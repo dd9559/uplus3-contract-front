@@ -11,10 +11,13 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      'api':{ //代理地址
+      '/api':{ //代理地址
         target: 'http://192.168.1.181:8080', //需要代理的地址
         changeOrigin: true, //是否跨域
-        secure: false
+        secure: false,
+        pathRewrite: {
+          '^/api': ''
+        }
       }
     },
 
