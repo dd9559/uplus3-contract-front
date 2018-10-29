@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+// 模块懒加载
+const Index = () => import('@/pages/index')
 
 Vue.use(Router)
 
@@ -8,8 +9,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      component: Index
     }
   ]
 })
