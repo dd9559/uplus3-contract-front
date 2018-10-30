@@ -14,6 +14,10 @@
           <template slot="title">设置</template>
           <el-menu-item index="contractTemplate">合同模板设置</el-menu-item>
         </el-submenu>
+        <el-submenu index="postSigning">
+          <template slot="title">签后</template>
+          <el-menu-item index="postReceive">后期接收</el-menu-item>
+        </el-submenu>
       </el-menu>
       <!--<ul class="navbar">
         <li v-for="item in views" @click="linkTo(item)">{{item.name}}</li>
@@ -34,6 +38,11 @@
             id:1,
             name:'设置',
             path:'setting'
+          },
+          {
+            id:2,
+            name:'签后',
+            path:'postSigning'
           }
         ]
       }

@@ -6,6 +6,10 @@ const Setting =()=>import('@/pages/setting/index')
 const contractTemplate =()=>import('@/pages/setting/contractTemplate')
 const postProcess=()=>import('@/pages/setting/postProcess')
 const Company=()=>import('@/pages/setting/company')
+const postSigning =() =>import('@/pages/postSigning/index')
+const postManage =() =>import('@/pages/postSigning/postManage')
+const postMonitor =() =>import('@/pages/postSigning/postMonitor')
+const postReceive =() =>import('@/pages/postSigning/postReceive')
 
 Vue.use(Router)
 
@@ -31,6 +35,24 @@ export default new Router({
             {
               path:'company',
               component:Company
+            }
+          ]
+        },
+        {
+          path:'postSigning',
+          component: postSigning,
+          children:[
+            {
+              path:'postReceive',
+              component:postReceive,
+            },
+            {
+              path:'postManage',
+              component:postManage,
+            },
+            {
+              path:'postMonitor',
+              component:postMonitor,
             }
           ]
         }
