@@ -44,8 +44,8 @@
       </el-table>
       <el-button type="primary" class="el-icon-plus" @click="showModal('添加交易步骤')">添加交易步骤</el-button>
       <div class="drop-view" ref="dragWindow">
-        <img :src="getImg('test.jpg')" width="1000px" :height="imgHeight" alt="">
-        <span class="btn-drop" ref="dropBtn">盖章</span>
+        <!--<img :src="getImg('test.jpg')" width="1000px" :height="imgHeight" alt="">
+        <span class="btn-drop" ref="dropBtn">盖章</span>-->
       </div>
     </div>
     <div class="modal">
@@ -275,28 +275,30 @@
       let objY = 0
       let dragObj = this.$refs.dropBtn //拖拽对象
 
-      dragObj.onmousedown = function () {
-        mouseStart = Object.assign({start: true}, TOOL.getMousePos())
-        // console.log(mouseStart)
-        objX = !dragObj.style.left ? 0 : parseInt(dragObj.style.left.split('px')[0])
-        objY = !dragObj.style.top ? 0 : parseInt(dragObj.style.top.split('px')[0])
-      }
-
-      document.onmousemove = function () {
-        if (mouseStart.start) {
-          let location = TOOL.getMousePos()
-          dragObj.style.left = `${location.x - mouseStart.x + objX}px`;
-          dragObj.style.top = `${location.y - mouseStart.y + objY}px`;
+      if(dragObj){
+        dragObj.onmousedown = function () {
+          mouseStart = Object.assign({start: true}, TOOL.getMousePos())
+          // console.log(mouseStart)
+          objX = !dragObj.style.left ? 0 : parseInt(dragObj.style.left.split('px')[0])
+          objY = !dragObj.style.top ? 0 : parseInt(dragObj.style.top.split('px')[0])
         }
 
-      }
+        document.onmousemove = function () {
+          if (mouseStart.start) {
+            let location = TOOL.getMousePos()
+            dragObj.style.left = `${location.x - mouseStart.x + objX}px`;
+            dragObj.style.top = `${location.y - mouseStart.y + objY}px`;
+          }
 
-      document.onmouseup = function () {
-        mouseStart = {start: false}
-        let dragWindow = this.$refs.dragWindow
-        let rateX = parseInt(dragObj.style.left.split('px')[0])/dragWindow.clientWidth
-        console.log(rateX.toFixed(2))
-      }.bind(this)
+        }
+
+        document.onmouseup = function () {
+          mouseStart = {start: false}
+          let dragWindow = this.$refs.dragWindow
+          let rateX = parseInt(dragObj.style.left.split('px')[0])/dragWindow.clientWidth
+          console.log(rateX.toFixed(2))
+        }.bind(this)
+      }
     },
     methods: {
       getImg: function (url) {
