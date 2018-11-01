@@ -9,7 +9,7 @@
       <div class="slider">
         <el-menu
           :default-active="activeIndex"
-          unique-opened="true"
+          :unique-opened="true"
           class="el-menu-demo"
           @select="handleSelect"
           text-color="#333333"
@@ -39,7 +39,7 @@
             child:[
               {
                 name:'交易合同',
-                path:''
+                path:'11'
               }
             ]
           },
@@ -50,23 +50,23 @@
             child:[
               {
                 name:'应收实收',
-                path:''
+                path:'21'
               },
               {
                 name:'收付款单',
-                path:''
+                path:'22'
               },
               {
                 name:'票据管理',
-                path:''
+                path:'23'
               },
               {
                 name:'房款监管',
-                path:''
+                path:'24'
               },
               {
                 name:'加盟账务',
-                path:''
+                path:'25'
               }
             ]
           },
@@ -77,15 +77,15 @@
             child:[
               {
                 name:'应收业绩',
-                path:''
+                path:'31'
               },
               {
                 name:'实收业绩',
-                path:''
+                path:'32'
               },
               {
                 name:'门店实收',
-                path:''
+                path:'33'
               }
             ]
           },
@@ -96,15 +96,15 @@
             child:[
               {
                 name:'后期接收',
-                path:''
+                path:'41'
               },
               {
                 name:'后期管理',
-                path:''
+                path:'42'
               },
               {
                 name:'后期监控',
-                path:''
+                path:'43'
               }
             ]
           },
@@ -115,31 +115,31 @@
             child:[
               {
                 name:'合同模板设置',
-                path:''
+                path:'contractTemplate'
               },
               {
                 name:'后期流程设置',
-                path:''
+                path:'postProcess'
               },
               {
                 name:'公司账户设置',
-                path:''
+                path:'company'
               },
               {
                 name:'电子签章设置',
-                path:''
+                path:'51'
               },
               {
                 name:'款类设置',
-                path:''
+                path:'52'
               },
               {
                 name:'职务-权限设置',
-                path:''
+                path:'53'
               },
               {
                 name:'个人-权限设置',
-                path:''
+                path:'54'
               }
             ]
           }
@@ -149,9 +149,9 @@
     methods: {
       handleSelect(key, keyPath) {
         // debugger
-        /*this.$router.push({
-          path:`${keyPath.join('/')}`
-        })*/
+        this.$router.push({
+          path:key
+        })
       },
       linkTo:function (item) {
         this.$router.push({
@@ -166,6 +166,8 @@
   @import "~@/assets/common.less";
   .main {
     min-width: 1000px;
+    position: relative;
+    height: 100%;
     .nav{
       height: 60px;
       background-color: @color-blue;
@@ -182,11 +184,22 @@
     }
     .container {
       display: flex;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      bottom: 0;
       .slider{
-        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
+        border-right: 1px solid @border-e6;
+        /deep/ .el-menu{
+          border: 0px;
+        }
       }
       .page-content{
         flex: 1;
+        background-color: @bg-grey;
       }
     }
   }
