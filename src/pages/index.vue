@@ -1,29 +1,31 @@
 <template>
   <div class="main">
     <div class="nav">
-      <el-menu
-        :default-active="activeIndex"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select="handleSelect"
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b">
-        <el-menu-item index="1">合同</el-menu-item>
-        <el-submenu index="setting">
-          <template slot="title">设置</template>
-          <el-menu-item index="contractTemplate">合同模板设置</el-menu-item>
-        </el-submenu>
-        <el-submenu index="postSigning">
-          <template slot="title">签后</template>
-          <el-menu-item index="postReceive">后期接收</el-menu-item>
-        </el-submenu>
-      </el-menu>
-      <!--<ul class="navbar">
-        <li v-for="item in views" @click="linkTo(item)">{{item.name}}</li>
-      </ul>-->
+      <ul class="navbar">
+        <li>退出</li>
+      </ul>
     </div>
-    <router-view></router-view>
+    <div class="container">
+      <div class="slider">
+        <el-menu
+          :default-active="activeIndex"
+          class="el-menu-demo"
+          @select="handleSelect"
+          text-color="#333333"
+          active-text-color="#478DE3">
+          <el-menu-item index="1">合同</el-menu-item>
+          <el-submenu index="setting">
+            <template slot="title">设置</template>
+            <el-menu-item index="contractTemplate">合同模板设置</el-menu-item>
+          </el-submenu>
+          <el-submenu index="postSigning">
+            <template slot="title">签后</template>
+            <el-menu-item index="postReceive">后期接收</el-menu-item>
+          </el-submenu>
+        </el-menu>
+      </div>
+      <router-view class="page-content"></router-view>
+    </div>
   </div>
 </template>
 
@@ -64,10 +66,31 @@
 </script>
 
 <style scoped lang="less">
+  @import "~@/assets/common.less";
   .main {
     min-width: 1000px;
+    .nav{
+      height: 60px;
+      background-color: @color-blue;
+      color: @color-white;
+      display: flex;
+      align-items: center;
+      position: relative;
+      .navbar{
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform:translateY(-50%);
+      }
+    }
     .container {
-      font-size: 40px;
+      display: flex;
+      .slider{
+        width: 200px;
+      }
+      .page-content{
+        flex: 1;
+      }
     }
   }
 </style>
