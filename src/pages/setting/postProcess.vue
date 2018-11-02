@@ -1,144 +1,29 @@
 <template>
   <div class="view-container">
+    <template>
+      <label>请选择城市：</label><el-select v-model="value" placeholder="请选择">
+        <el-option
+          v-for="item in citys"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+    </template>
     <ul class="tabs">
       <li v-for="item in tabs" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)">{{item.name}}</li>
     </ul>
-    <div class="data-list">
-      <el-table :data="listData" style="width: 100%" @row-dblclick="getRowDetails">
-        <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
-                         v-for="item in tHeader" :key="item.id"></el-table-column>
-        <el-table-column align="center" label="操作">
-          <template slot-scope="scope">
-            <el-button @click="rowOperation(scope.row,1)" type="text" size="small">编辑</el-button>
-            <el-button @click="rowOperation(scope.row,2)" type="text" size="small">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-button type="primary" class="el-icon-plus" @click="showModal('添加步骤类型')">添加步骤类型</el-button>
-    </div>
-    <div class="data-list other">
-      <el-table class="inner-table" :data="listData_other" border style="width: 100%" :span-method="arraySpanMethod">
-        <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
-                         v-for="item in tHeader_other" :key="item.id">
-          <template slot-scope="scope">
-            <template v-if="item.name==='步骤附属信息'">
-              <!--{{JSON.parse(scope.row.transStepsAttach).transStepsAttach}}-->
-              <el-table :data="JSON.parse(scope.row.transStepsAttach).transStepsAttach" style="width: 100%"
-                        :show-header="false">
-                <el-table-column align="center" label="步骤附属信息" prop="title"
-                                 :formatter="nullFormatter"></el-table-column>
-                <el-table-column align="center" label="信息类型" prop="type" :formatter="nullFormatter"></el-table-column>
-                <el-table-column align="center" label="是否必填" prop="name" :formatter="nullFormatter"></el-table-column>
-              </el-table>
-            </template>
-            <template v-else-if="item.name==='操作'">
-              <el-button @click="rowOperation(scope.row,'edit','stepBusiness')" type="text" size="small">编辑</el-button>
-              <el-button @click="rowOperation(scope.row,'delete','stepBusiness')" type="text" size="small">删除
-              </el-button>
-            </template>
-            <template v-else>
-              {{scope.row[item.prop]}}
-            </template>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-button type="primary" class="el-icon-plus" @click="showModal('添加交易步骤')">添加交易步骤</el-button>
-      <div class="drop-view" ref="dragWindow">
-        <!--<img :src="getImg('test.jpg')" width="1000px" :height="imgHeight" alt="">
-        <span class="btn-drop" ref="dropBtn">盖章</span>-->
-      </div>
-    </div>
-    <div class="modal">
-      <el-dialog :title="modalTitle" :visible.sync="modal">
-        <div class="modal-context">
-          <template v-if="modalTitle==='添加步骤类型'">
-            <div class="input-group">
-              <label>步骤类型：</label>
-              <el-input type="text" v-model="stepType.type"></el-input>
-            </div>
-            <div class="input-group">
-              <label>负责角色：</label>
-              <el-select v-model="stepType.role" placeholder="请选择">
-                <el-option
-                  v-for="item in roleListData"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </div>
-          </template>
-          <template v-else>
-            <div class="input-group">
-              <label>步骤名称：</label>
-              <span>{{stepBusiness.stepsTypeName}}</span>
-            </div>
-            <div class="input-group">
-              <label>步骤名称：</label>
-              <el-input type="text" v-model="stepBusiness.name"></el-input>
-            </div>
-            <div class="input-group">
-              <label>计划天数：</label>
-              <el-input type="text" v-model="stepBusiness.planDays"></el-input>
-            </div>
-            <div class="input-group">
-              <label>超时提醒：</label>
-              <el-input type="text" v-model="stepBusiness.overTimeDays"></el-input>
-            </div>
-            <div class="input-group">
-              <label>是否短信提醒：</label>
-              <el-radio v-model="stepBusiness.isSms" label="1">是</el-radio>
-              <el-radio v-model="stepBusiness.isSms" label="2">否</el-radio>
-            </div>
-            <div class="menu-table">
-              <p>附属信息</p>
-              <el-table border :data="tableForm" style="width: 100%">
-                <el-table-column align="center" label="名称">
-                  <template slot-scope="scope">
-                    <el-input v-model="tableForm[scope.$index].title"></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column align="center" label="信息类型">
-                  <template slot-scope="scope">
-                    <!--<el-select v-model="tableForm[scope.$index].type" placeholder="请选择">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>-->
-                  </template>
-                </el-table-column>
-                <el-table-column align="center" label="是否必填" min-width="140px">
-                  <template slot-scope="scope">
-                    <el-radio v-model="tableForm[scope.$index].isRequired" label="1">是</el-radio>
-                    <el-radio v-model="tableForm[scope.$index].isRequired" label="2">否</el-radio>
-                  </template>
-                </el-table-column>
-                <el-table-column align="center" label="操作">
-                  <template slot-scope="scope">
-                    <el-button @click="rowOperation(scope.row,'delete','info')" type="text" size="small">删除</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <p>
-                <el-button @click="addCell" class="el-icon-plus">添加</el-button>
-              </p>
-            </div>
-          </template>
-        </div>
-        <div slot="footer" class="modal-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
-        </div>
-      </el-dialog>
-    </div>
+    <component v-bind:is="current"></component>
+
   </div>
 </template>
 
 <script>
   import {FILTER} from "@/assets/js/filter";
   import {TOOL} from "../../assets/js/common";
+  import TransactionStep from './transactionStep'
+  import Tow from './tow'
+  import Three from './three'
 
   let stepTypeId = 1;
   let imgSize = 4 / 3;
@@ -151,6 +36,7 @@
     mixins: [FILTER],
     data() {
       return {
+        citys:[],
         tabs: [
           {
             id: 1,
@@ -165,13 +51,13 @@
           {
             id: 3,
             name: '合同资料库',
-            url: '/flowmanage/selectDatabaseList'
+            url: '/flowmanage/getTypeAndStepsList'
           }
         ],
         tHeader: [
           {
             id: 1,
-            prop: 'name',
+            prop: 'typeName',
             name: '步骤类型'
           },
           {
@@ -181,7 +67,7 @@
           },
           {
             id: 3,
-            prop: '',
+            prop: 'stepsNum',
             name: '步骤数量'
           }
         ],
@@ -242,6 +128,7 @@
         listData_other: [],
         modal: false,
         modalTitle: '',
+        current:'TransactionStep' , //当前组件
         //步骤类型
         stepType: {
           type: '',
@@ -267,8 +154,12 @@
         ],
       }
     },
+    components: {
+      TransactionStep,
+      Tow,
+      Three
+    },
     created() {
-      this.getData(this.tabs[0].url)
     },
     mounted() {
       let objX = 0
@@ -305,16 +196,15 @@
         return require('@/assets/img/' + url)
       },
       checkTab: function (item) {
+        console.log(item)
         this.activeItem = item.id
-        this.getData(item.url)
-      },
-      getData: function (type) {
-        this.$ajax.get(`/api${type}`, {cityId: 1}).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.listData = res.data
-          }
-        })
+        if(item.id==1){
+          this.current='TransactionStep'
+        }else if(item.id==2){
+          this.current='Tow'
+        }else{
+          this.current='Three'
+        }
       },
       /**
        * 获取步骤类型的交易步骤
@@ -389,7 +279,6 @@
             transStepsAttach: this.tableForm
           }
           obj = Object.assign({}, this.stepBusiness, {transStepsAttach: JSON.stringify(obj)})
-          console.log(obj)
           this.$ajax.post('/api/flowmanage/insertSteps', obj).then(res => {
 
           }).catch(error => {
