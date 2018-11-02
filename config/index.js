@@ -3,6 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 //庞豪：http://192.168.1.181:8080
 //刘梦冰：http://192.168.1.183:8080
+//朱辉：http://192.168.1.58:8080
 
 const path = require('path')
 
@@ -14,7 +15,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{ //代理地址
-        target: 'http://192.168.1.183:8080', //需要代理的地址
+        target: 'http://192.168.1.58:8080', //需要代理的地址
         changeOrigin: true, //是否跨域
         secure: false,
         pathRewrite: {

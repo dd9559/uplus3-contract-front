@@ -30,7 +30,7 @@
     name: "index",
     data() {
       return {
-        activeIndex: 'setting',
+        activeIndex: 'contractTemplate',
         views:[
           {
             id:1,
@@ -50,11 +50,11 @@
             child:[
               {
                 name:'应收实收',
-                path:'21'
+                path:'actualHarvest'
               },
               {
                 name:'收付款单',
-                path:'22'
+                path:'moneyCheck'
               },
               {
                 name:'票据管理',
@@ -146,16 +146,15 @@
         ]
       }
     },
+    created(){
+      // debugger
+      this.activeIndex = this.$route.path.split('/')[1]
+    },
     methods: {
       handleSelect(key, keyPath) {
         // debugger
         this.$router.push({
           path:key
-        })
-      },
-      linkTo:function (item) {
-        this.$router.push({
-          path:item.path
         })
       }
     }
@@ -200,6 +199,7 @@
       .page-content{
         flex: 1;
         background-color: @bg-grey;
+        padding: 20px;
       }
     }
   }

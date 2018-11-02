@@ -39,33 +39,13 @@
     padding: 0;
   }
 
-  .modal {
-    &-context{
-      /*width: 80%;*/
-      .input-group {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        &:last-of-type{
-          margin: 0px;
-        }
-        > label {
-          &:first-of-type{
-            min-width: 100px;
-          }
-        }
-      }
-      .file-upload {
-        &-opera {
-          display: flex;
-          > p {
-            display: inherit;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-right: 20px;
-          }
-        }
+  .input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    > label {
+      &:first-of-type{
+        min-width: 80px;
       }
     }
   }

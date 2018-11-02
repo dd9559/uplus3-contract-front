@@ -9,6 +9,8 @@ const postSigning =() =>import('@/pages/postSigning/index')
 const postManage =() =>import('@/pages/postSigning/postManage')
 const postMonitor =() =>import('@/pages/postSigning/postMonitor')
 const postReceive =() =>import('@/pages/postSigning/postReceive')
+const actualHarvest=()=>import('@/pages/finance/actualHarvest')
+const moneyCheck=()=>import('@/pages/finance/moneyCheck')
 
 Vue.use(Router)
 
@@ -29,6 +31,14 @@ export default new Router({
         {
           path:'company',
           component:Company
+        },
+        {
+          path:'actualHarvest',
+          component:actualHarvest
+        },
+        {
+          path:'moneyCheck',
+          component:moneyCheck
         }
       ]
     }
