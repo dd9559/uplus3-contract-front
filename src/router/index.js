@@ -51,6 +51,5 @@ export default new Router({
           component: billDetails
         }
       ]
-    }
-  ]
+    }]
 })
