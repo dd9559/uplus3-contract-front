@@ -58,7 +58,7 @@
               },
               {
                 name:'票据管理',
-                path:'23'
+                path:'paperSet'
               },
               {
                 name:'房款监管',

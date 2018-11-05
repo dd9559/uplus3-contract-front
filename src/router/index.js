@@ -9,6 +9,7 @@ const postSigning =() =>import('@/pages/postSigning/index')
 const postManage =() =>import('@/pages/postSigning/postManage')
 const postMonitor =() =>import('@/pages/postSigning/postMonitor')
 const postReceive =() =>import('@/pages/postSigning/postReceive')
+const paperSet =() =>import('@/pages/finance/paperSet')   //票据管理
 const actualHarvest=()=>import('@/pages/finance/actualHarvest')
 const moneyCheck=()=>import('@/pages/finance/moneyCheck')
 
@@ -39,6 +40,10 @@ export default new Router({
         {
           path:'moneyCheck',
           component:moneyCheck
+        },
+        {
+          path:'paperSet',
+          component:paperSet
         }
       ]
     }
