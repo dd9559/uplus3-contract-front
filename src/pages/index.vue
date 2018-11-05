@@ -2,7 +2,7 @@
   <div class="main">
     <div class="nav">
       <ul class="navbar">
-        <li>退出</li>
+        <li>退出111222</li>
       </ul>
     </div>
     <div class="container">
@@ -58,7 +58,7 @@ export default {
             },
             {
               name: "票据管理",
-              path: "23"
+              path: "paperSet"
             },
             {
               name: "房款监管",
