@@ -126,6 +126,14 @@
                       prop="done"
                       label="操作">
                     </el-table-column>
+
+                     <el-table-column
+                     label="单选框"
+                     >
+                       <template slot-scope="scope">
+                                <el-checkbox>备选项</el-checkbox>
+                       </template>
+                    </el-table-column>
                 </el-table>
              </div>
             <!-- 表单列表弹出框（业绩详情） -->
@@ -151,6 +159,21 @@ export default {
   data() {
     return {
       tableData: [
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: "未审核",
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: "业绩分成",
+          man1: "当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500",
+          done: "审核  编辑"
+        },
         {
           name:
             "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
@@ -242,7 +265,7 @@ export default {
     };
   },
   methods: {
-    getDetail() {
+    handleClose() {
       alert(1);
     }
   }
