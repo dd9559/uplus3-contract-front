@@ -2,7 +2,7 @@
   <div class="main">
     <div class="nav">
       <ul class="navbar">
-        <li>退出111222</li>
+        <li>退出</li>
       </ul>
     </div>
     <div class="container">
