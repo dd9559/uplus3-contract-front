@@ -21,6 +21,7 @@ const actualHarvest = () => import('@/pages/finance/actualHarvest')
 const moneyCheck = () => import('@/pages/finance/moneyCheck')
 const Bill = () => import('@/pages/finance/bill')
 const billDetails = () => import('@/pages/finance/billDetails')
+const payBill=()=>import('@/pages/finance/payBill')
 
 
 Vue.use(Router)
@@ -72,7 +73,12 @@ export default new Router({
       {
         path: 'billDetails',
         component: billDetails
-      }]
+      },
+      {
+        path: 'payBill',
+        component: payBill
+      }
+    ]
   }]
 })
 
