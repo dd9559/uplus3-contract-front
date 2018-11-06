@@ -3,7 +3,7 @@
     <!-- 头部表单 -->
     <el-form :inline="true" :model="companyForm" class="company-form">
       <div class="form-title">
-        <span>筛选查询11111</span>
+        <span>筛选查询</span>
         <div>
           <el-button @click="onReset" class="resetBtn">重置</el-button>
           <el-button type="primary" @click="onSearch" class="searchBth">查询</el-button>        

@@ -12,7 +12,6 @@
           </template>
         </el-table-column> 
       </el-table>
-      <el-button type="primary" class="el-icon-plus" @click="showModal('添加步骤类型')">添加步骤类型</el-button>
     </div>
 </template>
            

@@ -199,7 +199,8 @@
       .page-content{
         flex: 1;
         background-color: @bg-grey;
-        padding: 20px;
+        padding: 25px 15px 15px 20px;
+        height: 100%;
       }
     }
   }
