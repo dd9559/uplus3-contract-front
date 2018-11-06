@@ -1,6 +1,7 @@
 <template>
     <div class="paper-set">
         <div>
+            <!-- 筛选 -->
             <div class="paper-box">
                 <div class="paper-set-tit">
                     <div class="paper-tit-fl">筛选查询</div>
@@ -14,6 +15,7 @@
                         class="paper-btn paper-btn-blue" 
                         type="primary" 
                         size="medium" 
+                        @click="queryFn"
                         round>查 询</el-button>
                     </div>
                 </div>
@@ -24,28 +26,26 @@
                 :model="propForm" 
                 class="prop-form"
                 size="small">
-                    <!-- <el-form-item label="审批人">
-                        <el-input v-model="form.user" placeholder="审批人"></el-input>
-                    </el-form-item> -->
                     <el-form-item 
                     label="部门" 
-                    prop="region">
+                    prop="region"
+                    class="mr">
                         <el-select v-model="propForm.region" @change="regionChangeFn" class="w200">
-                        <el-option 
-                        v-for="item in rules.region" 
-                        :key="item.value"
-                        :label="item.label" 
-                        :value="item.value"></el-option>
+                            <el-option 
+                            v-for="item in rules.region" 
+                            :key="item.value"
+                            :label="item.label" 
+                            :value="item.value"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item 
                     prop="regionName">
                         <el-select v-model="propForm.regionName" class="w100">
-                        <el-option 
-                        v-for="item in rules.regionName" 
-                        :key="item.value"
-                        :label="item.label" 
-                        :value="item.value"></el-option>
+                            <el-option 
+                            v-for="item in rules.regionName" 
+                            :key="item.value"
+                            :label="item.label" 
+                            :value="item.value"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="关键字" prop="search">
@@ -63,16 +63,17 @@
                     label="票据状态" 
                     prop="paper">
                         <el-select v-model="propForm.paper" class="w120">
-                        <el-option 
-                        v-for="item in rules.paper" 
-                        :key="item.value"
-                        :label="item.label" 
-                        :value="item.value"></el-option>
-                    </el-select>
+                            <el-option 
+                            v-for="item in rules.paper" 
+                            :key="item.value"
+                            :label="item.label" 
+                            :value="item.value"></el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item 
-                    label="开票日期" 
-                    prop="time">
+                    label="查询时间" 
+                    prop="time"
+                    class="mr">
                         <el-select v-model="propForm.time" class="w120">
                         <el-option 
                             v-for="item in rules.time" 
@@ -81,8 +82,21 @@
                             :value="item.value"></el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item 
+                    prop="dateMo"
+                    class="mr">
+                        <el-date-picker
+                            v-model="propForm.dateMo"
+                            class="w330"
+                            type="daterange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-form-item>
                 </el-form>
             </div>
+            <!-- 列表 -->
             <div class="paper-table-box">
                 <div class="paper-set-tit">
                     <div class="paper-tit-fl">数据列表</div>
@@ -247,16 +261,38 @@
                     </el-table-column>
                 </el-table>
             </div>
+            <!-- 弹层 -->
+            <!-- 
+                * 变量名    type属性    默认值
+                * show      Boolean     false       弹层显示隐藏
+                * msg       String      弹层内容     弹层内容
+                * tit       String      弹层标题     弹层标题
+
+                * 事件接受
+                * propCloseFn   取消事件接收
+                * propBtnFn     确定事件接收
+                * propHandFn     点击黑层与叉叉按钮事件接收
+             -->
+            <LayerDialog 
+            :show="layer.show" 
+            :tit="layer.tit"
+            :msg="layer.msg"
+            @propCloseFn="propCloseFn"
+            @propBtnFn="propBtnFn"
+            @propHandFn="propHandFn"></LayerDialog>
         </div>
     </div>
 </template>
 
 <script>
+    import LayerDialog from '@/components/LayerDialog';
+    import {Mixin} from '@/assets/js/mixins';
     const STATE = {
         start:0,        //已开票
         invalid:1,      //已作废
     }
     export default {
+        mixins:[Mixin],
         data(){
             return {
                 // loginState 登入角色
@@ -296,6 +332,7 @@
                     search:'',
                     paper:'选项1',
                     time:'选项11',
+                    dateMo:'',
                 },
                 // 筛选选项
                 rules:{
@@ -335,7 +372,7 @@
                 // 搜索展示内容
                 restaurants:[{
                     "value": "1111111",
-                }]
+                }],
             }
         },
         methods:{
@@ -345,7 +382,11 @@
             },
             // 回收
             irecyclingFn(){
-                console.log('回收')
+                this.layer = {
+                    show:true,
+                    tit:'票据回收',
+                    msg:'确认要收回该票据吗？'
+                }
             },
             // 核销
             cancelFn(){
@@ -371,6 +412,10 @@
             resetFormFn() {
                 this.$refs.propForm.resetFields()
             },
+            // 查询
+            queryFn(){
+                console.log('查询')
+            },
             // 部门筛选回调
             regionChangeFn(e){
                 console.log(e)
@@ -391,6 +436,9 @@
                 console.log(item);
             }
         },
+        components:{
+            LayerDialog
+        }
     }
 </script>
 

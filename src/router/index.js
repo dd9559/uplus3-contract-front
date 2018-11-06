@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // 模块懒加载
-const Index = () => import('@/pages/index')
+
+const Index = () => import("@/pages/Index");
 const contractTemplate = () => import('@/pages/setting/contractTemplate')
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
@@ -23,7 +24,8 @@ const Bill = () => import('@/pages/finance/bill')
 const billDetails = () => import('@/pages/finance/billDetails')
 const payBill=()=>import('@/pages/finance/payBill')
 
-
+// 合同模块
+const newIntention = () => import("@/pages/contract/contractList/newIntention");
 Vue.use(Router)
 
 export default new Router({
@@ -74,11 +76,16 @@ export default new Router({
         path: 'billDetails',
         component: billDetails
       },
+      // 合同——合同列表——新增意向金
+      {
+        path: "newIntention",
+        component: newIntention
+      },
       {
         path: 'payBill',
         component: payBill
-      }
-    ]
+      }]
   }]
 })
+
 
