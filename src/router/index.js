@@ -22,6 +22,7 @@ const actualHarvest = () => import('@/pages/finance/actualHarvest')
 const moneyCheck = () => import('@/pages/finance/moneyCheck')
 const Bill = () => import('@/pages/finance/bill')
 const billDetails = () => import('@/pages/finance/billDetails')
+const payBill=()=>import('@/pages/finance/payBill')
 
 // 合同模块
 const newIntention = () => import("@/pages/contract/contractList/newIntention");
@@ -82,10 +83,16 @@ export default new Router({
         component: newIntention
       },
       {
-        path: "contractList",
+        path: 'payBill',
+        component: payBill
+      },
+      {
+        path: 'contractList',
         component: contractList
       }
     ]
   }]
 })
+
+
 
