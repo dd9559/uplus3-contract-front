@@ -58,7 +58,7 @@ export default {
         },
         // 点击黑层与叉叉按钮
         handleClose(){
-            
+            this.$emit('propHandFn')
         }
     }
 }

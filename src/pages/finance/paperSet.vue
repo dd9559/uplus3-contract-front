@@ -271,7 +271,7 @@
                 * 事件接受
                 * propCloseFn   取消事件接收
                 * propBtnFn     确定事件接收
-                * prophandFn     点击黑层与叉叉按钮事件接收
+                * propHandFn     点击黑层与叉叉按钮事件接收
              -->
             <LayerDialog 
             :show="layer.show" 
@@ -279,7 +279,7 @@
             :msg="layer.msg"
             @propCloseFn="propCloseFn"
             @propBtnFn="propBtnFn"
-            @prophandFn="prophandFn"></LayerDialog>
+            @propHandFn="propHandFn"></LayerDialog>
         </div>
     </div>
 </template>

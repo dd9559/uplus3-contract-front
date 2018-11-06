@@ -16,7 +16,7 @@ const Mixin ={
         propBtnFn(){
             this.layer.show = !this.layer.show  
         },
-        prophandFn(){
+        propHandFn(){
             this.layer.show = !this.layer.show  
         },
     }
