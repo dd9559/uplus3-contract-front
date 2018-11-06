@@ -1,0 +1,96 @@
+@import '../common.less';
+//公共部分 
+.paper-set{
+    position: relative;
+    >div{
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        top:20px;
+        bottom: 20px;
+    }
+}
+.paper-box{
+    padding: 20px 20px 0;
+    background-color: @bg-white;
+}
+.paper-table-box{
+    margin-top: 20px;
+    padding: 20px;
+    background-color: @bg-white;
+}
+.mt-20{
+    margin-top:20px;
+}
+.blue{
+    color: @color-blue;
+}
+.tc{
+    text-align: center;
+}
+.paper-btn-blue{
+    background-color: @color-blue;
+    border-color: @color-blue;
+}
+// 宽度
+.w100{
+    width: 100px;
+}
+.w120{
+    width: 120px;
+}
+.w200{
+    width: 200px;
+}
+.w312{
+    width: 312px;
+}
+// 按钮
+.paper-btn{
+    width: 100px;
+    text-align: center;
+}
+
+// 头部
+.paper-set-tit {
+    display: flex;
+    justify-content: space-between;
+    .paper-tit-fl{
+        font-size: 18px;
+        line-height: 36px;
+        color: #233241;
+    }
+}
+
+// 列表
+.paper-table{
+    /deep/.el-table__header-wrapper,
+    /deep/.el-table__fixed-header-wrapper{
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    /deep/.el-table__header th{
+        background-color: #EEF2FB;
+        line-height: 30px;
+        color: #6C7986;
+    }
+    /deep/&.el-table td{
+        padding: 25px 0;
+    }
+    /deep/&.el-table th:first-child>.cell{
+        text-align: center;
+    }
+    .line{
+        background-color: #e5e4ea;
+        display: inline-block;
+        height: 14px;
+        width: 1px;
+        margin:0 6px;
+        position: relative;
+        top: 3px;
+    }
+}
+// 筛选条件
+.prop-form{
+    padding-top: 10px;
+}

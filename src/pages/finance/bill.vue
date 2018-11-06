@@ -109,8 +109,8 @@
       </div>
     </div>
     <div class="view-context">
-      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
-        <el-table-column align="center" :label="getView" prop="contractType" :formatter="nullFormatter"></el-table-column>
+      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+        <el-table-column align="center" label="收付ID" prop="contractType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
@@ -125,11 +125,19 @@
         <el-table-column align="center" label="款类" prop="collectionType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="收付方式" prop="broker" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="对象" prop="accounts_receivable" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" :label="activeView===1?'收款人':'付款人'" prop="for_collection" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收款人" prop="for_collection" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="金额（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="付款时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="状态" prop="state" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="票据" prop="contractType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="余额（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="刷卡手续费" prop="useNum" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="入账时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付状态" prop="state" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="结算信息" prop="contractType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </div>
@@ -156,6 +164,7 @@
         },
         list: [
           {
+            id:1,
             contractId: '201809301289',
             houseId: "HRYY000039",
             customerId: "HRYY000039",
@@ -174,11 +183,6 @@
     created() {
       // this.getData()
     },
-    beforeRouteUpdate (to, from, next) {
-      // debugger
-      this.activeView = parseInt(to.query.type)
-      next()
-    },
     methods: {
       getData: function () {
         this.$ajax.get('/api/finance/listCollection').then(res => {
@@ -188,6 +192,19 @@
           }
         }).catch(error => {
           console.log(error)
+        })
+      },
+      /**
+       * 跳转详情页
+       * @param row
+       */
+      toDetails:function (row) {
+        debugger
+        this.$router.push({
+          path:'billDetails',
+          query:{
+            id:row.id
+          }
         })
       }
     },

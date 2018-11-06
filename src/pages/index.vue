@@ -11,6 +11,7 @@
           :default-active="activeIndex"
           :unique-opened="true"
           class="el-menu-demo"
+          :router="true"
           @select="handleSelect"
           text-color="#333333"
           active-text-color="#478DE3">
@@ -19,8 +20,23 @@
             <el-menu-item :index="grade.path" v-for="grade in item.child" :key="grade.name">{{grade.name}}</el-menu-item>
           </el-submenu>
         </el-menu>
+        <!--<ul>
+          <li v-for="item in views">
+            <span>{{item.name}}</span>
+            <ul>
+              <li v-for="grade in item.child" @click="handleSelect(grade)">{{grade.name}}</li>
+            </ul>
+          </li>
+        </ul>-->
       </div>
-      <router-view class="page-content"></router-view>
+      <div class="page-view">
+        <div class="page-view-index">
+          <p class="operation">
+            <el-button  type="text" @click="goBack">返回</el-button>
+          </p>
+        </div>
+        <router-view class="page-view-content"></router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -30,7 +46,7 @@
     name: "index",
     data() {
       return {
-        activeIndex: 'contractTemplate',
+        activeIndex: '',
         views:[
           {
             id:1,
@@ -49,24 +65,24 @@
             path:'2',
             child:[
               {
+                name:'收付款单',
+                path:'Bill'
+              },
+              {
+                name:'收款审核',
+                path:'moneyCheck?type=1'
+              },
+              {
+                name:'付款审核',
+                path:'moneyCheck?type=2'
+              },
+              {
                 name:'应收实收',
                 path:'actualHarvest'
               },
               {
-                name:'收付款单',
-                path:'moneyCheck'
-              },
-              {
                 name:'票据管理',
                 path:'23'
-              },
-              {
-                name:'房款监管',
-                path:'24'
-              },
-              {
-                name:'加盟账务',
-                path:'25'
               }
             ]
           },
@@ -146,16 +162,25 @@
         ]
       }
     },
-    created(){
+    beforeRouteEnter(to,from,next){
       // debugger
-      this.activeIndex = this.$route.path.split('/')[1]
+      next(vm=>{
+        vm.activeIndex = to.fullPath.split('/')[1]
+      })
+    },
+    beforeRouteUpdate(to,from,next){
+      this.activeIndex = to.fullPath.split('/')[1]
+      next()
+    },
+    created(){
+
     },
     methods: {
       handleSelect(key, keyPath) {
-        // debugger
-        this.$router.push({
-          path:key
-        })
+
+      },
+      goBack:function () {
+        this.$router.go(-1)
       }
     }
   }
@@ -196,11 +221,23 @@
           border: 0px;
         }
       }
-      .page-content{
+      .page-view{
         flex: 1;
+        padding: 0px 20px;
         background-color: @bg-grey;
-        padding: 20px;
+        overflow-x: auto;
+        &-index{
+          height: 40px;
+          position: relative;
+          .operation{
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform:translateY(-50%);
+          }
+        }
       }
     }
   }
 </style>
+
