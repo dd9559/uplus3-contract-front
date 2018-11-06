@@ -54,9 +54,17 @@
             path:'1',
             child:[
               {
-                name:'交易合同',
-                path:'11'
-              }
+                name:'合同列表',
+                path:'contractList'
+              },
+              {
+                name:'调佣审核',
+                path:'12'
+              },
+              {
+                name:'结算审核',
+                path:'13'
+              },
             ]
           },
           {
