@@ -2,112 +2,116 @@
 <template>
     <div class="newintention">
         <div class="formbox" ref="ruleForm" :style="{ height: clientHei }">
-            <el-form :inline="true" :model="form" :rules="rules">
+            <el-form :inline="true" :model="form" :rules="rules" class="form-innnerbox">
+                <div class="form-content">
                 <!-- 合同信息 -->
-                <div class="column-form"> 
-                    <div class="column-title">合同信息</div>
-                    <div class="form-cont">
-                        <el-form-item label="签约日期" prop="signdate">
-                            <el-date-picker v-model="form.signdate" type="date" placeholder="选择日期"></el-date-picker>
-                        </el-form-item>
-                        <el-form-item label="合同类型">
-                            <el-input v-model="form.contractType" :disabled="true"></el-input>
-                        </el-form-item>
-                        <el-form-item label="成交经纪人" required>
-                            <el-form-item prop="item1">
-                                <el-select v-model="form.item1" clearable filterable placeholder="请选择门店">
-                                    <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                </el-select>
+                    <div class="column-form"> 
+                        <div class="column-title">合同信息</div>
+                        <div class="form-cont">
+                            <el-form-item label="签约日期" prop="signdate">
+                                <el-date-picker v-model="form.signdate" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
-                            <el-form-item prop="item2" class="small-input">
-                                <el-select v-model="form.item2" clearable filterable placeholder="请选择经纪人">
-                                    <el-option v-for="item in option2" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                </el-select>
+                            <el-form-item label="合同类型">
+                                <el-input v-model="form.contractType" :disabled="true"></el-input>
                             </el-form-item>
-                        </el-form-item>
-                        <el-form-item label="认购期限" prop="subscribdate">
-                            <el-date-picker v-model="form.subscribdate" type="date" placeholder="选择日期"></el-date-picker>
-                        </el-form-item>
-                        <el-form-item label="认购总价" prop="subscribmoney">
-                            <el-input v-model.number="form.subscribmoney" clearable>
-                                <i slot="suffix" class="yuan">元</i>
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="意向金金额" prop="intentmoney">
-                            <el-input v-model.number="form.intentmoney" clearable>
-                                <i slot="suffix" class="yuan">元</i>
-                                <template slot="append">伍仟元整</template>
-                            </el-input>
-                        </el-form-item>
+                            <el-form-item label="成交经纪人" required>
+                                <el-form-item prop="item1">
+                                    <el-select v-model="form.item1" clearable filterable placeholder="请选择门店">
+                                        <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item prop="item2" class="small-input">
+                                    <el-select v-model="form.item2" clearable filterable placeholder="请选择经纪人">
+                                        <el-option v-for="item in option2" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-form-item>
+                            <el-form-item label="认购期限" prop="subscribdate">
+                                <el-date-picker v-model="form.subscribdate" type="date" placeholder="选择日期"></el-date-picker>
+                            </el-form-item>
+                            <el-form-item label="认购总价" prop="subscribmoney">
+                                <el-input v-model.number="form.subscribmoney" clearable>
+                                    <i slot="suffix" class="yuan">元</i>
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="意向金金额" prop="intentmoney">
+                                <el-input v-model.number="form.intentmoney" clearable>
+                                    <i slot="suffix" class="yuan">元</i>
+                                    <template slot="append">伍仟元整</template>
+                                </el-input>
+                            </el-form-item>
+                        </div>
+                    </div>
+
+                    <!-- 房源信息 -->
+                    <div class="column-form"> 
+                        <div class="column-title">房源信息</div>
+                        <div class="form-cont">
+                            <el-form-item>
+                                <el-form-item label="房源编号" prop="houseno">
+                                    <el-button type="primary" v-model="form.houseno">请选择房源</el-button>
+                                </el-form-item>
+                                <el-form-item label="物业地址" prop="address1">
+                                    <el-input v-model="form.address1" clearable class="big-input"></el-input>
+                                </el-form-item>
+                            </el-form-item>
+                            
+                            <el-form-item label="产权地址" prop="address2" class="disb">
+                                <el-input v-model="form.address2" clearable class="big-input"></el-input>
+                            </el-form-item>
+
+                            <el-form-item label="房源总价" class="disb">
+                                <el-input v-model.number="form.housemoney" clearable>
+                                    <i slot="suffix" class="yuan">元</i>
+                                </el-input>
+                            </el-form-item>
+
+                            <el-form-item label="业主信息" class="disb" required>
+                                <el-form-item prop="ownname">
+                                    <el-input v-model="form.ownname" clearable placeholder="姓名" class="ownwidth"></el-input>
+                                </el-form-item>
+                                <el-form-item prop="ownphone">
+                                    <el-input v-model="form.ownphone" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                </el-form-item>
+                            </el-form-item>
+                        </div>
+                    </div>
+
+                    <!-- 客源信息 -->
+                    <div class="column-form"> 
+                        <div class="column-title">客源信息</div>
+                        <div class="form-cont">
+                            <el-form-item label="客源编号" class="disb" prop="custno">
+                                    <el-button type="primary"  v-model="form.custno">请选择客源</el-button>
+                            </el-form-item>
+                            <el-form-item label="客户信息" class="disb" required>
+                                <el-form-item prop="custname">
+                                    <el-input v-model="form.custname" clearable placeholder="姓名" class="ownwidth"></el-input>
+                                </el-form-item>
+                                <el-form-item prop="custphone">
+                                    <el-input v-model="form.custphone" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                </el-form-item>
+                                <el-form-item prop="custidcard">
+                                    <el-input v-model="form.custidcard" clearable placeholder="身份证号" class="custwidth"></el-input>
+                                </el-form-item>
+                            </el-form-item>
+                        </div>
+                        <div class="form-cont mt30">
+                            <el-form-item label="意向备注" class="disb">
+                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请输入内容" v-model="form.textarea" class="textareawidth"></el-input>
+                            </el-form-item>
+                        </div>
                     </div>
                 </div>
-
-                <!-- 房源信息 -->
-                <div class="column-form"> 
-                    <div class="column-title">房源信息</div>
-                    <div class="form-cont">
-                        <el-form-item>
-                            <el-form-item label="房源编号" prop="houseno">
-                                <el-button type="primary" v-model="form.houseno">请选择房源</el-button>
-                            </el-form-item>
-                            <el-form-item label="物业地址" prop="address1">
-                                <el-input v-model="form.address1" clearable class="big-input"></el-input>
-                            </el-form-item>
-                        </el-form-item>
-                        
-                        <el-form-item label="产权地址" prop="address2" class="disb">
-                            <el-input v-model="form.address2" clearable class="big-input"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="房源总价" class="disb">
-                            <el-input v-model.number="form.housemoney" clearable>
-                                <i slot="suffix" class="yuan">元</i>
-                            </el-input>
-                        </el-form-item>
-
-                        <el-form-item label="业主信息" class="disb" required>
-                            <el-form-item prop="ownname">
-                                <el-input v-model="form.ownname" clearable placeholder="姓名" class="ownwidth"></el-input>
-                            </el-form-item>
-                            <el-form-item prop="ownphone">
-                                <el-input v-model="form.ownphone" clearable placeholder="手机号" class="ownwidth"></el-input>
-                            </el-form-item>
-                        </el-form-item>
-                    </div>
+                <div class="form-btn">
+                    
+                        <el-button type="primary" plain round>预 览</el-button>
+                        <el-button type="primary" round @click="onSubmit">保 存</el-button>
+                    
                 </div>
-
-                <!-- 客源信息 -->
-                <div class="column-form"> 
-                    <div class="column-title">客源信息</div>
-                    <div class="form-cont">
-                        <el-form-item label="客源编号" class="disb" prop="custno">
-                                <el-button type="primary"  v-model="form.custno">请选择客源</el-button>
-                        </el-form-item>
-                        <el-form-item label="客户信息" class="disb" required>
-                            <el-form-item prop="custname">
-                                <el-input v-model="form.custname" clearable placeholder="姓名" class="ownwidth"></el-input>
-                            </el-form-item>
-                            <el-form-item prop="custphone">
-                                <el-input v-model="form.custphone" clearable placeholder="手机号" class="ownwidth"></el-input>
-                            </el-form-item>
-                            <el-form-item prop="custidcard">
-                                <el-input v-model="form.custidcard" clearable placeholder="身份证号" class="custwidth"></el-input>
-                            </el-form-item>
-                        </el-form-item>
-                    </div>
-                    <div class="form-cont mt30">
-                        <el-form-item label="意向备注" class="disb">
-                            <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请输入内容" v-model="form.textarea" class="textareawidth"></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-
-                <el-form-item class="fr mr20">
-                    <el-button type="primary" plain round>预 览</el-button>
-                    <el-button type="primary" round @click="onSubmit">保 存</el-button>
-                </el-form-item>
-
             </el-form>
+
+
             
         </div>
     </div>
@@ -221,7 +225,7 @@ export default {
         }
     },
     mounted() {
-        console.log(document.documentElement.clientHeight - 100)
+        
     },
 }
 </script>
@@ -230,23 +234,23 @@ export default {
     .fr{
         float: right;
     }
-    .mr{
+    .mr20{
         margin-right: 20px;
     }
-    .newintention{
-        
-    }
-    .formbox{
-        background-color: #fff;
-        padding: 30px 30px 0 30px;
+
+    .form-innnerbox{
+        background-color: #fff; 
         border-radius: 5px;
         overflow-y: auto;
-        
+        position: relative;
         .el-date-editor.el-input, .el-date-editor.el-input__inner{
             width: 200px;
         }
         .el-input--suffix .el-input__inner{
             padding-right: 15px;
+        }
+        .form-content{
+            padding: 30px 30px 40px 30px;
         }
         .column-form{
             margin-bottom: 30px;
@@ -289,6 +293,13 @@ export default {
             .pb30{
                 padding-bottom: 30px;
             }
+        }
+        .form-btn{
+            overflow: hidden;
+            position: fixed;
+            bottom: 30px;
+            right: 60px;
+            background-color: #fff;
         }
         
         
