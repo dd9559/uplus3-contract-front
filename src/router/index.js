@@ -11,36 +11,41 @@ const postMonitor =() =>import('@/pages/postSigning/postMonitor')
 const postReceive =() =>import('@/pages/postSigning/postReceive')
 const actualHarvest=()=>import('@/pages/finance/actualHarvest')
 const moneyCheck=()=>import('@/pages/finance/moneyCheck')
-
+const newIntention = () => import("@/pages/contract/contractList/newIntention");
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: "/",
       component: Index,
-      children:[
+      children: [
         {
-          path:'contractTemplate',
-          component:contractTemplate
+          path: "contractTemplate",
+          component: contractTemplate
         },
         {
-          path:'postProcess',
-          component:postProcess
+          path: "postProcess",
+          component: postProcess
         },
         {
-          path:'company',
-          component:Company
+          path: "company",
+          component: Company
         },
         {
-          path:'actualHarvest',
-          component:actualHarvest
+          path: "actualHarvest",
+          component: actualHarvest
         },
         {
-          path:'moneyCheck',
-          component:moneyCheck
+          path: "moneyCheck",
+          component: moneyCheck
+        },
+        // 合同——合同列表——新增意向金
+        {
+          path: "newIntention",
+          component: newIntention
         }
       ]
     }
   ]
-})
+});
