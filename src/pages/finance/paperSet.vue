@@ -265,30 +265,34 @@
             <!-- 
                 * 变量名    type属性    默认值
                 * show      Boolean     false       弹层显示隐藏
-                * close     Boolean     false       是否开启取消事件
-                * btn       Boolean     false       是否开启确定事件
                 * msg       String      弹层内容     弹层内容
                 * tit       String      弹层标题     弹层标题
 
                 * 事件接受
-                * propCloseFn   取消事件接收(ps:必须 cloes 为 true)
-                * propBtnFn     确定事件接收(ps:必须 btn 为 true)
+                * propCloseFn   取消事件接收
+                * propBtnFn     确定事件接收
+                * prophandFn     点击黑层与叉叉按钮事件接收
              -->
             <LayerDialog 
-            :show="layerRecycle.show" 
-            :tit="layerRecycle.tit"
-            :msg="layerRecycle.msg"></LayerDialog>
+            :show="layer.show" 
+            :tit="layer.tit"
+            :msg="layer.msg"
+            @propCloseFn="propCloseFn"
+            @propBtnFn="propBtnFn"
+            @prophandFn="prophandFn"></LayerDialog>
         </div>
     </div>
 </template>
 
 <script>
     import LayerDialog from '@/components/LayerDialog';
+    import {Mixin} from '@/assets/js/mixins';
     const STATE = {
         start:0,        //已开票
         invalid:1,      //已作废
     }
     export default {
+        mixins:[Mixin],
         data(){
             return {
                 // loginState 登入角色
@@ -369,12 +373,6 @@
                 restaurants:[{
                     "value": "1111111",
                 }],
-                // 弹层  票据回收
-                layerRecycle:{
-                    show:true,
-                    msg:'票据回收',
-                    tit:'测试'
-                }
             }
         },
         methods:{
@@ -384,7 +382,11 @@
             },
             // 回收
             irecyclingFn(){
-                console.log('回收')
+                this.layer = {
+                    show:true,
+                    tit:'票据回收',
+                    msg:'确认要收回该票据吗？'
+                }
             },
             // 核销
             cancelFn(){

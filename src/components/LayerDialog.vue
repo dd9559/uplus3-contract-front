@@ -3,6 +3,7 @@
             <el-dialog
                 :title="comTit"
                 :visible.sync="comShow"
+                :before-close="handleClose"
                 class="layer-paper">
                 <span>{{comMsg}}</span>
                 <span slot="footer">
@@ -35,37 +36,29 @@ export default {
         tit:{
             type:String,
             default:'弹层标题'
-        },
-        close:{
-            type:Boolean,
-            default:false
-        },
-        btn:{
-            type:Boolean,
-            default:false
         }
     },
-    data(){
-        return {
-            comShow:this.show,
-            comMsg:this.msg,
-            comTit:this.tit
+    computed:{
+        comShow(){
+            return this.show
+        },
+        comMsg(){
+            return this.msg
+        },
+        comTit(){
+            return this.tit
         }
     },
     methods:{
         cloesFn(){
-            if(this.close){
-                this.$emit('propCloseFn')
-            }else{
-                this.comShow = false
-            }
+            this.$emit('propCloseFn')
         },
         btnFn(){
-            if(this.btn){
-                this.$emit('propBtnFn')
-            }else{
-                this.comShow = false
-            }
+            this.$emit('propBtnFn')
+        },
+        // 点击黑层与叉叉按钮
+        handleClose(){
+            
         }
     }
 }
