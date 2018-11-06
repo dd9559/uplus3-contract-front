@@ -1,8 +1,8 @@
 <!-- 新增意向金 -->
 <template>
     <div class="newintention">
-        <div class="formbox">
-            <el-form  ref="ruleForm" :inline="true" :model="form" :rules="rules">
+        <div class="formbox" ref="ruleForm" :style="{ height: clientHei }">
+            <el-form :inline="true" :model="form" :rules="rules">
                 <!-- 合同信息 -->
                 <div class="column-form"> 
                     <div class="column-title">合同信息</div>
@@ -47,10 +47,10 @@
                     <div class="column-title">房源信息</div>
                     <div class="form-cont">
                         <el-form-item>
-                            <el-form-item label="房源编号">
-                                <el-button type="primary">请选择房源</el-button>
+                            <el-form-item label="房源编号" prop="houseno">
+                                <el-button type="primary" v-model="form.houseno">请选择房源</el-button>
                             </el-form-item>
-                            <el-form-item label="物业地址" prop="addres1">
+                            <el-form-item label="物业地址" prop="address1">
                                 <el-input v-model="form.address1" clearable class="big-input"></el-input>
                             </el-form-item>
                         </el-form-item>
@@ -59,13 +59,13 @@
                             <el-input v-model="form.address2" clearable class="big-input"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="房源总价" prop="housebmoney" class="disb">
+                        <el-form-item label="房源总价" class="disb">
                             <el-input v-model.number="form.housemoney" clearable>
                                 <i slot="suffix" class="yuan">元</i>
                             </el-input>
                         </el-form-item>
 
-                        <el-form-item label="业主信息" class="disb">
+                        <el-form-item label="业主信息" class="disb" required>
                             <el-form-item prop="ownname">
                                 <el-input v-model="form.ownname" clearable placeholder="姓名" class="ownwidth"></el-input>
                             </el-form-item>
@@ -80,10 +80,10 @@
                 <div class="column-form"> 
                     <div class="column-title">客源信息</div>
                     <div class="form-cont">
-                        <el-form-item label="客源编号" class="disb">
-                                <el-button type="primary">请选择客源</el-button>
+                        <el-form-item label="客源编号" class="disb" prop="custno">
+                                <el-button type="primary"  v-model="form.custno">请选择客源</el-button>
                         </el-form-item>
-                        <el-form-item label="客户信息" class="disb">
+                        <el-form-item label="客户信息" class="disb" required>
                             <el-form-item prop="custname">
                                 <el-input v-model="form.custname" clearable placeholder="姓名" class="ownwidth"></el-input>
                             </el-form-item>
@@ -95,7 +95,7 @@
                             </el-form-item>
                         </el-form-item>
                     </div>
-                    <div class="form-cont mt30 pb30">
+                    <div class="form-cont mt30">
                         <el-form-item label="意向备注" class="disb">
                             <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请输入内容" v-model="form.textarea" class="textareawidth"></el-input>
                         </el-form-item>
@@ -104,7 +104,7 @@
 
                 <el-form-item class="fr mr20">
                     <el-button type="primary" plain round>预 览</el-button>
-                    <el-button type="primary"  round @click="onSubmit">保 存</el-button>
+                    <el-button type="primary" round @click="onSubmit">保 存</el-button>
                 </el-form-item>
 
             </el-form>
@@ -117,7 +117,6 @@
 export default {
     data() {
         return {
-
             form: {
                 signdate: '', //签约日期
                 contractType: '', //合同类型
@@ -132,6 +131,10 @@ export default {
                 housemoney: '', //房源总价
                 ownname: '', //业主姓名
                 ownphone: '', //业主手机号
+                custno: '', //客源编号
+                custname: '', //客户姓名
+                custphone: '', //客户手机号
+                custidcard: '', //客户身份证号
                 textarea: '', //备注
             
             },
@@ -176,10 +179,50 @@ export default {
                     { required: true, message: '请输入意向金金额', trigger: 'blur' },
                     // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
                 ],
+                houseno: [
+                    { required: true, message: '请选择房源', trigger: 'click' },
+                ],
+                address1: [
+                    { required: true, message: '请输入物业地址', trigger: 'blur' },
+                ],
+                address2: [
+                    { required: true, message: '请输入产权地址', trigger: 'blur' },
+                ],
+                ownname: [
+                    { required: true, message: '请输入业主姓名', trigger: 'blur' },
+                ],
+                ownphone: [
+                    { required: true, message: '请输入业主手机号', trigger: 'blur' },
+                ],
+                custno: [
+                    { required: true, message: '请选择客源', trigger: 'click' },
+                ],
+                custname: [
+                    { required: true, message: '请输入客户姓名', trigger: 'blur' },
+                ],
+                custphone: [
+                    { required: true, message: '请输入客户手机号', trigger: 'blur' },
+                ],
+                custidcard: [
+                    { required: true, message: '请输入客户身份证号', trigger: 'blur' },
+                ],
         
             },
         }
-    }
+    },
+    computed: {
+        clientHei() {
+            return document.documentElement.clientHeight - 130 + 'px'
+        }
+    },
+    methods: {
+        onSubmit() {
+
+        }
+    },
+    mounted() {
+        console.log(document.documentElement.clientHeight - 100)
+    },
 }
 </script>
 
@@ -190,10 +233,15 @@ export default {
     .mr{
         margin-right: 20px;
     }
+    .newintention{
+        
+    }
     .formbox{
         background-color: #fff;
-        padding: 30px;
+        padding: 30px 30px 0 30px;
         border-radius: 5px;
+        overflow-y: auto;
+        
         .el-date-editor.el-input, .el-date-editor.el-input__inner{
             width: 200px;
         }
