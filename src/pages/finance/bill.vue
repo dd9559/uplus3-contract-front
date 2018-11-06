@@ -109,8 +109,25 @@
       </div>
     </div>
     <div class="view-context">
-      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
-        <el-table-column align="center" :label="getView" prop="contractType" :formatter="nullFormatter"></el-table-column>
+      <div class="table-tool">
+        <h4>数据列表</h4>
+        <ul>
+          <li>
+            收款<span>{{tableTotal.receiptNum}}</span>笔，总额<span>{{tableTotal.receiptMoney}}</span>元；
+          </li>
+          <li>
+            付款<span>{{tableTotal.payNum}}</span>笔，总额<span>{{tableTotal.payMoney}}</span>元；
+          </li>
+          <li>
+            账户余额：<span>{{tableTotal.balance}}</span>元
+          </li>
+        </ul>
+        <p>
+          <el-button type="primary">导出</el-button>
+        </p>
+      </div>
+      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+        <el-table-column align="center" label="收付ID" prop="contractType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
@@ -125,11 +142,19 @@
         <el-table-column align="center" label="款类" prop="collectionType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="收付方式" prop="broker" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="对象" prop="accounts_receivable" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" :label="activeView===1?'收款人':'付款人'" prop="for_collection" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收款人" prop="for_collection" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="金额（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="付款时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="状态" prop="state" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="票据" prop="contractType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="余额（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="刷卡手续费" prop="useNum" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="入账时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付状态" prop="state" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="结算信息" prop="contractType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </div>
@@ -154,8 +179,16 @@
           collectionEnd: '',
           keyword: ''
         },
+        tableTotal:{
+          receiptNum:28,
+          receiptMoney:23680,
+          payNum:6,
+          payMoney:5641,
+          balance:4568
+        },
         list: [
           {
+            id:1,
             contractId: '201809301289',
             houseId: "HRYY000039",
             customerId: "HRYY000039",
@@ -174,11 +207,6 @@
     created() {
       // this.getData()
     },
-    beforeRouteUpdate (to, from, next) {
-      // debugger
-      this.activeView = parseInt(to.query.type)
-      next()
-    },
     methods: {
       getData: function () {
         this.$ajax.get('/api/finance/listCollection').then(res => {
@@ -188,6 +216,19 @@
           }
         }).catch(error => {
           console.log(error)
+        })
+      },
+      /**
+       * 跳转详情页
+       * @param row
+       */
+      toDetails:function (row) {
+        debugger
+        this.$router.push({
+          path:'billDetails',
+          query:{
+            id:row.id
+          }
         })
       }
     },
@@ -248,10 +289,32 @@
   }
   .view-context{
     background-color: @color-white;
-    padding: 20px;
+    padding: 0 20px 20px;
     /deep/ .theader-bg{
       >th{
         background-color: @bg-th;
+      }
+    }
+    .table-tool{
+      height: 60px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      >ul{
+        display: flex;
+        margin-left: 20px;
+        >li{
+          color: @color-6c;
+          >span{
+            color: @color-red;
+          }
+        }
+      }
+      >p{
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform:translateY(-50%);
       }
     }
   }

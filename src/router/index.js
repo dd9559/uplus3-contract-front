@@ -1,46 +1,98 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // 模块懒加载
-const Index = () => import('@/pages/index')
-const contractTemplate =()=>import('@/pages/setting/contractTemplate')
-const postProcess=()=>import('@/pages/setting/postProcess')
-const Company=()=>import('@/pages/setting/company')
-const postSigning =() =>import('@/pages/postSigning/index')
-const postManage =() =>import('@/pages/postSigning/postManage')
-const postMonitor =() =>import('@/pages/postSigning/postMonitor')
-const postReceive =() =>import('@/pages/postSigning/postReceive')
-const actualHarvest=()=>import('@/pages/finance/actualHarvest')
-const moneyCheck=()=>import('@/pages/finance/moneyCheck')
 
+const Index = () => import("@/pages/Index");
+const contractTemplate = () => import('@/pages/setting/contractTemplate')
+const postProcess = () => import('@/pages/setting/postProcess')
+const Company = () => import('@/pages/setting/company')
+const postSigning = () => import('@/pages/postSigning/index')
+const postManage = () => import('@/pages/postSigning/postManage')
+const postMonitor = () => import('@/pages/postSigning/postMonitor')
+const postReceive = () => import('@/pages/postSigning/postReceive')
+
+const paperSet = () => import('@/pages/finance/paperSet') //票据管理
+
+//业绩模块
+const actualAchievement = () => import('@/pages/achievement/actualAchievement')
+const receivableAchievement = () => import('@/pages/achievement/receivableAchievement')
+const storeReceive = () => import('./../pages/achievement/storeReceive.vue')
+
+const actualHarvest = () => import('@/pages/finance/actualHarvest')
+const moneyCheck = () => import('@/pages/finance/moneyCheck')
+const Bill = () => import('@/pages/finance/bill')
+const billDetails = () => import('@/pages/finance/billDetails')
+const payBill=()=>import('@/pages/finance/payBill')
+
+// 合同模块
+const newIntention = () => import("@/pages/contract/contractList/newIntention");
+const contractList = () => import("@/pages/contract/contractList/contractList");
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
-      path: '/',
-      component: Index,
-      children:[
-        {
-          path:'contractTemplate',
-          component:contractTemplate
-        },
-        {
-          path:'postProcess',
-          component:postProcess
-        },
-        {
-          path:'company',
-          component:Company
-        },
-        {
-          path:'actualHarvest',
-          component:actualHarvest
-        },
-        {
-          path:'moneyCheck',
-          component:moneyCheck
-        }
-      ]
-    }
-  ]
+  routes: [{
+    path: '/',
+    component: Index,
+    children: [{
+      path: 'contractTemplate',
+      component: contractTemplate
+    },
+      {
+        path: 'postProcess',
+        component: postProcess
+      },
+      {
+        path: 'company',
+        component: Company
+      },
+      {
+        path: 'actualHarvest',
+        component: actualHarvest
+      },
+      {
+        path: 'moneyCheck',
+        component: moneyCheck
+      },
+      {
+        path: 'actualAchievement',
+        component: actualAchievement
+      },
+      {
+        path: 'receivableAchievement',
+        component: receivableAchievement
+      },
+      {
+        path: 'storeReceive',
+        component: storeReceive
+      },
+      {
+        path: 'paperSet',
+        component: paperSet
+      },
+      {
+        path: 'Bill',
+        component: Bill
+      },
+      {
+        path: 'billDetails',
+        component: billDetails
+      },
+      // 合同——合同列表——新增意向金
+      {
+        path: "newIntention",
+        component: newIntention
+      },
+      {
+        path: 'payBill',
+        component: payBill
+      },
+      {
+        path: 'contractList',
+        component: contractList
+      }
+    ]
+  }]
 })
+
+
+
