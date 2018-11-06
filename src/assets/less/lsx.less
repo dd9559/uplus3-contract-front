@@ -45,6 +45,9 @@
 .w312{
     width: 312px;
 }
+.w330{
+    width: 330px;
+}
 // 按钮
 .paper-btn{
     width: 100px;
@@ -93,4 +96,40 @@
 // 筛选条件
 .prop-form{
     padding-top: 10px;
+    /deep/.el-form-item__label{
+        color: #6C7986;
+        padding-right: 8px;
+    }
+    /deep/.el-form-item{
+        margin-right: 20px;
+    }
+    .mr{
+        margin-right: 0;
+    }
+}
+// 弹层
+.layer-paper{
+    /deep/.el-dialog{
+        width: 460px;
+    }
+    /deep/.el-dialog__footer{
+        text-align: center;
+        padding-bottom: 30px;
+    }
+    /deep/.el-dialog__body{
+        height: 140px;
+        padding:0 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        color: #233241;
+    } 
+    /deep/.el-dialog__title{
+        font-size: 20px;
+    }
+    /deep/.el-dialog__header{
+        padding: 20px;
+        border-bottom: 1px solid #EDECF0;
+    }
 }
