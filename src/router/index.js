@@ -49,6 +49,10 @@ export default new Router({
         {
           path: 'billDetails',
           component: billDetails
+        },
+        {
+          path:'test',
+          component:billDetails
         }
       ]
     }]
