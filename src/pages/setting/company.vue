@@ -133,16 +133,16 @@
             </div>
             <div class="item">
               <el-form-item label="统一社会信用代码: " v-if="creditCodeAppear">
-                <el-input size="mini" v-model="addForm.documentCard.creditCode"></el-input>
+                <el-input size="mini" v-model="addForm.documentCardStr.creditCode"></el-input>
               </el-form-item>
               <el-form-item label="工商注册号: " v-if="icRegisterAppear">
-                <el-input size="mini" v-model="addForm.documentCard.icRegisterCode"></el-input>
+                <el-input size="mini" v-model="addForm.documentCardStr.icRegisterCode"></el-input>
               </el-form-item>
               <el-form-item label="组织机构代码: " v-if="icRegisterAppear">
-                <el-input size="mini" v-model="addForm.documentCard.organizationCode"></el-input>
+                <el-input size="mini" v-model="addForm.documentCardStr.organizationCode"></el-input>
               </el-form-item>
               <el-form-item label="税务登记证: " v-if="icRegisterAppear">
-                <el-input size="mini" v-model="addForm.documentCard.taxRegisterCode"></el-input>
+                <el-input size="mini" v-model="addForm.documentCardStr.taxRegisterCode"></el-input>
               </el-form-item>
             </div>
             <div class="tip">
@@ -158,25 +158,25 @@
         <div class="company-info">
           <p>添加企业银行账户</p>
           <div class="info-content">
-            <el-table style="width: 100%" :data="addForm.bankAccountData" class="addBankRow">
+            <el-table style="width: 100%" :data="addForm.companyBankListStr.data" class="addBankRow">
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model="addForm.bankAccountData[scope.$index].bankName"></el-input>
+                    <el-input size="mini" maxlength="15" v-model="addForm.companyBankListStr.data[scope.$index].bankAccountName"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" v-model="addForm.bankAccountData[scope.$index].bankAccountName"></el-input>
+                    <el-input size="mini" v-model="addForm.companyBankListStr.data[scope.$index].bankCard"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="" min-width="280px">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model="addForm.bankAccountData[scope.$index].bankCard"></el-input>
+                    <el-input size="mini" v-model="addForm.companyBankListStr.data[scope.$index].bankName"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -303,25 +303,25 @@
         <div class="company-info">
           <p>添加企业银行账户</p>
           <div class="info-content">
-            <el-table style="width: 100%" :data="addForm.bankAccountData" class="addBankRow">
+            <el-table style="width: 100%" :data="editCompanyBankList" class="addBankRow">
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model="addForm.bankAccountData[scope.$index].bankName"></el-input>
+                    <el-input size="mini" maxlength="15" v-model="editCompanyBankList[scope.$index].bankName"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" v-model="addForm.bankAccountData[scope.$index].bankAccountName"></el-input>
+                    <el-input size="mini" v-model="editCompanyBankList[scope.$index].bankAccountName"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="" min-width="280px">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model="addForm.bankAccountData[scope.$index].bankCard"></el-input>
+                    <el-input size="mini" v-model="editCompanyBankList[scope.$index].bankCard"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -368,7 +368,7 @@
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogAddVisible = false">确定</el-button>
+        <el-button type="primary" @click="editConfirm">确定</el-button>
       </span>
     </el-dialog>
     <!-- 查看 弹出框 -->
@@ -425,9 +425,12 @@ export default {
         searchTime: [],
         tableData: [],
         dialogAddVisible: false, //添加公司信息
+        //新增表单
         addForm: {
           cityId: "",
+          cityName: "武汉",
           storeId: "",
+          storeName: "当代一店",
           cooperationMode: "",
           name: "",
           lepName: "",
@@ -435,20 +438,22 @@ export default {
           lepDocumentCard: "",
           lepPhone: "",
           documentType: "",
-          documentCard: {
+          documentCardStr: {
             creditCode: "",
             icRegisterCode: "",
             organizationCode: "",
             taxRegisterCode: "",
           },
-          bankAccountData: [
-            {
-              id: 1,
-              bankName: '',
-              bankAccountName: '',
-              bankCard: '',
-            }
-          ],
+          companyBankListStr: {
+            data: [
+              {
+                id: 1,
+                bankName: '',
+                bankAccountName: '',
+                bankCard: '',
+              }
+            ]
+          },
           contractSign: "",
           financialSign: ""
         },
@@ -459,7 +464,9 @@ export default {
         creditCodeAppear: false,
         icRegisterAppear: false,
         dialogEditVisible: false, //编辑弹出框
+        //编辑表单
         editForm: {},
+        editCompanyBankList: [],
         creditCodeDisplay: false,
         icRegisterDisplay: false
       }
@@ -480,6 +487,8 @@ export default {
           if(res.status === 200) {
             this.tableData = res.data
           }
+        }).catch(error => {
+          console.log(error);
         })
       },
       //搜索
@@ -508,10 +517,10 @@ export default {
           bankAccountName: '',
           bankCard: '',
         }
-        this.addForm.bankAccountData.push(row)
+        this.addForm.companyBankListStr.data.push(row)
       },
       removeCell(index) {
-        this.addForm.bankAccountData.splice(index,1)
+        this.addForm.companyBankListStr.data.splice(index,1)
       },
       upload(type) {
         this.$refs[type].click()
@@ -530,14 +539,25 @@ export default {
           return
         }
       },
+      //确定新增公司信息
       addConfirm() {
         this.addForm.cooperationMode = 1
         this.addForm.cityId = 1
         this.addForm.storeId = 1
         this.addForm.lepDocumentType = 1
         this.addForm.documentType = 1
+        this.addForm.documentCardStr = JSON.stringify(this.addForm.documentCardStr)
+        this.addForm.companyBankListStr = JSON.stringify(this.addForm.companyBankListStr)
         this.$ajax.post('/api/setting/company/insert', this.addForm).then(res => {
           console.log(res)
+          res = res.data
+          if(res.status === 200) {
+            this.$message(res.message)
+          }
+          this.dialogAddVisible = false
+          this.getCompanyList()
+        }).catch(error => {
+          console.log(error);
         })
         console.log(this.addForm,123)
       },
@@ -564,6 +584,20 @@ export default {
           this.creditCodeDisplay = true
         }
         this.editForm = row
+        this.editCompanyBankList = row.companyBankList.length > 0 ? row.companyBankList : this.addForm.companyBankListStr.data
+      },
+      //确定编辑公司信息
+      editConfirm() {
+        console.log(this.editForm,123)
+        this.editForm.documentCardStr = JSON.stringify(this.editForm.documentCard)
+        this.editForm.documentCard = JSON.stringify(this.editForm.documentCard)
+        this.editForm.companyBankListStr = JSON.stringify(this.editForm.companyBankList)
+        this.editForm.companyBankList = JSON.stringify(this.editForm.companyBankList)
+        this.$ajax.put('/api/setting/company/update',this.editForm).then(res => {
+          console.log(res);
+        }).catch(error => {
+          console.log(error);
+        })
       }
     }
 }
