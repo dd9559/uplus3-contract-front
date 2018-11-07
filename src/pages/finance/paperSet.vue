@@ -267,6 +267,7 @@
                 * show      Boolean     false       弹层显示隐藏
                 * msg       String      弹层内容     弹层内容
                 * tit       String      弹层标题     弹层标题
+                * rabbet      Boolean     false       是否使用插槽
 
                 * 事件接受
                 * propCloseFn   取消事件接收
@@ -277,6 +278,7 @@
             :show="layer.show" 
             :tit="layer.tit"
             :msg="layer.msg"
+            :rabbet="layer.rabbet"
             @propCloseFn="propCloseFn"
             @propBtnFn="propCloseFn"
             @propHandFn="propCloseFn"></LayerDialog>
@@ -393,7 +395,8 @@
                 this.layer = {
                     show:true,
                     tit:'票据核销',
-                    msg:'确认要核销该票据吗？'
+                    msg:'确认要核销该票据吗？',
+                    rabbet:true,
                 }
             },
             // 开票

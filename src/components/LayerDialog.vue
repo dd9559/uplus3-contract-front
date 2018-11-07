@@ -5,7 +5,8 @@
                 :visible.sync="comShow"
                 :before-close="handleClose"
                 class="layer-paper">
-                <span>{{comMsg}}</span>
+                <slot v-if="comRabbet"></slot>
+                <div v-else class="txt">{{comMsg}}</div>
                 <span slot="footer">
                     <el-button 
                         class="paper-btn" 
@@ -36,6 +37,10 @@ export default {
         tit:{
             type:String,
             default:'弹层标题'
+        },
+        rabbet:{
+            type:Boolean,
+            default:false
         }
     },
     computed:{
@@ -47,6 +52,9 @@ export default {
         },
         comTit(){
             return this.tit
+        },
+        comRabbet(){
+            return this.rabbet
         }
     },
     methods:{
@@ -60,7 +68,7 @@ export default {
         handleClose(){
             this.$emit('propHandFn')
         }
-    }
+    },
 }
 </script>
 

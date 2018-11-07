@@ -4,8 +4,6 @@ const Mixin ={
             // 弹层
             layer:{
                 show:false,
-                msg:'',
-                tit:''
             }
         }
     },
