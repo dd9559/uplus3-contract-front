@@ -1,11 +1,86 @@
 <template>
-    <div>操作日志</div>
+    <div class="view-container">
+        <el-form v-model="searchForm" class="header">
+            <div class="form-title">
+                <span>筛选查询</span>
+                <div>
+                    <el-button @click="onReset" class="resetBtn">重置</el-button>
+                    <el-button type="primary" @click="onSearch" class="searchBth">查询</el-button>        
+                </div>
+            </div>
+            <div class="content">
+                <el-form-item label="部门">
+                    <el-select v-model="searchForm.department" placeholder="请选择">
+                        <el-option value=""></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="日期">
+                    <el-date-picker
+                    v-model="searchTime"
+                    type="daterange"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :default-time="['00:00:00', '23:59:59']"
+                    format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="关键字">
+                    <el-input v-model="searchForm.keyWord" placeholder="操作内容关/模块关键字"></el-input>
+                </el-form-item>
+            </div>
+        </el-form>
+        <div class="table-list">
+            <p>
+                <span>数据列表</span>
+            </p>
+            <el-table :data="tableData" style="width: 100%">
+                <el-table-column label="操作日期"></el-table-column>
+                <el-table-column label="操作人"></el-table-column>
+                <el-table-column label="功能模块"></el-table-column>
+                <el-table-column label="子类型"></el-table-column>
+                <el-table-column label="操作内容"></el-table-column>
+                <el-table-column label="IP地址"></el-table-column>
+            </el-table>
+        </div>
+    </div>
 </template>
 
 <script>
     export default {
         data() {
             return {
+                searchForm: {
+                    department: "",
+                    searchTimeStart: "",
+                    searchTimeEnd: "",
+                    keyWord: ""
+                },
+                searchTime: [],
+                tableData: [],
+                pageSize: 50,
+                pageNum: 1
+            }
+        },
+        computed() {
+            this.getLogList()
+        },
+        methods: {
+            getLogList() {
+                let param = {
+                    pageSize: this.pageSize,
+                    pageNum: this.pageNum
+                }
+                this.$ajax.get('/api/operation/getList',param).then(res => {
+                    console.log(res);
+                }).catch(error => {
+                    console.log(error);
+                })
+            },
+            onReset() {
+
+            },
+            onSearch() {
 
             }
         }
@@ -13,5 +88,47 @@
 </script>
 
 <style lang="less" scoped>
+.header {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius:2px;
+    box-sizing: border-box;
+    box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
+    .form-title {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        div {
+            > .el-button {
+                width: 100px;
+                height: 36px;
+                border-radius:18px;
+            }
+        }
+    }
+    .content {
+        display: flex;
+        > .el-form-item {
+            display: flex;
+            margin-right: 30px;
+        }
+    }
+}
 
+.table-list {
+    background-color: #fff;
+    padding: 10px;
+    > p {
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+}
+
+/deep/ .el-table th {
+  background:rgba(238,242,251,1);
+}
 </style>
