@@ -53,6 +53,7 @@ export default new Router({
         path: 'moneyCheck',
         component: moneyCheck
       },
+      // 业绩板块
       {
         path: 'actualAchievement',
         component: actualAchievement
@@ -65,6 +66,7 @@ export default new Router({
         path: 'storeReceive',
         component: storeReceive
       },
+      // 业绩板块 end
       {
         path: 'paperSet',
         component: paperSet

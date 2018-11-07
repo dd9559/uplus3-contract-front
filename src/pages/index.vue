@@ -101,15 +101,15 @@
             child:[
               {
                 name:'应收业绩',
-                path:'31'
+                path:'actualAchievement'
               },
               {
                 name:'实收业绩',
-                path:'32'
+                path:'receivableAchievement'
               },
               {
                 name:'门店实收',
-                path:'33'
+                path:'storeReceive'
               }
             ]
           },
