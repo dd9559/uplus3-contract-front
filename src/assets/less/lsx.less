@@ -19,14 +19,28 @@
     padding: 20px;
     background-color: @bg-white;
 }
-.mt-20{
-    margin-top:20px;
-}
+
 .blue{
     color: @color-blue;
 }
+.cl-1{
+    color: #6C7986;
+}
+.cl-2{
+    color:#233241;
+}
 .tc{
     text-align: center;
+}
+// margin
+.mt-20{
+    margin-top:20px;
+}
+.mr-10{
+    margin-right: 10px;
+}
+.mr-40{
+    margin-right: 40px;
 }
 .paper-btn-blue{
     background-color: @color-blue;
@@ -83,6 +97,9 @@
     /deep/&.el-table th:first-child>.cell{
         text-align: center;
     }
+    /deep/&.el-table td:last-child>.cell{
+        padding-right: 0;
+    }
     .line{
         background-color: #e5e4ea;
         display: inline-block;
@@ -107,29 +124,30 @@
         margin-right: 0;
     }
 }
-// 弹层
-.layer-paper{
-    /deep/.el-dialog{
-        width: 460px;
-    }
-    /deep/.el-dialog__footer{
-        text-align: center;
-        padding-bottom: 30px;
-    }
-    /deep/.el-dialog__body{
-        height: 140px;
-        padding:0 20px;
+
+// 作废弹层
+/deep/.layer-invalid{
+    padding: 30px 0 30px 20px;
+    .ul{
         display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 16px;
-        color: #233241;
-    } 
-    /deep/.el-dialog__title{
-        font-size: 20px;
     }
-    /deep/.el-dialog__header{
-        padding: 20px;
-        border-bottom: 1px solid #EDECF0;
+    .input-box{
+        display: flex;
+        margin-top: 25px;
+        .input{
+            width: 586px;
+            position: relative;
+            background-color: #FAFAFB;
+            /deep/.el-textarea__inner{
+                background-color: transparent;
+                border-color: #ECEFF2;
+                height: 140px;
+            } 
+            .text-absloute{
+                position: absolute;
+                right: 12px;
+                bottom: 12px;
+            }
+        }
     }
 }
