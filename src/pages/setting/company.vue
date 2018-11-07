@@ -75,6 +75,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pageNum"
+      :page-sizes="[5, 10, 15, 20]"
+      :page-size="pageSize"
+      layout="prev, pager, next,  total, sizes, jumper"
+      :total="count">
+      </el-pagination>
     </div>
     <!-- 添加公司信息 弹出框 -->
     <el-dialog
@@ -424,6 +433,9 @@ export default {
         },
         searchTime: [],
         tableData: [],
+        pageSize: 5,
+        pageNum: 1,
+        count: 0,
         dialogAddVisible: false, //添加公司信息
         //新增表单
         addForm: {
@@ -480,12 +492,15 @@ export default {
        */
       getCompanyList: function () {
         let param = {
-          cityId: 1
+          cityId: 1,
+          pageSize: this.pageSize,
+          pageNum: this.pageNum
         }
         this.$ajax.get('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
-            this.tableData = res.data
+            this.tableData = res.data.list
+            this.count = res.data.count
           }
         }).catch(error => {
           console.log(error);
@@ -598,6 +613,14 @@ export default {
         }).catch(error => {
           console.log(error);
         })
+      },
+      handleSizeChange(val) {
+        this.pageSize = val
+        this.getCompanyList()
+      },
+      handleCurrentChange(val) {
+        this.pageNum = val
+        this.getCompanyList()
       }
     }
 }
@@ -640,6 +663,11 @@ export default {
       height:36px;
       border-radius:18px;
     }
+  }
+  .el-pagination {
+    height: 60px;
+    padding-top: 15px;
+    text-align: center;
   }
 }
 .dialog-info {
