@@ -3,9 +3,13 @@ import Router from 'vue-router'
 // 模块懒加载
 
 const Index = () => import("@/pages/Index");
+
+//设置模块
 const contractTemplate = () => import('@/pages/setting/contractTemplate')
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
+const moneyType = () => import('@/pages/setting/moneyType')
+const operationLog = () => import('@/pages/setting/operationLog')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet') 
@@ -36,10 +40,12 @@ export default new Router({
   routes: [{
     path: '/',
     component: Index,
-    children: [{
-      path: 'contractTemplate',
-      component: contractTemplate
-    },
+    children: [
+      // 设置模块
+      {
+        path: 'contractTemplate',
+        component: contractTemplate
+      },
       {
         path: 'postProcess',
         component: postProcess
@@ -48,6 +54,15 @@ export default new Router({
         path: 'company',
         component: Company
       },
+      {
+        path: 'moneyType',
+        component: moneyType
+      },
+      {
+        path: 'operationLog',
+        component: operationLog
+      },
+      //设置模块 end
       {
         path: 'actualHarvest',
         component: actualHarvest

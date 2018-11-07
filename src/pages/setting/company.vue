@@ -502,11 +502,11 @@ export default {
       //企业证件选择
       documentTypeChange(val) {
         if(val === '老三证') {
-          this.creditCodeAppear = true
-          this.icRegisterAppear = false
-        } else {
-          this.icRegisterAppear = true
           this.creditCodeAppear = false
+          this.icRegisterAppear = true
+        } else {
+          this.icRegisterAppear = false
+          this.creditCodeAppear = true
         }
       },
       //新增银行账户

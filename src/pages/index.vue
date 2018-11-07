@@ -138,6 +138,10 @@
             path:'setting',
             child:[
               {
+                name:'公司设置',
+                path:'company'
+              },
+              {
                 name:'合同模板设置',
                 path:'contractTemplate'
               },
@@ -146,24 +150,12 @@
                 path:'postProcess'
               },
               {
-                name:'公司账户设置',
-                path:'company'
-              },
-              {
-                name:'电子签章设置',
-                path:'51'
-              },
-              {
                 name:'款类设置',
-                path:'52'
+                path:'moneyType'
               },
               {
-                name:'职务-权限设置',
-                path:'53'
-              },
-              {
-                name:'个人-权限设置',
-                path:'54'
+                name:'操作日志',
+                path:'operationLog'
               }
             ]
           }
