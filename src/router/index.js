@@ -15,7 +15,6 @@ const operationLog = () => import('@/pages/setting/operationLog')
 const paperSet = () => import('@/pages/finance/paperSet') 
 
 // 签后
-const postSigning = () => import('@/pages/postSigning/index')
 const postManage = () => import('@/pages/postSigning/postManage')
 const postMonitor = () => import('@/pages/postSigning/postMonitor')
 const postReceive = () => import('@/pages/postSigning/postReceive')
