@@ -120,15 +120,15 @@
             child:[
               {
                 name:'后期接收',
-                path:'41'
+                path:'postReceive'
               },
               {
                 name:'后期管理',
-                path:'42'
+                path:'postManage'
               },
               {
                 name:'后期监控',
-                path:'43'
+                path:'postMonitor'
               }
             ]
           },

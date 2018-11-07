@@ -8,7 +8,7 @@ const Mixin ={
         }
     },
     methods:{
-        propCloseFn(){
+        propCloseFn(e){
             this.layer.show = !this.layer.show  
         },
     }

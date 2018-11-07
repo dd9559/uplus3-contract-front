@@ -86,10 +86,6 @@ export default new Router({
       },
       // 业绩板块 end
       {
-        path: 'paperSet',
-        component: paperSet
-      },
-      {
         path: 'Bill',
         component: Bill
       },
@@ -109,7 +105,25 @@ export default new Router({
       {
         path: 'contractList',
         component: contractList
-      }
+      },
+      // 票据管理
+      {
+        path: 'paperSet',
+        component: paperSet
+      },
+      // 签后
+      {
+        path: 'postReceive',
+        component: postReceive
+      },
+      {
+        path: 'postManage',
+        component: postManage
+      },
+      {
+        path: 'postMonitor',
+        component: postMonitor
+      },
     ]
   }]
 })
