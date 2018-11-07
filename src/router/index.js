@@ -6,12 +6,15 @@ const Index = () => import("@/pages/Index");
 const contractTemplate = () => import('@/pages/setting/contractTemplate')
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
+
+//票据管理
+const paperSet = () => import('@/pages/finance/paperSet') 
+
+// 签后
 const postSigning = () => import('@/pages/postSigning/index')
 const postManage = () => import('@/pages/postSigning/postManage')
 const postMonitor = () => import('@/pages/postSigning/postMonitor')
 const postReceive = () => import('@/pages/postSigning/postReceive')
-
-const paperSet = () => import('@/pages/finance/paperSet') //票据管理
 
 //业绩模块
 const actualAchievement = () => import('@/pages/achievement/actualAchievement')

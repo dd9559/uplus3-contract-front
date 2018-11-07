@@ -278,8 +278,8 @@
             :tit="layer.tit"
             :msg="layer.msg"
             @propCloseFn="propCloseFn"
-            @propBtnFn="propBtnFn"
-            @propHandFn="propHandFn"></LayerDialog>
+            @propBtnFn="propCloseFn"
+            @propHandFn="propCloseFn"></LayerDialog>
         </div>
     </div>
 </template>
@@ -390,7 +390,11 @@
             },
             // 核销
             cancelFn(){
-                console.log('核销')
+                this.layer = {
+                    show:true,
+                    tit:'票据核销',
+                    msg:'确认要核销该票据吗？'
+                }
             },
             // 开票
             startFn(){

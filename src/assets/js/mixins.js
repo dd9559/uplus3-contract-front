@@ -13,12 +13,6 @@ const Mixin ={
         propCloseFn(){
             this.layer.show = !this.layer.show  
         },
-        propBtnFn(){
-            this.layer.show = !this.layer.show  
-        },
-        propHandFn(){
-            this.layer.show = !this.layer.show  
-        },
     }
 }
 
