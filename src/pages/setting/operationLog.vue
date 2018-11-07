@@ -1,52 +1,57 @@
 <template>
     <div class="view-container">
-        <el-form v-model="searchForm" class="header">
-            <div class="form-title">
-                <span>筛选查询</span>
-                <div>
-                    <el-button @click="onReset" class="resetBtn">重置</el-button>
-                    <el-button type="primary" @click="onSearch" class="searchBth">查询</el-button>        
+        <ScreeningTop
+        @propQueryFn="queryFn"
+        @propResetFormFn="resetFormFn">
+            <el-form v-model="searchForm" class="header">
+                <!-- <div class="form-title">
+                    <span>筛选查询</span>
+                    <div>
+                        <el-button @click="onReset" class="resetBtn">重置</el-button>
+                        <el-button type="primary" @click="onSearch" class="searchBth">查询</el-button>        
+                    </div>
+                </div> -->
+                <div class="content">
+                    <el-form-item label="部门">
+                        <el-select v-model="searchForm.department" placeholder="请选择">
+                            <el-option value=""></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="日期">
+                        <el-date-picker
+                        v-model="searchTime"
+                        type="daterange"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        :default-time="['00:00:00', '23:59:59']"
+                        format="yyyy-MM-dd"
+                        value-format="yyyy-MM-dd">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="关键字">
+                        <el-input v-model="searchForm.keyWord" placeholder="操作内容关/模块关键字"></el-input>
+                    </el-form-item>
                 </div>
-            </div>
-            <div class="content">
-                <el-form-item label="部门">
-                    <el-select v-model="searchForm.department" placeholder="请选择">
-                        <el-option value=""></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="日期">
-                    <el-date-picker
-                    v-model="searchTime"
-                    type="daterange"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :default-time="['00:00:00', '23:59:59']"
-                    format="yyyy-MM-dd"
-                    value-format="yyyy-MM-dd">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="关键字">
-                    <el-input v-model="searchForm.keyWord" placeholder="操作内容关/模块关键字"></el-input>
-                </el-form-item>
-            </div>
-        </el-form>
+            </el-form>
+        </ScreeningTop>
         <div class="table-list">
             <p>
                 <span>数据列表</span>
             </p>
             <el-table :data="tableData" style="width: 100%">
-                <el-table-column label="操作日期"></el-table-column>
-                <el-table-column label="操作人"></el-table-column>
-                <el-table-column label="功能模块"></el-table-column>
-                <el-table-column label="子类型"></el-table-column>
-                <el-table-column label="操作内容"></el-table-column>
-                <el-table-column label="IP地址"></el-table-column>
+                <el-table-column label="操作日期" prop="createTime"></el-table-column>
+                <el-table-column label="操作人" prop="createByDepName"></el-table-column>
+                <el-table-column label="功能模块" prop="functionName"></el-table-column>
+                <el-table-column label="子类型" prop="type"></el-table-column>
+                <el-table-column label="操作内容" prop="content"></el-table-column>
+                <el-table-column label="IP地址" prop="ip"></el-table-column>
             </el-table>
         </div>
     </div>
 </template>
 
 <script>
+    import ScreeningTop from '@/components/ScreeningTop';
     export default {
         data() {
             return {
@@ -62,7 +67,7 @@
                 pageNum: 1
             }
         },
-        computed() {
+        created() {
             this.getLogList()
         },
         methods: {
@@ -72,17 +77,25 @@
                     pageNum: this.pageNum
                 }
                 this.$ajax.get('/api/operation/getList',param).then(res => {
-                    console.log(res);
+                    res = res.data
+                    if(res.status === 200) {
+                        this.tableData = res.data.list
+                    }
                 }).catch(error => {
                     console.log(error);
                 })
             },
-            onReset() {
-
+            // 重置
+            resetFormFn() {
+                this.$refs.propForm.resetFields()
             },
-            onSearch() {
-
-            }
+            // 查询
+            queryFn(){
+                console.log('查询')
+            },
+        },
+        components:{
+            ScreeningTop
         }
     }
 </script>
@@ -90,7 +103,6 @@
 <style lang="less" scoped>
 .header {
     padding: 10px;
-    margin-bottom: 10px;
     background-color: #fff;
     border-radius:2px;
     box-sizing: border-box;
@@ -119,6 +131,7 @@
 .table-list {
     background-color: #fff;
     padding: 10px;
+    margin-top: 20px;
     > p {
         padding: 0 10px;
         display: flex;
