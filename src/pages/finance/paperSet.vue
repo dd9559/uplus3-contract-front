@@ -2,23 +2,18 @@
     <div class="paper-set">
         <div>
             <!-- 筛选 -->
-            <div class="paper-box">
-                <div class="paper-set-tit">
-                    <div class="paper-tit-fl">筛选查询</div>
-                    <div>
-                        <el-button 
-                        class="paper-btn" 
-                        type size="medium" 
-                        round
-                        @click="resetFormFn">重 置</el-button>
-                        <el-button 
-                        class="paper-btn paper-btn-blue" 
-                        type="primary" 
-                        size="medium" 
-                        @click="queryFn"
-                        round>查 询</el-button>
-                    </div>
-                </div>
+            <!-- 
+                * 参数     类型       默认值
+                * min      Number    61    
+
+                * 事件
+                * propQueryFn           点击查询回调
+                * propResetFormFn       点击重置回调
+             -->
+            <ScreeningTop
+                @propQueryFn="queryFn"
+                @propResetFormFn="resetFormFn"
+            >
                 <!-- 筛选条件 -->
                 <el-form 
                 :inline="true"
@@ -95,7 +90,7 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-form>
-            </div>
+            </ScreeningTop>
             <!-- 列表 -->
             <div class="paper-table-box">
                 <div class="paper-set-tit">
@@ -325,6 +320,7 @@
 
 <script>
     import LayerDialog from '@/components/LayerDialog';
+    import ScreeningTop from '@/components/ScreeningTop';
     import {Mixin} from '@/assets/js/mixins';
     const STATE = {
         start:0,        //已开票
@@ -494,7 +490,8 @@
             }
         },
         components:{
-            LayerDialog
+            LayerDialog,
+            ScreeningTop
         }
     }
 </script>
