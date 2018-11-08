@@ -234,6 +234,7 @@
         padding: 0px 20px;
         background-color: @bg-grey;
         overflow-x: auto;
+        position: relative;
         &-index{
           height: 40px;
           position: relative;
@@ -243,6 +244,14 @@
             right: 0;
             transform:translateY(-50%);
           }
+        }
+        &-content{
+          position: absolute;
+          top: 40px;
+          right: 0px;
+          bottom: 0px;
+          left: 0px;
+          overflow-y: auto;
         }
       }
     }

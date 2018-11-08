@@ -23,6 +23,8 @@ const moneyCheck = () => import('@/pages/finance/moneyCheck')
 const Bill = () => import('@/pages/finance/bill')
 const billDetails = () => import('@/pages/finance/billDetails')
 const payBill=()=>import('@/pages/finance/payBill')
+const payResult=()=>import('@/pages/finance/payResult')
+const receiptBill=()=>import('@/pages/finance/receiptBill')
 
 // 合同模块
 const newIntention = () => import("@/pages/contract/contractList/newIntention");
@@ -85,6 +87,14 @@ export default new Router({
       {
         path: 'payBill',
         component: payBill
+      },
+      {
+        path: 'payResult',
+        component: payResult
+      },
+      {
+        path: 'receiptBill',
+        component: receiptBill
       },
       {
         path: 'contractList',
