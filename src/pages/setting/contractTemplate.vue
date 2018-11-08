@@ -1,7 +1,19 @@
 <template>
   <div class="view-container">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/' }" class="colorf">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>合同模板设置</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-form ref="form" :model="flowForm" label-width="80px">
+      <el-form-item label="城市选择" class="selectCity">
+        <el-select v-model="flowForm.selectCity" placeholder="请选择">
+          <el-option label="区域一" value="shanghai"></el-option>
+          <el-option label="区域二" value="beijing"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
     <div class="data-list">
-      <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails">
+      <el-table :data="list" style="width: 100%" @cell-click="getRowDetails">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="typeName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
@@ -15,7 +27,7 @@
             <el-button @click="rowOperation(scope.row,2)" type="text" size="small" v-if="scope.row.useNum>0">预览
             </el-button>
           </template>
-        </el-table-column>
+        </el-table-column>modal
       </el-table>
     </div>
     <div class="modal" v-show="modal">
@@ -85,6 +97,9 @@
     mixins: [FILTER],
     data() {
       return {
+        flowForm: {
+        selectCity: '',
+        },
         list: [],
         rowData: [],
         modal: false,
@@ -116,8 +131,9 @@
        * 获取详情
        * @param row
        */
-      getRowDetails: function (row) {
-        this.$ajax.get('/api/setting/contractTemplate/listByType', {id: row.id}).then(res => {
+      getRowDetails: function (row, column, cell, event) {
+        if(column.property=='typeName'){
+          this.$ajax.get('/api/setting/contractTemplate/listByType', {id: row.id,cityName:row.cityName}).then(res => {
           res = res.data
           if (res.status === 200) {
             this.rowData = res.data
@@ -127,11 +143,13 @@
         }).catch(error => {
           console.log(error)
         })
+        }
       },
       upload:function(type){
         this.$refs[type].click()
       },
       uploadFile:function (e) {
+        console.log(e.target.files[0])
         const file = e.target.files[0];
         let fileType = file.name.split('.')[1]
         if(fileType==='word'){
@@ -143,11 +161,22 @@
       rowOperation: function (row, type = 1) {
         this.modal = true
         this.template = type
+        console.log(row)
         if (type === 1) {
-          this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
+          this.$confirm('是否确定启用此类型模？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }).then(()=>{
+            this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
+            this.$message({
+            type: 'success',
+            message: '启用成功!'
+          });
+        })
         }else {
           this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
-
+            console.log(res)
           }).catch(error=>{
             console.log(error)
           })
@@ -166,7 +195,49 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
-
+.view-container{
+  /deep/ 
+  .el-breadcrumb {
+    font-size: 12px;
+    font-family: 'MicrosoftYaHei';
+    .el-breadcrumb__item {
+      .is-link {
+        color: rgba(153,161,170,1);
+      }
+   }  
+  }
+  /deep/
+  .el-form {
+    background:rgba(255,255,255,1);
+    box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
+    border-radius:4px;
+    border: 1px solid transparent;
+    margin-top: 22px;
+    .selectCity {
+      margin-top: 24px;
+      line-height: 32px;
+      height: 32px;
+      .el-form-item__content, 
+      .el-form-item__label {
+        line-height: 32px;
+      }
+    }
+    .el-select {
+      width: 150px;
+      height: 32px;
+      .el-input {
+        height: 100%;
+        .el-input__inner {
+          height: 100%;
+          padding-left: 8px;
+        }
+        .el-input__icon {
+          line-height: 32px;
+        }
+      }
+    }
+  } 
+}
   .icon-font-close {
     &:after {
       content: 'X';
