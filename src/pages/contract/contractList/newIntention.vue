@@ -116,22 +116,14 @@
             
         </div>
        
-            <LayerDialog 
-            :show="layer.show" 
-            :tit="layer.tit"
-            :msg="layer.msg"
-            @propCloseFn="propCloseFn"
-            @propBtnFn="propBtnFn"
-            @propHandFn="propHandFn"></LayerDialog>
+            
     </div>
     
 </template>
 
 <script>
-import LayerDialog from '@/components/LayerDialog';
-import {Mixin} from '@/assets/js/mixins';
+
 export default {
-    mixins:[Mixin],
     data() {
         return {
             form: {
@@ -227,9 +219,7 @@ export default {
             },
         }
     },
-    components:{
-        LayerDialog
-    },
+   
     computed: {
         clientHei() {
             return document.documentElement.clientHeight - 130 + 'px'
@@ -237,11 +227,7 @@ export default {
     },
     methods: {
         onSubmit() {
-            this.layer = {
-                show:true,
-                // tit:'票据回收',
-                msg:'确定保存已创建合同？'
-            }
+           
         }
     },
     mounted() {
