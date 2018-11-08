@@ -2,23 +2,18 @@
     <div class="paper-set">
         <div>
             <!-- 筛选 -->
-            <div class="paper-box">
-                <div class="paper-set-tit">
-                    <div class="paper-tit-fl">筛选查询</div>
-                    <div>
-                        <el-button 
-                        class="paper-btn" 
-                        type size="medium" 
-                        round
-                        @click="resetFormFn">重 置</el-button>
-                        <el-button 
-                        class="paper-btn paper-btn-blue" 
-                        type="primary" 
-                        size="medium" 
-                        @click="queryFn"
-                        round>查 询</el-button>
-                    </div>
-                </div>
+            <!-- 
+                * 参数     类型       默认值
+                * min      Number    61    
+
+                * 事件
+                * propQueryFn           点击查询回调
+                * propResetFormFn       点击重置回调
+             -->
+            <ScreeningTop
+                @propQueryFn="queryFn"
+                @propResetFormFn="resetFormFn"
+            >
                 <!-- 筛选条件 -->
                 <el-form 
                 :inline="true"
@@ -95,7 +90,7 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-form>
-            </div>
+            </ScreeningTop>
             <!-- 列表 -->
             <div class="paper-table-box">
                 <div class="paper-set-tit">
@@ -265,8 +260,12 @@
             <!-- 
                 * 变量名    type属性    默认值
                 * show      Boolean     false       弹层显示隐藏
+                * rabbet    Boolean     false       是否使用插槽
+                * center    Boolean     true        按钮否居中
                 * msg       String      弹层内容     弹层内容
                 * tit       String      弹层标题     弹层标题
+                * type      String                  回调的值
+                * proWidth  String      460px       弹层宽度
 
                 * 事件接受
                 * propCloseFn   取消事件接收
@@ -277,15 +276,51 @@
             :show="layer.show" 
             :tit="layer.tit"
             :msg="layer.msg"
+            :rabbet="layer.rabbet"
+            :proWidth="layer.proWidth"
+            :center="layer.center"
+            type="111"
             @propCloseFn="propCloseFn"
-            @propBtnFn="propBtnFn"
-            @propHandFn="propHandFn"></LayerDialog>
+            @propBtnFn="propCloseFn"
+            @propHandFn="propCloseFn">
+                <div class="layer-invalid">
+                    <ul class="ul">
+                        <li>
+                            <span class="cl-1 mr-10">票据编号：</span>
+                            <span class="cl-2 mr-40">SJ201809301289</span>
+                        </li>
+                        <li>
+                            <span class="cl-1 mr-10">合同编号：</span>
+                            <span class="cl-2 mr-40">201809301289</span>
+                        </li>
+                        <li>
+                            <span class="cl-1 mr-10">收款时间：</span>
+                            <span class="cl-2">2018/09/30</span>
+                        </li>
+                    </ul>
+                    <div class="input-box">
+                        <span class="cl-1 mr-10">作废备注：</span>
+                        <div class="input">
+                            <el-input
+                                type="textarea"
+                                resize="none"
+                                placeholder="请输入核销理由"
+                                :maxlength="invalidMax"
+                                v-model="invalidInput"
+                                class="input">
+                            </el-input>
+                            <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
+                        </div>
+                    </div>
+                </div>
+            </LayerDialog>
         </div>
     </div>
 </template>
 
 <script>
     import LayerDialog from '@/components/LayerDialog';
+    import ScreeningTop from '@/components/ScreeningTop';
     import {Mixin} from '@/assets/js/mixins';
     const STATE = {
         start:0,        //已开票
@@ -323,7 +358,7 @@
                     a19:'陈晓玲',
                     a20:'2018/08/09 17:22',
                     // state 票据状态
-                    paperState:1,    // 0:已开票 1:已作废 2:已回收 3:已核销
+                    paperState:0,    // 0:已开票 1:已作废 2:已回收 3:已核销
                 },],
                 // 筛选条件
                 propForm:{
@@ -373,12 +408,26 @@
                 restaurants:[{
                     "value": "1111111",
                 }],
+                // 作废弹层输入框
+                invalidMax:150,
+                invalidInput:'',
             }
+        },
+        computed:{
+           invalidNumber(){
+               return this.invalidInput.length
+           } 
         },
         methods:{
             // 作废
             invalidFn(){
-                console.log('作废')
+                this.layer = {
+                    show:true,
+                    tit:'票据作废',
+                    proWidth:'740px',
+                    rabbet:true,
+                    center:false,
+                }
             },
             // 回收
             irecyclingFn(){
@@ -390,7 +439,11 @@
             },
             // 核销
             cancelFn(){
-                console.log('核销')
+                this.layer = {
+                    show:true,
+                    tit:'票据核销',
+                    msg:'确认要核销该票据吗？',
+                }
             },
             // 开票
             startFn(){
@@ -437,7 +490,8 @@
             }
         },
         components:{
-            LayerDialog
+            LayerDialog,
+            ScreeningTop
         }
     }
 </script>

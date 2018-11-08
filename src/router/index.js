@@ -3,15 +3,21 @@ import Router from 'vue-router'
 // 模块懒加载
 
 const Index = () => import("@/pages/Index");
+
+//设置模块
 const contractTemplate = () => import('@/pages/setting/contractTemplate')
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
-const postSigning = () => import('@/pages/postSigning/index')
+const moneyType = () => import('@/pages/setting/moneyType')
+const operationLog = () => import('@/pages/setting/operationLog')
+
+//票据管理
+const paperSet = () => import('@/pages/finance/paperSet') 
+
+// 签后
 const postManage = () => import('@/pages/postSigning/postManage')
 const postMonitor = () => import('@/pages/postSigning/postMonitor')
 const postReceive = () => import('@/pages/postSigning/postReceive')
-
-const paperSet = () => import('@/pages/finance/paperSet') //票据管理
 
 //业绩模块
 const actualAchievement = () => import('@/pages/achievement/actualAchievement')
@@ -27,18 +33,21 @@ const payResult=()=>import('@/pages/finance/payResult')
 const receiptBill=()=>import('@/pages/finance/receiptBill')
 
 // 合同模块
-const newIntention = () => import("@/pages/contract/contractList/newIntention");
-const contractList = () => import("@/pages/contract/contractList/contractList");
+const newIntention = () => import("@/pages/contract/contractList/newIntention")
+const contractList = () => import("@/pages/contract/contractList/contractList")
+const addContract = () => import("@/pages/contract/contractList/addContract")
 Vue.use(Router)
 
 export default new Router({
   routes: [{
     path: '/',
     component: Index,
-    children: [{
-      path: 'contractTemplate',
-      component: contractTemplate
-    },
+    children: [
+      // 设置模块
+      {
+        path: 'contractTemplate',
+        component: contractTemplate
+      },
       {
         path: 'postProcess',
         component: postProcess
@@ -48,6 +57,15 @@ export default new Router({
         component: Company
       },
       {
+        path: 'moneyType',
+        component: moneyType
+      },
+      {
+        path: 'operationLog',
+        component: operationLog
+      },
+      //设置模块 end
+      {
         path: 'actualHarvest',
         component: actualHarvest
       },
@@ -55,6 +73,7 @@ export default new Router({
         path: 'moneyCheck',
         component: moneyCheck
       },
+      // 业绩板块
       {
         path: 'actualAchievement',
         component: actualAchievement
@@ -67,10 +86,7 @@ export default new Router({
         path: 'storeReceive',
         component: storeReceive
       },
-      {
-        path: 'paperSet',
-        component: paperSet
-      },
+      // 业绩板块 end
       {
         path: 'Bill',
         component: Bill
@@ -99,7 +115,30 @@ export default new Router({
       {
         path: 'contractList',
         component: contractList
-      }
+      },
+      // 票据管理
+      {
+        path: 'paperSet',
+        component: paperSet
+      },
+      // 签后
+      {
+        path: 'postReceive',
+        component: postReceive
+      },
+      {
+        path: 'postManage',
+        component: postManage
+      },
+      {
+        path: 'postMonitor',
+        component: postMonitor
+      },
+      //新增合同
+      {
+        path: 'addContract',
+        component: addContract
+      },
     ]
   }]
 })
