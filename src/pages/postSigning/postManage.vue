@@ -1,6 +1,6 @@
 <template>
     <div>
-        1
+        postManage
     </div>
 </template>
 

@@ -54,9 +54,17 @@
             path:'1',
             child:[
               {
-                name:'交易合同',
-                path:'11'
-              }
+                name:'合同列表',
+                path:'contractList'
+              },
+              {
+                name:'调佣审核',
+                path:'12'
+              },
+              {
+                name:'结算审核',
+                path:'13'
+              },
             ]
           },
           {
@@ -93,15 +101,15 @@
             child:[
               {
                 name:'应收业绩',
-                path:'31'
+                path:'actualAchievement'
               },
               {
                 name:'实收业绩',
-                path:'32'
+                path:'receivableAchievement'
               },
               {
                 name:'门店实收',
-                path:'33'
+                path:'storeReceive'
               }
             ]
           },
@@ -112,15 +120,15 @@
             child:[
               {
                 name:'后期接收',
-                path:'41'
+                path:'postReceive'
               },
               {
                 name:'后期管理',
-                path:'42'
+                path:'postManage'
               },
               {
                 name:'后期监控',
-                path:'43'
+                path:'postMonitor'
               }
             ]
           },
@@ -130,6 +138,10 @@
             path:'setting',
             child:[
               {
+                name:'公司设置',
+                path:'company'
+              },
+              {
                 name:'合同模板设置',
                 path:'contractTemplate'
               },
@@ -138,24 +150,12 @@
                 path:'postProcess'
               },
               {
-                name:'公司账户设置',
-                path:'company'
-              },
-              {
-                name:'电子签章设置',
-                path:'51'
-              },
-              {
                 name:'款类设置',
-                path:'52'
+                path:'moneyType'
               },
               {
-                name:'职务-权限设置',
-                path:'53'
-              },
-              {
-                name:'个人-权限设置',
-                path:'54'
+                name:'操作日志',
+                path:'operationLog'
               }
             ]
           }
@@ -226,6 +226,7 @@
         padding: 0px 20px;
         background-color: @bg-grey;
         overflow-x: auto;
+        position: relative;
         &-index{
           height: 40px;
           position: relative;
@@ -235,6 +236,14 @@
             right: 0;
             transform:translateY(-50%);
           }
+        }
+        &-content{
+          position: absolute;
+          top: 40px;
+          right: 20px;
+          bottom: 20px;
+          left: 20px;
+          overflow-y: auto;
         }
       }
     }

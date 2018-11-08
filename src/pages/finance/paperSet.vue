@@ -1,24 +1,18 @@
 <template>
     <div class="paper-set">
-        <div>
             <!-- 筛选 -->
-            <div class="paper-box">
-                <div class="paper-set-tit">
-                    <div class="paper-tit-fl">筛选查询</div>
-                    <div>
-                        <el-button 
-                        class="paper-btn" 
-                        type size="medium" 
-                        round
-                        @click="resetFormFn">重 置</el-button>
-                        <el-button 
-                        class="paper-btn paper-btn-blue" 
-                        type="primary" 
-                        size="medium" 
-                        @click="queryFn"
-                        round>查 询</el-button>
-                    </div>
-                </div>
+            <!-- 
+                * 参数     类型       默认值
+                * min      Number    61    
+
+                * 事件
+                * propQueryFn           点击查询回调
+                * propResetFormFn       点击重置回调
+             -->
+            <ScreeningTop
+                @propQueryFn="queryFn"
+                @propResetFormFn="resetFormFn"
+            >
                 <!-- 筛选条件 -->
                 <el-form 
                 :inline="true"
@@ -95,7 +89,7 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-form>
-            </div>
+            </ScreeningTop>
             <!-- 列表 -->
             <div class="paper-table-box">
                 <div class="paper-set-tit">
@@ -107,8 +101,9 @@
                 >
                     <el-table-column
                         fixed
+                        align="center"
                         label="序号"
-                        width="70">
+                        min-width="70">
                         <template slot-scope="scope">
                             <p class="tc">{{scope.row.a0}}</p>
                         </template>
@@ -116,7 +111,7 @@
                     <el-table-column
                         fixed
                         label="合同编号"
-                        width="124">
+                        min-width="124">
                         <template slot-scope="scope">
                             <el-button class="blue" type="text" @click="contractFn">{{scope.row.a1}}</el-button>
                         </template>
@@ -124,7 +119,7 @@
                     <el-table-column
                         fixed
                         label="票据编号"
-                        width="137">
+                        min-width="137">
                         <template slot-scope="scope">
                             <el-button class="blue" type="text" @click="paperFn">{{scope.row.a2}}</el-button>
                         </template>
@@ -132,7 +127,7 @@
                     <el-table-column
                         fixed
                         label="收款ID"
-                        width="135">
+                        min-width="135">
                         <template slot-scope="scope">
                             <el-button class="blue" type="text" @click="collectionFn">{{scope.row.a3}}</el-button>
                         </template>
@@ -141,83 +136,83 @@
                         fixed
                         prop="a4"
                         label="物业地址"
-                        width="124">
+                        min-width="124">
                     </el-table-column>
                     <el-table-column
                         fixed
                         prop="a5"
                         label="客户姓名"
-                        width="84">
+                        min-width="84">
                     </el-table-column>
                     <el-table-column
                         fixed
                         prop="a6"
                         label="票据状态"
-                        width="84">
+                        min-width="84">
                     </el-table-column>
                     <el-table-column
                         prop="a7"
                         label="收款人"
-                        width="71">
+                        min-width="71">
                     </el-table-column>
                     <el-table-column
                         prop="a8"
                         label="开票人员"
-                        width="86">
+                        min-width="86">
                     </el-table-column>
                     <el-table-column
                         prop="a9"
                         label="门店"
-                        width="85">
+                        min-width="85">
                     </el-table-column>
                     <el-table-column
                         prop="a10"
                         label="开盘金额（元）"
-                        width="122">
+                        min-width="122">
                     </el-table-column>
                     <el-table-column
                         prop="a11"
                         label="开票日期"
-                        width="150">
+                        min-width="150">
                     </el-table-column>
                     <el-table-column
                         prop="a12"
                         label="打印次数"
-                        width="85">
+                        min-width="85">
                     </el-table-column>
                     <el-table-column
                         prop="a13"
                         label="打印人"
-                        width="72">
+                        min-width="72">
                     </el-table-column>
                     <el-table-column
                         prop="a14"
                         label="打印日期"
-                        width="152">
+                        min-width="152">
                     </el-table-column>
                     <el-table-column
                         prop="a15"
                         label="回收日期"
-                        width="152">
+                        min-width="152">
                     </el-table-column>
                     <el-table-column
                         prop="a16"
                         label="核销日期"
-                        width="148">
+                        min-width="148">
                     </el-table-column>
                     <el-table-column
                         prop="a17"
                         label="作废日期"
-                        width="152">
+                        min-width="152">
                     </el-table-column>
                     <el-table-column
                         prop="a18"
                         label="作废原因"
-                        width="100">
+                        min-width="100">
                     </el-table-column>
                     <el-table-column
                         label="操作人/时间"
-                        width="146">
+                        min-width="146">
                         <template slot-scope="scope">
                                 <p>{{scope.row.a19}}</p>
                                 <p>{{scope.row.a20}}</p>
@@ -225,7 +220,7 @@
                     </el-table-column>
                     <el-table-column
                         label="操作"
-                        width="148">
+                        min-width="148">
                         <template slot-scope="scope">
                             <!-- 已开票 -->
                             <template v-if="scope.row.paperState===STATE.start">
@@ -262,31 +257,62 @@
                 </el-table>
             </div>
             <!-- 弹层 -->
-            <!-- 
-                * 变量名    type属性    默认值
-                * show      Boolean     false       弹层显示隐藏
-                * msg       String      弹层内容     弹层内容
-                * tit       String      弹层标题     弹层标题
-
-                * 事件接受
-                * propCloseFn   取消事件接收
-                * propBtnFn     确定事件接收
-                * propHandFn     点击黑层与叉叉按钮事件接收
-             -->
-            <LayerDialog 
-            :show="layer.show" 
-            :tit="layer.tit"
-            :msg="layer.msg"
-            @propCloseFn="propCloseFn"
-            @propBtnFn="propBtnFn"
-            @propHandFn="propHandFn"></LayerDialog>
-        </div>
+            <el-dialog
+                :title="layer.tit"
+                :visible.sync="layer.show"
+                :width="layer.proWidth"
+                :center="layer.center"
+                class="layer-paper">
+                <div v-if="layer.rabbet" class="layer-invalid">
+                    <ul class="ul">
+                        <li>
+                            <span class="cl-1 mr-10">票据编号：</span>
+                            <span class="cl-2 mr-40">SJ201809301289</span>
+                        </li>
+                        <li>
+                            <span class="cl-1 mr-10">合同编号：</span>
+                            <span class="cl-2 mr-40">201809301289</span>
+                        </li>
+                        <li>
+                            <span class="cl-1 mr-10">收款时间：</span>
+                            <span class="cl-2">2018/09/30</span>
+                        </li>
+                    </ul>
+                    <div class="input-box">
+                        <span class="cl-1 mr-10">作废备注：</span>
+                        <div class="input">
+                            <el-input
+                                type="textarea"
+                                resize="none"
+                                placeholder="请输入核销理由"
+                                :maxlength="invalidMax"
+                                v-model="invalidInput"
+                                class="input">
+                            </el-input>
+                            <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="txt">{{layer.msg}}</div>
+                <span slot="footer">
+                        <el-button 
+                        class="paper-btn" 
+                        type size="medium"
+                        @click="propCloseFn" 
+                        round>取消</el-button>
+                    <el-button 
+                        class="paper-btn paper-btn-blue" 
+                        type="primary" 
+                        size="medium"
+                        @click="propCloseFn(layer.tit)" 
+                        round>确定</el-button>
+                </span>
+            </el-dialog>
     </div>
 </template>
 
 <script>
-    import LayerDialog from '@/components/LayerDialog';
-    import {Mixin} from '@/assets/js/mixins';
+    import ScreeningTop from '@/components/ScreeningTop';
     const STATE = {
         start:0,        //已开票
         invalid:1,      //已作废
@@ -323,7 +349,7 @@
                     a19:'陈晓玲',
                     a20:'2018/08/09 17:22',
                     // state 票据状态
-                    paperState:1,    // 0:已开票 1:已作废 2:已回收 3:已核销
+                    paperState:0,    // 0:已开票 1:已作废 2:已回收 3:已核销
                 },],
                 // 筛选条件
                 propForm:{
@@ -373,12 +399,30 @@
                 restaurants:[{
                     "value": "1111111",
                 }],
+                // 作废弹层输入框
+                invalidMax:150,
+                invalidInput:'',
+                // 弹层
+                 layer:{
+                    show:false,
+                }
             }
+        },
+        computed:{
+           invalidNumber(){
+               return this.invalidInput.length
+           } 
         },
         methods:{
             // 作废
             invalidFn(){
-                console.log('作废')
+                this.layer = {
+                    show:true,
+                    tit:'票据作废',
+                    proWidth:'740px',
+                    rabbet:true,
+                    center:false,
+                }
             },
             // 回收
             irecyclingFn(){
@@ -390,7 +434,11 @@
             },
             // 核销
             cancelFn(){
-                console.log('核销')
+                this.layer = {
+                    show:true,
+                    tit:'票据核销',
+                    msg:'确认要核销该票据吗？',
+                }
             },
             // 开票
             startFn(){
@@ -434,10 +482,14 @@
             },
             handleSelect(item) {
                 console.log(item);
+            },
+            // 弹层关闭
+            propCloseFn(){
+                this.layer.show = !this.layer.show  
             }
         },
         components:{
-            LayerDialog
+            ScreeningTop
         }
     }
 </script>

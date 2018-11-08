@@ -1,46 +1,54 @@
 <template>
   <div class="view-container">
     <!-- 头部表单 -->
-    <el-form :inline="true" :model="companyForm" class="company-form">
-      <div class="form-title">
-        <span>筛选查询</span>
-        <div>
-          <el-button @click="onReset" class="resetBtn">重置</el-button>
-          <el-button type="primary" @click="onSearch" class="searchBth">查询</el-button>        
-        </div>
-      </div>
-      <el-form-item label="城市: ">
-        <el-select v-model="companyForm.cityId" placeholder="请选择">
-          <el-option value="">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="门店选择: ">
-        <el-autocomplete class="inline-input" v-model="companyForm.storeId" placeholder="请输入内容"></el-autocomplete>
-      </el-form-item>
-      <el-form-item label="合作方式: ">
-        <el-select v-model="companyForm.cooperationMode">
-          <el-option label="全部" value="全部"></el-option>
-          <el-option label="加盟" value="加盟"></el-option>
-          <el-option label="直营" value="直营"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="银行账户: ">
-        <el-input v-model="companyForm.bankCard"></el-input>
-      </el-form-item>
-      <el-form-item label="添加时间: ">
-        <el-date-picker v-model="companyForm.searchTime" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="关键字: ">
-        <el-input v-model="companyForm.keyWord" maxlength=50></el-input>
-      </el-form-item>
-    </el-form>
+    <ScreeningTop
+    @propQueryFn="queryFn"
+    @propResetFormFn="resetFormFn">
+      <el-form :inline="true" :model="companyForm" class="company-form" size="small">
+        <!-- <div class="form-title">
+          <span>筛选查询</span>
+          <div>
+            <el-button @click="onReset" class="resetBtn">重置</el-button>
+            <el-button type="primary" @click="onSearch" class="searchBth">查询</el-button>        
+          </div>
+        </div> -->
+        <el-form-item label="城市">
+          <el-select v-model="companyForm.cityId">
+            <el-option label="全部" value="全部">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="门店选择">
+          <el-autocomplete class="inline-input" v-model="companyForm.storeId"></el-autocomplete>
+        </el-form-item>
+        <el-form-item label="合作方式">
+          <el-select v-model="companyForm.cooperationMode">
+            <el-option label="加盟" value="加盟"></el-option>
+            <el-option label="直营" value="直营"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="银行账户">
+          <el-input v-model="companyForm.bankCard"></el-input>
+        </el-form-item>
+        <el-form-item label="添加时间">
+          <el-date-picker
+          v-model="companyForm.searchTime"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="关键字">
+          <el-input v-model="companyForm.keyWord" maxlength=50 placeholder="添加人/开户行/开户名"></el-input>
+        </el-form-item>
+      </el-form>
+    </ScreeningTop>
     <!-- table表格 -->
     <div class="company-list">
       <p>
         <span>数据列表</span>
-        <el-button type="primary" @click="addCompany" icon="el-icon-plus">公司信息</el-button>
+        <el-button type="primary" @click="dialogAddVisible = true" icon="el-icon-plus">公司信息</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="center" label="城市" prop="cityName" width="150">
@@ -75,6 +83,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pageNum"
+      :page-sizes="[5, 10, 15, 20]"
+      :page-size="pageSize"
+      layout="prev, pager, next,  total, sizes, jumper"
+      :total="count">
+      </el-pagination>
     </div>
     <!-- 添加公司信息 弹出框 -->
     <el-dialog
@@ -104,7 +121,7 @@
             </div>
             <div class="item">
               <el-form-item label="门店名称: ">
-                <el-input size="mini" v-model="addForm.name"></el-input>
+                <el-input size="mini" v-model="addForm.name" placeholder="营业执照上的名字"></el-input>
               </el-form-item>
               <el-form-item label="法人姓名: ">
                 <el-input size="mini" maxlength="15" v-model="addForm.lepName"></el-input>
@@ -133,16 +150,16 @@
             </div>
             <div class="item">
               <el-form-item label="统一社会信用代码: " v-if="creditCodeAppear">
-                <el-input size="mini" v-model="addForm.documentCard.creditCode"></el-input>
+                <el-input size="mini" v-model="addForm.documentCardStr.creditCode"></el-input>
               </el-form-item>
               <el-form-item label="工商注册号: " v-if="icRegisterAppear">
-                <el-input size="mini" v-model="addForm.documentCard.icRegisterCode"></el-input>
+                <el-input size="mini" v-model="addForm.documentCardStr.icRegisterCode"></el-input>
               </el-form-item>
               <el-form-item label="组织机构代码: " v-if="icRegisterAppear">
-                <el-input size="mini" v-model="addForm.documentCard.organizationCode"></el-input>
+                <el-input size="mini" v-model="addForm.documentCardStr.organizationCode"></el-input>
               </el-form-item>
               <el-form-item label="税务登记证: " v-if="icRegisterAppear">
-                <el-input size="mini" v-model="addForm.documentCard.taxRegisterCode"></el-input>
+                <el-input size="mini" v-model="addForm.documentCardStr.taxRegisterCode"></el-input>
               </el-form-item>
             </div>
             <div class="tip">
@@ -158,32 +175,32 @@
         <div class="company-info">
           <p>添加企业银行账户</p>
           <div class="info-content">
-            <el-table style="width: 100%" :data="addForm.bankAccountData" class="addBankRow">
+            <el-table style="width: 100%" :data="addForm.companyBankListStr.data" class="addBankRow">
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model="addForm.bankAccountData[scope.$index].bankName"></el-input>
+                    <el-input size="mini" maxlength="15" v-model="addForm.companyBankListStr.data[scope.$index].bankAccountName"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" v-model="addForm.bankAccountData[scope.$index].bankAccountName"></el-input>
+                    <el-input size="mini" v-model="addForm.companyBankListStr.data[scope.$index].bankCard"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="" min-width="280px">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model="addForm.bankAccountData[scope.$index].bankCard"></el-input>
+                    <el-input size="mini" v-model="addForm.companyBankListStr.data[scope.$index].bankBranchName" placeholder="请精确到支行信息"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column label="" width="90px">
                 <template slot-scope="scope">
-                  <span @click="addRow" class="button"><i class="icon el-icon-plus"></i></span>
-                  <span @click="removeCell(scope.$index)" class="button"><i class="icon el-icon-minus"></i></span>
+                  <span @click="addRow('init')" class="button"><i class="icon el-icon-plus"></i></span>
+                  <span @click="removeRow(scope.$index, 'init')" class="button"><i class="icon el-icon-minus"></i></span>
                 </template>
               </el-table-column>
             </el-table>
@@ -303,32 +320,32 @@
         <div class="company-info">
           <p>添加企业银行账户</p>
           <div class="info-content">
-            <el-table style="width: 100%" :data="addForm.bankAccountData" class="addBankRow">
+            <el-table style="width: 100%" :data="editCompanyBankList" class="addBankRow">
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model="addForm.bankAccountData[scope.$index].bankName"></el-input>
+                    <el-input size="mini" maxlength="15" v-model="editCompanyBankList[scope.$index].bankAccountName"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" v-model="addForm.bankAccountData[scope.$index].bankAccountName"></el-input>
+                    <el-input size="mini" v-model="editCompanyBankList[scope.$index].bankCard"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="" min-width="280px">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model="addForm.bankAccountData[scope.$index].bankCard"></el-input>
+                    <el-input size="mini" v-model="editCompanyBankList[scope.$index].bankBranchName"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column label="" width="90px">
                 <template slot-scope="scope">
-                  <span @click="addRow" class="button"><i class="icon el-icon-plus"></i></span>
-                  <span @click="removeCell(scope.$index)" class="button"><i class="icon el-icon-minus"></i></span>
+                  <span @click="addRow('edit')" class="button"><i class="icon el-icon-plus"></i></span>
+                  <span @click="removeRow(scope.$index, 'edit')" class="button"><i class="icon el-icon-minus"></i></span>
                 </template>
               </el-table-column>
             </el-table>
@@ -368,7 +385,7 @@
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogAddVisible = false">确定</el-button>
+        <el-button type="primary" @click="editConfirm">确定</el-button>
       </span>
     </el-dialog>
     <!-- 查看 弹出框 -->
@@ -407,6 +424,7 @@
 </template>
 
 <script>
+import ScreeningTop from '@/components/ScreeningTop';
 let stepTypeId = 1;
 export default {
     name: "company",
@@ -424,10 +442,16 @@ export default {
         },
         searchTime: [],
         tableData: [],
+        pageSize: 5,
+        pageNum: 1,
+        count: 0,
         dialogAddVisible: false, //添加公司信息
+        //新增表单
         addForm: {
           cityId: "",
+          cityName: "武汉",
           storeId: "",
+          storeName: "当代一店",
           cooperationMode: "",
           name: "",
           lepName: "",
@@ -435,20 +459,22 @@ export default {
           lepDocumentCard: "",
           lepPhone: "",
           documentType: "",
-          documentCard: {
+          documentCardStr: {
             creditCode: "",
             icRegisterCode: "",
             organizationCode: "",
             taxRegisterCode: "",
           },
-          bankAccountData: [
-            {
-              id: 1,
-              bankName: '',
-              bankAccountName: '',
-              bankCard: '',
-            }
-          ],
+          companyBankListStr: {
+            data: [
+              {
+                id: 1,
+                bankBranchName: '',
+                bankAccountName: '',
+                bankCard: '',
+              }
+            ]
+          },
           contractSign: "",
           financialSign: ""
         },
@@ -459,7 +485,9 @@ export default {
         creditCodeAppear: false,
         icRegisterAppear: false,
         dialogEditVisible: false, //编辑弹出框
+        //编辑表单
         editForm: {},
+        editCompanyBankList: [],
         creditCodeDisplay: false,
         icRegisterDisplay: false
       }
@@ -468,50 +496,95 @@ export default {
       this.getCompanyList()
     },
     methods: {
+      //初始化新增表单对象
+      initFormData: function() {
+        let obj = {
+          cityId: "",
+          cityName: "武汉",
+          storeId: "",
+          storeName: "当代一店",
+          cooperationMode: "",
+          name: "",
+          lepName: "",
+          lepDocumentType: "",
+          lepDocumentCard: "",
+          lepPhone: "",
+          documentType: "",
+          documentCardStr: {
+            creditCode: "",
+            icRegisterCode: "",
+            organizationCode: "",
+            taxRegisterCode: "",
+          },
+          companyBankListStr: {
+            data: [
+              {
+                id: 1,
+                bankBranchName: '',
+                bankAccountName: '',
+                bankCard: '',
+              }
+            ]
+          },
+          contractSign: "",
+          financialSign: ""
+        }
+        this.addForm = Object.assign({},this.addForm,obj)
+        console.log(this.addForm,456);
+      },
       /**
        * 获取公司设置列表
        */
       getCompanyList: function () {
         let param = {
-          cityId: 1
+          cityId: 1,
+          pageSize: this.pageSize,
+          pageNum: this.pageNum
         }
         this.$ajax.get('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
-            this.tableData = res.data
+            this.tableData = res.data.list
+            this.count = res.data.total
           }
+        }).catch(error => {
+          console.log(error);
         })
       },
-      //搜索
-      onSearch() {},
-      //重置
-      onReset() {},
-      //点击新增公司信息
-      addCompany() {
-        this.dialogAddVisible = true
+      // 重置
+      resetFormFn() {
+          this.$refs.propForm.resetFields()
+      },
+      // 查询
+      queryFn(){
+          console.log('查询')
       },
       //企业证件选择
       documentTypeChange(val) {
         if(val === '老三证') {
-          this.creditCodeAppear = true
-          this.icRegisterAppear = false
-        } else {
-          this.icRegisterAppear = true
           this.creditCodeAppear = false
+          this.icRegisterAppear = true
+        } else {
+          this.icRegisterAppear = false
+          this.creditCodeAppear = true
         }
       },
       //新增银行账户
-      addRow() {
+      addRow(type) {
         let row = {
           id: ++stepTypeId,
           bankName: '',
           bankAccountName: '',
           bankCard: '',
         }
-        this.addForm.bankAccountData.push(row)
+        type === 'init'
+        ? this.addForm.companyBankListStr.data.push(row)
+        : this.editCompanyBankList.push(row)
       },
-      removeCell(index) {
-        this.addForm.bankAccountData.splice(index,1)
+      removeRow(index, type) {
+        type === 'init'
+        ? this.addForm.companyBankListStr.data.splice(index,1)
+        : this.editCompanyBankList.splice(index,1)
       },
       upload(type) {
         this.$refs[type].click()
@@ -530,14 +603,26 @@ export default {
           return
         }
       },
+      //确定新增公司信息
       addConfirm() {
         this.addForm.cooperationMode = 1
         this.addForm.cityId = 1
         this.addForm.storeId = 1
         this.addForm.lepDocumentType = 1
         this.addForm.documentType = 1
+        this.addForm.documentCardStr = JSON.stringify(this.addForm.documentCardStr)
+        this.addForm.companyBankListStr = JSON.stringify(this.addForm.companyBankListStr)
         this.$ajax.post('/api/setting/company/insert', this.addForm).then(res => {
           console.log(res)
+          res = res.data
+          if(res.status === 200) {
+            this.dialogAddVisible = false
+            this.$message(res.message)
+            this.getCompanyList()
+            this.initFormData()
+          }
+        }).catch(error => {
+          console.log(error);
         })
         console.log(this.addForm,123)
       },
@@ -564,17 +649,45 @@ export default {
           this.creditCodeDisplay = true
         }
         this.editForm = row
+        this.editCompanyBankList = row.companyBankList.length > 0 ? row.companyBankList : this.addForm.companyBankListStr.data
+      },
+      //确定编辑公司信息
+      editConfirm() {
+        console.log(this.editForm,123)
+        this.editForm.documentCardStr = JSON.stringify(this.editForm.documentCard)
+        // this.editForm.documentCard = JSON.stringify(this.editForm.documentCard)
+        let companyBankListStr = {
+          data: this.editForm.companyBankList
+        }
+        this.editForm.companyBankListStr = JSON.stringify(companyBankListStr)
+        // this.editForm.companyBankList = JSON.stringify(this.editForm.companyBankList)
+        delete this.editForm.documentCard
+        delete this.editForm.companyBankList
+        this.$ajax.put('/api/setting/company/update',this.editForm).then(res => {
+          console.log(res);
+        }).catch(error => {
+          console.log(error);
+        })
+      },
+      handleSizeChange(val) {
+        this.pageSize = val
+        this.getCompanyList()
+      },
+      handleCurrentChange(val) {
+        this.pageNum = val
+        this.getCompanyList()
       }
+    },
+    components:{
+        ScreeningTop
     }
 }
 </script>
 
 <style lang="less" scoped>
 @import "~@/assets/common.less";
-
 .company-form {
   padding: 10px;
-  margin-bottom: 10px;
   background-color: #fff;
   border-radius:2px;
   box-sizing: border-box;
@@ -595,6 +708,7 @@ export default {
 .company-list {
   background-color: #fff;
   padding: 10px;
+  margin-top: 20px;
   > p {
     padding: 0 10px;
     display: flex;
@@ -606,6 +720,11 @@ export default {
       height:36px;
       border-radius:18px;
     }
+  }
+  .el-pagination {
+    height: 60px;
+    padding-top: 15px;
+    text-align: center;
   }
 }
 .dialog-info {
