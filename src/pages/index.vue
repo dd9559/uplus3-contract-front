@@ -240,9 +240,9 @@
         &-content{
           position: absolute;
           top: 40px;
-          right: 0px;
-          bottom: 0px;
-          left: 0px;
+          right: 20px;
+          bottom: 20px;
+          left: 20px;
           overflow-y: auto;
         }
       }
