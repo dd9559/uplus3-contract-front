@@ -3,7 +3,7 @@
         <ScreeningTop
         @propQueryFn="queryFn"
         @propResetFormFn="resetFormFn">
-            <el-form v-model="searchForm" class="header">
+            <el-form v-model="searchForm" class="header" size="small">
                 <!-- <div class="form-title">
                     <span>筛选查询</span>
                     <div>
@@ -21,11 +21,9 @@
                         <el-date-picker
                         v-model="searchTime"
                         type="daterange"
+                        range-separator="至"
                         start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        :default-time="['00:00:00', '23:59:59']"
-                        format="yyyy-MM-dd"
-                        value-format="yyyy-MM-dd">
+                        end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="关键字">
@@ -40,7 +38,11 @@
             </p>
             <el-table :data="tableData" style="width: 100%">
                 <el-table-column label="操作日期" prop="createTime"></el-table-column>
-                <el-table-column label="操作人" prop="createByDepName"></el-table-column>
+                <el-table-column label="操作人">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.createByDepName }}+{{ scope.row.createByName }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column label="功能模块" prop="functionName"></el-table-column>
                 <el-table-column label="子类型" prop="type"></el-table-column>
                 <el-table-column label="操作内容" prop="content"></el-table-column>
