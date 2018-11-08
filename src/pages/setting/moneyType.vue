@@ -1,6 +1,6 @@
 <template>
     <div class="view-container">
-        <div class="data-list">
+        <div class="data-list gap">
             <p class="title">
                 <span>数据列表</span>
             </p>
@@ -16,7 +16,7 @@
                         </el-switch>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" min-width="150">
                     <template slot-scope="scope">
                         <el-button type="text" size="medium">新增</el-button>
                         <el-button type="text" size="medium">删除</el-button>
@@ -25,7 +25,7 @@
                 </el-table-column>
             </el-table>
         </div>
-        <div class="commission">
+        <div class="commission gap">
             <p class="title">
                 <span>佣金</span>
             </p>
@@ -135,11 +135,13 @@
 <style lang="less" scoped>
 .view-container {
     display: flex;
-    height: calc(100% - 40px);
+    // height: calc(100% - 40px);
     .data-list {
-        flex: 1;
-        margin-right: 15px;
-        padding: 15px 10px 0;
+        // flex: 1;
+        // margin-right: 15px;
+        min-width: 36%;
+        margin-right: 1%;
+        // padding: 15px 10px 0;
         background-color: #fff;
         box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
         border-radius:4px;
@@ -162,8 +164,9 @@
         }
     }
     .commission {
-        flex: 2;
-        padding: 15px 10px 0;
+        // flex: 2;
+        min-width: 63%;
+        // padding: 15px 10px 0;
         background:rgba(254,252,247,1);
         box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
         border-radius:4px;
@@ -173,6 +176,10 @@
         /deep/ .el-table th {
             background:rgba(242,243,248,1);
         }
+    }
+    .gap {
+        padding: 15px 10px 0;
+        box-sizing: border-box;
     }
     .title {
         padding: 0 10px;
