@@ -307,6 +307,9 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 
+.view-container{
+  padding: 0 20px;
+}
 .contract-form {
   padding: 10px;
   margin-bottom: 10px;
