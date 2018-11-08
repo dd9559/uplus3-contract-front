@@ -14,18 +14,7 @@
                             <el-form-item label="合同类型">
                                 <el-input v-model="form.contractType" :disabled="true"></el-input>
                             </el-form-item>
-                            <el-form-item label="成交经纪人" required>
-                                <el-form-item prop="item1">
-                                    <el-select v-model="form.item1" clearable filterable placeholder="请选择门店">
-                                        <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item prop="item2" class="small-input">
-                                    <el-select v-model="form.item2" clearable filterable placeholder="请选择经纪人">
-                                        <el-option v-for="item in option2" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-form-item>
+                            
                             <el-form-item label="认购期限" prop="subscribdate">
                                 <el-date-picker v-model="form.subscribdate" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
@@ -51,12 +40,12 @@
                                 <el-form-item label="房源编号" prop="houseno">
                                     <el-button type="primary" v-model="form.houseno">请选择房源</el-button>
                                 </el-form-item>
-                                <el-form-item label="物业地址" prop="address1">
+                                <el-form-item label="物业地址">
                                     <el-input v-model="form.address1" clearable class="big-input"></el-input>
                                 </el-form-item>
                             </el-form-item>
                             
-                            <el-form-item label="产权地址" prop="address2" class="disb">
+                            <el-form-item label="产证地址" class="disb">
                                 <el-input v-model="form.address2" clearable class="big-input"></el-input>
                             </el-form-item>
 
@@ -81,8 +70,22 @@
                     <div class="column-form"> 
                         <div class="column-title">客源信息</div>
                         <div class="form-cont">
-                            <el-form-item label="客源编号" class="disb" prop="custno">
-                                    <el-button type="primary"  v-model="form.custno">请选择客源</el-button>
+                            <el-form-item>
+                                <el-form-item label="客源编号"  prop="custno">
+                                        <el-button type="primary"  v-model="form.custno">请选择客源</el-button>
+                                </el-form-item>
+                                <el-form-item label="成交经纪人" required>
+                                    <el-form-item prop="item1">
+                                        <el-select v-model="form.item1" clearable filterable placeholder="请选择门店">
+                                            <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item prop="item2" class="small-input">
+                                        <el-select v-model="form.item2" clearable filterable placeholder="请选择经纪人">
+                                            <el-option v-for="item in option2" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form-item>
                             </el-form-item>
                             <el-form-item label="客户信息" class="disb" required>
                                 <el-form-item prop="custname">
@@ -103,22 +106,32 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-btn">
-                    
+                <div class="form-btn">                   
                         <el-button type="primary" plain round>预 览</el-button>
-                        <el-button type="primary" round @click="onSubmit">保 存</el-button>
-                    
+                        <el-button type="primary" round @click="onSubmit">保 存</el-button>                  
                 </div>
             </el-form>
 
 
             
         </div>
+       
+            <LayerDialog 
+            :show="layer.show" 
+            :tit="layer.tit"
+            :msg="layer.msg"
+            @propCloseFn="propCloseFn"
+            @propBtnFn="propBtnFn"
+            @propHandFn="propHandFn"></LayerDialog>
     </div>
+    
 </template>
 
 <script>
+import LayerDialog from '@/components/LayerDialog';
+import {Mixin} from '@/assets/js/mixins';
 export default {
+    mixins:[Mixin],
     data() {
         return {
             form: {
@@ -186,12 +199,12 @@ export default {
                 houseno: [
                     { required: true, message: '请选择房源', trigger: 'click' },
                 ],
-                address1: [
-                    { required: true, message: '请输入物业地址', trigger: 'blur' },
-                ],
-                address2: [
-                    { required: true, message: '请输入产权地址', trigger: 'blur' },
-                ],
+                // address1: [
+                //     { required: true, message: '请输入物业地址', trigger: 'blur' },
+                // ],
+                // address2: [
+                //     { required: true, message: '请输入产权地址', trigger: 'blur' },
+                // ],
                 ownname: [
                     { required: true, message: '请输入业主姓名', trigger: 'blur' },
                 ],
@@ -214,6 +227,9 @@ export default {
             },
         }
     },
+    components:{
+        LayerDialog
+    },
     computed: {
         clientHei() {
             return document.documentElement.clientHeight - 130 + 'px'
@@ -221,7 +237,11 @@ export default {
     },
     methods: {
         onSubmit() {
-
+            this.layer = {
+                show:true,
+                // tit:'票据回收',
+                msg:'确定保存已创建合同？'
+            }
         }
     },
     mounted() {
@@ -230,7 +250,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
     .fr{
         float: right;
     }
