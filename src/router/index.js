@@ -25,6 +25,8 @@ const billDetails = () => import('@/pages/finance/billDetails')
 
 // 合同模块
 const newIntention = () => import("@/pages/contract/contractList/newIntention");
+const editIntention = () => import("@/pages/contract/contractList/editIntention");
+const detailIntention = () => import("@/pages/contract/contractList/detailIntention");
 Vue.use(Router)
 
 export default new Router({
@@ -79,6 +81,14 @@ export default new Router({
       {
         path: "newIntention",
         component: newIntention
+      },
+      {
+        path: "editIntention",
+        component: editIntention
+      },
+      {
+        path: "detailIntention",
+        component: detailIntention
       }]
   }]
 })
