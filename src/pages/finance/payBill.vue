@@ -69,7 +69,7 @@
       </ul>
     </div>
     <p>
-      <el-button type="primary">提交付款申请</el-button>
+      <el-button type="primary" @click="goResult">提交付款申请</el-button>
       <el-button>取消</el-button>
     </p>
   </div>
@@ -127,6 +127,13 @@
         list:[
           {}
         ]
+      }
+    },
+    methods:{
+      goResult:function () {
+        this.$router.push({
+          path:'payResult'
+        })
       }
     }
   }
