@@ -1,4 +1,4 @@
-<!-- 新增意向金 -->
+<!-- 编辑意向金 -->
 <template>
     <div class="newintention">
         <div class="formbox" ref="ruleForm" :style="{ height: clientHei }">
@@ -8,11 +8,11 @@
                     <div class="column-form"> 
                         <div class="column-title">合同信息</div>
                         <div class="form-cont">
-                            <el-form-item label="签约日期" prop="signdate">
-                                <el-date-picker v-model="form.signdate" type="date" placeholder="选择日期"></el-date-picker>
+                            <el-form-item label="签约日期">
+                                 <el-input v-model="form.contractType" :disabled="true" placeholder="2018/11/7"></el-input>
                             </el-form-item>
                             <el-form-item label="合同类型">
-                                <el-input v-model="form.contractType" :disabled="true"></el-input>
+                                <el-input v-model="form.contractType" :disabled="true" placeholder="意向"></el-input>
                             </el-form-item>
                             
                             <el-form-item label="认购期限" prop="subscribdate">
@@ -37,11 +37,11 @@
                         <div class="column-title">房源信息</div>
                         <div class="form-cont">
                             <el-form-item>
-                                <el-form-item label="房源编号" prop="houseno">
-                                    <el-button type="primary" v-model="form.houseno">请选择房源</el-button>
+                                <el-form-item label="房源编号">
+                                    <el-button type="primary" v-model="form.houseno">FYBH0021</el-button>
                                 </el-form-item>
                                 <el-form-item label="物业地址">
-                                    <el-input v-model="form.address1" clearable class="big-input"></el-input>
+                                    <div>当代国际花园元帅哈萨克卡覅</div>
                                 </el-form-item>
                             </el-form-item>
                             
@@ -50,7 +50,7 @@
                             </el-form-item>
 
                             <el-form-item label="房源总价" class="disb">
-                                <el-input v-model.number="form.housemoney" clearable>
+                                <el-input v-model.number="form.housemoney" :disabled="true" placeholder="100,000,000">
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
@@ -71,8 +71,8 @@
                         <div class="column-title">客源信息</div>
                         <div class="form-cont">
                             <el-form-item>
-                                <el-form-item label="客源编号"  prop="custno">
-                                        <el-button type="primary"  v-model="form.custno">请选择客源</el-button>
+                                <el-form-item label="客源编号">
+                                        <el-button type="primary" v-model="form.custno">FYBH0021</el-button>
                                 </el-form-item>
                                 <el-form-item label="成交经纪人" required>
                                     <el-form-item prop="item1">
@@ -106,9 +106,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-btn">                   
+                <div class="form-btn">
+                    
                         <el-button type="primary" plain round>预 览</el-button>
-                        <el-button type="primary" round @click="onSubmit">保 存</el-button>                  
+                        <el-button type="primary" round @click="onSubmit">保 存</el-button>
+                    
                 </div>
             </el-form>
 
@@ -124,6 +126,7 @@
 <script>
 
 export default {
+
     data() {
         return {
             form: {
@@ -168,9 +171,7 @@ export default {
             }],
             // 表单校验规则
             rules: {
-                signdate: [
-                    { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-                ],
+                
                 item1: [
                     { required: true, message: '请选择门店', trigger: 'change' }
                 ],
@@ -188,9 +189,7 @@ export default {
                     { required: true, message: '请输入意向金金额', trigger: 'blur' },
                     // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
                 ],
-                houseno: [
-                    { required: true, message: '请选择房源', trigger: 'click' },
-                ],
+               
                 // address1: [
                 //     { required: true, message: '请输入物业地址', trigger: 'blur' },
                 // ],
@@ -203,9 +202,9 @@ export default {
                 ownphone: [
                     { required: true, message: '请输入业主手机号', trigger: 'blur' },
                 ],
-                custno: [
-                    { required: true, message: '请选择客源', trigger: 'click' },
-                ],
+                // custno: [
+                //     { required: true, message: '请选择客源', trigger: 'click' },
+                // ],
                 custname: [
                     { required: true, message: '请输入客户姓名', trigger: 'blur' },
                 ],
@@ -219,7 +218,6 @@ export default {
             },
         }
     },
-   
     computed: {
         clientHei() {
             return document.documentElement.clientHeight - 130 + 'px'
@@ -227,7 +225,7 @@ export default {
     },
     methods: {
         onSubmit() {
-           
+            
         }
     },
     mounted() {

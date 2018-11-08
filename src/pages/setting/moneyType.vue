@@ -4,10 +4,10 @@
             <p class="title">
                 <span>数据列表</span>
             </p>
-            <el-table :data="tableData">
-                <el-table-column align="center" label="序号" type="index"></el-table-column>
-                <el-table-column align="center" label="款类(大类)" prop="moneyType"></el-table-column>
-                <el-table-column align="center" label="是否启用">
+            <el-table :data="tableData" @row-click="rowClick" highlight-current-row>
+                <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
+                <el-table-column align="center" label="款类(大类)" prop="moneyType" width="120"></el-table-column>
+                <el-table-column align="center" label="是否启用" width="150">
                     <template slot-scope="scope">
                         <el-switch
                         v-model="value2"
@@ -20,7 +20,7 @@
                     <template slot-scope="scope">
                         <el-button type="text" size="medium">新增</el-button>
                         <el-button type="text" size="medium">删除</el-button>
-                        <el-button v-if="scope.row.moneyType === '代管'" type="text" size="medium" @click="makeCitySetting">城市设置</el-button>
+                        <el-button v-if="scope.row.moneyType === '代管'" type="text" size="medium" @click="dialogCitySettingVisible = true">城市设置</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -33,9 +33,22 @@
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(小类)"></el-table-column>
                 <el-table-column align="center" label="描述"></el-table-column>
-                <el-table-column align="center" label="是否启用"></el-table-column>
+                <el-table-column align="center" label="是否启用">
+                    <template slot-scope="scope">
+                        <el-switch
+                        v-model="value2"
+                        active-color="rgba(71,141,227,1)"
+                        inactive-color="rgba(141,144,148,1)">
+                        </el-switch>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" label="收款账户"></el-table-column>
-                <el-table-column align="center" label="操作"></el-table-column>
+                <el-table-column align="center" label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="text" size="medium">新增</el-button>
+                        <el-button type="text" size="medium">删除</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
         </div>
         <el-dialog
@@ -107,10 +120,12 @@
             }
         },
         methods: {
-            makeCitySetting() {
-                this.dialogCitySettingVisible = true
-            },
+            //城市设置弹框 确定
             confirm() {
+
+            },
+            //单击行事件
+            rowClick(row, event, column) {
 
             }
         }
@@ -148,7 +163,7 @@
     }
     .commission {
         flex: 2;
-        padding-top: 15px;
+        padding: 15px 10px 0;
         background:rgba(254,252,247,1);
         box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
         border-radius:4px;
