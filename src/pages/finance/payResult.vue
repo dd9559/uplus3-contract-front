@@ -64,7 +64,6 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
 .view{
-  margin: 0 20px 20px;
   background-color: @bg-white;
   position: relative;
   &-context{

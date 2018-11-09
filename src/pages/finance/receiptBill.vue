@@ -125,13 +125,15 @@
       </ul>
     </div>
     <p>
-      <el-button type="primary" @click="goResult">提交付款申请</el-button>
+      <el-button type="primary" @click="goResult">录入信息并提交审核</el-button>
       <el-button>取消</el-button>
     </p>
   </div>
 </template>
 
 <script>
+  import {TOOL} from "../../assets/js/common";
+
   let stepIndex = 0 //记录执行合并次数
   let otherStep = 0 //除合并外，剩余行数
   let rowTotal = 0  //总行数
@@ -257,7 +259,7 @@
       },
       goResult: function () {
         this.$router.push({
-          path: 'payResult'
+          path: 'receiptResult'
         })
       },
       choseType: function (item) {
@@ -282,43 +284,19 @@
         }
       },
       //合并单元格
-      collapseRow: function ({row, column, rowIndex, columnIndex}) {
+      collapseRow: function ({rowIndex, columnIndex}) {
         // debugger
+        let param = {
+          rowIndex:rowIndex,
+          rowTotal:rowTotal,
+          collapse:collapse,
+          type:'info'
+        }
         if (columnIndex === 0) {
-          if (rowIndex === 0 || rowIndex === rowTotal - otherStep) {
-            otherStep = 0 //初始化剩余行数
-            collapse.forEach((item, index) => {
-              //统计剩余行数
-              if (index > stepIndex) {
-                otherStep += item
-              }
-            })
-            stepIndex++
-            return {
-              rowspan: collapse[stepIndex - 1],
-              colspan: 1
-            }
-          } else if (rowIndex < rowTotal - otherStep) {
-            if (rowIndex + 1 === rowTotal) {
-              stepIndex = 0 //初始化合并次数，必需，不然再表格发生重绘时，会出现第一列消失的情况
-            }
-            return {
-              rowspan: 0,
-              colspan: 0
-            };
-          }
+          return TOOL.collapseRow(param)
         } else if ((columnIndex === 3 || columnIndex === 4)&&this.activeMoneyType===1) {
-          if (rowIndex === 0) {
-            return {
-              rowspan: rowTotal,
-              colspan: 1
-            }
-          } else {
-            return {
-              rowspan: 0,
-              colspan: 0
-            }
-          }
+          param.type='all'
+          return TOOL.collapseRow(param)
         }
       }
     }
