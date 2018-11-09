@@ -18,12 +18,18 @@
 .cl-2{
     color:#233241;
 }
+.font-cl1{
+    color: #55657A;
+}
 .tc{
     text-align: center;
 }
 // margin
 .mt-20{
     margin-top:20px;
+}
+.mt-50{
+    margin-top:50px;
 }
 .mr-5{
     margin-right: 5px;
@@ -41,6 +47,9 @@
 .w120{
     width: 120px;
 }
+.w134{
+    width: 134px;
+}
 .w180{
     width: 180px;
 }
@@ -52,6 +61,9 @@
 }
 .w262{
     width: 262px;
+}
+.w270{
+    width: 270px;
 }
 .w300{
     width: 300px;
@@ -70,6 +82,10 @@
     width: 100px;
     text-align: center;
 }
+.contract-btn{
+    width: 72px;
+    text-align: center;
+}
 .paper-btn-blue{
     background-color: @color-blue;
     border-color: @color-blue;
@@ -81,6 +97,11 @@
 .paper-btn-red{
     background-color: #F56C6C;
     border-color: #F56C6C;
+}
+.contract-gray{
+    background-color: #EAEFF5;
+    border-color: #EAEFF5;
+    color: #233241;
 }
 
 // 头部
@@ -219,5 +240,133 @@
             width: 770px;
             color: #233241;
         }
+    }
+}
+// 合同资料库
+.contract-box{
+    padding-top: 20px;
+    .contract-top{
+        height: 36px;
+        display: flex;
+        align-items: center;
+        position: absolute;
+        right: 0;
+        top: -24px;
+        // background-color: red;
+    }
+    // 相册
+    .contract-photo{
+        border:1px solid #E8EAF6;
+        padding: 0 20px 20px;
+        .tit{
+            color: #32485F;
+            font-size: 14px;
+        }
+        .contract-main{
+            padding: 0 10px;
+        }
+        .contract-tit{
+            margin-top: 14px;
+            color: #6C7986;
+            font-size: 14px;
+        }
+        .contract-ul{
+            overflow: hidden;
+            >li{
+                float: left;
+                margin-top: 12px;
+                margin-right: 20px;
+                width: 140px;
+                height: 140px;
+                border:1px solid #DEDDE2;
+                box-sizing: border-box;
+                border-radius: 2px;
+                overflow: hidden;
+                position: relative;
+                >img{
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                }
+                &:last-child{
+                    margin-right: 0;
+                }
+                .el-checkbox{
+                    position: absolute;
+                    right: 7px;
+                    top: 7px;
+                    /deep/.is-checked{
+                        .el-checkbox__inner{
+                            background-color: #54D384;
+                        }
+                    }
+                    /deep/.el-checkbox__inner{
+                        width: 35px;
+                        height: 35px;
+                        background-color:rgba(0,0,0,0.5);
+                        border: 0;
+                        border-radius: 50%;
+                        &::after{
+                            transform:rotate(45deg) scaleY(1);
+                            width: 8px;
+                            height: 16px;
+                            left:13px;
+                            top:5px;
+                        }
+                    }
+                    /deep/.el-checkbox__label{
+                        font-size: 0;
+                        padding-left: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+// 图片放大
+.fixed-zoom-box{
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5);
+    .fixed-zoom{
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+    .zoom-div{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        >img{
+            display: block;
+            max-height: 80%;
+            max-width: 80%;
+        }
+    }
+    .fixed-zoom-close{
+        position: absolute;
+        z-index: 9;
+        right: 0;
+        top: 0;
+        color: #fff;
+        width: 80px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        cursor: pointer;
+    }
+}
+.contract-tab{
+    /deep/.el-tabs__content{
+        overflow: initial;
     }
 }

@@ -2,7 +2,7 @@
     <!-- 筛选 -->
     <div class="paper-box">
         <div class="paper-set-tit">
-            <div class="paper-tit-fl">筛选查询</div>
+            <div class="paper-tit-fl"><i class="iconfont icon-tubiao-5 mr-10 font-cl1"></i>筛选查询</div>
             <div>
                 <el-button 
                 class="paper-btn" 
@@ -86,6 +86,12 @@ export default {
 
 <style  lang="less" scoped>
 @import "~@/assets/common.less";
+.font-cl1{
+    color: #55657A;
+}
+.mr-10{
+    margin-right: 10px;
+}
 .paper-box{
     padding: 20px 20px 0;
     background-color: @bg-white;
