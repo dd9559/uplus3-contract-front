@@ -99,7 +99,7 @@
     :visible.sync="dialogAddVisible"
     width="1000px"
     class="dialog-info">
-      <el-form :model="addForm">
+      <el-form :model="addForm" label-position='right'>
         <div class="company-info">
           <p>添加企业信息</p>
           <div class="info-content">
