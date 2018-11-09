@@ -51,16 +51,16 @@
         <el-button type="primary" @click="dialogAddVisible = true" icon="el-icon-plus">公司信息</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column align="center" label="城市" prop="cityName" width="150">
+        <el-table-column align="center" label="城市" prop="cityName" width="90">
         </el-table-column>
-        <el-table-column align="center" label="门店" prop="storeName" width="200">
+        <el-table-column align="center" label="门店" prop="storeName" width="220">
         </el-table-column>
-        <el-table-column align="center" label="开户行" width="200">
+        <el-table-column align="center" label="开户行" width="220">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankBranchName }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="开户名" width="190">
+        <el-table-column align="center" label="开户名" width="220">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
           </template>
@@ -72,7 +72,7 @@
         </el-table-column>
         <el-table-column align="center" label="合作方式" prop="cooperationMode" width="150">
         </el-table-column>
-        <el-table-column align="center" label="添加时间" prop="createTime" width="200">
+        <el-table-column align="center" label="添加时间" prop="createTime" width="208">
         </el-table-column>
         <el-table-column align="center" label="添加人" prop="createByName" width="150">
         </el-table-column>
@@ -97,6 +97,7 @@
     <el-dialog
     title="添加企业信息"
     :visible.sync="dialogAddVisible"
+    width="1000px"
     class="dialog-info">
       <el-form :model="addForm">
         <div class="company-info">
@@ -214,7 +215,7 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img src="@/assets/logo.png" alt=""></li>
+                  <li v-if="false"><img src="@/assets/logo.png" alt=""></li>
                   <li @click="upload('imgcontract')"><span>+</span><input ref="imgcontract" type="file"  @change="uploadFile" style="display: none;"></li>
                 </ul>
               </div>
@@ -224,7 +225,7 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img src="@/assets/logo.png" alt=""></li>
+                  <li v-if="false"><img src="@/assets/logo.png" alt=""></li>
                   <li @click="upload('imgfinance')"><span>+</span><input ref="imgfinance" type="file"  @change="uploadFile" style="display: none;"></li>
                 </ul>
               </div>
@@ -247,6 +248,7 @@
     <el-dialog
     title="编辑企业信息"
     :visible.sync="dialogEditVisible"
+    width="1000px"
     class="dialog-info">
       <el-form :model="editForm">
         <div class="company-info">
@@ -359,7 +361,7 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img :src="editForm.contractSign" alt=""></li>
+                  <li v-if="false"><img :src="editForm.contractSign" alt=""></li>
                   <li @click="upload('imgcontract')"><span>+</span><input ref="imgcontract" type="file"  @change="uploadFile" style="display: none;"></li>
                 </ul>
               </div>
@@ -369,7 +371,7 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img :src="editForm.financialSign" alt=""></li>
+                  <li v-if="false"><img :src="editForm.financialSign" alt=""></li>
                   <li @click="upload('imgfinance')"><span>+</span><input ref="imgfinance" type="file"  @change="uploadFile" style="display: none;"></li>
                 </ul>
               </div>
@@ -392,7 +394,7 @@
     <el-dialog
     title="详情信息"
     :visible.sync="dialogViewVisible"
-    width="30%"
+    width="740px"
     class="dialog-info">
     <div class="view-content">
       <p>汉街二店</p>
@@ -545,7 +547,7 @@ export default {
           res = res.data
           if(res.status === 200) {
             this.tableData = res.data.list
-            this.count = res.data.total
+            this.count = res.data.count
           }
         }).catch(error => {
           console.log(error);
@@ -687,7 +689,7 @@ export default {
 <style lang="less" scoped>
 @import "~@/assets/common.less";
 .company-form {
-  padding: 10px;
+  padding: 10px 0;
   background-color: #fff;
   border-radius:2px;
   box-sizing: border-box;
@@ -715,6 +717,7 @@ export default {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
+    font-size: 18px;
     > .el-button {
       width:119px;
       height:36px;
@@ -728,7 +731,7 @@ export default {
   }
 }
 .dialog-info {
-  min-width: 770px;
+  // min-width: 770px;
   .company-info {
     padding: 30px 20px;
     border-top: 1px solid rgba(237,236,240,1);
@@ -794,6 +797,9 @@ export default {
           }
         }
       }
+      /deep/ .el-table--enable-row-hover .el-table__body tr:hover>td {
+        background-color: #fff!important;
+      }
       /deep/ .el-table td { border: 0; padding: 0; }
     }
     &:last-child {
@@ -809,13 +815,14 @@ export default {
           }
           > .upload {
             display: flex;
-            margin-top: 50px;
+            margin-top: 20px;
             > ul {
               display: flex;
               li {
-                width: 60px;
-                height: 60px;
-                background-color: #ccc;
+                width: 160px;
+                height: 160px;
+                background-color: rgba(236,238,241,1);
+                border:2px dashed rgba(198,203,209,1);
                 margin-right: 10px;
                 position: relative;
                 > img {
@@ -826,8 +833,8 @@ export default {
                   left: 50%;
                   top: 50%;
                   transform: translate(-50%,-50%);
-                  font-size: 70px;
-                  color: @bg-grey;
+                  font-size: 117px;
+                  color:rgba(217,219,221,1);
                 }
               }
             }
@@ -866,9 +873,9 @@ export default {
         margin-top: 20px;
         span { margin-right: 5px; }
         > div {
-          width: 60px;
-          height: 60px;
-          background-color: #ccc;
+          width: 160px;
+          height: 160px;
+          background-color: rgba(236,238,241,1);
           > img {
             width: 100%;
           }
