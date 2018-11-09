@@ -11,15 +11,15 @@
           <el-form-item label="合同类型：">
             <el-input
               placeholder="请输入内容"
-              v-model="addForm.contType"
+              :value="addForm.contType==='1'?'租赁':'买卖'"
               :disabled="true">
             </el-input>
           </el-form-item>
-          <el-form-item label="成交总价：" prop="">
+          <el-form-item label="成交总价：" prop="dealPrice">
             <el-input v-model="addForm.dealPrice" placeholder="请输入内容"></el-input>
           </el-form-item>
           <br>
-          <el-form-item label="客户保证金：" prop="">
+          <el-form-item label="客户保证金：" prop="" v-if="addForm.contType==='2'">
             <el-input v-model="addForm.dealPrice" placeholder="请输入内容"></el-input>
           </el-form-item>
           <el-form-item label="客户佣金：" prop="">
@@ -32,12 +32,12 @@
             <el-input v-model="addForm.commissionPayment" placeholder="请输入内容"></el-input>
           </el-form-item>
           <br>
-          <el-form-item label="交易流程：" prop="">
+          <el-form-item label="交易流程：" prop="transaction" v-if="addForm.contType==='2'">
             <el-select v-model="addForm.jylc" placeholder="请选择交易流程">
               <el-option label="一次性（业）+ 按揭（客）" value="1"></el-option>
             </el-select>  
           </el-form-item>
-          <el-form-item label="按揭手续费：" prop="">
+          <el-form-item label="按揭手续费：" prop="" v-if="addForm.contType==='2'">
             <el-select v-model="addForm.sxf1" placeholder="" class="sxf_1">
               <el-option label="另外出" value="1"></el-option>
               <el-option label="佣金扣" value="2"></el-option>
@@ -62,7 +62,7 @@
           <el-form-item label="物业地址：">
             <el-input
               placeholder="请输入内容"
-              v-model="addForm.contType"
+              v-model="addForm.address"
               :disabled="true" class="address">
             </el-input>
           </el-form-item>
@@ -73,13 +73,13 @@
           <el-form-item label="套内面积：" prop="">
             <el-input v-model="addForm.insideArea" placeholder="请输入内容"></el-input>
           </el-form-item>
-          <br>
-          <el-form-item label="产权状态：" prop="">
+          <br v-if="addForm.contType==='2'">
+          <el-form-item label="产权状态：" prop="" v-if="addForm.contType==='2'">
             <el-select v-model="addForm.cqzt" placeholder="请选择状态">
               <el-option label="抵押" value="1"></el-option>
             </el-select>  
           </el-form-item>
-          <el-form-item label="按揭银行：" prop="">
+          <el-form-item label="按揭银行：" prop="" v-if="addForm.contType==='2'">
             <el-select v-model="addForm.ajyh" placeholder="请选择银行">
               <el-option label="中国工商银行" value="1"></el-option>
               <el-option label="中国建设银行" value="2"></el-option>
@@ -97,17 +97,17 @@
               <el-option label="华夏银行" value="14"></el-option>
             </el-select>  
           </el-form-item>
-          <el-form-item label="按揭欠款：" prop="">
+          <el-form-item label="按揭欠款：" prop="" v-if="addForm.contType==='2'">
             <el-input v-model="addForm.ajqk" placeholder="请输入内容"></el-input>
           </el-form-item>
-          <br>
-          <el-form-item label="产权地址：" prop="">
+          <br v-if="addForm.contType==='2'">
+          <el-form-item label="产权地址：" prop="" v-if="addForm.contType==='2'">
             <el-input v-model="addForm.cqdz" placeholder="请输入内容"></el-input>
           </el-form-item>
-          <el-form-item label="房产证号：" prop="">
+          <el-form-item label="房产证号：" prop="" v-if="addForm.contType==='2'">
             <el-input v-model="addForm.property" placeholder="请输入内容"></el-input>
           </el-form-item>
-          <br>
+          <br v-if="addForm.contType==='2'">
           <el-form-item label="房源方门店：" prop="">
             <el-select v-model="addForm.houseStoreId" placeholder="请选择状态">
               <el-option label="光谷一店" value="1"></el-option>
@@ -187,30 +187,32 @@
       </div>
       <!-- 三方合作 -->
       <div class="houseMsg">
-        <p>三方合作</p>
-        <div class="form-content">
-          <el-form-item label="扣合作费：" prop="">
-            <el-input v-model="addForm.aaa" placeholder="请输入内容"></el-input>
-          </el-form-item>
-          <el-form-item label="类型：" prop="">
-            <el-select v-model="addForm.type" placeholder="请选择">
-              <el-option label="客户转" value="1"></el-option>
-            </el-select>  
-          </el-form-item>
-          <br>
-          <el-form-item label="合作方姓名：" prop="">
-            <el-input v-model="addForm.name" placeholder="请输入内容"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式：" prop="">
-            <el-input v-model="addForm.mobile" placeholder="请输入内容"></el-input>
-          </el-form-item>
-          <el-form-item label="身份证号：" prop="">
-            <el-input v-model="addForm.identifyCode" placeholder="请输入内容"></el-input>
-          </el-form-item>
-          <br>
-          <el-form-item label="备注：" prop="">
-            <el-input type="textarea" :rows="4" v-model="addForm.desc" clear="textarea" placeholder="无备注内容"></el-input>
-          </el-form-item>
+        <p @click="toCooperation">三方合作 <span class="attention" :class="{'attention_':cooperation}"></span></p>
+        <div class="cooperation">
+          <div v-show="cooperation">
+            <el-form-item label="扣合作费：" prop="">
+              <el-input v-model="addForm.aaa" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <el-form-item label="类型：" prop="">
+              <el-select v-model="addForm.type" placeholder="请选择">
+                <el-option label="客户转" value="1"></el-option>
+              </el-select>  
+            </el-form-item>
+            <br>
+            <el-form-item label="合作方姓名：" prop="">
+              <el-input v-model="addForm.name" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <el-form-item label="联系方式：" prop="">
+              <el-input v-model="addForm.mobile" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <el-form-item label="身份证号：" prop="">
+              <el-input v-model="addForm.identifyCode" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <br>
+            <el-form-item label="备注：" prop="">
+              <el-input type="textarea" :rows="4" v-model="addForm.desc" placeholder="无备注内容"></el-input>
+            </el-form-item>
+          </div>
         </div>
       </div>
       <div class="btn">
@@ -338,7 +340,13 @@ export default {
       rules: {
         date: [
           { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        ]
+        ],
+        dealPrice: [
+          { required: true, message: '请输入总价', trigger: 'blur' },
+        ],
+        transaction: [
+          { required: true, message: '请选择交易流程', trigger: 'change' }
+        ],
       },
       houseList:[
         {houseId:'YQY110635',houseName:'康桥小区', status:1, floor:'中层/28', houseType:'2*2*2*1', area:'136', price:'90', fitment:'精装',maintainer:'当代一店下雨天'},
@@ -360,8 +368,12 @@ export default {
       dialogTableVisible1:false,
       dialogTableVisible2:false,
       attention:false,
-      total:5
+      total:5,
+      cooperation:false
     }
+  },
+  created(){
+    this.addForm.contType=this.$route.query.type
   },
   methods:{
     submitForm(formName) {
@@ -388,6 +400,9 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+    },
+    toCooperation(){
+      this.cooperation=!this.cooperation
     }
   }
 };
@@ -443,6 +458,10 @@ export default {
     .address{
       width: 500px;
     }
+  }
+  .cooperation{
+    height: 196px;
+    padding-left: 30px;
     /deep/.el-textarea__inner{
       width: 600px;
       min-height: 200px;

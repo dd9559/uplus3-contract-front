@@ -38,6 +38,7 @@ const editIntention = () => import("@/pages/contract/contractList/editIntention"
 const detailIntention = () => import("@/pages/contract/contractList/detailIntention")
 const contractList = () => import("@/pages/contract/contractList/contractList")
 const addContract = () => import("@/pages/contract/contractList/addContract")
+const contractDetails = () => import("@/pages/contract/contractList/contractDetails")
 
 Vue.use(Router)
 
@@ -149,6 +150,11 @@ export default new Router({
       {
         path: 'addContract',
         component: addContract
+      },
+      //合同详情
+      {
+        path: 'contractDetails',
+        component: contractDetails
       },
     ]
   }]
