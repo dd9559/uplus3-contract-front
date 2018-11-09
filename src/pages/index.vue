@@ -244,6 +244,11 @@
           bottom: 20px;
           left: 20px;
           overflow-y: auto;
+          /deep/ .theader-bg{
+            >th{
+              background-color: @bg-th;
+            }
+          }
         }
       }
     }

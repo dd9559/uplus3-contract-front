@@ -12,7 +12,7 @@ const moneyType = () => import('@/pages/setting/moneyType')
 const operationLog = () => import('@/pages/setting/operationLog')
 
 //票据管理
-const paperSet = () => import('@/pages/finance/paperSet') 
+const paperSet = () => import('@/pages/finance/paperSet')
 
 // 签后
 const postManage = () => import('@/pages/postSigning/postManage')
@@ -31,6 +31,7 @@ const billDetails = () => import('@/pages/finance/billDetails')
 const payBill=()=>import('@/pages/finance/payBill')
 const payResult=()=>import('@/pages/finance/payResult')
 const receiptBill=()=>import('@/pages/finance/receiptBill')
+const receiptResult=()=>import('@/pages/finance/receiptResult')
 
 // 合同模块
 const newIntention = () => import("@/pages/contract/contractList/newIntention")
@@ -111,6 +112,10 @@ export default new Router({
       {
         path: 'receiptBill',
         component: receiptBill
+      },
+      {
+        path: 'receiptResult',
+        component: receiptResult
       },
       {
         path: 'contractList',
