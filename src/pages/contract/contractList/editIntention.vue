@@ -301,7 +301,7 @@ export default {
         .form-btn{
             overflow: hidden;
             position: fixed;
-            bottom: 30px;
+            bottom: 50px;
             right: 60px;
             background-color: #fff;
         }

@@ -77,8 +77,117 @@
                         </div>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="合同主体" name="second">合同主体</el-tab-pane>
-                <el-tab-pane label="资料库" name="third">资料库</el-tab-pane>
+                <el-tab-pane label="合同主体" name="second">
+                    <div class="hetong">
+                        <el-upload
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            list-type="picture-card"
+                            multiple
+                            :on-preview="handlePictureCardPreview"
+                            :on-remove="handleRemove">
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="dialogImageUrl" alt="">
+                        </el-dialog>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="资料库" name="third" class="third-tab">
+                    <div class="hetong2">
+                        <div class="ht-col">
+                            <div class="ht-title">卖方</div>
+                            <div class="small-col">
+                                <div class="small-title"><span>*</span>身份证复印件</div>
+                                <div class="upbox">
+                                    <el-upload
+                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                        list-type="picture-card"
+                                        multiple
+                                        :on-preview="handlePictureCardPreview"
+                                        :on-remove="handleRemove">
+                                        <i class="el-icon-plus"></i>
+                                    </el-upload>
+                                    <el-dialog :visible.sync="dialogVisible">
+                                        <img width="100%" :src="dialogImageUrl" alt="">
+                                    </el-dialog>
+                                </div>
+                            </div>
+                            <div class="small-col">
+                                <div class="small-title"><span>*</span>资料</div>
+                                <div class="upbox">
+                                    <el-upload
+                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                        list-type="picture-card"
+                                        multiple
+                                        :on-preview="handlePictureCardPreview"
+                                        :on-remove="handleRemove">
+                                        <i class="el-icon-plus"></i>
+                                    </el-upload>
+                                    <el-dialog :visible.sync="dialogVisible">
+                                        <img width="100%" :src="dialogImageUrl" alt="">
+                                    </el-dialog>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hetong2">
+                        <div class="ht-col">
+                            <div class="ht-title">买方</div>
+                            <div class="small-col">
+                                <div class="small-title"><span>*</span>身份证复印件</div>
+                                <div class="upbox">
+                                    <el-upload
+                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                        list-type="picture-card"
+                                        multiple
+                                        :on-preview="handlePictureCardPreview"
+                                        :on-remove="handleRemove">
+                                        <i class="el-icon-plus"></i>
+                                    </el-upload>
+                                    <el-dialog :visible.sync="dialogVisible">
+                                        <img width="100%" :src="dialogImageUrl" alt="">
+                                    </el-dialog>
+                                </div>
+                            </div>
+                            <div class="small-col">
+                                <div class="small-title"><span>*</span>购房合同</div>
+                                <div class="upbox">
+                                    <el-upload
+                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                        list-type="picture-card"
+                                        multiple
+                                        :on-preview="handlePictureCardPreview"
+                                        :on-remove="handleRemove">
+                                        <i class="el-icon-plus"></i>
+                                    </el-upload>
+                                    <el-dialog :visible.sync="dialogVisible">
+                                        <img width="100%" :src="dialogImageUrl" alt="">
+                                    </el-dialog>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hetong2">
+                        <div class="ht-col">
+                            <div class="ht-title">其他</div>
+                            <div class="small-col">
+                                <div class="upbox">
+                                    <el-upload
+                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                        list-type="picture-card"
+                                        multiple
+                                        :on-preview="handlePictureCardPreview"
+                                        :on-remove="handleRemove">
+                                        <i class="el-icon-plus"></i>
+                                    </el-upload>
+                                    <el-dialog :visible.sync="dialogVisible">
+                                        <img width="100%" :src="dialogImageUrl" alt="">
+                                    </el-dialog>
+                                </div>
+                            </div>                           
+                        </div>
+                    </div>
+                </el-tab-pane>
             </el-tabs>
 
 
@@ -96,7 +205,9 @@ export default {
 
     data() {
         return {
-            activeName: 'first',           
+            activeName: 'first',
+            dialogImageUrl: '',
+            dialogVisible: false           
         }
     },
     components:{
@@ -105,7 +216,7 @@ export default {
     computed: {
         
         screenHeight() {
-            return document.documentElement.clientHeight - 285 + 'px'
+            return document.documentElement.clientHeight - 305 + 'px'
         },
         
     },
@@ -117,6 +228,13 @@ export default {
        handleClick(tab, event) {
         console.log(tab, event);
        },
+       handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+      }
        
     },
     
@@ -138,6 +256,14 @@ export default {
     .el-tabs__nav-scroll{
         padding: 0 30px;
     }
+    .el-upload--picture-card{
+        background-color: #fff;
+        border: 2px dashed #DEDDE2;
+        border-radius: 6px;
+    }
+    .el-upload-list--picture-card .el-upload-list__item{
+        margin: 0 20px 20px 0;
+    }
     
     .detailbox{
         padding: 20px 0 0px;
@@ -147,6 +273,7 @@ export default {
             height: 100%;
             .el-tabs__content{
                 height: 100%;
+                overflow-y: auto;
             }
         }
         .tab{
@@ -255,6 +382,38 @@ export default {
                     margin-right: 30px;
                 }
             }
+        }
+        // 合同主体
+        .hetong{
+            padding: 30px 30px 130px 40px;
+            background-color: #fff;
+            height: 100%;
+        }
+        .third-tab{
+           padding: 20px 30px 130px 40px; 
+        }
+        .hetong2{
+            margin-bottom: 30px;
+            border-bottom: 1px solid #EDECF0;
+            padding-bottom: 15px;
+            .ht-title{
+                color: #32485F;
+                font-size: 16px;
+                margin-bottom: 15px;               
+            }
+            .small-col{
+                margin-bottom: 20px;
+                .small-title{
+                    font-size: 14px;
+                    color: #6C7986;
+                    margin-bottom: 15px;
+                    span{
+                        color: #FF3E3E;
+                        
+                    }
+                }
+            }
+            
         }
         
     }
