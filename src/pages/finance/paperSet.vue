@@ -181,7 +181,6 @@
         invalid: 1, //已作废
     }
     export default {
-        mixins: [Mixin],
         data() {
             return {
                 // loginState 登入角色
