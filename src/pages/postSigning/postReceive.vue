@@ -12,27 +12,27 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="交易流程" prop="time">
-                    <el-select v-model="propForm.time" class="w300">
+                    <el-select v-model="propForm.time" class="w300" filterable>
                         <el-option v-for="item in rules.time" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="贷款银行" prop="paper">
-                    <el-select v-model="propForm.paper" class="w262">
+                    <el-select v-model="propForm.paper" class="w262" filterable>
                         <el-option v-for="item in rules.paper" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="部门" prop="region" class="mr">
-                    <el-select v-model="propForm.region" @change="regionChangeFn" class="w200">
+                    <el-select v-model="propForm.region" @change="regionChangeFn" class="w200" filterable>
                         <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item prop="regionName">
-                    <el-select v-model="propForm.regionName" class="w100">
+                    <el-select v-model="propForm.regionName" class="w100" filterable>
                         <el-option v-for="item in rules.regionName" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="后期状态" prop="late" class="mr">
-                    <el-select v-model="propForm.late" class="w180">
+                    <el-select v-model="propForm.late" class="w180" filterable>
                         <el-option v-for="item in rules.late" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
@@ -65,7 +65,7 @@
                 </el-table-column>
                 <el-table-column label="操作" min-width="70">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="receiveFn">接收</el-button>
+                        <el-button class="blue" type="text" @click="receiveFn(scope.row.receive)">{{receiveComFn(scope.row.receive,1)}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -90,7 +90,7 @@
         <!-- 接收弹层 -->
         <el-dialog :title="receive.tit" :visible.sync="receive.show" width="1000px" :center="receive.center" class="layer-paper">
             <div class="layer-receive-tab">
-                <el-tabs v-model="activeName">
+                <el-tabs v-model="activeName" class="contract-tab">
                     <el-tab-pane label="交易流程指派">
                         <el-table :data="dealTable" border class="paper-table mt-20">
                             <el-table-column prop="a1" align="center" label="步骤类型">
@@ -124,12 +124,84 @@
                             <div class="receive-txt">原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？</div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="合同资料库">合同资料库</el-tab-pane>
+                    <el-tab-pane label="合同资料库">
+                        <div class="contract-box">
+                            <div class="contract-top" v-show="downloadState">
+                                <el-button 
+                                    class="paper-btn paper-btn-blue" 
+                                    type="primary" 
+                                    size="medium" 
+                                    @click="downloadStateFn"
+                                    round>批量下载</el-button>
+                            </div>
+                            <div class="contract-top" v-show="!downloadState">
+                                <el-button 
+                                    class="contract-btn contract-gray" 
+                                    type="primary" 
+                                    size="small" 
+                                    @click="downloadStateFn"
+                                    round>完成</el-button>
+                                <el-button 
+                                    class="contract-btn contract-gray" 
+                                    type="primary" 
+                                    size="small" 
+                                    @click="downloadFn"
+                                    round>下载</el-button>
+                            </div>
+                            <div class="contract-photo">
+                                <el-checkbox-group v-model="checkList">
+                                    <div class="tit mt-20">{{photoTit.txt1}}</div>
+                                    <div class="contract-main" v-for="(items,i) in photoMain" :key="'photoMain' + items.txt">
+                                        <div class="contract-tit"><span class="mr-5 red">*</span>{{items.txt}}</div>
+                                        <ul class="contract-ul">
+                                            <li v-for="(item,t) in items.children" :key="item">
+                                                <el-checkbox :label="item" class="el-checkbox" v-show="!downloadState"></el-checkbox>
+                                                <img :src="item" @click="photoZoomFn(photoMain,i,t)">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="tit mt-50">{{photoTit.txt2}}</div>
+                                     <div class="contract-main" v-for="(items,i) in photoMainB" :key="'photoMainB' + items.txt">
+                                        <div class="contract-tit"><span class="mr-5 red">*</span>{{items.txt}}</div>
+                                        <ul class="contract-ul">
+                                            <li v-for="(item,t) in items.children" :key="item">
+                                                <el-checkbox :label="item" class="el-checkbox" v-show="!downloadState"></el-checkbox>
+                                                <img :src="item" @click="photoZoomFn(photoMainB,i,t)">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </el-checkbox-group>
+                            </div>
+                        </div>
+                    </el-tab-pane>
                 </el-tabs>
+                <div class="fixed-zoom-box" v-show="zoomCarousel.show">
+                    <el-carousel 
+                    class="fixed-zoom"
+                    arrow="always"
+                    height="100%"
+                    indicator-position="none"
+                    :initial-index="zoomCarousel.index"
+                    :autoplay="zoomCarousel.autoplay"
+                    >
+                        <el-carousel-item 
+                        class="zoom-div"
+                        v-for="item in zoomCarousel.children" 
+                        :key="'zoomCarousel'+item">
+                            <img :src="item">
+                        </el-carousel-item>
+                    </el-carousel>
+                    <div @click="zoomCloseFn" class="fixed-zoom-close">关闭</div>
+                </div>
             </div>
             <span slot="footer">
                 <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" round>保存</el-button>
-                <el-button class="paper-btn paper-btn-green" type="primary" size="medium" round>接收</el-button>
+                <el-button 
+                class="paper-btn paper-btn-green" 
+                type="primary" 
+                size="medium" 
+                v-show="receiveComFn(receive.receive,0)"
+                round>接收</el-button>
                 <el-button class="paper-btn paper-btn-red" type="primary" size="medium" @click="refusedFn" round>拒绝</el-button>
             </span>
         </el-dialog>
@@ -138,6 +210,10 @@
 
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
+    const RECEIVE = {
+        receive:0,          //接收
+        haveReceive:1       //已接收
+    }
 
     export default {
         data() {
@@ -152,7 +228,7 @@
                     a6: '张小龙',
                     a7: '张明明',
                     a8: '当代一店-夏雨田',
-                    a9: '汉街二店',
+                    receive: 1,
                 }, ],
                 // 筛选条件
                 propForm: {
@@ -247,7 +323,33 @@
                             value: "选项21"
                         }]
                     }
-                }]
+                }],
+                // 批量下载状态切换
+                downloadState:true,
+                // 多选数组
+                checkList:[],
+                // 相册
+                photoTit:{
+                    txt1:'卖方',
+                    txt2:'买方',
+                },
+                photoMain:[{
+                    txt:'身份证复印件',
+                    children:['https://img.zcool.cn/community/0147cf5be2aaaba801209252bb0d56.jpg','https://img.zcool.cn/community/016a935be3dbd0a801209252ee8536.jpg@520w_390h_1c_1e_1o_100sh.jpg']
+                }],
+                photoMainB:[{
+                    txt:'身份证复印件',
+                    children:['https://img.zcool.cn/community/010e835be3d71aa801209252ea8f78.jpg@520w_390h_1c_1e_1o_100sh.jpg','https://img.zcool.cn/community/01a2a25be32deca80121ab5d542482.jpg@520w_390h_1c_1e_1o_100sh.jpg','https://img.zcool.cn/community/01945f5be38aefa80121ab5dad4e08.jpg@520w_390h_1c_1e_1o_100sh.jpg']
+                },{
+                    txt:'购房合同',
+                    children:['https://img.zcool.cn/community/01fdf85be39d38a801209252edbf6c.jpg@520w_390h_1c_1e_1o_100sh.jpg']
+                }],
+                zoomCarousel:{
+                    show:false,
+                    autoplay:false,
+                    index:0,
+                    children:[],
+                }
             }
         },
         computed: {
@@ -256,15 +358,33 @@
             }
         },
         methods: {
+            // 接收状态显示
+            receiveComFn(state,bol){
+                if(bol){
+                    if(state === RECEIVE.receive){
+                        return '接收'
+                    }else{
+                        return '已接收'
+                    }
+                }else{
+                    if(state === RECEIVE.receive){
+                        return true
+                    }else{
+                        return false
+                    }
+                }
+                
+            },
             // 接收
-            receiveFn() {
+            receiveFn(e) {
                 this.receive = {
                     show: true,
                     tit: '接收',
                     proWidth: '1000px',
                     rabbet: true,
                     center: false,
-                    footer: true
+                    footer: true,
+                    receive:e
                 }
             },
             // 拒绝后期
@@ -314,7 +434,28 @@
             },
             handleSelect(item) {
                 console.log(item);
-            }
+            },
+            // 批量状态切换
+            downloadStateFn(){
+                this.downloadState = !this.downloadState
+            },
+            // 下载
+            downloadFn(){
+                console.log('下载',this.checkList);
+            },
+            // 图片放大
+            photoZoomFn(arr,i,t){
+                let j = {
+                    show:true,
+                    index:t,
+                    children:arr[i].children
+                };
+                Object.assign(this.zoomCarousel,j)
+            },
+            // 图片放大关闭
+            zoomCloseFn(){
+                this.zoomCarousel.show = false;
+            },
         },
         components: {
             ScreeningTop
