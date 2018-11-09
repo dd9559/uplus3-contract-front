@@ -1,9 +1,5 @@
 <template>
   <div class="view-container">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }" class="colorf">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>合同模板设置</el-breadcrumb-item>
-    </el-breadcrumb>
     <el-form ref="form" :model="flowForm" label-width="80px">
       <el-form-item label="城市选择" class="selectCity">
         <el-select v-model="flowForm.selectCity" placeholder="请选择">
@@ -13,7 +9,7 @@
       </el-form-item>
     </el-form>
     <div class="data-list">
-      <el-table :data="list" style="width: 100%" @cell-click="getRowDetails">
+      <el-table :data="list" style="width: 100%" @cell-click="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="typeName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
@@ -27,37 +23,52 @@
             <el-button @click="rowOperation(scope.row,2)" type="text" size="small" v-if="scope.row.useNum>0">预览
             </el-button>
           </template>
-        </el-table-column>modal
+        </el-table-column>
       </el-table>
     </div>
     <div class="modal" v-show="modal">
       <template v-if="template===1">
         <p>上传合同模板<span class="icon-font-close" @click="modal=false"></span></p>
-        <div class="modal-context">
-          <div class="input-group">
+        <div class="">
+          <div class="modal-context">
             <label>合同名称：</label>
-            <el-input placeholder="限制15个字符"></el-input>
+            <el-input placeholder="限制15个字符" maxlength='15'></el-input>
           </div>
-          <div class="input-group file-upload">
+          <div class="file-upload">
             <label>上传：</label>
             <div class="file-upload-opera">
               <template v-if="uploadType">
                 <p @click="upload('fileOne')">
-                  <span>+</span>
-                  <span>买卖</span>
-                  <input type="file" ref="fileOne" @change="uploadFile" style="display: none;">
+                  <el-upload
+                  class="upload-demo"
+                  action=""
+                  :on-change="uploadFile"
+                  :file-list="fileList3">
+                  <el-button>买卖</el-button>
+                  </el-upload>
                 </p>
                 <p @click="upload('fileTwo')">
-                  <span>+</span>
-                  <span>居间</span>
-                  <input type="file" ref="fileTwo" style="display: none;">
+                  <el-upload
+                  class="upload-demo"
+                  action=""
+                  :on-change="uploadFile"
+                  :file-list="fileList3">
+                  <el-button>居间</el-button>
+                  </el-upload>                 
                 </p>
+                <span class="wordtip">温馨提示：只支持Word格式</span> 
               </template>
               <template v-else>
                 <p @click="upload('fileOne')">
-                  <span>+</span>
-                  <input type="file" ref="fileOne" @change="uploadFile" style="display: none;">
+                 <el-upload
+                  class="upload-demo"
+                  action=""
+                  :on-change="uploadFile"
+                  :file-list="fileList3">
+                  <el-button>模板</el-button>
+                  </el-upload>
                 </p>
+                <span class="wordtip">温馨提示：只支持Word格式</span> 
               </template>
             </div>
           </div>
@@ -68,7 +79,7 @@
       </template>
       <template v-if="template===3">
         <p>合同类型详情<span class="icon-font-close" @click="modal=false"></span></p>
-        <el-table :data="list">
+        <el-table :data="list" class="contractType">
           <el-table-column align="center" min-width="100px" label="合同版本号" prop="version"
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="合同名称" prop="name"
@@ -79,7 +90,7 @@
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="操作">
             <template slot-scope="scope">
-              <el-button @click="rowOperation(scope.row,1)" type="text" size="small">启用</el-button>
+              <el-button @click="start(scope.row)" type="text" size="small">启用</el-button>
               <el-button @click="rowOperation(scope.row,2)" type="text" size="small">预览</el-button>
             </template>
           </el-table-column>
@@ -105,6 +116,7 @@
         modal: false,
         template: 1,//弹窗内容
         uploadType: false,//是否显示两个上传
+        fileList3: []
       }
     },
     created() {
@@ -148,22 +160,25 @@
       upload:function(type){
         this.$refs[type].click()
       },
-      uploadFile:function (e) {
-        console.log(e.target.files[0])
-        const file = e.target.files[0];
-        let fileType = file.name.split('.')[1]
-        if(fileType==='word'){
+      uploadFile:function (file,fileList) {
+        let fileType= file.name.split('.')
+        if(fileType[1]=='docx'){
+          console.log('上传的是word文档');
+          const file = e.target.files[0];
+          console.log(file,'form数据');
+           let da = new FormData()
+           da.append("files",this.file)
+           this.$ajax.post('/setting/contractTemplate/upload',this.da).then(()=>{
 
-        }else {
-          this.$message('只支持word格式')
+           })
         }
-      },
+        },
       rowOperation: function (row, type = 1) {
         this.modal = true
         this.template = type
         console.log(row)
-        if (type === 1) {
-          this.$confirm('是否确定启用此类型模？', '提示', {
+        if(type===1){
+          this.$confirm('是否确定上传此类型模版？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
@@ -171,15 +186,40 @@
             this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
             this.$message({
             type: 'success',
+            message: '上传成功!'
+          });
+        })
+        }
+        else if(type === 3) {
+          this.$confirm('是否确定启用此类型模版？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }).then(()=>{
+            this.$message({
+            type: 'success',
             message: '启用成功!'
           });
         })
         }else {
-          this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
+          this.template = type
+          if(type===2){
+          this.$confirm('是否确定预览此类型模版？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }).then(()=>{
+           this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
             console.log(res)
-          }).catch(error=>{
+            }).catch(error=>{
             console.log(error)
-          })
+            })
+            this.$message({
+            type: 'success',
+            message: '预览成功!'
+          });
+        })
+        }
         }
       }
     },
@@ -196,16 +236,6 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
 .view-container{
-  /deep/ 
-  .el-breadcrumb {
-    font-size: 12px;
-    font-family: 'MicrosoftYaHei';
-    .el-breadcrumb__item {
-      .is-link {
-        color: rgba(153,161,170,1);
-      }
-   }  
-  }
   /deep/
   .el-form {
     background:rgba(255,255,255,1);
@@ -237,7 +267,44 @@
       }
     }
   } 
-}
+} 
+  .data-list {
+    /deep/ 
+    .has-gutter {
+        tr {
+          border-radius: 4px;
+          th {
+            background: rgba(238, 242, 251, 1) !important;
+            .cell{
+              font-size:14px;
+              font-family:MicrosoftYaHei;
+              font-weight:400;
+              color:rgba(108,121,134,1);
+            }
+          }
+        }
+      }
+      /deep/
+    .el-table__body-wrapper{
+      tbody{
+         .el-table__row{
+          td{
+            .cell{
+              font-weight:400;
+              color:rgba(35,50,65,1);
+            }
+          }
+        }
+        .el-table__row{
+          td:nth-child(2){
+            .cell{
+              color:#409EFF;
+            }
+          }
+        }
+      }
+    }
+  }
   .icon-font-close {
     &:after {
       content: 'X';
@@ -260,23 +327,24 @@
     background-color: @bg-white;
     min-width: 400px;
     min-height: 200px;
+    border-radius:4px;
+    width: 700px;
     z-index: 9;
-    padding: 50px 20px 20px;
+    padding: 80px 20px 20px;
     display: flex;
-    align-items: center;
-    justify-content: center;
     > p {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      background-color: @bg-grey;
+      padding-left: 21px;
       height: 50px;
       display: flex;
-      justify-content: center;
+      justify-content: left;
       align-items: center;
+      border-bottom: solid 1px rgba(237,236,240,1); 
     }
-    .input-group {
+    .modal-context {
       display: flex;
       align-items: center;
       > label {
@@ -284,16 +352,53 @@
       }
     }
     .file-upload{
+      margin-top: 30px;
+      display: flex;
+      >label {
+        min-width: 100px;
+      }
       &-opera{
         display: flex;
+        flex-direction: column;
         >p{
-          display: inherit;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          margin-right: 20px;
+          /deep/
+          .el-button{
+            width:86px;
+            height:32px;
+            line-height: 7px;
+            background:rgba(71,141,227,1);
+            border-radius:16px;
+            color: white;
+            text-align: center;
+          }
+        }
+        >p:nth-child(2){
+          margin-top: 30px;
+        }
+        span{
+          font-size:14px;
+          font-family:MicrosoftYaHei;
+          font-weight:400;
+          color:rgba(108,121,134,1);
+          line-height:42px;
         }
       }
+    }
+    .contractType{
+      border:solid 1px rgba(237,236,240,1);
+      /deep/
+        .has-gutter{
+          th{
+             background:rgba(238,242,251,1);
+            .cell{
+            font-size:14px;
+            font-family:MicrosoftYaHei;
+            font-weight:400;
+            color:rgba(108,121,134,1);
+            line-height:42px;
+            }
+          }
+        }
     }
   }
 </style>
