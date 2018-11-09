@@ -54,7 +54,7 @@
         <el-dialog
         title="代管款类监管城市设置"
         :visible.sync="dialogCitySettingVisible"
-        width="30%">
+        width="740px">
         <div class="citySettingContent">
             <div class="tip">
                 <span>提示:</span>
@@ -187,6 +187,7 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 10px;
+        font-size: 18px;
     }
 
     .citySettingContent {
