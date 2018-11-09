@@ -41,7 +41,7 @@
         <!-- 列表 -->
         <div class="paper-table-box">
             <div class="paper-set-tit">
-                <div class="paper-tit-fl">数据列表</div>
+                <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
             <el-table :data="tableData" class="paper-table mt-20">
                 <el-table-column label="合同编号" min-width="161">
