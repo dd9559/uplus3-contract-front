@@ -9,7 +9,7 @@
       </el-form-item>
     </el-form>
     <div class="data-list">
-      <el-table :data="list" style="width: 100%" @cell-click="getRowDetails">
+      <el-table :data="list" style="width: 100%" @cell-click="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="typeName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
@@ -32,7 +32,7 @@
         <div class="">
           <div class="modal-context">
             <label>合同名称：</label>
-            <el-input placeholder="限制15个字符"></el-input>
+            <el-input placeholder="限制15个字符" maxlength='15'></el-input>
           </div>
           <div class="file-upload">
             <label>上传：</label>
@@ -164,6 +164,13 @@
         let fileType= file.name.split('.')
         if(fileType[1]=='docx'){
           console.log('上传的是word文档');
+          const file = e.target.files[0];
+          console.log(file,'form数据');
+           let da = new FormData()
+           da.append("files",this.file)
+           this.$ajax.post('/setting/contractTemplate/upload',this.da).then(()=>{
+
+           })
         }
         },
       rowOperation: function (row, type = 1) {
