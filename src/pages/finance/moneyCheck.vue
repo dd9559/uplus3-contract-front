@@ -130,6 +130,11 @@
         <el-table-column align="center" label="付款时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="状态" prop="state" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="票据" prop="contractType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="操作" fixed="right">
+          <template slot-scope="scope">
+            <el-button type="text" @click="cellOpera">审核</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </div>
@@ -137,6 +142,18 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
+
+  let formObj = {
+    moneyType: '',
+    moneyState: '',
+    department: '',
+    contractType: '',
+    signStart: '',
+    signEnd: '',
+    collectionStart: '',
+    collectionEnd: '',
+    keyword: ''
+  }
 
   export default {
     mixins: [FILTER],
@@ -173,9 +190,10 @@
     },
     created() {
       // this.getData()
+      this.activeView = parseInt(this.$route.query.type)
     },
     beforeRouteUpdate (to, from, next) {
-      // debugger
+      this.searchForm = Object.assign(JSON.parse(JSON.stringify(formObj)))
       this.activeView = parseInt(to.query.type)
       next()
     },
@@ -189,6 +207,22 @@
         }).catch(error => {
           console.log(error)
         })
+      },
+      //操作
+      cellOpera:function () {
+        let param = {
+          path:'billDetails'
+        }
+        if(this.activeView===1){
+          param.query={
+            tab:'收款信息'
+          }
+        }else {
+          param.query={
+            tab:'付款信息'
+          }
+        }
+        this.$router.push(param)
       }
     },
     computed:{
