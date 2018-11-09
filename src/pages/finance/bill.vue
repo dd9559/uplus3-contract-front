@@ -223,11 +223,12 @@
        * @param row
        */
       toDetails:function (row) {
-        debugger
+        // debugger
         this.$router.push({
           path:'billDetails',
           query:{
-            id:row.id
+            id:row.id,
+            tab:'收款信息'
           }
         })
       }
