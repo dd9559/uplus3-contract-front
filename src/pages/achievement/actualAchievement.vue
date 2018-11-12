@@ -17,15 +17,114 @@
 
                  <!-- 筛选条件  -->
                 <div class="filter-layout">
-                     <div class="filter-left f_l">
-                        <h1>
-                          <b class="el-icon-share"></b> 
-                          筛选查询
-                         </h1>
-                     </div>
-                     <div class="filter-right f_r">
-                        <el-button type="primary" round>重置</el-button>
-                        <el-button type="primary" round>查询</el-button>
+                         
+                           <div style="overflow:hidden;">
+                                 <div class="filter-left f_l">
+                                     <h1>
+                                       <b class="el-icon-share"></b> 
+                                       筛选查询
+                                      </h1>
+                               </div>
+                               <div class="filter-right f_r">
+                                  <el-button type="primary" round>重置</el-button>
+                                  <el-button type="primary" round>查询</el-button>
+                              </div>
+                           </div>
+                   
+
+                     <div class="filter-item">
+                               <!-- 筛选条件 -->
+                               <el-form 
+                               :inline="true"
+                               ref="propForm"
+                               :model="propForm" 
+                               class="prop-form"
+                               size="small">
+                                   <el-form-item 
+                                   label="部门" 
+                                   prop="region"
+                                   class="mr">
+                                       <el-select v-model="propForm.region"  class="w200">
+                                           <el-option 
+                                           v-for="item in rules.region" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+                                   <el-form-item 
+                                   prop="regionName">
+                                       <el-select v-model="propForm.regionName" class="w100">
+                                           <el-option 
+                                           v-for="item in rules.regionName" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+                               
+                                   <el-form-item 
+                                   label="合同类型" 
+                                   prop="paper">
+                                       <el-select v-model="propForm.paper" class="w120">
+                                           <el-option 
+                                           v-for="item in rules.paper" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+
+                                    <el-form-item 
+                                   label="分成类型" 
+                                   prop="paper">
+                                       <el-select v-model="propForm.paper" class="w120">
+                                           <el-option 
+                                           v-for="item in rules.paper" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+
+                                    <el-form-item 
+                                   label="业绩状态" 
+                                   prop="paper">
+                                       <el-select v-model="propForm.paper" class="w120">
+                                           <el-option 
+                                           v-for="item in rules.paper" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+
+                                   <el-form-item 
+                                   prop="dateMo"
+                                   class="mr">
+                                       <el-date-picker
+                                           v-model="propForm.dateMo"
+                                           class="w330"
+                                           type="daterange"
+                                           range-separator="至"
+                                           start-placeholder="开始日期"
+                                           end-placeholder="结束日期">
+                                       </el-date-picker>
+                                   </el-form-item>  
+
+
+                                   <p>
+                                         <el-form-item label="关键字" prop="search">
+                                       <el-autocomplete
+                                       class="w312"
+                                       v-model="propForm.search"
+                                       placeholder="开票人员/合同编号/票据编"
+                                       :trigger-on-focus="false"
+                                       clearable
+                                       ></el-autocomplete>
+                                   </el-form-item>
+                                   </p>
+                               </el-form>
                      </div>
                 </div> 
                 <!-- 筛选条件 end -->
@@ -135,19 +234,19 @@
                                 </el-table-columfn>
                                 <el-table-column
                                  label="操作"
-                                 width="80">
+                                 width="100">
                                  <template slot-scope="scope">                           
                                          <!-- <p>{{scope.row.statu}}</p> -->
                                          <div v-if="scope.row.statu==0" class="check-btn">
-                                            <span>审核</span>
-                                            <span>编辑</span>
+                                            <span @click.stop="checkAch">审核</span>
+                                            <span @click.stop="editAch">编辑</span>
                                          </div>
                                            <div v-if="scope.row.statu==1" class="check-btn">
-                                            <span>审核</span>
-                                            <span>编辑</span>
+                                            <span @click.stop="checkAch">审核</span>
+                                            <span @click.stop="editAch">编辑</span>
                                          </div>
                                           <div v-if="scope.row.statu==2" class="check-btn">
-                                            <span>反审核</span>
+                                            <span @click.stop="againCheck">反审核</span>
                                          </div>
                                   </template>
                                </el-table-column>
@@ -159,7 +258,7 @@
                      <el-dialog
                          :visible.sync="dialogVisible"
                          width="30%"
-                         :before-close="handleClose">
+                         >
                           <b class="el-icon-close" @click="closeDialog"></b>
                            <div class="ach-header">
                              <h1>业绩详情</h1>  
@@ -266,19 +365,21 @@
                                         label="备注"
                                         width="190">
                                       </el-table-column>
-                                    
 
-
-                                 
                                     </el-table>
                                 </div>
                            </div> 
                            <div class="ach-footer"></div> 
                      </el-dialog>
+
+                     <!-- 审核，编辑，反审核，业绩分成弹框 -->
+                     <achDialog :shows="shows" v-on:close='shows=false'></achDialog>
          </div>
 </template>
 
 <script>
+import achDialog from "./achDialog";
+
 export default {
   name: "actualAchievement",
   data() {
@@ -293,7 +394,7 @@ export default {
           man: "当代一店-夏雨天",
           date: "2018/6/28",
           type1: "业绩分成",
-          man1: "当代一店-夏雨天当代一店-夏雨天",
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
           type2: "房源维护人主客方",
           radio: "20%-80%",
           amout: "400-500"
@@ -423,21 +524,104 @@ export default {
           beizhu: "审核备注信息"
         }
       ],
-      dialogVisible: false
+      rules: {
+        region: [
+          {
+            label: "区域一",
+            value: "shanghai"
+          },
+          {
+            label: "区域二",
+            value: "quyuer"
+          }
+        ]
+      },
+      dialogVisible: false,
+      // 筛选条件
+      propForm: {
+        region: "",
+        regionName: "",
+        search: "",
+        paper: "选项1",
+        time: "选项11",
+        dateMo: ""
+      },
+      // 筛选选项
+      rules: {
+        region: [
+          {
+            label: "区域一",
+            value: "shanghai"
+          },
+          {
+            label: "区域二",
+            value: "quyuer"
+          }
+        ],
+        regionName: [
+          {
+            label: "区域一",
+            value: "shangha"
+          },
+          {
+            label: "区域二",
+            value: "quyue"
+          }
+        ],
+        paper: [
+          {
+            label: "合同1",
+            value: "yi"
+          },
+          {
+            label: "合同2",
+            value: "er"
+          }
+        ],
+        time: [
+          {
+            label: "开票日期",
+            value: "选项11"
+          },
+          {
+            label: "区域二",
+            value: "选项21"
+          }
+        ]
+      },
+      shows: false
     };
+  },
+  components: {
+    achDialog
   },
   methods: {
     closeDialog() {
       this.dialogVisible = false;
+    },
+    checkAch() {
+      this.shows = true;
+    },
+    editAch() {
+      this.shows = true;
+      // alert(this.shows);
+    },
+    againCheck() {
+      this.shows = true;
+      // alert(this.shows);
     }
   }
 };
 </script>
 
 <style scoped lang="less">
+@import "~@/assets/less/lsx.less";
 .layout {
   .check-btn span {
     color: #478de3;
+  }
+  .check-btn span:first-of-type {
+    margin-right: 8px;
   }
   .blue {
     color: #478de3;
@@ -472,7 +656,7 @@ export default {
     height: 180px;
     // width: 1680px;
     margin-right: 20px;
-    background-color: pink;
+    background-color: #fff;
     overflow: hidden;
     .filter-left {
       h1 {
