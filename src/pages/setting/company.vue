@@ -99,7 +99,7 @@
     :visible.sync="dialogAddVisible"
     width="1000px"
     class="dialog-info">
-      <el-form :model="addForm">
+      <el-form :model="addForm" label-position='right'>
         <div class="company-info">
           <p>添加企业信息</p>
           <div class="info-content">
@@ -547,7 +547,7 @@ export default {
           res = res.data
           if(res.status === 200) {
             this.tableData = res.data.list
-            this.count = res.data.count
+            this.count = res.data.total
           }
         }).catch(error => {
           console.log(error);

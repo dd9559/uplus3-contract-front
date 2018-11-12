@@ -10,178 +10,176 @@
         <el-button type="primary">审核</el-button>
       </p>
     </div>
-    <template v-if="activeItem!=='审核信息'">
-      <ul class="bill-details-content">
-        <li>
-          <h4>收款信息</h4>
-          <el-table border :data="list" header-row-class-name="theader-bg">
-            <el-table-column align="center" label="合同编号">
-              <template slot-scope="scope">
-                <span>-</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="收款ID">
-              <template slot-scope="scope">
+    <ul class="bill-details-content">
+      <li>
+        <h4>收款信息</h4>
+        <el-table border :data="list" header-row-class-name="theader-bg">
+          <el-table-column align="center" label="合同编号">
+            <template slot-scope="scope">
+              <span>-</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="收款ID">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="物业地址 ">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="物业地址 ">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="付款方">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="付款方">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="收款时间">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="收款时间">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="收款人">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="收款人">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-          </el-table>
-        </li>
-        <li v-if="activeItem==='收款信息'">
-          <h4>合计金额</h4>
-          <p class="total-text">合计：<span>23680</span>元</p>
-          <el-table border :data="list" header-row-class-name="theader-bg">
-            <el-table-column align="center" label="款类">
-              <template slot-scope="scope">
-                <span>-</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="票据">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+        </el-table>
+      </li>
+      <li v-if="activeItem==='收款信息'">
+        <h4>合计金额</h4>
+        <p class="total-text">合计：<span>23680</span>元</p>
+        <el-table border :data="list" header-row-class-name="theader-bg">
+          <el-table-column align="center" label="款类">
+            <template slot-scope="scope">
+              <span>-</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="票据">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="支付方式">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="支付方式">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="金额（元）">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="金额（元）">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="收款账户">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="收款账户">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="状态">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="状态">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="入账时间">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="入账时间">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="操作">
-              <template slot-scope="scope">
-                <el-button type="text">开票</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </li>
-        <li>
-          <h4>刷卡信息</h4>
-          <el-table border :data="list" header-row-class-name="theader-bg">
-            <el-table-column align="center" label="刷卡/转账银行">
-              <template slot-scope="scope">
-                <span>-</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="户名">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作">
+            <template slot-scope="scope">
+              <el-button type="text">开票</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </li>
+      <li>
+        <h4>刷卡信息</h4>
+        <el-table border :data="list" header-row-class-name="theader-bg">
+          <el-table-column align="center" label="刷卡/转账银行">
+            <template slot-scope="scope">
+              <span>-</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="户名">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="账户">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="账户">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="金额（元）">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="金额（元）">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="手续费（元）">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="手续费（元）">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-          </el-table>
-        </li>
-        <li>
-          <h4>其他信息</h4>
-          <div class="input-group">
-            <label>备注信息:</label>
-            <p>这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行</p>
-          </div>
-          <div class="input-group">
-            <label>付款凭证:</label>
-            <ul class="image-list">
-              <li></li>
-            </ul>
-          </div>
-        </li>
-      </ul>
-    </template>
-    <template v-else>
-      <ul class="bill-details-content">
-        <li>
-          <h4>审核信息</h4>
-          <el-table border :data="list" header-row-class-name="theader-bg">
-            <el-table-column align="center" label="时间">
-              <template slot-scope="scope">
-                <span>-</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="姓名">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+        </el-table>
+      </li>
+      <li>
+        <h4>其他信息</h4>
+        <div class="input-group">
+          <label>备注信息:</label>
+          <p>这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行</p>
+        </div>
+        <div class="input-group">
+          <label>付款凭证:</label>
+          <ul class="image-list">
+            <li></li>
+          </ul>
+        </div>
+      </li>
+      <li ref="checkBox" v-show="activeItem!=='收款信息'">
+        <h4>审核信息</h4>
+        <el-table border :data="list" header-row-class-name="theader-bg">
+          <el-table-column align="center" label="时间">
+            <template slot-scope="scope">
+              <span>-</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="姓名">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="职务">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="职务">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="操作">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="备注">
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="备注">
+            <template slot-scope="scope">
 
-              </template>
-            </el-table-column>
-          </el-table>
-        </li>
-      </ul>
-    </template>
+            </template>
+          </el-table-column>
+        </el-table>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
+  let timer = null
+  let target = 0
+  let scrollHeight = 0
+
   export default {
     name: "bill-details",
     data() {
       return {
-        tabs: ['审核信息'],
-        activeItem: '付款信息',
+        tabs: [],
+        activeItem: '',
         list: [
           {}
         ]
@@ -191,10 +189,34 @@
       // debugger
       this.activeItem = this.$route.query.tab
       this.tabs.unshift(this.activeItem)
+      if(this.activeItem === '付款信息'){
+        this.tabs.push('审核信息')
+      }
     },
     methods: {
       choseTab: function (item) {
-        this.activeItem = item
+        // this.activeItem = item
+        if(item!=='审核信息'){
+          return
+        }
+        target = this.$refs.checkBox.offsetTop
+        scrollHeight = document.querySelector('.view').clientHeight
+        console.log(`target:${target}`)
+        console.log(`容器：${document.querySelector('.view').clientHeight}`)
+        this.scrollTop()
+      },
+      scrollTop:function () {
+        // debugger
+        let scrollTop = document.querySelector('.view').scrollTop
+        document.querySelector('.view').scrollTop = scrollTop+30
+        console.log(scrollTop)
+        if(scrollTop+scrollHeight>=target){
+          clearTimeout(timer)
+        }else {
+          timer = setTimeout(()=>{
+            this.scrollTop()
+          },50)
+        }
       }
     }
   }

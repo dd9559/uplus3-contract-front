@@ -71,7 +71,7 @@
       </div>
     </el-dialog>
     <!-- 添加交易步骤 -->
-    <el-dialog :title="modalTitle" :visible.sync="rightmodal" width="740px">
+    <el-dialog :title="modalTitle" :visible.sync="rightmodal" width="740px" class="transtep">
       <div class="modal-context">
         <template>
           <div class="input-group">
@@ -100,7 +100,7 @@
             <el-table border :data="tableForm" style="width: 100%">
               <el-table-column align="center" label="名称">
                 <template slot-scope="scope">
-                  <el-input v-model="tableForm[scope.$index].title"></el-input>
+                  <el-input width='100%' v-model="tableForm[scope.$index].title"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="信息类型">
@@ -155,7 +155,7 @@ let stepTypeId = 1;
         rightmodal:false,
         listotherdata:[],
         transStepsAttach:[],
-        modalTitle: "",
+        modalTitle: "交易步骤",
         tableForm: [
           {
             id: 1,
@@ -394,6 +394,16 @@ let stepTypeId = 1;
   .gap {
     padding: 0 20px 0 12px;
     box-sizing: border-box;
+  }
+  .transtep{
+    /deep/ .el-input__inner {
+      width: 300px;
+      &:last-of-type{
+        width: auto;
+      }
+    }
+    
+
   }
 }
 </style>
