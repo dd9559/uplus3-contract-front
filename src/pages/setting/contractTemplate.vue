@@ -9,7 +9,7 @@
       </el-form-item>
     </el-form>
     <div class="data-list">
-      <el-table :data="list" style="width: 100%" @cell-dblclick="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
+      <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="typeName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
@@ -26,9 +26,9 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="modal" v-show="modal">
+    <!-- 上传,预览,详情弹出框 -->
+    <el-dialog class="modal" :title='titleStr' :visible.sync="modal" >
       <template v-if="template===1">
-        <p>上传合同模板<span class="icon-font-close" @click="modal=false"></span></p>
         <div class="">
           <div class="modal-context">
             <label>合同名称：</label>
@@ -64,10 +64,9 @@
         </div>
       </template>
       <template v-if="template===2">
-        <p>预览合同模板<span class="icon-font-close" @click="modal=false"></span></p>
+        sssssssssssss
       </template>
       <template v-if="template===3">
-        <p>合同类型详情<span class="icon-font-close" @click="modal=false"></span></p>
         <el-table :data="list" class="contractType">
           <el-table-column align="center" min-width="100px" label="合同版本号" prop="version"
                            :formatter="nullFormatter"></el-table-column>
@@ -85,7 +84,7 @@
           </el-table-column>
         </el-table>
       </template>
-    </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -102,13 +101,21 @@
         },
         list: [],
         rowData: [],
-        modal: false,
-        template: 1,//弹窗内容
+        modal: true,
+        template: 2,//弹窗内容
         uploadType: false,//是否显示两个上传
-        fileList3: []
+        fileList3: [],
+        titleStr:'',
       }
     },
     created() {
+      if(this.template===1){
+        this.titleStr='上传合同模板'
+      }else if(this.template===2){
+        this.titleStr='预览合同模板'
+      }else if(this.template===3){
+        this.titleStr='合同模板详情'
+      } 
       this.getList()
     },
     methods: {
@@ -163,7 +170,6 @@
        * @param row
        */
       getRowDetails: function (row, column, cell, event) {
-        if(column.property=='typeName'){
           this.$ajax.get('/api/setting/contractTemplate/listByType', {id: row.id,cityName:row.cityName}).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -174,7 +180,6 @@
         }).catch(error => {
           console.log(error)
         })
-        }
       },
       upload:function(type){
         this.$refs[type].click()
@@ -305,18 +310,6 @@
   }
 
   .modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: @bg-white;
-    min-width: 400px;
-    min-height: 200px;
-    border-radius:4px;
-    width: 700px;
-    z-index: 9;
-    padding: 80px 20px 20px;
-    display: flex;
     > p {
       position: absolute;
       top: 0;

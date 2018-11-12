@@ -1,7 +1,7 @@
 <template>
     <div class="data-list">
         <div class="table_head">
-            <el-button type="primary" plain>添加</el-button>
+            <el-button type="primary" @click="addTransPro" plain>添加</el-button>
         </div>
         <el-table :data="listData" style="width: 100%">
           <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
@@ -9,9 +9,9 @@
           </el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-              <el-button @click="rowOperation(scope.row,1)" type="text" size="small">交易流程管理</el-button>
-              <el-button @click="rowOperation(scope.row,1)" type="text" size="small">编辑</el-button>
-              <el-button @click="rowOperation(scope.row,2)" type="text" size="small">删除</el-button>
+              <el-button @click="tansProMan(scope.row)" type="text" size="small">交易流程管理</el-button>
+              <el-button @click="editTransPro(scope.row)" type="text" size="small">编辑</el-button>
+              <el-button @click="delTransPro(scope.row)" type="text" size="small">删除</el-button>
             </template>
           </el-table-column> 
         </el-table>
@@ -24,12 +24,66 @@
             layout="total, sizes, prev, next, jumper"
             :total="total">
         </el-pagination>
-        <el-dialog title="添加交易流程" :visible.sync="dialogFormVisible">
-          <el-form :model="form" label-width="90px">
+        <el-dialog title="添加交易流程" :visible.sync="addDialog">
+          <el-form :model="addForm" label-width="90px">
             <el-form-item label="活动名称：">
-                <el-input v-model="form.name"></el-input>
+                <el-input v-model="addForm.name"></el-input>
             </el-form-item>
           </el-form>
+        </el-dialog>
+        <!-- 编辑交易流程 -->
+        <el-dialog title="编辑交易流程" :visible.sync="editDialog">
+          <el-form :model="addForm" label-width="90px">
+            <el-form-item label="活动名称：">
+                <el-input v-model="addForm.name"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
+        <!-- 交易流程管理 -->
+        <el-dialog title="交易流程管理" width="51%"  class="jylcDialog" :visible.sync="proManDialog">
+            <el-table
+              ref="singleTable"
+              :data="tableData"
+              highlight-current-row
+              @current-change="handleCurrentChange"
+              style="width: 100%">
+              <el-table-column type="index" width="50" label="序号"></el-table-column>
+              <el-table-column label="步骤类型"  width="120"></el-table-column>
+              <el-table-column label="步骤名称"  width="120"></el-table-column>
+              <el-table-column label="计划天数"  width="120"></el-table-column>
+              <el-table-column label="超时提醒"  width="120"></el-table-column>
+              <el-table-column label="是否短信提醒"  width="120"></el-table-column>
+              <el-table-column align="center" label="操作">
+                <template slot-scope="scope">
+                  <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上</el-button>
+                  <el-button @click="rowOperation(scope.row,2)" type="text" size="small">下</el-button>
+                  <el-button @click="rowOperation(scope.row,3)" type="text" size="small">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="buttontip">
+               <el-button @click="addSteps" type="text" size="small">添加</el-button>
+               <el-button @click="sureUp" type="text" size="small">确定</el-button>
+            </div>
+            <el-dialog title='添加流程步骤' append-to-body :visible.sync="innerDialog">
+              <el-table
+                :data="addProcessOption"
+                border
+                style="width: 100%">
+                <el-table-column label="步骤类型" width="180">
+                 <template slot-scope="scope">
+                   <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">{{scope.row.stepsTypeName}}</el-checkbox>
+                 </template>
+                </el-table-column>
+                <el-table-column label="交易步骤">
+                  <template slot-scope="scope">
+                    <p v-for="(item,index) in scope.row.transStepsList" :key="index">
+                      <el-checkbox>{{scope.row.stepsTypeName}}</el-checkbox></p>
+                 </template>
+                </el-table-column>
+              </el-table>
+              <div style="text-align:center;margin-top:10px"><el-button type="primary" size="small"  plain>确定</el-button></div>
+            </el-dialog>
         </el-dialog>
     </div>
 </template>
@@ -41,33 +95,80 @@
     data() {
       return {
         listData: [],
-        dialogFormVisible: false,
-        form: {
+        addDialog: false,
+        editDialog:false,
+        proManDialog:true,
+        isIndeterminate:true,
+        checkAll:false,
+        checkedCities:[],
+        addForm: {
           name: ""
         },
-        tHeader: [
+        //流程步骤选项
+        addProcessOption: [
           {
             id: 1,
-            prop: "id",
-            name: "序号"
+            stepsTypeName: "担保流程",
+            transStepsList: [
+              {
+                id: 1,
+                type: "资料准备"
+              },
+              {
+                id: 2,
+                type: "转房款"
+              },
+            ]
           },
           {
             id: 2,
-            prop: "name",
-            name: "名称"
+            stepsTypeName: "金融流程",
+            transStepsList: []
           },
           {
             id: 3,
-            prop: "stepsNum",
-            name: "步骤数量"
+            stepsTypeName: "权证流程",
+            transStepsList: []
+          },
+          {
+            id: 4,
+            stepsTypeName: "物业交割",
+            transStepsList: []
           }
+        ],
+        tHeader: [{ id: 1,prop: "id",name: "序号"},
+                  {id: 2,prop: "name",name: "名称"},
+                  {id: 3,prop: "stepsNum",name: "步骤数量"}
         ],
         pageSize: 5,
         pageNum: 1,
-        total: 0
+        total: 0,
+        innerDialog:false,
       };
     },
     methods: {
+      handleCheckAllChange(val){
+        alert(val)
+        this.addProcessOption.transStepsList = val ? addProcessOption.transStepsList : [];
+        this.isIndeterminate = false;
+      },
+      sureUp(){
+      },
+      addSteps(){
+        this.innerDialog=true
+      },
+      addTransPro(){
+        console.log('添加交易流程');
+      },
+      tansProMan(){
+        console.log('交易流程管理');
+      },
+      editTransPro(){
+         console.log('编辑交易流程');
+      },
+      delTransPro(){
+        console.log('删除交易流程');
+      },
       getData: function() {
         let param = {
           cityId: "1"
@@ -114,6 +215,11 @@
         background:rgba(71,141,227,1);
         border-radius:18px;
       }
+    }
+    .jylcDialog{
+       .buttontip{
+        text-align: center;
+     }
     }
     /deep/
     .el-table {
