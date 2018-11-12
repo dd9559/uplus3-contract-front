@@ -9,7 +9,7 @@
       </el-form-item>
     </el-form>
     <div class="data-list">
-      <el-table :data="list" style="width: 100%" @cell-click="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
+      <el-table :data="list" style="width: 100%" @cell-dblclick="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="typeName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
@@ -39,36 +39,25 @@
             <div class="file-upload-opera">
               <template v-if="uploadType">
                 <p @click="upload('fileOne')">
-                  <el-upload
-                  class="upload-demo"
-                  action=""
-                  :on-change="uploadFile"
-                  :file-list="fileList3">
                   <el-button>买卖</el-button>
-                  </el-upload>
+                  <input type="file" ref="fileOne" @change="uploadFile" style="display: none;">
                 </p>
                 <p @click="upload('fileTwo')">
-                  <el-upload
-                  class="upload-demo"
-                  action=""
-                  :on-change="uploadFile"
-                  :file-list="fileList3">
-                  <el-button>居间</el-button>
-                  </el-upload>                 
+                   <el-button>居间</el-button>
+                   <input type="file" ref="fileTwo" style="display: none;">
+                   <span class="upMsg">上传成功</span> 
                 </p>
-                <span class="wordtip">温馨提示：只支持Word格式</span> 
+                <span class="wordtip">温馨提示：只支持Word格式</span>
+                <el-button class="sureUp" @click='sureUp'>确定</el-button>  
               </template>
               <template v-else>
                 <p @click="upload('fileOne')">
-                 <el-upload
-                  class="upload-demo"
-                  action=""
-                  :on-change="uploadFile"
-                  :file-list="fileList3">
-                  <el-button>模板</el-button>
-                  </el-upload>
+                  <el-button>模板</el-button><br>
+                <input type="file" ref="fileOne" @change="uploadFile" style="display: none;">
+                <span class="upMsg">上传成功</span>                  
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
+                <el-button class="sureUp" @click='sureUp'>确定</el-button>                  
               </template>
             </div>
           </div>
@@ -90,7 +79,7 @@
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="操作">
             <template slot-scope="scope">
-              <el-button @click="start(scope.row)" type="text" size="small">启用</el-button>
+              <el-button type="text" size="small" @click="enable">启用</el-button>
               <el-button @click="rowOperation(scope.row,2)" type="text" size="small">预览</el-button>
             </template>
           </el-table-column>
@@ -124,6 +113,18 @@
     },
     methods: {
       /**
+       * 弹框
+       */
+      popMsg(msg,callback){
+        this.$confirm(msg,'提示',{
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+           callback()
+        })
+      },
+      /**
        * 获取列表数据
        */
       getList: function () {
@@ -138,6 +139,24 @@
         }).catch(error => {
           console.log(error)
         })
+      },
+      /**
+       * 上传
+       */
+      sureUp(){      
+       this.popMsg('确定要上传此类型模板吗？',()=>{
+         console.log('上传');
+         this.modal=false
+       })
+      },
+      /**
+       * 启用
+       */
+      enable(){
+        this.popMsg('确定要启用此类型模板吗？',()=>{
+         console.log('启用');
+         this.modal=false
+       })
       },
       /**
        * 获取详情
@@ -174,52 +193,18 @@
         }
         },
       rowOperation: function (row, type = 1) {
-        this.modal = true
-        this.template = type
-        console.log(row)
+        //上传
         if(type===1){
-          this.$confirm('是否确定上传此类型模版？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }).then(()=>{
+            this.modal = true
+            this.template = type
             this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
-            this.$message({
-            type: 'success',
-            message: '上传成功!'
-          });
-        })
         }
-        else if(type === 3) {
-          this.$confirm('是否确定启用此类型模版？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }).then(()=>{
-            this.$message({
-            type: 'success',
-            message: '启用成功!'
-          });
-        })
-        }else {
+        //预览
+        else if(type==2){
           this.template = type
-          if(type===2){
-          this.$confirm('是否确定预览此类型模版？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }).then(()=>{
            this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
             console.log(res)
-            }).catch(error=>{
-            console.log(error)
             })
-            this.$message({
-            type: 'success',
-            message: '预览成功!'
-          });
-        })
-        }
         }
       }
     },
@@ -381,6 +366,18 @@
           font-weight:400;
           color:rgba(108,121,134,1);
           line-height:42px;
+        }
+         .sureUp{
+            width:86px;
+            height:32px;
+            line-height: 7px;
+            background:rgba(71,141,227,1);
+            border-radius:16px;
+            color: white;
+            text-align: center;
+            position: absolute;
+            right: 21px;
+            bottom: 10px;
         }
       }
     }
