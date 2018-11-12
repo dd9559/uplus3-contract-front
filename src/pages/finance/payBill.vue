@@ -33,7 +33,7 @@
     </div>
     <div class="input-group">
       <p><label>收款账户</label></p>
-      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="收款银行">
           <template slot-scope="scope">
             <span>-</span>
