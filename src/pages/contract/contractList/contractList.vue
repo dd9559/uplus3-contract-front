@@ -108,16 +108,16 @@
               <el-dropdown-item>定金</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-dropdown  placement="bottom">
+          <el-dropdown  placement="bottom" @command="toAddcontract">
             <el-button round>
               创建正式合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>租赁</el-dropdown-item>
-              <el-dropdown-item>买卖</el-dropdown-item>
-              <el-dropdown-item>代办</el-dropdown-item>
-              <el-dropdown-item>意向</el-dropdown-item>
-              <el-dropdown-item>定金</el-dropdown-item>
+              <el-dropdown-item command="1">租赁</el-dropdown-item>
+              <el-dropdown-item command="2">买卖</el-dropdown-item>
+              <el-dropdown-item command="3">代办</el-dropdown-item>
+              <el-dropdown-item command="4">意向</el-dropdown-item>
+              <el-dropdown-item command="5">定金</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </span>
@@ -258,9 +258,43 @@ export default {
         remarks:'',
         contChangeState:1,
         laterStageState:5,
-        resultState:1,
-
-
+        resultState:1
+      },
+      {
+        code:'YQYD110063',
+        houseinfoCode:'YQYD110063张三',
+        guestinfoCode:'YQYD110063张三',
+        contType:1,
+        propertyAddr:'沿河花园',
+        dealPrice:'12345121',
+        dealAgentStoreName:'当代一店下雨天',
+        signDate:'2018/11/07',
+        receivedCommission:'3500',
+        receivableCommission:'3500',
+        contState:2,
+        toExamineState:4,
+        remarks:'',
+        contChangeState:1,
+        laterStageState:5,
+        resultState:1
+      },
+      {
+        code:'YQYD110063',
+        houseinfoCode:'YQYD110063张三',
+        guestinfoCode:'YQYD110063张三',
+        contType:1,
+        propertyAddr:'沿河花园',
+        dealPrice:'12345121',
+        dealAgentStoreName:'当代一店下雨天',
+        signDate:'2018/11/07',
+        receivedCommission:'3500',
+        receivableCommission:'3500',
+        contState:2,
+        toExamineState:4,
+        remarks:'',
+        contChangeState:1,
+        laterStageState:5,
+        resultState:1
       }],
       total:0
     }
@@ -292,14 +326,31 @@ export default {
     //付款
     payment(){},
     //合同详情页
-    toDetail(){
-      alert('111')
+    toDetail(value){
+      console.log(value)
+      this.$router.push({
+        path:'/contractDetails',
+        query:{
+          id: value.code
+        }
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+    },
+    //新增合同
+    toAddcontract(command){
+      if(command==='1'||command==='2'){
+        this.$router.push({
+          path:'/addContract',
+          query:{
+            type:command
+          }
+        })
+      }
     }
   }
 };
