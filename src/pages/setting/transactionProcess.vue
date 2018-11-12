@@ -1,11 +1,7 @@
 <template>
     <div class="data-list">
         <div class="table_head">
-<<<<<<< HEAD
-            <el-button type="primary" @click="addTransPro" plain>添加</el-button>
-=======
             <el-button type="primary" plain @click="addProcess">添加</el-button>
->>>>>>> b5ae5ba24637a38e41aa8777a6a10a15ac212c6d
         </div>
         <el-table :data="listData" style="width: 100%">
           <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
@@ -13,15 +9,9 @@
           </el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-<<<<<<< HEAD
-              <el-button @click="tansProMan(scope.row)" type="text" size="small">交易流程管理</el-button>
-              <el-button @click="editTransPro(scope.row)" type="text" size="small">编辑</el-button>
-              <el-button @click="delTransPro(scope.row)" type="text" size="small">删除</el-button>
-=======
               <el-button @click="rowOperation(scope.row,1)" type="text" size="small">交易流程管理</el-button>
               <el-button @click="rowOperation(scope.row,'edit')" type="text" size="small">编辑</el-button>
               <el-button @click="rowOperation(scope.row,2)" type="text" size="small">删除</el-button>
->>>>>>> b5ae5ba24637a38e41aa8777a6a10a15ac212c6d
             </template>
           </el-table-column> 
         </el-table>
@@ -34,16 +24,10 @@
             layout="total, sizes, prev, next, jumper"
             :total="total">
         </el-pagination>
-<<<<<<< HEAD
-        <el-dialog title="添加交易流程" :visible.sync="addDialog">
-          <el-form :model="addForm" label-width="90px">
-            <el-form-item label="活动名称：">
-=======
         <!-- 添加交易流程 弹出框 -->
         <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px">
           <el-form v-model="addForm" label-width="90px" v-if="processTitle == '添加交易流程'">
             <el-form-item label="名称">
->>>>>>> b5ae5ba24637a38e41aa8777a6a10a15ac212c6d
                 <el-input v-model="addForm.name"></el-input>
             </el-form-item>
           </el-form>
@@ -156,20 +140,6 @@
     mixins: [FILTER],
     data() {
       return {
-<<<<<<< HEAD
-        listData: [],
-        addDialog: false,
-        editDialog:false,
-        proManDialog:true,
-        isIndeterminate:true,
-        checkAll:false,
-        checkedCities:[],
-        addForm: {
-          name: ""
-        },
-        //流程步骤选项
-        addProcessOption: [
-=======
         listData: [
           {
             typeName: "一次性（业）+一次性（客）住宅",
@@ -178,7 +148,6 @@
         ], //交易流程列表
         //交易流程列表表头
         tHeader: [
->>>>>>> b5ae5ba24637a38e41aa8777a6a10a15ac212c6d
           {
             id: 1,
             stepsTypeName: "担保流程",
@@ -209,12 +178,6 @@
             transStepsList: []
           }
         ],
-<<<<<<< HEAD
-        tHeader: [{ id: 1,prop: "id",name: "序号"},
-                  {id: 2,prop: "name",name: "名称"},
-                  {id: 3,prop: "stepsNum",name: "步骤数量"}
-        ],
-=======
         addForm: {
           name: ""
         },
@@ -271,7 +234,6 @@
           }
         ],
         stepsTypeName: "",
->>>>>>> b5ae5ba24637a38e41aa8777a6a10a15ac212c6d
         pageSize: 5,
         pageNum: 1,
         total: 0,
@@ -373,20 +335,6 @@
         border-radius:18px;
       }
     }
-<<<<<<< HEAD
-    .jylcDialog{
-       .buttontip{
-        text-align: center;
-     }
-    }
-    /deep/
-    .el-table {
-      height: 500px;
-      margin-bottom: 15px;
-    }
-    /deep/
-=======
->>>>>>> b5ae5ba24637a38e41aa8777a6a10a15ac212c6d
     .el-pagination {
       text-align: center;
       margin-left: 100px;
