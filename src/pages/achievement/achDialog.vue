@@ -5,7 +5,7 @@
              :visible.sync="shows"
              :before-close="handleClose"
              >
-              <b class="el-icon-close" @click="closeDialog"></b>
+                           <b class="el-icon-close" @click="closeDialog"></b>
                            <div class="ach-header">
                              <h1 v-if="dialogType==0">业绩审核</h1> 
                              <h1 v-if="dialogType==1">业绩编辑</h1> 
@@ -40,6 +40,14 @@
                                                      :value="item.value">
                                                    </el-option>
                                              </el-select> 
+
+                                               <!-- <el-autocomplete
+                                                class="inline-input"
+                                                v-model="state1"
+                                                :fetch-suggestions="querySearch"
+                                                placeholder="请输入内容"
+                                                @select="handleSelect"
+                                              ></el-autocomplete> -->
                                         </template>
                                       </el-table-column>
 
@@ -75,6 +83,22 @@
                                       </el-table-column>
 
                                       
+                                      <el-table-column
+                                        label="门店"
+                                        width="110">
+                                        <template slot-scope="scope">
+                                            <el-select v-model="value" placeholder="请选择">
+                                                   <el-option
+                                                     v-for="item in options"
+                                                     :key="item.value"
+                                                     :label="item.label"
+                                                     :value="item.value">
+                                                   </el-option>
+                                             </el-select> 
+                                        </template>
+                                      </el-table-column>
+
+
                                        <el-table-column
                                         label="店长"
                                         width="80">
@@ -91,20 +115,7 @@
                                         </template>
                                       </el-table-column>
 
-                                       <el-table-column
-                                        label="门店"
-                                        width="110">
-                                        <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择">
-                                                   <el-option
-                                                     v-for="item in options"
-                                                     :key="item.value"
-                                                     :label="item.label"
-                                                     :value="item.value">
-                                                   </el-option>
-                                             </el-select> 
-                                        </template>
-                                      </el-table-column>
+                                    
 
                                      <el-table-column
                                         label="区经"
@@ -633,7 +644,7 @@ export default {
 //业绩详情弹框改变样式
 .dialog1 {
   /deep/ .el-dialog {
-    min-width: 1350px !important;
+    max-width: 1000 !important;
     height: 666px;
     overflow: auto;
     /deep/ .el-input__inner {
@@ -756,7 +767,7 @@ export default {
         width: 60%;
       }
       textarea {
-        width: 650px !important;
+        width: 500px !important;
       }
       .footer-btn-layout {
         height: 38px;

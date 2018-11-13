@@ -1,20 +1,5 @@
 <template>   
       <div class="layout">
-                 <!-- 头部面包屑 -->
-                <!-- <div class="head clearfix">
-                    <div class="head-left">
-                       <el-breadcrumb separator-class="el-icon-arrow-right">
-                          <el-breadcrumb-item :to="{ path: '/' }">业绩</el-breadcrumb-item>
-                          <el-breadcrumb-item>应收业绩</el-breadcrumb-item>
-                       </el-breadcrumb>
-                    </div>
-                    <div class="head-right">
-                       <button>刷新</button>
-                       <button>返回</button>
-                    </div> 
-                </div> -->
-                <!-- 头部面包屑 end-->
-
                  <!-- 筛选条件  -->
                 <div class="filter-layout">
                          
@@ -136,7 +121,6 @@
                            <div class="data-head-left f_l">
                               <b class="el-icon-date"></b> 
                               <span>
-
                                   数据列表
                               </span> 
                            </div>
@@ -220,7 +204,7 @@
                                </el-table-column>
                                  <el-table-column
                                  label="分成比例"
-                                 width="100">
+                                 width="80">
                                   <template slot-scope="scope">
                                          <p>10%</p>
                                          <p>20%</p>
@@ -253,6 +237,16 @@
                                </el-table-column>
                           </el-table>
                       </div>
+
+                      
+                     <!-- 分页 -->
+                         <el-pagination
+                           @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="1"
+                           layout="total, prev, pager, next, jumper"
+                           :total="total">
+                        </el-pagination>
                 </div>
 
                    <!-- 表单列表弹出框（业绩详情） -->
@@ -432,7 +426,7 @@
                                         label="备注"
                                         width="190">
                                       </el-table-column>
-
+                                      
                                     </el-table>
                                 </div>
                            </div> 
@@ -442,14 +436,6 @@
                      <!-- 审核，编辑，反审核，业绩分成弹框 -->
                      <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
 
-                     <!-- 分页 -->
-                         <el-pagination
-                           @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="1"
-                           layout="total, prev, pager, next, jumper"
-                           :total="total">
-                        </el-pagination>
          </div>
 </template>
 
@@ -670,6 +656,19 @@ export default {
       total: 0
     };
   },
+  created() {
+    let param = {
+      pageNum: 1,
+      pageSize: 2
+    };
+    this.$ajax
+      .get("/api/achievement/selectAchievementList", param)
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res);
+        }
+      });
+  },
   components: {
     achDialog
   },
@@ -742,24 +741,23 @@ export default {
   }
   //  筛选条件
   .filter-layout {
-    height: 180px;
-    // width: 1680px;
-    margin-right: 20px;
+    min-height: 180px;
     background-color: #fff;
     overflow: hidden;
+    padding: 20px;
     .filter-left {
       h1 {
         font-size: 18px;
         color: #233241;
         margin-top: 28px;
         position: relative;
-        padding-left: 48px;
+        padding-left: 28px;
         b {
           position: absolute;
           width: 16px;
           height: 16px;
           // background-color: red;
-          left: 20px;
+          left: 0px;
           top: 50%;
           margin-top: -8px;
         }
@@ -767,7 +765,6 @@ export default {
     }
     .filter-right {
       margin-top: 19px;
-      margin-right: 30px;
       .el-button--primary {
         width: 100px;
         height: 36px;
@@ -792,8 +789,10 @@ export default {
   .data-layout {
     // height: 1000px;
     margin-right: 20px;
-    background-color: skyblue;
+    // background-color: skyblue;
     margin-top: 15px;
+    padding: 20px;
+    background-color: #fff;
     .data-head {
       height: 68px;
       background-color: #fff;
@@ -804,7 +803,7 @@ export default {
           position: absolute;
           width: 16px;
           height: 16px;
-          left: 20px;
+          left: 0px;
           top: 63%;
           // margin-top: -8px;
         }
@@ -813,7 +812,7 @@ export default {
           display: inline-block;
           margin-top: 30px;
           font-size: 18px;
-          margin-left: 48px;
+          margin-left: 28px;
         }
       }
       .data-head-right {
@@ -932,8 +931,8 @@ export default {
   }
 }
 /deep/ .el-pagination {
-text-align: center;
-padding-bottom: 50px;
-padding-top: 50px;
+  text-align: center;
+  padding-bottom: 50px;
+  padding-top: 50px;
 }
 </style>

@@ -83,7 +83,7 @@
                     
                           <div class="head-left" v-show="brandShow">
                              <el-breadcrumb separator-class="el-icon-arrow-right">
-                                 <el-breadcrumb-item>全公司</el-breadcrumb-item>
+                                 <el-breadcrumb-item @click.native="allCompany">全公司</el-breadcrumb-item>
                                  <el-breadcrumb-item v-for="(item,index) in brandArr" :key="index" @click.native="askData(item.id,index)">{{item.name}}</el-breadcrumb-item>
                                 <!-- <el-breadcrumb-item>全公司</el-breadcrumb-item>
                                 <el-breadcrumb-item>王德凯（区总）</el-breadcrumb-item>
@@ -377,6 +377,12 @@ export default {
      console.log(id);
      console.log(index);
      this.brandArr.splice(index,this.brandArr.length-index-1)
+    },
+    allCompany(){
+      this.brandShow = false;
+       this.brandArr=[];
+      // 请求全公司的列表
+      
     }
   }
 };
@@ -404,22 +410,22 @@ export default {
   .filter-layout {
     min-height: 128px;
     // width: 1680px;
-    margin-right: 20px;
     background-color: #fff;
     overflow: hidden;
+    padding: 20px;
     .filter-left {
       h1 {
         font-size: 18px;
         color: #233241;
         margin-top: 28px;
         position: relative;
-        padding-left: 48px;
+        padding-left: 28px;
         b {
           position: absolute;
           width: 16px;
           height: 16px;
           // background-color: red;
-          left: 20px;
+          left: 0px;
           top: 50%;
           margin-top: -8px;
         }
@@ -427,7 +433,7 @@ export default {
     }
     .filter-right {
       margin-top: 19px;
-      margin-right: 30px;
+      // margin-right: 30px;
       .el-button--primary {
         width: 100px;
         height: 36px;
@@ -453,6 +459,8 @@ export default {
     // height: 1000px;
     margin-right: 20px;
     margin-top: 15px;
+    padding: 20px;
+    background-color: #fff;
     /deep/ .el-table__header th {
       background-color: #eef2fb;
     }
@@ -470,7 +478,7 @@ export default {
           position: absolute;
           width: 16px;
           height: 16px;
-          left: 20px;
+          left: 0px;
           top: 63%;
           // margin-top: -8px;
         }
@@ -479,7 +487,7 @@ export default {
           display: inline-block;
           margin-top: 30px;
           font-size: 18px;
-          margin-left: 48px;
+          margin-left: 28px;
         }
       }
       .data-head-right {
