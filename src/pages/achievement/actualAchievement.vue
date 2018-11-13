@@ -1,18 +1,18 @@
 <template>   
       <div class="layout">
                  <!-- 头部面包屑 -->
-                <div class="head clearfix">
+                <!-- <div class="head clearfix">
                     <div class="head-left">
                        <el-breadcrumb separator-class="el-icon-arrow-right">
                           <el-breadcrumb-item :to="{ path: '/' }">业绩</el-breadcrumb-item>
                           <el-breadcrumb-item>应收业绩</el-breadcrumb-item>
                        </el-breadcrumb>
                     </div>
-                    <!-- <div class="head-right">
+                    <div class="head-right">
                        <button>刷新</button>
                        <button>返回</button>
-                    </div> -->
-                </div>
+                    </div> 
+                </div> -->
                 <!-- 头部面包屑 end-->
 
                  <!-- 筛选条件  -->
@@ -21,7 +21,7 @@
                            <div style="overflow:hidden;">
                                  <div class="filter-left f_l">
                                      <h1>
-                                       <b class="el-icon-share"></b> 
+                                       <b class="el-icon-search"></b> 
                                        筛选查询
                                       </h1>
                                </div>
@@ -100,6 +100,7 @@
                                    </el-form-item>
 
                                    <el-form-item 
+                                   label="签约日期"
                                    prop="dateMo"
                                    class="mr">
                                        <el-date-picker
@@ -133,7 +134,7 @@
                       <!-- 头部 -->
                       <div class="data-head">
                            <div class="data-head-left f_l">
-                              <b class="el-icon-loading"></b> 
+                              <b class="el-icon-date"></b> 
                               <span>
 
                                   数据列表
@@ -161,7 +162,7 @@
                                  width="240"
                                  >
                                   <template slot-scope="scope">
-                                          <p>合同编号：<span class="blue">YQYD001163</span> 姓名</p>
+                                          <p>合同编号：<span class="blue">YQYD001163</span></p>
                                           <p>房源编号：<span class="blue">YQYD001163</span> 姓名</p>
                                           <p>客源编号：<span class="blue">YQYD001163</span> 姓名</p>
                                   </template>
@@ -238,15 +239,15 @@
                                  <template slot-scope="scope">                           
                                          <!-- <p>{{scope.row.statu}}</p> -->
                                          <div v-if="scope.row.statu==0" class="check-btn">
-                                            <span @click.stop="checkAch">审核</span>
-                                            <span @click.stop="editAch">编辑</span>
+                                            <span @click.stop="checkAch()">审核</span>
+                                            <span @click.stop="editAch()">编辑</span>
                                          </div>
                                            <div v-if="scope.row.statu==1" class="check-btn">
-                                            <span @click.stop="checkAch">审核</span>
-                                            <span @click.stop="editAch">编辑</span>
+                                            <span @click.stop="checkAch()">审核</span>
+                                            <span @click.stop="editAch()">编辑</span>
                                          </div>
                                           <div v-if="scope.row.statu==2" class="check-btn">
-                                            <span @click.stop="againCheck">反审核</span>
+                                            <span @click.stop="againCheck()">反审核</span>
                                          </div>
                                   </template>
                                </el-table-column>
@@ -265,6 +266,8 @@
                              <p>可分配业绩：<span class="orange">3000元</span></p>
                            </div> 
                            <div class="ach-body">
+
+                                <h1>房源方分成</h1>
                                 <div class="ach-divide-list">
                                      <el-table
                                       :data="achDetail"
@@ -327,6 +330,70 @@
                                     </el-table>
                                 </div>
 
+                                <h1>客源方分成</h1>
+                                <div class="ach-divide-list">
+                                     <el-table
+                                      :data="achDetail"
+                                      style="width: 100%">
+                                      <el-table-column
+                                        prop="role_type"
+                                        label="角色类型"
+                                        width="100">
+                                      </el-table-column>
+
+                                      <el-table-column
+                                        prop="distributionList"
+                                        label="分成比例"
+                                        width="80">
+                                      </el-table-column>
+
+                                      <el-table-column
+                                        prop="name"
+                                        label="经纪人"
+                                        width="80">
+                                      </el-table-column>
+
+                                       <el-table-column
+                                        prop="is_job"
+                                        label="在职状况"
+                                        width="80">
+                                      </el-table-column>
+
+                                      
+                                       <el-table-column
+                                        prop="shopowner"
+                                        label="店长"
+                                        width="80">
+                                      </el-table-column>
+
+                                      <el-table-column
+                                        prop="level4"
+                                        label="单组"
+                                        width="120">
+                                      </el-table-column>
+
+                                       <el-table-column
+                                        prop="level3"
+                                        label="门店"
+                                        width="110">
+                                      </el-table-column>
+
+                                     <el-table-column
+                                        prop="amaldar"
+                                        label="区经"
+                                        width="60"> 
+                                      </el-table-column>
+
+                                      
+                                     <el-table-column
+                                        prop="manager"
+                                        label="区总"
+                                        width="60"> 
+                                      </el-table-column>
+                                    </el-table>
+                                </div>
+
+
                                 <h1>审核信息</h1>
 
                                 <div class="ach-check-list">
@@ -373,7 +440,16 @@
                      </el-dialog>
 
                      <!-- 审核，编辑，反审核，业绩分成弹框 -->
-                     <achDialog :shows="shows" v-on:close='shows=false'></achDialog>
+                     <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
+
+                     <!-- 分页 -->
+                         <el-pagination
+                           @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="1"
+                           layout="total, prev, pager, next, jumper"
+                           :total="total">
+                        </el-pagination>
          </div>
 </template>
 
@@ -589,7 +665,9 @@ export default {
           }
         ]
       },
-      shows: false
+      shows: false,
+      dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
+      total: 0
     };
   },
   components: {
@@ -600,15 +678,26 @@ export default {
       this.dialogVisible = false;
     },
     checkAch() {
+      this.dialogType = 0;
+      console.log(this.dialogType);
       this.shows = true;
     },
     editAch() {
+      this.dialogType = 1;
+      console.log(this.dialogType);
       this.shows = true;
-      // alert(this.shows);
     },
     againCheck() {
+      this.dialogType = 2;
+      console.log(this.dialogType);
       this.shows = true;
-      // alert(this.shows);
+    },
+    //分页
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
 };
@@ -841,5 +930,10 @@ export default {
       display: none;
     }
   }
+}
+/deep/ .el-pagination {
+text-align: center;
+padding-bottom: 50px;
+padding-top: 50px;
 }
 </style>
