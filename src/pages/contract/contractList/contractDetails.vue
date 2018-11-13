@@ -82,7 +82,7 @@
               <template>
                 <el-table :data="tableData" border header-row-class-name="theader-bg">
                   <el-table-column prop="name" label="客户姓名"></el-table-column>
-                   <el-table-column label="电话">
+                  <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}<i class="el-icon-phone-outline" @click="call(scope.row.mobile)"></i>
                     </template>
@@ -167,8 +167,9 @@
     <div class="functionTable">
       <el-button round class="search_btn">打印成交报告</el-button>
       <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button>
-      <el-button type="primary" round class="search_btn">分成</el-button>
+      <el-button type="primary" round class="search_btn" @click="fencheng">分成</el-button>
     </div>
+    
     <!-- 拨号弹出框 -->
     <el-dialog title="提示" :visible.sync="dialogVisible" width="460px">
       <div>
@@ -181,6 +182,7 @@
         </div>
       </div>
     </el-dialog>
+
     <!-- 资金监管弹窗 -->
     <el-dialog title="资金监管" :visible.sync="dialogSupervise" width="740px">
       <div class="download">
@@ -194,45 +196,75 @@
         <el-button type="primary" @click="dialogSupervise = false">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 审核，编辑，反审核，业绩分成弹框 -->
+    <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
   </div>
 </template>
            
 <script>
+import achDialog from "./../../achievement/achDialog";
 export default {
+  components: {
+    achDialog
+  },
   data() {
     return {
       dialogVisible: false,
       dialogSupervise: false,
       activeName: "first",
-      tableData:[
-        {name:'下雨天', mobile:'15845127895',relation:'本人', address:'本地', property:'100%', idCard:'11054854565656144444'}
+      tableData: [
+        {
+          name: "下雨天",
+          mobile: "15845127895",
+          relation: "本人",
+          address: "本地",
+          property: "100%",
+          idCard: "11054854565656144444"
+        }
       ],
-      performanceData:[
-        {category:'房源录入人', proportion:'10%', broker:'夏雨天', status:'在职', store:'当代一店', storer:'夏雨天', address:'波光园二店', manager:'夏雨天', generalManager:'夏雨天'}
+      performanceData: [
+        {
+          category: "房源录入人",
+          proportion: "10%",
+          broker: "夏雨天",
+          status: "在职",
+          store: "当代一店",
+          storer: "夏雨天",
+          address: "波光园二店",
+          manager: "夏雨天",
+          generalManager: "夏雨天"
+        }
       ],
-      callNumber:'',
-      contType:'2'
+      callNumber: "",
+      contType: "2",
+      shows: false,
+      dialogType:3
     };
   },
-  created(){
-    this.contType=this.$route.query.contType
+  created() {
+    this.contType = this.$route.query.contType;
   },
   methods: {
     handleClick(tab, event) {
       // console.log(tab, event);
     },
-    call(value){
-      this.dialogVisible=true;
-      this.callNumber=value
+    call(value) {
+      this.dialogVisible = true;
+      this.callNumber = value;
     },
     //合同预览
-    goPreview(){
+    goPreview() {
       this.$router.push({
-        path:'/contractPreview',
-        query:{
-          id:1
+        path: "/contractPreview",
+        query: {
+          id: 1
         }
-      })
+      });
+    },
+    fencheng(){
+      this.dialogType = 3;
+      this.shows = true;
     }
   }
 };
@@ -241,15 +273,15 @@ export default {
 @import "~@/assets/common.less";
 
 .view-container {
-  /deep/.el-tabs__header{
+  /deep/.el-tabs__header {
     margin-bottom: 0;
   }
-  /deep/.el-tabs__item{
+  /deep/.el-tabs__item {
     font-size: 18px;
     height: 60px;
     line-height: 60px;
   }
-  padding-left: 20px ;
+  padding-left: 20px;
   background: @bg-white;
   font-size: 14px;
   position: relative;
@@ -266,7 +298,7 @@ export default {
     .content {
       .one_ {
         margin-bottom: 10px;
-        &:last-of-type{
+        &:last-of-type {
           margin-bottom: 0;
         }
         > p {
@@ -281,101 +313,102 @@ export default {
           .text {
             color: @color-blank;
           }
-          .serialNumber{
+          .serialNumber {
             color: @color-blue;
-            font-weight:bold;
+            font-weight: bold;
           }
         }
-        .address{
+        .address {
           width: 600px;
         }
       }
-      .performance{
-        >p{
+      .performance {
+        > p {
           color: @color-6c;
-          .orange{
+          .orange {
             color: @color-orange;
           }
         }
       }
-      .table{
+      .table {
         padding: 10px 0;
         width: 1050px;
-        /deep/ .theader-bg{
-          >th{
+        /deep/ .theader-bg {
+          > th {
             background-color: @bg-th;
           }
         }
-        i{
+        i {
           font-size: 16px;
-          color: #54D384;
+          color: #54d384;
           cursor: pointer;
         }
-        >p{
+        > p {
           color: @color-6c;
           padding-bottom: 10px;
         }
       }
-      .remark{
+      .remark {
         width: 650px;
         height: 100px;
         padding: 10px;
-        border-radius:4px;
-        border:1px solid rgba(236, 239, 242, 1);
+        border-radius: 4px;
+        border: 1px solid rgba(236, 239, 242, 1);
         background: @bg-FA;
-        >p{
+        > p {
           color: @color-D6;
         }
       }
     }
   }
-  .footer{
+  .footer {
     display: flex;
     justify-content: space-between;
-    align-items:center;
+    align-items: center;
     height: 60px;
-    p{
+    p {
       color: @color-6c;
       display: inline-block;
       padding-right: 20px;
       font-size: 12px;
     }
-    > div{
-      &:last-of-type{
+    > div {
+      &:last-of-type {
         padding-right: 20px;
-        /deep/.el-button.is-round{
+        /deep/.el-button.is-round {
           padding: 10px 20px;
         }
       }
     }
   }
-  /deep/.el-dialog__header{
+  /deep/.el-dialog__header {
     border-bottom: 1px solid @border-ED;
   }
-  /deep/.el-dialog__body{
-    .icon{
+  /deep/.el-dialog__body {
+    .icon {
       text-align: center;
       font-size: 50px;
       padding-bottom: 20px;
-      color: #54D384;
+      color: #54d384;
     }
-    .text{
+    .text {
       text-align: center;
-      p{
+      p {
         line-height: 30px;
       }
     }
   }
-  .functionTable{
+  .functionTable {
     position: absolute;
     right: 0;
     top: 10px;
     padding-right: 20px;
-    /deep/.el-button.is-round{
+    /deep/.el-button.is-round {
       padding: 10px 20px;
     }
   }
-  .download, .upload{
+  .download,
+  .upload {
     height: 200px;
   }
 }
