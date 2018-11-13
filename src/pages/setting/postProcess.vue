@@ -20,7 +20,7 @@ import { FILTER } from "@/assets/js/filter";
 import { TOOL } from "../../assets/js/common";
 import TransactionStep from "./transactionStep";
 import transactionProcess from "./transactionProcess";
-import Three from "./three";
+import transactionContract from "./transactionContract";
 
   let imgSize = 4 / 3;
   let mouseStart = {
@@ -74,7 +74,7 @@ import Three from "./three";
     components: {
       TransactionStep,
       transactionProcess,
-      Three
+      transactionContract
     },
     mounted() {
       let objX = 0;
@@ -122,7 +122,7 @@ import Three from "./three";
         } else if (item.id == 2) {
           this.current = "transactionProcess";
         } else {
-          this.current = "Three";
+          this.current = "transactionContract";
         }
       },
       /**
@@ -239,5 +239,8 @@ import Three from "./three";
       }
     }
   }
+}
+/deep/ .el-table th {
+  background:rgba(238,242,251,1);
 }
 </style>

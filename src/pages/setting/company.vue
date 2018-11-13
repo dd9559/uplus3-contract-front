@@ -547,7 +547,7 @@ export default {
           res = res.data
           if(res.status === 200) {
             this.tableData = res.data.list
-            this.count = res.data.count
+            this.count = res.data.total
           }
         }).catch(error => {
           console.log(error);

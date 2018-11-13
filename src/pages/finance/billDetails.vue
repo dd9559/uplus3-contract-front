@@ -135,7 +135,7 @@
           </ul>
         </div>
       </li>
-      <li ref="checkBox">
+      <li ref="checkBox" v-show="activeItem!=='收款信息'">
         <h4>审核信息</h4>
         <el-table border :data="list" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
@@ -178,8 +178,8 @@
     name: "bill-details",
     data() {
       return {
-        tabs: ['审核信息'],
-        activeItem: '付款信息',
+        tabs: [],
+        activeItem: '',
         list: [
           {}
         ]
@@ -189,6 +189,9 @@
       // debugger
       this.activeItem = this.$route.query.tab
       this.tabs.unshift(this.activeItem)
+      if(this.activeItem === '付款信息'){
+        this.tabs.push('审核信息')
+      }
     },
     methods: {
       choseTab: function (item) {
