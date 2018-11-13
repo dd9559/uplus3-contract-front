@@ -173,12 +173,11 @@ export default new Router({
           path: "contractDetails",
           component: contractDetails
         },
-<<<<<<< HEAD
         //合同预览
         {
           path: "contractPreview",
           component: contractPreview
-=======
+        },
         //佣金申请弹层（最后需要删掉）
         {
           path: "layerAudit",
@@ -188,7 +187,6 @@ export default new Router({
         {
           path: "changeCancel",
           component: changeCancel
->>>>>>> hujingcao
         }
       ]
     }
