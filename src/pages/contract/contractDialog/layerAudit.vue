@@ -1,7 +1,7 @@
 <template>
     <div id="layeraudit">
         <!-- 调佣审核申请 -->
-    <el-button type="text" class="curPointer" @click="dialogVisible = true">审核申请</el-button>
+    <el-button type="text" @click="dialogVisible = true">审核申请</el-button>
     <el-dialog title="调佣申请" :visible.sync="dialogVisible" width="820px" class="layer-audit">
       <div class="audit-box"  :style="{ height: clientHei }">
         <div class="audit-col">
