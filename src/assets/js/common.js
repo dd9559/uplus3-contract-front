@@ -7,14 +7,14 @@ let TOOL = {
    * @param event
    * @returns {{x: number, y: number}}
    */
-  getMousePos:function (event) {
+  getMousePos: function (event) {
     var e = event || window.event;
     var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
     var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
     var x = e.pageX || e.clientX + scrollX;
     var y = e.pageY || e.clientY + scrollY;
 
-    return { 'x': x, 'y': y };
+    return {'x': x, 'y': y};
   },
   /**
    * 合并表格某列的单元格
@@ -24,9 +24,9 @@ let TOOL = {
    * @param type     该列所有单元格是否合并为一个
    * @returns {*}
    */
-  collapseRow:function ({rowIndex,rowTotal,collapse,type}) {
+  collapseRow: function ({rowIndex, rowTotal, collapse, type}) {
     // debugger
-    if(type==='all'){
+    if (type === 'all') {
       if (rowIndex === 0) {
         return {
           rowspan: rowTotal,
@@ -61,8 +61,38 @@ let TOOL = {
         colspan: 0
       };
     }
+  },
+  /**
+   * 重置表单对象
+   * @param form
+   */
+  clearForm: function (form) {
+    for (let item in form) {
+      let type = typeof form[item]
+      switch (type) {
+        case 'string':
+          form[item] = ''
+          break;
+        case 'number':
+          form[item] = 0
+          break;
+        case 'boolean':
+          form[item] = false
+          break;
+        case 'object':
+          if (Object.prototype.toString.call(form[item]) === '[object Array]') {
+            form[item] = []
+          } else {
+            form[item] = {}
+          }
+          break;
+        default:
+          form[item] = ''
+      }
+    }
   }
 }
+
 export {
   TOOL
 }
