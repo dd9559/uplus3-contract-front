@@ -171,11 +171,41 @@
                 <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="propCloseFn(layer.tit)" round>确定</el-button>
             </span>
         </el-dialog>
+        <!-- 开票 -->
+        <LayerInvoice ref="invoice"></LayerInvoice>
+        <!-- 票据编号弹层 -->
+        <el-dialog 
+            title="票据详情" 
+            :visible.sync="paperInfoData.show" 
+            width="1000px" 
+            class="layer-paper">
+            <LayerPaperInfo 
+                :number="paperInfoData.contCode"
+                :name="paperInfoData.payerName"
+                :collectionTime="paperInfoData.paymentTime"
+                :invoiceTime="paperInfoData.createTime"
+                :paper="paperInfoData.paper"
+                :project="paperInfoData.name"
+                :hide="paperInfoData.hide"
+                :address="paperInfoData.address"
+                :money="paperInfoData.money"
+                :moneyZh="paperInfoData.moneyZh"
+                :create="paperInfoData.createBy"
+                :rules="paperInfoData.val"
+                :payerType="paperInfoData.payerType"
+                ></LayerPaperInfo>
+            <span slot="footer">
+                <el-button class="paper-btn" type size="medium" @click="paperCloseFn" round>取消</el-button>
+                <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="paperBtnFn" round>打印</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
+    import LayerInvoice from '@/components/LayerInvoice';
+    import LayerPaperInfo from '@/components/LayerPaperInfo';
     const STATE = {
         start: 0, //已开票
         invalid: 1, //已作废
@@ -211,7 +241,7 @@
                     a19: '陈晓玲',
                     a20: '2018/08/09 17:22',
                     // state 票据状态
-                    paperState: 0, // 0:已开票 1:已作废 2:已回收 3:已核销
+                    paperState: 1, // 0:已开票 1:已作废 2:已回收 3:已核销
                 }, ],
                 // 筛选条件
                 propForm: {
@@ -267,6 +297,21 @@
                 // 弹层
                 layer: {
                     show: false,
+                },
+                invoice:false,
+                paperInfoData:{
+                    show:false,
+                    contCode:'201809301289',
+                    payerName:'张小茹',
+                    address:'东湖开发区安逸小区12幢4单元806',
+                    paymentTime:'2018-11-13',
+                    createTime:'2018-11-13',
+                    createBy:'张小茹',
+                    payerType:'客户身份',
+                    name:'房款',
+                    money:100000,
+                    val:'',
+                    paper:'10086'
                 }
             }
         },
@@ -304,7 +349,7 @@
             },
             // 开票
             startFn() {
-                console.log('开票')
+                this.$refs.invoice.propCloseFn();
             },
             // 合同编号
             contractFn() {
@@ -312,7 +357,8 @@
             },
             // 票据编号
             paperFn() {
-                console.log('票据编号')
+                this.paperInfoData.show = true;
+                // console.log('票据编号')
             },
             // 收款ID
             collectionFn() {
@@ -348,10 +394,20 @@
             // 弹层关闭
             propCloseFn() {
                 this.layer.show = !this.layer.show
+            },
+            //票据详情 取消
+            paperCloseFn(){
+                this.paperInfoData.show = false;
+            },
+            // 票据详情 打印
+            paperBtnFn(){
+                console.log('打印')
             }
         },
         components: {
-            ScreeningTop
+            ScreeningTop,
+            LayerInvoice,
+            LayerPaperInfo
         }
     }
 </script>

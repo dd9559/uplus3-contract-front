@@ -1,14 +1,12 @@
 <template>   
-      <div class="layout">
-          
-
+      <div class="layout" style="background-color: #f5f5f5">
                  <!-- 筛选条件  -->
                 <div class="filter-layout">
                          
                            <div style="overflow:hidden;">
                                  <div class="filter-left f_l">
                                      <h1>
-                                       <b class="el-icon-search"></b> 
+                                       <b class="iconfont icon-tubiao-5" style="color:#55657A;font-weight:normal;"></b> 
                                        筛选查询
                                       </h1>
                                </div>
@@ -74,7 +72,7 @@
                       <!-- 头部 -->
                       <div class="data-head">
                            <div class="data-head-left">
-                              <b class="el-icon-date"></b> 
+                              <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b> 
                               <span>
                                   数据列表
                               </span> 
@@ -240,10 +238,8 @@
 
                           </el-table>
                       </div>
-                      
-                </div>
 
-                     <!-- 分页 -->
+                      <!-- 分页 -->
                          <el-pagination
                            @size-change="handleSizeChange"
                            @current-change="handleCurrentChange"
@@ -251,6 +247,9 @@
                            layout="total, prev, pager, next, jumper"
                            :total="total">
                         </el-pagination>
+                </div>
+
+           
          </div>
 </template>
 
@@ -373,16 +372,15 @@ export default {
       console.log(this.brandArr);
       this.brandShow = true;
     },
-    askData(id,index) {
-     console.log(id);
-     console.log(index);
-     this.brandArr.splice(index,this.brandArr.length-index-1)
+    askData(id, index) {
+      console.log(id);
+      console.log(index);
+      this.brandArr.splice(index, this.brandArr.length - index - 1);
     },
-    allCompany(){
+    allCompany() {
       this.brandShow = false;
-       this.brandArr=[];
+      this.brandArr = [];
       // 请求全公司的列表
-      
     }
   }
 };
@@ -391,6 +389,7 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/less/lsx.less";
 .layout {
+  // background-color: #F2F3F8!important;
   .check-btn span {
     color: #478de3;
   }
@@ -413,11 +412,11 @@ export default {
     background-color: #fff;
     overflow: hidden;
     padding: 20px;
+    padding-bottom: 0;
     .filter-left {
       h1 {
         font-size: 18px;
         color: #233241;
-        margin-top: 28px;
         position: relative;
         padding-left: 28px;
         b {
@@ -432,7 +431,6 @@ export default {
       }
     }
     .filter-right {
-      margin-top: 19px;
       // margin-right: 30px;
       .el-button--primary {
         width: 100px;
@@ -457,9 +455,9 @@ export default {
   //数据列表
   .data-layout {
     // height: 1000px;
-    margin-right: 20px;
-    margin-top: 15px;
+    margin-top: 20px;
     padding: 20px;
+    padding-top: 0;
     background-color: #fff;
     /deep/ .el-table__header th {
       background-color: #eef2fb;
@@ -547,10 +545,11 @@ export default {
       }
     }
   }
-}
-/deep/ .el-pagination {
-  text-align: center;
-  padding-bottom: 50px;
-  padding-top: 50px;
+
+  /deep/ .el-pagination {
+    text-align: center;
+    padding-bottom: 50px;
+    padding-top: 50px;
+  }
 }
 </style>

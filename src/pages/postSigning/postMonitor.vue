@@ -47,7 +47,130 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
+            <el-table :data="tableData" class="paper-table mt-20">
+                <el-table-column label="合同编号" min-width="161">
+                    <template slot-scope="scope">
+                        <el-button class="blue" type="text" @click="contractFn">{{scope.row.a1}}</el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="a2" label="接收日期" min-width="100">
+                </el-table-column>
+                <el-table-column prop="a3" label="物业地址" min-width="180">
+                </el-table-column>
+                <el-table-column prop="a4" label="交易流程" min-width="248">
+                </el-table-column>
+                <el-table-column prop="a5" label="业主" min-width="70">
+                </el-table-column>
+                <el-table-column prop="a6" label="客户" min-width="70">
+                </el-table-column>
+                <el-table-column prop="a7" label="成交经纪人" min-width="140">
+                </el-table-column>
+                <el-table-column prop="a8" label="店长" min-width="70">
+                </el-table-column>
+                <el-table-column prop="a9" label="已超时步骤" min-width="110">
+                    <template slot-scope="scope">
+                        <el-button class="blue" type="text" @click="tradingStepsFn">{{scope.row.a9}}</el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="a10" label="当前步骤责任人" min-width="130">
+                </el-table-column>
+                <el-table-column prop="a11" label="计划完成时间" min-width="130">
+                </el-table-column>
+                <el-table-column prop="a12" label="超时天数">
+                </el-table-column>
+                <el-table-column prop="a13" label="收佣状态" min-width="100">
+                </el-table-column>
+                <el-table-column prop="a14" label="佣金结算状态" min-width="120">
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button class="blue" type="text" @click="operationFn">{{scope.row.a15}}</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
         </div>
+        <!-- 后期进度弹层 -->
+        <el-dialog :title="layer.tit" :visible.sync="layer.show" width="1000px"  class="layer-paper">
+            <div class="layer-progress">
+                <ul class="ul">
+                    <li>
+                        <span class="cl-2 mr-30">一次性（业）+一次性（客）住宅</span>
+                    </li>
+                    <li>
+                        <span class="cl-1 mr-10">佣金结算状态：</span>
+                        <span class="cl-2">部分</span>
+                    </li>
+                </ul>
+                <el-table 
+                border
+                :data="tableProgress" 
+                class="paper-table mt-20">
+                    <el-table-column 
+                    label="步骤类型" 
+                    align="center">
+                        <template slot-scope="scope">
+                           <span :class="scope.row.state?'red':'cl-2'">{{scope.row.a1}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                    label="步骤名称" 
+                    align="center">
+                        <template slot-scope="scope">
+                           <span :class="scope.row.state?'red':'cl-2'">{{scope.row.a2}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                    label="操作人" 
+                    align="center">
+                        <template slot-scope="scope">
+                           <span :class="scope.row.state?'red':'cl-2'">{{scope.row.a3}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                    label="操作日期" 
+                    align="center">
+                        <template slot-scope="scope">
+                           <span :class="scope.row.state?'red':'cl-2'">{{scope.row.a4}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                    label="责任人" 
+                    align="center">
+                        <template slot-scope="scope">
+                           <span :class="scope.row.state?'red':'cl-2'">{{scope.row.a5}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                    label="确定日期" 
+                    align="center">
+                        <template slot-scope="scope">
+                           <span :class="scope.row.state?'red':'cl-2'">{{scope.row.a6}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                    label="办理天数" 
+                    align="center">
+                        <template slot-scope="scope">
+                           <span :class="scope.row.state?'red':'cl-2'">{{scope.row.a7}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                    label="规定天数" 
+                    align="center">
+                        <template slot-scope="scope">
+                           <span :class="scope.row.state?'red':'cl-2'">{{scope.row.a8}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                    label="操作" 
+                    align="center">
+                        <template slot-scope="scope">
+                           <el-button class="blue" type="text" @click="operationFn">查看</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -114,6 +237,41 @@
                         value: "选项22"
                     }]
                 },
+                // 列表数据
+                tableData:[{
+                    a1: '201809301289',
+                    a2:'已开始',
+                    a3:'安居苑10栋3单元1102',
+                    a4:'一次性（业）+一次性（客）住宅',
+                    a5:'张三',
+                    a6:'张三',
+                    a7:'当代一店-夏雨天',
+                    a8:'王五',
+                    a9:'资料准备',
+                    a10:'王五',
+                    a11:'2018/6/28',
+                    a12:'1.6',
+                    a13:'0/25000',
+                    a14:'未收',
+                    a15:'流水',
+                }],
+                // 后期进度弹层
+                layer:{
+                    tit:'查看交易流程',
+                    show:false,
+                },
+                // 后期进度列表
+                tableProgress:[{
+                    state:false,
+                    a1:'担保流程',
+                    a2:'资料准备',
+                    a3:'李四',
+                    a4:'2018-09-08',
+                    a5:'李四',
+                    a6:'2018-09-08',
+                    a7:'8',
+                    a8:'7',
+                }]
             }
         },
         methods:{
@@ -147,6 +305,18 @@
             // 交易步骤回调
             lateChangeFn(e){
                 console.log(e)
+            },
+            // 合同编号弹层
+            contractFn(){
+                console.log('合同编号弹层')
+            },
+            // 交易步骤
+            tradingStepsFn(){
+                this.layer.show = true;
+            },
+            // 操作
+            operationFn(){
+                console.log('操作')
             }
         },
     }

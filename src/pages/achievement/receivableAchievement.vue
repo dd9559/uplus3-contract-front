@@ -1,12 +1,12 @@
 <template>   
-      <div class="layout">
+      <div class="layout" style="background-color: #f5f5f5">
                  <!-- 筛选条件  -->
                 <div class="filter-layout">
                          
                            <div style="overflow:hidden;">
                                  <div class="filter-left f_l">
                                      <h1>
-                                       <b class="el-icon-search"></b> 
+                                      <b class="iconfont icon-tubiao-5" style="color:#55657A;font-weight:normal;"></b>
                                        筛选查询
                                       </h1>
                                </div>
@@ -98,7 +98,7 @@
                       <!-- 头部 -->
                       <div class="data-head">
                            <div class="data-head-left f_l">
-                              <b class="el-icon-date"></b> 
+                             <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b> 
                               <span>
 
                                   数据列表
@@ -264,6 +264,62 @@ export default {
           type2: "房源维护人主客方",
           radio: "20%-80%",
           amout: "400-500"
+        },
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
+        },
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
+        },
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
+        },
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
         }
       ],
       rules: {
@@ -390,11 +446,11 @@ export default {
     background-color: #fff;
     overflow: hidden;
     padding: 20px;
+    padding-bottom: 0;
     .filter-left {
       h1 {
         font-size: 18px;
         color: #233241;
-        margin-top: 28px;
         position: relative;
         padding-left: 28px;
         b {
@@ -409,7 +465,6 @@ export default {
       }
     }
     .filter-right {
-      margin-top: 19px;
       .el-button--primary {
         width: 100px;
         height: 36px;
@@ -432,10 +487,10 @@ export default {
 
   //数据列表
   .data-layout {
-    margin-right: 20px;
     background-color: #fff;
-    margin-top: 15px;
     padding: 20px;
+    padding-top: 0;
+    margin-top: 20px;
     .data-head {
       height: 68px;
       background-color: #fff;
