@@ -122,7 +122,7 @@
         </span>
       </p>
       <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
-        <el-table-column align="left" label="合同信息" width="250">
+        <el-table-column align="left" label="合同信息" width="250" fixed>
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同编号：<span>{{scope.row.code}}</span></li>
@@ -131,7 +131,7 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="合同类型" width="100">
+        <el-table-column align="left" label="合同类型" width="100" fixed>
           <template slot-scope="scope">
             <span v-if="scope.row.contType===1">租赁</span>
             <span v-if="scope.row.contType===2">买卖</span>
@@ -139,11 +139,11 @@
             <span v-if="scope.row.contType===4">意向</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="物业地址" prop="propertyAddr" width="150">
+        <el-table-column align="left" label="物业地址" prop="propertyAddr" width="150" fixed>
         </el-table-column>
-        <el-table-column align="left" label="成交总价" prop="dealPrice" width="100">
+        <el-table-column align="left" label="成交总价" prop="dealPrice" width="100" fixed>
         </el-table-column>
-        <el-table-column align="left" label="财务收付" width="100">
+        <el-table-column align="left" label="财务收付" width="100" fixed>
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
             <div class="btn" @click="gathering(scope.row)">收款</div>
@@ -188,7 +188,7 @@
             <span v-if="scope.row.laterStageState===1">未提交</span>
             <span v-if="scope.row.laterStageState===2">已提交</span>
             <span v-if="scope.row.laterStageState===3">已开始</span>
-            <span v-if="scope.row.laterStageState===4">已拒绝</span>
+            <el-button v-if="scope.row.laterStageState===4" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
             <span v-if="scope.row.laterStageState===5">已结束</span>
           </template>
         </el-table-column>
@@ -217,8 +217,8 @@
         </el-table-column>
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
-            <el-button type="text" size="medium">编辑</el-button>
-            <el-button type="text" size="medium">预览</el-button>
+            <el-button type="text" size="medium">上传</el-button>
+            <el-button type="text" size="medium" @click="goPreview">预览</el-button>
             <el-button type="text" size="medium">提审</el-button>
             <el-button type="text" size="medium">调佣</el-button>
           </template>
@@ -260,7 +260,7 @@ export default {
         toExamineState:1,
         remarks:'',
         contChangeState:1,
-        laterStageState:5,
+        laterStageState:4,
         resultState:1
       },
       {
@@ -321,7 +321,7 @@ export default {
     }
   },
   created(){
-    //this.getContractList()
+    this.getContractList()
   },
   methods:{
     //获取合同列表
@@ -329,7 +329,7 @@ export default {
       let param = {
         pageNum:'1',
         pageSize:'10',
-        keyWord:'',
+        // keyWord:'',
         cont:{}
       }
       this.$ajax.post('/api/contract/contractList', param).then(res=>{
@@ -360,6 +360,17 @@ export default {
         }
       })
     },
+    uploadData(value){
+      // console.log(value)
+       this.$router.push({
+        path:'/contractDetails',
+        query:{
+          type:'dataBank',
+          id: value.code,
+          contType:value.contType
+        }
+      })
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
@@ -376,7 +387,16 @@ export default {
           }
         })
       }
-    }
+    },
+    //合同预览
+    goPreview() {
+      this.$router.push({
+        path: "/contractPreview",
+        query: {
+          id: 1
+        }
+      });
+    },
   }
 };
 </script>

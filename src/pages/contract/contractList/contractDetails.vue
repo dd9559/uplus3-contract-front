@@ -157,7 +157,7 @@
           </div>
           <div>
             <el-button round class="search_btn" @click="goPreview">预览</el-button>
-            <el-button type="primary" round class="search_btn">编辑</el-button>
+            <el-button type="primary" round class="search_btn" @click="goEdit">编辑</el-button>
           </div>
         </div>
       </el-tab-pane>
@@ -169,7 +169,7 @@
       <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button>
       <el-button type="primary" round class="search_btn" @click="fencheng">分成</el-button>
     </div>
-    
+
     <!-- 拨号弹出框 -->
     <el-dialog title="提示" :visible.sync="dialogVisible" width="460px">
       <div>
@@ -243,7 +243,10 @@ export default {
     };
   },
   created() {
-    this.contType = this.$route.query.contType;
+    this.contType = (this.$route.query.contType).toString();
+    if(this.$route.query.type==='dataBank'){
+      this.activeName='third'
+    }
   },
   methods: {
     handleClick(tab, event) {
@@ -265,6 +268,16 @@ export default {
     fencheng(){
       this.dialogType = 3;
       this.shows = true;
+    },
+    goEdit(){
+      this.$router.push({
+        path: "/addContract",
+        query: {
+          id: 1,
+          operateType:'edit',
+          type:this.contType
+        }
+      });
     }
   }
 };
