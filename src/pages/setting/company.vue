@@ -4,35 +4,28 @@
     <ScreeningTop
     @propQueryFn="queryFn"
     @propResetFormFn="resetFormFn">
-      <el-form :inline="true" :model="companyForm" class="company-form" size="small">
-        <!-- <div class="form-title">
-          <span>筛选查询</span>
-          <div>
-            <el-button @click="onReset" class="resetBtn">重置</el-button>
-            <el-button type="primary" @click="onSearch" class="searchBth">查询</el-button>        
-          </div>
-        </div> -->
+      <el-form :inline="true" :model="searchForm" class="form-head" size="small">
         <el-form-item label="城市">
-          <el-select v-model="companyForm.cityId">
+          <el-select v-model="searchForm.cityId">
             <el-option label="全部" value="全部">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="门店选择">
-          <el-autocomplete class="inline-input" v-model="companyForm.storeId"></el-autocomplete>
+          <el-autocomplete class="inline-input" v-model="searchForm.storeId"></el-autocomplete>
         </el-form-item>
         <el-form-item label="合作方式">
-          <el-select v-model="companyForm.cooperationMode">
+          <el-select v-model="searchForm.cooperationMode">
             <el-option label="加盟" value="加盟"></el-option>
             <el-option label="直营" value="直营"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="银行账户">
-          <el-input v-model="companyForm.bankCard"></el-input>
+          <el-input v-model="searchForm.bankCard"></el-input>
         </el-form-item>
         <el-form-item label="添加时间">
           <el-date-picker
-          v-model="companyForm.searchTime"
+          v-model="searchForm.searchTime"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
@@ -40,7 +33,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="companyForm.keyWord" maxlength=50 placeholder="添加人/开户行/开户名"></el-input>
+          <el-input v-model="searchForm.keyWord" maxlength=50 placeholder="添加人/开户行/开户名"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -48,7 +41,7 @@
     <div class="company-list">
       <p>
         <span>数据列表</span>
-        <el-button type="primary" @click="dialogAddVisible = true" icon="el-icon-plus">公司信息</el-button>
+        <el-button type="primary" @click="addCompany" icon="el-icon-plus">公司信息</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="center" label="城市" prop="cityName" width="90">
@@ -78,8 +71,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="text" @click="viewCompany(scope.row)" size="medium">查看</el-button>
-            <el-button type="text" @click="editCompany(scope.row)" size="medium">编辑</el-button>
+            <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium">查看</el-button>
+            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -93,74 +86,74 @@
       :total="count">
       </el-pagination>
     </div>
-    <!-- 添加公司信息 弹出框 -->
+    <!-- 添加和编辑公司信息 弹出框 -->
     <el-dialog
-    title="添加企业信息"
-    :visible.sync="dialogAddVisible"
+    :title="companyFormTitle"
+    :visible.sync="AddEditVisible"
     width="1000px"
+    :before-close="handleClose"
     class="dialog-info">
-      <el-form :model="addForm" label-position='right'>
+      <el-form :model="companyForm" label-position='right'>
         <div class="company-info">
           <p>添加企业信息</p>
           <div class="info-content">
             <div class="item">
               <el-form-item label="城市选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="addForm.cityId">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.cityId">
                 </el-select>
               </el-form-item>
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="addForm.storeId">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId">
                 </el-select>
               </el-form-item>
               <el-form-item label="合作方式: ">
-                <el-select v-model="addForm.cooperationMode" size="mini">
-                  <el-option label="全部" value="全部"></el-option>
-                  <el-option label="加盟" value="加盟"></el-option>
-                  <el-option label="直营" value="直营"></el-option>
+                <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange">
+                  <el-option label="加盟" value="1"></el-option>
+                  <el-option label="直营" value="2"></el-option>
                 </el-select>
               </el-form-item>
             </div>
             <div class="item">
               <el-form-item label="门店名称: ">
-                <el-input size="mini" v-model="addForm.name" placeholder="营业执照上的名字"></el-input>
+                <el-input size="mini" v-model="companyForm.name" placeholder="营业执照上的名字"></el-input>
               </el-form-item>
               <el-form-item label="法人姓名: ">
-                <el-input size="mini" maxlength="15" v-model="addForm.lepName"></el-input>
+                <el-input size="mini" maxlength="15" v-model="companyForm.lepName"></el-input>
               </el-form-item>
               <el-form-item label="证件类型: ">
-                <el-select placeholder="请选择" size="mini" v-model="addForm.lepDocumentType">
-                  <el-option label="居民身份证" value="居民身份证"></el-option>
-                  <el-option label="护照" value="护照"></el-option>
-                  <el-option label="港澳居民来往大陆通行证" value="港澳居民来往大陆通行证"></el-option>
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType">
+                  <el-option label="居民身份证" value="1"></el-option>
+                  <el-option label="护照" value="2"></el-option>
+                  <el-option label="港澳居民来往大陆通行证" value="3"></el-option>
                 </el-select>
               </el-form-item>
             </div>
             <div class="item">
               <el-form-item label="证件号: ">
-                <el-input size="mini" v-model="addForm.lepDocumentCard"></el-input>
+                <el-input size="mini" v-model="companyForm.lepDocumentCard"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: ">
-                <el-input size="mini" v-model="addForm.lepPhone"></el-input>
+                <el-input size="mini" v-model="companyForm.lepPhone"></el-input>
               </el-form-item>
               <el-form-item label="企业证件: ">
-                <el-select placeholder="请选择" size="mini" v-model="addForm.documentType" @change="documentTypeChange">
-                  <el-option label="三证合一" value="三证合一"></el-option>
-                  <el-option label="老三证" value="老三证"></el-option>
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange">
+                  <el-option label="三证合一" value="1"></el-option>
+                  <el-option label="老三证" value="2"></el-option>
                 </el-select>
               </el-form-item>
             </div>
             <div class="item">
-              <el-form-item label="统一社会信用代码: " v-if="creditCodeAppear">
-                <el-input size="mini" v-model="addForm.documentCardStr.creditCode"></el-input>
+              <el-form-item label="统一社会信用代码: " v-if="creditCodeShow">
+                <el-input size="mini" v-model="companyForm.documentCardStr.creditCode"></el-input>
               </el-form-item>
-              <el-form-item label="工商注册号: " v-if="icRegisterAppear">
-                <el-input size="mini" v-model="addForm.documentCardStr.icRegisterCode"></el-input>
+              <el-form-item label="工商注册号: " v-if="icRegisterShow">
+                <el-input size="mini" v-model="companyForm.documentCardStr.icRegisterCode"></el-input>
               </el-form-item>
-              <el-form-item label="组织机构代码: " v-if="icRegisterAppear">
-                <el-input size="mini" v-model="addForm.documentCardStr.organizationCode"></el-input>
+              <el-form-item label="组织机构代码: " v-if="icRegisterShow">
+                <el-input size="mini" v-model="companyForm.documentCardStr.organizationCode"></el-input>
               </el-form-item>
-              <el-form-item label="税务登记证: " v-if="icRegisterAppear">
-                <el-input size="mini" v-model="addForm.documentCardStr.taxRegisterCode"></el-input>
+              <el-form-item label="税务登记证: " v-if="icRegisterShow">
+                <el-input size="mini" v-model="companyForm.documentCardStr.taxRegisterCode"></el-input>
               </el-form-item>
             </div>
             <div class="tip">
@@ -176,32 +169,32 @@
         <div class="company-info">
           <p>添加企业银行账户</p>
           <div class="info-content">
-            <el-table style="width: 100%" :data="addForm.companyBankListStr.data" class="addBankRow">
+            <el-table style="width: 100%" :data="companyForm.companyBankListStr.data" class="addBankRow">
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model="addForm.companyBankListStr.data[scope.$index].bankAccountName"></el-input>
+                    <el-input size="mini" maxlength="15" v-model="companyForm.companyBankListStr.data[scope.$index].bankAccountName"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" v-model="addForm.companyBankListStr.data[scope.$index].bankCard"></el-input>
+                    <el-input size="mini" v-model="companyForm.companyBankListStr.data[scope.$index].bankCard"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="" min-width="280px">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model="addForm.companyBankListStr.data[scope.$index].bankBranchName" placeholder="请精确到支行信息"></el-input>
+                    <el-input size="mini" v-model="companyForm.companyBankListStr.data[scope.$index].bankBranchName" placeholder="请精确到支行信息"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column label="" width="90px">
                 <template slot-scope="scope">
-                  <span @click="addRow('init')" class="button"><i class="icon el-icon-plus"></i></span>
-                  <span @click="removeRow(scope.$index, 'init')" class="button"><i class="icon el-icon-minus"></i></span>
+                  <span @click="addRow" class="button"><i class="icon el-icon-plus"></i></span>
+                  <span @click="removeRow(scope.$index)" class="button"><i class="icon el-icon-minus"></i></span>
                 </template>
               </el-table-column>
             </el-table>
@@ -240,184 +233,39 @@
           </div>
         </div>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addConfirm">确定</el-button>
-      </span>
-    </el-dialog>
-    <!-- 编辑 弹出框 -->
-    <el-dialog
-    title="编辑企业信息"
-    :visible.sync="dialogEditVisible"
-    width="1000px"
-    class="dialog-info">
-      <el-form :model="editForm">
-        <div class="company-info">
-          <p>添加企业信息</p>
-          <div class="info-content">
-            <div class="item">
-              <el-form-item label="城市选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="editForm.cityId">
-                </el-select>
-              </el-form-item>
-              <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="editForm.storeId">
-                </el-select>
-              </el-form-item>
-              <el-form-item label="合作方式: ">
-                <el-select v-model="editForm.cooperationMode" size="mini">
-                  <el-option label="全部" value="全部"></el-option>
-                  <el-option label="加盟" value="加盟"></el-option>
-                  <el-option label="直营" value="直营"></el-option>
-                </el-select>
-              </el-form-item>
-            </div>
-            <div class="item">
-              <el-form-item label="门店名称: ">
-                <el-input size="mini" v-model="editForm.name"></el-input>
-              </el-form-item>
-              <el-form-item label="法人姓名: ">
-                <el-input size="mini" maxlength="15" v-model="editForm.lepName"></el-input>
-              </el-form-item>
-              <el-form-item label="证件类型: ">
-                <el-select placeholder="请选择" size="mini" v-model="editForm.lepDocumentType">
-                </el-select>
-              </el-form-item>
-            </div>
-            <div class="item">
-              <el-form-item label="证件号: ">
-                <el-input size="mini" v-model="editForm.lepDocumentCard"></el-input>
-              </el-form-item>
-              <el-form-item label="法人手机号码: ">
-                <el-input size="mini" v-model="editForm.lepPhone"></el-input>
-              </el-form-item>
-              <el-form-item label="企业证件: ">
-                <el-select placeholder="请选择" size="mini" v-model="editForm.documentType">
-                </el-select>
-              </el-form-item>
-            </div>
-            <div class="item">
-              <el-form-item label="统一社会信用代码: " v-if="creditCodeDisplay">
-                <el-input size="mini" v-model="editForm.documentCard.creditCode"></el-input>
-              </el-form-item>
-              <el-form-item label="工商注册号: " v-if="icRegisterDisplay">
-                <el-input size="mini" v-model="editForm.documentCard.icRegisterCode"></el-input>
-              </el-form-item>
-              <el-form-item label="组织机构代码: " v-if="icRegisterDisplay">
-                <el-input size="mini" v-model="editForm.documentCard.organizationCode"></el-input>
-              </el-form-item>
-              <el-form-item label="税务登记证: " v-if="icRegisterDisplay">
-                <el-input size="mini" v-model="editForm.documentCard.taxRegisterCode"></el-input>
-              </el-form-item>
-            </div>
-            <div class="tip">
-              <span>温馨提示: </span>
-              <div class="message">
-                <p>1. 门店名称必须和营业执照证件上登记的名称一致；</p>
-                <p>2. 如个体工商户在营业执照上无企业名称的，请填“经营者”名字；</p>
-                <p>3. 三证合一企业证件，只需要填写“统一社会信用代码”；老三证，请分别填写工商注册号、组织机构代码、税务登记证</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="company-info">
-          <p>添加企业银行账户</p>
-          <div class="info-content">
-            <el-table style="width: 100%" :data="editCompanyBankList" class="addBankRow">
-              <el-table-column width="270px" align="center" label="">
-                <template slot-scope="scope">
-                  <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model="editCompanyBankList[scope.$index].bankAccountName"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column width="270px" align="center" label="">
-                <template slot-scope="scope">
-                  <el-form-item label="银行账户: ">
-                    <el-input size="mini" v-model="editCompanyBankList[scope.$index].bankCard"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="" min-width="280px">
-                <template slot-scope="scope">
-                  <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model="editCompanyBankList[scope.$index].bankBranchName"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column label="" width="90px">
-                <template slot-scope="scope">
-                  <span @click="addRow('edit')" class="button"><i class="icon el-icon-plus"></i></span>
-                  <span @click="removeRow(scope.$index, 'edit')" class="button"><i class="icon el-icon-minus"></i></span>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-        </div>
-        <div class="company-info">
-          <p>添加电子签章</p>
-          <div>
-            <div class="stamp">
-              <span>合同章上传</span>
-              <div class="upload">
-                <span>上传电子签章图片：</span>
-                <ul>
-                  <li v-if="false"><img :src="editForm.contractSign" alt=""></li>
-                  <li @click="upload('imgcontract')"><span>+</span><input ref="imgcontract" type="file"  @change="uploadFile" style="display: none;"></li>
-                </ul>
-              </div>
-            </div>
-            <div class="stamp">
-              <span>财务章上传</span>
-              <div class="upload">
-                <span>上传电子签章图片：</span>
-                <ul>
-                  <li v-if="false"><img :src="editForm.financialSign" alt=""></li>
-                  <li @click="upload('imgfinance')"><span>+</span><input ref="imgfinance" type="file"  @change="uploadFile" style="display: none;"></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="tip">
-            <span>温馨提示: </span>
-            <div class="message">
-              <p>1. 上传前，请把图片处理成透明无底色,<span>不抠图</span>；</p>
-              <p>2. 请使用<span>jpg</span>或者<span>png</span>格式的图片，大小不超过<span>5M</span>；</p>
-            </div>
-          </div>
-        </div>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="editConfirm">确定</el-button>
-      </span>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitConfirm">确定</el-button>
+      </div>
     </el-dialog>
     <!-- 查看 弹出框 -->
     <el-dialog
     title="详情信息"
     :visible.sync="dialogViewVisible"
     width="740px"
+    :before-close="handleClose"
     class="dialog-info">
     <div class="view-content">
       <p>汉街二店</p>
       <div>
         <span>法人信息</span>
-        <p><span>法人姓名: {{ RowDataList.lepName }}</span><span>法人手机号码: {{ RowDataList.lepPhone }}</span></p>
-        <p><span>证件类型: {{ RowDataList.lepDocumentType }}</span><span>证件号: {{ RowDataList.lepDocumentCard }}</span></p>
+        <p><span>法人姓名: {{ companyForm.lepName }}</span><span>法人手机号码: {{ companyForm.lepPhone }}</span></p>
+        <p><span>证件类型: {{ companyForm.lepDocumentType }}</span><span>证件号: {{ companyForm.lepDocumentCard }}</span></p>
       </div>
       <div>
         <span>营业执照信息</span>
-        <p v-if="creditCodeShow">统一社会信用代码: {{ RowDataList.documentCard.creditCode }}</p>
-        <p v-if="icRegisterShow"><span>工商注册号: {{ RowDataList.documentCard.icRegisterCode }}</span><span>组织机构代码: {{ RowDataList.documentCard.organizationCode }}</span></p>
-        <p v-if="icRegisterShow">税务登记证: {{ RowDataList.documentCard.taxRegisterCode }}</p>
+        <p v-if="creditCodeShow">统一社会信用代码: {{ companyForm.documentCardStr.creditCode }}</p>
+        <p v-if="icRegisterShow"><span>工商注册号: {{ companyForm.documentCardStr.icRegisterCode }}</span><span>组织机构代码: {{ companyForm.documentCardStr.organizationCode }}</span></p>
+        <p v-if="icRegisterShow">税务登记证: {{ companyForm.documentCardStr.taxRegisterCode }}</p>
       </div>
       <div>
         <span>电子签章信息</span>
         <div class="stamp">
           <span>合同章: </span>
-          <div><img :src="RowDataList.contractSign" alt=""></div>
+          <div><img :src="companyForm.contractSign" alt=""></div>
         </div>
         <div class="stamp">
           <span>财务章: </span>
-          <div><img :src="RowDataList.financialSign" alt=""></div>
+          <div><img :src="companyForm.financialSign" alt=""></div>
         </div>
       </div>
     </div>
@@ -426,14 +274,45 @@
 </template>
 
 <script>
-import ScreeningTop from '@/components/ScreeningTop';
-let stepTypeId = 1;
-export default {
+  import ScreeningTop from '@/components/ScreeningTop';
+  let stepTypeId = 1;
+  let obj = {
+    cityId: "",
+    cityName: "武汉",
+    storeId: "",
+    storeName: "当代一店",
+    cooperationMode: "",
+    name: "",
+    lepName: "",
+    lepDocumentType: "",
+    lepDocumentCard: "",
+    lepPhone: "",
+    documentType: "",
+    documentCardStr: {
+      creditCode: "",
+      icRegisterCode: "",
+      organizationCode: "",
+      taxRegisterCode: "",
+    },
+    companyBankListStr: {
+      data: [
+        {
+          id: 1,
+          bankBranchName: '',
+          bankAccountName: '',
+          bankCard: ''
+        }
+      ]
+    },
+    contractSign: "",
+    financialSign: ""
+  }
+  export default {
     name: "company",
     data() {
       return {
-        //表单中的数据
-        companyForm: {
+        //搜索表单中的数据
+        searchForm: {
           cityId: "",
           storeId: "",
           cooperationMode: "",
@@ -443,97 +322,25 @@ export default {
           searchTimeEnd: ""
         },
         searchTime: [],
-        tableData: [],
+        tableData: [], //公司设置列表
         pageSize: 5,
         pageNum: 1,
         count: 0,
-        dialogAddVisible: false, //添加公司信息
-        //新增表单
-        addForm: {
-          cityId: "",
-          cityName: "武汉",
-          storeId: "",
-          storeName: "当代一店",
-          cooperationMode: "",
-          name: "",
-          lepName: "",
-          lepDocumentType: "",
-          lepDocumentCard: "",
-          lepPhone: "",
-          documentType: "",
-          documentCardStr: {
-            creditCode: "",
-            icRegisterCode: "",
-            organizationCode: "",
-            taxRegisterCode: "",
-          },
-          companyBankListStr: {
-            data: [
-              {
-                id: 1,
-                bankBranchName: '',
-                bankAccountName: '',
-                bankCard: '',
-              }
-            ]
-          },
-          contractSign: "",
-          financialSign: ""
-        },
+        AddEditVisible: false, //新增编辑公司信息 弹出框
+        companyFormTitle: "", //新增编辑弹出框 标题
+        companyForm: {}, //新增和编辑表单
+        companyDirectInfo: {}, //直营属性证件信息
         dialogViewVisible: false, //查看弹出框
-        RowDataList: {}, //当前行列表信息
         creditCodeShow: false,
-        icRegisterShow: false,
-        creditCodeAppear: false,
-        icRegisterAppear: false,
-        dialogEditVisible: false, //编辑弹出框
-        //编辑表单
-        editForm: {},
-        editCompanyBankList: [],
-        creditCodeDisplay: false,
-        icRegisterDisplay: false
+        icRegisterShow: false
       }
     },
     created() {
       this.getCompanyList()
+      this.selectDirectInfo()
+      this.companyForm = JSON.parse(JSON.stringify(obj))
     },
     methods: {
-      //初始化新增表单对象
-      initFormData: function() {
-        let obj = {
-          cityId: "",
-          cityName: "武汉",
-          storeId: "",
-          storeName: "当代一店",
-          cooperationMode: "",
-          name: "",
-          lepName: "",
-          lepDocumentType: "",
-          lepDocumentCard: "",
-          lepPhone: "",
-          documentType: "",
-          documentCardStr: {
-            creditCode: "",
-            icRegisterCode: "",
-            organizationCode: "",
-            taxRegisterCode: "",
-          },
-          companyBankListStr: {
-            data: [
-              {
-                id: 1,
-                bankBranchName: '',
-                bankAccountName: '',
-                bankCard: '',
-              }
-            ]
-          },
-          contractSign: "",
-          financialSign: ""
-        }
-        this.addForm = Object.assign({},this.addForm,obj)
-        console.log(this.addForm,456);
-      },
       /**
        * 获取公司设置列表
        */
@@ -553,22 +360,50 @@ export default {
           console.log(error);
         })
       },
-      // 重置
-      resetFormFn() {
-          this.$refs.propForm.resetFields()
+      //关闭模态窗
+      handleClose(done) {
+        this.creditCodeShow = false
+        this.icRegisterShow = false
+        done()
       },
-      // 查询
-      queryFn(){
-          console.log('查询')
+      //新增公司信息
+      addCompany() {
+        this.AddEditVisible = true
+        this.companyFormTitle = "添加企业信息"
+        this.companyForm = JSON.parse(JSON.stringify(obj))
+      },
+      //切换到直营属性时,自动带出证件信息
+      selectDirectInfo() {
+        this.$ajax.get('/api/setting/company/selectDirectInfo').then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.companyDirectInfo = res.data
+          }
+        })
+      },
+      //合作方式选择
+      cooModeChange(val) {
+        if(val === "2") {
+          this.companyForm.lepName = this.companyDirectInfo.lepName
+          this.companyForm.lepDocumentType = this.companyDirectInfo.lepDocumentType
+          this.companyForm.lepDocumentCard = this.companyDirectInfo.lepDocumentCard
+          this.companyForm.lepPhone = this.companyDirectInfo.lepPhone
+          this.companyForm.documentType = this.companyDirectInfo.documentType
+          this.icRegisterShow = true
+          this.creditCodeShow = false
+          this.companyForm.documentCardStr = this.companyDirectInfo.documentCard
+        } else {
+          this.icRegisterShow = false          
+        }
       },
       //企业证件选择
       documentTypeChange(val) {
-        if(val === '老三证') {
-          this.creditCodeAppear = false
-          this.icRegisterAppear = true
+        if(val === '2') {
+          this.creditCodeShow = false
+          this.icRegisterShow = true
         } else {
-          this.icRegisterAppear = false
-          this.creditCodeAppear = true
+          this.icRegisterShow = false
+          this.creditCodeShow = true
         }
       },
       //新增银行账户
@@ -577,16 +412,13 @@ export default {
           id: ++stepTypeId,
           bankName: '',
           bankAccountName: '',
-          bankCard: '',
+          bankCard: ''
         }
-        type === 'init'
-        ? this.addForm.companyBankListStr.data.push(row)
-        : this.editCompanyBankList.push(row)
+        this.companyForm.companyBankListStr.data.push(row)
       },
+      //移除银行账户
       removeRow(index, type) {
-        type === 'init'
-        ? this.addForm.companyBankListStr.data.splice(index,1)
-        : this.editCompanyBankList.splice(index,1)
+        this.companyForm.companyBankListStr.data.splice(index,1)
       },
       upload(type) {
         this.$refs[type].click()
@@ -605,32 +437,41 @@ export default {
           return
         }
       },
-      //确定新增公司信息
-      addConfirm() {
-        this.addForm.cooperationMode = 1
-        this.addForm.cityId = 1
-        this.addForm.storeId = 1
-        this.addForm.lepDocumentType = 1
-        this.addForm.documentType = 1
-        this.addForm.documentCardStr = JSON.stringify(this.addForm.documentCardStr)
-        this.addForm.companyBankListStr = JSON.stringify(this.addForm.companyBankListStr)
-        this.$ajax.post('/api/setting/company/insert', this.addForm).then(res => {
-          console.log(res)
-          res = res.data
-          if(res.status === 200) {
-            this.dialogAddVisible = false
-            this.$message(res.message)
-            this.getCompanyList()
-            this.initFormData()
-          }
-        }).catch(error => {
-          console.log(error);
-        })
-        console.log(this.addForm,123)
+      //确定新增和编辑公司信息
+      submitConfirm() {
+        this.companyForm.cityId = 1
+        this.companyForm.storeId = 1
+        this.companyForm.documentCardStr = JSON.stringify(this.companyForm.documentCardStr)
+        this.companyForm.companyBankListStr = JSON.stringify(this.companyForm.companyBankListStr)
+        if(this.companyFormTitle === "添加企业信息") {
+          //新增公司信息请求
+          this.$ajax.post('/api/setting/company/insert', this.companyForm).then(res => {
+            res = res.data
+            if(res.status === 200) {
+              this.AddEditVisible = false
+              this.$message(res.message)
+              this.getCompanyList()
+            }
+          }).catch(error => {
+            console.log(error)
+          })
+        } else {
+          //编辑公司信息请求
+          this.$ajax.put('/api/setting/company/update',this.companyForm).then(res => {
+            console.log(res)
+          }).catch(error => {
+            console.log(error)
+          })
+        }
       },
-      //点击查看
-      viewCompany(row) {
-        this.dialogViewVisible = true
+      //点击查看和编辑
+      viewEditCompany(row, type) {
+        if(type === 'init') {
+          this.dialogViewVisible = true
+        } else {
+          this.AddEditVisible = true
+          this.companyFormTitle = "编辑企业信息"
+        }
         if(row.documentType === 2) {
           this.icRegisterShow = true
           this.creditCodeShow = false
@@ -638,38 +479,11 @@ export default {
           this.icRegisterShow = false
           this.creditCodeShow = true
         }
-        this.RowDataList = row
-      },
-      //点击编辑
-      editCompany(row) {
-        this.dialogEditVisible = true
-        if(row.documentType === 2) {
-          this.icRegisterDisplay = true
-          this.creditCodeDisplay = false
-        } else {
-          this.icRegisterDisplay = false
-          this.creditCodeDisplay = true
-        }
-        this.editForm = row
-        this.editCompanyBankList = row.companyBankList.length > 0 ? row.companyBankList : this.addForm.companyBankListStr.data
-      },
-      //确定编辑公司信息
-      editConfirm() {
-        console.log(this.editForm,123)
-        this.editForm.documentCardStr = JSON.stringify(this.editForm.documentCard)
-        // this.editForm.documentCard = JSON.stringify(this.editForm.documentCard)
-        let companyBankListStr = {
-          data: this.editForm.companyBankList
-        }
-        this.editForm.companyBankListStr = JSON.stringify(companyBankListStr)
-        // this.editForm.companyBankList = JSON.stringify(this.editForm.companyBankList)
-        delete this.editForm.documentCard
-        delete this.editForm.companyBankList
-        this.$ajax.put('/api/setting/company/update',this.editForm).then(res => {
-          console.log(res);
-        }).catch(error => {
-          console.log(error);
-        })
+        this.companyForm = row
+        this.companyForm.documentCardStr = JSON.parse(JSON.stringify(row.documentCard))
+        this.companyForm.companyBankListStr = {}
+        this.companyForm.companyBankListStr.data = JSON.parse(JSON.stringify(row.companyBankList))
+        console.log(this.companyForm,666)
       },
       handleSizeChange(val) {
         this.pageSize = val
@@ -678,7 +492,15 @@ export default {
       handleCurrentChange(val) {
         this.pageNum = val
         this.getCompanyList()
-      }
+      },
+      // 重置
+      resetFormFn() {
+          this.$refs.propForm.resetFields()
+      },
+      // 查询
+      queryFn(){
+          console.log('查询')
+      },
     },
     components:{
         ScreeningTop
@@ -688,7 +510,7 @@ export default {
 
 <style lang="less" scoped>
 @import "~@/assets/common.less";
-.company-form {
+.form-head {
   padding: 10px 0;
   background-color: #fff;
   border-radius:2px;
@@ -731,7 +553,6 @@ export default {
   }
 }
 .dialog-info {
-  // min-width: 770px;
   .company-info {
     padding: 30px 20px;
     border-top: 1px solid rgba(237,236,240,1);
