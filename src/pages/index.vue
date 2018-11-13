@@ -38,7 +38,9 @@
             <el-button  type="text" @click="goBack">返回</el-button>
           </p>
         </div>
-        <router-view class="page-view-content"></router-view>
+        <div class="page-view-content">
+          <router-view class="router-view"></router-view>
+        </div>
       </div>
     </div>
   </div>
@@ -236,12 +238,12 @@
       }
       .page-view{
         flex: 1;
-        padding: 0px 20px;
-        background-color: @bg-grey;
         overflow-x: auto;
         position: relative;
+        background-color: @bg-grey;
         &-index{
           height: 40px;
+          margin: 0 20px;
           position: relative;
           >ul{
             height: 100%;
@@ -274,16 +276,21 @@
           }
         }
         &-content{
+          padding: 0px 20px;
           position: absolute;
           top: 40px;
-          right: 20px;
-          bottom: 20px;
-          left: 20px;
+          right: 0;
+          bottom: 0;
+          left: 0;
           overflow-y: auto;
           /deep/ .theader-bg{
             >th{
               background-color: @bg-th;
             }
+          }
+          .router-view{
+            min-height: 100%;
+            background-color: @bg-white;
           }
         }
       }
