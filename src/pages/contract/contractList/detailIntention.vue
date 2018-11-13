@@ -85,7 +85,7 @@
                             multiple
                             :on-preview="handlePictureCardPreview"
                             :on-remove="handleRemove">
-                            <i class="el-icon-plus"></i>
+                            <i class="iconfont icon-shangchuan"></i>
                         </el-upload>
                         <el-dialog :visible.sync="dialogVisible">
                             <img width="100%" :src="dialogImageUrl" alt="">
@@ -105,7 +105,7 @@
                                         multiple
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        <i class="iconfont icon-shangchuan"></i>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -121,7 +121,7 @@
                                         multiple
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        <i class="iconfont icon-shangchuan"></i>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -142,7 +142,7 @@
                                         multiple
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        <i class="iconfont icon-shangchuan"></i>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -158,7 +158,7 @@
                                         multiple
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        <i class="iconfont icon-shangchuan"></i>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -178,7 +178,7 @@
                                         multiple
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
-                                        <i class="el-icon-plus"></i>
+                                        <i class="iconfont icon-shangchuan"></i>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -260,6 +260,10 @@ export default {
         background-color: #fff;
         border: 2px dashed #DEDDE2;
         border-radius: 6px;
+        i{
+            color: #EEF2FB;
+            font-size: 56px;
+        }
     }
     .el-upload-list--picture-card .el-upload-list__item{
         margin: 0 20px 20px 0;
