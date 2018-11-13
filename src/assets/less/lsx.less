@@ -37,6 +37,9 @@
 .mr-10{
     margin-right: 10px;
 }
+.mr-30{
+    margin-right: 30px;
+}
 .mr-40{
     margin-right: 40px;
 }
@@ -117,7 +120,7 @@
 
 // 列表
 .paper-table{
-    width: 100%;
+    // width: 100%;
     /deep/.el-table__header-wrapper,
     /deep/.el-table__fixed-header-wrapper{
         border-radius: 4px;
@@ -368,5 +371,15 @@
 .contract-tab{
     /deep/.el-tabs__content{
         overflow: initial;
+    }
+}
+// 后期进度弹层
+.layer-progress{
+    padding: 30px 20px;
+    .ul{
+        display: flex;
+    }
+    /deep/.paper-table.el-table td{
+        padding: 15px 0;
     }
 }

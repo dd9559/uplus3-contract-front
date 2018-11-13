@@ -171,11 +171,14 @@
                 <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="propCloseFn(layer.tit)" round>确定</el-button>
             </span>
         </el-dialog>
+        <!-- 开票 -->
+        <LayerInvoice :show="invoice"></LayerInvoice>
     </div>
 </template>
 
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
+    import LayerInvoice from '@/components/LayerInvoice';
     const STATE = {
         start: 0, //已开票
         invalid: 1, //已作废
@@ -267,7 +270,8 @@
                 // 弹层
                 layer: {
                     show: false,
-                }
+                },
+                invoice:true
             }
         },
         computed: {
@@ -348,10 +352,11 @@
             // 弹层关闭
             propCloseFn() {
                 this.layer.show = !this.layer.show
-            }
+            },
         },
         components: {
-            ScreeningTop
+            ScreeningTop,
+            LayerInvoice
         }
     }
 </script>
