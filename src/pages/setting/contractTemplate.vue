@@ -205,7 +205,8 @@
             this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
         }
         //预览
-        else if(type==2){
+        else if(type===2){
+          this.modal = true
           this.template = type
            this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
             console.log(res)
@@ -232,7 +233,6 @@
     box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
     border-radius:4px;
     border: 1px solid transparent;
-    margin-top: 22px;
     .selectCity {
       margin-top: 24px;
       line-height: 32px;
