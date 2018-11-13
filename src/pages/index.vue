@@ -188,9 +188,9 @@
         this.Index = []
         keyPath.forEach(item=>{
           var myRe = new RegExp(`"name":"([^"]*?)","path":"${item.replace('?','\\?')}"`)
-          console.log(myRe)
+          // console.log(myRe)
           var myArray = myRe.exec(JSON.stringify(this.views));
-          console.log(myArray)
+          // console.log(myArray)
           this.Index.push(myArray[1])
         })
       },
