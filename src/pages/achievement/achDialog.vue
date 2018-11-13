@@ -285,7 +285,7 @@
                                         label="操作"
                                         width="80"> 
                                          <template slot-scope="scope">
-                                             <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail)">删除</a>
+                                             <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail1)">删除</a>
                                             <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
                                         </template>
                                       </el-table-column>
