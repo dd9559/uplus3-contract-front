@@ -41,7 +41,9 @@ const adjustCheck = () => import("@/pages/contract/contractList/adjustCheck");
 const contractList = () => import("@/pages/contract/contractList/contractList")
 const addContract = () => import("@/pages/contract/contractList/addContract")
 const contractDetails = () => import("@/pages/contract/contractList/contractDetails")
+const contractPreview = () => import("@/pages/contract/contractList/contractPreview")
 const layerAudit = () => import("@/pages/contract/contractDialog/layerAudit");
+
 Vue.use(Router)
 
 export default new Router({
@@ -120,6 +122,10 @@ export default new Router({
           component: adjustCheck
         },
         {
+          path: "layerAudit",
+          component: layerAudit
+        },
+        {
           path: "payBill",
           component: payBill
         },
@@ -167,10 +173,10 @@ export default new Router({
           path: "contractDetails",
           component: contractDetails
         },
-        //合同详情
+        //合同预览
         {
-          path: "layerAudit",
-          component: layerAudit
+          path: "contractPreview",
+          component: contractPreview
         }
       ]
     }

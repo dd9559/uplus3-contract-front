@@ -9,10 +9,7 @@
             <el-date-picker type="date" placeholder="选择日期" v-model="addForm.date" style="width: 100%;"></el-date-picker>
           </el-form-item>
           <el-form-item label="合同类型：">
-            <el-input
-              placeholder="请输入内容"
-              :value="addForm.contType==='1'?'租赁':'买卖'"
-              :disabled="true">
+            <el-input placeholder="请输入内容" :value="addForm.contType==='1'?'租赁':'买卖'" :disabled="true">
             </el-input>
           </el-form-item>
           <el-form-item label="成交总价：" prop="dealPrice">
@@ -187,7 +184,7 @@
       </div>
       <!-- 三方合作 -->
       <div class="houseMsg">
-        <p @click="toCooperation">三方合作 <span class="attention" :class="{'attention_':cooperation}"></span></p>
+        <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention" :class="{'attention_':cooperation}"></span></p>
         <div class="cooperation">
           <div v-show="cooperation">
             <el-form-item label="扣合作费：" prop="">
@@ -244,7 +241,7 @@
         <el-button type="primary" round class="search_btn">查询</el-button>
       </el-form>
       <div class="search_content" v-if="houseList.length>0">
-        <el-table :data="houseList" border>
+        <el-table :data="houseList" border header-row-class-name="theader-bg">
           <el-table-column type="selection" width="59"></el-table-column>
           <el-table-column property="houseId" label="房源编号" width="100"></el-table-column>
           <el-table-column property="houseName" label="楼盘名称" width="150"></el-table-column>
@@ -295,7 +292,7 @@
         <el-button type="primary" round class="search_btn">查询</el-button>
       </el-form>
       <div class="search_content" v-if="clientList.length>0">
-        <el-table :data="clientList" border>
+        <el-table :data="clientList" border header-row-class-name="theader-bg">
           <el-table-column type="selection" width="50"></el-table-column>
           <el-table-column property="clientName" label="姓名" width="150"></el-table-column>
           <el-table-column property="clientId" label="客源编号" width="200"></el-table-column>
@@ -444,6 +441,9 @@ export default {
     padding: 20px 0 10px 20px;
     font-size: 14px;
   }
+  .thirdParty{
+    display: inline-block;
+  }
   .form-content{
     padding-left: 30px;
     .select{
@@ -567,5 +567,10 @@ export default {
 /deep/.el-dialog__body{
   padding-top: 20px;
   border-top: 1px solid #EDECF0
+}
+/deep/ .theader-bg{
+  >th{
+    background-color: @bg-th;
+  }
 }
 </style>
