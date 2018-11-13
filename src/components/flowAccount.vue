@@ -1,8 +1,8 @@
 <template>
 <div id="flowaccount">
-    <el-button type="text" @click="dialogTableVisible = true">流水明细弹出层</el-button>
+    <!-- <el-button type="text" @click="dialogTableVisible = true">流水明细弹出层</el-button> -->
     <!-- 弹框明细 -->
-    <el-dialog title="流水明细" :visible.sync="dialogTableVisible">
+    <el-dialog title="流水明细" :visible="getDialogTableVisible" @close='close'>
         <el-tabs v-model="activeName">
             <!-- 分类账 -->
             <el-tab-pane label="分类账" name="first">
@@ -102,10 +102,16 @@
 
 <script>
     export default {
+         props: {
+            dialogTableVisible: {
+                type: Boolean,
+                default: false
+            }
+        },
         data() {
             return {
                 activeName: 'first',
-                dialogTableVisible: false,
+                //dialogTableVisible: false,
                 gridData1: [
                     {
                         moneyClass: '佣金',
@@ -234,9 +240,18 @@
                         };
                     }
                 }
+            },
+            close(){
+                //this.dialogTableVisible=false
+                this.$emit('closeRunningWater')
             }
 
-        }
+        },
+        computed: {
+            getDialogTableVisible: function () {
+                return this.dialogTableVisible
+            }
+        },
     }
 </script>
 

@@ -220,7 +220,7 @@
             <el-button type="text" size="medium">上传</el-button>
             <el-button type="text" size="medium" @click="goPreview">预览</el-button>
             <el-button type="text" size="medium">提审</el-button>
-            <el-button type="text" size="medium">调佣</el-button>
+            <el-button type="text" size="medium" @click="tiaoyong=true">调佣</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -232,15 +232,23 @@
       :total="total">
     </el-pagination>
     </div>
+    <!-- 流水明细弹框 -->
+    <flowAccount :dialogTableVisible="liushui" @closeRunningWater="closeWater"></flowAccount>
+    <!-- 调佣弹框 -->
+    <layerAudit :dialogVisible="tiaoyong" @closeCentCommission="closeCommission"></layerAudit>
   </div>
 </template>
            
 <script>
 import ScreeningTop from '@/components/ScreeningTop';
+import flowAccount from '@/components/flowAccount';
+import layerAudit from '../contractDialog/layerAudit';
 
 export default {
   components: {
-    ScreeningTop
+    ScreeningTop,
+    flowAccount,
+    layerAudit
   },
   data(){
     return{
@@ -317,7 +325,9 @@ export default {
         laterStageState:5,
         resultState:1
       }],
-      total:0
+      total:0,
+      liushui:false,
+      tiaoyong:false
     }
   },
   created(){
@@ -344,7 +354,9 @@ export default {
         console.log('查询')
     },
     //流水
-    runningWater(){},
+    runningWater(){
+      this.liushui=true
+    },
     //收款
     gathering(){},
     //付款
@@ -397,6 +409,14 @@ export default {
         }
       });
     },
+    //关闭流水弹窗
+    closeWater(){
+      this.liushui=false
+    },
+    //关闭调佣弹窗
+    closeCommission(){
+      this.tiaoyong=false
+    }
   }
 };
 </script>

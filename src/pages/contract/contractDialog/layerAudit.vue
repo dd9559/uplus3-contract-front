@@ -1,8 +1,8 @@
 <template>
     <div id="layeraudit">
         <!-- 调佣审核申请 -->
-    <el-button type="text" class="curPointer" @click="dialogVisible = true">审核申请</el-button>
-    <el-dialog title="调佣申请" :visible.sync="dialogVisible" width="820px" class="layer-audit">
+    <!-- <el-button type="text" class="curPointer" @click="dialogVisible = true">审核申请</el-button> -->
+    <el-dialog title="调佣申请" :visible="getDialogVisible" width="820px" class="layer-audit" @close='close'>
       <div class="audit-box"  :style="{ height: clientHei }">
         <div class="audit-col">
           <div class="col-li">
@@ -110,6 +110,12 @@
 
 <script>
 export default {
+    props: {
+        dialogVisible: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             auditForm: {
@@ -123,7 +129,7 @@ export default {
             },
             // 弹框里用到的
             dialogImageUrl: '',
-            dialogVisible: false,
+            //dialogVisible: false,
             // dialogVisible2: false,
             
             checked: false, //是否有解除协议
@@ -133,6 +139,9 @@ export default {
     computed: {
         clientHei() {
             return document.documentElement.clientHeight -266 + 'px'
+        },
+        getDialogVisible: function () {
+            return this.dialogVisible
         }
     },
 
@@ -146,6 +155,10 @@ export default {
     //     this.dialogImageUrl = file.url;
     //     this.dialogVisible2 = true;
     //   }
+        close(){
+            //this.dialogTableVisible=false
+            this.$emit('closeCentCommission')
+        }
     }
 }
 </script>
