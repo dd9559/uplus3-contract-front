@@ -42,6 +42,7 @@ const contractList = () => import("@/pages/contract/contractList/contractList")
 const addContract = () => import("@/pages/contract/contractList/addContract")
 const contractDetails = () => import("@/pages/contract/contractList/contractDetails")
 const layerAudit = () => import("@/pages/contract/contractDialog/layerAudit");
+const changeCancel = () => import("@/pages/contract/contractDialog/changeCancel");
 Vue.use(Router)
 
 export default new Router({
@@ -167,10 +168,15 @@ export default new Router({
           path: "contractDetails",
           component: contractDetails
         },
-        //合同详情
+        //佣金申请弹层（最后需要删掉）
         {
           path: "layerAudit",
           component: layerAudit
+        },
+        //变更/解约弹层（最后需要删掉）
+        {
+          path: "changeCancel",
+          component: changeCancel
         }
       ]
     }
