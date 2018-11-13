@@ -101,7 +101,7 @@
         },
         list: [],
         rowData: [],
-        modal: true,
+        modal: false,
         template: 2,//弹窗内容
         uploadType: false,//是否显示两个上传
         fileList3: [],
