@@ -6,13 +6,10 @@
         <p>合同信息</p>
         <div class="form-content">
           <el-form-item label="签约日期：" prop="date">
-            <el-date-picker type="date" placeholder="选择日期" v-model="addForm.date" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择日期" v-model="addForm.date" :disabled="operateType==='edit'?true:false"></el-date-picker>
           </el-form-item>
           <el-form-item label="合同类型：">
-            <el-input
-              placeholder="请输入内容"
-              :value="addForm.contType==='1'?'租赁':'买卖'"
-              :disabled="true">
+            <el-input placeholder="请输入内容" :value="addForm.contType==='1'?'租赁':'买卖'" :disabled="true">
             </el-input>
           </el-form-item>
           <el-form-item label="成交总价：" prop="dealPrice">
@@ -20,7 +17,7 @@
           </el-form-item>
           <br>
           <el-form-item label="客户保证金：" prop="" v-if="addForm.contType==='2'">
-            <el-input v-model="addForm.dealPrice" placeholder="请输入内容"></el-input>
+            <el-input v-model="addForm.dealPrice" placeholder="请输入内容" :disabled="operateType==='edit'?true:false"></el-input>
           </el-form-item>
           <el-form-item label="客户佣金：" prop="">
             <el-input v-model="addForm.custCommission" placeholder="请输入内容"></el-input>
@@ -68,19 +65,27 @@
           </el-form-item>
           <br>
           <el-form-item label="建筑面积：" prop="">
-            <el-input v-model="addForm.architectureArea" placeholder="请输入内容"></el-input>
+            <el-input v-model="addForm.architectureArea" placeholder="请输入内容" :disabled="operateType==='edit'?true:false"></el-input>
           </el-form-item>
           <el-form-item label="套内面积：" prop="">
-            <el-input v-model="addForm.insideArea" placeholder="请输入内容"></el-input>
+            <el-input v-model="addForm.insideArea" placeholder="请输入内容" :disabled="operateType==='edit'?true:false"></el-input>
+          </el-form-item>
+          <el-form-item label="房源方门店：" prop="">
+            <el-select v-model="addForm.houseStoreId" placeholder="请选择状态">
+              <el-option label="光谷一店" value="1"></el-option>
+            </el-select>  
+          </el-form-item>
+          <el-form-item label="店长：" prop="">
+              {{addForm.shopownerName}}{{addForm.shopownerMobile}}
           </el-form-item>
           <br v-if="addForm.contType==='2'">
           <el-form-item label="产权状态：" prop="" v-if="addForm.contType==='2'">
-            <el-select v-model="addForm.cqzt" placeholder="请选择状态">
+            <el-select v-model="addForm.cqzt" placeholder="请选择状态" :disabled="operateType==='edit'?true:false">
               <el-option label="抵押" value="1"></el-option>
             </el-select>  
           </el-form-item>
           <el-form-item label="按揭银行：" prop="" v-if="addForm.contType==='2'">
-            <el-select v-model="addForm.ajyh" placeholder="请选择银行">
+            <el-select v-model="addForm.ajyh" placeholder="请选择银行" :disabled="operateType==='edit'?true:false">
               <el-option label="中国工商银行" value="1"></el-option>
               <el-option label="中国建设银行" value="2"></el-option>
               <el-option label="中国银行" value="3"></el-option>
@@ -98,37 +103,28 @@
             </el-select>  
           </el-form-item>
           <el-form-item label="按揭欠款：" prop="" v-if="addForm.contType==='2'">
-            <el-input v-model="addForm.ajqk" placeholder="请输入内容"></el-input>
+            <el-input v-model="addForm.ajqk" placeholder="请输入内容" :disabled="operateType==='edit'?true:false"></el-input>
           </el-form-item>
           <br v-if="addForm.contType==='2'">
           <el-form-item label="产权地址：" prop="" v-if="addForm.contType==='2'">
-            <el-input v-model="addForm.cqdz" placeholder="请输入内容"></el-input>
+            <el-input v-model="addForm.cqdz" placeholder="请输入内容" :disabled="operateType==='edit'?true:false"></el-input>
           </el-form-item>
           <el-form-item label="房产证号：" prop="" v-if="addForm.contType==='2'">
-            <el-input v-model="addForm.property" placeholder="请输入内容"></el-input>
-          </el-form-item>
-          <br v-if="addForm.contType==='2'">
-          <el-form-item label="房源方门店：" prop="">
-            <el-select v-model="addForm.houseStoreId" placeholder="请选择状态">
-              <el-option label="光谷一店" value="1"></el-option>
-            </el-select>  
-          </el-form-item>
-          <el-form-item label="店长：" prop="">
-              {{addForm.shopownerName}}{{addForm.shopownerMobile}}
+            <el-input v-model="addForm.property" placeholder="请输入内容" :disabled="operateType==='edit'?true:false"></el-input>
           </el-form-item>
           <br>
           <el-form-item label="业主信息：" prop="">
             <ul class="peopleMsg">
               <li v-for="(item,index) in addForm.contPersons" :key="index">
                 <span class="merge">
-                  <input v-model="item.name" placeholder="姓名" class="name_">
-                  <input v-model="item.mobile" placeholder="电话" class="mobile_">
+                  <input v-model="item.name" placeholder="姓名" class="name_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
+                  <input v-model="item.mobile" placeholder="电话" class="mobile_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
                 </span>
-                <el-select v-model="addForm.houseStoreId" placeholder="关系" class="relation_">
+                <el-select v-model="addForm.houseStoreId" placeholder="关系" class="relation_" :disabled="operateType==='edit'?true:false">
                   <el-option label="本人" value="1"></el-option>
                 </el-select> 
-                <input v-model="addForm.property" placeholder="产权比" class="rate_">
-                <input v-model="item.idCard" placeholder="身份证号" class="idCard_">
+                <input v-model="addForm.property" placeholder="产权比" class="rate_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
+                <input v-model="item.idCard" placeholder="身份证号" class="idCard_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="el-icon-plus"></i>
                 </span>
@@ -148,11 +144,10 @@
             <span class="select" @click="dialogTableVisible2=true">请选择客源</span> 
           </el-form-item>
           <el-form-item label="付款方式：" prop="">
-            <el-select v-model="addForm.houseStoreId" placeholder="请选择状态">
+            <el-select v-model="addForm.houseStoreId" placeholder="请选择状态" :disabled="operateType==='edit'?true:false">
               <el-option label="全款" value="1"></el-option>
             </el-select>  
           </el-form-item>
-          <br>
           <el-form-item label="客源方门店：" prop="">
             <el-select v-model="addForm.paymentMethod" placeholder="请选择状态">
               <el-option label="光谷一店" value="1"></el-option>
@@ -166,14 +161,14 @@
             <ul class="peopleMsg">
               <li v-for="(item,index) in addForm.contPersons" :key="index">
                 <span class="merge">
-                  <input v-model="item.name" placeholder="姓名" class="name_">
-                  <input v-model="item.mobile" placeholder="电话" class="mobile_">
+                  <input v-model="item.name" placeholder="姓名" class="name_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
+                  <input v-model="item.mobile" placeholder="电话" class="mobile_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
                 </span>
-                <el-select v-model="addForm.houseStoreId" placeholder="关系" class="relation_">
+                <el-select v-model="addForm.houseStoreId" placeholder="关系" class="relation_" :disabled="operateType==='edit'?true:false">
                   <el-option label="本人" value="1"></el-option>
                 </el-select> 
-                <input v-model="addForm.property" placeholder="产权比" class="rate_">
-                <input v-model="item.idCard" placeholder="身份证号" class="idCard_">
+                <input v-model="addForm.property" placeholder="产权比" class="rate_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
+                <input v-model="item.idCard" placeholder="身份证号" class="idCard_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="el-icon-plus"></i>
                 </span>
@@ -187,7 +182,7 @@
       </div>
       <!-- 三方合作 -->
       <div class="houseMsg">
-        <p @click="toCooperation">三方合作 <span class="attention" :class="{'attention_':cooperation}"></span></p>
+        <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention" :class="{'attention_':cooperation}"></span></p>
         <div class="cooperation">
           <div v-show="cooperation">
             <el-form-item label="扣合作费：" prop="">
@@ -244,22 +239,22 @@
         <el-button type="primary" round class="search_btn">查询</el-button>
       </el-form>
       <div class="search_content" v-if="houseList.length>0">
-        <el-table :data="houseList" border>
-          <el-table-column type="selection" width="59"></el-table-column>
-          <el-table-column property="houseId" label="房源编号" width="100"></el-table-column>
-          <el-table-column property="houseName" label="楼盘名称" width="150"></el-table-column>
-          <el-table-column label="状态" width="50">
+        <el-table :data="houseList" border header-row-class-name="theader-bg">
+          <el-table-column type="selection" width="50"></el-table-column>
+          <el-table-column property="houseId" label="房源编号" min-width="100"></el-table-column>
+          <el-table-column property="houseName" label="楼盘名称" min-width="150"></el-table-column>
+          <el-table-column label="状态">
             <template slot-scope="scope">
               <span v-if="scope.row.status===1">有效</span>
               <span v-if="scope.row.status===2">无效</span>
             </template>
           </el-table-column>
-          <el-table-column property="floor" label="楼层" width="100"></el-table-column>
-          <el-table-column property="houseType" label="房型" width="100"></el-table-column>
-          <el-table-column property="area" label="面积" width="100"></el-table-column>
-          <el-table-column property="price" label="售/租价" width="80"></el-table-column>
-          <el-table-column property="fitment" label="装修" width="80"></el-table-column>
-          <el-table-column property="maintainer" label="维护人" width="100"></el-table-column>
+          <el-table-column property="floor" label="楼层"></el-table-column>
+          <el-table-column property="houseType" label="房型"></el-table-column>
+          <el-table-column property="area" label="面积"></el-table-column>
+          <el-table-column property="price" label="售/租价" min-width="65"></el-table-column>
+          <el-table-column property="fitment" label="装修" min-width="60"></el-table-column>
+          <el-table-column property="maintainer" label="维护人"></el-table-column>
         </el-table>
         <el-pagination
         @size-change="handleSizeChange"
@@ -295,18 +290,18 @@
         <el-button type="primary" round class="search_btn">查询</el-button>
       </el-form>
       <div class="search_content" v-if="clientList.length>0">
-        <el-table :data="clientList" border>
+        <el-table :data="clientList" border header-row-class-name="theader-bg">
           <el-table-column type="selection" width="50"></el-table-column>
-          <el-table-column property="clientName" label="姓名" width="150"></el-table-column>
-          <el-table-column property="clientId" label="客源编号" width="200"></el-table-column>
-          <el-table-column label="交易" width="168">
+          <el-table-column property="clientName" label="姓名"></el-table-column>
+          <el-table-column property="clientId" label="客源编号"></el-table-column>
+          <el-table-column label="交易">
             <template slot-scope="scope">
               <span v-if="scope.row.trade===1">求租</span>
               <span v-if="scope.row.trade===2">求购</span>
             </template>
           </el-table-column>
-          <el-table-column property="area" label="意向区域" width="200"></el-table-column>
-          <el-table-column property="price" label="租/售价" width="150"></el-table-column>
+          <el-table-column property="area" label="意向区域" min-width="100"></el-table-column>
+          <el-table-column property="price" label="租/售价" min-width="60"></el-table-column>
         </el-table>
         <el-pagination
         @size-change="handleSizeChange"
@@ -363,17 +358,25 @@ export default {
         {clientName:'张三', clientId:'YQY110635', trade:2, area:'武昌 汉街', price:'96万'},
         {clientName:'张三', clientId:'YQY110635', trade:1, area:'武昌 汉街', price:'96万'},
       ],
+      //房源搜索
       searchForm1:{},
+      //客源搜索
       searchForm2:{},
       dialogTableVisible1:false,
       dialogTableVisible2:false,
       attention:false,
       total:5,
-      cooperation:false
+      //三方合作 
+      cooperation:false,
+      //操作类型  默认是添加
+      operateType:'add'
     }
   },
   created(){
     this.addForm.contType=this.$route.query.type
+    if(this.$route.query.operateType){
+      this.operateType=this.$route.query.operateType
+    }
   },
   methods:{
     submitForm(formName) {
@@ -444,6 +447,9 @@ export default {
     padding: 20px 0 10px 20px;
     font-size: 14px;
   }
+  .thirdParty{
+    display: inline-block;
+  }
   .form-content{
     padding-left: 30px;
     .select{
@@ -473,35 +479,41 @@ export default {
       font-size: 14px;
       margin-bottom: 10px;
       .merge{
-        border: 1px solid #ccc;
+        border: 1px solid #dcdfe6;
         padding: 5px 0;
         border-radius: 3px;
       }
-    }
-    input{
-      padding: 5px 0;
+      input{
+        padding: 5px 0;
+        color: #606266;
+      }
     }
     .name_{
       width: 60px;
       padding-left: 5px;
       border: none;
-      border-right: 1px solid #ccc;
+      border-right: 1px solid #dcdfe6;
+    }
+    .disabled{
+      background-color: #f5f7fa;
     }
     .mobile_{
       width: 100px;
       border: none;
+      margin-left: -4px;
+      padding-left: 2px;
     }
     .rate_{
       width: 60px;
       margin-right: 10px;
       padding-left: 5px;
-      border: 1px solid #ccc;
+      border: 1px solid #dcdfe6;
       border-radius: 3px;
     }
     .idCard_{
       width: 140px;
       padding-left: 5px;
-      border: 1px solid #ccc;
+      border: 1px solid #dcdfe6;
       border-radius: 3px;
     }
     .relation_{
@@ -567,5 +579,10 @@ export default {
 /deep/.el-dialog__body{
   padding-top: 20px;
   border-top: 1px solid #EDECF0
+}
+/deep/ .theader-bg{
+  >th{
+    background-color: @bg-th;
+  }
 }
 </style>

@@ -31,17 +31,24 @@
       </div>
       <div class="page-view">
         <div class="page-view-index">
+          <ul>
+            <li v-for="(item,index) in Index" :key="index">{{item}}</li>
+          </ul>
           <p class="operation">
             <el-button  type="text" @click="goBack">返回</el-button>
           </p>
         </div>
-        <router-view class="page-view-content"></router-view>
+        <div class="page-view-content">
+          <router-view class="router-view"></router-view>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import index from "../router";
+
   export default {
     name: "index",
     data() {
@@ -159,7 +166,8 @@
               }
             ]
           }
-        ]
+        ],
+        Index:[]
       }
     },
     beforeRouteEnter(to,from,next){
@@ -177,7 +185,14 @@
     },
     methods: {
       handleSelect(key, keyPath) {
-
+        this.Index = []
+        keyPath.forEach(item=>{
+          var myRe = new RegExp(`"name":"([^"]*?)","path":"${item.replace('?','\\?')}"`)
+          // console.log(myRe)
+          var myArray = myRe.exec(JSON.stringify(this.views));
+          // console.log(myArray)
+          this.Index.push(myArray[1])
+        })
       },
       goBack:function () {
         this.$router.go(-1)
@@ -223,13 +238,36 @@
       }
       .page-view{
         flex: 1;
-        padding: 0px 20px;
-        background-color: @bg-grey;
         overflow-x: auto;
         position: relative;
+        background-color: @bg-grey;
         &-index{
           height: 40px;
+          margin: 0 20px;
           position: relative;
+          >ul{
+            height: 100%;
+            display: flex;
+            align-items: center;
+            >li{
+              position: relative;
+              margin-right: 10px;
+              color: @color-99A;
+              &:after{
+                content:'>';
+                margin-left: 10px;
+                /*width: 40px;
+                height: 40px;*/
+              }
+              &:last-of-type{
+                color: @color-324;
+                &:after{
+                  content:'';
+                  margin: 0;
+                }
+              }
+            }
+          }
           .operation{
             position: absolute;
             top: 50%;
@@ -238,16 +276,21 @@
           }
         }
         &-content{
+          padding: 0px 20px;
           position: absolute;
           top: 40px;
-          right: 20px;
-          bottom: 20px;
-          left: 20px;
+          right: 0;
+          bottom: 0;
+          left: 0;
           overflow-y: auto;
           /deep/ .theader-bg{
             >th{
               background-color: @bg-th;
             }
+          }
+          .router-view{
+            min-height: 100%;
+            background-color: @bg-white;
           }
         }
       }

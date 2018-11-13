@@ -1,31 +1,116 @@
 <template>   
       <div class="layout">
-                 <!-- 头部面包屑 -->
-                <div class="head clearfix">
-                    <div class="head-left">
-                       <el-breadcrumb separator-class="el-icon-arrow-right">
-                          <el-breadcrumb-item :to="{ path: '/' }">业绩</el-breadcrumb-item>
-                          <el-breadcrumb-item>应收业绩</el-breadcrumb-item>
-                       </el-breadcrumb>
-                    </div>
-                    <!-- <div class="head-right">
-                       <button>刷新</button>
-                       <button>返回</button>
-                    </div> -->
-                </div>
-                <!-- 头部面包屑 end-->
-
                  <!-- 筛选条件  -->
                 <div class="filter-layout">
-                     <div class="filter-left f_l">
-                        <h1>
-                          <b class="el-icon-share"></b> 
-                          筛选查询
-                         </h1>
-                     </div>
-                     <div class="filter-right f_r">
-                        <el-button type="primary" round>重置</el-button>
-                        <el-button type="primary" round>查询</el-button>
+                         
+                           <div style="overflow:hidden;">
+                                 <div class="filter-left f_l">
+                                     <h1>
+                                       <b class="el-icon-search"></b> 
+                                       筛选查询
+                                      </h1>
+                               </div>
+                               <div class="filter-right f_r">
+                                  <el-button type="primary" round>重置</el-button>
+                                  <el-button type="primary" round>查询</el-button>
+                              </div>
+                           </div>
+                   
+
+                     <div class="filter-item">
+                               <!-- 筛选条件 -->
+                               <el-form 
+                               :inline="true"
+                               ref="propForm"
+                               :model="propForm" 
+                               class="prop-form"
+                               size="small">
+                                   <el-form-item 
+                                   label="部门" 
+                                   prop="region"
+                                   class="mr">
+                                       <el-select v-model="propForm.region"  class="w200">
+                                           <el-option 
+                                           v-for="item in rules.region" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+                                   <el-form-item 
+                                   prop="regionName">
+                                       <el-select v-model="propForm.regionName" class="w100">
+                                           <el-option 
+                                           v-for="item in rules.regionName" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+                               
+                                   <el-form-item 
+                                   label="合同类型" 
+                                   prop="paper">
+                                       <el-select v-model="propForm.paper" class="w120">
+                                           <el-option 
+                                           v-for="item in rules.paper" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+
+                                    <el-form-item 
+                                   label="分成类型" 
+                                   prop="paper">
+                                       <el-select v-model="propForm.paper" class="w120">
+                                           <el-option 
+                                           v-for="item in rules.paper" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+
+                                    <el-form-item 
+                                   label="业绩状态" 
+                                   prop="paper">
+                                       <el-select v-model="propForm.paper" class="w120">
+                                           <el-option 
+                                           v-for="item in rules.paper" 
+                                           :key="item.value"
+                                           :label="item.label" 
+                                           :value="item.value"></el-option>
+                                       </el-select>
+                                   </el-form-item>
+
+                                   <el-form-item 
+                                   label="签约日期"
+                                   prop="dateMo"
+                                   class="mr">
+                                       <el-date-picker
+                                           v-model="propForm.dateMo"
+                                           class="w330"
+                                           type="daterange"
+                                           range-separator="至"
+                                           start-placeholder="开始日期"
+                                           end-placeholder="结束日期">
+                                       </el-date-picker>
+                                   </el-form-item>  
+
+
+                                   <p>
+                                         <el-form-item label="关键字" prop="search">
+                                       <el-autocomplete
+                                       class="w312"
+                                       v-model="propForm.search"
+                                       placeholder="开票人员/合同编号/票据编"
+                                       :trigger-on-focus="false"
+                                       clearable
+                                       ></el-autocomplete>
+                                   </el-form-item>
+                                   </p>
+                               </el-form>
                      </div>
                 </div> 
                 <!-- 筛选条件 end -->
@@ -34,9 +119,8 @@
                       <!-- 头部 -->
                       <div class="data-head">
                            <div class="data-head-left f_l">
-                              <b class="el-icon-loading"></b> 
+                              <b class="el-icon-date"></b> 
                               <span>
-
                                   数据列表
                               </span> 
                            </div>
@@ -62,7 +146,7 @@
                                  width="240"
                                  >
                                   <template slot-scope="scope">
-                                          <p>合同编号：<span class="blue">YQYD001163</span> 姓名</p>
+                                          <p>合同编号：<span class="blue">YQYD001163</span></p>
                                           <p>房源编号：<span class="blue">YQYD001163</span> 姓名</p>
                                           <p>客源编号：<span class="blue">YQYD001163</span> 姓名</p>
                                   </template>
@@ -120,7 +204,7 @@
                                </el-table-column>
                                  <el-table-column
                                  label="分成比例"
-                                 width="100">
+                                 width="80">
                                   <template slot-scope="scope">
                                          <p>10%</p>
                                          <p>20%</p>
@@ -135,37 +219,49 @@
                                 </el-table-columfn>
                                 <el-table-column
                                  label="操作"
-                                 width="80">
+                                 width="100">
                                  <template slot-scope="scope">                           
                                          <!-- <p>{{scope.row.statu}}</p> -->
                                          <div v-if="scope.row.statu==0" class="check-btn">
-                                            <span>审核</span>
-                                            <span>编辑</span>
+                                            <span @click.stop="checkAch()">审核</span>
+                                            <span @click.stop="editAch()">编辑</span>
                                          </div>
                                            <div v-if="scope.row.statu==1" class="check-btn">
-                                            <span>审核</span>
-                                            <span>编辑</span>
+                                            <span @click.stop="checkAch()">审核</span>
+                                            <span @click.stop="editAch()">编辑</span>
                                          </div>
                                           <div v-if="scope.row.statu==2" class="check-btn">
-                                            <span>反审核</span>
+                                            <span @click.stop="againCheck()">反审核</span>
                                          </div>
                                   </template>
                                </el-table-column>
                           </el-table>
                       </div>
+
+                      
+                     <!-- 分页 -->
+                         <el-pagination
+                           @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="1"
+                           layout="total, prev, pager, next, jumper"
+                           :total="total">
+                        </el-pagination>
                 </div>
 
                    <!-- 表单列表弹出框（业绩详情） -->
                      <el-dialog
                          :visible.sync="dialogVisible"
                          width="30%"
-                         :before-close="handleClose">
+                         >
                           <b class="el-icon-close" @click="closeDialog"></b>
                            <div class="ach-header">
                              <h1>业绩详情</h1>  
                              <p>可分配业绩：<span class="orange">3000元</span></p>
                            </div> 
                            <div class="ach-body">
+
+                                <h1>房源方分成</h1>
                                 <div class="ach-divide-list">
                                      <el-table
                                       :data="achDetail"
@@ -228,6 +324,70 @@
                                     </el-table>
                                 </div>
 
+                                <h1>客源方分成</h1>
+                                <div class="ach-divide-list">
+                                     <el-table
+                                      :data="achDetail"
+                                      style="width: 100%">
+                                      <el-table-column
+                                        prop="role_type"
+                                        label="角色类型"
+                                        width="100">
+                                      </el-table-column>
+
+                                      <el-table-column
+                                        prop="distributionList"
+                                        label="分成比例"
+                                        width="80">
+                                      </el-table-column>
+
+                                      <el-table-column
+                                        prop="name"
+                                        label="经纪人"
+                                        width="80">
+                                      </el-table-column>
+
+                                       <el-table-column
+                                        prop="is_job"
+                                        label="在职状况"
+                                        width="80">
+                                      </el-table-column>
+
+                                      
+                                       <el-table-column
+                                        prop="shopowner"
+                                        label="店长"
+                                        width="80">
+                                      </el-table-column>
+
+                                      <el-table-column
+                                        prop="level4"
+                                        label="单组"
+                                        width="120">
+                                      </el-table-column>
+
+                                       <el-table-column
+                                        prop="level3"
+                                        label="门店"
+                                        width="110">
+                                      </el-table-column>
+
+                                     <el-table-column
+                                        prop="amaldar"
+                                        label="区经"
+                                        width="60"> 
+                                      </el-table-column>
+
+                                      
+                                     <el-table-column
+                                        prop="manager"
+                                        label="区总"
+                                        width="60"> 
+                                      </el-table-column>
+                                    </el-table>
+                                </div>
+
+
                                 <h1>审核信息</h1>
 
                                 <div class="ach-check-list">
@@ -266,19 +426,22 @@
                                         label="备注"
                                         width="190">
                                       </el-table-column>
-                                    
-
-
-                                 
+                                      
                                     </el-table>
                                 </div>
                            </div> 
                            <div class="ach-footer"></div> 
                      </el-dialog>
+
+                     <!-- 审核，编辑，反审核，业绩分成弹框 -->
+                     <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
+
          </div>
 </template>
 
 <script>
+import achDialog from "./achDialog";
+
 export default {
   name: "actualAchievement",
   data() {
@@ -293,7 +456,7 @@ export default {
           man: "当代一店-夏雨天",
           date: "2018/6/28",
           type1: "业绩分成",
-          man1: "当代一店-夏雨天当代一店-夏雨天",
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
           type2: "房源维护人主客方",
           radio: "20%-80%",
           amout: "400-500"
@@ -423,21 +586,130 @@ export default {
           beizhu: "审核备注信息"
         }
       ],
-      dialogVisible: false
+      rules: {
+        region: [
+          {
+            label: "区域一",
+            value: "shanghai"
+          },
+          {
+            label: "区域二",
+            value: "quyuer"
+          }
+        ]
+      },
+      dialogVisible: false,
+      // 筛选条件
+      propForm: {
+        region: "",
+        regionName: "",
+        search: "",
+        paper: "选项1",
+        time: "选项11",
+        dateMo: ""
+      },
+      // 筛选选项
+      rules: {
+        region: [
+          {
+            label: "区域一",
+            value: "shanghai"
+          },
+          {
+            label: "区域二",
+            value: "quyuer"
+          }
+        ],
+        regionName: [
+          {
+            label: "区域一",
+            value: "shangha"
+          },
+          {
+            label: "区域二",
+            value: "quyue"
+          }
+        ],
+        paper: [
+          {
+            label: "合同1",
+            value: "yi"
+          },
+          {
+            label: "合同2",
+            value: "er"
+          }
+        ],
+        time: [
+          {
+            label: "开票日期",
+            value: "选项11"
+          },
+          {
+            label: "区域二",
+            value: "选项21"
+          }
+        ]
+      },
+      shows: false,
+      dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
+      total: 0
     };
+  },
+  created() {
+    let param = {
+      pageNum: 1,
+      pageSize: 2
+    };
+    this.$ajax
+      .get("/api/achievement/selectAchievementList", param)
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res);
+        }
+      });
+  },
+  components: {
+    achDialog
   },
   methods: {
     closeDialog() {
       this.dialogVisible = false;
+    },
+    checkAch() {
+      this.dialogType = 0;
+      console.log(this.dialogType);
+      this.shows = true;
+    },
+    editAch() {
+      this.dialogType = 1;
+      console.log(this.dialogType);
+      this.shows = true;
+    },
+    againCheck() {
+      this.dialogType = 2;
+      console.log(this.dialogType);
+      this.shows = true;
+    },
+    //分页
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
 };
 </script>
 
 <style scoped lang="less">
+@import "~@/assets/less/lsx.less";
 .layout {
   .check-btn span {
     color: #478de3;
+  }
+  .check-btn span:first-of-type {
+    margin-right: 8px;
   }
   .blue {
     color: #478de3;
@@ -469,24 +741,23 @@ export default {
   }
   //  筛选条件
   .filter-layout {
-    height: 180px;
-    // width: 1680px;
-    margin-right: 20px;
-    background-color: pink;
+    min-height: 180px;
+    background-color: #fff;
     overflow: hidden;
+    padding: 20px;
     .filter-left {
       h1 {
         font-size: 18px;
         color: #233241;
         margin-top: 28px;
         position: relative;
-        padding-left: 48px;
+        padding-left: 28px;
         b {
           position: absolute;
           width: 16px;
           height: 16px;
           // background-color: red;
-          left: 20px;
+          left: 0px;
           top: 50%;
           margin-top: -8px;
         }
@@ -494,7 +765,6 @@ export default {
     }
     .filter-right {
       margin-top: 19px;
-      margin-right: 30px;
       .el-button--primary {
         width: 100px;
         height: 36px;
@@ -519,8 +789,10 @@ export default {
   .data-layout {
     // height: 1000px;
     margin-right: 20px;
-    background-color: skyblue;
+    // background-color: skyblue;
     margin-top: 15px;
+    padding: 20px;
+    background-color: #fff;
     .data-head {
       height: 68px;
       background-color: #fff;
@@ -531,7 +803,7 @@ export default {
           position: absolute;
           width: 16px;
           height: 16px;
-          left: 20px;
+          left: 0px;
           top: 63%;
           // margin-top: -8px;
         }
@@ -540,7 +812,7 @@ export default {
           display: inline-block;
           margin-top: 30px;
           font-size: 18px;
-          margin-left: 48px;
+          margin-left: 28px;
         }
       }
       .data-head-right {
@@ -657,5 +929,10 @@ export default {
       display: none;
     }
   }
+}
+/deep/ .el-pagination {
+  text-align: center;
+  padding-bottom: 50px;
+  padding-top: 50px;
 }
 </style>

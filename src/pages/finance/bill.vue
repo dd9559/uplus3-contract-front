@@ -4,8 +4,8 @@
       <div class="title">
         <span>筛选条件</span>
         <p>
-          <el-button type="primary">重置</el-button>
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="operation('reset')">重置</el-button>
+          <el-button type="primary" @click="operation">查询</el-button>
         </p>
       </div>
       <div class="content">
@@ -26,12 +26,14 @@
             <el-date-picker
               v-model="searchForm.signStart"
               type="date"
+              value-format="yyyy-MM-dd"
               placeholder="选择日期">
             </el-date-picker>
             <span>至</span>
             <el-date-picker
               v-model="searchForm.signEnd"
               type="date"
+              value-format="yyyy-MM-dd"
               placeholder="选择日期">
             </el-date-picker>
           </div>
@@ -162,6 +164,7 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
+  import {TOOL} from "../../assets/js/common";
 
   export default {
     mixins: [FILTER],
@@ -231,6 +234,11 @@
             tab:'收款信息'
           }
         })
+      },
+      operation:function (opera) {
+        if(opera==='reset'){
+          TOOL.clearForm(this.searchForm)
+        }
       }
     },
     computed:{

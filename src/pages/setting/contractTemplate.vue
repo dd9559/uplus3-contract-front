@@ -9,7 +9,7 @@
       </el-form-item>
     </el-form>
     <div class="data-list">
-      <el-table :data="list" style="width: 100%" @cell-click="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
+      <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="typeName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
@@ -26,9 +26,9 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="modal" v-show="modal">
+    <!-- 上传,预览,详情弹出框 -->
+    <el-dialog class="modal" :title='titleStr' :visible.sync="modal" >
       <template v-if="template===1">
-        <p>上传合同模板<span class="icon-font-close" @click="modal=false"></span></p>
         <div class="">
           <div class="modal-context">
             <label>合同名称：</label>
@@ -39,46 +39,34 @@
             <div class="file-upload-opera">
               <template v-if="uploadType">
                 <p @click="upload('fileOne')">
-                  <el-upload
-                  class="upload-demo"
-                  action=""
-                  :on-change="uploadFile"
-                  :file-list="fileList3">
                   <el-button>买卖</el-button>
-                  </el-upload>
+                  <input type="file" ref="fileOne" @change="uploadFile" style="display: none;">
                 </p>
                 <p @click="upload('fileTwo')">
-                  <el-upload
-                  class="upload-demo"
-                  action=""
-                  :on-change="uploadFile"
-                  :file-list="fileList3">
-                  <el-button>居间</el-button>
-                  </el-upload>                 
+                   <el-button>居间</el-button>
+                   <input type="file" ref="fileTwo" style="display: none;">
+                   <span class="upMsg">上传成功</span> 
                 </p>
-                <span class="wordtip">温馨提示：只支持Word格式</span> 
+                <span class="wordtip">温馨提示：只支持Word格式</span>
+                <el-button class="sureUp" @click='sureUp'>确定</el-button>  
               </template>
               <template v-else>
                 <p @click="upload('fileOne')">
-                 <el-upload
-                  class="upload-demo"
-                  action=""
-                  :on-change="uploadFile"
-                  :file-list="fileList3">
-                  <el-button>模板</el-button>
-                  </el-upload>
+                  <el-button>模板</el-button><br>
+                <input type="file" ref="fileOne" @change="uploadFile" style="display: none;">
+                <span class="upMsg">上传成功</span>                  
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
+                <el-button class="sureUp" @click='sureUp'>确定</el-button>                  
               </template>
             </div>
           </div>
         </div>
       </template>
       <template v-if="template===2">
-        <p>预览合同模板<span class="icon-font-close" @click="modal=false"></span></p>
+        sssssssssssss
       </template>
       <template v-if="template===3">
-        <p>合同类型详情<span class="icon-font-close" @click="modal=false"></span></p>
         <el-table :data="list" class="contractType">
           <el-table-column align="center" min-width="100px" label="合同版本号" prop="version"
                            :formatter="nullFormatter"></el-table-column>
@@ -90,13 +78,13 @@
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="操作">
             <template slot-scope="scope">
-              <el-button @click="start(scope.row)" type="text" size="small">启用</el-button>
+              <el-button type="text" size="small" @click="enable">启用</el-button>
               <el-button @click="rowOperation(scope.row,2)" type="text" size="small">预览</el-button>
             </template>
           </el-table-column>
         </el-table>
       </template>
-    </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -114,15 +102,35 @@
         list: [],
         rowData: [],
         modal: false,
-        template: 1,//弹窗内容
+        template: 2,//弹窗内容
         uploadType: false,//是否显示两个上传
-        fileList3: []
+        fileList3: [],
+        titleStr:'',
       }
     },
     created() {
+      if(this.template===1){
+        this.titleStr='上传合同模板'
+      }else if(this.template===2){
+        this.titleStr='预览合同模板'
+      }else if(this.template===3){
+        this.titleStr='合同模板详情'
+      } 
       this.getList()
     },
     methods: {
+      /**
+       * 弹框
+       */
+      popMsg(msg,callback){
+        this.$confirm(msg,'提示',{
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+           callback()
+        })
+      },
       /**
        * 获取列表数据
        */
@@ -140,11 +148,28 @@
         })
       },
       /**
+       * 上传
+       */
+      sureUp(){      
+       this.popMsg('确定要上传此类型模板吗？',()=>{
+         console.log('上传');
+         this.modal=false
+       })
+      },
+      /**
+       * 启用
+       */
+      enable(){
+        this.popMsg('确定要启用此类型模板吗？',()=>{
+         console.log('启用');
+         this.modal=false
+       })
+      },
+      /**
        * 获取详情
        * @param row
        */
       getRowDetails: function (row, column, cell, event) {
-        if(column.property=='typeName'){
           this.$ajax.get('/api/setting/contractTemplate/listByType', {id: row.id,cityName:row.cityName}).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -155,7 +180,6 @@
         }).catch(error => {
           console.log(error)
         })
-        }
       },
       upload:function(type){
         this.$refs[type].click()
@@ -174,52 +198,19 @@
         }
         },
       rowOperation: function (row, type = 1) {
-        this.modal = true
-        this.template = type
-        console.log(row)
+        //上传
         if(type===1){
-          this.$confirm('是否确定上传此类型模版？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }).then(()=>{
+            this.modal = true
+            this.template = type
             this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
-            this.$message({
-            type: 'success',
-            message: '上传成功!'
-          });
-        })
         }
-        else if(type === 3) {
-          this.$confirm('是否确定启用此类型模版？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }).then(()=>{
-            this.$message({
-            type: 'success',
-            message: '启用成功!'
-          });
-        })
-        }else {
+        //预览
+        else if(type===2){
+          this.modal = true
           this.template = type
-          if(type===2){
-          this.$confirm('是否确定预览此类型模版？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }).then(()=>{
            this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
             console.log(res)
-            }).catch(error=>{
-            console.log(error)
             })
-            this.$message({
-            type: 'success',
-            message: '预览成功!'
-          });
-        })
-        }
         }
       }
     },
@@ -242,7 +233,6 @@
     box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
     border-radius:4px;
     border: 1px solid transparent;
-    margin-top: 22px;
     .selectCity {
       margin-top: 24px;
       line-height: 32px;
@@ -320,18 +310,6 @@
   }
 
   .modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: @bg-white;
-    min-width: 400px;
-    min-height: 200px;
-    border-radius:4px;
-    width: 700px;
-    z-index: 9;
-    padding: 80px 20px 20px;
-    display: flex;
     > p {
       position: absolute;
       top: 0;
@@ -381,6 +359,18 @@
           font-weight:400;
           color:rgba(108,121,134,1);
           line-height:42px;
+        }
+         .sureUp{
+            width:86px;
+            height:32px;
+            line-height: 7px;
+            background:rgba(71,141,227,1);
+            border-radius:16px;
+            color: white;
+            text-align: center;
+            position: absolute;
+            right: 21px;
+            bottom: 10px;
         }
       }
     }
