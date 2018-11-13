@@ -7,7 +7,10 @@
              >
               <b class="el-icon-close" @click="closeDialog"></b>
                            <div class="ach-header">
-                             <h1>业绩审核</h1>  
+                             <h1 v-if="dialogType==0">业绩审核</h1> 
+                             <h1 v-if="dialogType==1">业绩编辑</h1> 
+                             <h1 v-if="dialogType==2">业绩反审核</h1>  
+                             <h1 v-if="dialogType==3">业绩分成</h1> 
                              <p>可分配业绩：<span class="orange">3000元</span></p>
                            </div> 
                            <div class="ach-body">
@@ -143,7 +146,7 @@
                                         label="操作"
                                         width="80"> 
                                          <template slot-scope="scope">
-                                            <span  class="delete" style="color:#478de3;" @click="deleteHouse(scope.$index,achDetail)">删除</span>
+                                            <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail)">删除</a>
                                             <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
                                         </template>
                                       </el-table-column>
@@ -282,7 +285,7 @@
                                         label="操作"
                                         width="80"> 
                                          <template slot-scope="scope">
-                                            <span  class="delete" style="color:#478de3;" @click="delete1(scope.$index,achDetail1)">删除</span>
+                                             <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail1)">删除</a>
                                             <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
                                         </template>
                                       </el-table-column>
@@ -291,32 +294,53 @@
                            </div> 
 
                            <!-- 业绩审核底部 -->
-                           <div class="ach-footer">
+                          <div class="ach-footer" v-if="dialogType==0">
                                <p>
-                                     <!-- 审核日期：
-                                     <el-date-picker
-                                      v-model="value1"
-                                      type="date"
-                                      placeholder="选择日期">
-                                    </el-date-picker> -->
                                     备注：
                                     <el-input
                                       type="textarea"
                                       :rows="2"
                                       placeholder="请输入内容"
                                       class="f_l"
-                                      v-model="textarea">  
+                                      v-model="textarea"
+                                      >  
                                     </el-input>
                                 </p>
                                 <div class="footer-btn-layout f_r">
-                                       <el-button type="primary" round @click="passCloseDialog">通过</el-button>
-                                       <el-button type="primary" round @click="closeDialog()">驳回</el-button>
+                                       <el-button type="primary" round @click="passClose" class="color-green">通过</el-button>
+                                       <el-button type="primary" round @click="closeDialog" class="color-red">驳回</el-button>                       
+                                </div>
+                           </div> 
+
+                            <!-- 业绩编辑底部 -->
+                           <div class="ach-footer" v-else="dialogType==1">
+                                <div class="footer-btn-layout f_r">
+                                       <el-button type="primary" round @click="passClose" class="color-blue">保存</el-button>
+                                </div>
+                           </div>
+                             <!-- 业绩反审核底部 -->
+                           <div class="ach-footer" v-else="dialogType==2">
+                               <p>
+                                    审核日期：
+                                     <el-date-picker
+                                      v-model="value1"
+                                      type="date"
+                                      placeholder="选择日期">
+                                    </el-date-picker>
+                                </p>
+                                <div class="footer-btn-layout f_r">
+                                       <el-button type="primary" round @click="passClose" class="color-blue">保存</el-button>
                                 </div>
                            </div>
 
-
-                                                    
-
+                           <!-- 业绩分成底部      -->
+                           <div class="ach-footer" v-else="dialogType==3">
+                                <div class="footer-btn-layout f_r">
+                                       <el-button type="primary" round @click="passClose" class="color-white">取消</el-button>
+                                       <el-button type="primary" round @click="passClose" class="color-blue">保存</el-button>
+                                </div>
+                           </div>
+                          
                            
                              <div class="dialog2">
                                  <el-dialog
@@ -328,8 +352,9 @@
                                   <div class="mansList">
                                         <el-table
                                            :data="mansList"
-                                           style="width: 100%">
-                                                <el-table-column
+                                           style="width: 100%"
+                                           @selection-change="handleSelectionChange">
+                                                <!-- <el-table-column
                                                   prop="role_type"
                                                   width="70">
                                                        <template slot-scope="scope">
@@ -338,7 +363,13 @@
                                                        <template slot="header" slot-scope="slot">
                                                             <el-checkbox v-model="checked"></el-checkbox> 
                                                       </template>
-                                                 </el-table-column>
+                                                 </el-table-column> -->
+                                                
+                                                    <el-table-column
+                                                      type="selection"
+                                                      width="70">
+                                                    </el-table-column>
+                                                                                                
 
                                                  <el-table-column
                                                    label="经纪人"
@@ -478,7 +509,8 @@ export default {
     };
   },
   props: {
-    shows: Boolean
+    shows: Boolean,
+    dialogType: Number
   },
   methods: {
     handleClose() {
@@ -532,11 +564,15 @@ export default {
     delete1(index, rows) {
       rows.splice(index, 1);
     },
-    passCloseDialog() {
+    passClose() {
       this.$emit("close");
+      console.log(22222222);
     },
     closeDialog() {
       this.$emit("close");
+    },
+    handleSelectionChange() {
+      this.multipleSelection = val;
     }
   }
 };
@@ -708,7 +744,17 @@ export default {
       background-color: #fff;
       padding-left: 20px;
       box-sizing: border-box;
-      padding-bottom:150px;
+      position: relative;
+      p {
+        margin-top: 30px;
+      }
+      .el-textarea {
+        position: absolute;
+        left: 70px;
+        top: 0;
+        padding-bottom: 80px;
+        width: 60%;
+      }
       textarea {
         width: 650px !important;
       }
@@ -723,12 +769,20 @@ export default {
           border-radius: 19px;
           border: 0;
         }
-        button:first-of-type {
+        .color-green {
           background-color: #54d384;
         }
-        button:nth-of-type(2) {
+        .color-red {
           background-color: #f56c6c;
           margin-left: 20px;
+        }
+        .color-blue {
+          background-color: #478de3;
+        }
+        .color-white {
+          background-color: #fff;
+          color: #000;
+          border: 1px solid #e8eaf6;
         }
       }
     }
