@@ -190,7 +190,7 @@ let TOOL = {
   },
   dateFormat:function (val) {
     if(!val){
-      return ''
+      return '--'
     }else {
       let time = new Date(val)
       let y = time.getFullYear()
@@ -201,7 +201,7 @@ let TOOL = {
   },
   timeFormat:function (val) {
     if(!val){
-      return ''
+      return '--'
     }else {
       let time = new Date(val)
       let y = time.getFullYear()
