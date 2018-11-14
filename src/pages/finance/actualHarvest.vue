@@ -22,7 +22,7 @@
         </div>
         <div class="input-group">
           <label>收款状态:</label>
-          <el-select v-model="searchForm.moneyState" placeholder="请选择">
+          <el-select v-model="searchForm.status" placeholder="请选择">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -33,7 +33,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select v-model="searchForm.department" placeholder="请选择">
+          <el-select v-model="searchForm.proceedsStore" placeholder="请选择">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -65,6 +65,8 @@
             <el-date-picker
               v-model="searchForm.signEnd"
               type="date"
+              size="mini"
+              prefix-icon="daterange"
               placeholder="选择日期">
             </el-date-picker>
           </div>
@@ -81,6 +83,8 @@
             <el-date-picker
               v-model="searchForm.collectionEnd"
               type="date"
+              size="mini"
+              prefix-icon="daterange"
               placeholder="选择日期">
             </el-date-picker>
           </div>
@@ -125,8 +129,8 @@
       return {
         searchForm: {
           moneyType: '',
-          moneyState: '',
-          department: '',
+          status: '',
+          proceedsStore: '',
           contractType: '',
           signStart: '',
           signEnd: '',
@@ -157,7 +161,16 @@
     },
     methods: {
       getData: function () {
-        this.$ajax.get('/api/finance/listCollection').then(res => {
+        let param={
+          moneyType: this.searchForm.moneyType,
+          status: this.searchForm.status,
+          proceedsStore: this.searchForm.proceedsStore,
+          contractType: this.searchForm.contractType,
+          operatingTimeQUERY:this.searchForm.moneyType,
+          proceedsTimeQUERY:this.searchForm.moneyType,
+          keyword: this.searchForm.keyword
+        }
+        this.$ajax.get('/api/finance/listCollection',param).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list = res.data.list
