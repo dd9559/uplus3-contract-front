@@ -4,17 +4,17 @@
             <ul class="ul">
                 <li>
                     <span class="cl-1">合同编号：</span>
-                    <span class="w-150">201809301289</span>
+                    <span class="w-150">{{data.contCode}}</span>
                 </li>
                 <li>
                     <span class="cl-1">物业地址：</span>
-                    <span class="w-600">东湖开发区安逸小区12幢4单元806</span>
+                    <span class="w-600">{{data.address}}</span>
                 </li>
             </ul>
             <ul class="ul">
                 <li>
                     <span class="cl-1">交款单位：</span>
-                    <span class="w-150">张小茹</span>
+                    <span class="w-150">{{data.payerName}}</span>
                 </li>
                 <li>
                     <span class="cl-1">合计金额：</span>
@@ -26,7 +26,7 @@
                     <el-row>
                         <el-col :span="5">
                             <el-checkbox v-model="item.tab">
-                                <span class="cl-1">物业地址：</span>
+                                <span class="cl-1">款类：</span>
                                 <span class="cl-2">{{item.name}}</span>
                             </el-checkbox>
                         </el-col>
@@ -51,7 +51,7 @@
                         </el-col>
                         <el-col :span="4">
                             <span class="cl-1">票据编号：</span>
-                            <span class="cl-2">{{item.number}}</span>
+                            <span class="cl-2">{{item.paper}}</span>
                         </el-col>
                     </el-row>
                 </li>
@@ -59,37 +59,38 @@
             <div class="sure-btn">
                 <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="sureFn" round>确定开票</el-button>
             </div>
-            <div class="preview">
+            <div class="preview" v-show="perviewShow">
                 <div class="preview-tit">票据预览</div>
                 <div class="preview-ul">
                     <ul>
                         <li 
-                        v-for="(item,index) in previewTit" 
-                        :key="item" 
+                        v-for="(item,index) in perviewMain" 
+                        :key="item.name" 
                         :class="previewIndex === index ?'on':''"
-                        @click="tabClickFn(index)">{{item}}</li>
+                        @click="tabClickFn(index)">{{item.name}}</li>
                     </ul>
                 </div>
                 <LayerPaperInfo 
                 v-for="(item,index) in perviewMain"
-                :key="item.number"
-                :number="item.number"
-                :name="item.name"
-                :collectionTime="item.collectionTime"
-                :invoiceTime="item.invoiceTime"
+                :key="item.money"
+                :number="data.contCode"
+                :name="data.payerName"
+                :collectionTime="data.paymentTime"
+                :invoiceTime="data.createTime"
                 :paper="item.paper"
-                :project="item.project"
+                :project="item.name"
                 :hide="item.hide"
-                :address="item.address"
+                :address="data.address"
                 :money="item.money"
                 :moneyZh="item.moneyZh"
-                :create="item.create"
-                :rules="item.rules"
+                :create="data.createBy"
+                :rules="item.val"
+                :payerType="data.payerType"
                 v-show="previewIndex === index"
                 ></LayerPaperInfo>
             </div>
         </div>
-        <span slot="footer">
+        <span slot="footer" v-show="perviewShow">
             <el-button class="paper-btn" type size="medium" @click="propCloseFn" round>取消</el-button>
             <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="printFn" round>打印</el-button>
         </span>
@@ -99,15 +100,10 @@
 <script>
     import LayerPaperInfo from '@/components/LayerPaperInfo';
     export default {
-        props: {
-            show: {
-                type: Boolean,
-                default: false
-            }
-        },
+        props: {},
         data() {
             return {
-                comShow: this.show,
+                comShow: false,
                 checked:[{
                     tab:true,
                     name:'房款',
@@ -116,34 +112,46 @@
                     rules:[{
                         label:'区域1',
                         value:'选项1'
+                    },{
+                        label:'区域2',
+                        value:'选项2'
                     }],
                     hide:false,
-                    number:10086
-                }],
-                previewTit:['房款','佣金'],
-                previewIndex:0,
-                perviewMain:[{
-                    number:'201809301289',
-                    name:'房款',
-                    collectionTime:'',
-                    invoiceTime:'',
-                    paper:'',
-                    project:'',
+                    paper:'10086'
+                },{
+                    tab:false,
+                    name:'房款2',
+                    money:100000,
+                    val:'',
+                    rules:[{
+                        label:'区域1',
+                        value:'选项1'
+                    },{
+                        label:'区域2',
+                        value:'选项2'
+                    }],
                     hide:false,
-                    address:'',
-                    money:1000.01,
-                    moneyZh:'',
-                    create:'',
-                    rules:''
-                }]
+                    paper:'10000000'
+                }],
+                previewIndex:0,
+                perviewMain:[],
+                data:{
+                    contCode:'201809301289',
+                    payerName:'张小茹',
+                    address:'东湖开发区安逸小区12幢4单元806',
+                    paymentTime:'2018-11-13',
+                    createTime:'2018-11-13',
+                    createBy:'张小茹',
+                    payerType:'客户身份'
+                }
             }
         },
-        watch: {
-            show(oldVal, newVal) {
-                if (newVal === this.comShow) {
-                    this.comShow = !newVal
-                } else {
-                    this.comShow = newVal;
+        computed:{
+            perviewShow(){
+                if(this.perviewMain.length > 0){
+                    return true
+                }else{
+                    return false
                 }
             }
         },
@@ -164,7 +172,36 @@
             },
             // 确定开票
             sureFn(){
-                console.log('确定开票')
+                let bool = true;
+                let tab = false;
+                let arr = [];
+                this.checked.forEach(e => {
+                    if(e.tab){
+                        tab = true;
+                        if(e.val === ''){
+                            bool = true
+                            return false
+                        }else{
+                            bool = false
+                            arr.push({
+                                name:e.name,
+                                money:e.money,
+                                val:e.val,
+                                hide:e.hide,
+                                paper:e.paper
+                            });
+                        }
+                    }
+                });
+                if(tab){
+                    if(bool){
+                        this.$message.error('请选择开票项！');
+                    }else{
+                        this.perviewMain = arr;
+                    }
+                }else{
+                    this.previewTit = [];
+                }
             },
             // tab切换
             tabClickFn(index){

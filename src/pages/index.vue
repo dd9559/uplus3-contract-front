@@ -66,7 +66,7 @@
               },
               {
                 name:'调佣审核',
-                path:'12'
+                path:'adjustCheck'
               },
               {
                 name:'结算审核',

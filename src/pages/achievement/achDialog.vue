@@ -258,7 +258,7 @@
 
                                      <el-table-column
                                         label="区经"
-                                        width="60"> 
+                                        width="80"> 
                                         <template slot-scope="scope">
                                               <el-input v-model="scope.row.amaldar" placeholder="请输入"></el-input>
                                         </template>
@@ -267,7 +267,7 @@
                                       
                                      <el-table-column
                                         label="区总"
-                                        width="60"> 
+                                        width="80"> 
                                         <template slot-scope="scope">
                                               <el-input v-model="scope.row.manager" placeholder="请输入"></el-input>
                                         </template>

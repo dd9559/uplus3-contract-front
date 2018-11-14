@@ -137,84 +137,160 @@
                       <!-- 表格 -->
                       <div class="data-list">
                          <el-table
-                            :data="tableData"
+                            :data="selectAchLish"
                             style="width: 100%"
-                            @row-dblclick="dialogVisible = true"
+                            @row-dblclick="enterDetail"
                             >
                                <el-table-column
                                  label="合同信息"
                                  width="240"
                                  >
                                   <template slot-scope="scope">
-                                          <p>合同编号：<span class="blue">YQYD001163</span></p>
-                                          <p>房源编号：<span class="blue">YQYD001163</span> 姓名</p>
-                                          <p>客源编号：<span class="blue">YQYD001163</span> 姓名</p>
+                                          <p>合同编号：<span class="blue">{{scope.row.code}}</span></p>
+                                          <p>房源编号：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
+                                          <p>客源编号：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
                                   </template>
                                </el-table-column>
                                <el-table-column
-                                 prop="statu"
                                  label="业绩状态"
                                  width="100">
                                   <template slot-scope="scope">
-                                     <p v-if="scope.row.statu==0" class="blue">未审核</p>
-                                     <p v-if="scope.row.statu==1" class="green">已通过</p>
-                                     <p v-if="scope.row.statu==2" class="orange">已驳回</p>
+                                     <p v-if="scope.row.achievementState==0" class="blue">未审核</p>
+                                     <p v-if="scope.row.achievementState==1" class="green">已通过</p>
+                                     <p v-if="scope.row.achievementState==2" class="orange">已驳回</p>
                                   </template>
                                </el-table-column>
                                <el-table-column
-                                 prop="type"
                                  label="合同类型"
                                  width="100">
+                                 <template slot-scope="scope">
+                                     <p v-if="scope.row.contType==0">租赁</p>
+                                     <p v-if="scope.row.contType==1">买卖</p>
+                                     <p v-if="scope.row.contType==2">代办</p>
+                                  </template>
+
                                </el-table-column>
                                 <el-table-column
-                                 prop="address"
+                                 prop="propertyAddr"
                                  label="物业地址"
                                  width="210">
                                </el-table-column>
-                                   <el-table-column
-                                 prop="man"
+
+                               <el-table-column
                                  label="成交经纪人"
                                  width="170">
+                                     <template slot-scope="scope">
+                                       <p v-if="scope.row.dealName">{{scope.row.dealName}}</p>
+                                       <p v-else>暂无</p>
+                                     </template>
                                </el-table-column>
-                                   <el-table-column
+
+                               <el-table-column
                                  prop="date"
                                  label="签约日期"
                                  width="110">
+                                  <template slot-scope="scope">
+                                       <p>{{scope.row.signDate|formatDate}}</p>
+                                   </template>
                                </el-table-column>
+
+
                                <el-table-column
-                                 prop="type1"
                                  label="分成类型"
                                  width="110">
+                                   <template slot-scope="scope">
+                                     <!-- 目前一期分成类型只有业绩，暂时写死 -->
+                                       <p>业绩</p>
+                                   </template>
                                </el-table-column>
+
+
                                 <el-table-column
                                  label="分成人"
                                  width="170">
                                   <template slot-scope="scope">
-                                          <p>当代一店-夏天雨</p>
-                                          <p>当代一店-秋天叶</p>
+                                          <p v-for="item in scope.row.distributionFroms">{{item.assignor}}</p>
                                   </template>
                                </el-table-column>
+
+
                                <el-table-column
                                  label="角色类型"
                                  width="130">
                                   <template slot-scope="scope">
-                                          <p>房源维护人</p>
-                                          <p>主客方</p>
+                                          <div  v-for="item in scope.row.distributionFroms">
+                                               <div v-if="item.roleType==0">
+                                                  <p>房源维护人</p>
+                                                  <p>录入</p>
+                                               </div>
+                                               <div v-if="item.roleType==1">
+                                                  <p>房源维护人</p>
+                                                  <p>维护</p>
+                                               </div>
+                                               <div v-if="item.roleType==2">
+                                                  <p>房源维护人</p>
+                                                  <p>独家</p>
+                                               </div>
+                                                <div v-if="item.roleType==3">
+                                                  <p>房源维护人</p>
+                                                  <p>房勘</p>
+                                               </div>
+                                                <div v-if="item.roleType==4">
+                                                  <p>房源维护人</p>
+                                                  <p>钥匙</p>
+                                               </div>
+                                                <div v-if="item.roleType==5">
+                                                  <p>房源维护人</p>
+                                                  <p>委托</p>
+                                               </div>
+                                                <div v-if="item.roleType==6">
+                                                  <p>房源维护人</p>
+                                                  <p>建盘</p>
+                                               </div>
+
+                                                <div v-if="item.roleType==7">
+                                                  <p>客源维护人</p>
+                                                  <p>主客方</p>
+                                               </div>
+                                                <div v-if="item.roleType==8">
+                                                  <p>客源维护人</p>
+                                                  <p>推荐人</p>
+                                               </div>
+                                                <div v-if="item.roleType==9">
+                                                  <p>客源维护人</p>
+                                                  <p>签约人</p>
+                                               </div>
+                                                <div v-if="item.roleType==10">
+                                                  <p>客源维护人</p>
+                                                  <p>A/M</p>
+                                               </div>
+                                                <div v-if="item.roleType==11">
+                                                  <p>客源维护人</p>
+                                                  <p>协议方</p>
+                                               </div>
+                                               <div v-if="item.roleType==12">
+                                                  <p>客源维护人</p>
+                                                  <p>协议方2</p>
+                                               </div>
+
+                                          </div>
                                   </template>
                                </el-table-column>
-                                 <el-table-column
+
+                               <el-table-column
                                  label="分成比例"
                                  width="80">
                                   <template slot-scope="scope">
-                                         <p>10%</p>
-                                         <p>20%</p>
-                                         <p>50%</p>
+                                         <p v-for="item in scope.row.distributionFroms">{{item.ratio}}%</p>
                                   </template>
                                </el-table-column>
-                                 <el-table-column
-                                 prop="amout"
+
+                               <el-table-column
                                  label="应收分成金额"
                                >
+                                  <template slot-scope="scope">
+                                         <p v-for="item in scope.row.distributionFroms">{{item.aMoney}}</p>
+                                  </template>
                                </el-table-column>
                                 </el-table-columfn>
                                 <el-table-column
@@ -222,15 +298,15 @@
                                  width="100">
                                  <template slot-scope="scope">                           
                                          <!-- <p>{{scope.row.statu}}</p> -->
-                                         <div v-if="scope.row.statu==0" class="check-btn">
+                                         <div v-if="scope.row.achievementState==0" class="check-btn">
                                             <span @click.stop="checkAch()">审核</span>
                                             <span @click.stop="editAch()">编辑</span>
                                          </div>
-                                           <div v-if="scope.row.statu==1" class="check-btn">
+                                           <div v-if="scope.row.achievementState==1" class="check-btn">
                                             <span @click.stop="checkAch()">审核</span>
                                             <span @click.stop="editAch()">编辑</span>
                                          </div>
-                                          <div v-if="scope.row.statu==2" class="check-btn">
+                                          <div v-if="scope.row.achievementState==2" class="check-btn">
                                             <span @click.stop="againCheck()">反审核</span>
                                          </div>
                                   </template>
@@ -446,106 +522,7 @@ export default {
   name: "actualAchievement",
   data() {
     return {
-      tableData: [
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: "业绩分成",
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 1,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: "业绩分成",
-          man1: "当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 2,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: "业绩分成",
-          man1: "当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: "业绩分成",
-          man1: "当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 1,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: "业绩分成",
-          man1: "当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 2,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: "业绩分成",
-          man1: "当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: "业绩分成",
-          man1: "当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        }
-      ],
+      selectAchLish: [],
       achDetail: [
         {
           role_type: "房源录入人",
@@ -659,13 +636,15 @@ export default {
   created() {
     let param = {
       pageNum: 1,
-      pageSize: 2
+      pageSize: 10
     };
     this.$ajax
       .get("/api/achievement/selectAchievementList", param)
       .then(res => {
+        let data = res.data;
         if (res.status === 200) {
-          console.log(res);
+          this.selectAchLish = data.data.list;
+          console.log(data.data.list);
         }
       });
   },
@@ -675,6 +654,10 @@ export default {
   methods: {
     closeDialog() {
       this.dialogVisible = false;
+    },
+    enterDetail(row) {
+      console.log(row.code);
+      this.dialogVisible = true;
     },
     checkAch() {
       this.dialogType = 0;
