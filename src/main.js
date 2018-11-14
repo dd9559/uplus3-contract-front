@@ -16,6 +16,22 @@ Vue.config.productionTip = false
 Vue.prototype.$ajax=api
 Vue.prototype.$axios=axios
 
+// 时间格式化
+let padDate = function (va) {
+  va = va < 10 ? "0" + va : va;
+  return va;
+};
+
+Vue.filter("formatDate", function (value) {
+  var time = new Date(value);
+  var year = time.getFullYear();
+  var month = padDate(time.getMonth() + 1);
+  var day = padDate(time.getDate());
+  return (
+    year + "-" + month + "-" + day
+  );
+});
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -23,3 +39,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
