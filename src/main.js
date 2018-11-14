@@ -8,29 +8,18 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 import {api} from '@/assets/js/ajax'
+import {TOOL} from "@/assets/js/common"
 
 Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
-Vue.prototype.$ajax=api
-Vue.prototype.$axios=axios
+Vue.prototype.$ajax=api   //axios请求封装
+Vue.prototype.$tool=TOOL  //工具方法封装
 
-// 时间格式化
-let padDate = function (va) {
-  va = va < 10 ? "0" + va : va;
-  return va;
-};
-
-Vue.filter("formatDate", function (value) {
-  var time = new Date(value);
-  var year = time.getFullYear();
-  var month = padDate(time.getMonth() + 1);
-  var day = padDate(time.getDate());
-  return (
-    year + "-" + month + "-" + day
-  );
-});
+Vue.filter("formatDate", TOOL.dateFormat);
+Vue.filter("formatTime", TOOL.timeFormat);
+Vue.filter("formatNull", TOOL.nullFormat);
 
 /* eslint-disable no-new */
 new Vue({
