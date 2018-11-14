@@ -53,10 +53,10 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
-            :page-sizes="[20, 30, 40, 50]"
+            :page-sizes="[1, 2, 3, 4]"
             :page-size="pageSize"
             layout="prev, pager, next,  total, sizes, jumper"
-            :total="count">
+            :total="total">
         </el-pagination>
     </div>
 </template>
@@ -74,8 +74,9 @@
                 },
                 searchTime: [],
                 tableData: [],
-                pageSize: 50,
-                pageNum: 1
+                pageSize: 3,
+                pageNum: 1,
+                total:0,
             }
         },
         created() {
@@ -85,12 +86,13 @@
             handleSizeChange (val) {
             console.log(`每页 ${val} 条`)
             this.pageSize = val
-            this.initList()
+            console.log(this.pageSize,'pageSize');
+            this.getLogList()
             },
             handleCurrentChange (val) {
             console.log(`当前页: ${val}`)
             this.pageNum = val
-            this.initList()
+            this.getLogList()
             },
             getLogList() {
                 let param = {
@@ -100,6 +102,7 @@
                 this.$ajax.get('/api/operation/getList',param).then(res => {
                     res = res.data
                     if(res.status === 200) {
+                        this.total = res.data.total
                         this.tableData = res.data.list
                     }
                 }).catch(error => {
