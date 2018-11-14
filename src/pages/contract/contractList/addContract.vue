@@ -15,6 +15,9 @@
           <el-form-item label="成交总价：" prop="dealPrice">
             <el-input v-model="addForm.dealPrice" placeholder="请输入内容"></el-input>
           </el-form-item>
+          <el-form-item>
+            <span class="chineseNum">{{addForm.dealPrice|moneyFormat}}</span>
+          </el-form-item>
           <br>
           <el-form-item label="客户保证金：" prop="" v-if="addForm.contType==='2'">
             <el-input v-model="addForm.dealPrice" placeholder="请输入内容" :disabled="operateType==='edit'?true:false"></el-input>
@@ -159,9 +162,9 @@
           <br>
           <el-form-item label="客户信息：" prop="">
             <ul class="peopleMsg">
-              <li v-for="(item,index) in addForm.contPersons" :key="index">
+              <li v-for="(item,index) in addForm.contPersons1" :key="index">
                 <span class="merge">
-                  <input v-model="item.name" placeholder="姓名" class="name_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
+                  <input v-model="item.name" placeholder="姓名" class="name_" :disabled="item.edit?true:false" :class="{'disabled':operateType==='edit'&&!item.edit}">
                   <input v-model="item.mobile" placeholder="电话" class="mobile_" :disabled="operateType==='edit'?true:false" :class="{'disabled':operateType==='edit'}">
                 </span>
                 <el-select v-model="addForm.houseStoreId" placeholder="关系" class="relation_" :disabled="operateType==='edit'?true:false">
@@ -324,11 +327,16 @@
 </template>
            
 <script>
+import {TOOL} from "@/assets/js/common";
+
 export default {
   data(){
     return{
       addForm:{
         contPersons:[
+          {name:'张三', mobile:'123456789',idCard:'421124199801141256',edit:false},
+        ],
+        contPersons1:[
           {name:'张三', mobile:'123456789',idCard:'421124199801141256'}
         ]
       },
@@ -390,7 +398,7 @@ export default {
       });
     },
     addcommissionData(){
-      this.addForm.contPersons.push({});
+      this.addForm.contPersons.push({edit:true});
     },
     deleteRowcommissionData(index){
       this.addForm.contPersons.splice(index, 1);
@@ -406,6 +414,19 @@ export default {
     },
     toCooperation(){
       this.cooperation=!this.cooperation
+    },
+    // haha(){
+    //   var money = this.addForm.dealPrice
+    //   TOOL.toChineseNumber(money)
+    // }
+  },
+  filters:{
+    moneyFormat:function(val){
+      if(!val){
+        return '零'
+      }else{
+        return TOOL.toChineseNumber(val)
+      }
     }
   }
 };
@@ -438,6 +459,11 @@ export default {
     }
     .sxf_3{
       width: 80px;
+    }
+    .chineseNum{
+      padding-left: 10px;
+      color: @color-orange;
+      font-size: 14px;
     }
   }
 }

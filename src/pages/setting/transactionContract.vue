@@ -102,7 +102,7 @@
 <style scoped lang="less">
 .data-list {
     .table_head {
-        padding: 12px 10px;
+        padding: 13px 10px;
         display: flex;
         justify-content: flex-end;
         background-color: #fff;
@@ -114,7 +114,7 @@
         }
     }
     .contract-list {
-        padding: 0 10px;
+        padding: 0 12px;
     }
     .contract-form {
         .el-form-item {
