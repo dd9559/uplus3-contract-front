@@ -98,14 +98,14 @@
               </el-table-column>
               <el-table-column align="center" label="信息类型">
                 <template slot-scope="scope">
-                  <!--<el-select v-model="tableForm[scope.$index].type" placeholder="请选择">
+                  <el-select v-model="tableForm[scope.$index].type" placeholder="请选择">
                     <el-option
                       v-for="item in options"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value">
                     </el-option>
-                  </el-select>-->
+                  </el-select>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="是否必填" min-width="140px">

@@ -49,6 +49,15 @@
                 <el-table-column label="IP地址" prop="ip"></el-table-column>
             </el-table>
         </div>
+        <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-sizes="[1, 2, 3, 4]"
+            :page-size="pageSize"
+            layout="prev, pager, next,  total, sizes, jumper"
+            :total="total">
+        </el-pagination>
     </div>
 </template>
 
@@ -65,14 +74,26 @@
                 },
                 searchTime: [],
                 tableData: [],
-                pageSize: 50,
-                pageNum: 1
+                pageSize: 3,
+                pageNum: 1,
+                total:0,
             }
         },
         created() {
             this.getLogList()
         },
         methods: {
+            handleSizeChange (val) {
+            console.log(`每页 ${val} 条`)
+            this.pageSize = val
+            console.log(this.pageSize,'pageSize');
+            this.getLogList()
+            },
+            handleCurrentChange (val) {
+            console.log(`当前页: ${val}`)
+            this.pageNum = val
+            this.getLogList()
+            },
             getLogList() {
                 let param = {
                     pageSize: this.pageSize,
@@ -81,6 +102,7 @@
                 this.$ajax.get('/api/operation/getList',param).then(res => {
                     res = res.data
                     if(res.status === 200) {
+                        this.total = res.data.total
                         this.tableData = res.data.list
                     }
                 }).catch(error => {
@@ -146,5 +168,8 @@
 
 /deep/ .el-table th {
   background:rgba(238,242,251,1);
+}
+/deep/ .el-pagination{
+    text-align: center
 }
 </style>
