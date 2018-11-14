@@ -74,8 +74,12 @@
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="上传人" prop="uploadByName"
                            :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" min-width="100px" label="上传时间" prop="uploadTime"
-                           :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" min-width="100px" label="上传时间" 
+                           :formatter="nullFormatter">
+                              <template slot-scope="scope">
+                                {{scope.row.uploadTime | formatDate}}
+                              </template>
+                           </el-table-column>
           <el-table-column align="center" min-width="100px" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="enable">启用</el-button>
