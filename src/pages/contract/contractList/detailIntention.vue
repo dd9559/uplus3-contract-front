@@ -4,39 +4,39 @@
         <div class="detailbox" >
            <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="意向金详情" name="first" class="first-tab">
-                    <div class="tab" :style="{ height: screenHeight }">
-                        <ul class="ul1">
+                    <div class="tab" :style="{ height: clientHeight() }">
+                        <ul class="ul2">
                             <li class="tabs-title">合同信息</li>
-                            <li>
-                                <div><span>签约日期：</span>2018/11/07</div>
-                                <div><span>认购期限：</span>2018/11/07</div>
-                            </li>
-                            <li>
-                                <div><span>合同类型：</span>意向金</div>
-                                <div><span>认购总价：</span>10000元</div>
-                            </li>
-                            <li>
-                                <div><span>意向金金额：</span>10000元<span>一万元整</span></div>
-                            </li>
+                            <ul class="ul3">
+                                <li>
+                                    <div class="div1"><span>签约日期：</span>2018/11/07</div>
+                                    <div class="div2"><span>认购期限：</span>2018/11/07</div>
+                                </li>
+                                <li>
+                                    <div class="div1"><span>合同类型：</span>意向金</div>
+                                    <div class="div2"><span>认购总价：</span>10000元</div>
+                                    <div><span>意向金金额：</span><span class="yellow mr12">10000元</span><span class="chinesemoney yellow">一万元整</span></div>
+                                </li>
+                            </ul>
                         </ul>
                         <ul class="ul2">
                             <li class="tabs-title">房源信息</li>
                             <ul class="ul3">
                                 <li>
-                                    <div class="div1"><span>房源编号：</span>YGYH001163</div>
+                                    <div class="div1"><span>房源编号：</span><em class="blue">YGYH001163</em></div>
                                     <div class="div22"><span>物业地址：</span>当代国际花园当代国际花园</div>
                                 </li>
                                 <li>
                                     <div class="div1"><span>房源价格：</span>200000元</div>
                                     <div class="div2"><span>建筑面积：</span>155.21㎡</div>
                                     <div class="div3"><span>套内面积：</span>155.21㎡</div>
-                                    <div class="div4"><span>用途：</span>住宅</div>
+                                    <div><span>用途：</span>住宅</div>
                                 </li>
                                 <li>
                                     <div class="div1"><span>房型：</span>3*2*2*1</div>
                                     <div class="div2"><span>朝向：</span>东南</div>
                                     <div class="div3"><span>装修：</span>简装</div>
-                                    <div class="div4"><span>业主姓名：</span>夏雨田</div>
+                                    <div><span>业主姓名：</span>夏雨田</div>
                                 </li>
                                 <li>
                                     <div class="div1"><span>手机：</span>15527279348</div>
@@ -44,20 +44,25 @@
                                 </li>
                             </ul>
                         </ul>
-                        <ul class="ul1">
+                        <ul class="ul2">
                             <li class="tabs-title">客源信息</li>
-                            <li>
-                                <div><span>客源编号：</span>YGYH001163</div>
-                                <div><span>业主姓名：</span>夏雨田</div>
-                            </li>
-                            <li>
-                                <div><span>成交经纪人：</span>当代一店·夏雨田</div>
-                                <div><span>手机：</span>15524245689</div>
-                            </li>
-                            <li>
-                                <div><span>身份证号：</span>42112548775845221</div>
-                            </li>
+                            <ul class="ul3">
+                                <li>
+                                    <div class="div1"><span>客源编号：</span><em class="blue">YGYH001163</em></div>
+                                    <div class="div2"><span>成交经纪人：</span>当代一店·夏雨田</div>
+                                    
+                                </li>
+                                <li>
+                                    <div class="div1"><span>业主姓名：</span>夏雨田</div>
+                                    <div class="div2"><span>手机：</span>15524245689</div>
+                                    <div><span>身份证号：</span>42112548775845221</div>
+                                </li>
+                            </ul>
                         </ul>
+                        <div class="textbox">
+                            <span>意向备注：</span>
+                            <el-input type="textarea" class="textareawidth" :disabled="true"></el-input>
+                        </div>
                     </div>
                     <div class="fixed">
                         <div class="form-btn">
@@ -70,8 +75,8 @@
                                     </ul>
                                 </div>
                                 <div class="fr">                  
-                                    <el-button type="primary" plain round>预 览</el-button>
-                                    <el-button type="primary" round class="mr30">保 存</el-button>                  
+                                    <el-button type="primary" plain round class="btn1">预 览</el-button>
+                                    <el-button type="primary" round class="mr30 btn2">编 辑</el-button>                  
                                 </div>
                             </div>
                         </div>
@@ -86,6 +91,7 @@
                             :on-preview="handlePictureCardPreview"
                             :on-remove="handleRemove">
                             <i class="iconfont icon-shangchuan"></i>
+                            <span>点击上传</span>
                         </el-upload>
                         <el-dialog :visible.sync="dialogVisible">
                             <img width="100%" :src="dialogImageUrl" alt="">
@@ -106,6 +112,7 @@
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
                                         <i class="iconfont icon-shangchuan"></i>
+                                        <span>点击上传</span>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -122,6 +129,7 @@
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
                                         <i class="iconfont icon-shangchuan"></i>
+                                        <span>点击上传</span>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -143,6 +151,7 @@
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
                                         <i class="iconfont icon-shangchuan"></i>
+                                        <span>点击上传</span>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -159,6 +168,7 @@
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
                                         <i class="iconfont icon-shangchuan"></i>
+                                        <span>点击上传</span>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -179,6 +189,7 @@
                                         :on-preview="handlePictureCardPreview"
                                         :on-remove="handleRemove">
                                         <i class="iconfont icon-shangchuan"></i>
+                                        <span>点击上传</span>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
                                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -205,25 +216,13 @@ export default {
 
     data() {
         return {
+             clientHei: document.documentElement.clientHeight, //窗体高度
             activeName: 'first',
             dialogImageUrl: '',
             dialogVisible: false           
         }
     },
-    components:{
-       
-    },
-    computed: {
-        
-        screenHeight() {
-            return document.documentElement.clientHeight - 305 + 'px'
-        },
-        
-    },
-   
-        
     
-
     methods: {
        handleClick(tab, event) {
         console.log(tab, event);
@@ -234,8 +233,20 @@ export default {
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
-      }
+      },
+
+      // 控制弹框body内容高度，超过显示滚动条
+      clientHeight() {        
+          return this.clientHei - 285 + 'px'
+      },
        
+    },
+
+    mounted() {
+      var _this = this;
+       window.onresize = function(){
+         _this.clientHei = document.documentElement.clientHeight;
+       }
     },
     
 }
@@ -260,13 +271,24 @@ export default {
         background-color: #fff;
         border: 2px dashed #DEDDE2;
         border-radius: 6px;
+        line-height: 40px;
+        padding-top: 32px;
+        width: 140px;
+        height: 140px;
         i{
             color: #EEF2FB;
             font-size: 56px;
         }
+        span{
+            display: block;
+            text-align: center;
+            color: #32485F;
+        }
     }
     .el-upload-list--picture-card .el-upload-list__item{
         margin: 0 20px 20px 0;
+        width: 140px;
+        height: 140px;
     }
     
     .detailbox{
@@ -283,6 +305,24 @@ export default {
         .tab{
             padding: 10px 30px;
             overflow-y: auto;
+            .textbox{
+                display: flex;
+                margin-bottom: 20px;
+                span{
+                    color: #6C7986;
+                    font-size: 14px;
+                    width: 70px;
+                    white-space: nowrap;
+                }
+                .el-textarea{
+                    width: 650px;
+                    height: 80px;
+                    margin-left: 15px;
+                }
+                .el-textarea.is-disabled .el-textarea__inner{
+                    height: 80px;
+                }
+            }
             .ul1{
                     display: flex;
                     align-items: top; 
@@ -301,6 +341,10 @@ export default {
                         color:#233241;
                         span{
                             color: #6C7986;
+                        }
+                        em.blue{
+                            color: #478DE3;
+                            font-weight: 700;
                         }
                     }
                 }
@@ -325,16 +369,19 @@ export default {
                             overflow: hidden;
                             clear: both;
                             display: flex;
+                            span.yellow{
+                                color: #FF9039;
+                            }
+                            span.mr12{
+                                margin-right: 12px;
+                            }
                             .div1{
-                                width: 240px;
+                                width: 210px;
                             }
                             .div2{
-                                width: 230px;
+                                width: 200px;
                             }
                             .div3{
-                                width: 230px;
-                            }
-                            .div4{
                                 width: 200px;
                             }
                         }
@@ -342,6 +389,7 @@ export default {
                     
                     li.tabs-title{
                         margin-right: 30px;
+                        margin-bottom: 20px;
                         float: left;
                     }
                     
@@ -362,7 +410,19 @@ export default {
                 bottom: 0;
                 display: flex;
                 justify-content: space-between;
-                align-items: center;  
+                align-items: center; 
+                .el-button.is-round{
+                    padding: 11px 23px;
+                    width: 100px;
+                }
+                .btn1{
+                    background-color: #EAEFF5;
+                    color: #32485F;
+                    border: 1px solid #EAEFF5;
+                } 
+                .btn2{
+                    background-color: #478DE3;
+                } 
             }
             .fl{
                 overflow: hidden;
