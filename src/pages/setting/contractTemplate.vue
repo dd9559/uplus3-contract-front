@@ -17,7 +17,7 @@
         <el-table-column align="center" label="上传人" prop="uploadByName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="上传时间" :formatter="nullFormatter">
           <template slot-scope="scope">
-            {{scope.row.uploadTime | formatDate | nullFormat}}
+            {{scope.row.uploadTime | formatDate}}
           </template>
         </el-table-column>
         <el-table-column align="center" label="已使用份数" prop="useNum" :formatter="nullFormatter"></el-table-column>
@@ -106,22 +106,16 @@
         list: [],
         rowData: [],
         modal: false,
-        template: 2,//弹窗内容
+        template: '',//弹窗内容
         uploadType: false,//是否显示两个上传
         fileList3: [],
         titleStr:'',
       }
     },
     created() {
-      if(this.template===1){
-        this.titleStr='上传合同模板'
-      }else if(this.template===2){
-        this.titleStr='预览合同模板'
-      }else if(this.template===3){
-        this.titleStr='合同模板详情'
-      } 
       this.getList()
     },
+
     methods: {
       /**
        * 弹框
@@ -133,6 +127,8 @@
           type: 'warning'
         }).then(()=>{
            callback()
+        }).catch(()=>{
+
         })
       },
       /**
@@ -140,7 +136,7 @@
        */
       getList: function () {
         let param = {
-          cityId: 3
+          cityId: 1
         }
         this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
           res = res.data
@@ -179,6 +175,7 @@
           if (res.status === 200) {
             this.rowData = res.data
             this.modal = true
+            this.titleStr='合同模板详情'
             this.template = 3
           }
         }).catch(error => {
@@ -201,30 +198,24 @@
            })
         }
         },
-      rowOperation: function (row, type = 1) {
+      rowOperation: function (row, type) {
+        console.log(type,"type");
         //上传
+        this.modal = true
+        this.template = type
         if(type===1){
-            this.modal = true
-            this.template = type
+            this.titleStr='上传合同模板'
             this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
         }
         //预览
         else if(type===2){
-          this.modal = true
-          this.template = type
+           this.titleStr='预览合同模板'
            this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
             console.log(res)
             })
         }
       }
     },
-    watch: {
-      modal: function (val) {
-        if (!val) {
-          this.template = 1
-        }
-      }
-    }
   }
 </script>
 
