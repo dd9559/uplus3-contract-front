@@ -70,7 +70,7 @@
               },
               {
                 name:'结算审核',
-                path:'13'
+                path:'settleCheck'
               },
             ]
           },
