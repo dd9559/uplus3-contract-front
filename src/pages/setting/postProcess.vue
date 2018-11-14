@@ -189,6 +189,7 @@
 @import "~@/assets/common.less";
 
 .view-container {
+  background-color: #F2F3F8!important;
   .form-head {
     height: 82px;
     background: #fff;
