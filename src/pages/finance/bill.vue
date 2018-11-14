@@ -164,7 +164,6 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
-  import {TOOL} from "../../assets/js/common";
 
   export default {
     mixins: [FILTER],
@@ -237,7 +236,7 @@
       },
       operation:function (opera) {
         if(opera==='reset'){
-          TOOL.clearForm(this.searchForm)
+          this.$tool.clearForm(this.searchForm)
         }
       }
     },
