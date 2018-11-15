@@ -15,8 +15,6 @@
                                   <el-button type="primary" round>查询</el-button>
                               </div>
                            </div>
-                   
-
                      <div class="filter-item">
                                <!-- 筛选条件 -->
                                <el-form 
@@ -45,7 +43,7 @@
                                    label="部门" 
                                    prop="region"
                                    class="mr">
-                                       <el-select v-model="propForm.region"  class="w200">
+                                       <el-select v-model="propForm.region"  class="w200" filterable>
                                            <el-option 
                                            v-for="item in rules.region" 
                                            :key="item.value"
@@ -55,7 +53,7 @@
                                    </el-form-item>
                                    <el-form-item 
                                    prop="regionName">
-                                       <el-select v-model="propForm.regionName" class="w100">
+                                       <el-select v-model="propForm.regionName" class="w100" filterable>
                                            <el-option 
                                            v-for="item in rules.regionName" 
                                            :key="item.value"
@@ -95,8 +93,8 @@
 
                   
 
-                      <!-- 表格 -->
-                      <div class="data-list">
+                      <!-- 表格一 -->
+                      <div class="data-list" v-show="true">
                          <el-table
                             :data="tableData"
                             style="width: 100%"
@@ -233,11 +231,140 @@
                                           <p class="orange">{{scope.row.num2}}</p>
                                   </template>                         
                             </el-table-column> 
-
-
-
                           </el-table>
                       </div>
+                      
+                       <!-- 表格二 -->
+                      <div class="data-list" v-show="false">
+                         <el-table
+                            :data="tableData1"
+                            style="width: 100%"
+                            @row-dblclick="dialogVisible = true"
+                            >
+
+                               <el-table-column
+                                 prop="date"
+                                 label="签约日期"
+                                 width="110">
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="合同信息"
+                                 width="160"
+                                 >
+                                  <template slot-scope="scope">
+                                          <p><span class="blue">S0001181030001</span></p>
+                                  </template>
+                               </el-table-column>
+                                
+
+                               <el-table-column
+                                 prop="address"
+                                 label="物业地址"
+                                 width="180">
+                               </el-table-column>
+
+
+                               <el-table-column
+                                 prop="type"
+                                 label="合同类型"
+                                 width="100">
+                               </el-table-column>
+
+                                <el-table-column
+                                 prop="type1"
+                                 label="合同应收佣金(元)"
+                                 width="130">
+                               </el-table-column>
+                               
+                               <el-table-column
+                                 prop="type1"
+                                 label="当期实收总佣金(元)"
+                                 width="145">
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="分成比例"
+                                 width="80">
+                                  <template slot-scope="scope">
+                                         <p>10%</p>
+                                         <p>20%</p>
+                                  </template>
+                               </el-table-column>
+
+                               <el-table-column
+                                 prop="type1"
+                                 label="实收分成总金额(元)"
+                                 width="145">
+                               </el-table-column>
+
+                               <el-table-column
+                                 prop="type1"
+                                 label="金融服务费(元)"
+                                 width="120">
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="合作门店"
+                                 width="130">
+                                  <template slot-scope="scope">
+                                          <p>楚河汉街一店</p>
+                                          <p>中北路一店</p>
+                                  </template>
+                               </el-table-column>                    
+
+                                <el-table-column
+                                 label="违约金(元)"
+                                 width="130">
+                                  <template slot-scope="scope">
+                                          <p>214550</p>
+                                          <p>214550</p>
+                                  </template>
+                               </el-table-column>
+
+                               <el-table-column
+                                 prop="amout"
+                                 label="特许服务费(元)"
+                                 width="120"
+                                 >
+                                  <template slot-scope="scope">
+                                         <p>4550</p>
+                                         <p>613000</p>
+                                  </template>
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="当期刷卡手续费(元)"
+                                 width="145">
+                                 <template slot-scope="scope">
+                                         <p>4550</p>
+                                         <p>613000</p>
+                                  </template>
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="分成比例"
+                                 width="80">
+                                  <template slot-scope="scope">
+                                         <p>10%</p>
+                                         <p>20%</p>
+                                  </template>
+                               </el-table-column>
+
+                                 <el-table-column
+                                 prop="amout"
+                                 label="实收分成金额(元)"
+                                 width="120"
+                                 >
+                                  <template slot-scope="scope">
+                                         <p>214550</p>
+                                         <p>214550</p>
+                                  </template>
+                               </el-table-column>
+                               
+                          </el-table>
+                      </div>
+
 
                       <!-- 分页 -->
                          <el-pagination
@@ -286,6 +413,78 @@ export default {
           num2: 6000000,
           name: "李六",
           id: 3
+        }
+      ],
+      tableData1: [
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
+        },
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
+        },
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
+        },
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
+        },
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
         }
       ],
       rules: {
@@ -550,6 +749,9 @@ export default {
     text-align: center;
     padding-bottom: 50px;
     padding-top: 50px;
+  }
+  /deep/ .el-input__suffix {
+    right: 12px;
   }
 }
 </style>
