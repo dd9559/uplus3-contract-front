@@ -171,7 +171,6 @@
       }
     },
     beforeRouteEnter(to,from,next){
-      debugger
       next(vm=>{
         var myRe = new RegExp(`"id":"([^"]*?)","path":"${to.fullPath.split('/')[1]}"`)
         console.log(myRe)
