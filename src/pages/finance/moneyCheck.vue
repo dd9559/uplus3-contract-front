@@ -1,13 +1,6 @@
 <template>
   <div class="view">
-    <div class="view-header">
-      <div class="title">
-        <span>筛选条件</span>
-        <p>
-          <el-button type="primary">重置</el-button>
-          <el-button type="primary">查询</el-button>
-        </p>
-      </div>
+    <ScreeningTop>
       <div class="content">
         <div class="input-group">
           <label>合同类型:</label>
@@ -107,7 +100,7 @@
           <el-input v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
-    </div>
+    </ScreeningTop>
     <div class="view-context">
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" :label="getView" prop="contractType" :formatter="nullFormatter"></el-table-column>
@@ -250,10 +243,6 @@
   }
 
   .view-header {
-    background-color: @color-white;
-    padding: 20px;
-    margin-bottom: 10px;
-    border-radius: @border-radius;
     .title {
       position: relative;
       height: 60px;

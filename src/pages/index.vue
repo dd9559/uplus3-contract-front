@@ -171,8 +171,12 @@
       }
     },
     beforeRouteEnter(to,from,next){
-      // debugger
+      debugger
       next(vm=>{
+        var myRe = new RegExp(`"id":"([^"]*?)","path":"${to.fullPath.split('/')[1]}"`)
+        console.log(myRe)
+        var myArray = myRe.exec(JSON.stringify(vm.views));
+        console.log(myArray)
         vm.activeIndex = to.fullPath.split('/')[1]
       })
     },
@@ -306,8 +310,18 @@
               background-color: @bg-th;
             }
           }
-          .el-select, .el-input {
-            width: 200px;
+          .view-header{
+            .el-select, .el-input {
+              width: 200px;
+              >input{
+                height: 36px;
+                line-height: 36px;
+              }
+            }
+            .el-date-editor{
+              height: 36px;
+              line-height: 36px;
+            }
           }
           .router-view{
             min-height: 100%;
