@@ -6,18 +6,22 @@
             <el-form  class="header" size="small">
                 <div class="content">
                     <el-form-item label="部门">
-                         <el-select v-model="department" filterable placeholder="请选择">
+                         <el-select v-model="department" filterable placeholder="请选择"  @change="selUser">
                             <el-option
-                            v-for="(item,index) in departs"
-                            :key="index"
+                            v-for="(item) in departs"
+                            :key="item.id"
                             :label="item.name"
                             :value="item.id"
-                            @change="selUser">
+                           >
                             </el-option>
                         </el-select>
-                        <!-- <el-select v-model="depUser" filterable placeholder="请选择">
-                            <el-option v-for="(item,index) in users" :key="index" :label="item.name" value="item.id"></el-option>
-                        </el-select> -->
+                        <el-select v-model="depUser" filterable placeholder="请选择">
+                            <el-option v-for="(item,index) in users" 
+                            :key="index"
+                            ref="user" 
+                            :label="item.name"
+                            :value="item.empId"></el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="日期">
                         <el-date-picker
@@ -73,12 +77,8 @@
     export default {
         data() {
             return {
-                // searchForm: {
-                    department: [],
-                    // searchTimeStart: "",
-                    // searchTimeEnd: "",
-                    keyWord: "",
-                // },
+                department: [],
+                keyWord: "",
                 searchTime: '',
                 tableData: [],
                 pageSize: 3,
@@ -90,8 +90,7 @@
             }
         },
         created() {
-            this.$ajax.get('/api/access/deps',{keyword:""}).then((res)=>{
-                // console.log(res);
+            this.$ajax.get('/api/access/deps').then((res)=>{
                 if(res.status==200){
                     this.departs=res.data.data
                     console.log(this.departs);
@@ -100,14 +99,14 @@
             this.getLogList()
         },
         methods: {
-            selUser(value){
-                //debugger
-                console.log(value,'进入seluser');
+            selUser(){
+                console.log(this.department,'进入seluser');
+                this.depUser=''
                 this.$ajax.get('/api/organize/employees',{depId:this.department}).then((res)=>{
-                // console.log(res);
+                console.log(res);
                 if(res.status==200){
-                    this.departs=res.data.data
-                    console.log(this.departs);
+                    this.users=res.data.data
+                    console.log(this.users);
                 }
             })
             },
@@ -127,7 +126,7 @@
                     pageSize: this.pageSize,
                     pageNum: this.pageNum,
                     deptId:this.department,
-                    // empId:
+                    empId:this.depUser,
                     keyword:this.keyWord,
                     startTime:this.searchTime[0],
                     endTime:this.searchTime[1],
@@ -181,6 +180,7 @@
     }
     .content {
         display: flex;
+        flex-wrap: wrap;
         > .el-form-item {
             display: flex;
             margin-right: 30px;
