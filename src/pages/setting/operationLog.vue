@@ -3,7 +3,7 @@
         <ScreeningTop
         @propQueryFn="queryFn"
         @propResetFormFn="resetFormFn">
-            <el-form  class="header" size="small">
+            <el-form  class="header" ref="propForm" size="small">
                 <div class="content">
                     <el-form-item label="部门">
                          <el-select v-model="department" filterable placeholder="请选择"  @change="selUser">
@@ -145,7 +145,11 @@
             },
             // 重置
             resetFormFn() {
-                this.$refs.propForm.resetFields()
+                this.keyWord='',
+                this.searchTime='',
+                this.depUser='',
+                this.department=''
+                this.users=''
             },
             // 查询
             queryFn(){
