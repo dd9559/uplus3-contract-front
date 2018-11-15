@@ -45,7 +45,7 @@
                                    label="部门" 
                                    prop="region"
                                    class="mr">
-                                       <el-select v-model="propForm.region"  class="w200">
+                                       <el-select v-model="propForm.region"  class="w200" filterable>
                                            <el-option 
                                            v-for="item in rules.region" 
                                            :key="item.value"
@@ -55,7 +55,7 @@
                                    </el-form-item>
                                    <el-form-item 
                                    prop="regionName">
-                                       <el-select v-model="propForm.regionName" class="w100">
+                                       <el-select v-model="propForm.regionName" class="w100" filterable>
                                            <el-option 
                                            v-for="item in rules.regionName" 
                                            :key="item.value"
@@ -105,11 +105,11 @@
                               </span> 
                            </div>
                           <div class="data-head-right f_l">
-                              <span>总分成：<b>55922元</b>，</span>
-                              <span>分类分成：<b>45392元</b>，</span>
-                              <span>出售：<b>11754元</b>，</span>
-                              <span>代办：<b>2000元</b>，</span>
-                              <span>出租：<b>52747元</b></span>
+                              <span>总分成：<b>{{countData[0]}}元</b>，</span>
+                              <span>分类分成：</span>
+                              <span>出售：<b>{{countData[1]}}元</b>，</span>
+                              <span>代办：<b>{{countData[2]}}元</b>，</span>
+                              <span>出租：<b>{{countData[3]}}元</b></span>
                           </div>      
                       </div>
                       <!-- 头部 end -->
@@ -117,117 +117,196 @@
                       <!-- 表格 -->
                       <div class="data-list">
                          <el-table
-                            :data="tableData"
+                            :data="receivableList"
                             style="width: 100%"
                             @row-dblclick="dialogVisible = true"
                             >
+                               <!-- code -->
                                <el-table-column
                                  label="合同信息"
                                  width="160"
                                  >
                                   <template slot-scope="scope">
-                                          <p><span class="blue">S0001181030001</span></p>
+                                          <p><span class="blue">{{scope.row.code}}</span></p>
                                   </template>
                                </el-table-column>
                                 
+                                <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
                                <el-table-column
-                                 prop="type"
                                  label="合同类型"
                                  width="100">
+                                   <template slot-scope="scope">
+                                     <p v-if="scope.row.contType==0">租赁</p>
+                                     <p v-if="scope.row.contType==1">买卖</p>
+                                     <p v-if="scope.row.contType==2">代办</p>
+                                  </template>
                                </el-table-column>
 
+                                <!-- propertyAddr -->
                                 <el-table-column
-                                 prop="address"
+                                 prop="propertyAddr"
                                  label="物业地址"
                                  width="180">
                                </el-table-column>
+
+                               <!-- dealStorefront   dealName -->
                                    <el-table-column
                                  prop="man"
                                  label="成交经纪人"
                                  width="150">
+                                <template slot-scope="scope">
+                                    <div v-if="scope.row.dealName">
+                                         <p>{{scope.row.dealStorefront}}</p>
+                                         <p>{{scope.row.dealName}}</p>
+                                    </div>
+                                    <div v-else>
+                                         <p>暂无</p>
+                                    </div>
+                                  </template>
                                </el-table-column>
+
+                               <!-- signDate -->
                                    <el-table-column
                                  prop="date"
                                  label="签约日期"
                                  width="110">
+                                 <template slot-scope="scope">
+                                       <p>{{scope.row.signDate|formatDate}}</p>
+                                 </template>
                                </el-table-column>
+
+
                                <el-table-column
-                                 prop="type1"
+                                 prop="receiptsCommission"
                                  label="应收佣金(元)"
                                  width="120">
                                </el-table-column>
                                 <el-table-column
+                                 prop="receiptsAchievement"
                                  label="可分配业绩(元)"
                                  width="100">
-                                  <template slot-scope="scope">
+                                  <!-- <template slot-scope="scope">
                                           <p>3000/5000</p>
-                                  </template>
+                                  </template> -->
                                </el-table-column>
                                <el-table-column
+                                 prop="amount"
                                  label="合同实收(元)"
                                  width="130">
-                                  <template slot-scope="scope">
+                                  <!-- <template slot-scope="scope">
                                           <p>280000</p>
-                                  </template>
+                                  </template> -->
                                </el-table-column>
 
+                                <!-- level4 assignor -->
                                 <el-table-column
                                  label="分成人"
                                  width="170">
-                                  <template slot-scope="scope">
-                                          <p>当代一店-夏天雨</p>
-                                          <p>当代一店-秋天叶</p>
+                                   <template slot-scope="scope">
+                                         <div  v-for="item in scope.row.distributionFroms">
+                                                  <p>{{item.level4}}</p>
+                                                  <p>{{item.assignor}}</p>
+                                         </div>
                                   </template>
                                </el-table-column>
-
+                                <!-- roleType -->
                                <el-table-column
                                  label="角色类型"
                                  width="130">
-                                  <template slot-scope="scope">
-                                          <p>房源维护人</p>
-                                          <p>主客方</p>
+                                   <template slot-scope="scope">
+                                          <div  v-for="item in scope.row.distributionFroms">
+                                               <div v-if="item.roleType==0">
+                                                  <p>房源维护人</p>
+                                                  <p>录入</p>
+                                               </div>
+                                               <div v-if="item.roleType==1">
+                                                  <p>房源维护人</p>
+                                                  <p>维护</p>
+                                               </div>
+                                               <div v-if="item.roleType==2">
+                                                  <p>房源维护人</p>
+                                                  <p>独家</p>
+                                               </div>
+                                                <div v-if="item.roleType==3">
+                                                  <p>房源维护人</p>
+                                                  <p>房勘</p>
+                                               </div>
+                                                <div v-if="item.roleType==4">
+                                                  <p>房源维护人</p>
+                                                  <p>钥匙</p>
+                                               </div>
+                                                <div v-if="item.roleType==5">
+                                                  <p>房源维护人</p>
+                                                  <p>委托</p>
+                                               </div>
+                                                <div v-if="item.roleType==6">
+                                                  <p>房源维护人</p>
+                                                  <p>建盘</p>
+                                               </div>
+
+                                                <div v-if="item.roleType==7">
+                                                  <p>客源维护人</p>
+                                                  <p>主客方</p>
+                                               </div>
+                                                <div v-if="item.roleType==8">
+                                                  <p>客源维护人</p>
+                                                  <p>推荐人</p>
+                                               </div>
+                                                <div v-if="item.roleType==9">
+                                                  <p>客源维护人</p>
+                                                  <p>签约人</p>
+                                               </div>
+                                                <div v-if="item.roleType==10">
+                                                  <p>客源维护人</p>
+                                                  <p>A/M</p>
+                                               </div>
+                                                <div v-if="item.roleType==11">
+                                                  <p>客源维护人</p>
+                                                  <p>协议方</p>
+                                               </div>
+                                               <div v-if="item.roleType==12">
+                                                  <p>客源维护人</p>
+                                                  <p>协议方2</p>
+                                               </div>
+                                          </div>
                                   </template>
                                </el-table-column>
-
+                               <!-- ratio -->
                                <el-table-column
                                  label="分成比例"
                                  width="80">
                                   <template slot-scope="scope">
-                                         <p>10%</p>
-                                         <p>20%</p>
+                                         <p v-for="item in scope.row.distributionFroms">{{item.ratio}}%</p>
                                   </template>
                                </el-table-column>
 
-                                 <el-table-column
-                                 prop="amout"
+                               <!-- agentReceipts -->
+                               <el-table-column
                                  label="实收分成金额(元)"
                                  width="120"
                                  >
-                                  <template slot-scope="scope">
-                                         <p>214550</p>
-                                         <p>214550</p>
-                                  </template>
-                               </el-table-column>
-                               
-                                <el-table-column
-                                 prop="amout"
-                                 label="特许服务费(元)"
-                                 width="120"
-                                 >
-                                  <template slot-scope="scope">
-                                         <p>4550</p>
-                                         <p>613000</p>
+                                 <template slot-scope="scope">
+                                         <p v-for="item in scope.row.distributionFroms">{{item.agentReceipts}}</p>
                                   </template>
                                </el-table-column>
 
+                                 <!-- agentPlatformFee -->
                                 <el-table-column
-                                 prop="amout"
+                                 label="特许服务费(元)"
+                                 width="120"
+                                 >
+                                   <template slot-scope="scope">
+                                         <p v-for="item in scope.row.distributionFroms">{{item.agentPlatformFee}}</p>
+                                  </template>
+                               </el-table-column>
+
+                                 <!-- agentPayFee -->
+                                <el-table-column
                                  label="刷卡手续费(元)"
                                  width="120"
                                  >
-                                  <template slot-scope="scope">
-                                         <p>550</p>
-                                         <p>3000</p>
+                                <template slot-scope="scope">
+                                         <p v-for="item in scope.row.distributionFroms">{{item.agentPayFee}}</p>
                                   </template>
                                </el-table-column>
                           </el-table>
@@ -250,78 +329,8 @@ export default {
   name: "actualAchievement",
   data() {
     return {
-      tableData: [
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        }
-      ],
+      receivableList: [], //实收数据列表数组
+      countData: [], //数据统计数组
       rules: {
         region: [
           {
@@ -388,6 +397,20 @@ export default {
       },
       total: 0
     };
+  },
+  created() {
+    let param = {
+      pageNum: 1,
+      pageSize: 10
+    };
+    this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
+      console.log(res);
+      let data = res.data;
+      if (res.status === 200) {
+        this.receivableList = data.data.list;
+        this.countData = data.data.list[0].contractCount;
+      }
+    });
   },
   components: {},
   methods: {

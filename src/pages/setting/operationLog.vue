@@ -3,19 +3,21 @@
         <ScreeningTop
         @propQueryFn="queryFn"
         @propResetFormFn="resetFormFn">
-            <el-form v-model="searchForm" class="header" size="small">
-                <!-- <div class="form-title">
-                    <span>筛选查询</span>
-                    <div>
-                        <el-button @click="onReset" class="resetBtn">重置</el-button>
-                        <el-button type="primary" @click="onSearch" class="searchBth">查询</el-button>        
-                    </div>
-                </div> -->
+            <el-form  class="header" size="small">
                 <div class="content">
                     <el-form-item label="部门">
-                        <el-select v-model="searchForm.department" placeholder="请选择">
-                            <el-option value=""></el-option>
+                         <el-select v-model="department" filterable placeholder="请选择">
+                            <el-option
+                            v-for="(item,index) in departs"
+                            :key="index"
+                            :label="item.name"
+                            :value="item.id"
+                            @change="selUser">
+                            </el-option>
                         </el-select>
+                        <!-- <el-select v-model="depUser" filterable placeholder="请选择">
+                            <el-option v-for="(item,index) in users" :key="index" :label="item.name" value="item.id"></el-option>
+                        </el-select> -->
                     </el-form-item>
                     <el-form-item label="日期">
                         <el-date-picker
@@ -23,11 +25,12 @@
                         type="daterange"
                         range-separator="至"
                         start-placeholder="开始日期"
+                        value-format="yyyy-MM-dd"
                         end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="关键字">
-                        <el-input v-model="searchForm.keyWord" placeholder="操作内容关/模块关键字"></el-input>
+                        <el-input v-model="keyWord" placeholder="操作内容关/模块关键字"></el-input>
                     </el-form-item>
                 </div>
             </el-form>
@@ -37,7 +40,11 @@
                 <span>数据列表</span>
             </p>
             <el-table :data="tableData" style="width: 100%">
-                <el-table-column label="操作日期" prop="createTime"></el-table-column>
+                <el-table-column label="操作日期">
+                    <template slot-scope="scope">
+                        {{scope.row.createTime | formatDate}}
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作人">
                     <template slot-scope="scope">
                         <span>{{ scope.row.createByDepName }}+{{ scope.row.createByName }}</span>
@@ -66,23 +73,44 @@
     export default {
         data() {
             return {
-                searchForm: {
-                    department: "",
-                    searchTimeStart: "",
-                    searchTimeEnd: "",
-                    keyWord: ""
-                },
-                searchTime: [],
+                // searchForm: {
+                    department: [],
+                    // searchTimeStart: "",
+                    // searchTimeEnd: "",
+                    keyWord: "",
+                // },
+                searchTime: '',
                 tableData: [],
                 pageSize: 3,
                 pageNum: 1,
                 total:0,
+                departs:[],
+                users:[],
+                depUser:'',
             }
         },
         created() {
+            this.$ajax.get('/api/access/deps',{keyword:""}).then((res)=>{
+                // console.log(res);
+                if(res.status==200){
+                    this.departs=res.data.data
+                    console.log(this.departs);
+                }
+            }),
             this.getLogList()
         },
         methods: {
+            selUser(value){
+                //debugger
+                console.log(value,'进入seluser');
+                this.$ajax.get('/api/organize/employees',{depId:this.department}).then((res)=>{
+                // console.log(res);
+                if(res.status==200){
+                    this.departs=res.data.data
+                    console.log(this.departs);
+                }
+            })
+            },
             handleSizeChange (val) {
             console.log(`每页 ${val} 条`)
             this.pageSize = val
@@ -97,8 +125,15 @@
             getLogList() {
                 let param = {
                     pageSize: this.pageSize,
-                    pageNum: this.pageNum
+                    pageNum: this.pageNum,
+                    deptId:this.department,
+                    // empId:
+                    keyword:this.keyWord,
+                    startTime:this.searchTime[0],
+                    endTime:this.searchTime[1],
                 }
+                // console.log(param.keyword,'keyword');
+                console.log(this.searchTime[0],'searchTime');
                 this.$ajax.get('/api/operation/getList',param).then(res => {
                     res = res.data
                     if(res.status === 200) {
@@ -116,6 +151,7 @@
             // 查询
             queryFn(){
                 console.log('查询')
+                this.getLogList()
             },
         },
         components:{
