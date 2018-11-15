@@ -1,7 +1,7 @@
 <!-- 编辑意向金 -->
 <template>
     <div class="newintention">
-        <div class="formbox" ref="ruleForm" :style="{ height: clientHei }">
+        <div class="formbox" ref="ruleForm">
             <el-form :inline="true" :model="form" :rules="rules" class="form-innnerbox">
                 <div class="form-content">
                 <!-- 合同信息 -->
@@ -219,9 +219,7 @@ export default {
         }
     },
     computed: {
-        clientHei() {
-            return document.documentElement.clientHeight - 130 + 'px'
-        }
+        
     },
     methods: {
         onSubmit() {

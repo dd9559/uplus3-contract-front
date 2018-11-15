@@ -1,10 +1,9 @@
-<!-- 调佣审核 -->
+<!-- 结算审核 -->
 <template>
-  <div class="view-container" id="adjustcheck">
+  <div class="view-container" id="settlecheck">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="63"  class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="63" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini">
-
         <el-form-item label="发起日期">
           <el-date-picker v-model="adjustForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
           </el-date-picker>
@@ -15,7 +14,6 @@
             <el-option label="买卖" value="2"></el-option>
             <el-option label="代办" value="3"></el-option>
             <el-option label="意向" value="4"></el-option>
-            <el-option label="定金" value="5"></el-option>
           </el-select>  
         </el-form-item>         
         <el-form-item label="部门">
@@ -54,7 +52,6 @@
             <span v-if="scope.row.contType===2">买卖</span>
             <span v-if="scope.row.contType===3">代办</span>
             <span v-if="scope.row.contType===4">意向</span>
-            <span v-if="scope.row.contType===5">定金</span>
           </template>
         </el-table-column>
 
@@ -64,13 +61,13 @@
         <el-table-column label="成交经纪人" prop="dealPerson" width="180">
         </el-table-column>
 
-        <el-table-column label="签约日期" prop="signDate">
-        </el-table-column>
-
         <el-table-column label="发起日期" prop="sponsorDate">
         </el-table-column>
 
         <el-table-column label="发起人" prop="sponsorPerson" width="180">
+        </el-table-column>
+
+        <el-table-column label="实际结算" prop="realSettle">
         </el-table-column>
 
         <el-table-column label="审核状态" prop="toExamineState">
@@ -84,7 +81,7 @@
         <el-table-column label="审核日期" prop="examineDate">
         </el-table-column>
         
-        <el-table-column label="当前审核人" prop="examinePerson" width="180">
+        <el-table-column label="审核人" prop="examinePerson" width="180">
         </el-table-column>
 
         <el-table-column label="审核备注" width="200">
@@ -110,98 +107,65 @@
      </el-pagination>
     </div>
 
-    <!-- 调佣审核弹框 -->
-    <el-dialog title="调佣审核" :visible.sync="layer.show" width="820px" class="layer-audit">
+    <!-- 结算审核弹框 -->
+    <el-dialog title="结算审核" :visible.sync="layer.show" width="820px" class="layer-audit">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
             <p>合同编号：<span class="blue">YQYD001163</span></p>
             <p>物业地址：<span>当代国际花园当代国际花园当代国际花园当代国际花园当</span></p>
           </div>
-          <div class="col-li">
+          <div class="col-li col-li2">
             <p>申请日期：<span>2018/9/14</span></p>
-            <p>申请人：<span>当代一店-夏雨天</span></p>
-          </div>
-          <div class="col-li">
+            <p>发起人：<span>当代一店-夏雨天</span></p>
             <p>合同类型：<span>出租</span></p>
-            <p class="mr100">成交总价：<span>3000元</span></p>
-            <p>可分配业绩：<span>3500元</span></p>
           </div>
-          <div class="col-li">
-            <p>调整类型：<span>佣金调整</span></p>
-            <p><el-checkbox v-model="checked" :disabled="true">有解除协议</el-checkbox></p>
+          <div class="col-li col-li2">
+            <p>成交总价：<span>3000元</span></p>
+            <p>可分配业绩：<span>3000元</span></p>
+            <p>已结算：<span>3000元</span></p>
+          </div>
+          <div class="col-li col-li2">
+            <p>合同总实收：<span>3000元</span></p>
+            <p>本次结算：<span>3000元</span></p>
+            <p>实际结算：<span>3000元</span></p>
           </div>
           <div class="textareabox">
-            <span>调整原因</span>
-            <el-input type="textarea" :rows="3"  v-model="auditForm.textarea" class="textarea" maxlength=100 :disabled="true"></el-input>
+            <span class="tit">金融服务费：</span>
+            <el-input maxlength="9" :disabled="true"><i slot="suffix" class="i-slot">元（成本）</i></el-input>
           </div>
         </div>
 
-        <div class="audit-col bordernone">
-          <!-- 表格 -->
-          <table class="table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>业主佣金</th>
-                <th>客户佣金</th>
-                <th>按揭手续费</th>
-                <th>合作费扣除</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>原金额</td>
-                <td>152365元</td>
-                <td>152365元</td>
-                <td>另外出<span>;</span>客户<span>;</span>0元</td>
-                <td>0元</td>
-              </tr>
-              <tr>
-                <td>调整为</td>
-                <td>
-                  <div><el-input v-model="auditForm.money1" placeholder="输入金额" class="width70" :disabled="true"></el-input>元</div>
-                </td>
-                <td>
-                  <div><el-input v-model="auditForm.money2" placeholder="输入金额" class="width70" :disabled="true"></el-input>元</div>
-                </td>
-                <td class="flex">       
-                    <div>
-                      <el-select v-model="auditForm.item1" class="width70 mr10" :disabled="true">
-                        <el-option label="另外出" value="另外出"></el-option>
-                        <el-option label="佣金扣" value="佣金扣"></el-option>
-                        <el-option label="无" value="无"></el-option>
-                      </el-select>
-                    </div>
-                    <div>
-                      <el-select v-model="auditForm.item2" class="width70 mr10" :disabled="true">
-                        <el-option label="客户" value="客户"></el-option>
-                        <el-option label="业主" value="业主"></el-option>
-                        <el-option label="无" value="无"></el-option>
-                      </el-select>
-                    </div> 
-                    <div><el-input v-model="auditForm.money3" placeholder="输入金额" class="width70" :disabled="true"></el-input>元</div>
-                  
-                </td>
-                <td>
-                  <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70" :disabled="true"></el-input>元</div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- 上传附件 -->
-          <div class="uploadfile">
-            <div class="uploadtitle">附件:</div>
-            <div class="uploadbtn">
-              
-            </div>
-          </div>                  
+        <!-- 表格 -->
+        <div class="audit-col">
+          <el-table :data="jiesuanData" border style="width: 100%" class="table">
+          <el-table-column prop="a1" label="合作门店"></el-table-column>
+          <el-table-column prop="a2" label="分成比例"></el-table-column>
+          <el-table-column prop="a3" label="本次违约金"></el-table-column>
+          <el-table-column prop="a4" label="本次特许服务费"></el-table-column>
+          <el-table-column prop="a5" label="本次刷卡手续费"></el-table-column>
+          <el-table-column prop="a6" label="本次实收分成"></el-table-column>
+        </el-table>            
         </div>
-        <!-- 审核备注 -->
-        <div class="textareabox2">
-          <span>调整原因</span>
-          <el-input type="textarea" :rows="6"  v-model="auditForm.textarea" class="textarea" maxlength=200 ></el-input>
-        </div>  
+
+        <!-- 上传附件 -->
+        <div class="audit-col">
+          <div class="uploadfile">
+              <div class="uploadtitle"><em>*</em>结算凭证<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+              <div class="uploadbtn">
+              
+              </div>
+          </div>     
+        </div>
+
+        <!-- 结算备注 -->
+        <div class="audit-col bordernone">
+          <div class="textareabox2">
+            <span><em>*</em>结算备注</span>
+            <el-input type="textarea" :rows="6" class="textarea" maxlength=200 placeholder="请填写备注审核"></el-input>
+          </div>
+        </div>
+
       </div>
       <div class="btnbox">
         <el-button @click="dialogVisible = true" class="refuse">驳 回</el-button>
@@ -219,9 +183,7 @@
   export default {
     data(){
       return{
-        
         clientHei: document.documentElement.clientHeight, //窗体高度
-        
         adjustForm:{
           signDate: '', //发起日期
           contType: '', //合同类型
@@ -268,15 +230,33 @@
             value: '选项3',
             label: '蚵仔煎'
         }],
+        jiesuanData:[{
+            a1: '当代一店',
+            a2: '20%',
+            a3: '金额*分成比例',
+            a4: '',
+            a5: '',
+            a6: '',
+
+        },
+        {
+            a1: '当代二店',
+            a2: '20%',
+            a3: '金额*分成比例',
+            a4: '400',
+            a5: '300',
+            a6: '1200',
+
+        }],
         
         tableData:[{
           contractNo:'YQYD110063', //合同编号
           contType:1,              //合同类型
           dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',
-          signDate:'2018/11/07',
+          dealPerson:'当代一店下雨天1',         
           sponsorDate:'2018/11/07',
           sponsorPerson:'当代一店下雨天2',
+          realSettle: 2000,
           toExamineState:1,
           examineDate:'2018/11/07',
           examinePerson: '当代一店下雨天3',
@@ -284,12 +264,12 @@
         },
         {
           contractNo:'YQYD110063', //合同编号
-          contType:1,              //合同类型
+          contType:2,              //合同类型
           dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',
-          signDate:'2018/11/07',
+          dealPerson:'当代一店下雨天1',         
           sponsorDate:'2018/11/07',
           sponsorPerson:'当代一店下雨天2',
+          realSettle: 2000,
           toExamineState:1,
           examineDate:'2018/11/07',
           examinePerson: '当代一店下雨天3',
@@ -297,13 +277,26 @@
         },
         {
           contractNo:'YQYD110063', //合同编号
-          contType:1,              //合同类型
+          contType:3,              //合同类型
           dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',
-          signDate:'2018/11/07',
+          dealPerson:'当代一店下雨天1',         
           sponsorDate:'2018/11/07',
           sponsorPerson:'当代一店下雨天2',
-          toExamineState:1,
+          realSettle: 2000,
+          toExamineState:2,
+          examineDate:'2018/11/07',
+          examinePerson: '当代一店下雨天3',
+          remarks:''
+        },
+        {
+          contractNo:'YQYD110063', //合同编号
+          contType:4,              //合同类型
+          dealPrice:'12345121',
+          dealPerson:'当代一店下雨天1',         
+          sponsorDate:'2018/11/07',
+          sponsorPerson:'当代一店下雨天2',
+          realSettle: 2000,
+          toExamineState:3,
           examineDate:'2018/11/07',
           examinePerson: '当代一店下雨天3',
           remarks:''
@@ -341,7 +334,7 @@
       clientHeight() {        
           return this.clientHei - 265 + 'px'
       },
-
+      
 
       // 重置
       resetFormFn() {
@@ -386,13 +379,13 @@
       // }
       
     },
-
     mounted() {
       var _this = this;
        window.onresize = function(){
          _this.clientHei = document.documentElement.clientHeight;
        }
     },
+
 
     components: {
           ScreeningTop
@@ -402,7 +395,7 @@
 <style lang="less">
 @import "~@/assets/common.less";
 
-#adjustcheck{
+#settlecheck{
   .el-form-item--mini .el-form-item__content, .el-form-item--mini .el-form-item__label{
     line-height: 32px;
   }
@@ -541,6 +534,10 @@
     .audit-col{
       padding: 30px 0;
       border-bottom: 1px solid #EDECF0;
+      .el-table th{
+        background-color: #F2F3F8 !important;
+      }
+      
       .col-li{
         overflow: hidden;
         clear: left;
@@ -559,76 +556,47 @@
           }
         }
       }
+      .col-li2{
+        p:nth-child(2n){
+          width: 270px;
+        }
+      }
       .textareabox{
         display: flex;
-        align-items: flex-start;
-        span{
-          width: 76px;
+        align-items: center;
+        justify-content: flex-start;
+        span.tit{
+          width: 95px;
+          line-height: 36px;
+          color: #6C7986;
         }
-      }
-      .table{
-        width: 100%;
-        border-collapse:collapse;
-        border-spacing:1;
-        border-top: 1px solid #E8EAF6;
-        border-left: 1px solid #E8EAF6;
-        text-align: center;
+        i.i-slot{
+          width: 70px;
+          color:#999;
+          line-height: 36px;
+
+        }
+        .el-input{
+          width: 160px;
+        }
         .el-input__inner{
-          height: 28px;
-          line-height: 28px;
-          padding: 0;
-          text-align: center;
-        }
-        .el-input__icon{
-          line-height: 28px;
-        }
-        .el-input__suffix{
-          right: 0px;
-        }
-        tr th{
-          background-color:#F2F3F8;
-          border-right: 1px solid #E8EAF6;
-          border-bottom: 1px solid #E8EAF6;
-          line-height: 40px;
-          height: 40px;
-        }
-        tr td{
-          overflow: hidden;
-          padding: 14px 10px;
-          border-right: 1px solid #E8EAF6;
-          border-bottom: 1px solid #E8EAF6;
-          &.flex{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-  
-          }
-          .width70{
-            width: 72px;
-            height: 28px;
-            line-height: 28px;
-            margin-right: 3px;
-           
-          }
-          .mr10{
-            margin-right: 10px;
-            .el-input__inner{
-              text-align: left;
-              padding-left: 10px;
-            }
-          }
-          .fl{
-            float: left;
-          }
+          width: 160px;
+          height: 36px;
+          padding: 0 15px 0 10px;
         }
       }
+      
       .uploadfile{
-        margin: 40px 0 30px;
+        margin: 20px 0 30px;
         .uploadtitle{
           color: #6C7986;
+          em{
+            color: #FF3E3E;
+            margin-right: 4px;
+          }
           span{
             margin-left: 16px;
-            color: #8E8E8E;
+            color: #8E8E8E;           
             b{
               color: #6C7986;
             }
@@ -670,7 +638,11 @@
     align-items: flex-start;
     margin-bottom: 30px;
     span{
-      width: 76px;
+      width: 84px;
+      em{
+        color: #FF3E3E;
+        margin-right: 4px;
+      }
     }
   }
   .btnbox{

@@ -70,7 +70,7 @@
               },
               {
                 name:'结算审核',
-                path:'13'
+                path:'settleCheck'
               },
             ]
           },
@@ -203,6 +203,24 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  /deep/ .time-picker{
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+    width: 300px;
+    display: flex;
+    align-items: center;
+    .el-date-editor{
+      &.el-input{
+        /*width: auto;*/
+      }
+      >input{
+        border: 0px;
+      }
+    }
+    .daterange{
+      display: none;
+    }
+  }
   .main {
     min-width: 1000px;
     position: relative;
@@ -236,7 +254,7 @@
           border: 0px;
         }
       }
-      .page-view{
+      /deep/ .page-view{
         flex: 1;
         overflow-x: auto;
         position: relative;
@@ -283,10 +301,13 @@
           bottom: 0;
           left: 0;
           overflow-y: auto;
-          /deep/ .theader-bg{
+          .theader-bg{
             >th{
               background-color: @bg-th;
             }
+          }
+          .el-select, .el-input {
+            width: 200px;
           }
           .router-view{
             min-height: 100%;

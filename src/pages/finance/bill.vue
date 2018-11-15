@@ -11,7 +11,73 @@
       <div class="content">
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select v-model="searchForm.moneyType" placeholder="请选择">
+          <el-select size="mini" v-model="searchForm.contType" placeholder="请选择">
+            <el-option
+              v-for="item in 5"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>部门:</label>
+          <el-select size="mini" v-model="searchForm.deptId" placeholder="请选择">
+            <el-option
+              v-for="item in 5"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>票据状态:</label>
+          <el-select size="mini" v-model="searchForm.billStatus" placeholder="请选择">
+            <el-option
+              v-for="item in 5"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>收款账户:</label>
+          <el-select size="mini" v-model="searchForm.proAccount" placeholder="请选择">
+            <el-option
+              v-for="item in 5"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>收付状态:</label>
+          <el-select size="mini" v-model="searchForm.checkStatus" placeholder="请选择">
+            <el-option
+              v-for="item in 5"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>收付款类:</label>
+          <el-select size="mini" v-model="searchForm.moneyType" placeholder="请选择">
+            <el-option
+              v-for="item in 5"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>收付方式:</label>
+          <el-select size="mini" v-model="searchForm.payMethod" placeholder="请选择">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -26,6 +92,7 @@
             <el-date-picker
               v-model="searchForm.signStart"
               type="date"
+              size="mini"
               value-format="yyyy-MM-dd"
               placeholder="选择日期">
             </el-date-picker>
@@ -33,86 +100,22 @@
             <el-date-picker
               v-model="searchForm.signEnd"
               type="date"
+              size="mini"
+              prefix-icon="daterange"
               value-format="yyyy-MM-dd"
               placeholder="选择日期">
             </el-date-picker>
           </div>
         </div>
         <div class="input-group">
-          <label>部门:</label>
-          <el-select v-model="searchForm.moneyState" placeholder="请选择">
-            <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>票据状态:</label>
-          <el-select v-model="searchForm.department" placeholder="请选择">
-            <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收款账户:</label>
-          <el-select v-model="searchForm.contractType" placeholder="请选择">
-            <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收付状态:</label>
-          <el-select v-model="searchForm.contractType" placeholder="请选择">
-            <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收付款类:</label>
-          <el-select v-model="searchForm.contractType" placeholder="请选择">
-            <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收付方式:</label>
-          <el-select v-model="searchForm.contractType" placeholder="请选择">
-            <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
           <label>关键字:</label>
-          <el-input v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input size="mini" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </div>
     <div class="view-context">
       <div class="table-tool">
-        <h4>数据列表</h4>
+        <h4 title="hello">数据列表</h4>
         <ul>
           <li>
             收款<span>{{tableTotal.receiptNum}}</span>笔，总额<span>{{tableTotal.receiptMoney}}</span>元；
@@ -129,21 +132,21 @@
         </p>
       </div>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
-        <el-table-column align="center" label="收付ID" prop="contractType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付ID" prop="id" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span>{{scope.row.contractId}}</span></li>
-              <li>房源编号:<span>{{scope.row.houseId}}</span></li>
-              <li>客源编号:<span>{{scope.row.customerId}}</span></li>
+              <li>合同编号:<span>{{scope.row.cont_code}}</span></li>
+              <li>房源编号:<span>{{scope.row.house_code}}</span></li>
+              <li>客源编号:<span>{{scope.row.cust_code}}</span></li>
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="物业地址" prop="contractType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="合同类型" prop="contractType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="款类" prop="collectionType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收付方式" prop="broker" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="对象" prop="accounts_receivable" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="160" label="物业地址" prop="address" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="合同类型" prop="cont_type" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="款类" prop="money_type" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付方式" prop="method" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="对象" prop="in_obj" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="收款人" prop="for_collection" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="金额（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="余额（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
@@ -164,7 +167,6 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
-  import {TOOL} from "../../assets/js/common";
 
   export default {
     mixins: [FILTER],
@@ -173,14 +175,16 @@
         activeView:'',
         searchForm: {
           moneyType: '',
-          moneyState: '',
-          department: '',
-          contractType: '',
-          signStart: '',
-          signEnd: '',
-          collectionStart: '',
-          collectionEnd: '',
-          keyword: ''
+          billStatus: '',
+          checkStatus: '',
+          contType: '',
+          keyword: '',
+          deptId:'',
+          payMethod:'',
+          proAccount:'',
+          startTime:'',
+          endTime:'',
+          timeType:''
         },
         tableTotal:{
           receiptNum:28,
@@ -208,11 +212,11 @@
       }
     },
     created() {
-      // this.getData()
+      this.getData()
     },
     methods: {
       getData: function () {
-        this.$ajax.get('/api/finance/listCollection').then(res => {
+        this.$ajax.get('/api/payInfo/selectPayInfoList',this.searchForm).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list = res.data.list
@@ -237,7 +241,7 @@
       },
       operation:function (opera) {
         if(opera==='reset'){
-          TOOL.clearForm(this.searchForm)
+          this.$tool.clearForm(this.searchForm)
         }
       }
     },
@@ -290,9 +294,9 @@
         > label {
           text-align: center;
         }
-        /deep/ .el-select, .el-input {
-          flex: 1;
-        }
+        /*/deep/ .el-select, .el-input {
+          width: 200px;
+        }*/
       }
     }
   }
