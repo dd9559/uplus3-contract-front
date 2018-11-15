@@ -63,7 +63,7 @@
     </div>
     <!-- 添加和编辑步骤类型 -->
     <el-dialog :title="modalTitle" :visible.sync="stepsTypeDialog" width="740px">
-      <el-form :model="addForm" class="addform">
+      <el-form :model="addForm" class="addform" size="small">
         <el-form-item label="步骤类型">
           <el-input v-model="addForm.name" autocomplete="off"></el-input>
         </el-form-item>
@@ -384,6 +384,9 @@
             this.tradeStepsDialog = true
             this.modalTitle = "编辑交易步骤"
             this.tableForm = JSON.parse(JSON.stringify(row.transStepsAttach))
+            this.tableForm.forEach(item => {
+              item.isRequired = item.isRequired.toString()
+            })
             let obj = {
               id: row.id,
               stepsTypeName: row.stepsTypeName,
@@ -533,6 +536,10 @@
           content: "*";
           color: red;
         }
+        .el-input { width: 305px; }
+      }
+      &:last-child {
+        /deep/ .el-input { width: 282px; }
       }
     }
   }
