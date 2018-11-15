@@ -52,23 +52,7 @@
           }
         ],
         activeItem: 1, //Tab当前项
-        modal: false,
         current: "TransactionStep", //当前组件
-        //步骤类型
-        stepType: {
-          type: "",
-          role: ""
-        },
-        //交易步骤
-        stepBusiness: {
-          stepsTypeId: "",
-          stepsTypeName: "",
-          name: "",
-          planDays: "",
-          overTimeDays: "",
-          isSms: ""
-        },
-        roleListData: [], //负责角色
       };
     },
     components: {
@@ -115,7 +99,6 @@
         return require("@/assets/img/" + url);
       },
       checkTab: function(item) {
-        console.log(item);
         this.activeItem = item.id;
         if (item.id == 1) {
           this.current = "TransactionStep";
@@ -124,29 +107,6 @@
         } else {
           this.current = "transactionContract";
         }
-      },
-      /**
-       * 获取步骤类型的交易步骤
-       * @param row
-       */
-      getRowDetails: function(row) {
-        this.stepBusiness.stepsTypeName = row.name;
-        this.stepBusiness.stepsTypeId = row.id;
-        this.$ajax
-          .get("/api/flowmanage/selectStepsListByType", { stepsTypeId: row.id })
-          .then(res => {
-            res = res.data;
-            if (res.status === 200) {
-              this.listData_other = res.data;
-            }
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      },
-      showModal: function(title) {
-        this.modalTitle = title;
-        this.modal = true;
       },
       arraySpanMethod({ row, column, rowIndex, columnIndex }) {
         // debugger
@@ -231,5 +191,23 @@
 }
 /deep/ .el-dialog__header {
   border-bottom: 1px solid rgba(237,236,240,1);
+}
+/deep/ .el-input__inner {
+  border: 1px solid #DEDDE2;
+}
+/deep/ .confirmBtn {
+  width: 100px;
+  height: 38px;
+  border-radius: 18px;
+  background-color: #478DE3;
+  color: #fff;
+}
+/deep/ .addBtn {
+  background-color: #fff;
+  width: 100px;
+  height: 38px;
+  border-radius: 18px;
+  border-color: #478DE3;
+  color: #478DE3;
 }
 </style>

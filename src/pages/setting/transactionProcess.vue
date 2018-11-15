@@ -24,7 +24,7 @@
             layout="total, sizes, prev, next, jumper"
             :total="total">
         </el-pagination>
-        <!-- 添加交易流程 弹出框 -->
+        <!-- 添加编辑交易流程 弹出框 -->
         <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px">
           <el-form v-model="addForm" label-width="90px" v-if="processTitle == '添加交易流程'">
             <el-form-item label="名称">
@@ -37,7 +37,7 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="Confirm">确定</el-button>
+              <el-button @click="Confirm" class="confirmBtn">确定</el-button>
           </div>
         </el-dialog>
         <!-- 交易流程管理 弹出框 -->
@@ -58,8 +58,8 @@
             </el-table>
           </div>
           <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="AddProcessVisible = true">添加</el-button>
-              <el-button type="primary">确定</el-button>
+              <el-button @click="AddProcessVisible = true" class="addBtn">添加</el-button>
+              <el-button class="confirmBtn">确定</el-button>
           </div>
         </el-dialog>
         <!-- 添加流程步骤 弹出框 -->
@@ -76,6 +76,9 @@
               </template>
             </el-table-column>
           </el-table>
+          <div slot="footer" class="dialog-footer">
+              <el-button class="confirmBtn">确定</el-button>
+          </div>
         </el-dialog>
     </div>
 </template>
@@ -87,12 +90,7 @@
     data() {
       return {
         //交易流程列表
-        listData: [
-          {
-            typeName: "一次性（业）+一次性（客）住宅",
-            stepsNum: 1
-          }
-        ], 
+        listData: [], 
         //交易流程列表表头
         tHeader: [
           {
@@ -172,40 +170,19 @@
         total: 0
       };
     },
+    created() {
+      this.getData();
+    },
     methods: {
-      handleCheckAllChange(val){
-        alert(val)
-        this.addProcessOption.transStepsList = val ? addProcessOption.transStepsList : [];
-        this.isIndeterminate = false;
-      },
-      sureUp(){
-      },
-      addSteps(){
-        this.innerDialog=true
-      },
-      addTransPro(){
-        console.log('添加交易流程');
-      },
-      tansProMan(){
-        console.log('交易流程管理');
-      },
-      editTransPro(){
-         console.log('编辑交易流程');
-      },
-      delTransPro(){
-        console.log('删除交易流程');
-      },
       getData: function() {
         let param = {
           cityId: 1
         };
-        this.$ajax
-          .postJSON(`/api/flowmanage/selectFlowPageList`, param)
-          .then(res => {
+        this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
             res = res.data;
             if (res.status === 200) {
               console.log(res.data);
-              // this.listData = res.data;
+              this.listData = res.data;
             }
           });
       },
@@ -243,11 +220,7 @@
         this.pageNum = val
         this.getData()
       }
-    },
-    created() {
-      this.getData();
-    },
-    mounted() {}
+    }
   };
 </script>
 <style lang="less" scoped>
