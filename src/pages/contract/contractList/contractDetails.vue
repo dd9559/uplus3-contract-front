@@ -157,6 +157,9 @@
           </div>
           <div>
             <el-button round class="search_btn" @click="goPreview">预览</el-button>
+            <el-button round type="danger" class="search_btn">解约</el-button>
+            <el-button round type="danger" @click="dialogInvalid=true" class="search_btn">无效</el-button>
+            <el-button round class="search_btn">变更</el-button>
             <el-button type="primary" round class="search_btn" @click="goEdit">编辑</el-button>
           </div>
         </div>
@@ -197,6 +200,30 @@
       </span>
     </el-dialog>
 
+    <!-- 合同无效弹窗 -->
+    <el-dialog title="合同无效" :visible.sync="dialogInvalid" width="740px">
+      <div class="top">
+        <p>合同无效原因</p>
+        <div class="reason">
+          <el-input
+          type="textarea"
+          :rows="5"
+          placeholder="请填写合同无效原因，最多100字 "
+          v-model="textarea"
+          resize='none'
+          style="width:597px"
+          maxlength="100">
+          </el-input>
+          <span>{{textarea.length}}/100</span>
+          <p><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button round @click="dialogInvalid = false">取消</el-button>
+        <el-button round type="primary" @click="dialogInvalid = false">保存</el-button>
+      </span>
+    </el-dialog>
+
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
   </div>
@@ -212,6 +239,9 @@ export default {
     return {
       dialogVisible: false,
       dialogSupervise: false,
+      //合同无效弹窗内容
+      dialogInvalid: false,
+      textarea:'',
       activeName: "first",
       tableData: [
         {
