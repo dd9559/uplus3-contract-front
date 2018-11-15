@@ -5,7 +5,7 @@
 
         <!-- 结算审核弹框 -->
         <el-dialog title="发起结算" :visible.sync="dialogVisible" width="820px" class="layer-audit">
-        <div class="audit-box"  :style="{ height: clientHei }">
+        <div class="audit-box"  :style="{ height: clientHeight() }">
             <div class="audit-col">
             <div class="col-li">
                 <p>合同编号：<span class="blue">YQYD001163</span></p>
@@ -54,7 +54,7 @@
                     list-type="picture-card"
                     multiple
                     >
-                    <i class="el-icon-plus"></i>
+                    <i class="iconfont icon-shangchuan"></i>
                 </el-upload>
                 <!-- <el-dialog :visible.sync="dialogVisible2">
                     <img width="100%" :src="dialogImageUrl" alt="">
@@ -77,34 +77,49 @@
 export default {
     data() {
         return {
+            clientHei: document.documentElement.clientHeight, //窗体高度
              // 弹框里用到的
-        dialogImageUrl: '',
-        dialogVisible: false,
-        jiesuanData:[{
-            a1: '当代一店',
-            a2: '20%',
-            a3: '金额*分成比例',
-            a4: '',
-            a5: '',
-            a6: '',
+            dialogImageUrl: '',
+            dialogVisible: false,
+            jiesuanData:[{
+                a1: '当代一店',
+                a2: '20%',
+                a3: '金额*分成比例',
+                a4: '',
+                a5: '',
+                a6: '',
 
-        },
-        {
-            a1: '当代二店',
-            a2: '20%',
-            a3: '金额*分成比例',
-            a4: '400',
-            a5: '300',
-            a6: '1200',
+            },
+            {
+                a1: '当代二店',
+                a2: '20%',
+                a3: '金额*分成比例',
+                a4: '400',
+                a5: '300',
+                a6: '1200',
 
-        }],
+            }],
         }
     },
+
     computed: {
-        clientHei() {
-            return document.documentElement.clientHeight -266 + 'px'
-        }
+        
     },
+
+    methods: {
+        // 控制弹框body内容高度，超过显示滚动条
+      clientHeight() {        
+          return this.clientHei - 265 + 'px'
+      },
+    },
+
+     mounted() {
+      var _this = this;
+       window.onresize = function(){
+         _this.clientHei = document.documentElement.clientHeight;
+       }
+    },
+
 }
 </script>
 
@@ -219,7 +234,7 @@ export default {
                     border-radius: 6px;
                     width: 130px;
                     height: 130px;
-                    line-height: 130px;
+                    line-height: 124px;
                     margin-top: 20px;
                     i{
                         color: #EEF2FB;

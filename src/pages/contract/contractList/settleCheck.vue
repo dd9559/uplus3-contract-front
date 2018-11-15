@@ -2,7 +2,7 @@
 <template>
   <div class="view-container" id="settlecheck">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn"  class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="63" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini">
         <el-form-item label="发起日期">
           <el-date-picker v-model="adjustForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
@@ -109,7 +109,7 @@
 
     <!-- 结算审核弹框 -->
     <el-dialog title="结算审核" :visible.sync="layer.show" width="820px" class="layer-audit">
-      <div class="audit-box"  :style="{ height: clientHei }">
+      <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
             <p>合同编号：<span class="blue">YQYD001163</span></p>
@@ -183,7 +183,7 @@
   export default {
     data(){
       return{
-
+        clientHei: document.documentElement.clientHeight, //窗体高度
         adjustForm:{
           signDate: '', //发起日期
           contType: '', //合同类型
@@ -312,9 +312,7 @@
     },
 
     computed: {
-        clientHei() {
-            return document.documentElement.clientHeight -266 + 'px'
-        }
+        
     },
   
     methods:{
@@ -330,6 +328,13 @@
 
       //   })
       // },
+
+
+      // 控制弹框body内容高度，超过显示滚动条
+      clientHeight() {        
+          return this.clientHei - 265 + 'px'
+      },
+      
 
       // 重置
       resetFormFn() {
@@ -373,6 +378,12 @@
       //   this.dialogVisible = true;
       // }
       
+    },
+    mounted() {
+      var _this = this;
+       window.onresize = function(){
+         _this.clientHei = document.documentElement.clientHeight;
+       }
     },
 
 

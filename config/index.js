@@ -4,6 +4,7 @@
 //庞豪：http://192.168.1.181:8080
 //刘梦冰：http://192.168.1.183:8080
 //朱辉：http://192.168.1.58:8080
+//朱浩然：http://192.168.1.6:28081
 
 const path = require('path')
 
@@ -15,7 +16,11 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{ //代理地址
+<<<<<<< HEAD
         target: 'http://192.168.1.224:28081', //需要代理的地址
+=======
+        target: 'http://192.168.1.96:28081', //需要代理的地址
+>>>>>>> 8d0345466cdc97536c7fee592b24ea8728837f5d
         changeOrigin: true, //是否跨域
         secure: false,
         pathRewrite: {
@@ -79,4 +84,5 @@ module.exports = {
     bundleAnalyzerReport: process.env.npm_config_report
   }
 }
+
 

@@ -4,7 +4,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="45">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="mini">
         <el-form-item label="签约日期">
-          <el-date-picker v-model="contractForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width:330px">
+          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width:330px">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
@@ -28,20 +28,18 @@
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="contractForm.keyWord" placeholder="关键字" style="width:250px"></el-input>
+          <el-input v-model="keyword" placeholder="关键字" style="width:250px"></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="contractForm.recordDept" placeholder="请选择部门" style="width:200px">
-            <el-option label="起草中" value="1"></el-option>
-            <el-option label="已签章" value="2"></el-option>
-            <el-option label="已上传" value="3"></el-option>
+          <el-select v-model="contractForm.recordDept" placeholder="请选择部门" style="width:200px" filterable>
+            <!-- <el-option label="起草中" value="1"></el-option> -->
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-select v-model="contractForm.recordDept" placeholder="请选择" style="width:100px">
-            <el-option label="起草中" value="1"></el-option>
+            <!-- <el-option label="起草中" value="1"></el-option>
             <el-option label="已签章" value="2"></el-option>
-            <el-option label="已上传" value="3"></el-option>
+            <el-option label="已上传" value="3"></el-option> -->
           </el-select>
         </el-form-item>
         <el-form-item label="审核状态">
@@ -122,7 +120,7 @@
         </span>
       </p>
       <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
-        <el-table-column align="left" label="合同信息" width="250" fixed>
+        <el-table-column align="left" label="合同信息" width="200" fixed>
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同编号：<span>{{scope.row.code}}</span></li>
@@ -150,11 +148,18 @@
             <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="成交经纪人" prop="dealAgentStoreName" width="150 ">
+        <el-table-column align="left" label="成交经纪人" width="150 ">
+          <template slot-scope="scope">
+            <p>{{scope.row.dealAgentName}}</p>
+            <p>{{scope.row.dealAgentStoreName}}</p>
+          </template>
         </el-table-column>
-        <el-table-column align="left" label="签约日期" prop="signDate" width="100">
+        <el-table-column align="left" label="签约日期" width="100">
+          <template slot-scope="scope">
+            {{scope.row.signDate.substr(0, 10)}}
+          </template>
         </el-table-column>
-        <el-table-column align="left" label="可分配业绩" prop="receivedCommission" width="100">
+        <el-table-column align="left" label="可分配业绩" prop="distributableAchievement" width="100">
         </el-table-column>
         <el-table-column align="left" label="合同状态" width="100">
           <template slot-scope="scope">
@@ -173,13 +178,20 @@
         </el-table-column>
         <el-table-column align="left" label="备注" width="200">
           <template slot-scope="scope">
-            {{scope.row.remarks?scope.row.remarks:'-'}}
+            <el-popover trigger="hover" placement="top">
+              <div style="width:160px">
+                {{scope.row.remarks?scope.row.remarks:'-'}}
+              </div>
+              <div slot="reference" class="name-wrapper">
+                {{scope.row.remarks?scope.row.remarks:'-'}}
+              </div>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.contChangeState===1">变更</span>
-            <span v-if="scope.row.contChangeState===2">解约</span>
+            <el-button type="text" size="medium" v-if="scope.row.contChangeState===1">变更</el-button>
+            <el-button type="text" size="medium" v-if="scope.row.contChangeState===2">解约</el-button>
             <span v-if="scope.row.contChangeState===3">-</span>
           </template>
         </el-table-column>
@@ -194,7 +206,7 @@
         </el-table-column>
         <el-table-column align="left" label="后期进度" width="100">
           <template slot-scope="scope">
-            资料准备
+            <el-button type="text" size="medium">{{scope.row.stepInstanceName}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="收佣状态" width="100">
@@ -217,10 +229,13 @@
         </el-table-column>
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
-            <el-button type="text" size="medium">上传</el-button>
-            <el-button type="text" size="medium" @click="goPreview">预览</el-button>
-            <el-button type="text" size="medium">提审</el-button>
-            <el-button type="text" size="medium" @click="tiaoyong=true">调佣</el-button>
+            <div style="text-align:center">
+              <el-button type="text" size="medium">上传</el-button>
+              <el-button type="text" size="medium" @click="goPreview">预览</el-button>
+              <el-button type="text" size="medium">提审</el-button>
+              <el-button type="text" size="medium" @click="tiaoyong=true">调佣</el-button>
+            </div>
+            
           </template>
         </el-table-column>
       </el-table>
@@ -243,6 +258,7 @@
 import ScreeningTop from '@/components/ScreeningTop';
 import flowAccount from '@/components/flowAccount';
 import layerAudit from '../contractDialog/layerAudit';
+import {TOOL} from "@/assets/js/common";
 
 export default {
   components: {
@@ -253,79 +269,11 @@ export default {
   data(){
     return{
       contractForm:{},
-      tableData:[{
-        code:'YQYD110063',
-        houseinfoCode:'YQYD110063张三',
-        guestinfoCode:'YQYD110063张三',
-        contType:1,
-        propertyAddr:'沿河花园',
-        dealPrice:'12345121',
-        dealAgentStoreName:'当代一店下雨天',
-        signDate:'2018/11/07',
-        receivedCommission:'3500',
-        receivableCommission:'3500',
-        contState:2,
-        toExamineState:1,
-        remarks:'',
-        contChangeState:1,
-        laterStageState:4,
-        resultState:1
-      },
-      {
-        code:'YQYD110063',
-        houseinfoCode:'YQYD110063张三',
-        guestinfoCode:'YQYD110063张三',
-        contType:2,
-        propertyAddr:'沿河花园',
-        dealPrice:'12345121',
-        dealAgentStoreName:'当代一店下雨天',
-        signDate:'2018/11/07',
-        receivedCommission:'3500',
-        receivableCommission:'3500',
-        contState:2,
-        toExamineState:2,
-        remarks:'',
-        contChangeState:1,
-        laterStageState:5,
-        resultState:1
-      },
-      {
-        code:'YQYD110063',
-        houseinfoCode:'YQYD110063张三',
-        guestinfoCode:'YQYD110063张三',
-        contType:2,
-        propertyAddr:'沿河花园',
-        dealPrice:'12345121',
-        dealAgentStoreName:'当代一店下雨天',
-        signDate:'2018/11/07',
-        receivedCommission:'3500',
-        receivableCommission:'3500',
-        contState:2,
-        toExamineState:3,
-        remarks:'',
-        contChangeState:1,
-        laterStageState:5,
-        resultState:1
-      },
-      {
-        code:'YQYD110063',
-        houseinfoCode:'YQYD110063张三',
-        guestinfoCode:'YQYD110063张三',
-        contType:1,
-        propertyAddr:'沿河花园',
-        dealPrice:'12345121',
-        dealAgentStoreName:'当代一店下雨天',
-        signDate:'2018/11/07',
-        receivedCommission:'3500',
-        receivableCommission:'3500',
-        contState:2,
-        toExamineState:4,
-        remarks:'',
-        contChangeState:1,
-        laterStageState:5,
-        resultState:1
-      }],
+      keyword:'',
+      signDate:[],
+      tableData:[],
       total:0,
+      pageNum:1,
       liushui:false,
       tiaoyong:false
     }
@@ -337,21 +285,36 @@ export default {
     //获取合同列表
     getContractList(){
       let param = {
-        pageNum:'1',
-        pageSize:'10',
-        // keyWord:'',
-        cont:{}
+        pageNum: this.pageNum,
+        pageSize: 10,
+        //cont: this.contractForm
+        keyword:this.keyword
+      }
+      if(this.signDate.length>0){
+        param.beginDate=this.signDate[0].replace(/-/g,"/");
+        param.endDate=this.signDate[1].replace(/-/g,"/");
       }
       this.$ajax.post('/api/contract/contractList', param).then(res=>{
-
+        res=res.data
+        if(res.status===200){
+          this.tableData=res.data.list
+          this.total=res.data.count
+        }
       })
     },
+    //重置
     resetFormFn() {
-      this.$refs.propForm.resetFields()
+      TOOL.clearForm(this.contractForm)
     },
     // 查询
     queryFn() {
-        console.log('查询')
+      console.log('查询')
+      // if(this.signDate.length>0){
+      //   this.contractForm.beginDate=this.signDate[0].replace(/-/g,"/");
+      //   this.contractForm.endDate=this.signDate[1].replace(/-/g,"/");
+      // }
+      //console.log(this.contractForm)
+      this.getContractList()
     },
     //流水
     runningWater(){
@@ -465,6 +428,14 @@ export default {
       font-size: 14px;
       color: @color-blue;
     }
+  }
+  .name-wrapper{
+    width:160px;
+    height:65px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
   }
 }
 .contract-msglist{
