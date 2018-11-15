@@ -1,9 +1,7 @@
 <template>
   <div class="view-container">
     <!-- 头部表单 -->
-    <ScreeningTop
-    @propQueryFn="queryFn"
-    @propResetFormFn="resetFormFn">
+    <ScreeningTop>
       <el-form :inline="true" :model="searchForm" class="form-head" size="small">
         <el-form-item label="城市">
           <el-select v-model="searchForm.cityId">
@@ -492,18 +490,7 @@
       handleCurrentChange(val) {
         this.pageNum = val
         this.getCompanyList()
-      },
-      // 重置
-      resetFormFn() {
-          this.$refs.propForm.resetFields()
-      },
-      // 查询
-      queryFn(){
-          console.log('查询')
-      },
-    },
-    components:{
-        ScreeningTop
+      }
     }
 }
 </script>

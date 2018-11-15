@@ -6,7 +6,7 @@
         <span>步骤类型</span>
         <el-button type="primary" @click="addStepsType">添加步骤类型</el-button>
       </div>
-      <el-table :data="listData" @row-click="rowClick" @cell-click="cellClick" highlight-current-row>
+      <el-table :data="listData" @cell-click="cellClick" highlight-current-row>
         <el-table-column
         align="center"
         :label="item.name"
@@ -29,7 +29,7 @@
         <span>交易步骤</span>
         <el-button type="primary" @click="addTradeSteps">添加交易步骤</el-button>
       </div>
-      <el-table :data="listotherdata">
+      <el-table :data="listData_other">
         <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
                         v-for="item in tHeader_other" :key="item.id">
         </el-table-column>
@@ -74,8 +74,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="stepsTypeDialog = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="submitForm" class="confirmBtn">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 添加和编辑交易步骤 -->
@@ -132,7 +131,7 @@
         </template>
       </div>
       <div slot="footer" class="modal-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="submitForm" class="confirmBtn">确 定</el-button>
       </div>
     </el-dialog> 
   </div>
@@ -151,10 +150,9 @@
     data() {
       return {
         listData: [], //步骤类型列表
-        listotherdata: [], //交易步骤列表
+        listData_other: [], //交易步骤列表
         stepsTypeDialog: false, //添加和编辑步骤类型 弹出框
         tradeStepsDialog: false, //添加和编辑交易步骤 弹出框
-        transStepsAttach: [],
         modalTitle: "", //弹出框title标题
         addForm: {}, //新增和编辑步骤类型 表单
         currentRow: {}, //步骤类型列表当前行
@@ -217,6 +215,7 @@
             name: "超时提醒"
           }
         ],
+        //交易步骤信息类型
         options: [
           {
             label: "文本",
@@ -260,26 +259,23 @@
           res = res.data
           if (res.status === 200) {
             this.listData = res.data
-            this.listotherdata = this.listData[0].stepsList
+            this.listData_other = this.listData[0].stepsList
             this.currentRow = this.listData[0]
             }
           }) 
       },
-      //单击步骤类型列表行获取交易步骤
-      rowClick(row,column,e) {
-        this.listotherdata = row.stepsList
-        this.currentRow = row
-      },
+      //单击步骤类型列表行单元格获取交易步骤
       cellClick(row, column, cell, event) {
-        // cell.parentNode.firstElementChild.style.background = "#478DE3"
-        // console.log(cell.parentNode.parentNode.children.length,111);
+        this.listData_other = row.stepsList
+        this.currentRow = row
+        //高亮选中的步骤类型
         let rows = cell.parentNode.parentNode.children
-        console.log(rows[0].childNodes,111);
-        // for(var i = 0; i <= rows.length; i++) {
-        //   rows[i].childNodes.style.background = "#fff"
-        // }
-        // console.log(cell.parentNode,222);
+        for(var i = 0; i < rows.length; i++) {
+          rows[i].firstElementChild.style.background = "#fff"
+          rows[i].firstElementChild.style.color = "#606267"
+        }
         cell.parentNode.firstElementChild.style.background = "#478DE3"
+        cell.parentNode.firstElementChild.style.color = "#fff"
       },
       //点击添加步骤类型
       addStepsType() {
@@ -315,27 +311,18 @@
        */
       submitForm: function() {
         if(this.modalTitle === "添加步骤类型") {
-          this.$ajax.postJSON('/api/flowmanage/insertStepsType',this.addForm).then(res => {
-            res = res.data
-            if(res.status === 200) {
-              this.$message('添加步骤类型成功')
-              this.stepsTypeDialog = false
-              this.getData()
-            }
-          })
+          const url = "/api/flowmanage/insertStepsType"
+          let param = this.addForm
+          const msg = "添加步骤类型成功"
+          this.stepsTypePost(url,param,msg)
         } else if(this.modalTitle === "编辑步骤类型") {
+          const url = "/api/flowmanage/updateStepsType"
           let param = {
             id: this.currentRow.typeId
           }
           param = Object.assign({},this.addForm,param)
-          this.$ajax.postJSON('/api/flowmanage/updateStepsType',param).then(res => {
-            res = res.data
-            if(res.status === 200) {
-              this.$message('编辑步骤类型成功')
-              this.stepsTypeDialog = false
-              this.getData()
-            }
-          })
+          const msg = "编辑步骤类型成功"
+          this.stepsTypePost(url,param,msg)
         } else if (this.modalTitle === "添加交易步骤") {
           let url = "/api/flowmanage/insertSteps"
           this.tradeStepsPost(url)
@@ -344,7 +331,20 @@
           this.tradeStepsPost(url)
         }
       },
-      //添加和编辑交易步骤请求封装
+      //添加和编辑步骤类型请求
+      stepsTypePost(url,param,msg) {
+        this.$ajax.postJSON(url, param).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.$message(msg)
+            this.stepsTypeDialog = false
+            this.getData()
+          }
+        }).catch(error => {
+          console.log(error);
+        })
+      },
+      //添加和编辑交易步骤请求
       tradeStepsPost(url) {
         let obj = {
           transStepsAttach: JSON.stringify(this.tableForm)
@@ -372,11 +372,7 @@
         this.tableForm.push(cell);
         console.log(this.tableForm);
       },
-      /**
-       * 列表操作
-       * @param row
-       * @param type
-       */
+      //点击 编辑 删除 操作
       rowOperation: function(row, opera, type) {
         if(opera === "edit") {
           if(type === 1) {
@@ -387,7 +383,7 @@
           } else if (type === 2) {
             this.tradeStepsDialog = true
             this.modalTitle = "编辑交易步骤"
-            this.tableForm = row.transStepsAttach
+            this.tableForm = JSON.parse(JSON.stringify(row.transStepsAttach))
             let obj = {
               id: row.id,
               stepsTypeName: row.stepsTypeName,
@@ -407,34 +403,42 @@
               }
             });
           } else if (type === "stepsType") {
-            this.$confirm('是否删除该信息?', '删除步骤类型', {
-              distinguishCancelAndClose: true,
-              confirmButtonText: '确定',
-              cancelButtonText: '取消'
-            }).then(() => {
-              this.$ajax.post('/api/flowmanage/deleteStepsType',{id: row.typeId}).then(res => {
-                res = res.data
-                if(res.status === 200) {
-                  this.$message('删除成功')
-                  this.getData()
-                }
-              })
-            })
+            const url = "/api/flowmanage/deleteStepsType"
+            const info = "删除步骤类型"
+            let param = {
+              id: row.typeId
+            }
+            const msg = "删除步骤类型成功"
+            this.deleteStepsPost(url,info,param,msg)
           } else if (type === "stepBusiness") {
-            this.$ajax
-              .post("/api/flowmanage/deleteSteps", { id: row.id })
-              .then(res => {
-                res = res.data;
-                if (res.status === 200) {
-                  this.$message("删除交易步骤成功")
-                }
-              })
-              .catch(error => {
-                console.log(error);
-              });
+            const url = "/api/flowmanage/deleteSteps"
+            const info = "删除交易步骤"
+            let param = {
+              id: row.id
+            }
+            const msg = "删除交易步骤成功"
+            this.deleteStepsPost(url,info,param,msg)
           }
         }
       },
+      //删除步骤类型和交易步骤请求
+      deleteStepsPost(url,info,param,msg) {
+        this.$confirm('是否删除该信息?', info, {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          this.$ajax.post(url,param).then(res => {
+            res = res.data
+            if(res.status === 200) {
+              this.$message(msg)
+              this.getData()
+            }
+          }).catch(error => {
+            console.log(error);
+          })
+        })
+      }
     }     
   }  
 </script>
