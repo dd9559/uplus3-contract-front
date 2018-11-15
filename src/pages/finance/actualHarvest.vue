@@ -4,7 +4,7 @@
       <div class="content">
         <div class="input-group">
           <label>收付款类:</label>
-          <el-select v-model="searchForm.moneyType" placeholder="请选择">
+          <el-select size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -15,7 +15,7 @@
         </div>
         <div class="input-group">
           <label>收款状态:</label>
-          <el-select v-model="searchForm.status" placeholder="请选择">
+          <el-select size="small" v-model="searchForm.status" placeholder="请选择">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -26,7 +26,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select v-model="searchForm.proceedsStore" placeholder="请选择">
+          <el-select size="small" v-model="searchForm.proceedsStore" placeholder="请选择">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -37,7 +37,7 @@
         </div>
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select v-model="searchForm.contractType" placeholder="请选择">
+          <el-select size="small" v-model="searchForm.contractType" placeholder="请选择">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -50,17 +50,12 @@
           <label>签约时间:</label>
           <div class="time-picker">
             <el-date-picker
-              v-model="searchForm.signStart"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-            <span>至</span>
-            <el-date-picker
-              v-model="searchForm.signEnd"
-              type="date"
-              size="mini"
-              prefix-icon="daterange"
-              placeholder="选择日期">
+              v-model="searchForm.signTime"
+              type="daterange"
+              size="small"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
             </el-date-picker>
           </div>
         </div>
@@ -68,23 +63,18 @@
           <label>收款时间:</label>
           <div class="time-picker">
             <el-date-picker
-              v-model="searchForm.collectionStart"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-            <span>至</span>
-            <el-date-picker
-              v-model="searchForm.collectionEnd"
-              type="date"
-              size="mini"
-              prefix-icon="daterange"
-              placeholder="选择日期">
+              v-model="searchForm.collectionTime"
+              type="daterange"
+              size="small"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
             </el-date-picker>
           </div>
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -125,10 +115,8 @@
           status: '',
           proceedsStore: '',
           contractType: '',
-          signStart: '',
-          signEnd: '',
-          collectionStart: '',
-          collectionEnd: '',
+          signTime: '',
+          collectionTime: '',
           keyword: ''
         },
         list: [

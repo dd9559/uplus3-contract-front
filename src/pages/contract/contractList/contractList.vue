@@ -4,11 +4,11 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="45">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="mini">
         <el-form-item label="签约日期">
-          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width:330px">
+          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
-          <el-select v-model="contractForm.contType" placeholder="请选择合同类型" style="width:150px">
+          <el-select v-model="contractForm.contType" placeholder="请选择合同类型">
             <el-option label="租赁" value="1"></el-option>
             <el-option label="买卖" value="2"></el-option>
             <el-option label="代办" value="3"></el-option>
@@ -16,34 +16,34 @@
           </el-select>  
         </el-form-item>
         <el-form-item label="合同状态">
-          <el-select v-model="contractForm.contState" placeholder="请选择合同状态" style="width:150px">
+          <el-select v-model="contractForm.contState" placeholder="请选择合同状态">
             <el-option label="起草中" value="1"></el-option>
             <el-option label="已签章" value="2"></el-option>
             <el-option label="已上传" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用途">
-          <el-select v-model="contractForm.houseinfoPurpose" placeholder="请选择用途" style="width:150px">
+          <el-select v-model="contractForm.houseinfoPurpose" placeholder="请选择用途">
             <el-option value=""></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="keyword" placeholder="关键字" style="width:250px"></el-input>
+          <el-input v-model="keyword" placeholder="关键字" ></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="contractForm.recordDept" placeholder="请选择部门" style="width:200px" filterable>
+          <el-select v-model="contractForm.recordDept" placeholder="请选择部门"  filterable>
             <!-- <el-option label="起草中" value="1"></el-option> -->
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="contractForm.recordDept" placeholder="请选择" style="width:100px">
+          <el-select v-model="contractForm.recordDept" placeholder="请选择">
             <!-- <el-option label="起草中" value="1"></el-option>
             <el-option label="已签章" value="2"></el-option>
             <el-option label="已上传" value="3"></el-option> -->
           </el-select>
         </el-form-item>
         <el-form-item label="审核状态">
-          <el-select v-model="contractForm.toExamineState" placeholder="请选择审核状态" style="width:150px">
+          <el-select v-model="contractForm.toExamineState" placeholder="请选择审核状态">
             <el-option label="未提审" value="1"></el-option>
             <el-option label="审核中" value="2"></el-option>
             <el-option label="通过" value="3"></el-option>
@@ -51,27 +51,27 @@
           </el-select>
         </el-form-item>
         <el-form-item label="变更/解约">
-          <el-select v-model="contractForm.contChangeState" placeholder="" style="width:150px">
+          <el-select v-model="contractForm.contChangeState" placeholder="">
             <el-option label="已变更" value="1"></el-option>
             <el-option label="已解约" value="2"></el-option>
             <el-option label="未变更/解约" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="结算状态">
-          <el-select v-model="contractForm.resultState" placeholder="" style="width:150px">
+          <el-select v-model="contractForm.resultState" placeholder="">
             <el-option label="未结算" value="1"></el-option>
             <el-option label="已结算" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="收佣状态">
-          <el-select v-model="contractForm.receiveAmountState" placeholder="" style="width:150px">
+          <el-select v-model="contractForm.receiveAmountState" placeholder="">
             <el-option label="未收" value="1"></el-option>
             <el-option label="部分" value="2"></el-option>
             <el-option label="收齐" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="业绩状态">
-          <el-select v-model="contractForm.achievementState" placeholder="" style="width:150px">
+          <el-select v-model="contractForm.achievementState" placeholder="">
             <el-option label="未审核" value="1"></el-option>
             <el-option label="审核中" value="2"></el-option>
             <el-option label="通过" value="3"></el-option>
@@ -129,13 +129,7 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="合同类型" width="100" fixed>
-          <template slot-scope="scope">
-            <span v-if="scope.row.contType===1">租赁</span>
-            <span v-if="scope.row.contType===2">买卖</span>
-            <span v-if="scope.row.contType===3">代办</span>
-            <span v-if="scope.row.contType===4">意向</span>
-          </template>
+        <el-table-column align="left" label="合同类型" prop="contType" width="100" fixed>
         </el-table-column>
         <el-table-column align="left" label="物业地址" prop="propertyAddr" width="150" fixed>
         </el-table-column>
@@ -161,20 +155,9 @@
         </el-table-column>
         <el-table-column align="left" label="可分配业绩" prop="distributableAchievement" width="100">
         </el-table-column>
-        <el-table-column align="left" label="合同状态" width="100">
-          <template slot-scope="scope">
-            <span v-if="scope.row.contState===1">起草中</span>
-            <span v-if="scope.row.contState===2">已签章</span>
-            <span v-if="scope.row.contState===3">已上传</span>
-          </template>
+        <el-table-column align="left" label="合同状态" prop="contState" width="100">
         </el-table-column>
-        <el-table-column align="left" label="审核状态" prop="toExamineState" width="100">
-          <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.toExamineState===1">未提审</span>
-            <span class="yellow" v-if="scope.row.toExamineState===2">审核中</span>
-            <span class="green" v-if="scope.row.toExamineState===3">通过</span>
-            <span class="red" v-if="scope.row.toExamineState===4">驳回</span>
-          </template>
+        <el-table-column align="left" label="审核状态" prop="toExamineState" width="120">
         </el-table-column>
         <el-table-column align="left" label="备注" width="200">
           <template slot-scope="scope">
@@ -190,18 +173,15 @@
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" v-if="scope.row.contChangeState===1">变更</el-button>
-            <el-button type="text" size="medium" v-if="scope.row.contChangeState===2">解约</el-button>
-            <span v-if="scope.row.contChangeState===3">-</span>
+            <span v-if="scope.row.contChangeState==='未变更/解约'">-</span>
+            <el-button type="text" size="medium" v-else>{{scope.row.contChangeState}}</el-button>
+            <!-- <el-button type="text" size="medium" v-if="scope.row.contChangeState===2">解约</el-button> -->
           </template>
         </el-table-column>
         <el-table-column align="left" label="后期状态" width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.laterStageState===1">未提交</span>
-            <span v-if="scope.row.laterStageState===2">已提交</span>
-            <span v-if="scope.row.laterStageState===3">已开始</span>
-            <el-button v-if="scope.row.laterStageState===4" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
-            <span v-if="scope.row.laterStageState===5">已结束</span>
+            <el-button v-if="scope.row.laterStageState==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
+            <span v-else>{{scope.row.laterStageState}}</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="后期进度" width="100">
@@ -216,15 +196,12 @@
         </el-table-column>
         <el-table-column align="left" label="结算状态" width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.resultState===1">已结算</span>
-            <span v-if="scope.row.resultState===2">未结算</span>
+             <el-button type="text" size="medium">{{scope.row.resultState}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="业绩状态" width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.contState===1">起草中</span>
-            <span v-if="scope.row.contState===2">已签章</span>
-            <span v-if="scope.row.contState===3">已上传</span>
+            {{scope.row.contState}}
           </template>
         </el-table-column>
         <el-table-column align="left" label="操作" width="150">
@@ -287,14 +264,15 @@ export default {
       let param = {
         pageNum: this.pageNum,
         pageSize: 10,
-        //cont: this.contractForm
         keyword:this.keyword
       }
+      param = Object.assign({},param,this.contractForm)
       if(this.signDate.length>0){
-        param.beginDate=this.signDate[0].replace(/-/g,"/");
-        param.endDate=this.signDate[1].replace(/-/g,"/");
+        param.beginDate=this.signDate[0];
+        param.endDate=this.signDate[1];
       }
-      this.$ajax.post('/api/contract/contractList', param).then(res=>{
+      console.log(param)
+      this.$ajax.postJSON('/api/contract/contractList', param).then(res=>{
         res=res.data
         if(res.status===200){
           this.tableData=res.data.list
@@ -304,11 +282,13 @@ export default {
     },
     //重置
     resetFormFn() {
-      TOOL.clearForm(this.contractForm)
+      TOOL.clearForm(this.contractForm);
+      this.keyword='';
+      this.signDate=[];
     },
     // 查询
     queryFn() {
-      console.log('查询')
+      console.log(this.signDate)
       // if(this.signDate.length>0){
       //   this.contractForm.beginDate=this.signDate[0].replace(/-/g,"/");
       //   this.contractForm.endDate=this.signDate[1].replace(/-/g,"/");
@@ -387,7 +367,7 @@ export default {
 @import "~@/assets/common.less";
 
 .view-container{
-  padding: 0 20px;
+  //padding: 0 20px;
 }
 /deep/.paper-box{
   padding-top: 10px !important;

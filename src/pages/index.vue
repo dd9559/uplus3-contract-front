@@ -172,10 +172,16 @@
     },
     beforeRouteEnter(to,from,next){
       next(vm=>{
-        var myRe = new RegExp(`"id":"([^"]*?)","path":"${to.fullPath.split('/')[1]}"`)
-        console.log(myRe)
-        var myArray = myRe.exec(JSON.stringify(vm.views));
-        console.log(myArray)
+        vm.views.forEach(item=>{
+          item.child.forEach(tip=>{
+            if(tip.path===to.fullPath.split('/')[1]){
+              vm.Index.push(item.name)
+              vm.Index.push(tip.name)
+            }else {
+              return
+            }
+          })
+        })
         vm.activeIndex = to.fullPath.split('/')[1]
       })
     },
@@ -206,24 +212,6 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
-  /deep/ .time-picker{
-    border-radius: 4px;
-    border: 1px solid #dcdfe6;
-    width: 300px;
-    display: flex;
-    align-items: center;
-    .el-date-editor{
-      &.el-input{
-        /*width: auto;*/
-      }
-      >input{
-        border: 0px;
-      }
-    }
-    .daterange{
-      display: none;
-    }
-  }
   .main {
     min-width: 1000px;
     position: relative;
@@ -311,15 +299,20 @@
           }
           .view-header{
             .el-select, .el-input {
-              width: 200px;
-              >input{
+              /*width: 200px;*/
+              /*>input{
                 height: 36px;
                 line-height: 36px;
-              }
+              }*/
             }
             .el-date-editor{
-              height: 36px;
+              /*height: 36px;
               line-height: 36px;
+              .el-range-separator{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }*/
             }
           }
           .router-view{
