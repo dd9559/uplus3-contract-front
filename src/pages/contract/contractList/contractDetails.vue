@@ -271,7 +271,7 @@ export default {
         }
       ],
       callNumber: "",
-      contType: "2",
+      contType: 2,
       shows: false,
       dialogType:3,
       canceldialogType:'',
@@ -313,7 +313,7 @@ export default {
         path: "/addContract",
         query: {
           id: 1,
-          operateType:'edit',
+          operateType:2,
           type:this.contType
         }
       });

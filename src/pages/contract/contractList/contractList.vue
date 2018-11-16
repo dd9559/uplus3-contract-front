@@ -8,7 +8,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
-          <el-select v-model="contractForm.contType" placeholder="请选择合同类型" style="width:150px">
+          <el-select v-model="contractForm.contType" placeholder="请选择合同类型" :clearable="true" style="width:150px">
             <el-option label="租赁" value="1"></el-option>
             <el-option label="买卖" value="2"></el-option>
             <el-option label="代办" value="3"></el-option>
@@ -16,14 +16,14 @@
           </el-select>  
         </el-form-item>
         <el-form-item label="合同状态">
-          <el-select v-model="contractForm.contState" placeholder="请选择合同状态" style="width:150px">
+          <el-select v-model="contractForm.contState" placeholder="请选择合同状态" :clearable="true" style="width:150px">
             <el-option label="起草中" value="1"></el-option>
             <el-option label="已签章" value="2"></el-option>
             <el-option label="已上传" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用途">
-          <el-select v-model="contractForm.houseinfoPurpose" placeholder="请选择用途" style="width:150px">
+          <el-select v-model="contractForm.houseinfoPurpose" placeholder="请选择用途" :clearable="true" style="width:150px">
             <el-option value=""></el-option>
           </el-select>
         </el-form-item>
@@ -43,7 +43,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="审核状态">
-          <el-select v-model="contractForm.toExamineState" placeholder="请选择审核状态" style="width:150px">
+          <el-select v-model="contractForm.toExamineState" placeholder="请选择审核状态" :clearable="true" style="width:150px">
             <el-option label="未提审" value="1"></el-option>
             <el-option label="审核中" value="2"></el-option>
             <el-option label="通过" value="3"></el-option>
@@ -51,27 +51,27 @@
           </el-select>
         </el-form-item>
         <el-form-item label="变更/解约">
-          <el-select v-model="contractForm.contChangeState" placeholder="" style="width:150px">
+          <el-select v-model="contractForm.contChangeState" placeholder="" :clearable="true" style="width:150px">
             <el-option label="已变更" value="1"></el-option>
             <el-option label="已解约" value="2"></el-option>
             <el-option label="未变更/解约" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="结算状态">
-          <el-select v-model="contractForm.resultState" placeholder="" style="width:150px">
+          <el-select v-model="contractForm.resultState" placeholder="" :clearable="true" style="width:150px">
             <el-option label="未结算" value="1"></el-option>
             <el-option label="已结算" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="收佣状态">
-          <el-select v-model="contractForm.receiveAmountState" placeholder="" style="width:150px">
+          <el-select v-model="contractForm.receiveAmountState" placeholder="" :clearable="true" style="width:150px">
             <el-option label="未收" value="1"></el-option>
             <el-option label="部分" value="2"></el-option>
             <el-option label="收齐" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="业绩状态">
-          <el-select v-model="contractForm.achievementState" placeholder="" style="width:150px">
+          <el-select v-model="contractForm.achievementState" placeholder="" :clearable="true" style="width:150px">
             <el-option label="未审核" value="1"></el-option>
             <el-option label="审核中" value="2"></el-option>
             <el-option label="通过" value="3"></el-option>
@@ -315,8 +315,8 @@ export default {
       this.$router.push({
         path:'/contractDetails',
         query:{
-          id: value.code,
-          contType:value.contType
+          id: value.id,
+          contType:value.contType.value
         }
       })
     },
@@ -326,8 +326,8 @@ export default {
         path:'/contractDetails',
         query:{
           type:'dataBank',
-          id: value.code,
-          contType:value.contType
+          id: value.id,
+          contType:value.contType.value
         }
       })
     },
