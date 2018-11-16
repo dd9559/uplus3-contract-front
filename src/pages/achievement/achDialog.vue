@@ -32,7 +32,7 @@
                                         label="角色类型"
                                         width="110">
                                        <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择">
+                                            <el-select v-model="value" placeholder="请选择" filterable>
                                                    <el-option
                                                      v-for="item in options"
                                                      :key="item.value"
@@ -71,7 +71,7 @@
                                         label="在职状况"
                                         width="110">
                                          <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择">
+                                            <el-select v-model="value" placeholder="请选择" filterable>
                                                    <el-option
                                                      v-for="item in options"
                                                      :key="item.value"
@@ -87,7 +87,7 @@
                                         label="门店"
                                         width="110">
                                         <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择">
+                                            <el-select v-model="value" placeholder="请选择" filterable>
                                                    <el-option
                                                      v-for="item in options"
                                                      :key="item.value"
@@ -182,7 +182,7 @@
                                         label="角色类型"
                                         width="110">
                                        <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择">
+                                            <el-select v-model="value" placeholder="请选择" filterable>
                                                    <el-option
                                                      v-for="item in options"
                                                      :key="item.value"
@@ -213,7 +213,7 @@
                                         label="在职状况"
                                         width="110">
                                          <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择">
+                                            <el-select v-model="value" placeholder="请选择" filterable>
                                                    <el-option
                                                      v-for="item in options"
                                                      :key="item.value"
@@ -245,7 +245,7 @@
                                         label="门店"
                                         width="110">
                                         <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择">
+                                            <el-select v-model="value" placeholder="请选择" filterable>
                                                    <el-option
                                                      v-for="item in options"
                                                      :key="item.value"

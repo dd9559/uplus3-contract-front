@@ -15,8 +15,6 @@
                                   <el-button type="primary" round>查询</el-button>
                               </div>
                            </div>
-                   
-
                      <div class="filter-item">
                                <!-- 筛选条件 -->
                                <el-form 
@@ -45,7 +43,7 @@
                                    label="部门" 
                                    prop="region"
                                    class="mr">
-                                       <el-select v-model="propForm.region"  class="w200">
+                                       <el-select v-model="propForm.region"  class="w200" filterable>
                                            <el-option 
                                            v-for="item in rules.region" 
                                            :key="item.value"
@@ -55,7 +53,7 @@
                                    </el-form-item>
                                    <el-form-item 
                                    prop="regionName">
-                                       <el-select v-model="propForm.regionName" class="w100">
+                                       <el-select v-model="propForm.regionName" class="w100" filterable>
                                            <el-option 
                                            v-for="item in rules.regionName" 
                                            :key="item.value"
@@ -74,7 +72,7 @@
                            <div class="data-head-left">
                               <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b> 
                               <span>
-                                  数据列表
+                                  {{storeTitle}}实收业绩汇总
                               </span> 
                            </div> 
                           <!-- 面包屑 -->
@@ -95,15 +93,15 @@
 
                   
 
-                      <!-- 表格 -->
-                      <div class="data-list">
+                      <!-- 表格一 -->
+                      <div class="data-list" v-show="tableShow">
                          <el-table
                             :data="tableData"
                             style="width: 100%"
                             @row-dblclick="dialogVisible = true"
                             >
                                <el-table-column
-                                 label="区总"
+                                 :label="partStep"
                                  width="80"
                                  >
                                   <template slot-scope="scope">
@@ -233,20 +231,158 @@
                                           <p class="orange">{{scope.row.num2}}</p>
                                   </template>                         
                             </el-table-column> 
-
-
-
                           </el-table>
+
+                          
+                            <!-- 分页 -->
+                             <el-pagination
+                               @size-change="handleSizeChange"
+                               @current-change="handleCurrentChange"
+                               :current-page="1"
+                               layout="total, prev, pager, next, jumper"
+                               :total="total">
+                            </el-pagination>
+                      </div>
+                      
+                       <!-- 表格二 -->
+                      <div class="data-list" v-show="!tableShow">
+                         <el-table
+                            :data="tableData1"
+                            style="width: 100%"
+                            @row-dblclick="dialogVisible = true"
+                            >
+
+                               <el-table-column
+                                 prop="date"
+                                 label="签约日期"
+                                 width="110">
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="合同信息"
+                                 width="160"
+                                 >
+                                  <template slot-scope="scope">
+                                          <p><span class="blue">S0001181030001</span></p>
+                                  </template>
+                               </el-table-column>
+                                
+
+                               <el-table-column
+                                 prop="address"
+                                 label="物业地址"
+                                 width="180">
+                               </el-table-column>
+
+
+                               <el-table-column
+                                 prop="type"
+                                 label="合同类型"
+                                 width="100">
+                               </el-table-column>
+
+                                <el-table-column
+                                 prop="type1"
+                                 label="合同应收佣金(元)"
+                                 width="130">
+                               </el-table-column>
+                               
+                               <el-table-column
+                                 prop="type1"
+                                 label="当期实收总佣金(元)"
+                                 width="145">
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="分成比例"
+                                 width="80">
+                                  <template slot-scope="scope">
+                                         <p>10%</p>
+                                         <p>20%</p>
+                                  </template>
+                               </el-table-column>
+
+                               <el-table-column
+                                 prop="type1"
+                                 label="实收分成总金额(元)"
+                                 width="145">
+                               </el-table-column>
+
+                               <el-table-column
+                                 prop="type1"
+                                 label="金融服务费(元)"
+                                 width="120">
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="合作门店"
+                                 width="130">
+                                  <template slot-scope="scope">
+                                          <p>楚河汉街一店</p>
+                                          <p>中北路一店</p>
+                                  </template>
+                               </el-table-column>                    
+
+                                <el-table-column
+                                 label="违约金(元)"
+                                 width="130">
+                                  <template slot-scope="scope">
+                                          <p>214550</p>
+                                          <p>214550</p>
+                                  </template>
+                               </el-table-column>
+
+                               <el-table-column
+                                 prop="amout"
+                                 label="特许服务费(元)"
+                                 width="120"
+                                 >
+                                  <template slot-scope="scope">
+                                         <p>4550</p>
+                                         <p>613000</p>
+                                  </template>
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="当期刷卡手续费(元)"
+                                 width="145">
+                                 <template slot-scope="scope">
+                                         <p>4550</p>
+                                         <p>613000</p>
+                                  </template>
+                               </el-table-column>
+
+                               <el-table-column
+                                 label="分成比例"
+                                 width="80">
+                                  <template slot-scope="scope">
+                                         <p>10%</p>
+                                         <p>20%</p>
+                                  </template>
+                               </el-table-column>
+
+                                 <el-table-column
+                                 prop="amout"
+                                 label="实收分成金额(元)"
+                                 width="120"
+                                 >
+                                  <template slot-scope="scope">
+                                         <p>214550</p>
+                                         <p>214550</p>
+                                  </template>
+                               </el-table-column>               
+                          </el-table>
+                            <!-- 分页 -->
+                             <el-pagination
+                               @size-change="handleSizeChange"
+                               @current-change="handleCurrentChange"
+                               :current-page="1"
+                               layout="total, prev, pager, next, jumper"
+                               :total="total">
+                            </el-pagination>
                       </div>
 
-                      <!-- 分页 -->
-                         <el-pagination
-                           @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="1"
-                           layout="total, prev, pager, next, jumper"
-                           :total="total">
-                        </el-pagination>
+
                 </div>
 
            
@@ -258,34 +394,182 @@ export default {
   name: "actualAchievement",
   data() {
     return {
-      tableData: [
+      testData0: {
+        title: "全公司",
+        currentPart: "",
+        nextPart: "区总",
+        testArr: [
+          {
+            partName: "testData0汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "周松1",
+            id: 0
+          },
+          {
+            partName: "testData0汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "周松1",
+            id: 1
+          },
+          {
+            partName: "testData0汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "周松1",
+            id: 2
+          },
+          {
+            partName: "testData0汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "周松1",
+            id: 3
+          }
+        ]
+      },
+      testData1: {
+        title: "汉口大区",
+        currentPart: "区总",
+        nextPart: "区经",
+        testArr: [
+          {
+            partName: "testData1汉口大区",
+            num1: 100,
+            num2: 7000000,
+            name: "秦星星1",
+            id: 0
+          },
+          {
+            partName: "testData1汉口大区",
+            num1: 100,
+            num2: 7000000,
+            name: "秦星星1",
+            id: 1
+          },
+          {
+            partName: "testData1汉口大区",
+            num1: 100,
+            num2: 7000000,
+            name: "王五",
+            id: 2
+          },
+          {
+            partName: "testData1汉口大区",
+            num1: 100,
+            num2: 7000000,
+            name: "李六",
+            id: 3
+          }
+        ]
+      },
+      testData2: {
+        title: "万松园片区",
+        currentPart: "店长",
+        nextPart: "门店明细",
+        testArr: [
+          {
+            partName: "testData2汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "王大大",
+            id: 0
+          },
+          {
+            partName: "testData2汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "王大大",
+            id: 1
+          },
+          {
+            partName: "testData2汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "王大大",
+            id: 2
+          },
+          {
+            partName: "testData2汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "王大大",
+            id: 3
+          }
+        ]
+      },
+      tableData: [],
+      tableData1: [
         {
-          partName: "汉口大区",
-          num1: 200,
-          num2: 6000000,
-          name: "张三",
-          id: 0
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
         },
         {
-          partName: "汉口大区",
-          num1: 200,
-          num2: 6000000,
-          name: "李四",
-          id: 1
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
         },
         {
-          partName: "汉口大区",
-          num1: 200,
-          num2: 6000000,
-          name: "王五",
-          id: 2
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
         },
         {
-          partName: "汉口大区",
-          num1: 200,
-          num2: 6000000,
-          name: "李六",
-          id: 3
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
+        },
+        {
+          name:
+            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
+          statu: 0,
+          type: "租赁",
+          address: "安居苑10栋3单元1102",
+          man: "当代一店-夏雨天",
+          date: "2018/6/28",
+          type1: 3000000,
+          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
+          type2: "房源维护人主客方",
+          radio: "20%-80%",
+          amout: "400-500"
         }
       ],
       rules: {
@@ -354,8 +638,16 @@ export default {
       },
       total: 0,
       brandShow: false,
-      brandArr: []
+      brandArr: [],
+      tableShow: true, //控制门店实收表格，门店明细表格两者显示与隐藏
+      storeTitle: "全公司",
+      steps: 0,
+      partStep:"区总"
     };
+  },
+  created() {
+    this.tableData = this.testData0.testArr;
+    this.storeTitle = this.testData0.title;
   },
   components: {},
   methods: {
@@ -367,10 +659,28 @@ export default {
       console.log(`当前页: ${val}`);
     },
     nextStep(id, name) {
-      console.log(id);
       this.brandArr.push({ name: name, id: id });
       console.log(this.brandArr);
       this.brandShow = true;
+      if (this.steps == 0) {
+        this.tableData = this.testData1.testArr;
+        this.storeTitle = this.testData1.title;
+        this.partStep=this.testData1.nextPart
+        this.steps = 1;
+      } else if (this.steps == 1) {
+        this.tableData = this.testData2.testArr;
+        this.storeTitle = this.testData2.title;
+        this.partStep=this.testData2.nextPart
+        this.steps = 2;
+      } else if (this.steps == 2) {
+        this.tableShow = false;
+        this.steps = 3;
+      }
+
+      console.log(id);
+
+
+
     },
     askData(id, index) {
       console.log(id);
@@ -378,6 +688,7 @@ export default {
       this.brandArr.splice(index, this.brandArr.length - index - 1);
     },
     allCompany() {
+      this.tableShow = true;
       this.brandShow = false;
       this.brandArr = [];
       // 请求全公司的列表
@@ -550,6 +861,9 @@ export default {
     text-align: center;
     padding-bottom: 50px;
     padding-top: 50px;
+  }
+  /deep/ .el-input__suffix {
+    right: 12px;
   }
 }
 </style>

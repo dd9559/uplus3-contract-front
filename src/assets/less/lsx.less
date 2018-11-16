@@ -1,107 +1,164 @@
 @import '../common.less';
 //公共部分 
-.paper-table-box{
+.paper-table-box {
     margin-top: 20px;
     padding: 20px;
     background-color: @bg-white;
 }
 
-.blue{
+.blue {
     color: @color-blue;
 }
-.red{
+
+.red {
     color: #FF3E3E;
 }
-.cl-1{
+
+.cl-1 {
     color: #6C7986;
 }
-.cl-2{
-    color:#233241;
+
+.cl-2 {
+    color: #233241;
 }
-.font-cl1{
+
+.font-cl1 {
     color: #55657A;
 }
-.tc{
+
+.tc {
     text-align: center;
 }
+
+.in-block {
+    display: inline-block;
+}
+.fl{
+    float: left;
+}
+
 // margin
-.mt-20{
-    margin-top:20px;
+.mt-20 {
+    margin-top: 20px;
 }
-.mt-50{
-    margin-top:50px;
+
+.mt-50 {
+    margin-top: 50px;
 }
-.mr-5{
+
+.mr-5 {
     margin-right: 5px;
 }
-.mr-10{
+
+.mr-10 {
     margin-right: 10px;
 }
-.mr-30{
+
+.mr-30 {
     margin-right: 30px;
 }
-.mr-40{
+
+.mr-40 {
     margin-right: 40px;
 }
+
 // 宽度
-.w100{
+.w100 {
     width: 100px;
 }
-.w120{
+
+.w110 {
+    width: 110px;
+}
+
+.w120 {
     width: 120px;
 }
-.w134{
+
+.w134 {
     width: 134px;
 }
-.w180{
+
+.w160 {
+    width: 160px;
+}
+
+.w180 {
     width: 180px;
 }
-.w185{
+
+.w185 {
     width: 185px;
 }
-.w200{
+
+.w200 {
     width: 200px;
 }
-.w262{
+
+.w262 {
     width: 262px;
 }
-.w270{
+
+.w270 {
     width: 270px;
 }
-.w300{
+
+.w284 {
+    width: 284px;
+}
+
+.w300 {
     width: 300px;
 }
-.w312{
+
+.w312 {
     width: 312px;
 }
-.w322{
+
+.w322 {
     width: 322px;
 }
-.w330{
+
+.w330 {
     width: 330px;
 }
+
+.w460 {
+    width: 460px;
+}
+
 // 按钮
-.paper-btn{
+.paper-btn {
     width: 100px;
     text-align: center;
 }
-.contract-btn{
+
+.management-btn {
+    width: 122px;
+    text-align: center;
+}
+
+.contract-btn {
     width: 72px;
     text-align: center;
 }
-.paper-btn-blue{
+
+.paper-btn-blue {
     background-color: @color-blue;
     border-color: @color-blue;
 }
-.paper-btn-green{
+
+.paper-btn-green {
     background-color: #54D384;
     border-color: #54D384;
 }
-.paper-btn-red{
+
+.paper-btn-red {
     background-color: #F56C6C;
     border-color: #F56C6C;
 }
-.contract-gray{
+
+.contract-gray {
     background-color: #EAEFF5;
     border-color: #EAEFF5;
     color: #233241;
@@ -111,7 +168,7 @@
 .paper-set-tit {
     display: flex;
     justify-content: space-between;
-    .paper-tit-fl{
+    .paper-tit-fl {
         font-size: 18px;
         line-height: 36px;
         color: #233241;
@@ -119,70 +176,71 @@
 }
 
 // 列表
-.paper-table{
+.paper-table {
     // width: 100%;
     /deep/.el-table__header-wrapper,
-    /deep/.el-table__fixed-header-wrapper{
+    /deep/.el-table__fixed-header-wrapper {
         border-radius: 4px;
         overflow: hidden;
     }
-    /deep/.el-table__header th{
+    /deep/.el-table__header th {
         background-color: #EEF2FB;
         line-height: 30px;
         color: #6C7986;
     }
-    /deep/&.el-table td{
+    /deep/&.el-table td {
         padding: 25px 0;
     }
-    /deep/&.el-table td:last-child>.cell{
+    /deep/&.el-table td:last-child>.cell {
         padding-right: 0;
     }
-    .line{
+    .line {
         background-color: #e5e4ea;
         display: inline-block;
         height: 14px;
         width: 1px;
-        margin:0 6px;
+        margin: 0 6px;
         position: relative;
         top: 3px;
     }
 }
+
 // 筛选条件
-.prop-form{
+.prop-form {
     padding-top: 10px;
-    /deep/.el-form-item__label{
+    /deep/.el-form-item__label {
         color: #6C7986;
         padding-right: 8px;
     }
-    /deep/.el-form-item{
+    /deep/.el-form-item {
         margin-right: 20px;
     }
-    .mr{
+    .mr {
         margin-right: 0;
     }
 }
 
 // 弹层
-.layer-paper{
-    /deep/.el-dialog__header{
+.layer-paper {
+    /deep/.el-dialog__header {
         text-align: left;
     }
-    /deep/.el-dialog__footer{
+    /deep/.el-dialog__footer {
         padding-bottom: 30px;
     }
-    /deep/.el-dialog__body{
-        padding:0;
+    /deep/.el-dialog__body {
+        padding: 0;
     }
-    /deep/.el-dialog__title{
+    /deep/.el-dialog__title {
         font-size: 20px;
     }
-    /deep/.el-dialog__header{
+    /deep/.el-dialog__header {
         padding: 20px;
         border-bottom: 1px solid #EDECF0;
     }
-    .txt{
+    .txt {
         height: 140px;
-        padding:0 20px;
+        padding: 0 20px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -192,24 +250,24 @@
 }
 
 // 作废弹层
-/deep/.layer-invalid{
+/deep/.layer-invalid {
     padding: 30px 0 30px 20px;
-    .ul{
+    .ul {
         display: flex;
     }
-    .input-box{
+    .input-box {
         display: flex;
         margin-top: 25px;
-        .input{
+        .input {
             width: 586px;
             position: relative;
             background-color: #FAFAFB;
-            /deep/.el-textarea__inner{
+            /deep/.el-textarea__inner {
                 background-color: transparent;
                 border-color: #ECEFF2;
                 height: 140px;
-            } 
-            .text-absloute{
+            }
+            .text-absloute {
                 position: absolute;
                 right: 12px;
                 bottom: 12px;
@@ -217,107 +275,108 @@
         }
     }
 }
-/deep/.layer-refused{
-    .input-box{
+
+/deep/.layer-refused {
+    .input-box {
         margin-top: 0;
-        .input /deep/.el-textarea__inner{
+        .input /deep/.el-textarea__inner {
             height: 200px;
         }
     }
 }
-/deep/.layer-receive-tab{
+
+/deep/.layer-receive-tab {
     padding: 10px 20px 20px;
-    .el-tabs__nav-wrap::after{
+    .el-tabs__nav-wrap::after {
         height: 0;
     }
-    .el-tabs__header{
+    .el-tabs__header {
         margin-bottom: 0;
     }
-    .paper-table.el-table td{
+    .paper-table.el-table td {
         padding: 5px 0;
     }
-    .receive-label{
+    .receive-label {
         display: flex;
         padding-top: 30px;
-        .receive-txt{
+        .receive-txt {
             width: 770px;
             color: #233241;
         }
     }
 }
+
 // 合同资料库
-.contract-box{
+.contract-box {
     padding-top: 20px;
-    .contract-top{
+    .contract-top {
         height: 36px;
         display: flex;
         align-items: center;
         position: absolute;
         right: 0;
-        top: -24px;
-        // background-color: red;
-    }
-    // 相册
-    .contract-photo{
-        border:1px solid #E8EAF6;
+        top: -24px; // background-color: red;
+    } // 相册
+    .contract-photo {
+        border: 1px solid #E8EAF6;
         padding: 0 20px 20px;
-        .tit{
+        .tit {
             color: #32485F;
             font-size: 14px;
         }
-        .contract-main{
+        .contract-main {
             padding: 0 10px;
         }
-        .contract-tit{
+        .contract-tit {
             margin-top: 14px;
             color: #6C7986;
             font-size: 14px;
         }
-        .contract-ul{
+        .contract-ul {
             overflow: hidden;
-            >li{
+            >li {
                 float: left;
                 margin-top: 12px;
                 margin-right: 20px;
                 width: 140px;
                 height: 140px;
-                border:1px solid #DEDDE2;
+                border: 1px solid #DEDDE2;
                 box-sizing: border-box;
                 border-radius: 2px;
                 overflow: hidden;
                 position: relative;
-                >img{
+                >img {
                     display: block;
                     width: 100%;
                     height: 100%;
                 }
-                &:last-child{
+                &:last-child {
                     margin-right: 0;
                 }
-                .el-checkbox{
+                .el-checkbox {
                     position: absolute;
                     right: 7px;
                     top: 7px;
-                    /deep/.is-checked{
-                        .el-checkbox__inner{
+                    /deep/.is-checked {
+                        .el-checkbox__inner {
                             background-color: #54D384;
                         }
                     }
-                    /deep/.el-checkbox__inner{
+                    /deep/.el-checkbox__inner {
                         width: 35px;
                         height: 35px;
-                        background-color:rgba(0,0,0,0.5);
+                        background-color: rgba(0, 0, 0, 0.5);
                         border: 0;
                         border-radius: 50%;
-                        &::after{
-                            transform:rotate(45deg) scaleY(1);
+                        &::after {
+                            transform: rotate(45deg) scaleY(1);
                             width: 8px;
                             height: 16px;
-                            left:13px;
-                            top:5px;
+                            left: 13px;
+                            top: 5px;
                         }
                     }
-                    /deep/.el-checkbox__label{
+                    /deep/.el-checkbox__label {
                         font-size: 0;
                         padding-left: 0;
                     }
@@ -326,8 +385,9 @@
         }
     }
 }
+
 // 图片放大
-.fixed-zoom-box{
+.fixed-zoom-box {
     position: fixed;
     left: 0;
     top: 0;
@@ -337,25 +397,25 @@
     justify-content: center;
     align-items: center;
     z-index: 10;
-    background-color: rgba(0,0,0,0.5);
-    .fixed-zoom{
+    background-color: rgba(0, 0, 0, 0.5);
+    .fixed-zoom {
         position: absolute;
         left: 0;
         right: 0;
         top: 0;
         bottom: 0;
     }
-    .zoom-div{
+    .zoom-div {
         display: flex;
         justify-content: center;
         align-items: center;
-        >img{
+        >img {
             display: block;
             max-height: 80%;
             max-width: 80%;
         }
     }
-    .fixed-zoom-close{
+    .fixed-zoom-close {
         position: absolute;
         z-index: 9;
         right: 0;
@@ -368,18 +428,199 @@
         cursor: pointer;
     }
 }
-.contract-tab{
-    /deep/.el-tabs__content{
+
+.contract-tab {
+    /deep/.el-tabs__content {
         overflow: initial;
     }
 }
+
 // 后期进度弹层
-.layer-progress{
+.layer-progress {
     padding: 30px 20px;
-    .ul{
+    .ul {
         display: flex;
     }
-    /deep/.paper-table.el-table td{
+    .ul-line {
+        line-height: 36px;
+    }
+    /deep/.paper-table.el-table td {
         padding: 15px 0;
+    }
+}
+
+// 更换交易流程
+.replace-box {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 20px;
+    >div {
+        width: 340px;
+        border: 1px solid #E8EAF6;
+        border-radius: 4px;
+        box-sizing: border-box;
+        >.tit {
+            line-height: 54px;
+            background-color: #F2F3F8;
+            border-bottom: 1px solid #E8EAF6;
+            text-align: center;
+            color: #6C7986;
+        }
+        >.ul {
+            height: 230px;
+            overflow-y: auto;
+            >li {
+                padding: 0 20px;
+                line-height: 46px;
+                border-bottom: 1px solid #E8EAF6;
+                cursor: pointer;
+            }
+            >.on {
+                background-color: #F8F8F8;
+            }
+        }
+        >.ul-box {
+            height: 230px;
+            overflow-y: auto;
+            >li {
+                padding: 0 20px;
+                line-height: 36px;
+            }
+        }
+    }
+}
+
+.steps-from {
+    padding: 0 20px 20px;
+    .steps-li {
+        position: relative;
+        padding-top: 20px;
+        min-height: 32px;
+    }
+    .steps-li-fl {
+        position: absolute;
+        left: 0;
+        padding-right: 10px;
+        box-sizing: border-box;
+        overflow: hidden;
+        line-height: 32px;
+    }
+    .steps-mandatory {
+        float: left;
+        width: 14px;
+        color: #FF3E3E;
+        height: 32px;
+    }
+    .steps-see {
+        line-height: 32px;
+        word-break: break-all;
+    }
+}
+
+.steps-input {
+    position: relative;
+    background-color: #FAFAFB;
+    /deep/.el-textarea__inner {
+        background-color: transparent;
+        border-color: #ECEFF2;
+        height: 140px;
+    }
+    .text-absloute {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+    }
+}
+
+.steps-img{
+    overflow: hidden;
+    >li{
+        float: left;
+        margin-left: 22px;
+        margin-top: 14px;
+        &:first-child{
+            margin-left: 0;
+        }
+        .icon-tubiao-6{
+            cursor: pointer;
+        }
+    }
+    .steps-img-li{
+        position: relative;
+        border:1px solid #EBEBEB;
+        box-sizing: border-box;
+        border-radius: 4px;
+        width: 130px;
+        height: 130px;
+        >img{
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .icon-tubiao-6{
+            position: absolute;
+            right: -14px;
+            top: -14px;
+            font-size: 28px;
+            color: #F56C6C;
+            &::after{
+                content: '';
+                position: absolute;
+                left: 50%;
+                top:50%;
+                width: 20px;
+                height: 20px;
+                margin-left: -10px;
+                margin-top: -10px;
+                background-color: #fff;
+                border-radius: 50%;
+            }
+            &::before{
+                position: relative;
+                z-index: 1;
+            }
+        }
+    }
+    .steps-mp4-li{
+        line-height: 20px;
+        overflow: hidden;
+        .icon-tubiao-7{
+            font-size: 20px;
+            float: left;
+            margin-left: 10px;
+        }
+        .icon-steps{
+            width: 16px;
+            margin-right: 8px;
+            float: left;
+        }
+    }
+}
+
+// 调整步骤弹层
+.layer-chekbox-box{
+    padding: 30px 20px 20px;
+    /deep/.el-table{
+        .cell{
+            padding: 0;
+        }
+        .el-checkbox{
+            display: block;
+        }
+        td{
+            padding: 0;
+        }
+    }
+    .layer-checkbox-p>p{
+        padding: 16px 0 16px 40px ;
+        border-bottom: 1px solid #E8EAF6;
+        text-align: left;
+        &:last-child{
+            border-bottom: 0;
+        }
+    }
+    .check-all{
+        padding-left: 70px;
+        text-align: left;
     }
 }

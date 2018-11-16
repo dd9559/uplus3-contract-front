@@ -6,7 +6,8 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import axios from 'axios'
+
+import ScreeningTop from '@/components/ScreeningTop';
 import {api} from '@/assets/js/ajax'
 import {TOOL} from "@/assets/js/common"
 
@@ -20,6 +21,8 @@ Vue.prototype.$tool=TOOL  //工具方法封装
 Vue.filter("formatDate", TOOL.dateFormat);
 Vue.filter("formatTime", TOOL.timeFormat);
 Vue.filter("formatNull", TOOL.nullFormat);
+
+Vue.component("ScreeningTop",ScreeningTop);
 
 /* eslint-disable no-new */
 new Vue({

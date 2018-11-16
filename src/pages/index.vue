@@ -171,8 +171,17 @@
       }
     },
     beforeRouteEnter(to,from,next){
-      // debugger
       next(vm=>{
+        vm.views.forEach(item=>{
+          item.child.forEach(tip=>{
+            if(tip.path===to.fullPath.split('/')[1]){
+              vm.Index.push(item.name)
+              vm.Index.push(tip.name)
+            }else {
+              return
+            }
+          })
+        })
         vm.activeIndex = to.fullPath.split('/')[1]
       })
     },
@@ -203,24 +212,6 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
-  /deep/ .time-picker{
-    border-radius: 4px;
-    border: 1px solid #dcdfe6;
-    width: 300px;
-    display: flex;
-    align-items: center;
-    .el-date-editor{
-      &.el-input{
-        /*width: auto;*/
-      }
-      >input{
-        border: 0px;
-      }
-    }
-    .daterange{
-      display: none;
-    }
-  }
   .main {
     min-width: 1000px;
     position: relative;
@@ -305,9 +296,6 @@
             >th{
               background-color: @bg-th;
             }
-          }
-          .el-select, .el-input {
-            width: 200px;
           }
           .router-view{
             min-height: 100%;

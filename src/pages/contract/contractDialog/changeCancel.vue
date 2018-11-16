@@ -1,15 +1,15 @@
 <template>
     <div id="changecancel">
         <!-- 合同变更（操作弹框） -->
-        <el-button type="text" @click="dialogVisible1 = true">合同变更（编辑）</el-button>
+        <!-- <el-button type="text" @click="dialogVisible1 = true">合同变更（编辑）</el-button>
         <el-button type="text" @click="dialogVisible2 = true">合同变更（查看）</el-button>
         <el-button type="text" @click="dialogVisible3 = true">合同解约（编辑）</el-button>
         <el-button type="text" @click="dialogVisible4 = true">合同解约（查看）</el-button>
-        <el-button type="text" @click="dialogVisible5 = true">上传合同主体弹层</el-button>
+        <el-button type="text" @click="dialogVisible5 = true">上传合同主体弹层</el-button> -->
 
         <!-- 合同变更（编辑） -->
-        <el-dialog title="合同变更" :visible.sync="dialogVisible1" width="740px" class="layer-changecancel mt80">
-            <div class="audit-box"  :style="{ height: clientHeight() }">
+        <el-dialog :title="getDialogType==='changeEdit'||getDialogType==='changeLook'?'合同变更':'合同解除'" :visible="getCancelDialog" width="740px" class="layer-changecancel mt80" @close='close'>
+            <div class="audit-box" v-if="getDialogType==='changeEdit'">
                 <div class="textareabox">
                     <span>合同变更原因</span>
                     <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字"  class="textarea" maxlength=100></el-input>
@@ -31,18 +31,12 @@
                     </div>
                 </div>     
             </div>
-            <div class="btnbox">
-                <el-button>取 消</el-button>
-                <el-button type="primary">保 存</el-button>  
-            </div>
-        </el-dialog>
 
-        <!-- 合同变更（查看） -->
-        <el-dialog title="合同变更" :visible.sync="dialogVisible2" width="740px" class="layer-changecancel mt80">
-            <div class="audit-box"  :style="{ height: clientHeight2() }">
+            <!-- 合同变更（查看） -->
+            <div class="audit-box" v-if="getDialogType==='changeLook'">
                 <div class="textareabox">
                     <span>合同变更原因</span>
-                    <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字"  class="textarea" maxlength=100 :disabled="true"></el-input>
+                    <el-input type="textarea" :rows="4" placeholder="请填写合同变更原因，最多100字"  class="textarea" maxlength=100 :disabled="true"></el-input>
                 </div>
                 <!-- 上传附件 -->
                 <div class="uploadfile">
@@ -52,12 +46,9 @@
                     </div>
                 </div>     
             </div>
-            
-        </el-dialog>
 
-        <!-- 合同解约（编辑） -->
-        <el-dialog title="合同解除" :visible.sync="dialogVisible3" width="740px" class="layer-changecancel mt80">
-            <div class="audit-box"  :style="{ height: clientHeight() }">
+            <!-- 合同解约（编辑） -->
+            <div class="audit-box" v-if="getDialogType==='cancelEdit'">
                 <div class="textareabox">
                     <span>合同解除原因</span>
                     <el-input type="textarea" :rows="3" placeholder="请填写合同解除原因，最多100字"  class="textarea" maxlength=100></el-input>
@@ -79,15 +70,9 @@
                     </div>
                 </div>     
             </div>
-            <div class="btnbox">
-                <el-button>取 消</el-button>
-                <el-button type="primary">保 存</el-button>  
-            </div>
-        </el-dialog>
 
-        <!-- 合同解约（查看） -->
-        <el-dialog title="合同解除" :visible.sync="dialogVisible4" width="740px" class="layer-changecancel mt80">
-            <div class="audit-box"  :style="{ height: clientHeight2() }">
+            <!-- 合同解约（查看） -->
+            <div class="audit-box" v-if="getDialogType==='cancelLook'">
                 <div class="textareabox">
                     <span>合同解除原因</span>
                     <el-input type="textarea" :rows="3" placeholder="请填写合同变更，最多100字"  class="textarea" maxlength=100  :disabled="true"></el-input>
@@ -100,12 +85,9 @@
                     </div>
                 </div>     
             </div>
-            
-        </el-dialog>
 
-        <!-- 上传合同主体 -->
-        <el-dialog title="合同主体" :visible.sync="dialogVisible5" width="740px" class="layer-changecancel" top="16vh">
-            <div class="audit-box" style=" height: 390px ">
+            <!-- 上传合同主体 -->
+            <div class="audit-box" style=" height: 390px " v-if="getDialogType==='upload'">
                 <!-- 上传附件 -->
                 <div class="uploadfile uploadfile2">
                     <div class="uploadtitle">上传合同主体<span><b>注：</b>合同主体上传支持jpg、png、docx、以及pdf格式</span></div>
@@ -124,51 +106,160 @@
                 </div>         
             </div>
             <div class="btnbox">
+                <el-button @click="close">取 消</el-button>
+                <el-button type="primary">保 存</el-button>  
+            </div>
+        </el-dialog>
+
+        <!-- 合同变更（查看） -->
+        <!-- <el-dialog title="合同变更" :visible="getDialogType==='changeLook'" width="740px" class="layer-changecancel mt80" @close="close">
+            <div class="audit-box"  :style="{ height: clientHeight2() }">
+                <div class="textareabox">
+                    <span>合同变更原因</span>
+                    <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字"  class="textarea" maxlength=100 :disabled="true"></el-input>
+                </div> -->
+                <!-- 上传附件 -->
+                <!-- <div class="uploadfile">
+                    <div class="uploadtitle">上传变更协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+                    <div class="uploadbtn">
+                    
+                    </div>
+                </div>     
+            </div>
+            
+        </el-dialog> -->
+
+        <!-- 合同解约（编辑） -->
+        <!-- <el-dialog title="合同解除" :visible="getDialogType==='cancelEdit'" width="740px" class="layer-changecancel mt80" @close='close'>
+            <div class="audit-box"  :style="{ height: clientHeight() }">
+                <div class="textareabox">
+                    <span>合同解除原因</span>
+                    <el-input type="textarea" :rows="3" placeholder="请填写合同解除原因，最多100字"  class="textarea" maxlength=100></el-input>
+                </div> -->
+                <!-- 上传附件 -->
+                <!-- <div class="uploadfile">
+                    <div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+                    <div class="uploadbtn">
+                    <el-upload
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        list-type="picture-card"
+                        multiple
+                        >
+                        <i class="iconfont icon-shangchuan"></i>
+                    </el-upload> -->
+                    <!-- <el-dialog :visible.sync="dialogVisible2">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                    </el-dialog> -->
+                    <!-- </div>
+                </div>     
+            </div>
+            <div class="btnbox">
+                <el-button>取 消</el-button>
+                <el-button type="primary">保 存</el-button>  
+            </div>
+        </el-dialog> -->
+
+        <!-- 合同解约（查看） -->
+        <!-- <el-dialog title="合同解除" :visible="getDialogType==='cancelLook'" width="740px" class="layer-changecancel mt80" @close='close'>
+            <div class="audit-box"  :style="{ height: clientHeight2() }">
+                <div class="textareabox">
+                    <span>合同解除原因</span>
+                    <el-input type="textarea" :rows="3" placeholder="请填写合同变更，最多100字"  class="textarea" maxlength=100  :disabled="true"></el-input>
+                </div> -->
+                <!-- 上传附件 -->
+                <!-- <div class="uploadfile">
+                    <div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+                    <div class="uploadbtn">
+                    
+                    </div>
+                </div>     
+            </div>
+            
+        </el-dialog> -->
+
+        <!-- 上传合同主体 -->
+        <!-- <el-dialog title="合同主体" :visible="getDialogType==='upload'" width="740px" class="layer-changecancel" top="16vh">
+            <div class="audit-box" style=" height: 390px "> -->
+                <!-- 上传附件 -->
+                <!-- <div class="uploadfile uploadfile2">
+                    <div class="uploadtitle">上传合同主体<span><b>注：</b>合同主体上传支持jpg、png、docx、以及pdf格式</span></div>
+                    <div class="uploadbtn">
+                    <el-upload
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        list-type="picture-card"
+                        multiple
+                        >
+                        <i class="iconfont icon-shangchuan"></i>
+                    </el-upload> -->
+                    <!-- <el-dialog :visible.sync="dialogVisible2">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                    </el-dialog> -->
+                    <!-- </div>
+                </div>         
+            </div>
+            <div class="btnbox">
                 <el-button>取 消</el-button>
                 <el-button type="primary">确 定</el-button>  
             </div>
-        </el-dialog>
+        </el-dialog> -->
     </div>
 </template>
 
 <script>
 export default {
+    // dialogType类型有四种：1.changeEdit 变更编辑
+    //                      2.changeLook 变更查看
+    //                      3.cancelEdit  解约编辑
+    //                      4.cancelLook  解约查看
+    //                      5.upload  上传合同主体
+     props: {
+        dialogType: {
+            type: String,
+            default: ''
+        },
+        cancelDialog: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
-            clientHei: document.documentElement.clientHeight, //窗体高度
-
-            dialogVisible1: false,
-            dialogVisible2: false, 
-            dialogVisible3: false,
-            dialogVisible4: false,
-            dialogVisible5: false,            
+            //clientHei: document.documentElement.clientHeight, //窗体高度
+           
         }
     },
 
     computed: {
-       
+       getCancelDialog(){
+           return this.cancelDialog
+       },
+       getDialogType(){
+           return this.dialogType
+       }
     },
     
     methods: {
       // 控制弹框body内容高度，超过显示滚动条
-      clientHeight() {        
-          return this.clientHei - 321 + 'px'
-      },
-      clientHeight2() {        
-          return this.clientHei - 252 + 'px'
-      },
-    },
-
-    mounted() {
-      var _this = this;
-       window.onresize = function(){
-         _this.clientHei = document.documentElement.clientHeight;
-       }
-    },
+    //   clientHeight() {        
+    //       return this.clientHei - 321 + 'px'
+    //   },
+    //   clientHeight2() {        
+    //       return this.clientHei - 252 + 'px'
+    //   },
+      close(){
+          this.$emit('closeChangeCancel')
+      }
+    }
+    // mounted() {
+    //   var _this = this;
+    //    window.onresize = function(){
+    //      _this.clientHei = document.documentElement.clientHeight;
+    //    }
+    // },
 }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
     #changecancel{
         .mt80{
             .el-dialog{
@@ -178,7 +269,7 @@ export default {
         }
         .layer-changecancel{
             
-            .el-dialog__header{
+            /deep/.el-dialog__header{
                 border-bottom: 1px solid #EDECF0;
                 padding: 16px 20px 15px;
             span{
@@ -195,12 +286,13 @@ export default {
                 }
             } 
             }
-            .el-dialog__body{
+            /deep/.el-dialog__body{
                 padding: 0;
             }
 
             .audit-box{
-                padding: 26px 20px 30px 20px;
+                padding: 26px 20px 10px 20px;
+                max-height: 500px;
                 overflow-y: auto;
                 .textareabox{
                     display: flex;
@@ -217,6 +309,7 @@ export default {
                 }
                 .uploadfile{
                     margin: 40px 0 30px;
+                    min-height: 100px;
                     .uploadtitle{
                         color: #6C7986;
                         span{

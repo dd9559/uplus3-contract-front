@@ -2,7 +2,7 @@
       <div class="layout" style="background-color: #f5f5f5">
                  <!-- 筛选条件  -->
                 <div class="filter-layout">
-                         
+                      
                            <div style="overflow:hidden;">
                                  <div class="filter-left f_l">
                                      <h1>
@@ -12,7 +12,7 @@
                                </div>
                                <div class="filter-right f_r">
                                   <el-button type="primary" round>重置</el-button>
-                                  <el-button type="primary" round>查询</el-button>
+                                  <el-button type="primary" round @click="filterData">查询</el-button>
                               </div>
                            </div>
                    
@@ -21,27 +21,29 @@
                                <!-- 筛选条件 -->
                                <el-form 
                                :inline="true"
-                               ref="propForm"
                                :model="propForm" 
-                               class="prop-form"
+                                class="prop-form"
                                size="small">
+                                    
+                                    <!-- 部门 -->
                                    <el-form-item 
                                    label="部门" 
-                                   prop="region"
+                                   prop="department"
                                    class="mr">
-                                       <el-select v-model="propForm.region"  class="w200">
+                                       <el-select v-model="propForm.department"  class="w200" filterable>
                                            <el-option 
-                                           v-for="item in rules.region" 
+                                           v-for="item in rules.department" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
                                        </el-select>
                                    </el-form-item>
+
                                    <el-form-item 
-                                   prop="regionName">
-                                       <el-select v-model="propForm.regionName" class="w100">
+                                   prop="departmentDetail">
+                                       <el-select v-model="propForm.departmentDetail" class="w100" filterable>
                                            <el-option 
-                                           v-for="item in rules.regionName" 
+                                           v-for="item in rules.departmentDetail" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
@@ -50,10 +52,10 @@
                                
                                    <el-form-item 
                                    label="合同类型" 
-                                   prop="paper">
-                                       <el-select v-model="propForm.paper" class="w120">
+                                   prop="contractType">
+                                       <el-select v-model="propForm.contractType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.paper" 
+                                           v-for="item in rules.contractType" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
@@ -62,10 +64,10 @@
 
                                     <el-form-item 
                                    label="分成类型" 
-                                   prop="paper">
-                                       <el-select v-model="propForm.paper" class="w120">
+                                   prop="divideType">
+                                       <el-select v-model="propForm.divideType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.paper" 
+                                           v-for="item in rules.divideType" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
@@ -74,10 +76,10 @@
 
                                     <el-form-item 
                                    label="业绩状态" 
-                                   prop="paper">
-                                       <el-select v-model="propForm.paper" class="w120">
+                                   prop="achType">
+                                       <el-select v-model="propForm.achType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.paper" 
+                                           v-for="item in rules.achType" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
@@ -93,6 +95,7 @@
                                            class="w330"
                                            type="daterange"
                                            range-separator="至"
+                                           value-format="yyyy-MM-dd"
                                            start-placeholder="开始日期"
                                            end-placeholder="结束日期">
                                        </el-date-picker>
@@ -100,7 +103,7 @@
 
 
                                    <p>
-                                         <el-form-item label="关键字" prop="search">
+                                       <el-form-item label="关键字" prop="search">
                                        <el-autocomplete
                                        class="w312"
                                        v-model="propForm.search"
@@ -125,19 +128,20 @@
                               </span> 
                            </div>
                           <div class="data-head-right f_l">
-                              <span>总分成：<b>55922元</b>，</span>
-                              <span>分类分成：<b>45392元</b>，</span>
-                              <span>出售：<b>11754元</b>，</span>
-                              <span>代办：<b>2000元</b>，</span>
-                              <span>出租：<b>52747元</b></span>
+                              <span>总分成：<b>{{countData[0]}}元</b>，</span>
+                              <span>分类分成：</span>
+                              <span>出售：<b>{{countData[1]}}元</b>，</span>
+                              <span>代办：<b>{{countData[2]}}元</b>，</span>
+                              <span>出租：<b>{{countData[3]}}元</b></span>
                           </div>      
                       </div>
                       <!-- 头部 end -->
 
+
                       <!-- 表格 -->
                       <div class="data-list">
                          <el-table
-                            :data="selectAchLish"
+                            :data="selectAchList"
                             style="width: 100%"
                             @row-dblclick="enterDetail"
                             >
@@ -151,6 +155,7 @@
                                           <p>客源编号：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
                                   </template>
                                </el-table-column>
+
                                <el-table-column
                                  label="业绩状态"
                                  width="100">
@@ -160,6 +165,7 @@
                                      <p v-if="scope.row.achievementState==2" class="orange">已驳回</p>
                                   </template>
                                </el-table-column>
+
                                <el-table-column
                                  label="合同类型"
                                  width="100">
@@ -170,6 +176,7 @@
                                   </template>
 
                                </el-table-column>
+
                                 <el-table-column
                                  prop="propertyAddr"
                                  label="物业地址"
@@ -180,7 +187,7 @@
                                  label="成交经纪人"
                                  width="170">
                                      <template slot-scope="scope">
-                                       <p v-if="scope.row.dealName">{{scope.row.dealName}}</p>
+                                       <p v-if="scope.row.dealName">{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
                                        <p v-else>暂无</p>
                                      </template>
                                </el-table-column>
@@ -209,7 +216,10 @@
                                  label="分成人"
                                  width="170">
                                   <template slot-scope="scope">
-                                          <p v-for="item in scope.row.distributionFroms">{{item.assignor}}</p>
+                                         <div  v-for="item in scope.row.distributionFroms">
+                                                  <p>{{item.level4}}</p>
+                                                  <p>{{item.assignor}}</p>
+                                         </div>
                                   </template>
                                </el-table-column>
 
@@ -272,7 +282,6 @@
                                                   <p>客源维护人</p>
                                                   <p>协议方2</p>
                                                </div>
-
                                           </div>
                                   </template>
                                </el-table-column>
@@ -316,13 +325,15 @@
 
                       
                      <!-- 分页 -->
-                         <el-pagination
+                      <el-pagination
                            @size-change="handleSizeChange"
                            @current-change="handleCurrentChange"
                            :current-page="1"
-                           layout="total, prev, pager, next, jumper"
+                           :page-size="2"
+                           layout="total,prev, pager, next , jumper"
                            :total="total">
-                        </el-pagination>
+                      </el-pagination>
+
                 </div>
 
                    <!-- 表单列表弹出框（业绩详情） -->
@@ -340,58 +351,118 @@
                                 <h1>房源方分成</h1>
                                 <div class="ach-divide-list">
                                      <el-table
-                                      :data="achDetail"
+                                      :data="houseArr"
                                       style="width: 100%">
+                                      <!-- roleType 分成人角色类型 :
+                                                    房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
+                                                    客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
                                       <el-table-column
-                                        prop="role_type"
                                         label="角色类型"
                                         width="100">
+                                              <template slot-scope="scope">
+                                                  <div>
+                                                      <div v-if="scope.row.roleType==0">
+                                                         <p>录入</p>
+                                                      </div>
+                                                      <div v-if="scope.row.roleType==1">
+                                                         <p>维护</p>
+                                                      </div>
+                                                      <div v-if="scope.row.roleType==2">
+                                                         <p>独家</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==3">
+                                                         <p>房勘</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==4">
+                                                         <p>钥匙</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==5">
+                                                         <p>委托</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==6">
+                                                         <p>建盘</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==7">
+                                                         <p>主客方</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==8">
+                                                         <p>推荐人</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==9">
+                                                         <p>签约人</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==10">
+                                                         <p>A/M</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==11">
+                                                         <p>协议方</p>
+                                                      </div>
+                                                      <div v-if="scope.row.roleType==12">
+                                                         <p>协议方2</p>
+                                                      </div>
+                                                   </div>
+                                             </template>
                                       </el-table-column>
-
+                                       
+                                       <!-- ratio -->
                                       <el-table-column
-                                        prop="distributionList"
+                                        prop="ratio"
                                         label="分成比例"
                                         width="80">
                                       </el-table-column>
 
+                                      <!-- assignor -->
                                       <el-table-column
-                                        prop="name"
+                                        prop="assignor"
                                         label="经纪人"
                                         width="80">
                                       </el-table-column>
-
+                                       <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
                                        <el-table-column
-                                        prop="is_job"
                                         label="在职状况"
                                         width="80">
+                                               <template slot-scope="scope">
+                                                  <div>
+                                                      <div v-if="scope.row.isJob==0">
+                                                         <p>离职</p>
+                                                      </div>
+                                                      <div v-if="scope.row.isJob==1">
+                                                         <p>在职</p>
+                                                      </div>
+                                                      <div v-if="scope.row.isJob==2">
+                                                         <p>待入职</p>
+                                                      </div>
+                                                   </div>
+                                             </template>
                                       </el-table-column>
 
-                                      
+                                      <!-- shopkeeper -->
                                        <el-table-column
-                                        prop="shopowner"
+                                        prop="shopkeeper"
                                         label="店长"
                                         width="80">
                                       </el-table-column>
-
+                                       <!-- level4 -->
                                       <el-table-column
                                         prop="level4"
                                         label="单组"
                                         width="120">
                                       </el-table-column>
-
+                                       <!-- level3 -->
                                        <el-table-column
                                         prop="level3"
                                         label="门店"
                                         width="110">
                                       </el-table-column>
 
+                                      <!-- amaldar -->
                                      <el-table-column
                                         prop="amaldar"
                                         label="区经"
                                         width="60"> 
                                       </el-table-column>
 
-                                      
+                                      <!-- manager -->
                                      <el-table-column
                                         prop="manager"
                                         label="区总"
@@ -402,59 +473,119 @@
 
                                 <h1>客源方分成</h1>
                                 <div class="ach-divide-list">
-                                     <el-table
-                                      :data="achDetail"
+                                 <el-table
+                                      :data="clientArr"
                                       style="width: 100%">
+                                      <!-- roleType 分成人角色类型 :
+                                                    房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
+                                                    客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
                                       <el-table-column
-                                        prop="role_type"
                                         label="角色类型"
                                         width="100">
+                                              <template slot-scope="scope">
+                                                  <div>
+                                                      <div v-if="scope.row.roleType==0">
+                                                         <p>录入</p>
+                                                      </div>
+                                                      <div v-if="scope.row.roleType==1">
+                                                         <p>维护</p>
+                                                      </div>
+                                                      <div v-if="scope.row.roleType==2">
+                                                         <p>独家</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==3">
+                                                         <p>房勘</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==4">
+                                                         <p>钥匙</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==5">
+                                                         <p>委托</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==6">
+                                                         <p>建盘</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==7">
+                                                         <p>主客方</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==8">
+                                                         <p>推荐人</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==9">
+                                                         <p>签约人</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==10">
+                                                         <p>A/M</p>
+                                                      </div>
+                                                       <div v-if="scope.row.roleType==11">
+                                                         <p>协议方</p>
+                                                      </div>
+                                                      <div v-if="scope.row.roleType==12">
+                                                         <p>协议方2</p>
+                                                      </div>
+                                                   </div>
+                                             </template>
                                       </el-table-column>
-
+                                       
+                                       <!-- ratio -->
                                       <el-table-column
-                                        prop="distributionList"
+                                        prop="ratio"
                                         label="分成比例"
                                         width="80">
                                       </el-table-column>
 
+                                      <!-- assignor -->
                                       <el-table-column
-                                        prop="name"
+                                        prop="assignor"
                                         label="经纪人"
                                         width="80">
                                       </el-table-column>
-
+                                       <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
                                        <el-table-column
-                                        prop="is_job"
                                         label="在职状况"
                                         width="80">
+                                               <template slot-scope="scope">
+                                                  <div>
+                                                      <div v-if="scope.row.isJob==0">
+                                                         <p>离职</p>
+                                                      </div>
+                                                      <div v-if="scope.row.isJob==1">
+                                                         <p>在职</p>
+                                                      </div>
+                                                      <div v-if="scope.row.isJob==2">
+                                                         <p>待入职</p>
+                                                      </div>
+                                                   </div>
+                                             </template>
                                       </el-table-column>
 
-                                      
+                                      <!-- shopkeeper -->
                                        <el-table-column
-                                        prop="shopowner"
+                                        prop="shopkeeper"
                                         label="店长"
                                         width="80">
                                       </el-table-column>
-
+                                       <!-- level4 -->
                                       <el-table-column
                                         prop="level4"
                                         label="单组"
                                         width="120">
                                       </el-table-column>
-
+                                       <!-- level3 -->
                                        <el-table-column
                                         prop="level3"
                                         label="门店"
                                         width="110">
                                       </el-table-column>
 
+                                      <!-- amaldar -->
                                      <el-table-column
                                         prop="amaldar"
                                         label="区经"
                                         width="60"> 
                                       </el-table-column>
 
-                                      
+                                      <!-- manager -->
                                      <el-table-column
                                         prop="manager"
                                         label="区总"
@@ -468,37 +599,52 @@
 
                                 <div class="ach-check-list">
                                       <el-table
-                                      :data="checkDetail"
+                                      :data="checkArr"
                                       style="width: 100%">
-
+                                       <!-- examineDate -->
                                       <el-table-column
-                                        prop="date"
                                         label="时间"
                                         width="200">
+                                          <template slot-scope="scope">
+                                             <p>{{scope.row.examineDate|formatDate}}</p>      
+                                          </template>
                                       </el-table-column>
-
+                                      <!-- auditorDepartment -->
                                       <el-table-column
-                                        prop="part"
+                                        prop="auditorDepartment"
                                         label="部门"
                                         width="100">
                                       </el-table-column>
-
+                                      <!-- auditor -->
                                       <el-table-column
-                                        prop="job"
+                                        prop="auditor"
                                         label="员工"
                                         width="100">
                                       </el-table-column>
                                      
-                                     
+                                     <!-- result审核结果(0未审核 1通过 2驳回)(薪资组审核) -->
                                       <el-table-column
                                         prop="done"
                                         label="操作"
                                         width="170">
+                                             <template slot-scope="scope">
+                                                  <div>
+                                                      <div v-if="scope.row.result==0">
+                                                         <p class="blue">未审核</p>
+                                                      </div>
+                                                      <div v-if="scope.row.result==1">
+                                                         <p class="green">已通过</p>
+                                                      </div>
+                                                      <div v-if="scope.row.result==2">
+                                                         <p class="orange">已驳回</p>
+                                                      </div>
+                                                   </div>
+                                             </template>
                                       </el-table-column>
 
-                                      
+                                      <!-- remark -->
                                       <el-table-column
-                                        prop="beizhu"
+                                        prop="remark"
                                         label="备注"
                                         width="190">
                                       </el-table-column>
@@ -510,121 +656,86 @@
                      </el-dialog>
 
                      <!-- 审核，编辑，反审核，业绩分成弹框 -->
-                     <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
+                     <achDialog :shows="shows"  @close="shows=false" :dialogType="dialogType"></achDialog>
 
          </div>
 </template>
 
 <script>
+// 引入审核，编辑，反审核，分成弹框
 import achDialog from "./achDialog";
 
 export default {
   name: "actualAchievement",
   data() {
     return {
-      selectAchLish: [],
-      achDetail: [
-        {
-          role_type: "房源录入人",
-          distributionList: "10",
-          name: "经纪人",
-          is_job: "离职",
-          shopowner: "店长",
-          level4: "楚河汉街一店",
-          level3: "门店名称",
-          amaldar: "区经",
-          manager: "区总"
-        },
-        {
-          role_type: "房源录入人",
-          distributionList: "10",
-          name: "经纪人",
-          is_job: "离职",
-          shopowner: "店长",
-          level4: "楚河汉街一店",
-          level3: "门店名称",
-          amaldar: "区经",
-          manager: "区总"
-        }
-      ],
-      checkDetail: [
-        {
-          date: "2018/10/23 10:24",
-          part: "技术部",
-          job: "冬天雪",
-          done: "审批通过",
-          beizhu: "审核备注信息"
-        },
-        {
-          date: "2018/10/23 10:24",
-          part: "技术部",
-          job: "冬天雪",
-          done: "审批通过",
-          beizhu: "审核备注信息"
-        }
-      ],
-      rules: {
-        region: [
-          {
-            label: "区域一",
-            value: "shanghai"
-          },
-          {
-            label: "区域二",
-            value: "quyuer"
-          }
-        ]
-      },
+      selectAchList: [], //应收列表数组
+      countData: [], //数据统计数组
+      houseArr: [], //应收详情房源数组
+      clientArr: [], //应收详情客源数组
+      checkArr: [], //应收详情审核信息数组
+      pageSize: 5,
       dialogVisible: false,
       // 筛选条件
       propForm: {
-        region: "",
-        regionName: "",
-        search: "",
-        paper: "选项1",
-        time: "选项11",
-        dateMo: ""
+        department: "", //部门
+        departmentDetail: "", //部门详情
+        contractType: "", //合同类型
+        divideType: "", //分成类型
+        achType: "", //业绩类型
+        dateMo: "",
+        search: ""
       },
       // 筛选选项
       rules: {
-        region: [
+        department: [
           {
-            label: "区域一",
-            value: "shanghai"
+            label: "部门1",
+            value: "1"
           },
           {
-            label: "区域二",
-            value: "quyuer"
+            label: "部门2",
+            value: "2"
           }
         ],
-        regionName: [
+        departmentDetail: [
           {
-            label: "区域一",
-            value: "shangha"
+            label: "部门详情1",
+            value: "1"
           },
           {
-            label: "区域二",
-            value: "quyue"
+            label: "部门详情2",
+            value: "2"
           }
         ],
-        paper: [
+        contractType: [
           {
-            label: "合同1",
-            value: "yi"
+            label: "合同类型1",
+            value: "1"
           },
           {
-            label: "合同2",
-            value: "er"
+            label: "合同类型2",
+            value: "2"
           }
         ],
-        time: [
+        divideType: [
           {
-            label: "开票日期",
-            value: "选项11"
+            label: "分成类型1",
+            value: "1"
           },
           {
-            label: "区域二",
-            value: "选项21"
+            label: "分成类型2",
+            value: "2"
+          }
+        ],
+        achType: [
+          {
+            label: "业绩类型1",
+            value: "1"
+          },
+          {
+            label: "业绩类型2",
+            value: "2"
           }
         ]
       },
@@ -634,30 +745,61 @@ export default {
     };
   },
   created() {
-    let param = {
-      pageNum: 1,
-      pageSize: 10
-    };
-    this.$ajax
-      .get("/api/achievement/selectAchievementList", param)
-      .then(res => {
-        let data = res.data;
-        if (res.status === 200) {
-          this.selectAchLish = data.data.list;
-          console.log(data.data.list);
-        }
-      });
+    this.getData();
   },
   components: {
     achDialog
   },
   methods: {
+    getData() {
+      let param = {
+        pageNum: 1,
+        pageSize: 2
+      };
+      this.$ajax
+        .get("/api/achievement/selectAchievementList", param)
+        .then(res => {
+          console.log(res);
+          let data = res.data;
+          if (res.status === 200) {
+            this.selectAchList = data.data.list;
+            this.countData = data.data.list[0].contractCount;
+            this.total = data.data.total;
+            console.log(data.data.total);
+          }
+        });
+    },
     closeDialog() {
       this.dialogVisible = false;
     },
+    //获取应收列表详情
     enterDetail(row) {
-      console.log(row.code);
+      //合同边和获取业绩详情
+      let param = { code: row.code };
+      this.$ajax
+        .get("/api/achievement/selectAchievementByCode", param)
+        .then(res => {
+          console.log(res);
+          let data = res.data;
+          if (res.status === 200) {
+            this.houseArr = data.data[0];
+            this.clientArr = data.data[1];
+            this.checkArr = data.data[2];
+          }
+        });
       this.dialogVisible = true;
+    },
+    filterData() {
+      let param = {
+        departmentId: this.propForm.department, //部门
+        employeeIdQUERY: this.propForm.departmentDetail, //员工
+        contract_type: this.propForm.contractType, //合同类型
+        separate_type: this.propForm.divideType, //分成类型
+        status: this.propForm.achType, //业绩类型
+        start_time: this.propForm.dateMo[0],  //开始时间
+        end_time: this.propForm.dateMo[1]  //结束时间
+      };
+      console.log(param);
     },
     checkAch() {
       this.dialogType = 0;
@@ -676,7 +818,7 @@ export default {
     },
     //分页
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      console.log(val);
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);

@@ -161,7 +161,6 @@ export default {
       },
 
       close(){
-          //this.dialogTableVisible=false
           this.$emit('closeCentCommission')
       }
     },
