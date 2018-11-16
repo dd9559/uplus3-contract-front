@@ -12,16 +12,18 @@
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <!-- 筛选条件 -->
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
-                <el-form-item label="部门" prop="region" class="mr">
-                    <el-select v-model="propForm.region" @change="regionChangeFn" class="w200">
-                        <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="regionName">
-                    <el-select v-model="propForm.regionName" class="w100">
-                        <el-option v-for="item in rules.regionName" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
+                <div class="in-block">
+                    <el-form-item label="部门" prop="region" class="mr">
+                        <el-select v-model="propForm.region" @change="regionChangeFn" class="w200">
+                            <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="regionName">
+                        <el-select v-model="propForm.regionName" class="w100">
+                            <el-option v-for="item in rules.regionName" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </div>
                 <el-form-item label="关键字" prop="search">
                     <el-autocomplete class="w312" v-model="propForm.search" :fetch-suggestions="querySearch" placeholder="开票人员/合同编号/票据编" :trigger-on-focus="false" @select="handleSelect" clearable></el-autocomplete>
                 </el-form-item>
@@ -30,15 +32,17 @@
                         <el-option v-for="item in rules.paper" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="查询时间" prop="time" class="mr">
-                    <el-select v-model="propForm.time" class="w120">
-                        <el-option v-for="item in rules.time" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="dateMo" class="mr">
-                    <el-date-picker v-model="propForm.dateMo" class="w330" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-                    </el-date-picker>
-                </el-form-item>
+                <div class="in-block">
+                    <el-form-item label="查询时间" prop="time" class="mr">
+                        <el-select v-model="propForm.time" class="w120">
+                            <el-option v-for="item in rules.time" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="dateMo" class="mr">
+                        <el-date-picker v-model="propForm.dateMo" class="w330" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-form-item>
+                </div>
             </el-form>
         </ScreeningTop>
         <!-- 列表 -->
@@ -242,7 +246,31 @@
                     a20: '2018/08/09 17:22',
                     // state 票据状态
                     paperState: 1, // 0:已开票 1:已作废 2:已回收 3:已核销
-                }, ],
+                }, {
+                    a0: '2',
+                    a1: '201809301289',
+                    a2: 'SK201809301289',
+                    a3: 'SJ201809301289',
+                    a4: '汉街二路289号 1栋2单元',
+                    a5: '陈晓东',
+                    a6: '已开票',
+                    a7: '张明明',
+                    a8: '东野圭吾',
+                    a9: '汉街二店',
+                    a10: '5000',
+                    a11: '2018/09/30 12:00',
+                    a12: '2',
+                    a13: '陈晓茹',
+                    a14: '2018/09/30 12:00',
+                    a15: '2018/09/30 12:00',
+                    a16: '2018/09/30 12:00',
+                    a17: '2018/09/30 12:00',
+                    a18: '写错了抬头',
+                    a19: '陈晓玲',
+                    a20: '2018/08/09 17:22',
+                    // state 票据状态
+                    paperState: 0, // 0:已开票 1:已作废 2:已回收 3:已核销
+                },],
                 // 筛选条件
                 propForm: {
                     region: '',
