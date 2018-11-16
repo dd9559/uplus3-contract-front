@@ -9,7 +9,7 @@
 
         <!-- 合同变更（编辑） -->
         <el-dialog title="合同变更" :visible.sync="dialogVisible1" width="740px" class="layer-changecancel mt80">
-            <div class="audit-box"  :style="{ height: clientHei }">
+            <div class="audit-box"  :style="{ height: clientHeight() }">
                 <div class="textareabox">
                     <span>合同变更原因</span>
                     <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字"  class="textarea" maxlength=100></el-input>
@@ -23,7 +23,7 @@
                         list-type="picture-card"
                         multiple
                         >
-                        <i class="el-icon-plus"></i>
+                        <i class="iconfont icon-shangchuan"></i>
                     </el-upload>
                     <!-- <el-dialog :visible.sync="dialogVisible2">
                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -39,7 +39,7 @@
 
         <!-- 合同变更（查看） -->
         <el-dialog title="合同变更" :visible.sync="dialogVisible2" width="740px" class="layer-changecancel mt80">
-            <div class="audit-box"  :style="{ height: clientHei }">
+            <div class="audit-box"  :style="{ height: clientHeight2() }">
                 <div class="textareabox">
                     <span>合同变更原因</span>
                     <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字"  class="textarea" maxlength=100 :disabled="true"></el-input>
@@ -52,15 +52,12 @@
                     </div>
                 </div>     
             </div>
-            <div class="btnbox">
-                <el-button>取 消</el-button>
-                <el-button type="primary">保 存</el-button>  
-            </div>
+            
         </el-dialog>
 
         <!-- 合同解约（编辑） -->
         <el-dialog title="合同解除" :visible.sync="dialogVisible3" width="740px" class="layer-changecancel mt80">
-            <div class="audit-box"  :style="{ height: clientHei }">
+            <div class="audit-box"  :style="{ height: clientHeight() }">
                 <div class="textareabox">
                     <span>合同解除原因</span>
                     <el-input type="textarea" :rows="3" placeholder="请填写合同解除原因，最多100字"  class="textarea" maxlength=100></el-input>
@@ -74,7 +71,7 @@
                         list-type="picture-card"
                         multiple
                         >
-                        <i class="el-icon-plus"></i>
+                        <i class="iconfont icon-shangchuan"></i>
                     </el-upload>
                     <!-- <el-dialog :visible.sync="dialogVisible2">
                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -90,7 +87,7 @@
 
         <!-- 合同解约（查看） -->
         <el-dialog title="合同解除" :visible.sync="dialogVisible4" width="740px" class="layer-changecancel mt80">
-            <div class="audit-box"  :style="{ height: clientHei }">
+            <div class="audit-box"  :style="{ height: clientHeight2() }">
                 <div class="textareabox">
                     <span>合同解除原因</span>
                     <el-input type="textarea" :rows="3" placeholder="请填写合同变更，最多100字"  class="textarea" maxlength=100  :disabled="true"></el-input>
@@ -103,10 +100,7 @@
                     </div>
                 </div>     
             </div>
-            <div class="btnbox">
-                <el-button>取 消</el-button>
-                <el-button type="primary">保 存</el-button>  
-            </div>
+            
         </el-dialog>
 
         <!-- 上传合同主体 -->
@@ -121,7 +115,7 @@
                         list-type="picture-card"
                         multiple
                         >
-                        <i class="el-icon-plus"></i>
+                        <i class="iconfont icon-shangchuan"></i>
                     </el-upload>
                     <!-- <el-dialog :visible.sync="dialogVisible2">
                         <img width="100%" :src="dialogImageUrl" alt="">
@@ -141,6 +135,8 @@
 export default {
     data() {
         return {
+            clientHei: document.documentElement.clientHeight, //窗体高度
+
             dialogVisible1: false,
             dialogVisible2: false, 
             dialogVisible3: false,
@@ -150,9 +146,24 @@ export default {
     },
 
     computed: {
-        clientHei() {
-            return document.documentElement.clientHeight - 322 + 'px'
-        }
+       
+    },
+    
+    methods: {
+      // 控制弹框body内容高度，超过显示滚动条
+      clientHeight() {        
+          return this.clientHei - 321 + 'px'
+      },
+      clientHeight2() {        
+          return this.clientHei - 252 + 'px'
+      },
+    },
+
+    mounted() {
+      var _this = this;
+       window.onresize = function(){
+         _this.clientHei = document.documentElement.clientHeight;
+       }
     },
 }
 </script>
@@ -224,7 +235,7 @@ export default {
                             border-radius: 6px;
                             width: 130px;
                             height: 130px;
-                            line-height: 130px;
+                            line-height: 124px;
                             margin-top: 20px;
                             i{
                                 color: #EEF2FB;

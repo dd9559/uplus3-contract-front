@@ -1,9 +1,9 @@
 <template>
     <div id="layeraudit">
         <!-- 调佣审核申请 -->
-    <el-button type="text" @click="dialogVisible = true">审核申请</el-button>
-    <el-dialog title="调佣申请" :visible.sync="dialogVisible" width="820px" class="layer-audit">
-      <div class="audit-box"  :style="{ height: clientHei }">
+    <!-- <el-button type="text" class="curPointer" @click="dialogVisible = true">审核申请</el-button> -->
+    <el-dialog title="调佣申请" :visible="getDialogVisible" width="820px" class="layer-audit" @close='close'>
+      <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
             <p>合同编号：<span class="blue">YQYD001163</span></p>
@@ -89,7 +89,7 @@
                 list-type="picture-card"
                 multiple
                 >
-                <i class="el-icon-plus"></i>
+                <i class="iconfont icon-shangchuan"></i>
               </el-upload>
               <!-- <el-dialog :visible.sync="dialogVisible2">
                 <img width="100%" :src="dialogImageUrl" alt="">
@@ -110,29 +110,37 @@
 
 <script>
 export default {
+    props: {
+        dialogVisible: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
-            auditForm: {
-                textarea: '', //备注
-                item1: '', //另外出-佣金扣-无
-                item2: '', //客户-业主-无
-                money1: '', //业主佣金
-                money2: '', //客户佣金
-                money3: '', //按揭收费
-                money4: '', //合作费扣除
-            },
-            // 弹框里用到的
-            dialogImageUrl: '',
-            dialogVisible: false,
-            // dialogVisible2: false,
-            
-            checked: false, //是否有解除协议
+          clientHei: document.documentElement.clientHeight, //窗体高度
+
+          auditForm: {
+              textarea: '', //备注
+              item1: '', //另外出-佣金扣-无
+              item2: '', //客户-业主-无
+              money1: '', //业主佣金
+              money2: '', //客户佣金
+              money3: '', //按揭收费
+              money4: '', //合作费扣除
+          },
+          // 弹框里用到的
+          dialogImageUrl: '',
+          //dialogVisible: false,
+          // dialogVisible2: false,
+          
+          checked: false, //是否有解除协议
         }
     },
 
     computed: {
-        clientHei() {
-            return document.documentElement.clientHeight -266 + 'px'
+        getDialogVisible: function () {
+            return this.dialogVisible
         }
     },
 
@@ -146,7 +154,24 @@ export default {
     //     this.dialogImageUrl = file.url;
     //     this.dialogVisible2 = true;
     //   }
-    }
+
+    // 控制弹框body内容高度，超过显示滚动条
+      clientHeight() {        
+          return this.clientHei - 265 + 'px'
+      },
+
+      close(){
+          //this.dialogTableVisible=false
+          this.$emit('closeCentCommission')
+      }
+    },
+
+    mounted() {
+      var _this = this;
+       window.onresize = function(){
+         _this.clientHei = document.documentElement.clientHeight;
+       }
+    },
 }
 </script>
 
@@ -189,6 +214,9 @@ export default {
         overflow: hidden;
         clear: left;
         margin-bottom: 18px;
+        .mr100{
+          margin-right: 100px;
+        }
         p{
           float: left;
           &:first-child{
@@ -286,7 +314,7 @@ export default {
             border-radius: 6px;
             width: 130px;
             height: 130px;
-            line-height: 130px;
+            line-height: 124px;
             margin-top: 20px;
             i{
                 color: #EEF2FB;
@@ -324,5 +352,6 @@ export default {
   }
 }
 </style>
+
 
 

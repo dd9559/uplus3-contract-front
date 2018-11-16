@@ -2,15 +2,9 @@
 <template>
   <div class="view-container" id="adjustcheck">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn"  class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="63"  class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini">
-        <!-- <div class="form-title">
-          <span class="form-title-fl">筛选查询</span>
-          <div>
-            <el-button @click="onReset" class="resetBtn">重置</el-button>
-            <el-button type="primary" @click="onSearch" class="searchBth">查询</el-button>        
-          </div>
-        </div> -->
+
         <el-form-item label="发起日期">
           <el-date-picker v-model="adjustForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
           </el-date-picker>
@@ -47,7 +41,7 @@
 
     <!-- 数据列表 -->
     <div class="contract-list">  
-      <div class="form-title-fl">数据列表</div>   
+      <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
       <el-table :data="tableData" style="width: 100%">
         <el-table-column label="合同编号" width="150" fixed>
           <template slot-scope="scope">
@@ -118,7 +112,7 @@
 
     <!-- 调佣审核弹框 -->
     <el-dialog title="调佣审核" :visible.sync="layer.show" width="820px" class="layer-audit">
-      <div class="audit-box"  :style="{ height: clientHei }">
+      <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
             <p>合同编号：<span class="blue">YQYD001163</span></p>
@@ -225,7 +219,9 @@
   export default {
     data(){
       return{
-
+        
+        clientHei: document.documentElement.clientHeight, //窗体高度
+        
         adjustForm:{
           signDate: '', //发起日期
           contType: '', //合同类型
@@ -323,9 +319,7 @@
     },
 
     computed: {
-        clientHei() {
-            return document.documentElement.clientHeight -266 + 'px'
-        }
+        
     },
   
     methods:{
@@ -341,6 +335,13 @@
 
       //   })
       // },
+
+
+      // 控制弹框body内容高度，超过显示滚动条
+      clientHeight() {        
+          return this.clientHei - 265 + 'px'
+      },
+
 
       // 重置
       resetFormFn() {
@@ -386,6 +387,12 @@
       
     },
 
+    mounted() {
+      var _this = this;
+       window.onresize = function(){
+         _this.clientHei = document.documentElement.clientHeight;
+       }
+    },
 
     components: {
           ScreeningTop
@@ -431,26 +438,6 @@
     background-color: #fff;
     border-radius:2px;
     box-sizing: border-box;
-    
-    .form-title {
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      .form-title-fl{
-        font-size: 18px;
-        color: #233241;
-      }
-      div {
-        > .el-button {
-          width: 100px;
-          height: 36px;
-          line-height: 36px;
-          border-radius:18px;
-          padding: 0;
-        }
-      }
-    }
   }
 
   .contract-list {
@@ -461,6 +448,9 @@
       font-size: 18px;
       color: #233241;
       margin: 10px 0 20px 10px;
+      .mr8{
+        margin-right: 8px;
+      }
     }
     .el-table{
       th{

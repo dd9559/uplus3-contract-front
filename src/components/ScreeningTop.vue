@@ -1,12 +1,12 @@
 <template>
   <!-- 筛选 -->
-  <div class="paper-box">
-    <div class="paper-set-tit">
-      <div class="paper-tit-fl"><i class="iconfont icon-tubiao-5 mr-10 font-cl1"></i>筛选查询</div>
-      <div>
+  <div class="paper-box view-header" :class="[show?'collapse-on':'collapse-off']">
+    <div class="paper-box-title">
+      <p><i class="iconfont icon-tubiao-5 mr-10 font-cl1"></i>筛选查询</p>
+      <p>
         <el-button
           class="paper-btn"
-          type size="medium"
+          size="medium"
           @click="resetFormFn"
           round>重 置
         </el-button>
@@ -17,15 +17,13 @@
           @click="queryFn"
           round>查 询
         </el-button>
-      </div>
+      </p>
     </div>
     <!-- 筛选条件 -->
-    <div class="tit" :style="comStyle">
-      <div ref="children">
-        <slot></slot>
-      </div>
+    <div class="paper-box-content" v-show="show">
+      <slot></slot>
     </div>
-    <div class="btn" v-show="show" @click="touchBtn"></div>
+    <div class="btn" @click="show=!show"></div>
   </div>
 </template>
 
@@ -39,26 +37,10 @@
     },
     data() {
       return {
-        show: true,
-        showHeight: true
+        show: true
       }
     },
     methods: {
-      size() {
-        window.onresize = this.showFn
-        this.showFn();
-      },
-      showFn() {
-        if (this.$refs.children.clientHeight > this.comMin) {
-          this.show = true
-        } else {
-          this.show = false
-        }
-      },
-      // 点击展开
-      touchBtn() {
-        this.showHeight = !this.showHeight
-      },
       // 点击查询
       queryFn() {
         this.$emit('propQueryFn')
@@ -67,22 +49,7 @@
       resetFormFn() {
         this.$emit('propResetFormFn')
       },
-    },
-    computed: {
-      comMin() {
-        return this.min
-      },
-      comStyle() {
-        if (this.showHeight) {
-          return `height:${this.comMin}px`
-        } else {
-          return ''
-        }
-      }
-    },
-    mounted() {
-      this.size();
-    },
+    }
   }
 </script>
 
@@ -98,7 +65,6 @@
   }
 
   .paper-box {
-    padding: 20px 20px 0;
     background-color: @bg-white;
     position: relative;
     &:after {
@@ -111,8 +77,23 @@
       bottom: -20px;
       background-color: @bg-grey;
     }
-    .tit {
-      overflow: hidden;
+    &.collapse-on{
+      padding-bottom: 0;
+    }
+    &.collapse-off{
+      /*padding: 10px 20px;*/
+      .paper-box-title{
+        margin-bottom: 0;
+      }
+    }
+    &-title{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    &-content{
+
     }
     .btn {
       width: 50px;
@@ -125,6 +106,12 @@
       z-index: 9;
     }
   }
+  .view-header {
+    background-color: @color-white;
+    padding: 10px 20px;
+    border-radius: @border-radius;
+    margin-bottom: 20px;
+  }
 
   // 按钮
   .paper-btn {
@@ -135,17 +122,6 @@
   .paper-btn-blue {
     background-color: @color-blue;
     border-color: @color-blue;
-  }
-
-  // 头部
-  .paper-set-tit {
-    display: flex;
-    justify-content: space-between;
-    .paper-tit-fl {
-      font-size: 18px;
-      line-height: 36px;
-      color: #233241;
-    }
   }
 
 </style>

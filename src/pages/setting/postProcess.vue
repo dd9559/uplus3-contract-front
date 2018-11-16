@@ -1,8 +1,8 @@
 <template>
   <div class="view-container">
-    <el-form ref="form" :model="flowForm" label-width="80px">
-      <el-form-item label="城市选择" class="selectCity">
-        <el-select v-model="flowForm.selectCity" placeholder="请选择">
+    <el-form :model="searchForm" class="form-head" size="small">
+      <el-form-item label="城市选择">
+        <el-select v-model="searchForm.cityId" placeholder="请选择">
           <el-option label="区域一" value="shanghai"></el-option>
           <el-option label="区域二" value="beijing"></el-option>
         </el-select>
@@ -16,11 +16,11 @@
 </template>
 
 <script>
-import { FILTER } from "@/assets/js/filter";
-import { TOOL } from "../../assets/js/common";
-import TransactionStep from "./transactionStep";
-import transactionProcess from "./transactionProcess";
-import transactionContract from "./transactionContract";
+  import { FILTER } from "@/assets/js/filter";
+  import { TOOL } from "../../assets/js/common";
+  import TransactionStep from "./transactionStep";
+  import transactionProcess from "./transactionProcess";
+  import transactionContract from "./transactionContract";
 
   let imgSize = 4 / 3;
   let mouseStart = {
@@ -31,8 +31,8 @@ import transactionContract from "./transactionContract";
     name: "post-process",
     data() {
       return {
-        flowForm: {
-          selectCity: ""
+        searchForm: {
+          cityId: ""
         },
         tabs: [
           {
@@ -52,23 +52,7 @@ import transactionContract from "./transactionContract";
           }
         ],
         activeItem: 1, //Tab当前项
-        modal: false,
         current: "TransactionStep", //当前组件
-        //步骤类型
-        stepType: {
-          type: "",
-          role: ""
-        },
-        //交易步骤
-        stepBusiness: {
-          stepsTypeId: "",
-          stepsTypeName: "",
-          name: "",
-          planDays: "",
-          overTimeDays: "",
-          isSms: ""
-        },
-        roleListData: [], //负责角色
       };
     },
     components: {
@@ -80,8 +64,8 @@ import transactionContract from "./transactionContract";
       let objX = 0;
       let objY = 0;
       let dragObj = this.$refs.dropBtn; //拖拽对象
-
       if (dragObj) {
+
         dragObj.onmousedown = function() {
           mouseStart = Object.assign({ start: true }, TOOL.getMousePos());
           // console.log(mouseStart)
@@ -115,7 +99,6 @@ import transactionContract from "./transactionContract";
         return require("@/assets/img/" + url);
       },
       checkTab: function(item) {
-        console.log(item);
         this.activeItem = item.id;
         if (item.id == 1) {
           this.current = "TransactionStep";
@@ -124,29 +107,6 @@ import transactionContract from "./transactionContract";
         } else {
           this.current = "transactionContract";
         }
-      },
-      /**
-       * 获取步骤类型的交易步骤
-       * @param row
-       */
-      getRowDetails: function(row) {
-        this.stepBusiness.stepsTypeName = row.name;
-        this.stepBusiness.stepsTypeId = row.id;
-        this.$ajax
-          .get("/api/flowmanage/selectStepsListByType", { stepsTypeId: row.id })
-          .then(res => {
-            res = res.data;
-            if (res.status === 200) {
-              this.listData_other = res.data;
-            }
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      },
-      showModal: function(title) {
-        this.modalTitle = title;
-        this.modal = true;
       },
       arraySpanMethod({ row, column, rowIndex, columnIndex }) {
         // debugger
@@ -189,47 +149,33 @@ import transactionContract from "./transactionContract";
 @import "~@/assets/common.less";
 
 .view-container {
-  /deep/ .el-form {
-    background: rgba(255, 255, 255, 1);
+  background-color: #F2F3F8!important;
+  .form-head {
+    height: 82px;
+    background: #fff;
     box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
-    border-radius: 4px;
-    border: 1px solid transparent;
-    .selectCity {
-      margin-top: 24px;
-      line-height: 32px;
-      height: 32px;
-      .el-form-item__content,
-      .el-form-item__label {
-        line-height: 32px;
-      }
-    }
-    .el-select {
-      width: 150px;
-      height: 32px;
-      .el-input {
-        height: 100%;
-        .el-input__inner {
-          height: 100%;
-          padding-left: 8px;
-        }
-        .el-input__icon {
-          line-height: 32px;
-        }
-      }
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    .el-form-item {
+      display: flex;
+      margin-bottom: 0;
     }
   }
-
   .tabs {
+    height: 48px;
     display: flex;
     background: rgba(250, 250, 251, 1);
     font-size: 16px;
+    padding-left: 30px;
     > li {
-      height: 50px;
       display: flex;
       align-items: center;
       padding: 0 20px;
       font-family: "MicrosoftYaHei";
       color: rgba(50, 72, 95, 1);
+      margin-right: 30px;
       &.active {
         color: @color-blue;
         border-bottom: 4px solid @color-blue;
@@ -242,5 +188,26 @@ import transactionContract from "./transactionContract";
 }
 /deep/ .el-table th {
   background:rgba(238,242,251,1);
+}
+/deep/ .el-dialog__header {
+  border-bottom: 1px solid rgba(237,236,240,1);
+}
+/deep/ .el-input__inner {
+  border: 1px solid #DEDDE2;
+}
+/deep/ .confirmBtn {
+  width: 100px;
+  height: 38px;
+  border-radius: 18px;
+  background-color: #478DE3;
+  color: #fff;
+}
+/deep/ .addBtn {
+  background-color: #fff;
+  width: 100px;
+  height: 38px;
+  border-radius: 18px;
+  border-color: #478DE3;
+  color: #478DE3;
 }
 </style>

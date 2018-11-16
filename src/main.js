@@ -6,15 +6,23 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import axios from 'axios'
+
+import ScreeningTop from '@/components/ScreeningTop';
 import {api} from '@/assets/js/ajax'
+import {TOOL} from "@/assets/js/common"
 
 Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
-Vue.prototype.$ajax=api
-Vue.prototype.$axios=axios
+Vue.prototype.$ajax=api   //axios请求封装
+Vue.prototype.$tool=TOOL  //工具方法封装
+
+Vue.filter("formatDate", TOOL.dateFormat);
+Vue.filter("formatTime", TOOL.timeFormat);
+Vue.filter("formatNull", TOOL.nullFormat);
+
+Vue.component("ScreeningTop",ScreeningTop);
 
 /* eslint-disable no-new */
 new Vue({
@@ -23,3 +31,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+

@@ -70,7 +70,7 @@
               },
               {
                 name:'结算审核',
-                path:'13'
+                path:'settleCheck'
               },
             ]
           },
@@ -171,8 +171,17 @@
       }
     },
     beforeRouteEnter(to,from,next){
-      // debugger
       next(vm=>{
+        vm.views.forEach(item=>{
+          item.child.forEach(tip=>{
+            if(tip.path===to.fullPath.split('/')[1]){
+              vm.Index.push(item.name)
+              vm.Index.push(tip.name)
+            }else {
+              return
+            }
+          })
+        })
         vm.activeIndex = to.fullPath.split('/')[1]
       })
     },
@@ -236,7 +245,7 @@
           border: 0px;
         }
       }
-      .page-view{
+      /deep/ .page-view{
         flex: 1;
         overflow-x: auto;
         position: relative;
@@ -283,9 +292,27 @@
           bottom: 0;
           left: 0;
           overflow-y: auto;
-          /deep/ .theader-bg{
+          .theader-bg{
             >th{
               background-color: @bg-th;
+            }
+          }
+          .view-header{
+            .el-select, .el-input {
+              /*width: 200px;*/
+              /*>input{
+                height: 36px;
+                line-height: 36px;
+              }*/
+            }
+            .el-date-editor{
+              /*height: 36px;
+              line-height: 36px;
+              .el-range-separator{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }*/
             }
           }
           .router-view{

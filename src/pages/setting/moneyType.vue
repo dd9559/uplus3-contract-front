@@ -65,11 +65,11 @@
             </div>
             <div class="cityList">
                 <el-checkbox-group v-model="cityName" class="cityName">
-                    <el-checkbox v-for="item in cityListData" :key="item.id">{{ item.name }}</el-checkbox>
+                    <el-checkbox  v-for="item in cityListData" :key="item.id">{{ item.name }}</el-checkbox>
                 </el-checkbox-group>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="dialogCitySettingVisible = false">取消</el-button>
+                <el-button  @click="dialogCitySettingVisible = false">取消</el-button>
                 <el-button type="primary" @click="confirm">确定</el-button>
             </div>
         </div>
@@ -119,14 +119,24 @@
                 cityName: ""
             }
         },
+        created(){
+           this.initList()
+         
+        },
         methods: {
+            // 初始化数据
+            initList(){
+                this.$ajax.get('api/setting/moneyType/list',{id:''},).then((res)=>{
+                    console.log(res);
+                })
+            },
             //城市设置弹框 确定
             confirm() {
 
             },
             //单击行事件
             rowClick(row, event, column) {
-
+                
             }
         }
     }
@@ -205,12 +215,16 @@
                 flex-wrap: wrap;
                 > .el-checkbox {
                     margin-right: 20px;
+                    width: 120px;
+                    &:first-child{
+                        margin-left: 30px;
+                    }
                 }
             }
         }
         .dialog-footer {
             display: flex;
-            justify-content: center;
+            justify-content: flex-end;
             .el-button {
                 width:100px;
                 height:36px;

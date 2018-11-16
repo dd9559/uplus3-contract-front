@@ -1,17 +1,17 @@
 <template>
     <div class="data-list">
         <div class="table_head">
-            <el-button type="primary" plain @click="addProcess">添加</el-button>
+            <el-button type="primary" @click="addProcess('添加交易流程')">添加</el-button>
         </div>
-        <el-table :data="listData" style="width: 100%">
+        <el-table :data="listData" style="width: 100%" class="list1">
           <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
                           v-for="item in tHeader" :key="item.id">
           </el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-              <el-button @click="rowOperation(scope.row,1)" type="text" size="small">交易流程管理</el-button>
+              <el-button @click="rowOperation(scope.row,'init')" type="text" size="small">交易流程管理</el-button>
               <el-button @click="rowOperation(scope.row,'edit')" type="text" size="small">编辑</el-button>
-              <el-button @click="rowOperation(scope.row,2)" type="text" size="small">删除</el-button>
+              <el-button @click="rowOperation(scope.row,'delete')" type="text" size="small">删除</el-button>
             </template>
           </el-table-column> 
         </el-table>
@@ -24,20 +24,15 @@
             layout="total, sizes, prev, next, jumper"
             :total="total">
         </el-pagination>
-        <!-- 添加交易流程 弹出框 -->
-        <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px">
-          <el-form v-model="addForm" label-width="90px" v-if="processTitle == '添加交易流程'">
-            <el-form-item label="名称">
-                <el-input v-model="addForm.name"></el-input>
-            </el-form-item>
-          </el-form>
-          <el-form v-model="editForm" label-width="90px" v-else>
-            <el-form-item label="名称">
-                <el-input v-model="editForm.name"></el-input>
+        <!-- 添加编辑交易流程 弹出框 -->
+        <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px" class="processDialog">
+          <el-form v-model="addForm" size="small">
+            <el-form-item label="名称" class="add-form-item">
+              <el-input v-model="addForm.name"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="Confirm">确定</el-button>
+            <el-button @click="submitForm" class="confirmBtn">确定</el-button>
           </div>
         </el-dialog>
         <!-- 交易流程管理 弹出框 -->
@@ -58,13 +53,13 @@
             </el-table>
           </div>
           <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="AddProcessVisible = true">添加</el-button>
-              <el-button type="primary">确定</el-button>
+              <el-button @click="ProcessStepVisible = true" class="addBtn">添加</el-button>
+              <el-button class="confirmBtn">确定</el-button>
           </div>
         </el-dialog>
         <!-- 添加流程步骤 弹出框 -->
-        <el-dialog title="添加流程步骤" :visible.sync="AddProcessVisible" width="740px">
-          <el-table :data="addProcessOption" class="process-list">
+        <el-dialog title="添加流程步骤" :visible.sync="ProcessStepVisible" width="740px">
+          <el-table :data="ProcessStepOption" class="process-list">
             <el-table-column label="步骤类型">
               <template slot-scope="scope">
                 <el-checkbox>{{ scope.row.stepsTypeName }}</el-checkbox>
@@ -76,60 +71,9 @@
               </template>
             </el-table-column>
           </el-table>
-        </el-dialog>
-        <!-- 编辑交易流程 -->
-        <el-dialog title="编辑交易流程" :visible.sync="editDialog">
-          <el-form :model="addForm" label-width="90px">
-            <el-form-item label="活动名称：">
-                <el-input v-model="addForm.name"></el-input>
-            </el-form-item>
-          </el-form>
-        </el-dialog>
-        <!-- 交易流程管理 -->
-        <el-dialog title="交易流程管理" width="51%"  class="jylcDialog" :visible.sync="proManDialog">
-            <el-table
-              ref="singleTable"
-              :data="tableData"
-              highlight-current-row
-              @current-change="handleCurrentChange"
-              style="width: 100%">
-              <el-table-column type="index" width="50" label="序号"></el-table-column>
-              <el-table-column label="步骤类型"  width="120"></el-table-column>
-              <el-table-column label="步骤名称"  width="120"></el-table-column>
-              <el-table-column label="计划天数"  width="120"></el-table-column>
-              <el-table-column label="超时提醒"  width="120"></el-table-column>
-              <el-table-column label="是否短信提醒"  width="120"></el-table-column>
-              <el-table-column align="center" label="操作">
-                <template slot-scope="scope">
-                  <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上</el-button>
-                  <el-button @click="rowOperation(scope.row,2)" type="text" size="small">下</el-button>
-                  <el-button @click="rowOperation(scope.row,3)" type="text" size="small">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <div class="buttontip">
-               <el-button @click="addSteps" type="text" size="small">添加</el-button>
-               <el-button @click="sureUp" type="text" size="small">确定</el-button>
-            </div>
-            <el-dialog title='添加流程步骤' append-to-body :visible.sync="innerDialog">
-              <el-table
-                :data="addProcessOption"
-                border
-                style="width: 100%">
-                <el-table-column label="步骤类型" width="180">
-                 <template slot-scope="scope">
-                   <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">{{scope.row.stepsTypeName}}</el-checkbox>
-                 </template>
-                </el-table-column>
-                <el-table-column label="交易步骤">
-                  <template slot-scope="scope">
-                    <p v-for="(item,index) in scope.row.transStepsList" :key="index">
-                      <el-checkbox>{{scope.row.stepsTypeName}}</el-checkbox></p>
-                 </template>
-                </el-table-column>
-              </el-table>
-              <div style="text-align:center;margin-top:10px"><el-button type="primary" size="small"  plain>确定</el-button></div>
-            </el-dialog>
+          <div slot="footer" class="dialog-footer">
+              <el-button class="confirmBtn">确定</el-button>
+          </div>
         </el-dialog>
     </div>
 </template>
@@ -140,54 +84,34 @@
     mixins: [FILTER],
     data() {
       return {
-        listData: [
-          {
-            typeName: "一次性（业）+一次性（客）住宅",
-            stepsNum: 1
-          }
-        ], //交易流程列表
+        //交易流程列表
+        listData: [], 
         //交易流程列表表头
         tHeader: [
           {
             id: 1,
-            stepsTypeName: "担保流程",
-            transStepsList: [
-              {
-                id: 1,
-                type: "资料准备"
-              },
-              {
-                id: 2,
-                type: "转房款"
-              },
-            ]
+            prop: "id",
+            name: "序号"
           },
           {
             id: 2,
-            stepsTypeName: "金融流程",
-            transStepsList: []
+            prop: 'name',
+            name: '名称'
           },
           {
             id: 3,
-            stepsTypeName: "权证流程",
-            transStepsList: []
-          },
-          {
-            id: 4,
-            stepsTypeName: "物业交割",
-            transStepsList: []
+            prop: "stepsNum",
+            name: "交易步骤数"
           }
         ],
         addForm: {
           name: ""
         },
-        editForm: {
-          name: ""
-        },
+        processId: 0,
         processTitle: "",
         dialogProcessVisible: false, //添加交易流程
         dialogManageVisible: false, //交易流程管理
-        AddProcessVisible: false, //添加流程步骤
+        ProcessStepVisible: false, //添加流程步骤
         //流程管理列表
         manageData: [
           {
@@ -198,7 +122,7 @@
           }
         ],
         //流程步骤选项
-        addProcessOption: [
+        ProcessStepOption: [
           {
             id: 1,
             stepsTypeName: "担保流程",
@@ -236,56 +160,38 @@
         stepsTypeName: "",
         pageSize: 5,
         pageNum: 1,
-        total: 0,
-        innerDialog:false,
+        total: 0
       };
     },
+    created() {
+      this.getData();
+    },
     methods: {
-      handleCheckAllChange(val){
-        alert(val)
-        this.addProcessOption.transStepsList = val ? addProcessOption.transStepsList : [];
-        this.isIndeterminate = false;
-      },
-      sureUp(){
-      },
-      addSteps(){
-        this.innerDialog=true
-      },
-      addTransPro(){
-        console.log('添加交易流程');
-      },
-      tansProMan(){
-        console.log('交易流程管理');
-      },
-      editTransPro(){
-         console.log('编辑交易流程');
-      },
-      delTransPro(){
-        console.log('删除交易流程');
-      },
+      // 获取交易流程列表
       getData: function() {
         let param = {
           cityId: 1
         };
-        this.$ajax
-          .postJSON(`/api/flowmanage/selectFlowPageList`, param)
-          .then(res => {
+        this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
             res = res.data;
             if (res.status === 200) {
-              console.log(res.data);
-              // this.listData = res.data;
+              this.listData = res.data;
             }
           });
       },
-      addProcess() {
+      addProcess(title) {
         this.dialogProcessVisible = true
-        this.processTitle = "添加交易流程"
+        this.processTitle = title
+        this.addForm.name = ""
       },
+      // 点击 交易流程管理 编辑 删除
       rowOperation(row, type) {
         if(type === 'edit') {
           this.dialogProcessVisible = true
           this.processTitle = "编辑交易流程"
-        } else if(type === 1) {
+          this.processId = row.id
+          this.addForm.name = row.name
+        } else if(type === 'init') {
           this.dialogManageVisible = true
           let param = {
             trans_flow_id: row.id
@@ -293,15 +199,48 @@
           this.$ajax.post('/api/flowmanage/selectFlowStepsList',param).then(res => {
             res = res.data
             if(res.status === 200) {
-              // this.manageData = res.data.list
+              // this.manageData = res.data
             }
           })
+        } else if(type === 'delete') {
+          const param = {
+            id: row.id,
+            isDel: 1
+          }
+          this.processPost(param,type)
         }
       },
-      Confirm() {
-        this.$ajax.post('/api/flowmanage/insertFLow',this.addForm).then(res => {
-          console.log(res);
-        })
+      // 提交表单
+      submitForm() {
+        if(this.processTitle === "添加交易流程") {
+          let param = {
+            cityId: 1
+          }
+          param = Object.assign({},this.addForm,obj)
+          this.processPost(param)
+        } else {
+          let param = {
+            id: this.processId
+          }
+          param = Object.assign({},this.addForm,param)
+          this.processPost(param)
+        }
+      },
+      // 添加 编辑 删除 操作
+      processPost(param,type) {
+        if(!type) {
+          console.log(11111);
+        }
+        // this.$ajax.post('/api/flowmanage/insertFLow',param).then(res => {
+        //   res = res.data
+        //   if(res.status === 200) {
+        //     this.$message(res.message)
+        //     if(!type) {
+        //       this.dialogProcessVisible = false
+        //     }
+        //     this.getData()
+        //   }
+        // })
       },
       handleSizeChange(val) {
         this.pageSize = val
@@ -311,33 +250,40 @@
         this.pageNum = val
         this.getData()
       }
-    },
-    created() {
-      this.getData();
-    },
-    mounted() {}
+    }
   };
 </script>
 <style lang="less" scoped>
   .data-list {
     .table_head {
-      height:54px;
+      padding: 13px 10px;
+      display: flex;
+      justify-content: flex-end;
       background: #fff;
       border-top: 1px solid rgba(237,236,240,1);
-      button:nth-of-type(1){
-        float: right;
+      .el-button {
         width:100px;
         height:36px;
-        margin-right: 15px;
-        color: white;
-        margin-top: 9px;
-        background:rgba(71,141,227,1);
         border-radius:18px;
       }
+    }
+    .list1 {
+      padding: 0 12px;
     }
     .el-pagination {
       text-align: center;
       margin-left: 100px;
+    }
+    .processDialog {
+      /deep/ .el-dialog__body {
+        margin-bottom: 271px;
+      }
+      .add-form-item {
+        display: flex;
+        .el-input {
+          width: 656px;
+        }
+      }
     }
     //交易流程管理
     .manage-list {

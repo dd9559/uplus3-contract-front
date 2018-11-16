@@ -2,9 +2,9 @@
   <div class="view-container">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="45">
-      <el-form :inline="true" :model="contractForm" class="prop-form" size="mini">
+      <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="签约日期">
-          <el-date-picker v-model="contractForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width:330px">
+          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
@@ -28,20 +28,18 @@
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="contractForm.keyWord" placeholder="关键字" style="width:250px"></el-input>
+          <el-input v-model="keyword" placeholder="关键字" style="width:250px"></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="contractForm.recordDept" placeholder="请选择部门" style="width:200px">
-            <el-option label="起草中" value="1"></el-option>
-            <el-option label="已签章" value="2"></el-option>
-            <el-option label="已上传" value="3"></el-option>
+          <el-select v-model="contractForm.recordDept" placeholder="请选择部门"  filterable style="width:200px">
+            <!-- <el-option label="起草中" value="1"></el-option> -->
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-select v-model="contractForm.recordDept" placeholder="请选择" style="width:100px">
-            <el-option label="起草中" value="1"></el-option>
+            <!-- <el-option label="起草中" value="1"></el-option>
             <el-option label="已签章" value="2"></el-option>
-            <el-option label="已上传" value="3"></el-option>
+            <el-option label="已上传" value="3"></el-option> -->
           </el-select>
         </el-form-item>
         <el-form-item label="审核状态">
@@ -122,7 +120,7 @@
         </span>
       </p>
       <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
-        <el-table-column align="left" label="合同信息" width="250" fixed>
+        <el-table-column align="left" label="合同信息" width="200" fixed>
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同编号：<span>{{scope.row.code}}</span></li>
@@ -131,13 +129,7 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="合同类型" width="100" fixed>
-          <template slot-scope="scope">
-            <span v-if="scope.row.contType===1">租赁</span>
-            <span v-if="scope.row.contType===2">买卖</span>
-            <span v-if="scope.row.contType===3">代办</span>
-            <span v-if="scope.row.contType===4">意向</span>
-          </template>
+        <el-table-column align="left" label="合同类型" prop="contType" width="100" fixed>
         </el-table-column>
         <el-table-column align="left" label="物业地址" prop="propertyAddr" width="150" fixed>
         </el-table-column>
@@ -150,51 +142,51 @@
             <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="成交经纪人" prop="dealAgentStoreName" width="150 ">
-        </el-table-column>
-        <el-table-column align="left" label="签约日期" prop="signDate" width="100">
-        </el-table-column>
-        <el-table-column align="left" label="可分配业绩" prop="receivedCommission" width="100">
-        </el-table-column>
-        <el-table-column align="left" label="合同状态" width="100">
+        <el-table-column align="left" label="成交经纪人" width="150 ">
           <template slot-scope="scope">
-            <span v-if="scope.row.contState===1">起草中</span>
-            <span v-if="scope.row.contState===2">已签章</span>
-            <span v-if="scope.row.contState===3">已上传</span>
+            <p>{{scope.row.dealAgentName}}</p>
+            <p>{{scope.row.dealAgentStoreName}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="审核状态" prop="toExamineState" width="100">
+        <el-table-column align="left" label="签约日期" width="100">
           <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.toExamineState===1">未提审</span>
-            <span class="yellow" v-if="scope.row.toExamineState===2">审核中</span>
-            <span class="green" v-if="scope.row.toExamineState===3">通过</span>
-            <span class="red" v-if="scope.row.toExamineState===4">驳回</span>
+            {{scope.row.signDate.substr(0, 10)}}
           </template>
+        </el-table-column>
+        <el-table-column align="left" label="可分配业绩" prop="distributableAchievement" width="100">
+        </el-table-column>
+        <el-table-column align="left" label="合同状态" prop="contState" width="100">
+        </el-table-column>
+        <el-table-column align="left" label="审核状态" prop="toExamineState" width="120">
         </el-table-column>
         <el-table-column align="left" label="备注" width="200">
           <template slot-scope="scope">
-            {{scope.row.remarks?scope.row.remarks:'-'}}
+            <el-popover trigger="hover" placement="top">
+              <div style="width:160px">
+                {{scope.row.remarks?scope.row.remarks:'-'}}
+              </div>
+              <div slot="reference" class="name-wrapper">
+                {{scope.row.remarks?scope.row.remarks:'-'}}
+              </div>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.contChangeState===1">变更</span>
-            <span v-if="scope.row.contChangeState===2">解约</span>
-            <span v-if="scope.row.contChangeState===3">-</span>
+            <span v-if="scope.row.contChangeState==='未变更/解约'">-</span>
+            <el-button type="text" size="medium" v-else>{{scope.row.contChangeState}}</el-button>
+            <!-- <el-button type="text" size="medium" v-if="scope.row.contChangeState===2">解约</el-button> -->
           </template>
         </el-table-column>
         <el-table-column align="left" label="后期状态" width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.laterStageState===1">未提交</span>
-            <span v-if="scope.row.laterStageState===2">已提交</span>
-            <span v-if="scope.row.laterStageState===3">已开始</span>
-            <el-button v-if="scope.row.laterStageState===4" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
-            <span v-if="scope.row.laterStageState===5">已结束</span>
+            <el-button v-if="scope.row.laterStageState==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
+            <span v-else>{{scope.row.laterStageState}}</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="后期进度" width="100">
           <template slot-scope="scope">
-            资料准备
+            <el-button type="text" size="medium">{{scope.row.stepInstanceName}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="收佣状态" width="100">
@@ -204,23 +196,23 @@
         </el-table-column>
         <el-table-column align="left" label="结算状态" width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.resultState===1">已结算</span>
-            <span v-if="scope.row.resultState===2">未结算</span>
+             <el-button type="text" size="medium">{{scope.row.resultState}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="业绩状态" width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.contState===1">起草中</span>
-            <span v-if="scope.row.contState===2">已签章</span>
-            <span v-if="scope.row.contState===3">已上传</span>
+            {{scope.row.contState}}
           </template>
         </el-table-column>
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
-            <el-button type="text" size="medium">上传</el-button>
-            <el-button type="text" size="medium" @click="goPreview">预览</el-button>
-            <el-button type="text" size="medium">提审</el-button>
-            <el-button type="text" size="medium">调佣</el-button>
+            <div style="text-align:center">
+              <el-button type="text" size="medium">上传</el-button>
+              <el-button type="text" size="medium" @click="goPreview">预览</el-button>
+              <el-button type="text" size="medium">提审</el-button>
+              <el-button type="text" size="medium" @click="tiaoyong=true">调佣</el-button>
+            </div>
+            
           </template>
         </el-table-column>
       </el-table>
@@ -232,92 +224,35 @@
       :total="total">
     </el-pagination>
     </div>
+    <!-- 流水明细弹框 -->
+    <flowAccount :dialogTableVisible="liushui" @closeRunningWater="closeWater"></flowAccount>
+    <!-- 调佣弹框 -->
+    <layerAudit :dialogVisible="tiaoyong" @closeCentCommission="closeCommission"></layerAudit>
   </div>
 </template>
            
 <script>
 import ScreeningTop from '@/components/ScreeningTop';
+import flowAccount from '@/components/flowAccount';
+import layerAudit from '../contractDialog/layerAudit';
+import {TOOL} from "@/assets/js/common";
 
 export default {
   components: {
-    ScreeningTop
+    ScreeningTop,
+    flowAccount,
+    layerAudit
   },
   data(){
     return{
       contractForm:{},
-      tableData:[{
-        code:'YQYD110063',
-        houseinfoCode:'YQYD110063张三',
-        guestinfoCode:'YQYD110063张三',
-        contType:1,
-        propertyAddr:'沿河花园',
-        dealPrice:'12345121',
-        dealAgentStoreName:'当代一店下雨天',
-        signDate:'2018/11/07',
-        receivedCommission:'3500',
-        receivableCommission:'3500',
-        contState:2,
-        toExamineState:1,
-        remarks:'',
-        contChangeState:1,
-        laterStageState:4,
-        resultState:1
-      },
-      {
-        code:'YQYD110063',
-        houseinfoCode:'YQYD110063张三',
-        guestinfoCode:'YQYD110063张三',
-        contType:2,
-        propertyAddr:'沿河花园',
-        dealPrice:'12345121',
-        dealAgentStoreName:'当代一店下雨天',
-        signDate:'2018/11/07',
-        receivedCommission:'3500',
-        receivableCommission:'3500',
-        contState:2,
-        toExamineState:2,
-        remarks:'',
-        contChangeState:1,
-        laterStageState:5,
-        resultState:1
-      },
-      {
-        code:'YQYD110063',
-        houseinfoCode:'YQYD110063张三',
-        guestinfoCode:'YQYD110063张三',
-        contType:2,
-        propertyAddr:'沿河花园',
-        dealPrice:'12345121',
-        dealAgentStoreName:'当代一店下雨天',
-        signDate:'2018/11/07',
-        receivedCommission:'3500',
-        receivableCommission:'3500',
-        contState:2,
-        toExamineState:3,
-        remarks:'',
-        contChangeState:1,
-        laterStageState:5,
-        resultState:1
-      },
-      {
-        code:'YQYD110063',
-        houseinfoCode:'YQYD110063张三',
-        guestinfoCode:'YQYD110063张三',
-        contType:1,
-        propertyAddr:'沿河花园',
-        dealPrice:'12345121',
-        dealAgentStoreName:'当代一店下雨天',
-        signDate:'2018/11/07',
-        receivedCommission:'3500',
-        receivableCommission:'3500',
-        contState:2,
-        toExamineState:4,
-        remarks:'',
-        contChangeState:1,
-        laterStageState:5,
-        resultState:1
-      }],
-      total:0
+      keyword:'',
+      signDate:[],
+      tableData:[],
+      total:0,
+      pageNum:1,
+      liushui:false,
+      tiaoyong:false
     }
   },
   created(){
@@ -327,24 +262,44 @@ export default {
     //获取合同列表
     getContractList(){
       let param = {
-        pageNum:'1',
-        pageSize:'10',
-        // keyWord:'',
-        cont:{}
+        pageNum: this.pageNum,
+        pageSize: 10,
+        keyword:this.keyword
       }
-      this.$ajax.post('/api/contract/contractList', param).then(res=>{
-
+      param = Object.assign({},param,this.contractForm)
+      if(this.signDate.length>0){
+        param.beginDate=this.signDate[0];
+        param.endDate=this.signDate[1];
+      }
+      console.log(param)
+      this.$ajax.postJSON('/api/contract/contractList', param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.tableData=res.data.list
+          this.total=res.data.count
+        }
       })
     },
+    //重置
     resetFormFn() {
-      this.$refs.propForm.resetFields()
+      TOOL.clearForm(this.contractForm);
+      this.keyword='';
+      this.signDate=[];
     },
     // 查询
     queryFn() {
-        console.log('查询')
+      console.log(this.signDate)
+      // if(this.signDate.length>0){
+      //   this.contractForm.beginDate=this.signDate[0].replace(/-/g,"/");
+      //   this.contractForm.endDate=this.signDate[1].replace(/-/g,"/");
+      // }
+      //console.log(this.contractForm)
+      this.getContractList()
     },
     //流水
-    runningWater(){},
+    runningWater(){
+      this.liushui=true
+    },
     //收款
     gathering(){},
     //付款
@@ -397,6 +352,20 @@ export default {
         }
       });
     },
+    //关闭流水弹窗
+    closeWater(){
+      this.liushui=false
+    },
+    //关闭调佣弹窗
+    closeCommission(){
+      this.tiaoyong=false
+    },
+    //字典查询
+    getDictionaries(){
+      this.$ajas.get('/api/dictionary/batchQuery',param).then(res=>{
+        
+      })
+    }
   }
 };
 </script>
@@ -404,7 +373,7 @@ export default {
 @import "~@/assets/common.less";
 
 .view-container{
-  padding: 0 20px;
+  //padding: 0 20px;
 }
 /deep/.paper-box{
   padding-top: 10px !important;
@@ -445,6 +414,14 @@ export default {
       font-size: 14px;
       color: @color-blue;
     }
+  }
+  .name-wrapper{
+    width:160px;
+    height:65px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
   }
 }
 .contract-msglist{

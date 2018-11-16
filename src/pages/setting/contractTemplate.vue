@@ -1,10 +1,15 @@
 <template>
   <div class="view-container">
-    <el-form ref="form" :model="flowForm" label-width="80px">
+    <el-form ref="form"  label-width="80px">
       <el-form-item label="城市选择" class="selectCity">
-        <el-select v-model="flowForm.selectCity" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+        <el-select v-model="selectCity" placeholder="请选择" @change='selCity'>
+          <el-option
+              v-for="(item) in citys"
+              :key="item.cityId"
+              :label="item.name"
+              :value="item.cityId"
+              >
+              </el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -15,7 +20,11 @@
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同版本号" prop="version" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="上传人" prop="uploadByName" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="上传时间" prop="uploadTime" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="上传时间" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            {{scope.row.uploadTime | formatDate}}
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="已使用份数" prop="useNum" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
@@ -44,7 +53,7 @@
                 </p>
                 <p @click="upload('fileTwo')">
                    <el-button>居间</el-button>
-                   <input type="file" ref="fileTwo" style="display: none;">
+                   <input type="file" ref="fileTwo" style="display: none;"><br>
                    <span class="upMsg">上传成功</span> 
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span>
@@ -74,8 +83,12 @@
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="上传人" prop="uploadByName"
                            :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" min-width="100px" label="上传时间" prop="uploadTime"
-                           :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" min-width="100px" label="上传时间" 
+                           :formatter="nullFormatter">
+                           <template slot-scope="scope">
+                          {{scope.row.uploadTime | formatDate}}
+                        </template>
+          </el-table-column>
           <el-table-column align="center" min-width="100px" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="enable">启用</el-button>
@@ -96,29 +109,39 @@
     mixins: [FILTER],
     data() {
       return {
-        flowForm: {
         selectCity: '',
-        },
         list: [],
         rowData: [],
         modal: false,
-        template: 2,//弹窗内容
+        template: '',//弹窗内容
         uploadType: false,//是否显示两个上传
         fileList3: [],
         titleStr:'',
+        citys:[],
       }
     },
     created() {
-      if(this.template===1){
-        this.titleStr='上传合同模板'
-      }else if(this.template===2){
-        this.titleStr='预览合同模板'
-      }else if(this.template===3){
-        this.titleStr='合同模板详情'
-      } 
+      this.$ajax.get('/api/organize/cities').then((res)=>{
+                if(res.status==200){
+                    this.citys=res.data.data
+                    // console.log(res);
+                }
+            }),
+      this.selectCity='武汉'
       this.getList()
     },
+
     methods: {
+      selCity(){
+            console.log(this.selectCity,'selectCity');
+            this.getList()
+            // this.$ajax.get('/api/organize/cities').then((res)=>{
+            //     if(res.status==200){
+            //         this.citys=res.data.data
+            //         // console.log(res);
+            //     }
+            // })
+      },
       /**
        * 弹框
        */
@@ -129,6 +152,8 @@
           type: 'warning'
         }).then(()=>{
            callback()
+        }).catch(()=>{
+
         })
       },
       /**
@@ -136,7 +161,7 @@
        */
       getList: function () {
         let param = {
-          cityId: 1
+          cityId:this.selectCity=='武汉'?1:this.selectCity
         }
         this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
           res = res.data
@@ -175,6 +200,7 @@
           if (res.status === 200) {
             this.rowData = res.data
             this.modal = true
+            this.titleStr='合同模板详情'
             this.template = 3
           }
         }).catch(error => {
@@ -197,30 +223,24 @@
            })
         }
         },
-      rowOperation: function (row, type = 1) {
+      rowOperation: function (row, type) {
+        console.log(type,"type");
         //上传
+        this.modal = true
+        this.template = type
         if(type===1){
-            this.modal = true
-            this.template = type
+            this.titleStr='上传合同模板'
             this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
         }
         //预览
         else if(type===2){
-          this.modal = true
-          this.template = type
+           this.titleStr='预览合同模板'
            this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
             console.log(res)
             })
         }
       }
     },
-    watch: {
-      modal: function (val) {
-        if (!val) {
-          this.template = 1
-        }
-      }
-    }
   }
 </script>
 

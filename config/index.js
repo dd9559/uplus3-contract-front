@@ -4,6 +4,7 @@
 //庞豪：http://192.168.1.181:8080
 //刘梦冰：http://192.168.1.183:8080
 //朱辉：http://192.168.1.58:8080
+//朱浩然：http://192.168.1.6:28081
 
 const path = require('path')
 
@@ -79,4 +80,6 @@ module.exports = {
     bundleAnalyzerReport: process.env.npm_config_report
   }
 }
+
+
 
