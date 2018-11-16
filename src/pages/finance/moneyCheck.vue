@@ -16,6 +16,14 @@
         <div class="input-group">
           <label>查询时间:</label>
           <div class="time-picker">
+            <el-select size="small" v-model="searchForm.moneyType" placeholder="请选择">
+              <el-option
+                v-for="item in 5"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
             <el-date-picker
               v-model="searchForm.signTime"
               type="daterange"

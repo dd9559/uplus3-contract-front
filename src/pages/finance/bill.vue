@@ -14,8 +14,38 @@
           </el-select>
         </div>
         <div class="input-group">
+          <label>查询时间:</label>
+          <div class="time-picker">
+            <el-select size="small" v-model="searchForm.timeType" placeholder="请选择">
+              <el-option
+                v-for="item in 5"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker
+              v-model="searchForm.signTime"
+              type="daterange"
+              size="small"
+              value-format="yyyy-MM-dd"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="input-group">
           <label>部门:</label>
           <el-select size="small" v-model="searchForm.deptId" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['10']"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <el-select class="margin-left-10" size="small" v-model="searchForm.empId" placeholder="请选择" v-show="searchForm.deptId">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -80,35 +110,11 @@
           </el-select>
         </div>
         <div class="input-group">
-          <label>查询时间:</label>
-          <div class="time-picker">
-            <el-date-picker
-              v-model="searchForm.signTime"
-              type="daterange"
-              size="small"
-              value-format="yyyy-MM-dd"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
-          </div>
-        </div>
-        <div class="input-group">
           <label>关键字:</label>
           <el-input size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
-    <!--<div class="view-header">
-      <div class="title">
-        <span>筛选条件</span>
-        <p>
-          <el-button type="primary" @click="operation('reset')">重置</el-button>
-          <el-button type="primary" @click="operation">查询</el-button>
-        </p>
-      </div>
-
-    </div>-->
     <div class="view-context">
       <div class="table-tool">
         <h4 title="hello">数据列表</h4>
@@ -132,25 +138,40 @@
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span>{{scope.row.cont_code}}</span></li>
-              <li>房源编号:<span>{{scope.row.house_code}}</span></li>
-              <li>客源编号:<span>{{scope.row.cust_code}}</span></li>
+              <li>合同编号:<span>{{scope.row.contCode}}</span></li>
+              <li>房源编号:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
+              <li>客源编号:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
             </ul>
           </template>
         </el-table-column>
         <el-table-column align="center" min-width="160" label="物业地址" prop="address" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="合同类型" prop="cont_type" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="款类" prop="money_type" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="收付方式" prop="method" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="对象" prop="in_obj" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收款人" prop="for_collection" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="金额（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="余额（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="刷卡手续费" prop="useNum" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收付时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="入账时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收付状态" prop="state" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="结算信息" prop="contractType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="对象">
+          <template slot-scope="scope">
+            <span>{{scope.row.type===1?scope.row.inObjType:scope.row.outObjType|getLabel}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="收款人" prop="inObjName" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付时间" prop="createTime" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <span>{{scope.row.createTime|formatDate}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="入账时间" prop="toAccountTime" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <span>{{scope.row.toAccountTime|formatDate}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="收付状态" prop="checkStatus" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="结算信息">
+          <template slot-scope="scope">
+            <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
 
@@ -176,10 +197,13 @@
           contType: '',
           keyword: '',
           deptId:'',
+          empId:'',
           payMethod:'',
           proAccount:'',
           signTime:'',
-          timeType:''
+          timeType:'',
+          startTime:'',
+          endTime:''
         },
         tableTotal:{
           receiptNum:28,
@@ -203,18 +227,42 @@
             operation_time: "2018/09/30 12:00",
             state: "未收"
           }
-        ]
+        ],
+        dictionary:{ //数据字典
+          '10':'',
+          '33':''
+        }
       }
     },
     created() {
       this.getData()
+      this.getDir()
     },
     methods: {
+      getDictionaryIds:function (obj) {
+        let arr = []
+        for(let item in obj){
+          arr.push(item)
+        }
+        return arr.join(',')
+      },
+      getDir:function () {
+        let param = {
+          parentIds:this.getDictionaryIds(this.dictionary)
+        }
+        this.$ajax.get('/api/dictionary/batchQuery',param).then(res=>{
+          // debugger
+          if(res.status===200){
+            console.log(res.data)
+            // this.dictionary = Object.assign({},JSON.parse(res.data))
+          }
+        })
+      },
       getData: function () {
         this.$ajax.get('/api/payInfo/selectPayInfoList',this.searchForm).then(res => {
           res = res.data
           if (res.status === 200) {
-            this.list = res.data.list
+            this.list = res.data.page.list
           }
         }).catch(error => {
           console.log(error)
@@ -254,12 +302,18 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .margin-left-10{
+    margin-left:10px;
+  }
 
   .contract-msglist{
     >li{
       text-align: left;
       >span{
-        color: @color-blue;
+        &:first-of-type{
+          color: @color-blue;
+          margin-right: 10px;
+        }
       }
     }
   }
