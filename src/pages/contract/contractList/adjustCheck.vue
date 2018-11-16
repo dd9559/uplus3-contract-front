@@ -382,8 +382,7 @@
         }
         this.$ajax.get("/api/commission/update", param)
         .then(res => {
-          console.log(res.data.data);
-          let data = res.data;
+          let tips = res.data.message;
           if (res.status === 200) {
             this.$message(tips);
             // let _this = this
