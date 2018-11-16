@@ -36,7 +36,7 @@
                 <th></th>
                 <th>业主佣金</th>
                 <th>客户佣金</th>
-                <th>按揭手续费</th>
+                <!-- <th>按揭手续费</th> -->
                 <th>合作费扣除</th>
               </tr>
             </thead>
@@ -45,7 +45,7 @@
                 <td>原金额</td>
                 <td>152365元</td>
                 <td>152365元</td>
-                <td>另外出<span>;</span>客户<span>;</span>0元</td>
+                <!-- <td>另外出<span>;</span>客户<span>;</span>0元</td> -->
                 <td>0元</td>
               </tr>
               <tr>
@@ -56,7 +56,7 @@
                 <td>
                   <div><el-input v-model="auditForm.money2" placeholder="输入金额" class="width70"></el-input>元</div>
                 </td>
-                <td class="flex">       
+                <!-- <td class="flex">       
                     <div>
                       <el-select v-model="auditForm.item1" class="width70 mr10">
                         <el-option label="另外出" value="另外出"></el-option>
@@ -73,7 +73,7 @@
                     </div>
                     <div><el-input v-model="auditForm.money3" placeholder="输入金额" class="width70"></el-input>元</div>
                   
-                </td>
+                </td> -->
                 <td>
                   <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70"></el-input>元</div>
                 </td>
