@@ -21,16 +21,18 @@
                         <el-option v-for="item in rules.paper" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="部门" prop="region" class="mr">
-                    <el-select v-model="propForm.region" @change="regionChangeFn" class="w200" filterable>
-                        <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="regionName">
-                    <el-select v-model="propForm.regionName" class="w100" filterable>
-                        <el-option v-for="item in rules.regionName" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
+                <div class="in-block">
+                    <el-form-item label="部门" prop="region" class="mr">
+                        <el-select v-model="propForm.region" @change="regionChangeFn" class="w200" filterable>
+                            <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="regionName">
+                        <el-select v-model="propForm.regionName" class="w100" filterable>
+                            <el-option v-for="item in rules.regionName" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </div>
                 <el-form-item label="后期状态" prop="late" class="mr">
                     <el-select v-model="propForm.late" class="w180" filterable>
                         <el-option v-for="item in rules.late" :key="item.value" :label="item.label" :value="item.value"></el-option>
