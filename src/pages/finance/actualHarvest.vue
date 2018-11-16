@@ -137,8 +137,7 @@
       }
     },
     created() {
-      this.getData()
-
+      // this.getData()
     },
     methods: {
       getData: function () {

@@ -1,33 +1,34 @@
 <template>
   <div class="view">
-    <ScreeningTop>
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
       <div class="content">
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select size="small" v-model="searchForm.moneyType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['10']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>查询时间:</label>
           <div class="time-picker">
-            <el-select size="small" v-model="searchForm.moneyType" placeholder="请选择">
+            <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
               <el-option
                 v-for="item in 5"
                 :key="item.value"
-                :label="item.label"
+                :label="item.value"
                 :value="item.value">
               </el-option>
             </el-select>
             <el-date-picker
-              v-model="searchForm.signTime"
+              v-model="searchForm.timeRange"
               type="daterange"
               size="small"
+              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期">
@@ -36,7 +37,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select size="small" v-model="searchForm.moneyState" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.deptId" placeholder="请选择">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -47,56 +48,56 @@
         </div>
         <div class="input-group">
           <label>票据状态:</label>
-          <el-select size="small" v-model="searchForm.department" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.billStatus" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['33']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收款账户:</label>
-          <el-select size="small" v-model="searchForm.contractType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.proAccount" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['32']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付状态:</label>
-          <el-select size="small" v-model="searchForm.contractType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.checkStatus" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['23']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付款类:</label>
-          <el-select size="small" v-model="searchForm.contractType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['25']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付方式:</label>
-          <el-select size="small" v-model="searchForm.contractType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.payMethod" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['24']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
@@ -108,26 +109,50 @@
     </ScreeningTop>
     <div class="view-context">
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
-        <el-table-column align="center" :label="getView" prop="contractType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="150" :label="getView" prop="payCode"
+                         :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span>{{scope.row.contractId}}</span></li>
-              <li>房源编号:<span>{{scope.row.houseId}}</span></li>
-              <li>客源编号:<span>{{scope.row.customerId}}</span></li>
+              <li>合同编号:<span>{{scope.row.contCode}}</span></li>
+              <li>房源编号:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
+              <li>客源编号:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="物业地址" prop="contractType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="合同类型" prop="contractType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="款类" prop="collectionType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收付方式" prop="broker" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="对象" prop="accounts_receivable" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" :label="activeView===1?'收款人':'付款人'" prop="for_collection" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="金额（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="付款时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="状态" prop="state" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="票据" prop="contractType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="150" label="物业地址" prop="address"
+                         :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付方式" prop="method" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="对象">
+          <template slot-scope="scope">
+            <span>{{scope.row.type===1?scope.row.inObjType:scope.row.outObjType|getLabel}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" :label="activeView===1?'收款人':'付款人'">
+          <template slot-scope="scope">
+            <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付时间" prop="createTime" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <span>{{scope.row.createTime|formatDate}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="入账时间" prop="toAccountTime" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <span>{{scope.row.toAccountTime|formatDate}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="收付状态" prop="checkStatus.label"></el-table-column>
+        <el-table-column align="center" label="结算信息">
+          <template slot-scope="scope">
+            <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="操作" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" @click="cellOpera">审核</el-button>
@@ -140,91 +165,96 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
-
-  let formObj = {
-    moneyType: '',
-    moneyState: '',
-    department: '',
-    contractType: '',
-    signStart: '',
-    signEnd: '',
-    collectionStart: '',
-    collectionEnd: '',
-    keyword: ''
-  }
+  import {MIXINS} from "@/assets/js/mixins";
 
   export default {
-    mixins: [FILTER],
+    mixins: [FILTER, MIXINS],
     data() {
       return {
-        activeView:'',
+        activeView: '',
         searchForm: {
+          contType: '',
+          timeType: '',
+          deptId: '',
+          empId: '',
+          billStatus: '',
+          proAccount: '',
+          checkStatus: '',
           moneyType: '',
-          moneyState: '',
-          department: '',
-          contractType: '',
-          signTime: '',
-          keyword: ''
+          payMethod: '',
+          keyword: '',
+          timeRange:''
         },
-        list: [
-          {
-            contractId: '201809301289',
-            houseId: "HRYY000039",
-            customerId: "HRYY000039",
-            contractType: "买卖&居间",
-            collectionType: "佣金",
-            broker: "东野圭吾-当代一店",
-            accounts_receivable: 1000,
-            payment_received: 1000,
-            for_collection: 1000,
-            operation_time: "2018/09/30 12:00",
-            state: "未收"
-          }
-        ]
+        list: [],
+        dictionary: {
+          '10': '',
+          '33': '',
+          '32': '',
+          '23': '',
+          '24': '',
+          '25': '',
+          '507': ''
+        }
       }
     },
     created() {
-      // this.getData()
+      this.getData()
+      this.getDictionary()
       this.activeView = parseInt(this.$route.query.type)
     },
-    beforeRouteUpdate (to, from, next) {
-      this.searchForm = Object.assign(JSON.parse(JSON.stringify(formObj)))
+    beforeRouteUpdate(to, from, next) {
+      this.getData()
+      this.getDictionary()
       this.activeView = parseInt(to.query.type)
+      this.$tool.clearForm(this.searchForm)   //初始化筛选查询
       next()
     },
     methods: {
+      reset:function () {
+        this.$tool.clearForm(this.searchForm)
+      },
+      search:function () {
+
+      },
       getData: function () {
-        this.$ajax.get('/api/finance/listCollection').then(res => {
+        let param = JSON.parse(JSON.stringify(this.searchForm))
+        if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+        }
+        delete param.timeRange
+        let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
+        this.$ajax.get(`/api${url}`,param).then(res => {
           res = res.data
           if (res.status === 200) {
-            this.list = res.data.list
+            this.list = res.data.page.list
           }
         }).catch(error => {
           console.log(error)
         })
       },
       //操作
-      cellOpera:function () {
+      cellOpera: function () {
         let param = {
-          path:'billDetails'
+          path: 'billDetails'
         }
-        if(this.activeView===1){
-          param.query={
-            tab:'收款信息'
+        if (this.activeView === 1) {
+          param.query = {
+            tab: '收款信息'
           }
-        }else {
-          param.query={
-            tab:'付款信息'
+        } else {
+          param.query = {
+            tab: '付款信息'
           }
         }
         this.$router.push(param)
       }
     },
-    computed:{
-      getView:function () {
-        if(this.activeView===1){
+    computed: {
+      getView: function () {
+        if (this.activeView === 1) {
           return '收款ID'
-        }else {
+        } else {
           return '付款ID'
         }
       }
@@ -235,11 +265,14 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
 
-  .contract-msglist{
-    >li{
+  .contract-msglist {
+    > li {
       text-align: left;
-      >span{
-        color: @color-blue;
+      > span {
+        &:first-of-type {
+          color: @color-blue;
+          margin-right: 10px;
+        }
       }
     }
   }
@@ -271,11 +304,12 @@
       }
     }
   }
-  .view-context{
+
+  .view-context {
     background-color: @color-white;
     padding: 20px;
-    /deep/ .theader-bg{
-      >th{
+    /deep/ .theader-bg {
+      > th {
         background-color: @bg-th;
       }
     }
