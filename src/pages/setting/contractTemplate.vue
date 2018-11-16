@@ -1,10 +1,15 @@
 <template>
   <div class="view-container">
-    <el-form ref="form" :model="flowForm" label-width="80px">
+    <el-form ref="form"  label-width="80px">
       <el-form-item label="城市选择" class="selectCity">
-        <el-select v-model="flowForm.selectCity" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+        <el-select v-model="selectCity" placeholder="请选择" @change='selCity'>
+          <el-option
+              v-for="(item) in citys"
+              :key="item.cityId"
+              :label="item.name"
+              :value="item.cityId"
+              >
+              </el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -79,7 +84,11 @@
           <el-table-column align="center" min-width="100px" label="上传人" prop="uploadByName"
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="上传时间" 
-                           :formatter="nullFormatter" prop="uploadTime"></el-table-column>
+                           :formatter="nullFormatter">
+                           <template slot-scope="scope">
+                          {{scope.row.uploadTime | formatDate}}
+                        </template>
+          </el-table-column>
           <el-table-column align="center" min-width="100px" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="enable">启用</el-button>
@@ -100,9 +109,7 @@
     mixins: [FILTER],
     data() {
       return {
-        flowForm: {
         selectCity: '',
-        },
         list: [],
         rowData: [],
         modal: false,
@@ -110,13 +117,31 @@
         uploadType: false,//是否显示两个上传
         fileList3: [],
         titleStr:'',
+        citys:[],
       }
     },
     created() {
+      this.$ajax.get('/api/organize/cities').then((res)=>{
+                if(res.status==200){
+                    this.citys=res.data.data
+                    // console.log(res);
+                }
+            }),
+      this.selectCity='武汉'
       this.getList()
     },
 
     methods: {
+      selCity(){
+            console.log(this.selectCity,'selectCity');
+            this.getList()
+            // this.$ajax.get('/api/organize/cities').then((res)=>{
+            //     if(res.status==200){
+            //         this.citys=res.data.data
+            //         // console.log(res);
+            //     }
+            // })
+      },
       /**
        * 弹框
        */
@@ -136,7 +161,7 @@
        */
       getList: function () {
         let param = {
-          cityId: 1
+          cityId:this.selectCity=='武汉'?1:this.selectCity
         }
         this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
           res = res.data
