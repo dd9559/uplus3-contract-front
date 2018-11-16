@@ -157,9 +157,9 @@
           </div>
           <div>
             <el-button round class="search_btn" @click="goPreview">预览</el-button>
-            <el-button round type="danger" class="search_btn">解约</el-button>
+            <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)">解约</el-button>
             <el-button round type="danger" @click="dialogInvalid=true" class="search_btn">无效</el-button>
-            <el-button round class="search_btn">变更</el-button>
+            <el-button round class="search_btn" @click="goChangeCancel(1)">变更</el-button>
             <el-button type="primary" round class="search_btn" @click="goEdit">编辑</el-button>
           </div>
         </div>
@@ -226,14 +226,18 @@
 
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
+    <!-- 变更/解约编辑弹窗 -->
+    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel" @closeChangeCancel="changeCancelDialog"></changeCancel>
   </div>
 </template>
            
 <script>
 import achDialog from "./../../achievement/achDialog";
+import changeCancel from '../contractDialog/changeCancel';
 export default {
   components: {
-    achDialog
+    achDialog,
+    changeCancel
   },
   data() {
     return {
@@ -269,7 +273,9 @@ export default {
       callNumber: "",
       contType: "2",
       shows: false,
-      dialogType:3
+      dialogType:3,
+      canceldialogType:'',
+      changeCancel:false
     };
   },
   created() {
@@ -282,6 +288,7 @@ export default {
     handleClick(tab, event) {
       // console.log(tab, event);
     },
+    //打电话
     call(value) {
       this.dialogVisible = true;
       this.callNumber = value;
@@ -295,10 +302,12 @@ export default {
         }
       });
     },
+    // 分成弹窗
     fencheng(){
       this.dialogType = 3;
       this.shows = true;
     },
+    // 合同编辑
     goEdit(){
       this.$router.push({
         path: "/addContract",
@@ -308,8 +317,24 @@ export default {
           type:this.contType
         }
       });
+    },
+     // 变更解约弹窗
+    goChangeCancel(value){
+      if(value===1){
+        this.canceldialogType='changeEdit';
+        this.changeCancel=true;
+      }else if(value===2){
+        this.canceldialogType='cancelEdit';
+        this.changeCancel=true;
+      }
+    },
+    // 关闭变更解约弹窗
+    changeCancelDialog(){
+      this.changeCancel=false
+      this.canceldialogType=''
     }
-  }
+    },
+ 
 };
 </script>
 <style scoped lang="less">

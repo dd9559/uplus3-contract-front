@@ -552,14 +552,14 @@ export default {
               name: "张小宝",
               uId: 13,
               relation: 2,
-              personType: "CUST",
+              type: 2,
               mobile: "13098120011"
             },
             {
               pid: 46,
               name: "牛锦涛",
               relation: 1,
-              personType: "OWNER",
+              type: 1,
               mobile: "13001864012"
             }
           ],
