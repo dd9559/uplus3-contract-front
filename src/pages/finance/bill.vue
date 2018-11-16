@@ -166,7 +166,7 @@
             <span>{{scope.row.toAccountTime|formatDate}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收付状态" prop="checkStatus" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付状态" prop="checkStatus.label"></el-table-column>
         <el-table-column align="center" label="结算信息">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
@@ -186,9 +186,10 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
+  import {MIXINS} from "@/assets/js/mixins";
 
   export default {
-    mixins: [FILTER],
+    mixins: [FILTER,MIXINS],
     data() {
       return {
         activeView:'',
@@ -232,28 +233,9 @@
     },
     created() {
       this.getData()
-      this.getDir()
+      this.getDictionary()
     },
     methods: {
-      getDictionaryIds:function (obj) {
-        let arr = []
-        for(let item in obj){
-          arr.push(item)
-        }
-        return arr.join(',')
-      },
-      getDir:function () {
-        let param = {
-          parentIds:this.getDictionaryIds(this.dictionary)
-        }
-        this.$ajax.get('/api/dictionary/batchQuery',param).then(res=>{
-          res=res.data
-          if(res.status===200){
-            console.log(res.data)
-            this.dictionary = Object.assign({},res.data)
-          }
-        })
-      },
       getData: function () {
         this.$ajax.get('/api/payInfo/selectPayInfoList',this.searchForm).then(res => {
           res = res.data
