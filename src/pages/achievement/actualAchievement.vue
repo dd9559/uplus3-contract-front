@@ -12,7 +12,7 @@
                                </div>
                                <div class="filter-right f_r">
                                   <el-button type="primary" round>重置</el-button>
-                                  <el-button type="primary" round>查询</el-button>
+                                  <el-button type="primary" round @click="filterData">查询</el-button>
                               </div>
                            </div>
                    
@@ -21,27 +21,29 @@
                                <!-- 筛选条件 -->
                                <el-form 
                                :inline="true"
-                               ref="propForm"
                                :model="propForm" 
-                               class="prop-form"
+                                class="prop-form"
                                size="small">
+                                    
+                                    <!-- 部门 -->
                                    <el-form-item 
                                    label="部门" 
-                                   prop="region"
+                                   prop="department"
                                    class="mr">
-                                       <el-select v-model="propForm.region"  class="w200" filterable>
+                                       <el-select v-model="propForm.department"  class="w200" filterable>
                                            <el-option 
-                                           v-for="item in rules.region" 
+                                           v-for="item in rules.department" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
                                        </el-select>
                                    </el-form-item>
+
                                    <el-form-item 
-                                   prop="regionName">
-                                       <el-select v-model="propForm.regionName" class="w100" filterable>
+                                   prop="departmentDetail">
+                                       <el-select v-model="propForm.departmentDetail" class="w100" filterable>
                                            <el-option 
-                                           v-for="item in rules.regionName" 
+                                           v-for="item in rules.departmentDetail" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
@@ -50,10 +52,10 @@
                                
                                    <el-form-item 
                                    label="合同类型" 
-                                   prop="paper">
-                                       <el-select v-model="propForm.paper" class="w120">
+                                   prop="contractType">
+                                       <el-select v-model="propForm.contractType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.paper" 
+                                           v-for="item in rules.contractType" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
@@ -62,10 +64,10 @@
 
                                     <el-form-item 
                                    label="分成类型" 
-                                   prop="paper">
-                                       <el-select v-model="propForm.paper" class="w120">
+                                   prop="divideType">
+                                       <el-select v-model="propForm.divideType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.paper" 
+                                           v-for="item in rules.divideType" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
@@ -74,10 +76,10 @@
 
                                     <el-form-item 
                                    label="业绩状态" 
-                                   prop="paper">
-                                       <el-select v-model="propForm.paper" class="w120">
+                                   prop="achType">
+                                       <el-select v-model="propForm.achType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.paper" 
+                                           v-for="item in rules.achType" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
@@ -93,6 +95,7 @@
                                            class="w330"
                                            type="daterange"
                                            range-separator="至"
+                                           value-format="yyyy-MM-dd"
                                            start-placeholder="开始日期"
                                            end-placeholder="结束日期">
                                        </el-date-picker>
@@ -100,7 +103,7 @@
 
 
                                    <p>
-                                         <el-form-item label="关键字" prop="search">
+                                       <el-form-item label="关键字" prop="search">
                                        <el-autocomplete
                                        class="w312"
                                        v-model="propForm.search"
@@ -653,7 +656,7 @@
                      </el-dialog>
 
                      <!-- 审核，编辑，反审核，业绩分成弹框 -->
-                     <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
+                     <achDialog :shows="shows"  @close="shows=false" :dialogType="dialogType"></achDialog>
 
          </div>
 </template>
@@ -672,68 +675,67 @@ export default {
       clientArr: [], //应收详情客源数组
       checkArr: [], //应收详情审核信息数组
       pageSize: 5,
-      rules: {
-        region: [
-          {
-            label: "区域一",
-            value: "shanghai"
-          },
-          {
-            label: "区域二",
-            value: "quyuer"
-          }
-        ]
-      },
       dialogVisible: false,
       // 筛选条件
       propForm: {
-        region: "",
-        regionName: "",
-        search: "",
-        paper: "选项1",
-        time: "选项11",
-        dateMo: ""
+        department: "", //部门
+        departmentDetail: "", //部门详情
+        contractType: "", //合同类型
+        divideType: "", //分成类型
+        achType: "", //业绩类型
+        dateMo: "",
+        search: ""
       },
       // 筛选选项
       rules: {
-        region: [
+        department: [
           {
-            label: "区域一",
-            value: "shanghai"
+            label: "部门1",
+            value: "1"
           },
           {
-            label: "区域二",
-            value: "quyuer"
+            label: "部门2",
+            value: "2"
           }
         ],
-        regionName: [
+        departmentDetail: [
           {
-            label: "区域一",
-            value: "shangha"
+            label: "部门详情1",
+            value: "1"
           },
           {
-            label: "区域二",
-            value: "quyue"
+            label: "部门详情2",
+            value: "2"
           }
         ],
-        paper: [
+        contractType: [
           {
-            label: "合同1",
-            value: "yi"
+            label: "合同类型1",
+            value: "1"
           },
           {
-            label: "合同2",
-            value: "er"
+            label: "合同类型2",
+            value: "2"
           }
         ],
-        time: [
+        divideType: [
           {
-            label: "开票日期",
-            value: "选项11"
+            label: "分成类型1",
+            value: "1"
           },
           {
-            label: "区域二",
-            value: "选项21"
+            label: "分成类型2",
+            value: "2"
+          }
+        ],
+        achType: [
+          {
+            label: "业绩类型1",
+            value: "1"
+          },
+          {
+            label: "业绩类型2",
+            value: "2"
           }
         ]
       },
@@ -786,6 +788,18 @@ export default {
           }
         });
       this.dialogVisible = true;
+    },
+    filterData() {
+      let param = {
+        departmentId: this.propForm.department, //部门
+        employeeIdQUERY: this.propForm.departmentDetail, //员工
+        contract_type: this.propForm.contractType, //合同类型
+        separate_type: this.propForm.divideType, //分成类型
+        status: this.propForm.achType, //业绩类型
+        start_time: this.propForm.dateMo[0],  //开始时间
+        end_time: this.propForm.dateMo[1]  //结束时间
+      };
+      console.log(param);
     },
     checkAch() {
       this.dialogType = 0;

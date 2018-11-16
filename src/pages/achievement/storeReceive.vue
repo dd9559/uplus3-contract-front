@@ -72,7 +72,7 @@
                            <div class="data-head-left">
                               <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b> 
                               <span>
-                                  数据列表
+                                  {{storeTitle}}实收业绩汇总
                               </span> 
                            </div> 
                           <!-- 面包屑 -->
@@ -94,14 +94,14 @@
                   
 
                       <!-- 表格一 -->
-                      <div class="data-list" v-show="true">
+                      <div class="data-list" v-show="tableShow">
                          <el-table
                             :data="tableData"
                             style="width: 100%"
                             @row-dblclick="dialogVisible = true"
                             >
                                <el-table-column
-                                 label="区总"
+                                 :label="partStep"
                                  width="80"
                                  >
                                   <template slot-scope="scope">
@@ -232,10 +232,20 @@
                                   </template>                         
                             </el-table-column> 
                           </el-table>
+
+                          
+                            <!-- 分页 -->
+                             <el-pagination
+                               @size-change="handleSizeChange"
+                               @current-change="handleCurrentChange"
+                               :current-page="1"
+                               layout="total, prev, pager, next, jumper"
+                               :total="total">
+                            </el-pagination>
                       </div>
                       
                        <!-- 表格二 -->
-                      <div class="data-list" v-show="false">
+                      <div class="data-list" v-show="!tableShow">
                          <el-table
                             :data="tableData1"
                             style="width: 100%"
@@ -360,20 +370,19 @@
                                          <p>214550</p>
                                          <p>214550</p>
                                   </template>
-                               </el-table-column>
-                               
+                               </el-table-column>               
                           </el-table>
+                            <!-- 分页 -->
+                             <el-pagination
+                               @size-change="handleSizeChange"
+                               @current-change="handleCurrentChange"
+                               :current-page="1"
+                               layout="total, prev, pager, next, jumper"
+                               :total="total">
+                            </el-pagination>
                       </div>
 
 
-                      <!-- 分页 -->
-                         <el-pagination
-                           @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="1"
-                           layout="total, prev, pager, next, jumper"
-                           :total="total">
-                        </el-pagination>
                 </div>
 
            
@@ -385,36 +394,112 @@ export default {
   name: "actualAchievement",
   data() {
     return {
-      tableData: [
-        {
-          partName: "汉口大区",
-          num1: 200,
-          num2: 6000000,
-          name: "张三",
-          id: 0
-        },
-        {
-          partName: "汉口大区",
-          num1: 200,
-          num2: 6000000,
-          name: "李四",
-          id: 1
-        },
-        {
-          partName: "汉口大区",
-          num1: 200,
-          num2: 6000000,
-          name: "王五",
-          id: 2
-        },
-        {
-          partName: "汉口大区",
-          num1: 200,
-          num2: 6000000,
-          name: "李六",
-          id: 3
-        }
-      ],
+      testData0: {
+        title: "全公司",
+        currentPart: "",
+        nextPart: "区总",
+        testArr: [
+          {
+            partName: "testData0汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "周松1",
+            id: 0
+          },
+          {
+            partName: "testData0汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "周松1",
+            id: 1
+          },
+          {
+            partName: "testData0汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "周松1",
+            id: 2
+          },
+          {
+            partName: "testData0汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "周松1",
+            id: 3
+          }
+        ]
+      },
+      testData1: {
+        title: "汉口大区",
+        currentPart: "区总",
+        nextPart: "区经",
+        testArr: [
+          {
+            partName: "testData1汉口大区",
+            num1: 100,
+            num2: 7000000,
+            name: "秦星星1",
+            id: 0
+          },
+          {
+            partName: "testData1汉口大区",
+            num1: 100,
+            num2: 7000000,
+            name: "秦星星1",
+            id: 1
+          },
+          {
+            partName: "testData1汉口大区",
+            num1: 100,
+            num2: 7000000,
+            name: "王五",
+            id: 2
+          },
+          {
+            partName: "testData1汉口大区",
+            num1: 100,
+            num2: 7000000,
+            name: "李六",
+            id: 3
+          }
+        ]
+      },
+      testData2: {
+        title: "万松园片区",
+        currentPart: "店长",
+        nextPart: "门店明细",
+        testArr: [
+          {
+            partName: "testData2汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "王大大",
+            id: 0
+          },
+          {
+            partName: "testData2汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "王大大",
+            id: 1
+          },
+          {
+            partName: "testData2汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "王大大",
+            id: 2
+          },
+          {
+            partName: "testData2汉口大区",
+            num1: 200,
+            num2: 6000000,
+            name: "王大大",
+            id: 3
+          }
+        ]
+      },
+      tableData: [],
       tableData1: [
         {
           name:
@@ -553,8 +638,16 @@ export default {
       },
       total: 0,
       brandShow: false,
-      brandArr: []
+      brandArr: [],
+      tableShow: true, //控制门店实收表格，门店明细表格两者显示与隐藏
+      storeTitle: "全公司",
+      steps: 0,
+      partStep:"区总"
     };
+  },
+  created() {
+    this.tableData = this.testData0.testArr;
+    this.storeTitle = this.testData0.title;
   },
   components: {},
   methods: {
@@ -566,10 +659,28 @@ export default {
       console.log(`当前页: ${val}`);
     },
     nextStep(id, name) {
-      console.log(id);
       this.brandArr.push({ name: name, id: id });
       console.log(this.brandArr);
       this.brandShow = true;
+      if (this.steps == 0) {
+        this.tableData = this.testData1.testArr;
+        this.storeTitle = this.testData1.title;
+        this.partStep=this.testData1.nextPart
+        this.steps = 1;
+      } else if (this.steps == 1) {
+        this.tableData = this.testData2.testArr;
+        this.storeTitle = this.testData2.title;
+        this.partStep=this.testData2.nextPart
+        this.steps = 2;
+      } else if (this.steps == 2) {
+        this.tableShow = false;
+        this.steps = 3;
+      }
+
+      console.log(id);
+
+
+
     },
     askData(id, index) {
       console.log(id);
@@ -577,6 +688,7 @@ export default {
       this.brandArr.splice(index, this.brandArr.length - index - 1);
     },
     allCompany() {
+      this.tableShow = true;
       this.brandShow = false;
       this.brandArr = [];
       // 请求全公司的列表
