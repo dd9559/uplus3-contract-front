@@ -10,16 +10,18 @@
                     <el-date-picker v-model="propForm.dateMo" class="w330" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="交易步骤" prop="late" class="mr">
-                    <el-select v-model="propForm.late" @change="lateChangeFn" class="w100">
-                        <el-option v-for="item in rules.late" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="lateName">
-                    <el-select v-model="propForm.lateName" class="w100" placeholder="状态">
-                        <el-option v-for="item in rules.lateName" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
+                <div class="in-block">
+                    <el-form-item label="交易步骤" prop="late" class="mr">
+                        <el-select v-model="propForm.late" @change="lateChangeFn" class="w100">
+                            <el-option v-for="item in rules.late" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="lateName">
+                        <el-select v-model="propForm.lateName" class="w100" placeholder="状态">
+                            <el-option v-for="item in rules.lateName" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </div>
                 <el-form-item label="交易流程" prop="time">
                     <el-select v-model="propForm.time" class="w270">
                         <el-option v-for="item in rules.time" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -30,16 +32,18 @@
                         <el-option v-for="item in rules.paper" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="部门" prop="region" class="mr">
-                    <el-select v-model="propForm.region" @change="regionChangeFn" class="w200" filterable>
-                        <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
+                <div class="in-block">
+                    <el-form-item label="部门" prop="region" class="mr">
+                        <el-select v-model="propForm.region" @change="regionChangeFn" class="w200" filterable>
+                            <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="regionName">
+                        <el-select v-model="propForm.regionName" class="w100" filterable>
+                            <el-option v-for="item in rules.regionName" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
                 </el-form-item>
-                <el-form-item prop="regionName">
-                    <el-select v-model="propForm.regionName" class="w100" filterable>
-                        <el-option v-for="item in rules.regionName" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
+                </div>
             </el-form>
         </ScreeningTop>
         <!-- 列表 -->
@@ -178,7 +182,6 @@
     import ScreeningTop from '@/components/ScreeningTop';
 
     export default {
-        mixins:[],
         components:{
             ScreeningTop
         },
