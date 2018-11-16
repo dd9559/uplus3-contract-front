@@ -297,24 +297,6 @@
               background-color: @bg-th;
             }
           }
-          .view-header{
-            .el-select, .el-input {
-              /*width: 200px;*/
-              /*>input{
-                height: 36px;
-                line-height: 36px;
-              }*/
-            }
-            .el-date-editor{
-              /*height: 36px;
-              line-height: 36px;
-              .el-range-separator{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              }*/
-            }
-          }
           .router-view{
             min-height: 100%;
             background-color: @bg-white;
