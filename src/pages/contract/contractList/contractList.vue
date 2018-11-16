@@ -129,7 +129,7 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="合同类型" prop="contType" width="100" fixed>
+        <el-table-column align="left" label="合同类型" prop="contType.label" width="100" fixed>
         </el-table-column>
         <el-table-column align="left" label="物业地址" prop="propertyAddr" width="150" fixed>
         </el-table-column>
@@ -155,9 +155,9 @@
         </el-table-column>
         <el-table-column align="left" label="可分配业绩" prop="distributableAchievement" width="100">
         </el-table-column>
-        <el-table-column align="left" label="合同状态" prop="contState" width="100">
+        <el-table-column align="left" label="合同状态" prop="contState.label" width="100">
         </el-table-column>
-        <el-table-column align="left" label="审核状态" prop="toExamineState" width="120">
+        <el-table-column align="left" label="审核状态" prop="toExamineState.label" width="120">
         </el-table-column>
         <el-table-column align="left" label="备注" width="200">
           <template slot-scope="scope">
@@ -173,20 +173,20 @@
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.contChangeState==='未变更/解约'">-</span>
-            <el-button type="text" size="medium" v-else>{{scope.row.contChangeState}}</el-button>
-            <!-- <el-button type="text" size="medium" v-if="scope.row.contChangeState===2">解约</el-button> -->
+            <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>
+            <el-button type="text" size="medium" v-else @click="goChangeCancel(scope.row)">{{scope.row.contChangeState.label}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="后期状态" width="100">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.laterStageState==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
-            <span v-else>{{scope.row.laterStageState}}</span>
+            <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
+            <span v-else>{{scope.row.laterStageState.label}}</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="后期进度" width="100">
           <template slot-scope="scope">
-            <el-button type="text" size="medium">{{scope.row.stepInstanceName}}</el-button>
+            <span v-if="scope.row.stepInstanceName==='-'">-</span>
+            <el-button v-else type="text" size="medium">{{scope.row.stepInstanceName}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="收佣状态" width="100">
@@ -196,12 +196,12 @@
         </el-table-column>
         <el-table-column align="left" label="结算状态" width="100">
           <template slot-scope="scope">
-             <el-button type="text" size="medium">{{scope.row.resultState}}</el-button>
+             <el-button type="text" size="medium">{{scope.row.resultState.label}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="业绩状态" width="100">
           <template slot-scope="scope">
-            {{scope.row.contState}}
+            {{scope.row.achievementState.label}}
           </template>
         </el-table-column>
         <el-table-column align="left" label="操作" width="150">
@@ -212,7 +212,6 @@
               <el-button type="text" size="medium">提审</el-button>
               <el-button type="text" size="medium" @click="tiaoyong=true">调佣</el-button>
             </div>
-            
           </template>
         </el-table-column>
       </el-table>
@@ -228,6 +227,8 @@
     <flowAccount :dialogTableVisible="liushui" @closeRunningWater="closeWater"></flowAccount>
     <!-- 调佣弹框 -->
     <layerAudit :dialogVisible="tiaoyong" @closeCentCommission="closeCommission"></layerAudit>
+    <!-- 变更/解约查看弹窗 -->
+    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" @closeChangeCancel="ChangeCancelDialog"></changeCancel>
   </div>
 </template>
            
@@ -235,13 +236,15 @@
 import ScreeningTop from '@/components/ScreeningTop';
 import flowAccount from '@/components/flowAccount';
 import layerAudit from '../contractDialog/layerAudit';
+import changeCancel from '../contractDialog/changeCancel';
 import {TOOL} from "@/assets/js/common";
 
 export default {
   components: {
     ScreeningTop,
     flowAccount,
-    layerAudit
+    layerAudit,
+    changeCancel
   },
   data(){
     return{
@@ -252,7 +255,9 @@ export default {
       total:0,
       pageNum:1,
       liushui:false,
-      tiaoyong:false
+      tiaoyong:false,
+      changeCancel:false,
+      dialogType:''
     }
   },
   created(){
@@ -271,7 +276,7 @@ export default {
         param.beginDate=this.signDate[0];
         param.endDate=this.signDate[1];
       }
-      console.log(param)
+      //console.log(param)
       this.$ajax.postJSON('/api/contract/contractList', param).then(res=>{
         res=res.data
         if(res.status===200){
@@ -360,11 +365,27 @@ export default {
     closeCommission(){
       this.tiaoyong=false
     },
+    //关闭变更解约弹窗
+    ChangeCancelDialog(){
+      this.changeCancel=false
+    },
     //字典查询
     getDictionaries(){
       this.$ajas.get('/api/dictionary/batchQuery',param).then(res=>{
         
       })
+    },
+    //变更解约弹窗
+    goChangeCancel(item){
+      console.log(item.contChangeState.value);
+      //debugger
+      if(item.contChangeState.value===1){
+        this.changeCancel=true;
+        this.dialogType='changeLook';
+      }else if(item.contChangeState.value===2){
+        this.changeCancel=true;
+        this.dialogType='cancelLook';
+      }
     }
   }
 };
