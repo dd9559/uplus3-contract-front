@@ -6,10 +6,10 @@
           <label>合同类型:</label>
           <el-select size="small" v-model="searchForm.contType" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['10']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.parentId">
             </el-option>
           </el-select>
         </div>
@@ -120,13 +120,13 @@
         <h4 title="hello">数据列表</h4>
         <ul>
           <li>
-            收款<span>{{tableTotal.receiptNum}}</span>笔，总额<span>{{tableTotal.receiptMoney}}</span>元；
+            收款<span>{{tableTotal.payMentCount}}</span>笔，总额<span>{{tableTotal.payMentSum}}</span>元；
           </li>
           <li>
-            付款<span>{{tableTotal.payNum}}</span>笔，总额<span>{{tableTotal.payMoney}}</span>元；
+            付款<span>{{tableTotal.ProceedsCount}}</span>笔，总额<span>{{tableTotal.ProceedsSum}}</span>元；
           </li>
           <li>
-            账户余额：<span>{{tableTotal.balance}}</span>元
+            账户余额：<span>{{tableTotal.payMentSum-tableTotal.ProceedsSum}}</span>元
           </li>
         </ul>
         <p>
@@ -134,7 +134,7 @@
         </p>
       </div>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
-        <el-table-column align="center" label="收付ID" prop="id" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付ID" prop="payCode" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
@@ -172,9 +172,11 @@
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作">
+        <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
-
+            <el-button type="text" v-show="scope.row.type===1">开票</el-button>
+            <el-button type="text">修改</el-button>
+            <el-button type="text">作废</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -205,13 +207,7 @@
           startTime:'',
           endTime:''
         },
-        tableTotal:{
-          receiptNum:28,
-          receiptMoney:23680,
-          payNum:6,
-          payMoney:5641,
-          balance:4568
-        },
+        tableTotal:{},
         list: [
           {
             id:1,
@@ -251,10 +247,10 @@
           parentIds:this.getDictionaryIds(this.dictionary)
         }
         this.$ajax.get('/api/dictionary/batchQuery',param).then(res=>{
-          // debugger
+          res=res.data
           if(res.status===200){
             console.log(res.data)
-            // this.dictionary = Object.assign({},JSON.parse(res.data))
+            this.dictionary = Object.assign({},res.data)
           }
         })
       },
@@ -263,6 +259,7 @@
           res = res.data
           if (res.status === 200) {
             this.list = res.data.page.list
+            this.tableTotal = Object.assign({},res.data.payMentDataList,res.data.paymentDataList)
           }
         }).catch(error => {
           console.log(error)
