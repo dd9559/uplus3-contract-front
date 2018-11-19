@@ -116,7 +116,8 @@ export default {
             default: false
         },
         contractCode: {
-          type: String
+          type: String,
+          default:''
         }
     },
     data() {

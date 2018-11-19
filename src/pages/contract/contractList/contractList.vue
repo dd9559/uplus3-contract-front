@@ -226,7 +226,7 @@
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="liushui" @closeRunningWater="closeWater"></flowAccount>
     <!-- 调佣弹框 -->
-    <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission"></layerAudit>
+    <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
     <!-- 变更/解约查看弹窗 -->
     <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" @closeChangeCancel="ChangeCancelDialog"></changeCancel>
   </div>
