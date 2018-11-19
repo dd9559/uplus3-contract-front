@@ -155,10 +155,19 @@
         </el-table-column>
         <el-table-column align="center" label="操作" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="cellOpera">审核</el-button>
+            <el-button type="text" @click="cellOpera(scope.row)">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -166,9 +175,10 @@
 <script>
   import {FILTER} from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
+  import {UPLOAD} from "@/assets/js/uploadMixins";
 
   export default {
-    mixins: [FILTER, MIXINS],
+    mixins: [FILTER, MIXINS,UPLOAD],
     data() {
       return {
         activeView: '',
@@ -183,7 +193,7 @@
           moneyType: '',
           payMethod: '',
           keyword: '',
-          timeRange:''
+          timeRange:'',
         },
         list: [],
         dictionary: {
@@ -194,27 +204,38 @@
           '24': '',
           '25': '',
           '507': ''
-        }
+        },
+        //分页
+        total:0,
+        currentPage:1,
+        pageSize:20
       }
     },
     created() {
+      this.activeView = parseInt(this.$route.query.type)
+
       this.getData()
       this.getDictionary()
-      this.activeView = parseInt(this.$route.query.type)
     },
     beforeRouteUpdate(to, from, next) {
-      this.getData()
-      this.getDictionary()
       this.activeView = parseInt(to.query.type)
       this.$tool.clearForm(this.searchForm)   //初始化筛选查询
+
+      this.getData()
+      this.getDictionary()
       next()
     },
     methods: {
       reset:function () {
         this.$tool.clearForm(this.searchForm)
       },
-      search:function () {
-
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.currentPage = val
+        this.getData()
       },
       getData: function () {
         let param = JSON.parse(JSON.stringify(this.searchForm))
@@ -223,28 +244,33 @@
           param.endTime = param.timeRange[1]
         }
         delete param.timeRange
+        param.pageNum = this.currentPage
+        param.pageSize = this.pageSize
         let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
         this.$ajax.get(`/api${url}`,param).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list = res.data.page.list
+            this.total = res.data.page.total
           }
         }).catch(error => {
           console.log(error)
         })
       },
       //操作
-      cellOpera: function () {
+      cellOpera: function (item) {
         let param = {
           path: 'billDetails'
         }
         if (this.activeView === 1) {
           param.query = {
-            tab: '收款信息'
+            tab: '收款信息',
+            id:item.id
           }
         } else {
           param.query = {
-            tab: '付款信息'
+            tab: '付款信息',
+            id:item.id
           }
         }
         this.$router.push(param)
