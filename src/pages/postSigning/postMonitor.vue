@@ -320,7 +320,12 @@
             // 操作
             operationFn(){
                 console.log('操作')
-            }
+            },
+            // 获取列表数据
+            getListData(){}
+        },
+        mounted() {
+            this.getListData();
         },
     }
 </script>

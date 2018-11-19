@@ -6,21 +6,30 @@
           <div class="title">合同信息</div>
           <div class="content">
             <div class="one_">
-              <p><span class="tag">签约日期：</span><span class="text">2018/09/29</span></p>
-              <p><span class="tag">合同类型：</span><span class="text">{{contType==='2'?'买卖':'租赁'}}</span></p>
-              <p><span class="tag">成交总价：</span><span class="text">3,0026,000 元</span></p>
+              <p><span class="tag">签约日期：</span><span class="text">{{contractDetail.signDate}}</span></p>
+              <p>
+                <span class="tag">合同类型：</span>
+                <span class="text" v-if="contractDetail.contType.value===1">租赁</span>
+                <span class="text" v-if="contractDetail.contType.value===2">买卖</span>
+                <span class="text" v-if="contractDetail.contType.value===3">代办</span>
+                <span class="text" v-if="contractDetail.contType.value===4">意向</span>
+                <span class="text" v-if="contractDetail.contType.value===5">定金</span>
+              </p>
+              <p><span class="tag">成交总价：</span><span class="text">{{contractDetail.dealPrice}} 元</span></p>
             </div>
             <div class="one_">
-              <p v-if="contType==='2'"><span class="tag">客户保证金：</span><span class="text">10000 元</span></p>
-              <p><span class="tag">客户佣金：</span><span class="text">10000 元</span></p>
-              <p><span class="tag">业主佣金：</span><span class="text">10000 元</span></p>
-              <p><span class="tag">佣金支付费：</span><span class="text">10000 元</span></p>
-              <p v-if="contType==='2'"><span class="tag">佣金合计：</span><span class="text">10000 元</span></p>
+              <p v-if="contType==='2'"><span class="tag">客户保证金：</span><span class="text">{{contractDetail.custEnsure}} 元</span></p>
+              <p><span class="tag">客户佣金：</span><span class="text">{{contractDetail.custCommission}} 元</span></p>
+              <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
+              <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p>
+              <p v-if="contType==='2'">
+                <span class="tag">佣金合计：</span>
+                <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission-contractDetail.commissionPayment}} 元</span></p>
             </div>
             <div class="one_" v-if="contType==='2'">
-              <p><span class="tag">交易流程：</span><span class="text">一次性（业）+ 按揭（客）</span></p>
-              <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
-              <p><span class="tag">按揭员：</span><span class="text">夏雨天</span></p>
+              <p><span class="tag">交易流程：</span><span class="text">{{contractDetail.transFlowCode}}</span></p>
+              <!-- <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
+              <p><span class="tag">按揭员：</span><span class="text">夏雨天</span></p> -->
             </div>
           </div>
         </div>
@@ -28,39 +37,38 @@
           <div class="title">房源信息</div>
           <div class="content">
             <div class="one_">
-              <p><span class="tag">房源编号：</span><span class="serialNumber">YQYD001163</span></p>
-              <p class="address"><span class="tag">物业地址：</span><span class="text">当代国际花园当代国际花园当代国际花园当代国际花园当代国际花园</span></p>
+              <p><span class="tag">房源编号：</span><span class="serialNumber">{{contractDetail.houseinfoCode}}</span></p>
+              <p class="address"><span class="tag">物业地址：</span><span class="text">{{contractDetail.houseInfo.building}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">建筑面积：</span><span class="text">100.62 m²</span></p>
-              <p><span class="tag">套内面积：</span><span class="text">100.62 m²</span></p>
+              <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.architectureArea}} m²</span></p>
+              <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.insideArea}} m²</span></p>
               <p><span class="tag">用 途：</span><span class="text">住宅</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房 型：</span><span class="text">3*2*1*1</span></p>
-              <p><span class="tag">朝 向：</span><span class="text">东南</span></p>
-              <p><span class="tag">装 修：</span><span class="text">毛坯</span></p>
+              <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.houseType}}</span></p>
+              <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.orientation}}</span></p>
+              <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.renovation}}</span></p>
             </div>
             <div class="one_" v-if="contType==='2'">
-              <p><span class="tag">产权状态：</span><span class="text">抵押</span></p>
-              <p><span class="tag">按揭银行：</span><span class="text">招商银行</span></p>
-              <p><span class="tag">按揭欠款：</span><span class="text">10000 元</span></p>
-              <p><span class="tag">房产证号：</span><span class="text">权 0001563</span></p>
+              <p><span class="tag">产权状态：</span><span class="text">{{contractDetail.houseInfo.propertyRightStatus}}</span></p>
+              <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName}}</span></p>
+              <p><span class="tag">按揭欠款：</span><span class="text">{{contractDetail.houseInfo.stagesArrears}} 元</span></p>
+              <p><span class="tag">房产证号：</span><span class="text">{{contractDetail.propertyCard}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房源方门店：</span><span class="text">当代一店</span></p>
-              <p><span class="tag">店 长：</span><span class="text">夏雨天</span></p>
-              <p><span class="tag">手 机：</span><span class="text">15845127895</span></p>
+              <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.houseStoreName}}</span></p>
+              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.shopownerName}}</span></p>
+              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.shopownerMobile}}</span></p>
             </div>
             <div class="table">
               <template>
-                <el-table :data="tableData" border header-row-class-name="theader-bg">
+                <el-table :data="ownerData" border header-row-class-name="theader-bg">
                   <el-table-column prop="name" label="业主姓名"></el-table-column>
                   <el-table-column prop="mobile" label="电话"></el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
-                  <el-table-column prop="address" label="地域"></el-table-column>
-                  <el-table-column prop="property" label="产权比"></el-table-column>
-                  <el-table-column prop="idCard" min-width="150" label="身份证号"></el-table-column>
+                  <el-table-column prop="propertyRightRatio" label="产权比"></el-table-column>
+                  <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
                 </el-table>
               </template>
             </div>
@@ -70,17 +78,17 @@
           <div class="title">客源信息</div>
           <div class="content">
             <div class="one_">
-              <p><span class="tag">客源编号：</span><span class="serialNumber">YQYD001163</span></p>
-              <p><span class="tag">付款方式：</span><span class="text">转账</span></p>
+              <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
+              <p><span class="tag">付款方式：</span><span class="text">{{contractDetail.houseInfo.paymentMethod}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房源方门店：</span><span class="text">当代一店</span></p>
-              <p><span class="tag">店 长：</span><span class="text">夏雨天</span></p>
-              <p><span class="tag">手 机：</span><span class="text">15845127895</span></p>
+              <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.guestStoreName}}</span></p>
+              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.shopownerName}}</span></p>
+              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.shopownerMobile}}</span></p>
             </div>
             <div class="table">
               <template>
-                <el-table :data="tableData" border header-row-class-name="theader-bg">
+                <el-table :data="clientrData" border header-row-class-name="theader-bg">
                   <el-table-column prop="name" label="客户姓名"></el-table-column>
                   <el-table-column label="电话">
                     <template slot-scope="scope">
@@ -88,9 +96,8 @@
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
-                  <el-table-column prop="address" label="地域"></el-table-column>
-                  <el-table-column prop="property" label="产权比"></el-table-column>
-                  <el-table-column prop="idCard" min-width="150" label="身份证号"></el-table-column>
+                  <el-table-column prop="propertyRightRatio" label="产权比"></el-table-column>
+                  <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
                 </el-table>
               </template>
             </div>
@@ -101,15 +108,16 @@
           <div class="content">
             <div class="one_">
               <p><span class="tag">扣合作费：</span><span class="text">2018元</span></p>
-              <p><span class="tag">类型：</span><span class="text">客户转</span></p>
+              <p><span class="tag">类型：</span><span class="text">{{contractDetail.otherCooperationInfo.type}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">合作方姓名：</span><span class="text">夏雨天</span></p>
-              <p><span class="tag">联系方式：</span><span class="text">15845127895</span></p>
-              <p><span class="tag">身份证号：</span><span class="text">11054854565656144444</span></p>
+              <p><span class="tag">合作方姓名：</span><span class="text">{{contractDetail.otherCooperationInfo.name}}</span></p>
+              <p><span class="tag">联系方式：</span><span class="text">{{contractDetail.otherCooperationInfo.mobile}}</span></p>
+              <p><span class="tag">身份证号：</span><span class="text">{{contractDetail.otherCooperationInfo.identifyCode}}</span></p>
             </div>
             <div class="remark">
-              <p>暂无备注</p>
+              <p v-if="contractDetail.otherCooperationInfo.remarks">{{contractDetail.otherCooperationInfo.remarks}}</p>
+              <p v-else>暂无备注</p>
             </div>
           </div>
         </div>
@@ -166,6 +174,30 @@
       </el-tab-pane>
       <el-tab-pane label="合同主体" name="second">合同主体</el-tab-pane>
       <el-tab-pane label="资料库" name="third">资料库</el-tab-pane>
+      <el-tab-pane label="回访录音" name="fourth">
+        <div class="type">
+          <span :class="{'active':isActive===1}" @click="changeType(1)">客源</span>
+          <span :class="{'active':isActive===2}" @click="changeType(2)">房源</span>
+        </div>
+        <div class="record">
+          <el-table :data="recordData" border style="width: 100%" header-row-class-name="theader-bg">
+            <el-table-column prop="visitTime" label="回访时间">
+            </el-table-column>
+            <el-table-column prop="visitPeople" label="回访人">
+            </el-table-column>
+            <el-table-column label="回访电话">
+              <template slot-scope="scope">
+                {{scope.row.visitMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="record" label="录音">
+              <audio src="www.baidu.com"></audio>
+            </el-table-column>
+            <el-table-column prop="remakes" label="备注" width="320">
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-tab-pane>
     </el-tabs>
     <div class="functionTable">
       <el-button round class="search_btn">打印成交报告</el-button>
@@ -205,14 +237,7 @@
       <div class="top">
         <p>合同无效原因</p>
         <div class="reason">
-          <el-input
-          type="textarea"
-          :rows="5"
-          placeholder="请填写合同无效原因，最多100字 "
-          v-model="textarea"
-          resize='none'
-          style="width:597px"
-          maxlength="100">
+          <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="textarea" resize='none' style="width:597px" maxlength="100">
           </el-input>
           <span>{{textarea.length}}/100</span>
           <p><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
@@ -233,7 +258,7 @@
            
 <script>
 import achDialog from "./../../achievement/achDialog";
-import changeCancel from '../contractDialog/changeCancel';
+import changeCancel from "../contractDialog/changeCancel";
 export default {
   components: {
     achDialog,
@@ -245,18 +270,14 @@ export default {
       dialogSupervise: false,
       //合同无效弹窗内容
       dialogInvalid: false,
-      textarea:'',
+      textarea: "",
       activeName: "first",
-      tableData: [
-        {
-          name: "下雨天",
-          mobile: "15845127895",
-          relation: "本人",
-          address: "本地",
-          property: "100%",
-          idCard: "11054854565656144444"
-        }
-      ],
+      //合同信息
+      contractDetail:{},
+      //业主信息
+      ownerData: [],
+      //客户信息
+      clientrData: [],
       performanceData: [
         {
           category: "房源录入人",
@@ -270,19 +291,31 @@ export default {
           generalManager: "夏雨天"
         }
       ],
+      //录音
+      recordData:[
+        {visitTime:'2018/11/11',visitPeople:'万科四季花城-夏雨天',visitMobile:'18571606238',remakes:'萨瓦迪卡哈哈哈'},
+        {visitTime:'2018/11/11',visitPeople:'万科四季花城-夏雨天',visitMobile:'18571606238',remakes:'萨瓦迪卡哈哈哈'},
+        {visitTime:'2018/11/11',visitPeople:'万科四季花城-夏雨天',visitMobile:'18571606238',remakes:'萨瓦迪卡哈哈哈'},
+      ],
       callNumber: "",
+      //合同类型
       contType: 2,
+      //合同id
+      id:'',
       shows: false,
-      dialogType:3,
-      canceldialogType:'',
-      changeCancel:false
+      dialogType: 3,
+      canceldialogType: "",
+      changeCancel: false,
+      isActive:1
     };
   },
   created() {
-    this.contType = (this.$route.query.contType).toString();
-    if(this.$route.query.type==='dataBank'){
-      this.activeName='third'
+    this.contType = this.$route.query.contType.toString();
+    this.id = this.$route.query.id
+    if (this.$route.query.type === "dataBank") {
+      this.activeName = "third";
     }
+    this.getContractDetail()
   },
   methods: {
     handleClick(tab, event) {
@@ -303,38 +336,61 @@ export default {
       });
     },
     // 分成弹窗
-    fencheng(){
+    fencheng() {
       this.dialogType = 3;
       this.shows = true;
     },
     // 合同编辑
-    goEdit(){
+    goEdit() {
       this.$router.push({
         path: "/addContract",
         query: {
           id: 1,
-          operateType:2,
-          type:this.contType
+          operateType: 2,
+          type: this.contType
         }
       });
     },
-     // 变更解约弹窗
-    goChangeCancel(value){
-      if(value===1){
-        this.canceldialogType='changeEdit';
-        this.changeCancel=true;
-      }else if(value===2){
-        this.canceldialogType='cancelEdit';
-        this.changeCancel=true;
+    // 变更解约弹窗
+    goChangeCancel(value) {
+      if (value === 1) {
+        this.canceldialogType = "changeEdit";
+        this.changeCancel = true;
+      } else if (value === 2) {
+        this.canceldialogType = "cancelEdit";
+        this.changeCancel = true;
       }
     },
     // 关闭变更解约弹窗
-    changeCancelDialog(){
-      this.changeCancel=false
-      this.canceldialogType=''
-    }
+    changeCancelDialog() {
+      this.changeCancel = false;
+      this.canceldialogType = "";
     },
- 
+    //房源客源切换
+    changeType(value){
+      this.isActive=value
+    },
+    //合同详情
+    getContractDetail(){
+      let param={
+        id:this.id
+      }
+      this.$ajax.get('/api/contract/getById',param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.contractDetail=res.data
+          this.contractDetail.signDate=res.data.signDate.substr(0, 10)
+          for(var i=0;i<this.contractDetail.contPersons.length;i++){
+            if(this.contractDetail.contPersons[i].personType.value===1){
+              this.ownerData.push(this.contractDetail.contPersons[i])
+            }else if(this.contractDetail.contPersons[i].personType.value===2){
+              this.clientrData.push(this.contractDetail.contPersons[i])
+            }
+          }
+        }
+      })
+    }
+  }
 };
 </script>
 <style scoped lang="less">
@@ -478,6 +534,33 @@ export default {
   .download,
   .upload {
     height: 200px;
+  }
+  .type {
+    margin-top: 20px;
+    width: 168px;
+    height: 36px;
+    align-items: center;
+    box-sizing: border-box;
+    border: 2px solid @color-blue;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    > span {
+      width: 50%;
+      height: 36px;
+      line-height: 36px;
+      text-align: center;
+      font-size: 14px;
+      color: @color-blue;
+    }
+    .active {
+      background: @color-blue;
+      color: @color-white;
+    }
+  }
+  .record{
+    width: 950px;
+    padding-top: 20px;
   }
 }
 </style>

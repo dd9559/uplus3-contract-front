@@ -210,7 +210,7 @@
               <el-button type="text" size="medium">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview">预览</el-button>
               <el-button type="text" size="medium">提审</el-button>
-              <el-button type="text" size="medium" @click="tiaoyong=true">调佣</el-button>
+              <el-button type="text" size="medium" @click="toLayerAudit(scope.row.code)">调佣</el-button>
             </div>
           </template>
         </el-table-column>
@@ -226,7 +226,7 @@
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="liushui" @closeRunningWater="closeWater"></flowAccount>
     <!-- 调佣弹框 -->
-    <layerAudit :dialogVisible="tiaoyong" @closeCentCommission="closeCommission"></layerAudit>
+    <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
     <!-- 变更/解约查看弹窗 -->
     <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" @closeChangeCancel="ChangeCancelDialog"></changeCancel>
   </div>
@@ -255,6 +255,7 @@ export default {
       total:0,
       pageNum:1,
       liushui:false,
+      contractCode:'',
       tiaoyong:false,
       changeCancel:false,
       dialogType:''
@@ -311,7 +312,6 @@ export default {
     payment(){},
     //合同详情页
     toDetail(value){
-      console.log(value)
       this.$router.push({
         path:'/contractDetails',
         query:{
@@ -360,6 +360,11 @@ export default {
     //关闭流水弹窗
     closeWater(){
       this.liushui=false
+    },
+    //调佣弹窗
+    toLayerAudit(code){
+      this.contractCode=code
+      this.tiaoyong=true
     },
     //关闭调佣弹窗
     closeCommission(){

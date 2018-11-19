@@ -12,7 +12,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="交易流程" prop="time">
-                    <el-select v-model="propForm.time" class="w300" filterable>
+                    <el-select v-model="propForm.time" class="w300">
                         <el-option v-for="item in rules.time" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
@@ -34,7 +34,7 @@
                     </el-form-item>
                 </div>
                 <el-form-item label="后期状态" prop="late" class="mr">
-                    <el-select v-model="propForm.late" class="w180" filterable>
+                    <el-select v-model="propForm.late" class="w180">
                         <el-option v-for="item in rules.late" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
@@ -45,33 +45,48 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
-            <el-table :data="tableData" class="paper-table mt-20">
+            <el-table 
+            :data="tableData.list" 
+            class="paper-table mt-20"
+            :formatter="nullFormatter">
                 <el-table-column label="合同编号" min-width="161">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="contractFn">{{scope.row.a1}}</el-button>
+                        <el-button class="blue" type="text" @click="contractFn">{{scope.row.code}}</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column prop="a2" label="签约日期" min-width="154">
+                <el-table-column prop="signDate" label="签约日期" min-width="154">
                 </el-table-column>
-                <el-table-column prop="a3" label="后期状态" min-width="145">
+                <el-table-column prop="" label="后期状态" min-width="145">
+                    <template slot-scope="scope">
+                        {{statusLaterStageFn(scope.row.statusLaterStage.value)}}
+                    </template>
                 </el-table-column>
-                <el-table-column prop="a4" label="物业地址" min-width="221">
+                <el-table-column prop="propertyAddr" label="物业地址" min-width="221">
                 </el-table-column>
-                <el-table-column prop="a5" label="交易流程" min-width="290">
+                <el-table-column prop="transFlowName" label="交易流程" min-width="290">
                 </el-table-column>
-                <el-table-column prop="a6" label="业主" min-width="154">
+                <el-table-column prop="owner" label="业主" min-width="154">
                 </el-table-column>
-                <el-table-column prop="a7" label="客户" min-width="125">
+                <el-table-column prop="customer" label="客户" min-width="125">
                 </el-table-column>
-                <el-table-column prop="a8" label="成交经纪人" min-width="230">
+                <el-table-column label="成交经纪人" min-width="230">
+                    <template slot-scope="scope">
+                        {{agentFn(scope.row.agent,scope.row.dealagentStoreName)}}
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作" min-width="70">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="receiveFn(scope.row.receive)">{{receiveComFn(scope.row.receive,1)}}</el-button>
+                        <el-button class="blue" type="text" @click="receiveFn(scope.row.statusLaterStage.value)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
+        <el-pagination
+            :current-page="tableData.pageNum"
+            :page-size="tableData.pageSize"
+            layout="total,prev, next, jumper"
+            :total="tableData.total">
+        </el-pagination>
         <!-- 拒绝弹层 -->
         <el-dialog :title="layer.tit" :visible.sync="layer.show" width="740px" :center="layer.center" class="layer-paper">
             <div class="layer-invalid layer-refused">
@@ -212,26 +227,21 @@
 
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
+    import {FILTER} from '@/assets/js/filter';
     const RECEIVE = {
-        receive:0,          //接收
-        haveReceive:1       //已接收
+        receive:2,          //接收
+        haveReceive:3       //已接收
     }
 
     export default {
+        mixins: [FILTER],
         data() {
             return {
                 // 列表数据
-                tableData: [{
-                    a1: '201809301289',
-                    a2: '2018/09/30',
-                    a3: '未开始',
-                    a4: '安居苑10栋3单元1102',
-                    a5: '一次性（业）+一次性',
-                    a6: '张小龙',
-                    a7: '张明明',
-                    a8: '当代一店-夏雨田',
-                    receive: 1,
-                }, ],
+                tableData:{},
+                // 列表请求的页数
+                pageNum:1,
+                pageSize:20,
                 // 筛选条件
                 propForm: {
                     region: '',
@@ -377,6 +387,26 @@
                 }
                 
             },
+            // 开始状态接收
+            statusLaterStageFn(state){
+                if(state === RECEIVE.receive){
+                    return '未开始'
+                }else{
+                    return '已开始'
+                }
+            },
+            // 经纪人
+            agentFn(s,t){
+                if(!!s && !!t){
+                    return `${s}-${t}`
+                }else if(!!s){
+                    return s
+                }else if(!!t){
+                    return t
+                }else{
+                    '-'
+                }
+            },
             // 接收
             receiveFn(e) {
                 this.receive = {
@@ -458,10 +488,28 @@
             zoomCloseFn(){
                 this.zoomCarousel.show = false;
             },
+            // 获取数据
+            getListData(){
+                this.$ajax.postJSON('/api/postSigning/getContract',{
+                    // keyword:'13112341234',
+                    pageNum:this.pageNum,
+                    pageSize:this.pageSize,
+                }).then((res)=>{
+                    res = res.data
+                    if (res.status === 200) {
+                        this.tableData = res.data;
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            }
         },
         components: {
             ScreeningTop
-        }
+        },
+        mounted() {
+            this.getListData();
+        },
     }
 </script>
 
