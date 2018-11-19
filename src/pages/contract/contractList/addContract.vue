@@ -156,7 +156,7 @@
           <br>
           <el-form-item label="客户信息：" prop="">
             <ul class="peopleMsg">
-              <li v-for="(item,index) in contractForm.contPersons1" :key="index">
+              <li v-for="(item,index) in contractForm.contPersons" :key="index" v-if="item.type===2">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.mobile" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
@@ -169,7 +169,7 @@
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="el-icon-plus"></i>
                 </span>
-                <span @click.stop="deleteRowcommissionData1(index)" v-if="contractForm.contPersons1.length>1" class="icon delete">
+                <span @click.stop="deleteRowcommissionData1(index)" v-if="contractForm.contPersons.length>1" class="icon delete">
                   <i class="el-icon-minus"></i>
                 </span>
               </li>
@@ -351,26 +351,26 @@ export default {
     return {
       text: "",
       contractForm: {
-        contPersons: [
-          {
-            name: "张三",
-            mobile: "123456789",
-            idCard: "421124199801141256",
-            property: 100,
-            relation: "1",
-            edit: false
-          }
-        ],
-        contPersons1: [
-          {
-            name: "张三",
-            mobile: "123456789",
-            idCard: "421124199801141256",
-            property: 100,
-            relation: "1",
-            edit: false
-          }
-        ],
+        // contPersons: [
+        //   {
+        //     name: "张三",
+        //     mobile: "123456789",
+        //     idCard: "421124199801141256",
+        //     property: 100,
+        //     relation: "1",
+        //     edit: false
+        //   }
+        // ],
+        // contPersons1: [
+        //   {
+        //     name: "张三",
+        //     mobile: "123456789",
+        //     idCard: "421124199801141256",
+        //     property: 100,
+        //     relation: "1",
+        //     edit: false
+        //   }
+        // ],
         type: 2,
         houseinfoCode: "HHH002",
         guestinfoCode: "GGG002",
@@ -565,16 +565,16 @@ export default {
       });
     },
     addcommissionData() {
-      this.addForm.contPersons.push({ edit: true });
+      this.contractForm.contPersons.push({ edit: true, type:1 });
     },
     deleteRowcommissionData(index) {
-      this.addForm.contPersons.splice(index, 1);
+      this.contractForm.contPersons.splice(index, 1);
     },
     addcommissionData1() {
-      this.addForm.contPersons1.push({ edit: true });
+      this.contractForm.contPersons.push({ edit: true, type:2 });
     },
     deleteRowcommissionData1(index) {
-      this.addForm.contPersons1.splice(index, 1);
+      this.contractForm.contPersons.splice(index, 1);
     },
     isAttention() {
       this.attention = !this.attention;
