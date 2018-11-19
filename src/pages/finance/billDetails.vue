@@ -12,7 +12,7 @@
     </div>
     <ul class="bill-details-content">
       <li>
-        <h4>收款信息</h4>
+        <h4>{{activeItem}}</h4>
         <el-table border :data="list" header-row-class-name="theader-bg">
           <el-table-column align="center" label="合同编号">
             <template slot-scope="scope">
@@ -92,7 +92,7 @@
           </el-table-column>
         </el-table>
       </li>
-      <li>
+      <li v-if="activeItem==='收款信息'">
         <h4>刷卡信息</h4>
         <el-table border :data="list" header-row-class-name="theader-bg">
           <el-table-column align="center" label="刷卡/转账银行">
@@ -110,12 +110,42 @@
 
             </template>
           </el-table-column>
+          <el-table-column align="center" label="订单编号">
+            <template slot-scope="scope">
+
+            </template>
+          </el-table-column>
           <el-table-column align="center" label="金额（元）">
             <template slot-scope="scope">
 
             </template>
           </el-table-column>
           <el-table-column align="center" label="手续费（元）">
+            <template slot-scope="scope">
+
+            </template>
+          </el-table-column>
+        </el-table>
+      </li>
+      <li v-if="activeItem==='付款信息'">
+        <h4>账户信息</h4>
+        <el-table border :data="list" header-row-class-name="theader-bg">
+          <el-table-column align="center" label="收款银行">
+            <template slot-scope="scope">
+              <span>-</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="户名">
+            <template slot-scope="scope">
+
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="收款账户">
+            <template slot-scope="scope">
+
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="金额（元）">
             <template slot-scope="scope">
 
             </template>
@@ -135,7 +165,7 @@
           </ul>
         </div>
       </li>
-      <li ref="checkBox" v-show="activeItem!=='收款信息'">
+      <li ref="checkBox">
         <h4>审核信息</h4>
         <el-table border :data="list" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
@@ -178,7 +208,7 @@
     name: "bill-details",
     data() {
       return {
-        tabs: [],
+        tabs: ['审核信息'],
         activeItem: '',
         list: [
           {}
@@ -189,9 +219,6 @@
       // debugger
       this.activeItem = this.$route.query.tab
       this.tabs.unshift(this.activeItem)
-      if(this.activeItem === '付款信息'){
-        this.tabs.push('审核信息')
-      }
     },
     methods: {
       choseTab: function (item) {

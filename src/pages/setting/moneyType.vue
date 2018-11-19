@@ -6,74 +6,59 @@
             </p>
             <el-table :data="tableData" @row-click="rowClick" highlight-current-row>
                 <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
-                <el-table-column align="center" label="款类(大类)" prop="moneyType" width="120"></el-table-column>
-                <el-table-column align="center" label="是否启用" width="150">
-                    <template slot-scope="scope">
-                        <el-switch
-                        v-model="value2"
-                        active-color="rgba(71,141,227,1)"
-                        inactive-color="rgba(141,144,148,1)">
-                        </el-switch>
+                <el-table-column align="center" label="款类(大类)" prop="name" width="120"></el-table-column>
+                <el-table-column align="center" label="是否启用系统收款" width="150">
+                    <template slot-scope="scope"  >
+                        <div v-if="scope.row.name=='代收代付'">
+                            <el-switch
+                            v-model="scope.row.status==0?true:false"
+                            active-color="rgba(71,141,227,1)"
+                            inactive-color="rgba(141,144,148,1)">
+                            </el-switch>
+                        </div>
+                        <div v-else>--</div>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" min-width="150">
+                <!-- <el-table-column label="操作" min-width="150">
                     <template slot-scope="scope">
                         <el-button type="text" size="medium">新增</el-button>
                         <el-button type="text" size="medium">删除</el-button>
                         <el-button v-if="scope.row.moneyType === '代管'" type="text" size="medium" @click="dialogCitySettingVisible = true">城市设置</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
         </div>
         <div class="commission gap">
             <p class="title">
                 <span>佣金</span>
             </p>
-            <el-table :data="commissionData">
+            <el-table :data="moneyTypes">
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
-                <el-table-column align="center" label="款类(小类)"></el-table-column>
-                <el-table-column align="center" label="描述"></el-table-column>
+                <el-table-column align="center" label="款类(小类)" prop="name"></el-table-column>
+                <el-table-column align="center" label="描述" prop="remark"></el-table-column>
                 <el-table-column align="center" label="是否启用">
                     <template slot-scope="scope">
-                        <el-switch
-                        v-model="value2"
-                        active-color="rgba(71,141,227,1)"
-                        inactive-color="rgba(141,144,148,1)">
-                        </el-switch>
+                        <div v-if="scope.row.status==0?true:scope.row.status==1?true:false">
+                            <el-switch
+                                v-model="scope.row.status==0?true:false"
+                                active-color="rgba(71,141,227,1)"
+                                inactive-color="rgba(141,144,148,1)">
+                            </el-switch>
+                        </div>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="收款账户"></el-table-column>
+                <el-table-column align="center" label="收款账户" prop="accountType"></el-table-column>
                 <el-table-column align="center" label="操作">
-                    <template slot-scope="scope">
+
+                    
+                    <template slot-scope="scope" v-if="isSF">
                         <el-button type="text" size="medium">新增</el-button>
                         <el-button type="text" size="medium">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog
-        title="代管款类监管城市设置"
-        :visible.sync="dialogCitySettingVisible"
-        width="740px">
-        <div class="citySettingContent">
-            <div class="tip">
-                <span>提示:</span>
-                <div class="message">
-                    <p>设置代管款类交管系统收款后，代管款类需在交管系统进行收款记录。</p>
-                    <p>（未勾选的城市需在联动优势公众号进行代管类的收款）</p>
-                </div>
-            </div>
-            <div class="cityList">
-                <el-checkbox-group v-model="cityName" class="cityName">
-                    <el-checkbox  v-for="item in cityListData" :key="item.id">{{ item.name }}</el-checkbox>
-                </el-checkbox-group>
-            </div>
-            <div slot="footer" class="dialog-footer">
-                <el-button  @click="dialogCitySettingVisible = false">取消</el-button>
-                <el-button type="primary" @click="confirm">确定</el-button>
-            </div>
-        </div>
-        </el-dialog>
+       
     </div>
 </template>
 
@@ -82,41 +67,12 @@
         data() {
             return {
                 tableData: [
-                    {
-                        id: 1,
-                        moneyType: "佣金",
-                    },
-                    {
-                        id: 2,
-                        moneyType: "金融类",
-                    },
-                    {
-                        id: 3,
-                        moneyType: "违约金",
-                    },
-                    {
-                        id: 4,
-                        moneyType: "代管",
-                    }
+                    
                 ],
-                commissionData: [],
+                moneyTypes: [],
                 value2: true,
-                dialogCitySettingVisible: false,
-                cityListData: [
-                    { id: 1, name: "武汉" },
-                    { id: 2, name: "乌鲁木齐" },
-                    { id: 3, name: "长沙" },
-                    { id: 4, name: "武汉" },
-                    { id: 5, name: "武汉" },
-                    { id: 6, name: "长沙" },
-                    { id: 7, name: "乌鲁木齐" },
-                    { id: 8, name: "武汉" },
-                    { id: 9, name: "武汉" },
-                    { id: 10, name: "武汉" },
-                    { id: 11, name: "石家庄" },
-                    { id: 12, name: "长沙" }
-                ],
-                cityName: ""
+                cityName: "",
+                isSF:''
             }
         },
         created(){
@@ -127,6 +83,11 @@
             // 初始化数据
             initList(){
                 this.$ajax.get('api/setting/moneyType/list',{id:''},).then((res)=>{
+                    if(res.status==200){
+                        this.tableData=res.data.data
+                        this.isSF=this.tableData.name=='代收代付'?true:false
+                        console.log(this.tableData);
+                    }
                     console.log(res);
                 })
             },
@@ -136,7 +97,7 @@
             },
             //单击行事件
             rowClick(row, event, column) {
-                
+                this.moneyTypes=row.moneyTypes
             }
         }
     }

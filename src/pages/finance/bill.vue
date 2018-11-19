@@ -153,7 +153,11 @@
             <span>{{scope.row.type===1?scope.row.inObjType:scope.row.outObjType|getLabel}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收款人" prop="inObjName" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收款人">
+          <template slot-scope="scope">
+            <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="收付时间" prop="createTime" :formatter="nullFormatter">

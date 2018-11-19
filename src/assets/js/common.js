@@ -82,7 +82,7 @@ let TOOL = {
           form[item] = ''
           break;
         case 'number':
-          form[item] = 0
+          form[item] = ''
           break;
         case 'boolean':
           form[item] = false

@@ -108,7 +108,7 @@
                 </div>
                 <div class="form-btn">                   
                         <el-button type="primary" plain round>预 览</el-button>
-                        <el-button type="primary" round @click="onSubmit">保 存</el-button>                  
+                        <el-button type="primary" round @click="onSubmit('ruleForm')">保 存</el-button>                  
                 </div>
             </el-form>
 
@@ -224,9 +224,47 @@ export default {
         
     },
     methods: {
+  
         onSubmit() {
-           
-        }
+            // 新增意向金接口（post）
+            this.$ajax
+            .post(
+                "/api/contract/editIgdCont?type=1",
+                {
+                    "id": 10,
+                    "contType":"4",
+                    "houseinfoCode":"USK092",
+                    "guestinfoCode":"WQA357",
+                    "signDate":"2018/11/04",
+                    "subscriptionTerm":"2018/11/18",
+                    "subscriptionPrice": "3000",
+                    "dealAgentStoreId":"10",
+                    "dealAgentStoreName":"当代一店",
+                    "dealPrice":"3200.50",
+                    "remarks":"意向备注"
+                    // "contPersons":[
+                    //     {"name": "测试1", "relation": 1, "personType": "1", "mobile": "13099942411"},
+                    //     {"name": "测试2", "relation": 2, "personType": "2", "mobile": "13004325012"}
+                    // ],
+                    // "houseInfo":{
+                    //     "houseinfoId": "100",
+                    //     "propertyRightAddr": "产权地址",
+                    //     "building":"楚河汉街万达环球国际中心",
+                    //     "unit":"三单元",
+                    //     "number": "804",
+                    //     "price":"501"
+                    // },
+                    // "guestInfo":{
+                    //     "guestinfoId": "87"
+                    // }
+                }
+            )
+            .then(res => {
+                console.log(res)
+            }).catch(error => {
+                console.log(error)
+            })
+        },
     },
     mounted() {
         
