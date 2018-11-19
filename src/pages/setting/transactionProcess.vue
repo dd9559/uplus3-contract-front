@@ -37,12 +37,24 @@
         </el-dialog>
         <!-- 交易流程管理 弹出框 -->
         <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px">
+          <div class="manage-title">
+            <label>结算百分比 : </label>
+            <el-input></el-input>%
+          </div>
           <div class="manage-list">
             <el-table :data="manageData">
               <el-table-column align="center" type="index" label="序号"></el-table-column>
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
               <el-table-column align="center" label="步骤名称" prop="name"></el-table-column>
               <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
+              <el-table-column align="center" label="是否可以结算">
+                <template slot-scope="scope">
+                  <el-select>
+                    <el-option label="是" value="1"></el-option>
+                    <el-option label="否" value="2"></el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
               <el-table-column align="center" label="操作">
                 <template slot-scope="scope">
                   <el-button type="text">上</el-button>
@@ -82,6 +94,7 @@
   import { FILTER } from "@/assets/js/filter"
   export default {
     mixins: [FILTER],
+    props: ["cityId"],
     data() {
       return {
         //交易流程列表
@@ -170,7 +183,7 @@
       // 获取交易流程列表
       getData: function() {
         let param = {
-          cityId: 1
+          cityId: this.cityId
         };
         this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
             res = res.data;
@@ -216,7 +229,7 @@
           let param = {
             cityId: 1
           }
-          param = Object.assign({},this.addForm,obj)
+          param = Object.assign({},this.addForm,param)
           this.processPost(param)
         } else {
           let param = {
@@ -228,19 +241,16 @@
       },
       // 添加 编辑 删除 操作
       processPost(param,type) {
-        if(!type) {
-          console.log(11111);
-        }
-        // this.$ajax.post('/api/flowmanage/insertFLow',param).then(res => {
-        //   res = res.data
-        //   if(res.status === 200) {
-        //     this.$message(res.message)
-        //     if(!type) {
-        //       this.dialogProcessVisible = false
-        //     }
-        //     this.getData()
-        //   }
-        // })
+        this.$ajax.postJSON('/api/flowmanage/insertFLow',param).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.$message(res.message)
+            if(!type) {
+              this.dialogProcessVisible = false
+            }
+            this.getData()
+          }
+        })
       },
       handleSizeChange(val) {
         this.pageSize = val
@@ -286,9 +296,25 @@
       }
     }
     //交易流程管理
+    .manage-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      .el-input {
+        width: 90px;
+        height: 32px;
+        margin-left: 5px;
+        /deep/ .el-input__inner { width: 100%; height: 32px; }
+      }
+    }
     .manage-list {
       .el-table {
         border: 1px solid rgba(237,236,240,1);
+      }
+      /deep/ .el-input {
+        width: 94px;
+        height: 32px;
+        .el-input__inner { width: 100%; height: 32px; }
       }
     }
     .process-list {
