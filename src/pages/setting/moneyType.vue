@@ -1,10 +1,11 @@
 <template>
     <div class="view-container">
         <div class="data-list gap">
+            <span class='sjx'></span>
             <p class="title">
                 <span>数据列表</span>
             </p>
-            <el-table :data="tableData" @row-click="rowClick" highlight-current-row>
+            <el-table :data="tableData" ref='onetable' @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
                 <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
                 <el-table-column align="center" label="款类(大类)" prop="name" width="120"></el-table-column>
                 <el-table-column align="center" label="是否启用系统收款" width="150">
@@ -19,13 +20,6 @@
                         <div v-else>--</div>
                     </template>
                 </el-table-column>
-                <!-- <el-table-column label="操作" min-width="150">
-                    <template slot-scope="scope">
-                        <el-button type="text" size="medium">新增</el-button>
-                        <el-button type="text" size="medium">删除</el-button>
-                        <el-button v-if="scope.row.moneyType === '代管'" type="text" size="medium" @click="dialogCitySettingVisible = true">城市设置</el-button>
-                    </template>
-                </el-table-column> -->
             </el-table>
         </div>
         <div class="commission gap">
@@ -49,16 +43,32 @@
                 </el-table-column>
                 <el-table-column align="center" label="收款账户" prop="accountType"></el-table-column>
                 <el-table-column align="center" label="操作">
-
-                    
                     <template slot-scope="scope" v-if="isSF">
                         <el-button type="text" size="medium">新增</el-button>
-                        <el-button type="text" size="medium">删除</el-button>
+                        <el-button type="text" size="medium" @click="delYj(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-       
+          <!-- 添加 -->
+        <!-- <el-dialog title="添加佣金" :visible.sync="addDialog" width="740px">
+            <el-form :model="addForm" class="addform" size="small">
+                <el-form-item label="名称">
+                <el-input v-model="addForm.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="分配负责角色">
+                <el-select v-model="addForm.bigType">
+                    <el-option v-for="(item,index) in listData" :key="index" :label="item.dutyType" :value="item.dutyType"></el-option>
+                </el-select>
+                </el-form-item>
+                 <el-form-item label="描述">
+                <el-input v-model="addForm.remark" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="submitForm" class="confirmBtn">确 定</el-button>
+            </div>
+        </el-dialog> -->
     </div>
 </template>
 
@@ -70,9 +80,14 @@
                     
                 ],
                 moneyTypes: [],
-                value2: true,
                 cityName: "",
-                isSF:''
+                isSF:true,
+                addDialog:true,
+                addForm:{
+                    name:'',
+                    bigType:'',
+                    remark:''
+                }
             }
         },
         created(){
@@ -85,8 +100,7 @@
                 this.$ajax.get('api/setting/moneyType/list',{id:''},).then((res)=>{
                     if(res.status==200){
                         this.tableData=res.data.data
-                        this.isSF=this.tableData.name=='代收代付'?true:false
-                        console.log(this.tableData);
+                        this.moneyTypes=res.data.data[0].moneyTypes
                     }
                     console.log(res);
                 })
@@ -95,8 +109,69 @@
             confirm() {
 
             },
+             /**
+             * 弹框
+             */
+            popMsg(msg,callback,row){
+                this.$confirm(msg,'提示',{
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(()=>{
+                callback(row)
+                }).catch(()=>{
+
+                })
+            },
+            delYj(row){
+                // console.log(row,'删除记录');
+                this.popMsg('确定删除此记录吗？',(row)=>{
+                    console.log(row,'删除记录');
+                   this.$ajax.get('/api/setting/moneyType/updateStatus',{id:row.id,status:2})
+                   .then((res)=>{
+                       console.log(res,'res');
+                        if (res.status === 200) {
+                            this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                            })
+                            this.initList()
+                        }
+                   })
+                },row)
+            },
+            //表格第一行加样式
+            tableStyle({row, rowIndex}){
+                if(rowIndex==0){
+                    return 'linestyle'
+                }
+            },
             //单击行事件
             rowClick(row, event, column) {
+                console.log(row);
+                var top=114
+                if(row.id==16){
+                     top=top
+                }
+                else if(row.id==22){
+                     top=top+47.4
+                }
+                else if(row.id==24){
+                     top=top+47.4*2
+                }
+                else if(row.id==26){
+                    top=top+47.4*3
+                }
+                var sjx=document.getElementsByClassName('sjx')
+                console.log(sjx[0]);
+                sjx[0].style.top=top+'px'
+                console.log(this.$refs.onetable,'代收代付');
+                this.$refs.onetable.$el.classList.remove('onetable')
+                if(row.name =='代收代付'){
+                    this.isSF=false
+                }else{
+                    this.isSF=true
+                }
                 this.moneyTypes=row.moneyTypes
             }
         }
@@ -106,16 +181,28 @@
 <style lang="less" scoped>
 .view-container {
     display: flex;
+    background-color: #F5F5F5 !important;
     // height: calc(100% - 40px);
     .data-list {
         // flex: 1;
         // margin-right: 15px;
+        position: relative;
         min-width: 36%;
         margin-right: 1%;
         // padding: 15px 10px 0;
         background-color: #fff;
         box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
         border-radius:4px;
+        > .sjx{
+                width:0;
+                right:-14px;
+                top: 114px;
+                position: absolute;
+                border-width:7px;
+                border-style:solid;
+                border-color:transparent transparent transparent white; /* transparent 设置边框颜色透明 */
+        
+        }
         /deep/ .el-table th {
             background:rgba(242,243,248,1);
         }
@@ -196,6 +283,9 @@
 }
 /deep/ .el-dialog__header {
     border: 1px solid rgba(232, 234, 246, 1);
+}
+/deep/ .onetable tr.linestyle{
+    background-color: #ECF5FF;
 }
 </style>
 
