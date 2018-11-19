@@ -6,8 +6,8 @@
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
-            <p>合同编号：<span class="blue">YQYD001163</span></p>
-            <p>物业地址：<span>当代国际花园当代国际花园当代国际花园当代国际花园当</span></p>
+            <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
+            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
           <div class="col-li">
             <p>申请日期：<span>2018/9/14</span></p>
@@ -132,6 +132,9 @@ export default {
               money3: '', //按揭收费
               money4: '', //合作费扣除
           },
+          layerAudit:{
+
+          },
           // 弹框里用到的
           dialogImageUrl: '',
           //dialogVisible: false,
@@ -178,7 +181,7 @@ export default {
             console.log(res);
             let data = res.data;
             if (res.status === 200) {
-              // this.tableData = data.data.list
+              this.layerAudit = data.data
             }
             
 
