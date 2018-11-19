@@ -329,10 +329,10 @@
                 :key="item.tit"
                 class="steps-li">
                     <div class="steps-li-fl">
-                        <div class="steps-mandatory"><span v-if="item.bool">*</span></div>
-                        <span class="fl">{{item.tit}}：</span>
+                        <span class="steps-fl">{{item.tit}}：</span>
+                        <div class="steps-mandatory" v-if="item.bool">*</div>
                     </div>
-                    <div :style="'padding-left:'+stepsWidthFn(item.tit)">
+                    <div class="steps-fr">
                         <!-- 办理 编辑 -->
                         <template v-if="stepsData.tit !== STEPS.end">
                             <template v-if="item.type === STEPSINPUT.start">
@@ -791,7 +791,7 @@
                 // 步骤管理弹层数据
                 stepsData:{
                     show:false,
-                    tit:'查看'
+                    tit:'办理'
                 },
                 stepsFrom:[{
                     // 默认input输入文字

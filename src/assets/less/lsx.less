@@ -493,20 +493,25 @@
 .steps-from {
     padding: 0 20px 20px;
     .steps-li {
-        position: relative;
         padding-top: 20px;
-        min-height: 32px;
+        overflow: hidden;
     }
     .steps-li-fl {
-        position: absolute;
-        left: 0;
-        padding-right: 10px;
-        box-sizing: border-box;
-        overflow: hidden;
         line-height: 32px;
+        float: left;
+        width: 140px;
+        >.steps-fl{
+            max-width: 126px;
+            text-align: right;
+            float: right;
+        }
+    }
+    .steps-fr{
+        float: right;
+        width: 550px;
     }
     .steps-mandatory {
-        float: left;
+        float: right;
         width: 14px;
         color: #FF3E3E;
         height: 32px;
@@ -588,6 +593,7 @@
             font-size: 20px;
             float: left;
             margin-left: 10px;
+            cursor: pointer;
         }
         .icon-steps{
             width: 16px;
