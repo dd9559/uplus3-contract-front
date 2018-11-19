@@ -9,22 +9,32 @@
         </el-form-item>
         <el-form-item label="合同类型">
           <el-select v-model="contractForm.contType" placeholder="请选择合同类型" :clearable="true" style="width:150px">
-            <el-option label="租赁" value="1"></el-option>
-            <el-option label="买卖" value="2"></el-option>
-            <el-option label="代办" value="3"></el-option>
-            <el-option label="意向" value="4"></el-option>
+            <el-option
+            v-for="item in dictionary['10']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
           </el-select>  
         </el-form-item>
         <el-form-item label="合同状态">
           <el-select v-model="contractForm.contState" placeholder="请选择合同状态" :clearable="true" style="width:150px">
-            <el-option label="起草中" value="1"></el-option>
-            <el-option label="已签章" value="2"></el-option>
-            <el-option label="已上传" value="3"></el-option>
+            <el-option
+            v-for="item in dictionary['9']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用途">
           <el-select v-model="contractForm.houseinfoPurpose" placeholder="请选择用途" :clearable="true" style="width:150px">
-            <el-option value=""></el-option>
+            <el-option
+            v-for="item in dictionary['538']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
@@ -44,38 +54,52 @@
         </el-form-item>
         <el-form-item label="审核状态">
           <el-select v-model="contractForm.toExamineState" placeholder="请选择审核状态" :clearable="true" style="width:150px">
-            <el-option label="未提审" value="1"></el-option>
-            <el-option label="审核中" value="2"></el-option>
-            <el-option label="通过" value="3"></el-option>
-            <el-option label="驳回" value="4"></el-option>
+            <el-option
+            v-for="item in dictionary['17']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="变更/解约">
           <el-select v-model="contractForm.contChangeState" placeholder="" :clearable="true" style="width:150px">
-            <el-option label="已变更" value="1"></el-option>
-            <el-option label="已解约" value="2"></el-option>
-            <el-option label="未变更/解约" value="3"></el-option>
+            <el-option
+            v-for="item in dictionary['6']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="结算状态">
           <el-select v-model="contractForm.resultState" placeholder="" :clearable="true" style="width:150px">
-            <el-option label="未结算" value="1"></el-option>
-            <el-option label="已结算" value="2"></el-option>
+            <el-option
+            v-for="item in dictionary['14']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="收佣状态">
           <el-select v-model="contractForm.receiveAmountState" placeholder="" :clearable="true" style="width:150px">
-            <el-option label="未收" value="1"></el-option>
-            <el-option label="部分" value="2"></el-option>
-            <el-option label="收齐" value="3"></el-option>
+            <el-option
+            v-for="item in dictionary['13']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="业绩状态">
           <el-select v-model="contractForm.achievementState" placeholder="" :clearable="true" style="width:150px">
-            <el-option label="未审核" value="1"></el-option>
-            <el-option label="审核中" value="2"></el-option>
-            <el-option label="通过" value="3"></el-option>
-            <el-option label="驳回" value="4"></el-option>
+            <el-option
+            v-for="item in dictionary['2']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -100,10 +124,9 @@
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>租赁</el-dropdown-item>
-              <el-dropdown-item>买卖</el-dropdown-item>
-              <el-dropdown-item>代办</el-dropdown-item>
-              <el-dropdown-item>意向</el-dropdown-item>
+              <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
+              {{item.value}}
+              </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown  placement="bottom" @command="toAddcontract">
@@ -111,10 +134,13 @@
               创建正式合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="1">租赁</el-dropdown-item>
+              <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
+              {{item.value}}
+              </el-dropdown-item>
+              <!-- <el-dropdown-item command="1">租赁</el-dropdown-item>
               <el-dropdown-item command="2">买卖</el-dropdown-item>
               <el-dropdown-item command="3">代办</el-dropdown-item>
-              <el-dropdown-item command="4">意向</el-dropdown-item>
+              <el-dropdown-item command="4">意向</el-dropdown-item> -->
             </el-dropdown-menu>
           </el-dropdown>
         </span>
@@ -238,8 +264,10 @@ import flowAccount from '@/components/flowAccount';
 import layerAudit from '../contractDialog/layerAudit';
 import changeCancel from '../contractDialog/changeCancel';
 import {TOOL} from "@/assets/js/common";
+import {MIXINS} from "@/assets/js/mixins";
 
 export default {
+  mixins: [MIXINS],
   components: {
     ScreeningTop,
     flowAccount,
@@ -258,11 +286,22 @@ export default {
       contractCode:'',
       tiaoyong:false,
       changeCancel:false,
-      dialogType:''
+      dialogType:'',
+      dictionary:{ //数据字典
+        '10':'',//合同类型
+        '9':'',//合同状态
+        '17':'',//审核状态
+        '6':'',//变更/解约
+        '14':'',//结算状态
+        '13':'',//收佣状态
+        '2':'',//业绩状态
+        '538':'',//用途
+      }
     }
   },
   created(){
-    this.getContractList()
+    this.getContractList();
+    this.getDictionary()
   },
   methods:{
     //获取合同列表
@@ -339,7 +378,7 @@ export default {
     },
     //新增合同
     toAddcontract(command){
-      if(command==='1'||command==='2'){
+      if(command===1||command===2){
         this.$router.push({
           path:'/addContract',
           query:{
@@ -368,7 +407,8 @@ export default {
     },
     //关闭调佣弹窗
     closeCommission(){
-      this.tiaoyong=false
+      this.tiaoyong=false;
+      this.contractCode='';
     },
     //关闭变更解约弹窗
     ChangeCancelDialog(){
