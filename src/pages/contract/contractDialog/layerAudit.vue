@@ -114,6 +114,9 @@ export default {
         dialogVisible: {
             type: Boolean,
             default: false
+        },
+        contractCode: {
+          type: String
         }
     },
     data() {
@@ -162,7 +165,31 @@ export default {
 
       close(){
           this.$emit('closeCentCommission')
+      },
+
+      getData(){
+        let param = {
+            "contractCode": this.contractCode            
+          }
+          //根据合同编号获取调佣申请弹框的内容
+          this.$ajax         
+          .get("/api/commission/detail", param)
+          .then(res => {
+            console.log(res);
+            let data = res.data;
+            if (res.status === 200) {
+              // this.tableData = data.data.list
+            }
+            
+
+          }).catch(error => {
+            console.log(error)
+          })
       }
+    },
+
+    created() {
+      this.getData()
     },
 
     mounted() {
