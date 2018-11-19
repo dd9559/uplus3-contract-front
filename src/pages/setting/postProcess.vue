@@ -3,36 +3,30 @@
     <el-form :model="searchForm" class="form-head" size="small">
       <el-form-item label="城市选择">
         <el-select v-model="searchForm.cityId" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
     <ul class="tabs">
       <li v-for="item in tabs" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)" :key="item.id">{{item.name}}</li>
     </ul>
-    <component :is="current"></component>
+    <component :is="current" :cityId="searchForm.cityId"></component>
   </div>
 </template>
 
 <script>
   import { FILTER } from "@/assets/js/filter";
-  import { TOOL } from "../../assets/js/common";
   import TransactionStep from "./transactionStep";
   import transactionProcess from "./transactionProcess";
   import transactionContract from "./transactionContract";
-
-  let imgSize = 4 / 3;
-  let mouseStart = {
-    start: false
-  };
 
   export default {
     name: "post-process",
     data() {
       return {
+        cityList: [],
         searchForm: {
-          cityId: ""
+          cityId: 1
         },
         tabs: [
           {
@@ -60,44 +54,15 @@
       transactionProcess,
       transactionContract
     },
-    mounted() {
-      let objX = 0;
-      let objY = 0;
-      let dragObj = this.$refs.dropBtn; //拖拽对象
-      if (dragObj) {
-
-        dragObj.onmousedown = function() {
-          mouseStart = Object.assign({ start: true }, TOOL.getMousePos());
-          // console.log(mouseStart)
-          objX = !dragObj.style.left
-            ? 0
-            : parseInt(dragObj.style.left.split("px")[0]);
-          objY = !dragObj.style.top
-            ? 0
-            : parseInt(dragObj.style.top.split("px")[0]);
-        };
-
-        document.onmousemove = function() {
-          if (mouseStart.start) {
-            let location = TOOL.getMousePos();
-            dragObj.style.left = `${location.x - mouseStart.x + objX}px`;
-            dragObj.style.top = `${location.y - mouseStart.y + objY}px`;
-          }
-        };
-
-        document.onmouseup = function() {
-          mouseStart = { start: false };
-          let dragWindow = this.$refs.dragWindow;
-          let rateX =
-            parseInt(dragObj.style.left.split("px")[0]) / dragWindow.clientWidth;
-          console.log(rateX.toFixed(2));
-        }.bind(this);
-      }
+    created() {
+      this.$ajax.get('/api/organize/cities').then(res => {
+        res = res.data
+        if(res.status === 200) {
+          this.cityList = res.data
+        }
+      })
     },
     methods: {
-      getImg: function(url) {
-        return require("@/assets/img/" + url);
-      },
       checkTab: function(item) {
         this.activeItem = item.id;
         if (item.id == 1) {
@@ -107,39 +72,6 @@
         } else {
           this.current = "transactionContract";
         }
-      },
-      arraySpanMethod({ row, column, rowIndex, columnIndex }) {
-        // debugger
-        if (columnIndex === 5) {
-          return [1, 3];
-        } else if (columnIndex === 6 || columnIndex === 7) {
-          return [0, 0];
-        }
-      },
-      mouseDown: function() {
-        let target = this.$refs.dropBtn;
-        mouseStart = Object.assign({ start: true }, TOOL.getMousePos());
-        console.log(document);
-        /*document.onmousemove = function (event) {
-            let location = TOOL.getMousePos()
-            console.log(location)
-            if(mouseStart.start){
-              target.style.left = `${location.x}px`
-              target.style.top = `${location.y}px`
-            }
-          }
-          document.onmouseup = function () {
-            mouseStart = {start:false}
-          }*/
-      },
-      mouseEnd: function() {
-        /*debugger
-          mouseStart = {start:false}*/
-      }
-    },
-    computed: {
-      imgHeight: function() {
-        return `${1000 / imgSize}px`;
       }
     }
   };
