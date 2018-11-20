@@ -17,7 +17,7 @@
                            </div>
                    
 
-                     <div class="filter-item">
+                           <div class="filter-item" v-show="filterShow">
                                <!-- 筛选条件 -->
                                <el-form 
                                :inline="true"
@@ -55,22 +55,22 @@
                                    prop="contractType">
                                        <el-select v-model="propForm.contractType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.contractType" 
+                                           v-for="item in dictionary['10']" 
                                            :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                           :label="item.value" 
+                                           :value="item.key"></el-option>
                                        </el-select>
                                    </el-form-item>
 
-                                    <el-form-item 
+                                  <el-form-item 
                                    label="分成类型" 
                                    prop="divideType">
                                        <el-select v-model="propForm.divideType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.divideType" 
+                                           v-for="item in dictionary['21']" 
                                            :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                           :label="item.value" 
+                                           :value="item.key"></el-option>
                                        </el-select>
                                    </el-form-item>
 
@@ -79,10 +79,10 @@
                                    prop="achType">
                                        <el-select v-model="propForm.achType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.achType" 
+                                           v-for="item in dictionary['2']" 
                                            :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                           :label="item.value" 
+                                           :value="item.key"></el-option>
                                        </el-select>
                                    </el-form-item>
 
@@ -102,19 +102,21 @@
                                    </el-form-item>  
 
 
-                                   <p>
+                        
                                        <el-form-item label="关键字" prop="search">
-                                       <el-autocomplete
-                                       class="w312"
-                                       v-model="propForm.search"
-                                       placeholder="开票人员/合同编号/票据编"
-                                       :trigger-on-focus="false"
-                                       clearable
-                                       ></el-autocomplete>
-                                   </el-form-item>
-                                   </p>
+                                          <el-input
+                                          class="w312"
+                                          v-model="propForm.search"
+                                          placeholder="开票人员/合同编号/票据编"
+                                          :trigger-on-focus="false"
+                                          clearable
+                                          ></el-input>
+                                      </el-form-item>
+                            
                                </el-form>
-                     </div>
+                           </div>
+
+                           <div class="btn" @click="filterShow=!filterShow"></div>
                 </div> 
                 <!-- 筛选条件 end -->
                 <!-- 数据列表 -->
@@ -274,7 +276,7 @@
                                                   <p>客源维护人</p>
                                                   <p>A/M</p>
                                                </div>
-                                                <div v-if="item.roleType==11">
+                                               <div v-if="item.roleType==11">
                                                   <p>客源维护人</p>
                                                   <p>协议方</p>
                                                </div>
@@ -308,15 +310,15 @@
                                  <template slot-scope="scope">                           
                                          <!-- <p>{{scope.row.statu}}</p> -->
                                          <div v-if="scope.row.achievementState==0" class="check-btn">
-                                            <span @click.stop="checkAch()">审核</span>
-                                            <span @click.stop="editAch()">编辑</span>
+                                            <span @click.stop="checkAch(scope.row.code)">审核</span>
+                                            <span @click.stop="editAch(scope.row.code)">编辑</span>
                                          </div>
                                            <div v-if="scope.row.achievementState==1" class="check-btn">
-                                            <span @click.stop="checkAch()">审核</span>
-                                            <span @click.stop="editAch()">编辑</span>
+                                            <span @click.stop="checkAch(scope.row.code)">审核</span>
+                                            <span @click.stop="editAch(scope.row.code)">编辑</span>
                                          </div>
                                           <div v-if="scope.row.achievementState==2" class="check-btn">
-                                            <span @click.stop="againCheck()">反审核</span>
+                                            <span @click.stop="againCheck(scope.row.code)">反审核</span>
                                          </div>
                                   </template>
                                </el-table-column>
@@ -656,7 +658,7 @@
                      </el-dialog>
 
                      <!-- 审核，编辑，反审核，业绩分成弹框 -->
-                     <achDialog :shows="shows"  @close="shows=false" :dialogType="dialogType"></achDialog>
+                     <achDialog :shows="shows"  @close="shows=false" :dialogType="dialogType" :contractCode="code"></achDialog>
 
          </div>
 </template>
@@ -664,8 +666,9 @@
 <script>
 // 引入审核，编辑，反审核，分成弹框
 import achDialog from "./achDialog";
-
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+  mixins: [MIXINS],
   name: "actualAchievement",
   data() {
     return {
@@ -676,6 +679,7 @@ export default {
       checkArr: [], //应收详情审核信息数组
       pageSize: 5,
       dialogVisible: false,
+      filterShow: true,
       // 筛选条件
       propForm: {
         department: "", //部门
@@ -700,11 +704,11 @@ export default {
         ],
         departmentDetail: [
           {
-            label: "部门详情1",
+            label: "员工1",
             value: "1"
           },
           {
-            label: "部门详情2",
+            label: "员工2",
             value: "2"
           }
         ],
@@ -741,14 +745,23 @@ export default {
       },
       shows: false,
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
-      total: 0
+      total: 0,
+      code: "",
+      dictionary: {
+        //数据字典
+        "10": "", //合同类型
+        "21": "", //分成状态
+        "2": "" //业绩状态
+      }
     };
   },
   created() {
     this.getData();
+    this.getDictionary();
   },
   components: {
-    achDialog
+    achDialog,
+    MIXINS
   },
   methods: {
     getData() {
@@ -775,6 +788,7 @@ export default {
     //获取应收列表详情
     enterDetail(row) {
       //合同边和获取业绩详情
+      this.code = row.code;
       let param = { code: row.code };
       this.$ajax
         .get("/api/achievement/selectAchievementByCode", param)
@@ -796,22 +810,26 @@ export default {
         contract_type: this.propForm.contractType, //合同类型
         separate_type: this.propForm.divideType, //分成类型
         status: this.propForm.achType, //业绩类型
-        start_time: this.propForm.dateMo[0],  //开始时间
-        end_time: this.propForm.dateMo[1]  //结束时间
+        start_time: this.propForm.dateMo[0], //开始时间
+        end_time: this.propForm.dateMo[1], //结束时间
+        keyword: this.propForm.search //关键字
       };
       console.log(param);
     },
-    checkAch() {
+    checkAch(code) {
+      this.code = code;
       this.dialogType = 0;
       console.log(this.dialogType);
       this.shows = true;
     },
-    editAch() {
+    editAch(code) {
+      this.code = code;
       this.dialogType = 1;
       console.log(this.dialogType);
       this.shows = true;
     },
-    againCheck() {
+    againCheck(code) {
+      this.code = code;
       this.dialogType = 2;
       console.log(this.dialogType);
       this.shows = true;
@@ -866,11 +884,20 @@ export default {
   }
   //  筛选条件
   .filter-layout {
-    min-height: 180px;
+    // min-height: 180px;
     background-color: #fff;
-    overflow: hidden;
     padding: 20px;
-    padding-bottom: 0;
+    padding-bottom: 0px;
+    position: relative;
+    .btn {
+      width: 50px;
+      height: 12px;
+      background-color: gray;
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      margin-left: -25px;
+    }
     .filter-left {
       h1 {
         font-size: 18px;

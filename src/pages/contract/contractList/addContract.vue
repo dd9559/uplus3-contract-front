@@ -58,7 +58,7 @@
         <p>房源信息</p>
         <div class="form-content">
           <el-form-item label="房源编号：" prop="">
-            <span class="select" @click="dialogTableVisible1=true">请选择房源</span>
+            <span class="select" @click="showDialog('house')">请选择房源</span>
           </el-form-item>
           <el-form-item label="物业地址：" prop="">
             <el-input placeholder="请输入内容" v-model="contractForm.houseInfo.building" :disabled="true" class="address">
@@ -147,7 +147,7 @@
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" prop="">
-            <span class="select" @click="dialogTableVisible2=true">请选择客源</span>
+            <span class="select" @click="showDialog('guest')">请选择客源</span>
           </el-form-item>
           <el-form-item label="付款方式：" prop="">
             <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px">
@@ -243,7 +243,7 @@
       </div>
     </el-form>
     <!-- 选择房源弹窗 -->
-    <el-dialog title="选择房源" :visible.sync="dialogTableVisible1">
+    <!-- <el-dialog title="选择房源" :visible.sync="dialogTableVisible1">
       <el-form :inline="true" :model="searchForm1" class="search-form" size="mini">
         <el-form-item label="关键字：">
           <el-input v-model="searchForm1.loupan" placeholder="楼盘字典"></el-input>
@@ -288,10 +288,10 @@
         <el-button round class="search_btn">取消</el-button>
         <el-button type="primary" round class="search_btn">确定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
 
     <!-- 选择客源弹窗 -->
-    <el-dialog title="选择客源" :visible.sync="dialogTableVisible2">
+    <!-- <el-dialog title="选择客源" :visible.sync="dialogTableVisible2">
       <el-form :inline="true" :model="searchForm2" class="search-form" size="mini">
         <el-form-item label="交易：">
           <el-select v-model="searchForm2.tradeType" placeholder="">
@@ -332,8 +332,8 @@
         <el-button round class="search_btn">取消</el-button>
         <el-button type="primary" round class="search_btn">确定</el-button>
       </div>
-      <!-- 添加客源弹窗 -->
-      <el-dialog width="30%" title="添加客源" :visible.sync="innerVisible" :modal="isModel" style="margin-top:150px" append-to-body>
+       添加客源弹窗 -->
+      <!--<el-dialog width="30%" title="添加客源" :visible.sync="innerVisible" :modal="isModel" style="margin-top:150px" append-to-body>
         <el-form :inline="true" :model="addclient" class="search-form" size="mini">
           <el-form-item label="姓名：">
             <el-input v-model="addclient.name" placeholder="请输入姓名"></el-input>
@@ -359,7 +359,9 @@
           <el-button type="primary" round class="search_btn" @click="innerVisible=false">确定</el-button>
         </div>
       </el-dialog>
-    </el-dialog>
+    </el-dialog> -->
+    <!-- 房源客源弹窗 -->
+    <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog"></houseGuest>
     <custom-input v-model="text"></custom-input>
   </div>
 </template>
@@ -368,11 +370,13 @@
 import { TOOL } from "@/assets/js/common";
 import customInput from "./customInput";
 import {MIXINS} from "@/assets/js/mixins";
+import houseGuest from '../contractDialog/houseGuest';
 
 export default {
   mixins: [MIXINS],
   components: {
-    customInput
+    customInput,
+    houseGuest
   },
   data() {
     return {
@@ -553,23 +557,25 @@ export default {
         // {clientName:'张三', clientId:'YQY110635', trade:2, area:'武昌 汉街', price:'96万'},
         // {clientName:'张三', clientId:'YQY110635', trade:1, area:'武昌 汉街', price:'96万'},
       ],
-      clientStatus: 3,
+      // clientStatus: 3,
       //房源搜索
-      searchForm1: {},
+      // searchForm1: {},
       //客源搜索
-      searchForm2: {},
-      dialogTableVisible1: false,
-      dialogTableVisible2: false,
-      attention: false,
-      total: 5,
+      // searchForm2: {},
+      // dialogTableVisible1: false,
+      // dialogTableVisible2: false,
+      // attention: false,
+      // total: 5,
+      dialogType:'',
+      isShowDialog:false,
       //三方合作
       cooperation: false,
       //操作类型  默认是添加
       type: 1,
       //添加客源
-      innerVisible: false,
-      isModel: false,
-      addclient: {},
+      // innerVisible: false,
+      // isModel: false,
+      // addclient: {},
       dictionary:{ //数据字典
         '514':'',//产权状态
         '534':'',//支付方式
@@ -581,7 +587,7 @@ export default {
     };
   },
   created() {
-    this.contractForm.type = Number(this.$route.query.type);
+    this.contractForm.type = Number(this.$route.query.contType);
     if (this.$route.query.operateType) {
       this.type = this.$route.query.operateType;
     }
@@ -650,17 +656,24 @@ export default {
         this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {});
       }
     },
+    //获取所在城市的交易类型
     getTransFlow(){
-      let param={
-        cityId:1
-      }
-      this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res=>{
+      this.$ajax.get('/api/contract/getTransFlowListByCity').then(res=>{
         res=res.data;
         if(res.status===200){
           console.log(res.data)
           this.transFlowList=res.data
         }
       })
+    },
+    //房源客源弹窗
+    showDialog(value){
+      this.isShowDialog=true;
+      this.dialogType=value
+    },
+    //关闭房源客源弹窗
+    closeHouseGuest(){
+      this.isShowDialog=false
     }
   },
   filters: {
@@ -743,7 +756,6 @@ export default {
   }
   .peopleMsg {
     li {
-      //display: flex;
       font-size: 14px;
       margin-bottom: 10px;
       .merge {
@@ -773,10 +785,6 @@ export default {
     }
     .rate_ {
       width: 90px;
-      //margin-right: 10px;
-      //padding-left: 5px;
-      //border: 1px solid #dcdfe6;
-      //border-radius: 3px;
     }
     .idCard_ {
       width: 140px;
@@ -814,53 +822,6 @@ export default {
     display: inline-block;
     padding-right: 20px;
     font-size: 12px;
-  }
-}
-.search_btn {
-  padding: 8px 20px;
-}
-.attention {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border: 1px solid #ccc;
-  border-radius: 2px;
-}
-.attention_ {
-  background: @color-blue;
-}
-.floor_btn {
-  padding: 10px 0;
-  overflow: hidden;
-  display: flex;
-  justify-content: flex-end;
-  //float: right;
-}
-.noList {
-  background: #dedde2;
-  padding: 148px 0;
-  text-align: center;
-}
-.client_b {
-  display: flex;
-  justify-content: flex-end;
-}
-/deep/.el-table td {
-  padding: 5px 0;
-}
-/deep/.el-dialog__header {
-  padding-top: 10px;
-  .el-dialog__title {
-    color: @color-blue;
-  }
-}
-/deep/.el-dialog__body {
-  padding-top: 20px;
-  border-top: 1px solid #edecf0;
-}
-/deep/ .theader-bg {
-  > th {
-    background-color: @bg-th;
   }
 }
 </style>

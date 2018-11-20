@@ -6,6 +6,8 @@ const Index = () => import("@/pages/Index");
 
 //设置模块
 const contractTemplate = () => import('@/pages/setting/contractTemplate')
+const contraPreview = () => import('@/pages/setting/contraPreview')
+
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
 const moneyType = () => import('@/pages/setting/moneyType')
@@ -46,6 +48,7 @@ const contractPreview = () => import("@/pages/contract/contractList/contractPrev
 const layerAudit = () => import("@/pages/contract/contractDialog/layerAudit");
 const layerSettle = () => import("@/pages/contract/contractDialog/layerSettle");
 const changeCancel = () => import("@/pages/contract/contractDialog/changeCancel");
+const routingRecord = () => import("@/pages/contract/contractList/routingRecord");
 Vue.use(Router)
 
 export default new Router({
@@ -58,6 +61,10 @@ export default new Router({
         {
           path: "contractTemplate",
           component: contractTemplate
+        },
+        {
+          path: "contraPreview",
+          component: contraPreview
         },
         {
           path: "postProcess",
@@ -198,6 +205,11 @@ export default new Router({
         {
           path: "changeCancel",
           component: changeCancel
+        },
+        //分账记录
+        {
+          path: "routingRecord",
+          component: routingRecord
         }
       ]
     }
