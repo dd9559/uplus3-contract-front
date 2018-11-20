@@ -234,10 +234,17 @@
         }
         //预览
         else if(type===2){
-           this.titleStr='预览合同模板'
-           this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
-            console.log(res)
-            })
+          //合同预览
+          this.$router.push({
+            path: "/contraPreview",
+            query: {
+              // id: 1
+            }
+          });
+          //  this.titleStr='预览合同模板'
+          //  this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
+          //   console.log(res)
+          //   })
         }
       }
     },

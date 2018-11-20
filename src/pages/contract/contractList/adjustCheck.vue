@@ -78,9 +78,9 @@
             <p>{{scope.row.createByName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="审核状态" :formatter="nullFormatter">
+        <el-table-column label="审核状态" :formatter="nullFormatter" align="center">
           <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.checkState === '未提审'">未提审</span>
+            <span class="blue" v-if="scope.row.checkState === '未审核'">未审核</span>
             <span class="green" v-if="scope.row.checkState === '通过'">通过</span>
             <span class="red" v-if="scope.row.checkState === '驳回'">驳回</span>
           </template>
@@ -348,10 +348,10 @@
           let param = {
             "pageNum": 1,                 
             "pageSize": 50,          
-            "deptId": 273,              
-            "empId": 441,               
-            "startTime": "2018-11-07",    
-            "endTime": "2018-11-10",      
+            "deptId": '',              
+            "empId": '',               
+            "startTime": "",    
+            "endTime": "",      
             "contractType": this.adjustForm.tradeType,           
             "checkState": this.adjustForm.checkState,                              
             "keyword": this.adjustForm.keyWord             
