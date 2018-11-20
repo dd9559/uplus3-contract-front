@@ -310,7 +310,7 @@
       return {
         // 搜索表单中的数据
         searchForm: {
-          cityId: "",
+          cityId: 1,
           storeId: "",
           cooperationMode: "",
           bankCard: "",
