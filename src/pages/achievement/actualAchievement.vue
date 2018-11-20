@@ -55,22 +55,22 @@
                                    prop="contractType">
                                        <el-select v-model="propForm.contractType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.contractType" 
+                                           v-for="item in dictionary['10']" 
                                            :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                           :label="item.value" 
+                                           :value="item.key"></el-option>
                                        </el-select>
                                    </el-form-item>
 
-                                    <el-form-item 
+                                  <el-form-item 
                                    label="分成类型" 
                                    prop="divideType">
                                        <el-select v-model="propForm.divideType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.divideType" 
+                                           v-for="item in dictionary['21']" 
                                            :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                           :label="item.value" 
+                                           :value="item.key"></el-option>
                                        </el-select>
                                    </el-form-item>
 
@@ -79,10 +79,10 @@
                                    prop="achType">
                                        <el-select v-model="propForm.achType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.achType" 
+                                           v-for="item in dictionary['2']" 
                                            :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                           :label="item.value" 
+                                           :value="item.key"></el-option>
                                        </el-select>
                                    </el-form-item>
 
@@ -102,7 +102,7 @@
                                    </el-form-item>  
 
 
-                                   <p>
+                        
                                        <el-form-item label="关键字" prop="search">
                                           <el-input
                                           class="w312"
@@ -112,7 +112,7 @@
                                           clearable
                                           ></el-input>
                                       </el-form-item>
-                                   </p>
+                            
                                </el-form>
                            </div>
 
@@ -666,8 +666,9 @@
 <script>
 // 引入审核，编辑，反审核，分成弹框
 import achDialog from "./achDialog";
-
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+  mixins: [MIXINS],
   name: "actualAchievement",
   data() {
     return {
@@ -745,14 +746,22 @@ export default {
       shows: false,
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
       total: 0,
-      code: ""
+      code: "",
+      dictionary: {
+        //数据字典
+        "10": "", //合同类型
+        "21": "", //分成状态
+        "2": "" //业绩状态
+      }
     };
   },
   created() {
     this.getData();
+    this.getDictionary();
   },
   components: {
-    achDialog
+    achDialog,
+    MIXINS
   },
   methods: {
     getData() {

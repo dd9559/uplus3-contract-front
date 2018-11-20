@@ -72,16 +72,13 @@
                                    prop="contractType">
                                        <el-select v-model="propForm.contractType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.contractType" 
+                                           v-for="item in dictionary['10']" 
                                            :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                           :label="item.value" 
+                                           :value="item.key"></el-option>
                                        </el-select>
                                    </el-form-item>
 
-        
-
-                          
                                   <el-form-item label="关键字" prop="search">
                                           <el-input
                                           class="w312"
@@ -330,7 +327,9 @@
 </template>
 
 <script>
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+  mixins: [MIXINS],
   name: "actualAchievement",
   data() {
     return {
@@ -342,8 +341,8 @@ export default {
         department: "", //部门
         departmentDetail: "", //部门详情
         contractType: "", //合同类型
-        dateMo: "",    //时间
-        search: ""    //关键字
+        dateMo: "", //时间
+        search: "" //关键字
       },
       // 筛选选项
       rules: {
@@ -378,10 +377,15 @@ export default {
           }
         ]
       },
-      total: 0
+      total: 0,
+      dictionary: {
+        //数据字典
+        "10": "" //合同类型
+      }
     };
   },
   created() {
+    this.getDictionary();
     let param = {
       pageNum: 1,
       pageSize: 10

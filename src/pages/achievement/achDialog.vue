@@ -746,6 +746,7 @@ export default {
     handleSelectionChange() {
       this.multipleSelection = val;
     },
+    // 审核，反审核，编辑，分成点进去的房源，客源
     codeBaseInfo(val) {
       let param = { code: val };
       this.$ajax.get("/api//achievement/selectDisAgents", param).then(res => {
@@ -757,7 +758,6 @@ export default {
   },
   watch: {
     contractCode(val) {
-      console.log(`亲星星${val}`);
       this.code = val;
       this.codeBaseInfo(val);
     }
