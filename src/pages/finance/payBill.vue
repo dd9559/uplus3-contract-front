@@ -6,7 +6,7 @@
         <label>收款方</label>
         <el-select v-model="form.person" placeholder="请选择">
           <el-option
-            v-for="item in 5"
+            v-for="item in dropdown"
             :key="item.value"
             :label="item.label"
             :value="item.value">
@@ -20,17 +20,37 @@
     </section>
     <div class="input-group">
       <label>款类</label>
-      <ul class="type-list">
-        <li v-for="item in moneyType">{{item.name}}</li>
-      </ul>
+      <el-table class="collapse-cell" :span-method="collapse" border :data="moneyType" style="width: 100%"
+                header-row-class-name="theader-bg">
+        <el-table-column align="center" label="款类（大类）" prop="name"></el-table-column>
+        <el-table-column align="center" label="款类（小类）">
+          <template slot-scope="scope">
+            <ul>
+              <li v-for="item in scope.row.moneyTypes">
+                <el-radio v-model="form.radio" :label="item.key">{{item.name}}</el-radio>
+              </li>
+            </ul>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="付款金额（元） ">
+          <template slot-scope="scope">
+            <ul>
+              <li v-for="item in scope.row.moneyTypes"><input type="text" class="no-style" placeholder="请输入"></li>
+            </ul>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="可支配金额">
+          <template slot-scope="scope"></template>
+        </el-table-column>
+      </el-table>
     </div>
-    <div class="input-group">
+    <!--<div class="input-group">
       <p><label>付款金额</label><span>（可支配金额：1234）</span></p>
       <div class="span-join">
         <input type="number" class="no-style" placeholder="请填写支付金额">
         <span>元</span>
       </div>
-    </div>
+    </div>-->
     <div class="input-group">
       <p><label>收款账户</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
@@ -46,7 +66,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入">
+            <input type="text" class="no-style" placeholder="请输入" v-model="form.bankCard" @input="getBank">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -80,56 +100,73 @@
     data() {
       return {
         form: {
-          person: ''
+          person: '',
+          radio:'',
+          bankCard:''
         },
-        moneyType: [
-          {
-            index: 1,
-            name: '二手买卖佣金'
-          },
-          {
-            index: 2,
-            name: '二手低佣买卖佣金'
-          },
-          {
-            index: 3,
-            name: '租赁佣金'
-          },
-          {
-            index: 4,
-            name: '代办佣金'
-          },
-          {
-            index: 5,
-            name: '金融服务费'
-          },
-          {
-            index: 6,
-            name: '房款'
-          },
-          {
-            index: 7,
-            name: '物业保证金'
-          },
-          {
-            index: 8,
-            name: '定金'
-          },
-          {
-            index: 9,
-            name: '违约金'
-          },
-          {
-            index: 10,
-            name: '意向金'
-          }
-        ],
+        moneyType: [],
         list:[
           {}
-        ]
+        ],
+        dropdown:[]
       }
     },
+    created(){
+      this.getDropdown()
+      this.getMoneyType()
+    },
     methods:{
+      /**
+       * 获取下拉框数据
+       */
+      getDropdown:function () {
+        let param = {
+          contId:18
+        }
+        this.$ajax.get('/api/payInfo/selectValue',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.dropdown = res.data
+          }
+        })
+      },
+      /**
+       * 获取所有款类
+       */
+      getMoneyType:function () {
+        this.$ajax.get('/api/payInfo/selectMoneyType').then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.moneyType = res.data
+          }
+        })
+      },
+      /**
+       * 根据卡号获取银行信息
+       */
+      getBank:function () {
+        let param = {
+          cardNumber:this.form.bankCard
+        }
+        if(this.form.bankCard.length>=16){
+          this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
+            // debugger
+
+          })
+        }
+      },
+      /**
+       * 合并所有行
+       */
+      collapse:function ({ rowIndex, columnIndex }) {
+        if(columnIndex===3){
+          if (rowIndex === 0) {
+            return [this.moneyType.length,1]
+          } else {
+            return [0,0]
+          }
+        }
+      },
       goResult:function () {
         this.$router.push({
           path:'payResult'
@@ -141,6 +178,26 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  /deep/.collapse-cell{
+    .el-table__row{
+      >td{
+        padding: 0;
+        .cell{
+          padding: 0;
+          >ul{
+            >li{
+              padding: 12px 10px;
+              border-bottom: 1px solid #ebeef5;
+              text-align: left;
+              &:last-of-type{
+                border: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .input-group {
     margin: 0;
     display: block;

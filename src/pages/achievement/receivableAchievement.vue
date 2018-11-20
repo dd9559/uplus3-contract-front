@@ -12,12 +12,12 @@
                                </div>
                                <div class="filter-right f_r">
                                   <el-button type="primary" round>重置</el-button>
-                                  <el-button type="primary" round>查询</el-button>
+                                  <el-button type="primary" round @click="filterData">查询</el-button>
                               </div>
                            </div>
                    
 
-                     <div class="filter-item">
+                           <div class="filter-item" v-show="filterShow">
                                <!-- 筛选条件 -->
                                <el-form 
                                :inline="true"
@@ -25,51 +25,54 @@
                                :model="propForm" 
                                class="prop-form"
                                size="small">
-                                   <!-- <span>签约日期：</span> -->
-                                   <el-form-item 
-                                   prop="dateMo"
+
+                                 <el-form-item 
                                    label="签约日期"
+                                   prop="dateMo"
                                    class="mr">
                                        <el-date-picker
                                            v-model="propForm.dateMo"
                                            class="w330"
                                            type="daterange"
                                            range-separator="至"
+                                           value-format="yyyy-MM-dd"
                                            start-placeholder="开始日期"
                                            end-placeholder="结束日期">
                                        </el-date-picker>
-                                   </el-form-item> 
+                                   </el-form-item>  
 
 
+                                    <!-- 部门 -->
                                    <el-form-item 
                                    label="部门" 
-                                   prop="region"
+                                   prop="department"
                                    class="mr">
-                                       <el-select v-model="propForm.region"  class="w200" filterable>
+                                       <el-select v-model="propForm.department"  class="w200" filterable>
                                            <el-option 
-                                           v-for="item in rules.region" 
+                                           v-for="item in rules.department" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
                                        </el-select>
                                    </el-form-item>
+
                                    <el-form-item 
-                                   prop="regionName">
-                                       <el-select v-model="propForm.regionName" class="w100" filterable>
+                                   prop="departmentDetail">
+                                       <el-select v-model="propForm.departmentDetail" class="w100" filterable>
                                            <el-option 
-                                           v-for="item in rules.regionName" 
+                                           v-for="item in rules.departmentDetail" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
                                        </el-select>
                                    </el-form-item>
                                
-                                   <el-form-item 
+                                    <el-form-item 
                                    label="合同类型" 
-                                   prop="paper">
-                                       <el-select v-model="propForm.paper" class="w120">
+                                   prop="contractType">
+                                       <el-select v-model="propForm.contractType" class="w120">
                                            <el-option 
-                                           v-for="item in rules.paper" 
+                                           v-for="item in rules.contractType" 
                                            :key="item.value"
                                            :label="item.label" 
                                            :value="item.value"></el-option>
@@ -79,18 +82,20 @@
         
 
                           
-                                   <el-form-item label="关键字" prop="search">
-                                       <el-autocomplete
-                                       class="w312"
-                                       v-model="propForm.search"
-                                       placeholder="开票人员/合同编号/票据编"
-                                       :trigger-on-focus="false"
-                                       clearable
-                                       ></el-autocomplete>
-                                   </el-form-item>
+                                  <el-form-item label="关键字" prop="search">
+                                          <el-input
+                                          class="w312"
+                                          v-model="propForm.search"
+                                          placeholder="开票人员/合同编号/票据编"
+                                          :trigger-on-focus="false"
+                                          clearable
+                                          ></el-input>
+                                 </el-form-item>
                               
                                </el-form>
-                     </div>
+                           </div>
+
+                           <div class="btn" @click="filterShow=!filterShow"></div>
                 </div> 
                 <!-- 筛选条件 end -->
                 <!-- 数据列表 -->
@@ -331,67 +336,45 @@ export default {
     return {
       receivableList: [], //实收数据列表数组
       countData: [], //数据统计数组
-      rules: {
-        region: [
-          {
-            label: "区域一",
-            value: "shanghai"
-          },
-          {
-            label: "区域二",
-            value: "quyuer"
-          }
-        ]
-      },
+      filterShow: true,
       // 筛选条件
       propForm: {
-        region: "",
-        regionName: "",
-        search: "",
-        paper: "选项1",
-        time: "选项11",
-        dateMo: ""
+        department: "", //部门
+        departmentDetail: "", //部门详情
+        contractType: "", //合同类型
+        dateMo: "",    //时间
+        search: ""    //关键字
       },
       // 筛选选项
       rules: {
-        region: [
+        department: [
           {
-            label: "区域一",
-            value: "shanghai"
+            label: "部门1",
+            value: "1"
           },
           {
-            label: "区域二",
-            value: "quyuer"
+            label: "部门2",
+            value: "2"
           }
         ],
-        regionName: [
+        departmentDetail: [
           {
-            label: "区域一",
-            value: "shangha"
+            label: "员工1",
+            value: "1"
           },
           {
-            label: "区域二",
-            value: "quyue"
+            label: "员工2",
+            value: "2"
           }
         ],
-        paper: [
+        contractType: [
           {
-            label: "合同1",
-            value: "yi"
+            label: "合同类型1",
+            value: "1"
           },
           {
-            label: "合同2",
-            value: "er"
-          }
-        ],
-        time: [
-          {
-            label: "开票日期",
-            value: "选项11"
-          },
-          {
-            label: "区域二",
-            value: "选项21"
+            label: "合同类型2",
+            value: "2"
           }
         ]
       },
@@ -414,6 +397,17 @@ export default {
   },
   components: {},
   methods: {
+    filterData() {
+      let param = {
+        departmentId: this.propForm.department, //部门
+        employeeIdQUERY: this.propForm.departmentDetail, //员工
+        contract_type: this.propForm.contractType, //合同类型
+        start_time: this.propForm.dateMo[0], //开始时间
+        end_time: this.propForm.dateMo[1], //结束时间
+        keyword: this.propForm.search //关键字
+      };
+      console.log(param);
+    },
     //分页
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -464,12 +458,20 @@ export default {
   }
   //  筛选条件
   .filter-layout {
-    min-height: 128px;
     // width: 1680px;
     background-color: #fff;
-    overflow: hidden;
     padding: 20px;
     padding-bottom: 0;
+    position: relative;
+    .btn {
+      width: 50px;
+      height: 12px;
+      background-color: gray;
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      margin-left: -25px;
+    }
     .filter-left {
       h1 {
         font-size: 18px;
