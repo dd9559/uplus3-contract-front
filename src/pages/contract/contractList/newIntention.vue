@@ -1,32 +1,32 @@
 <!-- 新增意向金 -->
 <template>
     <div class="newintention">
-        <div class="formbox" ref="ruleForm">
-            <el-form :inline="true" :model="form" :rules="rules" class="form-innnerbox">
+        <div class="formbox">
+            <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" :validate-on-rule-change="false" class="form-innnerbox">
                 <div class="form-content">
                 <!-- 合同信息 -->
                     <div class="column-form"> 
                         <div class="column-title">合同信息</div>
                         <div class="form-cont">
                             <el-form-item label="签约日期" prop="signdate">
-                                <el-date-picker v-model="form.signdate" type="date" placeholder="选择日期"></el-date-picker>
+                                <el-date-picker v-model="ruleForm.signdate" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="合同类型">
-                                <el-input v-model="form.contractType" :disabled="true"></el-input>
+                                <el-input v-model="ruleForm.contractType" :disabled="true"></el-input>
                             </el-form-item>
                             
                             <el-form-item label="认购期限" prop="subscribdate">
-                                <el-date-picker v-model="form.subscribdate" type="date" placeholder="选择日期"></el-date-picker>
+                                <el-date-picker v-model="ruleForm.subscribdate" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="认购总价" prop="subscribmoney">
-                                <el-input v-model.number="form.subscribmoney" clearable>
+                                <el-input v-model.number="ruleForm.subscribmoney" type="number" clearable>
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="意向金金额" prop="intentmoney">
-                                <el-input v-model.number="form.intentmoney" clearable>
+                                <el-input v-model.number="ruleForm.intentmoney" type="number" clearable>
                                     <i slot="suffix" class="yuan">元</i>
-                                    <template slot="append">伍仟元整</template>
+                                    <template slot="append">{{ruleForm.intentmoney | moneyFormat}}</template>
                                 </el-input>
                             </el-form-item>
                         </div>
@@ -38,29 +38,29 @@
                         <div class="form-cont">
                             <el-form-item>
                                 <el-form-item label="房源编号" prop="houseno">
-                                    <el-button type="primary" v-model="form.houseno">请选择房源</el-button>
+                                    <el-button type="primary" v-model="ruleForm.houseno">请选择房源</el-button>
                                 </el-form-item>
                                 <el-form-item label="物业地址">
-                                    <el-input v-model="form.address1" clearable class="big-input"></el-input>
+                                    <el-input v-model="ruleForm.address1" clearable class="big-input"></el-input>
                                 </el-form-item>
                             </el-form-item>
                             
                             <el-form-item label="产证地址" class="disb">
-                                <el-input v-model="form.address2" clearable class="big-input"></el-input>
+                                <el-input v-model="ruleForm.address2" clearable class="big-input"></el-input>
                             </el-form-item>
 
                             <el-form-item label="房源总价" class="disb">
-                                <el-input v-model.number="form.housemoney" clearable>
+                                <el-input v-model.number="ruleForm.housemoney" clearable>
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
 
                             <el-form-item label="业主信息" class="disb" required>
                                 <el-form-item prop="ownname">
-                                    <el-input v-model="form.ownname" clearable placeholder="姓名" class="ownwidth"></el-input>
+                                    <el-input v-model="ruleForm.ownname" clearable placeholder="姓名" class="ownwidth"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="ownphone">
-                                    <el-input v-model="form.ownphone" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                    <el-input v-model="ruleForm.ownphone" clearable placeholder="手机号" class="ownwidth"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -72,16 +72,16 @@
                         <div class="form-cont">
                             <el-form-item>
                                 <el-form-item label="客源编号"  prop="custno">
-                                        <el-button type="primary"  v-model="form.custno">请选择客源</el-button>
+                                        <el-button type="primary"  v-model="ruleForm.custno">请选择客源</el-button>
                                 </el-form-item>
                                 <el-form-item label="成交经纪人" required>
                                     <el-form-item prop="item1">
-                                        <el-select v-model="form.item1" clearable filterable placeholder="请选择门店">
+                                        <el-select v-model="ruleForm.item1" clearable filterable placeholder="请选择门店">
                                             <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item prop="item2" class="small-input">
-                                        <el-select v-model="form.item2" clearable filterable placeholder="请选择经纪人">
+                                        <el-select v-model="ruleForm.item2" clearable filterable placeholder="请选择经纪人">
                                             <el-option v-for="item in option2" :key="item.value" :label="item.label" :value="item.value"></el-option>
                                         </el-select>
                                     </el-form-item>
@@ -89,25 +89,25 @@
                             </el-form-item>
                             <el-form-item label="客户信息" class="disb" required>
                                 <el-form-item prop="custname">
-                                    <el-input v-model="form.custname" clearable placeholder="姓名" class="ownwidth"></el-input>
+                                    <el-input v-model="ruleForm.custname" clearable placeholder="姓名" class="ownwidth"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custphone">
-                                    <el-input v-model="form.custphone" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                    <el-input v-model="ruleForm.custphone" clearable placeholder="手机号" class="ownwidth"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custidcard">
-                                    <el-input v-model="form.custidcard" clearable placeholder="身份证号" class="custwidth"></el-input>
+                                    <el-input v-model="ruleForm.custidcard" clearable placeholder="身份证号" class="custwidth"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
                         <div class="form-cont mt30">
                             <el-form-item label="意向备注" class="disb">
-                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请输入内容" v-model="form.textarea" class="textareawidth"></el-input>
+                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请输入内容" v-model="ruleForm.textarea" class="textareawidth"></el-input>
                             </el-form-item>
                         </div>
                     </div>
                 </div>
                 <div class="form-btn">                   
-                        <el-button type="primary" plain round>预 览</el-button>
+                        <el-button type="primary" plain round @click="onPreview()">预 览</el-button>
                         <el-button type="primary" round @click="onSubmit('ruleForm')">保 存</el-button>                  
                 </div>
             </el-form>
@@ -122,11 +122,11 @@
 </template>
 
 <script>
-
+import { TOOL } from "@/assets/js/common";
 export default {
     data() {
         return {
-            form: {
+            ruleForm: {
                 signdate: '', //签约日期
                 contractType: '', //合同类型
                 item1: '',    //选择门店
@@ -181,16 +181,16 @@ export default {
                     { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
                 ],
                 subscribmoney: [
-                    { required: true, message: '请输入认购总价', trigger: 'blur' },
+                    { required: true, message: '请输入认购总价' },
                     // { min: 0, max: 12, message: '输入总价在0-999999999.99之间', trigger: 'blur' }
                 ],
                 intentmoney: [
-                    { required: true, message: '请输入意向金金额', trigger: 'blur' },
+                    { required: true, message: '请输入意向金金额' },
                     // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
                 ],
-                houseno: [
-                    { required: true, message: '请选择房源', trigger: 'click' },
-                ],
+                // houseno: [
+                //     { required: true, message: '请选择房源', trigger: 'click' },
+                // ],
                 // address1: [
                 //     { required: true, message: '请输入物业地址', trigger: 'blur' },
                 // ],
@@ -198,22 +198,22 @@ export default {
                 //     { required: true, message: '请输入产权地址', trigger: 'blur' },
                 // ],
                 ownname: [
-                    { required: true, message: '请输入业主姓名', trigger: 'blur' },
+                    { required: true, message: '请输入业主姓名' },
                 ],
                 ownphone: [
-                    { required: true, message: '请输入业主手机号', trigger: 'blur' },
+                    { required: true, message: '请输入业主手机号' },
                 ],
                 custno: [
                     { required: true, message: '请选择客源', trigger: 'click' },
                 ],
                 custname: [
-                    { required: true, message: '请输入客户姓名', trigger: 'blur' },
+                    { required: true, message: '请输入客户姓名' },
                 ],
                 custphone: [
-                    { required: true, message: '请输入客户手机号', trigger: 'blur' },
+                    { required: true, message: '请输入客户手机号' },
                 ],
                 custidcard: [
-                    { required: true, message: '请输入客户身份证号', trigger: 'blur' },
+                    { required: true, message: '请输入客户身份证号' },
                 ],
         
             },
@@ -223,47 +223,102 @@ export default {
     computed: {
         
     },
+
+    filters: {
+        moneyFormat: function(val) {
+        if (!val) {
+            return "零";
+        } else {
+            return TOOL.toChineseNumber(val);
+        }
+        }
+    },
+
     methods: {
-  
-        onSubmit() {
-            // 新增意向金接口（post）
-            this.$ajax
-            .post(
-                "/api/contract/editIgdCont?type=1",
-                {
-                    "id": 10,
-                    "contType":"4",
-                    "houseinfoCode":"USK092",
-                    "guestinfoCode":"WQA357",
-                    "signDate":"2018/11/04",
-                    "subscriptionTerm":"2018/11/18",
-                    "subscriptionPrice": "3000",
-                    "dealAgentStoreId":"10",
-                    "dealAgentStoreName":"当代一店",
-                    "dealPrice":"3200.50",
-                    "remarks":"意向备注"
-                    // "contPersons":[
-                    //     {"name": "测试1", "relation": 1, "personType": "1", "mobile": "13099942411"},
-                    //     {"name": "测试2", "relation": 2, "personType": "2", "mobile": "13004325012"}
-                    // ],
-                    // "houseInfo":{
-                    //     "houseinfoId": "100",
-                    //     "propertyRightAddr": "产权地址",
-                    //     "building":"楚河汉街万达环球国际中心",
-                    //     "unit":"三单元",
-                    //     "number": "804",
-                    //     "price":"501"
-                    // },
-                    // "guestInfo":{
-                    //     "guestinfoId": "87"
-                    // }
+
+        //预览事件
+        onPreview() {
+            this.$router.push({
+                path:'/contractPreview',
+                query:{
+                    // contractCode: value.contractCode
                 }
-            )
-            .then(res => {
-                console.log(res)
-            }).catch(error => {
-                console.log(error)
             })
+        },
+       
+        // 新增意向金接口（post）
+        onSubmit(ruleForm) {
+            this.$refs[ruleForm].validate((valid) => {
+                if (valid) {
+                    let param = { 
+                        igdCont:{      
+                        "id": 23,		//这是合同ID，在修改时才会用到，新增时使用不会报错
+                        "type":5,
+                        "houseinfoCode":"UUS001",
+                        "guestinfoCode":"SQH001",
+                        "signDate":"2018/11/04",
+                        "subscriptionTerm":"2018/11/18",
+                        "subscriptionPrice": "300",		//意向/定金金额
+                        "dealAgentStoreId":"10",
+                        "dealAgentStoreName":"当代一店",
+                        "subscriptionTerm":"2011-11-11",
+                        "dealPrice":"3200.50",			//成交总价
+                        "remarks":"意向备注",
+                        "houseInfo":{
+                            "houseinfoId": "100",
+                            "estateName":"中天国际",
+                            "propertyRightAddr": "产权地址",
+                            "building":"楚河汉街万达环球国际中心",
+                            "unit":"三单元",
+                            "number": "804",
+                            "price":"875"
+                        },
+                        "guestInfo":{
+                            "guestinfoId": "87"
+                        },
+                        "contPersons": [
+                            {
+                                "name": "test",
+                                "uId": 13,
+                                "relation": 2,
+                                "type": 2,
+                                "mobile": "13098120011"
+                            },
+                            {
+                                "name": "test2",
+                                "relation": 1,
+                                "type": 2,
+                                "mobile": "13001864012"
+                            }
+                        ]
+                        
+                    },
+                    type:1
+                    }
+                    this.$confirm('确定保存已创建合同?', '', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'info',
+                        center: true
+                    }).then(() => {
+                        this.$ajax
+                        .postJSON("/api/contract/editIgdCont", param)
+                        .then(res => {
+                            console.log(res)
+                        }).catch(error => {
+                            console.log(error)
+                        })
+                    
+                    }).catch(() => {
+
+                    })
+                }else{
+                    return false
+                }
+            })
+            
+            
+            
         },
     },
     mounted() {

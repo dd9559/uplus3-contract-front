@@ -10,17 +10,17 @@
             <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
           <div class="col-li">
-            <p>申请日期：<span>2018/9/14</span></p>
-            <p>申请人：<span>当代一店-夏雨天</span></p>
+            <p>申请日期：<span>{{layerAudit.createTime}}</span></p>
+            <p>申请人：<span>{{layerAudit.createByDepName + '-' + layerAudit.createByName}}</span></p>
           </div>
           <div class="col-li">
-            <p>合同类型：<span>出租</span></p>
-            <p class="mr100">成交总价：<span>3000元</span></p>
-            <p>可分配业绩：<span>3500元</span></p>
+            <p>合同类型：<span>{{layerAudit.tradeType}}</span></p>
+            <p class="mr100">成交总价：<span>{{layerAudit.dealPrice}}元</span></p>
+            <p>可分配业绩：<span>{{layerAudit.money}}元</span></p>
           </div>
           <div class="col-li">
             <p>调整类型：<span>佣金调整</span></p>
-            <p><el-checkbox v-model="checked">有解除协议</el-checkbox></p>
+            <p><el-checkbox :v-model="auditForm.checked">有解除协议</el-checkbox></p>
           </div>
           <div class="textareabox">
             <span>调整原因</span>
@@ -43,10 +43,10 @@
             <tbody>
               <tr>
                 <td>原金额</td>
-                <td>152365元</td>
-                <td>152365元</td>
+                <td>{{layerAudit.ownerCommission}}元</td>
+                <td>{{layerAudit.custCommission}}元</td>
                 <!-- <td>另外出<span>;</span>客户<span>;</span>0元</td> -->
-                <td>0元</td>
+                <td>{{layerAudit.otherCooperationCost}}0元</td>
               </tr>
               <tr>
                 <td>调整为</td>
@@ -101,14 +101,15 @@
            
       </div>
       <div class="btnbox">
-        <el-button @click="dialogVisible = true">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = true">保 存</el-button>  
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="auditApply()">保 存</el-button>  
       </div> 
     </el-dialog>
     </div>
 </template>
 
 <script>
+import { Message } from 'element-ui';
 export default {
     props: {
         dialogVisible: {
@@ -120,14 +121,18 @@ export default {
           default:''
         }
     },
+
+    components: {
+        Message
+    },
+
     data() {
         return {
           clientHei: document.documentElement.clientHeight, //窗体高度
 
           auditForm: {
               textarea: '', //备注
-              item1: '', //另外出-佣金扣-无
-              item2: '', //客户-业主-无
+              checked: '', //是否有解除协议
               money1: '', //业主佣金
               money2: '', //客户佣金
               money3: '', //按揭收费
@@ -141,7 +146,7 @@ export default {
           //dialogVisible: false,
           // dialogVisible2: false,
           
-          checked: false, //是否有解除协议
+          
         }
     },
 
@@ -171,11 +176,11 @@ export default {
           this.$emit('closeCentCommission')
       },
 
+      //根据合同编号获取调佣申请弹框的内容
       getData(){
         let param = {
-            "contractCode": this.contractCode            
+            contractCode: this.contractCode            
           }
-          //根据合同编号获取调佣申请弹框的内容
           this.$ajax         
           .get("/api/commission/detail", param)
           .then(res => {
@@ -189,6 +194,33 @@ export default {
           }).catch(error => {
             console.log(error)
           })
+      },
+
+
+      //发起调佣申请
+      auditApply() {
+        let param = {
+          contractCode: this.contractCode,
+          reason: this.auditForm.textarea,
+          vouchers: '',
+          relieve: this.auditForm.checked, 
+          newOwnerCommission: this.auditForm.money1,
+          newCustCommission: this.auditForm.money2,
+          newOtherCooperationCost: this.auditForm.money4
+        }
+        this.$ajax         
+        .postJSON("/api/commission/waitUpdate", param)
+        .then(res => {
+          console.log(res);
+          let tips = res.data.data;
+          if (res.status === 200) {
+             this.$message(res.data.data);
+          }
+          
+
+        }).catch(error => {
+          console.log(error)
+        })
       }
     },
 

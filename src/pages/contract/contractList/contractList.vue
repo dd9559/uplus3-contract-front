@@ -368,7 +368,8 @@ export default {
     },
     //关闭调佣弹窗
     closeCommission(){
-      this.tiaoyong=false
+      this.tiaoyong=false;
+      this.contractCode = ''
     },
     //关闭变更解约弹窗
     ChangeCancelDialog(){
