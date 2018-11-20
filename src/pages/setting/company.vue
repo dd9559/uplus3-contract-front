@@ -1,21 +1,23 @@
 <template>
   <div class="view-container">
     <!-- 头部表单 -->
-    <ScreeningTop>
+    <ScreeningTop
+    @propQueryFn="queryFn"
+    @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="searchForm" class="form-head" size="small">
         <el-form-item label="城市">
-          <el-select v-model="searchForm.cityId">
-            <el-option label="全部" value="全部">
-            </el-option>
+          <el-select v-model="searchForm.cityId" filterable @change="getStoreList">
+            <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="门店选择">
-          <el-autocomplete class="inline-input" v-model="searchForm.storeId"></el-autocomplete>
+          <el-select v-model="searchForm.storeId" filterable>
+            <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="合作方式">
           <el-select v-model="searchForm.cooperationMode">
-            <el-option label="加盟" value="加盟"></el-option>
-            <el-option label="直营" value="直营"></el-option>
+            <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="银行账户">
@@ -23,15 +25,16 @@
         </el-form-item>
         <el-form-item label="添加时间">
           <el-date-picker
-          v-model="searchForm.searchTime"
+          v-model="searchTime"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
-          end-placeholder="结束日期">
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="searchForm.keyWord" maxlength=50 placeholder="添加人/开户行/开户名"></el-input>
+          <el-input v-model="searchForm.keyword" maxlength=50 placeholder="添加人/开户行/开户名"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -61,7 +64,7 @@
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合作方式" prop="cooperationMode" width="150">
+        <el-table-column align="center" label="合作方式" prop="cooperationMode.label" width="150">
         </el-table-column>
         <el-table-column align="center" label="添加时间" prop="createTime" width="208">
         </el-table-column>
@@ -75,13 +78,13 @@
         </el-table-column>
       </el-table>
       <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="pageNum"
-      :page-sizes="[5, 10, 15, 20]"
-      :page-size="pageSize"
-      layout="prev, pager, next,  total, sizes, jumper"
-      :total="count">
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageNum"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="count">
       </el-pagination>
     </div>
     <!-- 添加和编辑公司信息 弹出框 -->
@@ -97,17 +100,18 @@
           <div class="info-content">
             <div class="item">
               <el-form-item label="城市选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.cityId">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.cityId" filterable @change="getStoreList">
+                  <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect">
+                  <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="合作方式: ">
-                <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange">
-                  <el-option label="加盟" value="1"></el-option>
-                  <el-option label="直营" value="2"></el-option>
+                <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
+                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>                  
                 </el-select>
               </el-form-item>
             </div>
@@ -116,42 +120,39 @@
                 <el-input size="mini" v-model="companyForm.name" placeholder="营业执照上的名字"></el-input>
               </el-form-item>
               <el-form-item label="法人姓名: ">
-                <el-input size="mini" maxlength="15" v-model="companyForm.lepName"></el-input>
+                <el-input size="mini" maxlength="15" v-model="companyForm.lepName" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="证件类型: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType">
-                  <el-option label="居民身份证" value="1"></el-option>
-                  <el-option label="护照" value="2"></el-option>
-                  <el-option label="港澳居民来往大陆通行证" value="3"></el-option>
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="directSaleSelect">
+                  <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>                  
                 </el-select>
               </el-form-item>
             </div>
             <div class="item">
               <el-form-item label="证件号: ">
-                <el-input size="mini" v-model="companyForm.lepDocumentCard"></el-input>
+                <el-input size="mini" v-model="companyForm.lepDocumentCard" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: ">
-                <el-input size="mini" v-model="companyForm.lepPhone"></el-input>
+                <el-input size="mini" v-model="companyForm.lepPhone" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="企业证件: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange">
-                  <el-option label="三证合一" value="1"></el-option>
-                  <el-option label="老三证" value="2"></el-option>
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="directSaleSelect">
+                  <el-option v-for="item in dictionary['38']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
             </div>
             <div class="item">
               <el-form-item label="统一社会信用代码: " v-if="creditCodeShow">
-                <el-input size="mini" v-model="companyForm.documentCardStr.creditCode"></el-input>
+                <el-input size="mini" v-model="documentCard.creditCode"></el-input>
               </el-form-item>
               <el-form-item label="工商注册号: " v-if="icRegisterShow">
-                <el-input size="mini" v-model="companyForm.documentCardStr.icRegisterCode"></el-input>
+                <el-input size="mini" v-model="documentCard.icRegisterCode" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="组织机构代码: " v-if="icRegisterShow">
-                <el-input size="mini" v-model="companyForm.documentCardStr.organizationCode"></el-input>
+                <el-input size="mini" v-model="documentCard.organizationCode" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="税务登记证: " v-if="icRegisterShow">
-                <el-input size="mini" v-model="companyForm.documentCardStr.taxRegisterCode"></el-input>
+                <el-input size="mini" v-model="documentCard.taxRegisterCode" :disabled="directSaleSelect"></el-input>
               </el-form-item>
             </div>
             <div class="tip">
@@ -167,32 +168,32 @@
         <div class="company-info">
           <p>添加企业银行账户</p>
           <div class="info-content">
-            <el-table style="width: 100%" :data="companyForm.companyBankListStr.data" class="addBankRow">
+            <el-table style="width: 100%" :data="companyBankList" class="addBankRow">
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model="companyForm.companyBankListStr.data[scope.$index].bankAccountName"></el-input>
+                    <el-input size="mini" maxlength="15" v-model="companyBankList[scope.$index].bankAccountName" :disabled="directSaleSelect"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" v-model="companyForm.companyBankListStr.data[scope.$index].bankCard"></el-input>
+                    <el-input size="mini" v-model="companyBankList[scope.$index].bankCard" :disabled="directSaleSelect"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="" min-width="280px">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model="companyForm.companyBankListStr.data[scope.$index].bankBranchName" placeholder="请精确到支行信息"></el-input>
+                    <el-input size="mini" v-model="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="directSaleSelect"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column label="" width="90px">
                 <template slot-scope="scope">
-                  <span @click="addRow" class="button"><i class="icon el-icon-plus"></i></span>
-                  <span @click="removeRow(scope.$index)" class="button"><i class="icon el-icon-minus"></i></span>
+                  <span @click="addRow" class="button" :class="{'direct-sale':directSaleSelect}"><i class="icon el-icon-plus"></i></span>
+                  <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':directSaleSelect}"><i class="icon el-icon-minus"></i></span>
                 </template>
               </el-table-column>
             </el-table>
@@ -251,9 +252,9 @@
       </div>
       <div>
         <span>营业执照信息</span>
-        <p v-if="creditCodeShow">统一社会信用代码: {{ companyForm.documentCardStr.creditCode }}</p>
-        <p v-if="icRegisterShow"><span>工商注册号: {{ companyForm.documentCardStr.icRegisterCode }}</span><span>组织机构代码: {{ companyForm.documentCardStr.organizationCode }}</span></p>
-        <p v-if="icRegisterShow">税务登记证: {{ companyForm.documentCardStr.taxRegisterCode }}</p>
+        <p v-if="creditCodeShow">统一社会信用代码: {{ documentCard.creditCode }}</p>
+        <p v-if="icRegisterShow"><span>工商注册号: {{ documentCard.icRegisterCode }}</span><span>组织机构代码: {{ documentCard.organizationCode }}</span></p>
+        <p v-if="icRegisterShow">税务登记证: {{ documentCard.taxRegisterCode }}</p>
       </div>
       <div>
         <span>电子签章信息</span>
@@ -273,12 +274,12 @@
 
 <script>
   import ScreeningTop from '@/components/ScreeningTop';
-  let stepTypeId = 1;
-  let obj = {
+  import {MIXINS} from "@/assets/js/mixins";
+  let obj1 = {
     cityId: "",
-    cityName: "武汉",
+    cityName: "",
     storeId: "",
-    storeName: "当代一店",
+    storeName: "",
     cooperationMode: "",
     name: "",
     lepName: "",
@@ -286,39 +287,37 @@
     lepDocumentCard: "",
     lepPhone: "",
     documentType: "",
-    documentCardStr: {
-      creditCode: "",
-      icRegisterCode: "",
-      organizationCode: "",
-      taxRegisterCode: "",
-    },
-    companyBankListStr: {
-      data: [
-        {
-          id: 1,
-          bankBranchName: '',
-          bankAccountName: '',
-          bankCard: ''
-        }
-      ]
-    },
     contractSign: "",
-    financialSign: ""
+    financialSign: "",
   }
+  let obj2 = {
+    creditCode: "",
+    icRegisterCode: "",
+    organizationCode: "",
+    taxRegisterCode: ""
+  }
+  let arr = [
+    {
+      bankBranchName: '',
+      bankAccountName: '',
+      bankCard: ''
+    }
+  ]
   export default {
     name: "company",
+    mixins: [MIXINS],
     data() {
       return {
-        //搜索表单中的数据
+        // 搜索表单中的数据
         searchForm: {
           cityId: "",
           storeId: "",
           cooperationMode: "",
           bankCard: "",
-          keyWord: "",
-          searchTimeStart: "",
-          searchTimeEnd: ""
+          keyword: ""
         },
+        cityList: [],
+        storeList: [],
         searchTime: [],
         tableData: [], //公司设置列表
         pageSize: 5,
@@ -327,27 +326,47 @@
         AddEditVisible: false, //新增编辑公司信息 弹出框
         companyFormTitle: "", //新增编辑弹出框 标题
         companyForm: {}, //新增和编辑表单
-        companyDirectInfo: {}, //直营属性证件信息
+        documentCard: {}, //营业执照信息
+        companyBankList: [], //银行账户集合
+        delIds: [],
+        directInfo: {}, //直营属性证件信息
+        directSaleSelect: false,
+        directSaleOut: false,
         dialogViewVisible: false, //查看弹出框
         creditCodeShow: false,
-        icRegisterShow: false
+        icRegisterShow: false,
+        dictionary: {
+          '38':'',
+          '39':'',
+          '40':''
+        }
       }
     },
     created() {
       this.getCompanyList()
       this.selectDirectInfo()
-      this.companyForm = JSON.parse(JSON.stringify(obj))
+      this.initFormList()
+      this.getCityList()
+      this.getDictionary()
     },
     methods: {
+      // 初始化表单 数组集合
+      initFormList() {
+        this.companyForm = JSON.parse(JSON.stringify(obj1))
+        this.documentCard = JSON.parse(JSON.stringify(obj2))
+        this.companyBankList = JSON.parse(JSON.stringify(arr))
+      },
       /**
        * 获取公司设置列表
        */
       getCompanyList: function () {
         let param = {
-          cityId: 1,
           pageSize: this.pageSize,
-          pageNum: this.pageNum
+          pageNum: this.pageNum,
+          startTime: this.searchTime[0],
+          endTime: this.searchTime[1]
         }
+        param = Object.assign({},this.searchForm,param)
         this.$ajax.get('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
@@ -358,45 +377,90 @@
           console.log(error);
         })
       },
+      getCityList() {
+        this.$ajax.get('/api/organize/cities').then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.cityList = res.data
+          }
+        })
+      },
+      getStoreList(val) {
+        let param = {
+          cityId: val,
+          keyWord: ""
+        }
+        this.$ajax.get('/api/organize/deps', param).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.storeList = res.data
+          }
+        })
+        this.companyForm.cityId = val
+        this.cityList.forEach(item => {
+          if(val === item.id) {
+            this.companyForm.cityName = item.name
+          }
+        })
+        this.companyForm.storeId = ""
+      },
+      storeSelect(val) {
+        console.log(val,123);
+      },
       //关闭模态窗
       handleClose(done) {
         this.creditCodeShow = false
         this.icRegisterShow = false
         done()
       },
-      //新增公司信息
       addCompany() {
         this.AddEditVisible = true
         this.companyFormTitle = "添加企业信息"
-        this.companyForm = JSON.parse(JSON.stringify(obj))
+        this.initFormList()
+        this.directSaleSelect = false
+        this.directSaleOut = false
       },
       //切换到直营属性时,自动带出证件信息
       selectDirectInfo() {
         this.$ajax.get('/api/setting/company/selectDirectInfo').then(res => {
           res = res.data
           if(res.status === 200) {
-            this.companyDirectInfo = res.data
+            this.directInfo = res.data
           }
         })
       },
       //合作方式选择
       cooModeChange(val) {
-        if(val === "2") {
-          this.companyForm.lepName = this.companyDirectInfo.lepName
-          this.companyForm.lepDocumentType = this.companyDirectInfo.lepDocumentType
-          this.companyForm.lepDocumentCard = this.companyDirectInfo.lepDocumentCard
-          this.companyForm.lepPhone = this.companyDirectInfo.lepPhone
-          this.companyForm.documentType = this.companyDirectInfo.documentType
+        if(val === 1) {
+          this.directSaleSelect = true
+          this.companyForm.lepName = this.directInfo.lepName
+          this.companyForm.lepDocumentType = this.directInfo.lepDocumentType.value
+          this.companyForm.lepDocumentCard = this.directInfo.lepDocumentCard
+          this.companyForm.lepPhone = this.directInfo.lepPhone
+          this.companyForm.documentType = this.directInfo.documentType.value
           this.icRegisterShow = true
-          this.creditCodeShow = false
-          this.companyForm.documentCardStr = this.companyDirectInfo.documentCard
+          this.documentCard = this.directInfo.documentCard
+          this.companyBankList = this.directInfo.companyBankList
         } else {
-          this.icRegisterShow = false          
+          this.directSaleSelect = false
+          for(let key in this.companyForm) {
+            if(
+              key === "lepName" || key === "lepDocumentType" ||
+              key === "lepDocumentCard" || key === "lepPhone" ||
+              key === "documentType"
+              )
+            {
+              this.companyForm[key] = ""
+            }
+          }
+          this.icRegisterShow = false
+          this.documentCard = JSON.parse(JSON.stringify(obj2))
+          this.companyBankList = JSON.parse(JSON.stringify(arr))
         }
       },
       //企业证件选择
       documentTypeChange(val) {
-        if(val === '2') {
+        if(val === 2) {
           this.creditCodeShow = false
           this.icRegisterShow = true
         } else {
@@ -404,19 +468,17 @@
           this.creditCodeShow = true
         }
       },
-      //新增银行账户
-      addRow(type) {
+      addRow() {
         let row = {
-          id: ++stepTypeId,
           bankName: '',
           bankAccountName: '',
           bankCard: ''
         }
-        this.companyForm.companyBankListStr.data.push(row)
+        this.companyBankList.push(row)
       },
-      //移除银行账户
-      removeRow(index, type) {
-        this.companyForm.companyBankListStr.data.splice(index,1)
+      removeRow(index) {
+        this.delIds.push(JSON.stringify(this.companyBankList[index].id))
+        this.companyBankList.splice(index,1)
       },
       upload(type) {
         this.$refs[type].click()
@@ -435,15 +497,37 @@
           return
         }
       },
-      //确定新增和编辑公司信息
       submitConfirm() {
-        this.companyForm.cityId = 1
-        this.companyForm.storeId = 1
-        this.companyForm.documentCardStr = JSON.stringify(this.companyForm.documentCardStr)
-        this.companyForm.companyBankListStr = JSON.stringify(this.companyForm.companyBankListStr)
+        this.storeList.forEach(item => {
+          if(this.companyForm.storeId === item.id) {
+            this.companyForm.storeName = item.name
+          }
+        })
+        let obj = {
+          companyBankListStr: JSON.stringify({data: this.companyBankList})
+        }
+        let param = {
+          documentCardStr: JSON.stringify(this.documentCard)
+        }
+        param = Object.assign({},this.companyForm,obj,param)
         if(this.companyFormTitle === "添加企业信息") {
-          //新增公司信息请求
-          this.$ajax.post('/api/setting/company/insert', this.companyForm).then(res => {
+          this.$ajax.post('/api/setting/company/insert',param).then(res => {
+            res = res.data
+            if(res.status === 200) {
+              this.AddEditVisible = false
+              this.directSaleSelect = false
+              this.$message(res.message)
+              this.getCompanyList()
+            }
+          }).catch(error => {
+            console.log(error);
+          })
+        } else {
+          let obj = {
+            delIds: this.delIds
+          }
+          param = Object.assign({},param,obj)
+          this.$ajax.put('/api/setting/company/update',param).then(res => {
             res = res.data
             if(res.status === 200) {
               this.AddEditVisible = false
@@ -451,14 +535,7 @@
               this.getCompanyList()
             }
           }).catch(error => {
-            console.log(error)
-          })
-        } else {
-          //编辑公司信息请求
-          this.$ajax.put('/api/setting/company/update',this.companyForm).then(res => {
-            console.log(res)
-          }).catch(error => {
-            console.log(error)
+            console.log(error);
           })
         }
       },
@@ -469,19 +546,41 @@
         } else {
           this.AddEditVisible = true
           this.companyFormTitle = "编辑企业信息"
+          if(row.cooperationMode.value === 1) {
+            this.directSaleSelect = true
+            this.directSaleOut = true
+          } else {
+            this.directSaleSelect = false
+            this.directSaleOut = false
+          }
         }
-        if(row.documentType === 2) {
+        if(row.documentType.value === 2) {
           this.icRegisterShow = true
           this.creditCodeShow = false
         } else {
           this.icRegisterShow = false
           this.creditCodeShow = true
         }
-        this.companyForm = row
-        this.companyForm.documentCardStr = JSON.parse(JSON.stringify(row.documentCard))
-        this.companyForm.companyBankListStr = {}
-        this.companyForm.companyBankListStr.data = JSON.parse(JSON.stringify(row.companyBankList))
-        console.log(this.companyForm,666)
+        this.documentCard = JSON.parse(JSON.stringify(row.documentCard))
+        this.companyBankList = JSON.parse(JSON.stringify(row.companyBankList))
+        let currentRow = JSON.parse(JSON.stringify(row))
+        let newForm = {
+          id: currentRow.id,
+          cityId: currentRow.cityId,
+          cityName: currentRow.cityName,
+          storeId: currentRow.storeId,
+          storeName: currentRow.storeName,
+          cooperationMode: currentRow.cooperationMode.value,
+          name: currentRow.name,
+          lepName: currentRow.lepName,
+          lepDocumentType: type === 'init' ? currentRow.lepDocumentType.label :currentRow.lepDocumentType.value,
+          lepDocumentCard: currentRow.lepDocumentCard,
+          lepPhone: currentRow.lepPhone,
+          documentType: currentRow.documentType.value,
+          contractSign: currentRow.contractSign ? currentRow.contractSign : "",
+          financialSign: currentRow.financialSign ? currentRow.financialSign : "",
+        }
+        this.companyForm = newForm
       },
       handleSizeChange(val) {
         this.pageSize = val
@@ -490,6 +589,15 @@
       handleCurrentChange(val) {
         this.pageNum = val
         this.getCompanyList()
+      },
+      queryFn() {
+        this.getCompanyList()
+      },
+      resetFormFn() {
+        for(let key in this.searchForm) {
+          this.searchForm[key] = ""
+        }
+        this.searchTime = []
       }
     }
 }
@@ -533,11 +641,6 @@
       border-radius:18px;
     }
   }
-  .el-pagination {
-    height: 60px;
-    padding-top: 15px;
-    text-align: center;
-  }
 }
 .dialog-info {
   .company-info {
@@ -569,6 +672,17 @@
           justify-content: space-between;
           > .el-form-item {
             display: flex;
+            margin-bottom: 5px;
+            /deep/ .el-input {
+              .el-input__inner {
+                height: 32px!important;
+              }
+            }
+          }
+          &:nth-child(-n+3) {
+            /deep/ .el-input {
+              width: 230px;
+            }
           }
         }
       }
@@ -599,6 +713,7 @@
             font-weight: bold;
           }
         }
+        .direct-sale { display: none; }
         &.el-table tr:first-child td:last-child {
           span:last-child {
             display: none;

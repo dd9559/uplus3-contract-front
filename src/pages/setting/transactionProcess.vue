@@ -15,15 +15,6 @@
             </template>
           </el-table-column> 
         </el-table>
-        <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="pageNum"
-            :page-sizes="[5, 10, 15, 20]"
-            :page-size="pageSize"
-            layout="total, sizes, prev, next, jumper"
-            :total="total">
-        </el-pagination>
         <!-- 添加编辑交易流程 弹出框 -->
         <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px" class="processDialog">
           <el-form v-model="addForm" size="small">
@@ -37,17 +28,29 @@
         </el-dialog>
         <!-- 交易流程管理 弹出框 -->
         <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px">
+          <div class="manage-title">
+            <label>结算百分比 : </label>
+            <el-input v-model="manageForm.settlePercent"></el-input>%
+          </div>
           <div class="manage-list">
             <el-table :data="manageData">
               <el-table-column align="center" type="index" label="序号"></el-table-column>
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
               <el-table-column align="center" label="步骤名称" prop="name"></el-table-column>
               <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
+              <el-table-column align="center" label="是否可以结算">
+                <template slot-scope="scope">
+                  <el-select v-model="manageForm.isRequired">
+                    <el-option label="是" value="1"></el-option>
+                    <el-option label="否" value="2"></el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
               <el-table-column align="center" label="操作">
                 <template slot-scope="scope">
-                  <el-button type="text">上</el-button>
-                  <el-button type="text">下</el-button>
-                  <el-button type="text">删除</el-button>
+                  <el-button type="text" @click="Operation(scope.$index, 'up')" :disabled="scope.$index === 0">上</el-button>
+                  <el-button type="text" @click="Operation(scope.$index, 'down')" :disabled="scope.$index === (manageData.length - 1)">下</el-button>
+                  <el-button type="text" @click="Operation(scope.$index, 'delete')">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -59,20 +62,24 @@
         </el-dialog>
         <!-- 添加流程步骤 弹出框 -->
         <el-dialog title="添加流程步骤" :visible.sync="ProcessStepVisible" width="740px">
-          <el-table :data="ProcessStepOption" class="process-list">
+          <el-table :data="StepsOption" border class="process-list">
             <el-table-column label="步骤类型">
               <template slot-scope="scope">
-                <el-checkbox>{{ scope.row.stepsTypeName }}</el-checkbox>
+                <p>
+                  <el-checkbox v-model="scope.row.stepsSelect" @change="allSelect(scope.$index,$event)">{{ scope.row.typeName }}</el-checkbox>
+                </p>
               </template>
             </el-table-column>
             <el-table-column label="交易步骤">
               <template slot-scope="scope">
-                <p v-for="item in scope.row.transStepsList" :key="item.id"><el-checkbox>{{ item.type }}</el-checkbox></p>
+                <el-checkbox-group v-model="scope.row.stepsTypeList" @change="select(scope.$index,$event)">
+                  <p v-for="item in scope.row.stepsList" :key="item.id"><el-checkbox :label="item.name">{{ item.name }}</el-checkbox></p>
+                </el-checkbox-group>
               </template>
             </el-table-column>
           </el-table>
           <div slot="footer" class="dialog-footer">
-              <el-button class="confirmBtn">确定</el-button>
+              <el-button class="confirmBtn" @click="confirmSteps">确定</el-button>
           </div>
         </el-dialog>
     </div>
@@ -82,6 +89,7 @@
   import { FILTER } from "@/assets/js/filter"
   export default {
     mixins: [FILTER],
+    props: ["cityId"],
     data() {
       return {
         //交易流程列表
@@ -113,64 +121,25 @@
         dialogManageVisible: false, //交易流程管理
         ProcessStepVisible: false, //添加流程步骤
         //流程管理列表
-        manageData: [
-          {
-            id: 1,
-            stepsTypeName: "金融流程",
-            name: "资料准备",
-            planDays: 7
-          }
-        ],
+        manageData: [],
+        manageForm: {
+          settlePercent: "",
+          isRequired: ""
+        },
         //流程步骤选项
-        ProcessStepOption: [
-          {
-            id: 1,
-            stepsTypeName: "担保流程",
-            transStepsList: [
-              {
-                id: 1,
-                type: "资料准备"
-              },
-              {
-                id: 2,
-                type: "转房款"
-              },
-              {
-                id: 3,
-                type: "交税、过户"
-              }
-            ]
-          },
-          {
-            id: 2,
-            stepsTypeName: "金融流程",
-            transStepsList: []
-          },
-          {
-            id: 3,
-            stepsTypeName: "权证流程",
-            transStepsList: []
-          },
-          {
-            id: 4,
-            stepsTypeName: "物业交割",
-            transStepsList: []
-          }
-        ],
-        stepsTypeName: "",
-        pageSize: 5,
-        pageNum: 1,
-        total: 0
+        StepsOption: [],
+        stepsTypeName: ""
       };
     },
     created() {
       this.getData();
+      this.getTypeSteps()
     },
     methods: {
       // 获取交易流程列表
       getData: function() {
         let param = {
-          cityId: 1
+          cityId: this.cityId
         };
         this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
             res = res.data;
@@ -194,12 +163,12 @@
         } else if(type === 'init') {
           this.dialogManageVisible = true
           let param = {
-            trans_flow_id: row.id
+            flowId: row.id
           }
           this.$ajax.post('/api/flowmanage/selectFlowStepsList',param).then(res => {
             res = res.data
             if(res.status === 200) {
-              // this.manageData = res.data
+              this.manageData = res.data
             }
           })
         } else if(type === 'delete') {
@@ -216,7 +185,7 @@
           let param = {
             cityId: 1
           }
-          param = Object.assign({},this.addForm,obj)
+          param = Object.assign({},this.addForm,param)
           this.processPost(param)
         } else {
           let param = {
@@ -228,27 +197,71 @@
       },
       // 添加 编辑 删除 操作
       processPost(param,type) {
-        if(!type) {
-          console.log(11111);
+        this.$ajax.postJSON('/api/flowmanage/insertFLow',param).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.$message(res.message)
+            if(!type) {
+              this.dialogProcessVisible = false
+            }
+            this.getData()
+          }
+        })
+      },
+      getTypeSteps() {
+        this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: this.cityId}).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            res.data.forEach(item => {
+              this.StepsOption.push({
+                typeId: item.typeId,
+                stepsSelect: false,
+                stepsTypeList: [],
+                typeName: item.typeName,
+                stepsList: item.stepsList
+              })
+            })
+          }
+        }) 
+      },
+      Operation(index,type) {
+        if(type === "up") {
+          if(index > 0) {
+            let upSort = this.manageData[index - 1]
+            this.manageData.splice(index - 1, 1)
+            this.manageData.splice(index, 0, upSort)
+          }
+        } else if(type === "down") {
+          if((index + 1) !== this.manageData.length) {
+            let downSort = this.manageData[index + 1]
+            this.manageData.splice(index + 1, 1)
+            this.manageData.splice(index, 0, downSort)
+          }
+        } else {
+          this.manageData.splice(index, 1)
         }
-        // this.$ajax.post('/api/flowmanage/insertFLow',param).then(res => {
-        //   res = res.data
-        //   if(res.status === 200) {
-        //     this.$message(res.message)
-        //     if(!type) {
-        //       this.dialogProcessVisible = false
-        //     }
-        //     this.getData()
-        //   }
-        // })
       },
-      handleSizeChange(val) {
-        this.pageSize = val
-        this.getData()
+      // 全选
+      allSelect(i,bool) {
+        let arr = this.StepsOption[i]
+        if(bool) {
+          let ar = []
+          arr.stepsList.forEach(item => {
+            ar.push(item.name)
+          })
+          arr.stepsTypeList = ar
+        } else {
+          arr.stepsTypeList = []
+        }
       },
-      handleCurrentChange(val) {
-        this.pageNum = val
-        this.getData()
+      // 多选
+      select(i,arr) {
+        let obj = this.StepsOption[i]
+        let bool = obj.stepsList.length === arr.length
+        obj.stepsSelect = bool
+      },
+      confirmSteps() {
+        
       }
     }
   };
@@ -270,10 +283,6 @@
     .list1 {
       padding: 0 12px;
     }
-    .el-pagination {
-      text-align: center;
-      margin-left: 100px;
-    }
     .processDialog {
       /deep/ .el-dialog__body {
         margin-bottom: 271px;
@@ -286,9 +295,26 @@
       }
     }
     //交易流程管理
+    .manage-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      .el-input {
+        width: 90px;
+        height: 32px;
+        margin-left: 5px;
+        /deep/ .el-input__inner { width: 100%; height: 32px; }
+      }
+    }
     .manage-list {
       .el-table {
         border: 1px solid rgba(237,236,240,1);
+      }
+      /deep/ .el-input {
+        width: 94px;
+        height: 32px;
+        .el-input__inner { width: 100%; height: 32px; }
+        .el-input__icon { line-height: 0; }
       }
     }
     .process-list {
@@ -297,7 +323,6 @@
         line-height: 3;
         padding-left: 50px;
         border-bottom: 1px solid #ebeef5;
-        border-left: 1px solid #ebeef5;
         &:last-child { border-bottom: none; }
       }
       /deep/ .el-table__row {

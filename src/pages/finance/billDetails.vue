@@ -16,32 +16,52 @@
         <el-table border :data="list" header-row-class-name="theader-bg">
           <el-table-column align="center" label="合同编号">
             <template slot-scope="scope">
-              <span>-</span>
+              <span>{{billMsg.contCode}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="收款ID">
+          <el-table-column align="center" :label="activeItem==='付款信息'?'付款ID':'收款ID'">
             <template slot-scope="scope">
-
+              <span>{{billMsg.payCode}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="物业地址 ">
             <template slot-scope="scope">
-
+              <span>{{billMsg.address}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="付款方">
+          <el-table-column align="center" label="收款方" v-if="activeItem==='付款信息'">
             <template slot-scope="scope">
-
+              <span>{{billMsg.inObjType|getLabel}}-{{billMsg.inObjName}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="收款时间">
+          <el-table-column align="center" label="付款方" v-else>
             <template slot-scope="scope">
-
+              <span>{{billMsg.outObjType|getLabel}}-{{billMsg.outObj}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="收款人">
+          <el-table-column align="center" label="付款时间" v-if="activeItem==='付款信息'">
             <template slot-scope="scope">
-
+              <span>{{billMsg.toAccountTime|formatDate}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="收款时间" v-else>
+            <template slot-scope="scope">
+              <span>{{billMsg.createTime|formatDate}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="发起人" v-if="activeItem==='付款信息'">
+            <template slot-scope="scope">
+              <span>{{billMsg.createByName}}-{{billMsg.store}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="收款人" v-else>
+            <template slot-scope="scope">
+              <span>{{billMsg.inObjName}}-{{billMsg.store}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="款类" v-if="activeItem==='付款信息'">
+            <template slot-scope="scope">
+              <span>{{billMsg.moneyType}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -49,40 +69,40 @@
       <li v-if="activeItem==='收款信息'">
         <h4>合计金额</h4>
         <p class="total-text">合计：<span>23680</span>元</p>
-        <el-table border :data="list" header-row-class-name="theader-bg">
+        <el-table border :data="billMsg.inAccount" header-row-class-name="theader-bg">
           <el-table-column align="center" label="款类">
             <template slot-scope="scope">
-              <span>-</span>
+              <span>{{billMsg.moneyType}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="票据">
             <template slot-scope="scope">
-
+              <span>{{billMsg.billCode}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="支付方式">
             <template slot-scope="scope">
-
+              <span>{{billMsg.method}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="金额（元）">
             <template slot-scope="scope">
-
+              <span>{{billMsg.amount}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="收款账户">
+          <el-table-column min-width="200" align="center" label="收款账户">
             <template slot-scope="scope">
-
+              <p>{{scope.row.userName}} {{scope.row.bankName}} {{scope.row.cardNumber}}</p>
             </template>
           </el-table-column>
           <el-table-column align="center" label="状态">
             <template slot-scope="scope">
-
+              {{billMsg.checkStatus|getLabel}}
             </template>
           </el-table-column>
           <el-table-column align="center" label="入账时间">
             <template slot-scope="scope">
-
+              {{billMsg.toAccountTime|formatDate}}
             </template>
           </el-table-column>
           <el-table-column align="center" label="操作">
@@ -94,69 +114,29 @@
       </li>
       <li v-if="activeItem==='收款信息'">
         <h4>刷卡信息</h4>
-        <el-table border :data="list" header-row-class-name="theader-bg">
-          <el-table-column align="center" label="刷卡/转账银行">
-            <template slot-scope="scope">
-              <span>-</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="户名">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="账户">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="订单编号">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="金额（元）">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="手续费（元）">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
+        <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
+          <el-table-column align="center" prop="bankName" label="刷卡/转账银行"></el-table-column>
+          <el-table-column align="center" prop="userName" label="户名"></el-table-column>
+          <el-table-column align="center" prop="cardNumber" label="账户"></el-table-column>
+          <el-table-column align="center" prop="orderNo" label="订单编号"></el-table-column>
+          <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
+          <el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>
         </el-table>
       </li>
       <li v-if="activeItem==='付款信息'">
         <h4>账户信息</h4>
-        <el-table border :data="list" header-row-class-name="theader-bg">
-          <el-table-column align="center" label="收款银行">
-            <template slot-scope="scope">
-              <span>-</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="户名">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="收款账户">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="金额（元）">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
+        <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
+          <el-table-column align="center" prop="bankName" label="收款银行"></el-table-column>
+          <el-table-column align="center" prop="userName" label="户名"></el-table-column>
+          <el-table-column align="center" prop="cardNumber" label="收款账户"></el-table-column>
+          <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
         </el-table>
       </li>
       <li>
         <h4>其他信息</h4>
         <div class="input-group">
           <label>备注信息:</label>
-          <p>这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行，这里是备注信息中国银行光谷分行</p>
+          <p>{{billMsg.remark}}</p>
         </div>
         <div class="input-group">
           <label>付款凭证:</label>
@@ -200,16 +180,21 @@
 </template>
 
 <script>
+  import {FILTER} from "@/assets/js/filter";
+
   let timer = null
   let target = 0
   let scrollHeight = 0
 
   export default {
     name: "bill-details",
+    mixins: [FILTER],
     data() {
       return {
         tabs: ['审核信息'],
         activeItem: '',
+        billId:0,
+        billMsg:{},
         list: [
           {}
         ]
@@ -218,24 +203,38 @@
     created(){
       // debugger
       this.activeItem = this.$route.query.tab
+      this.billId = this.$route.query.id
       this.tabs.unshift(this.activeItem)
+      this.getData()
     },
     methods: {
+      getData:function () {
+        let param = {
+          payId:this.activeItem==='收款信息'?33:3,
+          type:this.activeItem==='收款信息'?1:2
+        }
+        this.$ajax.get('/api/payInfo/selectPayInfoDetail',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.billMsg = Object.assign({},res.data)
+          }
+        })
+      },
+
       choseTab: function (item) {
         // this.activeItem = item
         if(item!=='审核信息'){
           return
         }
         target = this.$refs.checkBox.offsetTop
-        scrollHeight = document.querySelector('.view').clientHeight
+        scrollHeight = document.querySelector('.view').parentNode.clientHeight
         console.log(`target:${target}`)
-        console.log(`容器：${document.querySelector('.view').clientHeight}`)
+        console.log(`容器：${scrollHeight}`)
         this.scrollTop()
       },
       scrollTop:function () {
-        // debugger
-        let scrollTop = document.querySelector('.view').scrollTop
-        document.querySelector('.view').scrollTop = scrollTop+30
+        let scrollTop = document.querySelector('.view').parentNode.scrollTop
+        document.querySelector('.view').parentNode.scrollTop = scrollTop+30
         console.log(scrollTop)
         if(scrollTop+scrollHeight>=target){
           clearTimeout(timer)

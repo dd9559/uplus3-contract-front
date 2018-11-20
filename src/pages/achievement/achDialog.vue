@@ -5,304 +5,367 @@
              :visible.sync="shows"
              :before-close="handleClose"
              >
-                           <b class="el-icon-close" @click="closeDialog"></b>
-                           <div class="ach-header">
-                             <h1 v-if="dialogType==0">业绩审核</h1> 
-                             <h1 v-if="dialogType==1">业绩编辑</h1> 
-                             <h1 v-if="dialogType==2">业绩反审核</h1>  
-                             <h1 v-if="dialogType==3">业绩分成</h1> 
-                             <p>可分配业绩：<span class="orange">3000元</span></p>
-                           </div> 
-                           <div class="ach-body">
-              
-                                <div class="house-divide">
-                                    <div class="house-left f_l">
-                                              <h1>房源方分成</h1>
-                                    </div>
-                                    <div class="house-right f_r">
-                                             <el-button type="primary" @click="relativeMans">相关人员</el-button>
-                                             <el-button type="primary"  @click="addMansHouse">添加分配人</el-button>
-                                    </div>
-                                </div>
-                                <div class="ach-divide-list">
-                                       <el-table                                      
-                                       :data="achDetail"
-                                       style="width: 100%">
-                                      <el-table-column
-                                        label="角色类型"
-                                        width="110">
-                                       <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择" filterable>
-                                                   <el-option
-                                                     v-for="item in options"
-                                                     :key="item.value"
-                                                     :label="item.label"
-                                                     :value="item.value">
-                                                   </el-option>
-                                             </el-select> 
+                 <!-- 头部右边关闭按钮 -->
+                <b class="el-icon-close" @click="closeDialog"></b>
+                <!-- 头部左边业绩分成title -->
+                <div class="ach-header">
+                  <h1 v-if="dialogType==0">业绩审核</h1> 
+                  <h1 v-if="dialogType==1">业绩编辑</h1> 
+                  <h1 v-if="dialogType==2">业绩反审核</h1>  
+                  <h1 v-if="dialogType==3">业绩分成</h1> 
+                  <p>可分配业绩：<span class="orange">3000元</span></p>
+                </div> 
 
-                                               <!-- <el-autocomplete
-                                                class="inline-input"
-                                                v-model="state1"
-                                                :fetch-suggestions="querySearch"
-                                                placeholder="请输入内容"
-                                                @select="handleSelect"
-                                              ></el-autocomplete> -->
-                                        </template>
-                                      </el-table-column>
+                <!-- 房源列表 -->
+                <div class="ach-body">
+                     <div class="house-divide">
+                         <div class="house-left f_l">
+                                   <h1>房源方分成</h1>
+                         </div>
+                         <div class="house-right f_r">
+                                  <el-button type="primary" @click="relativeMans">相关人员</el-button>
+                                  <el-button type="primary"  @click="addMansHouse">添加分配人</el-button>
+                         </div>
+                     </div>
 
-                                      <el-table-column
-                                        label="分成比例"
-                                        width="100">
-                                        <template slot-scope="scope">
-                                          <el-input v-model="input" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
+                     <div class="ach-divide-list">
+                            <el-table                                      
+                            :data="achDetail"
+                            style="width: 100%">
+                           <el-table-column
+                             label="角色类型"
+                             width="140">
+                            <template slot-scope="scope">
+                              <!-- filterable -->
+                                 <el-select v-model="scope.row.role_type" placeholder="请选择">
+                                        <el-option
+                                           v-for="item in rules.role_type"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value"
+                                         >
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                      <el-table-column
-                                        label="经纪人"
-                                        width="100">
-                                           <template slot-scope="scope">
-                                              <el-input v-model="scope.row.name" placeholder="请输入"></el-input>
-                                           </template>
-                                      </el-table-column>
+                           <el-table-column
+                             label="分成比例"
+                             width="100">
+                              <template slot-scope="scope">
+                                  <el-input v-model.number="scope.row.radio" placeholder="请输入数字"
+                                     @keyup.native="filterNumber(scope.$index,scope.row.radio)" 
+                                    oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"></el-input>
+                              </template>
+                           </el-table-column>
 
-                                       <el-table-column
-                                        label="在职状况"
-                                        width="110">
-                                         <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择" filterable>
-                                                   <el-option
-                                                     v-for="item in options"
-                                                     :key="item.value"
-                                                     :label="item.label"
-                                                     :value="item.value">
-                                                   </el-option>
-                                             </el-select> 
-                                        </template>
-                                      </el-table-column>
+                           <el-table-column
+                             label="经纪人"
+                             width="120">
+                                <template slot-scope="scope">
+                                       <el-select v-model="scope.row.dealName" placeholder="请选择">
+                                          <el-option                                   
+                                            v-for="item in rules.dealName"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value">
+                                          </el-option>
+                                       </el-select>
+                                </template>
+                           </el-table-column>
 
-                                      
-                                      <el-table-column
-                                        label="门店"
-                                        width="110">
-                                        <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择" filterable>
-                                                   <el-option
-                                                     v-for="item in options"
-                                                     :key="item.value"
-                                                     :label="item.label"
-                                                     :value="item.value">
-                                                   </el-option>
-                                             </el-select> 
-                                        </template>
-                                      </el-table-column>
+                           <el-table-column
+                             label="在职状况"
+                             width="110">
+                              <template slot-scope="scope">
+                                 <el-select v-model="scope.row.isJob" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.isJob"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
+
+                           
+                           <el-table-column
+                             label="门店"
+                             width="110">
+                             <template slot-scope="scope">
+                                 <el-select v-model="scope.row.level3" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.level3"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
 
-                                       <el-table-column
-                                        label="店长"
-                                        width="80">
-                                        <template slot-scope="scope">
-                                              <el-input v-model="scope.row.shopowner" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
+                            <el-table-column
+                             label="店长"
+                             width="110">
+                             <template slot-scope="scope">
+                                   <el-select v-model="scope.row.shopowner" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.shopowner"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                      <el-table-column
-                                        label="单组"
-                                        width="120">
-                                         <template slot-scope="scope">
-                                              <el-input v-model="scope.row.level4" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
+                           <el-table-column
+                             label="单组"
+                             width="150">
+                              <template slot-scope="scope">
+                                  <el-select v-model="scope.row.level4" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.level4"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                    
+                         
 
-                                     <el-table-column
-                                        label="区经"
-                                        width="80"> 
-                                        <template slot-scope="scope">
-                                              <el-input v-model="scope.row.amaldar" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
+                          <el-table-column
+                             label="区经"
+                             width="100"> 
+                             <template slot-scope="scope">
+                                  <el-select v-model="scope.row.amaldar" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.amaldar"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                      
-                                     <el-table-column
-                                        label="区总"
-                                        width="80"> 
-                                        <template slot-scope="scope">
-                                              <el-input v-model="scope.row.manager" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
+                           
+                          <el-table-column
+                             label="区总"
+                             width="100"> 
+                             <template slot-scope="scope">
+                                  <el-select v-model="scope.row.manager" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.manager"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                     <el-table-column
-                                        label="门店公共业绩"
-                                        width="120"> 
-                                        <template slot-scope="scope">
-                                              <el-radio v-model="scope.row.radio" name="scope.row.name1" label="门店"></el-radio>
-                                             <!-- <p> <input type="radio" :name="scope.row.name1"></p> -->
-                                        </template>
-                                      </el-table-column>
+                          <el-table-column
+                             label="门店/公司公共业绩"
+                             width="170"> 
+                             <template slot-scope="scope">
+                                   <el-radio-group v-model="scope.row.isChoose">
+                                     <el-radio :label="0">门店</el-radio>
+                                     <el-radio :label="1">公司</el-radio>
+                                  </el-radio-group>
+                             </template>
+                           </el-table-column>
 
-                                      <el-table-column
-                                        label="公司公共业绩"
-                                        width="120"> 
-                                         <template slot-scope="scope">
-                                           <el-radio v-model="scope.row.radio" name="scope.row.name1" label="公司"></el-radio>
-                                          <!-- <p> <input type="radio"   :name="scope.row.name1"></p> -->
-                                        </template>
-                                      </el-table-column>
+                            <el-table-column
+                               prop="manager"
+                               label="操作"
+                               width="80"> 
+                                <template slot-scope="scope">
+                                   <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail)">删除</a>
+                                   <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
+                               </template>
+                           </el-table-column>
+                         </el-table>
+                     </div>
 
-                                     <el-table-column
-                                        prop="manager"
-                                        label="操作"
-                                        width="80"> 
-                                         <template slot-scope="scope">
-                                            <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail)">删除</a>
-                                            <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
-                                        </template>
-                                      </el-table-column>
-                                    </el-table>
-                                </div>
+                      <div class="house-divide">
+                               <div class="house-left f_l">
+                                         <h1>客源方分成</h1>
+                               </div>
+                               <div class="house-right f_r">
+                                        <el-button type="primary" @click="relativeMans">相关人员</el-button>
+                                        <el-button type="primary" @click="addMansClient">添加分配人</el-button>
+                               </div>
+                           </div>
 
-                                <div class="house-divide">
-                                    <div class="house-left f_l">
-                                              <h1>客源方分成</h1>
-                                    </div>
-                                    <div class="house-right f_r">
-                                             <el-button type="primary" @click="relativeMans">相关人员</el-button>
-                                             <el-button type="primary" @click="addMansClient">添加分配人</el-button>
-                                    </div>
-                                </div>
+                             <div class="ach-divide-list">
+                                                        <el-table                                      
+                            :data="achDetail"
+                            style="width: 100%">
+                           <el-table-column
+                             label="角色类型"
+                             width="140">
+                            <template slot-scope="scope">
+                              <!-- filterable -->
+                                 <el-select v-model="scope.row.role_type" placeholder="请选择">
+                                        <el-option
+                                           v-for="item in rules.role_type"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value"
+                                         >
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                <div class="ach-check-list">
-                                      <el-table                                      
-                                       :data="achDetail1"
-                                       style="width: 100%">
-                                      <el-table-column
-                                        label="角色类型"
-                                        width="110">
-                                       <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择" filterable>
-                                                   <el-option
-                                                     v-for="item in options"
-                                                     :key="item.value"
-                                                     :label="item.label"
-                                                     :value="item.value">
-                                                   </el-option>
-                                             </el-select> 
-                                        </template>
-                                      </el-table-column>
+                           <el-table-column
+                             label="分成比例"
+                             width="100">
+                              <template slot-scope="scope">
+                                  <el-input v-model.number="scope.row.radio" placeholder="请输入数字"
+                                     @keyup.native="filterNumber(scope.$index,scope.row.radio)" 
+                                    oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"></el-input>
+                              </template>
+                           </el-table-column>
 
-                                      <el-table-column
-                                        label="分成比例"
-                                        width="100">
-                                        <template slot-scope="scope">
-                                          <el-input v-model="input" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
+                           <el-table-column
+                             label="经纪人"
+                             width="120">
+                                <template slot-scope="scope">
+                                       <el-select v-model="scope.row.dealName" placeholder="请选择">
+                                          <el-option                                   
+                                            v-for="item in rules.dealName"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value">
+                                          </el-option>
+                                       </el-select>
+                                </template>
+                           </el-table-column>
 
-                                      <el-table-column
-                                        label="经纪人"
-                                        width="100">
-                                           <template slot-scope="scope">
-                                              <el-input v-model="scope.row.name" placeholder="请输入"></el-input>
-                                           </template>
-                                      </el-table-column>
+                           <el-table-column
+                             label="在职状况"
+                             width="110">
+                              <template slot-scope="scope">
+                                 <el-select v-model="scope.row.isJob" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.isJob"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                       <el-table-column
-                                        label="在职状况"
-                                        width="110">
-                                         <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择" filterable>
-                                                   <el-option
-                                                     v-for="item in options"
-                                                     :key="item.value"
-                                                     :label="item.label"
-                                                     :value="item.value">
-                                                   </el-option>
-                                             </el-select> 
-                                        </template>
-                                      </el-table-column>
+                           
+                           <el-table-column
+                             label="门店"
+                             width="110">
+                             <template slot-scope="scope">
+                                 <el-select v-model="scope.row.level3" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.level3"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                      
-                                       <el-table-column
-                                        label="店长"
-                                        width="80">
-                                        <template slot-scope="scope">
-                                              <el-input v-model="scope.row.shopowner" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
 
-                                      <el-table-column
-                                        label="单组"
-                                        width="120">
-                                         <template slot-scope="scope">
-                                              <el-input v-model="scope.row.level4" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
+                            <el-table-column
+                             label="店长"
+                             width="110">
+                             <template slot-scope="scope">
+                                   <el-select v-model="scope.row.shopowner" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.shopowner"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                       <el-table-column
-                                        label="门店"
-                                        width="110">
-                                        <template slot-scope="scope">
-                                            <el-select v-model="value" placeholder="请选择" filterable>
-                                                   <el-option
-                                                     v-for="item in options"
-                                                     :key="item.value"
-                                                     :label="item.label"
-                                                     :value="item.value">
-                                                   </el-option>
-                                             </el-select> 
-                                        </template>
-                                      </el-table-column>
+                           <el-table-column
+                             label="单组"
+                             width="150">
+                              <template slot-scope="scope">
+                                  <el-select v-model="scope.row.level4" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.level4"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                     <el-table-column
-                                        label="区经"
-                                        width="80"> 
-                                        <template slot-scope="scope">
-                                              <el-input v-model="scope.row.amaldar" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
+                         
 
-                                      
-                                     <el-table-column
-                                        label="区总"
-                                        width="80"> 
-                                        <template slot-scope="scope">
-                                              <el-input v-model="scope.row.manager" placeholder="请输入"></el-input>
-                                        </template>
-                                      </el-table-column>
+                          <el-table-column
+                             label="区经"
+                             width="100"> 
+                             <template slot-scope="scope">
+                                  <el-select v-model="scope.row.amaldar" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.amaldar"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                     <el-table-column
-                                        label="门店公共业绩"
-                                        width="120"> 
-                                        <template slot-scope="scope">
-                                              <el-radio v-model="scope.row.radio" name="scope.row.name1" label="门店"></el-radio>
-                                             <!-- <p> <input type="radio" :name="scope.row.name1"></p> -->
-                                        </template>
-                                      </el-table-column>
+                           
+                          <el-table-column
+                             label="区总"
+                             width="100"> 
+                             <template slot-scope="scope">
+                                  <el-select v-model="scope.row.manager" placeholder="请选择" filterable>
+                                        <el-option
+                                          v-for="item in rules.manager"
+                                          :key="item.value"
+                                          :label="item.label"
+                                          :value="item.value">
+                                        </el-option>
+                                  </el-select> 
+                             </template>
+                           </el-table-column>
 
-                                      <el-table-column
-                                        label="公司公共业绩"
-                                        width="120"> 
-                                         <template slot-scope="scope">
-                                           <el-radio v-model="scope.row.radio" name="scope.row.name1" label="公司"></el-radio>
-                                          <!-- <p> <input type="radio"   :name="scope.row.name1"></p> -->
-                                        </template>
-                                      </el-table-column>
+                          <el-table-column
+                             label="门店/公司公共业绩"
+                             width="170"> 
+                             <template slot-scope="scope">
+                                   <el-radio-group v-model="scope.row.isChoose">
+                                     <el-radio :label="0">门店</el-radio>
+                                     <el-radio :label="1">公司</el-radio>
+                                  </el-radio-group>
+                             </template>
+                           </el-table-column>
 
-                                     <el-table-column
-                                        prop="manager"
-                                        label="操作"
-                                        width="80"> 
-                                         <template slot-scope="scope">
-                                             <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail1)">删除</a>
-                                            <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
-                                        </template>
-                                      </el-table-column>
-                                    </el-table>
-                                </div>
-                           </div> 
+                            <el-table-column
+                               prop="manager"
+                               label="操作"
+                               width="80"> 
+                                <template slot-scope="scope">
+                                   <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail)">删除</a>
+                                   <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
+                               </template>
+                           </el-table-column>
+                         </el-table>
+                           </div>
+                     </div> 
 
                            <!-- 业绩审核底部 -->
                           <div class="ach-footer" v-if="dialogType==0">
@@ -324,14 +387,14 @@
                            </div> 
 
                             <!-- 业绩编辑底部 -->
-                           <div class="ach-footer" v-else="dialogType==1">
+                           <div class="ach-footer" v-if="dialogType==1">
                                 <div class="footer-btn-layout f_r">
                                        <el-button type="primary" round @click="passClose" class="color-blue">保存</el-button>
                                 </div>
                            </div>
                              <!-- 业绩反审核底部 -->
-                           <div class="ach-footer" v-else="dialogType==2">
-                               <p>
+                           <div class="ach-footer" v-if="dialogType==2">
+                                <p class="f_l">
                                     审核日期：
                                      <el-date-picker
                                       v-model="value1"
@@ -340,12 +403,12 @@
                                     </el-date-picker>
                                 </p>
                                 <div class="footer-btn-layout f_r">
-                                       <el-button type="primary" round @click="passClose" class="color-blue">保存</el-button>
+                                       <el-button type="primary" round @click="passClose" class="color-blue" style="margin-top:20px;">保存</el-button>
                                 </div>
                            </div>
 
                            <!-- 业绩分成底部      -->
-                           <div class="ach-footer" v-else="dialogType==3">
+                           <div class="ach-footer" v-if="dialogType==3">
                                 <div class="footer-btn-layout f_r">
                                        <el-button type="primary" round @click="passClose" class="color-white">取消</el-button>
                                        <el-button type="primary" round @click="passClose" class="color-blue">保存</el-button>
@@ -432,45 +495,28 @@ export default {
     return {
       achDetail: [
         {
-          role_type: "房源录入人",
-          distributionList: "10",
-          name: "经纪人",
-          is_job: "离职",
-          shopowner: "店长",
-          level4: "楚河汉街一店",
-          level3: "门店名称",
-          amaldar: "区经",
-          manager: "区总",
-          name1: 1,
-          radio: 1
+          role_type: "协议方",
+          radio: 10,
+          dealName: "经纪人1",
+          isJob: "在职",
+          level3: "门店1",
+          shopowner: "店长1",
+          level4: "单组1",
+          amaldar: "区经1",
+          manager: "区总1",
+          isChoose: 0
         },
         {
-          role_type: "房源录入人",
-          distributionList: "10",
-          name: "经纪人",
-          is_job: "离职",
-          shopowner: "店长",
-          level4: "楚河汉街一店",
-          level3: "门店名称",
-          amaldar: "区经",
-          manager: "区总",
-          name1: 2,
-          radio: 2
-        }
-      ],
-      achDetail1: [
-        {
-          role_type: "房源录入人",
-          distributionList: "10",
-          name: "经纪人",
-          is_job: "离职",
-          shopowner: "店长",
-          level4: "楚河汉街一店",
-          level3: "门店名称",
-          amaldar: "区经",
-          manager: "区总",
-          name1: 1,
-          radio: 1
+          role_type: "协议方",
+          radio: 10,
+          dealName: "经纪人1",
+          isJob: "在职",
+          level3: "门店1",
+          shopowner: "店长1",
+          level4: "单组1",
+          amaldar: "区经1",
+          manager: "区总1",
+          isChoose: 1
         }
       ],
       mansList: [
@@ -516,22 +562,137 @@ export default {
       value: "",
       input: "",
       value1: "",
-      textarea: ""
+      textarea: "",
+      // 筛选选项
+      rules: {
+        role_type: [
+          {
+            label: "协议方",
+            value: "1"
+          },
+          {
+            label: "房源录入人",
+            value: "2"
+          },
+          {
+            label: "主客方",
+            value: "3"
+          }
+        ],
+        dealName: [
+          {
+            label: "经纪人1",
+            value: "1"
+          },
+          {
+            label: "经纪人2",
+            value: "2"
+          }
+        ],
+        isJob: [
+          {
+            label: "在职",
+            value: "1"
+          },
+          {
+            label: "离职",
+            value: "2"
+          },
+          {
+            label: "待入职",
+            value: "3"
+          }
+        ],
+        level3: [
+          {
+            label: "门店1",
+            value: "1"
+          },
+          {
+            label: "门店2",
+            value: "2"
+          },
+          {
+            label: "门店3",
+            value: "3"
+          }
+        ],
+        shopowner: [
+          {
+            label: "店长1",
+            value: "1"
+          },
+          {
+            label: "店长2",
+            value: "2"
+          },
+          {
+            label: "店长3",
+            value: "3"
+          }
+        ],
+        level4: [
+          {
+            label: "单组1",
+            value: "1"
+          },
+          {
+            label: "单组2",
+            value: "2"
+          },
+          {
+            label: "单组3",
+            value: "3"
+          }
+        ],
+        amaldar: [
+          {
+            label: "区经1",
+            value: "1"
+          },
+          {
+            label: "区经2",
+            value: "2"
+          },
+          {
+            label: "区经3",
+            value: "3"
+          }
+        ],
+        manager: [
+          {
+            label: "区总1",
+            value: "1"
+          },
+          {
+            label: "区总2",
+            value: "2"
+          },
+          {
+            label: "区总3",
+            value: "3"
+          }
+        ]
+      }
     };
   },
   props: {
     shows: Boolean,
-    dialogType: Number
+    dialogType: Number,
+    contractCode: String
   },
   methods: {
     handleClose() {
       this.$emit("close");
+      console.log("弹框关闭之前的逻辑");
     },
-    info() {
-      this.$emit("close");
-    },
-    closeDialog() {
-      this.$emit("close");
+    //判断分成比例只能输入1-100的正整数
+    filterNumber(index, val) {
+      if (val > 100) {
+        this.achDetail[index].radio = 100;
+      } else if (val == "0") {
+        this.achDetail[index].radio = 1;
+      }
     },
     relativeMans() {
       this.showTips = true;
@@ -584,6 +745,21 @@ export default {
     },
     handleSelectionChange() {
       this.multipleSelection = val;
+    },
+    // 审核，反审核，编辑，分成点进去的房源，客源
+    codeBaseInfo(val) {
+      let param = { code: val };
+      this.$ajax.get("/api//achievement/selectDisAgents", param).then(res => {
+        console.log(res);
+        if (res.status === 200) {
+        }
+      });
+    }
+  },
+  watch: {
+    contractCode(val) {
+      this.code = val;
+      this.codeBaseInfo(val);
     }
   }
 };
@@ -647,12 +823,7 @@ export default {
     max-width: 1000 !important;
     height: 666px;
     overflow: auto;
-    /deep/ .el-input__inner {
-      border: 0;
-      box-shadow: 0;
-      padding: 0;
-      padding-left: 10px;
-    }
+
     /deep/ .el-input__suffix {
       right: 21px;
     }
@@ -687,6 +858,12 @@ export default {
       padding: 0 30px;
       box-sizing: border-box;
       overflow-y: auto;
+      /deep/ .el-input__inner {
+        border: 0;
+        box-shadow: 0;
+        padding: 0;
+        // padding-left: 10px;
+      }
       .house-divide {
         width: 100%;
         //   background-color: pink;
@@ -757,6 +934,7 @@ export default {
       padding-left: 20px;
       box-sizing: border-box;
       position: relative;
+      padding-bottom: 30px;
       p {
         margin-top: 30px;
       }

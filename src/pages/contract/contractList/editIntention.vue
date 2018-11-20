@@ -223,7 +223,58 @@ export default {
     },
     methods: {
         onSubmit() {
-            
+             let param = { 
+                 igdCont:{      
+                    "id": 23,		//这是合同ID，在修改时才会用到，新增时使用不会报错
+                    "type":5,
+                    "houseinfoCode":"UUS001",
+                    "guestinfoCode":"SQH001",
+                    "signDate":"2018/11/04",
+                    "subscriptionTerm":"2018/11/18",
+                    "subscriptionPrice": "300",		//意向/定金金额
+                    "dealAgentStoreId":"10",
+                    "dealAgentStoreName":"当代一店",
+                    "subscriptionTerm":"2011-11-11",
+                    "dealPrice":"3200.50",			//成交总价
+                    "remarks":"意向备注",
+                    "houseInfo":{
+                        "houseinfoId": "100",
+                        "estateName":"中天国际111",
+                        "propertyRightAddr": "产权地址",
+                        "building":"楚河汉街万达环球国际中心",
+                        "unit":"三单元",
+                        "number": "804",
+                        "price":"875"
+                    },
+                    "guestInfo":{
+                        "guestinfoId": "87"
+                    },
+                    "contPersons": [
+                        {
+                            "name": "test",
+                            "uId": 13,
+                            "relation": 2,
+                            "type": 2,
+                            "mobile": "13098120011"
+                        },
+                        {
+                            "name": "test2",
+                            "relation": 1,
+                            "type": 2,
+                            "mobile": "13001864012"
+                        }
+                    ]
+                    
+                },
+                type:2
+             }
+            this.$ajax
+            .postJSON("/api/contract/editIgdCont", param)
+            .then(res => {
+                console.log(res)
+            }).catch(error => {
+                console.log(error)
+            })
         }
     },
     mounted() {

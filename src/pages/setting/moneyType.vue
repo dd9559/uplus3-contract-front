@@ -1,17 +1,19 @@
 <template>
     <div class="view-container">
         <div class="data-list gap">
+            <span class='sjx'></span>
             <p class="title">
                 <span>数据列表</span>
             </p>
-            <el-table :data="tableData" @row-click="rowClick" highlight-current-row>
+            <el-table :data="tableData" ref='onetable'  @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
                 <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
                 <el-table-column align="center" label="款类(大类)" prop="name" width="120"></el-table-column>
                 <el-table-column align="center" label="是否启用系统收款" width="150">
-                    <template slot-scope="scope"  >
+                    <template slot-scope="scope">
                         <div v-if="scope.row.name=='代收代付'">
                             <el-switch
-                            v-model="scope.row.status==0?true:false"
+                            v-model="scope.row.status"
+                            :active-value="0"
                             active-color="rgba(71,141,227,1)"
                             inactive-color="rgba(141,144,148,1)">
                             </el-switch>
@@ -19,18 +21,12 @@
                         <div v-else>--</div>
                     </template>
                 </el-table-column>
-                <!-- <el-table-column label="操作" min-width="150">
-                    <template slot-scope="scope">
-                        <el-button type="text" size="medium">新增</el-button>
-                        <el-button type="text" size="medium">删除</el-button>
-                        <el-button v-if="scope.row.moneyType === '代管'" type="text" size="medium" @click="dialogCitySettingVisible = true">城市设置</el-button>
-                    </template>
-                </el-table-column> -->
             </el-table>
         </div>
         <div class="commission gap">
             <p class="title">
                 <span>佣金</span>
+                 <el-button type="primary"  class='paper-btn' round size="medium"  @click='operation(null,1)'>新增</el-button> 
             </p>
             <el-table :data="moneyTypes">
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
@@ -40,39 +36,84 @@
                     <template slot-scope="scope">
                         <div v-if="scope.row.status==0?true:scope.row.status==1?true:false">
                             <el-switch
-                                v-model="scope.row.status==0?true:false"
+                                v-model="scope.row.status"
+                                :active-value="0"
                                 active-color="rgba(71,141,227,1)"
-                                inactive-color="rgba(141,144,148,1)">
+                                inactive-color="rgba(141,144,148,1)"
+                                >
                             </el-switch>
                         </div>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="收款账户" prop="accountType"></el-table-column>
-                <el-table-column align="center" label="操作">
+                <el-table-column align="center" label="操作" :formatter="nullFormatter">
+                    <template slot-scope="scope">
+                        <div v-if="scope.row.parentId ==26">--</div>
 
-                    
-                    <template slot-scope="scope" v-if="isSF">
-                        <el-button type="text" size="medium">新增</el-button>
-                        <el-button type="text" size="medium">删除</el-button>
+                        <div v-else>
+                            <el-button type="text" size="medium" @click='operation(scope.row,2)'>编辑</el-button>
+                            <el-button type="text" size="medium" @click="delYj(scope.row)">删除</el-button>
+                        </div>
+                        <!-- <el-button type="text" size="medium" @click='operation(scpoe.row,1)'>新增</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-       
+          <!-- 添加 -->
+        <el-dialog :title="title" :visible.sync="addDialog" width="740px">
+            <el-form :model="addForm"  class="addform" size="small">
+                <div class="input-group">
+                    <label>名称：</label>
+                    <el-input type="text" v-model="addForm.name"></el-input>
+                </div>
+                 <div class="input-group">
+                    <label>描述：</label>
+                    <el-input type="text" v-model="addForm.remark"></el-input>
+                </div>
+                <div class="input-group">
+                    <label>是否启用：</label>
+                    <div>
+                        <!-- <el-radio label="0" v-model="addForm.status">是</el-radio>
+                        <el-radio label="1" v-model="addForm.status">否</el-radio> -->
+                        <el-switch
+                                v-model="addForm.status"
+                                :active-value="0"
+                                active-color="rgba(71,141,227,1)"
+                                inactive-color="rgba(141,144,148,1)"
+                                >
+                        </el-switch>
+                    </div>
+                </div>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="submitForm" class="confirmBtn">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+  import {FILTER} from "@/assets/js/filter";
     export default {
+        mixins: [FILTER],
         data() {
             return {
                 tableData: [
                     
                 ],
+                value2:'',
                 moneyTypes: [],
-                value2: true,
                 cityName: "",
-                isSF:''
+                isSF:true,
+                title:'',
+                addDialog:false,
+                bigId:'',
+                addForm:{
+                    parentId:'',
+                    name:'',
+                    status:'',
+                    remark:''
+                }
             }
         },
         created(){
@@ -82,22 +123,141 @@
         methods: {
             // 初始化数据
             initList(){
-                this.$ajax.get('api/setting/moneyType/list',{id:''},).then((res)=>{
+                this.$ajax.get('api/setting/moneyType/list',{id:this.bigId},).then((res)=>{
                     if(res.status==200){
-                        this.tableData=res.data.data
-                        this.isSF=this.tableData.name=='代收代付'?true:false
-                        console.log(this.tableData);
+                        // debugger
+                        if(this.bigId==''){
+                            this.tableData=res.data.data
+                            this.moneyTypes=res.data.data[0].moneyTypes
+                        }else{
+                            this.moneyTypes=res.data.data
+                            console.log(this.moneyTypes);
+                        }
+                        // this.value2=this.moneyTypes.status==0?true:false
+                        this.moneyTypes.forEach(item=>{
+                            this.value2=item.status==0?true:false
+                        })
+                        console.log(this.value2,'value2');
+                        // this.addForm.parentId=this.moneyTypes[0].parentId
+                        this.addForm.parentId=this.bigId==''?16:this.bigId
                     }
                     console.log(res);
                 })
+            },
+            valueChange(){
+                debugger
             },
             //城市设置弹框 确定
             confirm() {
 
             },
+            tableRowClassName({row, rowIndex}){
+                row.index = rowIndex;
+            },
+            operation(row,type){
+                this.addDialog=true
+                if(type==1){
+                    this.title='新增小类',
+                    this.addForm.name=''
+                    this.addForm.status=0
+                    this.addForm.remark=''
+                    this.addForm.parentId=this.bigId
+                }else{
+                    this.title='编辑小类'
+                    this.addForm.name=row.name
+                    this.addForm.status=row.status
+                    this.addForm.remark=row.remark
+                    this.addForm.parentId=row.parentId
+                }
+            },
+            submitForm(){
+                this.addForm.status=this.addForm.status?0:1
+                if(this.title=='新增小类'){
+                    this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
+                    if(res.status==200){
+                        this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                        })
+                        this.addDialog=false
+                        this.initList()
+                    }
+                  })
+                }else{
+                    this.$ajax.post('',this.addForm).then(res=>{
+
+                    })
+                }
+                
+            },
+             /**
+             * 弹框
+             */
+            popMsg(msg,callback,row){
+                this.$confirm(msg,'提示',{
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(()=>{
+                callback(row)
+                }).catch(()=>{
+
+                })
+            },
+            delYj(row){
+                // console.log(row,'删除记录');
+                this.popMsg('确定删除此记录吗？',(row)=>{
+                    console.log(row,'删除记录');
+                   this.$ajax.get('/api/setting/moneyType/updateStatus',{id:row.id,status:2})
+                   .then((res)=>{
+                       console.log(res,'res');
+                        if (res.status === 200) {
+                            this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                            })
+                            this.initList()
+                        }
+                   })
+                },row)
+            },
+            //表格第一行加样式
+            tableStyle({row, rowIndex}){
+                row.index = rowIndex;
+                if(rowIndex==0){
+                    return 'linestyle'
+                }
+            },
             //单击行事件
             rowClick(row, event, column) {
+                var index=row.index
+                // alert(index)
+                // debugger
+                var top=114+index*47.4
+                var sjx=document.getElementsByClassName('sjx')
+                var paperBtn=document.getElementsByClassName('paper-btn')
+                if(row.name=='代收代付'){
+                    paperBtn[0].disabled=true
+                    paperBtn[0].classList.add('grey')
+                }else{
+                     paperBtn[0].disabled=false
+                     paperBtn[0].classList.remove('grey')
+                }
+                console.log(sjx[0]);
+                sjx[0].style.top=top+'px'
+                // console.log(this.$refs.onetable,'代收代付');
+                this.$refs.onetable.$el.classList.remove('onetable')
+                if(row.name =='代收代付'){
+                    this.isSF=false
+                }else{
+                    this.isSF=true
+                }
                 this.moneyTypes=row.moneyTypes
+
+                // console.log(row.moneyTypes,'parentid');
+                this.addForm.parentId=row.id
+                this.bigId=row.id
+                this.initList()
             }
         }
     }
@@ -106,16 +266,28 @@
 <style lang="less" scoped>
 .view-container {
     display: flex;
+    background-color: #F5F5F5 !important;
     // height: calc(100% - 40px);
     .data-list {
         // flex: 1;
         // margin-right: 15px;
-        min-width: 36%;
+        position: relative;
+        min-width: 26%;
         margin-right: 1%;
         // padding: 15px 10px 0;
         background-color: #fff;
         box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
         border-radius:4px;
+        > .sjx{
+                width:0;
+                right:-14px;
+                top: 114px;
+                position: absolute;
+                border-width:7px;
+                border-style:solid;
+                border-color:transparent transparent transparent white; /* transparent 设置边框颜色透明 */
+        
+        }
         /deep/ .el-table th {
             background:rgba(242,243,248,1);
         }
@@ -196,6 +368,20 @@
 }
 /deep/ .el-dialog__header {
     border: 1px solid rgba(232, 234, 246, 1);
+}
+/deep/ .onetable tr.linestyle{
+    background-color: #ECF5FF;
+}
+/dppe/ .addform .el-input__inner{
+    width: auto
+}
+.paper-btn{
+    width: 100px;
+}
+.grey{
+    background-color: #F5F5F5;
+    color:#ACA899;
+    border: 1px solid #DDD;
 }
 </style>
 

@@ -6,8 +6,8 @@
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini" ref="adjustCheckForm">
 
         <el-form-item label="发起日期">
-          <!-- <el-date-picker v-model="adjustForm.signDate" type="daterange" unlink-panels start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
-          </el-date-picker> -->
+          <el-date-picker v-model="adjustForm.signDate" type="daterange" unlink-panels start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
+          </el-date-picker>
 
         </el-form-item>
         <el-form-item label="合同类型">
@@ -50,20 +50,52 @@
           </template>
         </el-table-column>
         <el-table-column label="合同类型" prop="tradeType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="成交总价" prop="dealPrice" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="成交经纪人" prop="dealPerson" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="签约日期" prop="signDate" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="发起日期" prop="createTime" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="发起人" prop="createByName" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="审核状态" :formatter="nullFormatter">
+        <el-table-column label="成交总价" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.checkState===1">未提审</span>
-            <span class="green" v-if="scope.row.checkState===2">通过</span>
-            <span class="red" v-if="scope.row.checkState===3">驳回</span>
+            <p v-if="scope.row.tradeType !== '租赁'">{{scope.row.dealPrice}}元</p>
+            <p v-if="scope.row.tradeType === '租赁'">{{scope.row.dealPrice}}元/季度</p>
           </template>
         </el-table-column>
-        <el-table-column label="审核日期" prop="checkTime" :formatter="nullFormatter"></el-table-column>   
-        <el-table-column label="当前审核人" prop="checkByName" :formatter="nullFormatter"></el-table-column>
+        <el-table-column label="成交经纪人" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.dealAgentStoreName}}</p>
+            <p>{{scope.row.dealAgentName}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="签约日期">
+          <template slot-scope="scope">
+            <p>{{scope.row.signDate | getDate}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="发起日期">
+          <template slot-scope="scope">
+            <p>{{scope.row.createTime | getDate}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="发起人" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.createByDepName}}</p>
+            <p>{{scope.row.createByName}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核状态" :formatter="nullFormatter" align="center">
+          <template slot-scope="scope">
+            <span class="blue" v-if="scope.row.checkState === '未审核'">未审核</span>
+            <span class="green" v-if="scope.row.checkState === '通过'">通过</span>
+            <span class="red" v-if="scope.row.checkState === '驳回'">驳回</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核日期">
+          <template slot-scope="scope">
+            <p>{{scope.row.checkTime | getDate}}</p>
+          </template>
+        </el-table-column>   
+        <el-table-column label="当前审核人" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.checkByDepName}}</p>
+            <p>{{scope.row.checkByName}}</p>
+          </template>
+        </el-table-column>
         <el-table-column label="审核备注" width="200" prop="checkRemark" :formatter="nullFormatter"></el-table-column>             
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope">
@@ -185,6 +217,7 @@
   import { Message } from 'element-ui';
 
   import {FILTER} from "@/assets/js/filter";
+  import {TOOL} from "@/assets/js/common";
   export default {
     name: "adjust-check",
     mixins: [FILTER],
@@ -264,7 +297,13 @@
     },
 
     computed: {
-       
+      
+    },
+
+    filters: {
+       getDate(val) {
+         return TOOL.dateFormat(val);
+       }
     },
   
     methods:{
@@ -309,13 +348,13 @@
           let param = {
             "pageNum": 1,                 
             "pageSize": 50,          
-            "deptId": 273,              
-            "empId": 441,               
-            "startTime": "2018-11-07",    
-            "endTime": "2018-11-10",      
+            "deptId": '',              
+            "empId": '',               
+            "startTime": "",    
+            "endTime": "",      
             "contractType": this.adjustForm.tradeType,           
-            "checkState": 2 ,                              
-            "keyword": ''             
+            "checkState": this.adjustForm.checkState,                              
+            "keyword": this.adjustForm.keyWord             
           }
           //调整佣金审核列表
           this.$ajax         
