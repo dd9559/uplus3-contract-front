@@ -6,6 +6,8 @@ const Index = () => import("@/pages/Index");
 
 //设置模块
 const contractTemplate = () => import('@/pages/setting/contractTemplate')
+const contraPreview = () => import('@/pages/setting/contraPreview')
+
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
 const moneyType = () => import('@/pages/setting/moneyType')
@@ -58,6 +60,10 @@ export default new Router({
         {
           path: "contractTemplate",
           component: contractTemplate
+        },
+        {
+          path: "contraPreview",
+          component: contraPreview
         },
         {
           path: "postProcess",

@@ -9,7 +9,7 @@
                 <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
                 <el-table-column align="center" label="款类(大类)" prop="name" width="120"></el-table-column>
                 <el-table-column align="center" label="是否启用系统收款" width="150">
-                    <template slot-scope="scope"  >
+                    <template slot-scope="scope">
                         <div v-if="scope.row.name=='代收代付'">
                             <el-switch
                             v-model="scope.row.status"
