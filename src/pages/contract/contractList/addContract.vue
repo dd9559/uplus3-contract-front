@@ -587,7 +587,7 @@ export default {
     };
   },
   created() {
-    this.contractForm.type = Number(this.$route.query.type);
+    this.contractForm.type = Number(this.$route.query.contType);
     if (this.$route.query.operateType) {
       this.type = this.$route.query.operateType;
     }
@@ -656,11 +656,9 @@ export default {
         this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {});
       }
     },
+    //获取所在城市的交易类型
     getTransFlow(){
-      let param={
-        cityId:1
-      }
-      this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res=>{
+      this.$ajax.get('/api/contract/getTransFlowListByCity').then(res=>{
         res=res.data;
         if(res.status===200){
           console.log(res.data)
@@ -758,7 +756,6 @@ export default {
   }
   .peopleMsg {
     li {
-      //display: flex;
       font-size: 14px;
       margin-bottom: 10px;
       .merge {
@@ -788,10 +785,6 @@ export default {
     }
     .rate_ {
       width: 90px;
-      //margin-right: 10px;
-      //padding-left: 5px;
-      //border: 1px solid #dcdfe6;
-      //border-radius: 3px;
     }
     .idCard_ {
       width: 140px;
@@ -831,51 +824,4 @@ export default {
     font-size: 12px;
   }
 }
-// .search_btn {
-//   padding: 8px 20px;
-// }
-// .attention {
-//   display: inline-block;
-//   width: 10px;
-//   height: 10px;
-//   border: 1px solid #ccc;
-//   border-radius: 2px;
-// }
-// .attention_ {
-//   background: @color-blue;
-// }
-// .floor_btn {
-//   padding: 10px 0;
-//   overflow: hidden;
-//   display: flex;
-//   justify-content: flex-end;
-//   //float: right;
-// }
-// .noList {
-//   background: #dedde2;
-//   padding: 148px 0;
-//   text-align: center;
-// }
-// .client_b {
-//   display: flex;
-//   justify-content: flex-end;
-// }
-// /deep/.el-table td {
-//   padding: 5px 0;
-// }
-// /deep/.el-dialog__header {
-//   padding-top: 10px;
-//   .el-dialog__title {
-//     color: @color-blue;
-//   }
-// }
-// /deep/.el-dialog__body {
-//   padding-top: 20px;
-//   border-top: 1px solid #edecf0;
-// }
-// /deep/ .theader-bg {
-//   > th {
-//     background-color: @bg-th;
-//   }
-// }
 </style>
