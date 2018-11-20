@@ -250,7 +250,7 @@
     </el-dialog>
 
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
-    <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
+    <achDialog :shows="shows" v-on:close="shows=false" :contractCode="code" :dialogType="dialogType"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel" @closeChangeCancel="changeCancelDialog"></changeCancel>
   </div>
@@ -307,7 +307,9 @@ export default {
       contType: 2,
       //合同id
       id:'',
+      //分成
       shows: false,
+      code:'',
       dialogType: 3,
       canceldialogType: "",
       changeCancel: false,
@@ -344,6 +346,7 @@ export default {
     fencheng() {
       this.dialogType = 3;
       this.shows = true;
+      this.code=this.contractDetail.code
     },
     // 合同编辑
     goEdit() {

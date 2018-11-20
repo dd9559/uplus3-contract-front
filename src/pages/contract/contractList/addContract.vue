@@ -43,10 +43,12 @@
           <br>
           <el-form-item label="交易流程：" prop="transaction" v-if="contractForm.type===2">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程">
-              <el-option label="一次性（业）+ 一次性（客）" value="1"></el-option>
-              <el-option label="一次性（业）+ 按揭（客）" value="2"></el-option>
-              <el-option label="按揭（业）+ 一次性（客）" value="3"></el-option>
-              <el-option label="按揭（业）+ 按揭（客）" value="4"></el-option>
+              <el-option
+              v-for="item in transFlowList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+              </el-option>
             </el-select>
           </el-form-item>
         </div>
@@ -574,7 +576,8 @@ export default {
         '507':'',//时间单位
         '517':'',//第三方合作类型
         '12':'',//第三方合作类型
-      }
+      },
+      transFlowList:[]
     };
   },
   created() {
@@ -582,7 +585,8 @@ export default {
     if (this.$route.query.operateType) {
       this.type = this.$route.query.operateType;
     }
-    this.getDictionary()
+    this.getDictionary();
+    this.getTransFlow()
   },
   methods: {
     showVal: function(val) {
@@ -645,6 +649,18 @@ export default {
         };
         this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {});
       }
+    },
+    getTransFlow(){
+      let param={
+        cityId:1
+      }
+      this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          console.log(res.data)
+          this.transFlowList=res.data
+        }
+      })
     }
   },
   filters: {

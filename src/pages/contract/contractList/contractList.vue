@@ -233,18 +233,19 @@
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
             <div style="text-align:center">
-              <el-button type="text" size="medium">上传</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.contState.value!=3" @click="upload(scope.row.code)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview">预览</el-button>
-              <el-button type="text" size="medium">提审</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===1" @click="goCheck">审核</el-button>
               <el-button type="text" size="medium" @click="toLayerAudit(scope.row.code)">调佣</el-button>
+              <el-button type="text" size="medium">提交审核</el-button>
             </div>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-      @size-change="handleSizeChange"
+      class="pagination-info"
       @current-change="handleCurrentChange"
-      :current-page="1"
+      :current-page="currentPage"
       layout="total, prev, pager, next, jumper"
       :total="total">
     </el-pagination>
@@ -254,7 +255,7 @@
     <!-- 调佣弹框 -->
     <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
     <!-- 变更/解约查看弹窗 -->
-    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" @closeChangeCancel="ChangeCancelDialog"></changeCancel>
+    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
   </div>
 </template>
            
@@ -281,7 +282,8 @@ export default {
       signDate:[],
       tableData:[],
       total:0,
-      pageNum:1,
+      currentPage:1,
+      pageSize:10,
       liushui:false,
       contractCode:'',
       tiaoyong:false,
@@ -307,8 +309,8 @@ export default {
     //获取合同列表
     getContractList(){
       let param = {
-        pageNum: this.pageNum,
-        pageSize: 10,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
         keyword:this.keyword
       }
       param = Object.assign({},param,this.contractForm)
@@ -370,11 +372,10 @@ export default {
         }
       })
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.currentPage=val;
+      this.getContractList()
     },
     //新增合同
     toAddcontract(command){
@@ -395,6 +396,10 @@ export default {
           id: 1
         }
       });
+    },
+    //合同审核
+    goCheck(){
+
     },
     //关闭流水弹窗
     closeWater(){
@@ -431,6 +436,12 @@ export default {
         this.changeCancel=true;
         this.dialogType='cancelLook';
       }
+    },
+    //上传合同主体
+    upload(code){
+      console.log(code)
+      this.changeCancel=true;
+      this.dialogType='upload'
     }
   }
 };
