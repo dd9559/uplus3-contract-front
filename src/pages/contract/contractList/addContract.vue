@@ -16,10 +16,12 @@
           </el-form-item>
           <el-form-item prop="dealPrice" v-if="contractForm.type===1">
             <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:90px">
-              <el-option label="/ 天" value="1"></el-option>
-              <el-option label="/ 月" value="2"></el-option>
-              <el-option label="/ 季度" value="3"></el-option>
-              <el-option label="/ 年" value="4"></el-option>
+              <el-option
+              v-for="item in dictionary['507']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -41,10 +43,12 @@
           <br>
           <el-form-item label="交易流程：" prop="transaction" v-if="contractForm.type===2">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程">
-              <el-option label="一次性（业）+ 一次性（客）" value="1"></el-option>
-              <el-option label="一次性（业）+ 按揭（客）" value="2"></el-option>
-              <el-option label="按揭（业）+ 一次性（客）" value="3"></el-option>
-              <el-option label="按揭（业）+ 按揭（客）" value="4"></el-option>
+              <el-option
+              v-for="item in transFlowList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+              </el-option>
             </el-select>
           </el-form-item>
         </div>
@@ -78,7 +82,12 @@
           <br v-if="contractForm.type===2">
           <el-form-item label="产权状态：" prop="" v-if="contractForm.type===2">
             <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px">
-              <el-option label="抵押" value="1"></el-option>
+              <el-option
+              v-for="item in dictionary['514']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="按揭银行：" prop="" v-if="contractForm.type===2">
@@ -142,7 +151,12 @@
           </el-form-item>
           <el-form-item label="付款方式：" prop="">
             <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px">
-              <el-option label="全款" value="1"></el-option>
+              <el-option
+              v-for="item in dictionary['534']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="客源方门店：" prop="">
@@ -187,7 +201,12 @@
             </el-form-item>
             <el-form-item label="类型：" prop="">
               <el-select v-model="contractForm.otherCooperationInfo.type" placeholder="请选择" style="width:140px">
-                <el-option label="客户转" value="1"></el-option>
+                <el-option
+                v-for="item in dictionary['517']"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key">
+                </el-option>
               </el-select>
             </el-form-item>
             <br>
@@ -208,13 +227,19 @@
         </div>
       </div>
       <div class="btn">
-        <p>录入时间：{{111}} 录入人： 最后修改：</p>
-        <p>
+        <div>
+          <div v-if="type===2">
+            <p><span>录入时间：</span>{{contractForm.createTime}}</p>
+            <p><span>录入人：</span>{{contractForm.dealAgentStoreName}}-{{contractForm.dealAgentName}}</p>
+            <p><span>最后修改：</span>{{contractForm.updateTime}}</p>
+          </div>
+        </div>
+        <div>
           <el-button round>预览</el-button>
           <el-button type="success" round>提交审核</el-button>
           <el-button type="primary" round @click="submitForm('ruleForm')">保存</el-button>
           <el-button type="primary" round @click="addContract">保存1</el-button>
-        </p>
+        </div>
       </div>
     </el-form>
     <!-- 选择房源弹窗 -->
@@ -342,8 +367,10 @@
 <script>
 import { TOOL } from "@/assets/js/common";
 import customInput from "./customInput";
+import {MIXINS} from "@/assets/js/mixins";
 
 export default {
+  mixins: [MIXINS],
   components: {
     customInput
   },
@@ -416,7 +443,7 @@ export default {
         },
         guestInfo: {
           guestinfoId: "802",
-          paymentMethod: "1",
+          paymentMethod: 1,
           guestStoreId: "211",
           guestStoreCode: "Qsy481",
           guestStoreName: "客源当代一店",
@@ -425,12 +452,13 @@ export default {
           dealAgentName: "戚琪"
         },
         otherCooperationInfo: {
-          type: "518",
+          type: 1,
           name: "Hibernate",
           mobile: "17720546921",
           identifyCode: "420621199603070921",
           remarks: "三方合作"
-        }
+        },
+        isHavaCooperation:0
       },
       rules: {
         date: [
@@ -541,7 +569,15 @@ export default {
       //添加客源
       innerVisible: false,
       isModel: false,
-      addclient: {}
+      addclient: {},
+      dictionary:{ //数据字典
+        '514':'',//产权状态
+        '534':'',//支付方式
+        '507':'',//时间单位
+        '517':'',//第三方合作类型
+        '12':'',//第三方合作类型
+      },
+      transFlowList:[]
     };
   },
   created() {
@@ -549,6 +585,8 @@ export default {
     if (this.$route.query.operateType) {
       this.type = this.$route.query.operateType;
     }
+    this.getDictionary();
+    this.getTransFlow()
   },
   methods: {
     showVal: function(val) {
@@ -587,6 +625,11 @@ export default {
     },
     toCooperation() {
       this.cooperation = !this.cooperation;
+      if(this.contractForm.isHavaCooperation){
+        this.contractForm.isHavaCooperation=0
+      }else{
+        this.contractForm.isHavaCooperation=1
+      }
     },
     /* 新增/编辑合同 */
     addContract() {
@@ -606,6 +649,18 @@ export default {
         };
         this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {});
       }
+    },
+    getTransFlow(){
+      let param={
+        cityId:1
+      }
+      this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          console.log(res.data)
+          this.transFlowList=res.data
+        }
+      })
     }
   },
   filters: {
@@ -754,6 +809,12 @@ export default {
   padding-top: 20px;
   display: flex;
   justify-content: space-between;
+  p {
+    color: @color-6c;
+    display: inline-block;
+    padding-right: 20px;
+    font-size: 12px;
+  }
 }
 .search_btn {
   padding: 8px 20px;

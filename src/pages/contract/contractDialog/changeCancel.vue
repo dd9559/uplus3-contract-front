@@ -8,7 +8,7 @@
         <el-button type="text" @click="dialogVisible5 = true">上传合同主体弹层</el-button> -->
 
         <!-- 合同变更（编辑） -->
-        <el-dialog :title="getDialogType==='changeEdit'||getDialogType==='changeLook'?'合同变更':'合同解除'" :visible="getCancelDialog" width="740px" class="layer-changecancel mt80" @close='close'>
+        <el-dialog :title="title" :visible="getCancelDialog" width="740px" class="layer-changecancel mt80" @close='close'>
             <div class="audit-box" v-if="getDialogType==='changeEdit'">
                 <div class="textareabox">
                     <span>合同变更原因</span>
@@ -225,7 +225,7 @@ export default {
     data() {
         return {
             //clientHei: document.documentElement.clientHeight, //窗体高度
-           
+            title:''
         }
     },
 
@@ -249,6 +249,17 @@ export default {
       close(){
           this.$emit('closeChangeCancel')
       }
+    },
+
+    created(){
+        console.log('222')
+        if(this.dialogType==="changeEdit"||this.dialogType==="changeLook"){
+            this.title='合同变更'
+        }else if(this.dialogType==="cancelEdit"||this.dialogType==="cancelLook"){
+            this.title='合同解除'
+        }else if(this.dialogType==="upload"){
+            this.title='合同主体'
+        }
     }
     // mounted() {
     //   var _this = this;
@@ -321,7 +332,7 @@ export default {
                         }
                     }       
                     .uploadbtn{
-                        margin: 0 0 0 100px;
+                        margin: 10px 0 0 100px;
                         .el-upload--picture-card{
                             background-color: #fff;
                             border: 2px dashed #DEDDE2;

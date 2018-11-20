@@ -62,7 +62,7 @@
       </el-table>
     </div>
     <!-- 添加和编辑步骤类型 -->
-    <el-dialog :title="modalTitle" :visible.sync="stepsTypeDialog" width="740px">
+    <el-dialog :title="modalTitle" :visible.sync="stepsTypeDialog" width="740px" class="steps-type">
       <el-form :model="addForm" class="addform" size="small">
         <el-form-item label="步骤类型">
           <el-input v-model="addForm.name" autocomplete="off"></el-input>
@@ -97,7 +97,7 @@
             <el-table border :data="tableForm" style="width: 100%">
               <el-table-column align="center" label="名称" min-width="150">
                 <template slot-scope="scope">
-                  <el-input width='100%' v-model="tableForm[scope.$index].title"></el-input>
+                  <el-input v-model="tableForm[scope.$index].title"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="信息类型" min-width="150">
@@ -147,6 +147,7 @@
   }
   export default {
     mixins: [FILTER],
+    props: ["cityId"],
     data() {
       return {
         listData: [], //步骤类型列表
@@ -255,7 +256,7 @@
     methods: {
       //获取步骤类型列表
       getData: function () {
-        this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: 1}).then(res => {
+        this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: this.cityId}).then(res => {
           res = res.data
           if (res.status === 200) {
             this.listData = res.data
@@ -442,7 +443,7 @@
           })
         })
       }
-    }     
+    }    
   }  
 </script>
 
@@ -528,6 +529,9 @@
       }
     }
   }
+  .steps-type {
+    /deep/ .el-dialog__body { margin-bottom: 220px; }
+  }
   .addform {
     .el-form-item {
       display: flex;
@@ -544,6 +548,15 @@
     }
   }
   .modal-context {
+    .input-group {
+      margin-bottom: 20px;
+      /deep/ .el-input {
+        height: 32px;
+        .el-input__inner {
+          height: 32px;
+        }
+      }
+    }
     .menu-table {
       p {
         width: 100%;
@@ -555,6 +568,12 @@
             color: #CECECE;
           }
         }
+      }
+    }
+    /deep/ .el-input {
+      height: 32px;
+      .el-input__inner {
+        height: 32px;
       }
     }
   }

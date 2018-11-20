@@ -259,6 +259,7 @@
     #flowaccount{
         .el-dialog{
             width: 760px;
+            min-height: 600px;
         }
         .el-dialog__body{
             padding: 10px 20px 30px;

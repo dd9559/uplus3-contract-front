@@ -15,7 +15,7 @@
             </el-table-column>
         </el-table>
         <!-- 添加合同资料 -->
-        <el-dialog :title="contractTitle" :visible.sync="contractVisible" width="740px">
+        <el-dialog :title="contractTitle" :visible.sync="contractVisible" width="740px" class="con-dialog">
             <el-form v-model="contractForm" class="contract-form" size="small">
                 <el-form-item label="信息类型">
                     <el-select v-model="contractForm.type" placeholder="请选择信息类型">
@@ -43,6 +43,7 @@
 import { FILTER } from "@/assets/js/filter";
 export default {
   mixins: [FILTER],
+  props: ["cityId"],
   data() {
     return {
       listData: [],
@@ -84,7 +85,7 @@ export default {
     // 获取合同资料库列表
     getData: function() {
       let param = {
-        cityId: 1,
+        cityId: this.cityId,
         pageSize: this.pageSize,
         pageNum: this.pageNum
       };
@@ -181,6 +182,9 @@ export default {
   }
   .contract-list {
     padding: 0 12px;
+  }
+  .con-dialog {
+    /deep/ .el-dialog__body { margin-bottom: 50px; }
   }
   .contract-form {
     .el-form-item {
