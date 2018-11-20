@@ -19,9 +19,7 @@
             <el-form v-model="contractForm" class="contract-form" size="small">
                 <el-form-item label="信息类型">
                     <el-select v-model="contractForm.type" placeholder="请选择信息类型">
-                        <el-option label="买方" value="买方"></el-option>
-                        <el-option label="卖方" value="卖方"></el-option>
-                        <el-option label="其它" value="其它"></el-option>
+                        <el-option v-for="item in dictionary['520']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="资料名称">
@@ -41,14 +39,13 @@
            
 <script>
 import { FILTER } from "@/assets/js/filter";
+import {MIXINS} from "@/assets/js/mixins";
 export default {
-  mixins: [FILTER],
+  mixins: [FILTER,MIXINS],
   props: ["cityId"],
   data() {
     return {
       listData: [],
-      pageSize: 10,
-      pageNum: 1,
       contractTitle: "", //弹出框 标题
       //列表 表头
       tHeader: [
@@ -75,11 +72,15 @@ export default {
         type: "",
         name: "",
         isNecessary: ""
+      },
+      dictionary: {
+        '520':''
       }
     };
   },
   created() {
     this.getData();
+    this.getDictionary()
   },
   methods: {
     // 获取合同资料库列表
@@ -114,7 +115,6 @@ export default {
     },
     // 编辑 删除 操作
     rowOperation(row, opera, title) {
-      debugger;
       if (opera === 1) {
         this.contractVisible = true;
         this.contractTitle = title;
@@ -139,7 +139,6 @@ export default {
     // 提交表单
     submitForm() {
       if (this.contractTitle === "添加合同资料") {
-        debugger;
         const url = "/api/flowmanage/insertConAttach";
         this.conPost(url);
       } else if (this.contractTitle === "编辑合同资料") {
