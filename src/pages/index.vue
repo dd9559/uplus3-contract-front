@@ -72,6 +72,10 @@
                 name:'结算审核',
                 path:'settleCheck'
               },
+              {
+                name:'分账记录',
+                path:'routingRecord'
+              },
             ]
           },
           {
