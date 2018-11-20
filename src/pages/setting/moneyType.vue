@@ -5,7 +5,7 @@
             <p class="title">
                 <span>数据列表</span>
             </p>
-            <el-table :data="tableData" ref='onetable' @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
+            <el-table :data="tableData" ref='onetable'  @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
                 <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
                 <el-table-column align="center" label="款类(大类)" prop="name" width="120"></el-table-column>
                 <el-table-column align="center" label="是否启用系统收款" width="150">
@@ -25,6 +25,7 @@
         <div class="commission gap">
             <p class="title">
                 <span>佣金</span>
+                 <el-button type="primary" class='paper-btn' round size="medium"  @click='operation(null,1)'>新增</el-button> 
             </p>
             <el-table :data="moneyTypes">
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
@@ -44,31 +45,36 @@
                 <el-table-column align="center" label="收款账户" prop="accountType"></el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope" v-if="isSF">
-                        <el-button type="text" size="medium">新增</el-button>
+                        <!-- <el-button type="text" size="medium" @click='operation(scpoe.row,1)'>新增</el-button> -->
+                        <el-button type="text" size="medium" @click='operation(scope.row,2)'>编辑</el-button>
                         <el-button type="text" size="medium" @click="delYj(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
           <!-- 添加 -->
-        <!-- <el-dialog title="添加佣金" :visible.sync="addDialog" width="740px">
-            <el-form :model="addForm" class="addform" size="small">
-                <el-form-item label="名称">
-                <el-input v-model="addForm.name" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="分配负责角色">
-                <el-select v-model="addForm.bigType">
-                    <el-option v-for="(item,index) in listData" :key="index" :label="item.dutyType" :value="item.dutyType"></el-option>
-                </el-select>
-                </el-form-item>
-                 <el-form-item label="描述">
-                <el-input v-model="addForm.remark" autocomplete="off"></el-input>
-                </el-form-item>
+        <el-dialog :title="title" :visible.sync="addDialog" width="740px">
+            <el-form :model="addForm"  class="addform" size="small">
+                <div class="input-group">
+                    <label>名称：</label>
+                    <el-input type="text" v-model="addForm.name"></el-input>
+                </div>
+                 <div class="input-group">
+                    <label>描述：</label>
+                    <el-input type="text" v-model="addForm.remark"></el-input>
+                </div>
+                <div class="input-group">
+                    <label>是否启用：</label>
+                    <div>
+                        <el-radio label="0" v-model="addForm.isUse">是</el-radio>
+                        <el-radio label="1" v-model="addForm.isUse">否</el-radio>
+                    </div>
+                </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="submitForm" class="confirmBtn">确 定</el-button>
             </div>
-        </el-dialog> -->
+        </el-dialog>
     </div>
 </template>
 
@@ -82,10 +88,12 @@
                 moneyTypes: [],
                 cityName: "",
                 isSF:true,
-                addDialog:true,
+                title:'',
+                addDialog:false,
                 addForm:{
+                    parentId:'',
                     name:'',
-                    bigType:'',
+                    isUse:'',
                     remark:''
                 }
             }
@@ -101,6 +109,7 @@
                     if(res.status==200){
                         this.tableData=res.data.data
                         this.moneyTypes=res.data.data[0].moneyTypes
+                        this.addForm.parentId=this.moneyTypes[0].parentId
                     }
                     console.log(res);
                 })
@@ -108,6 +117,35 @@
             //城市设置弹框 确定
             confirm() {
 
+            },
+            tableRowClassName({row, rowIndex}){
+                row.index = rowIndex;
+            },
+            operation(row,type){
+                this.addDialog=true
+                if(type==1){
+                    this.title='新增小类'
+                }else{
+                    this.title='编辑小类'
+                    this.addForm.name=row.name
+                    this.addForm.isUse=row.isUse
+                    this.addForm.remark=row.remark
+                    this.addForm.parentId=row.parentId
+                }
+            },
+            submitForm(){
+                // /setting/moneyType/insert
+                console.log(this.addForm);
+                this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
+                    if(res.status==200){
+                        this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                        })
+                        this.initList()
+                    }
+                })
+                console.log(this.addForm);
             },
              /**
              * 弹框
@@ -142,30 +180,21 @@
             },
             //表格第一行加样式
             tableStyle({row, rowIndex}){
+                row.index = rowIndex;
                 if(rowIndex==0){
                     return 'linestyle'
                 }
             },
             //单击行事件
             rowClick(row, event, column) {
-                console.log(row);
-                var top=114
-                if(row.id==16){
-                     top=top
-                }
-                else if(row.id==22){
-                     top=top+47.4
-                }
-                else if(row.id==24){
-                     top=top+47.4*2
-                }
-                else if(row.id==26){
-                    top=top+47.4*3
-                }
+                var index=row.index
+                // alert(index)
+                // debugger
+                var top=114+index*47.4
                 var sjx=document.getElementsByClassName('sjx')
                 console.log(sjx[0]);
                 sjx[0].style.top=top+'px'
-                console.log(this.$refs.onetable,'代收代付');
+                // console.log(this.$refs.onetable,'代收代付');
                 this.$refs.onetable.$el.classList.remove('onetable')
                 if(row.name =='代收代付'){
                     this.isSF=false
@@ -173,6 +202,9 @@
                     this.isSF=true
                 }
                 this.moneyTypes=row.moneyTypes
+
+                // console.log(row.moneyTypes,'parentid');
+                this.addForm.parentId=row.id
             }
         }
     }
@@ -286,6 +318,12 @@
 }
 /deep/ .onetable tr.linestyle{
     background-color: #ECF5FF;
+}
+/dppe/ .addform .el-input__inner{
+    width: auto
+}
+.paper-btn{
+    width: 100px;
 }
 </style>
 
