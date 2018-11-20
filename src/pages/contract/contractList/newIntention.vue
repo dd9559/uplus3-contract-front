@@ -1,6 +1,6 @@
 <!-- 新增意向金 -->
 <template>
-    <div class="newintention">
+    <div class="newintention" id="newIntention">
         <div class="formbox">
             <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" :validate-on-rule-change="false" class="form-innnerbox">
                 <div class="form-content">
@@ -8,25 +8,25 @@
                     <div class="column-form"> 
                         <div class="column-title">合同信息</div>
                         <div class="form-cont">
-                            <el-form-item label="签约日期" prop="signdate">
-                                <el-date-picker v-model="ruleForm.signdate" type="date" placeholder="选择日期"></el-date-picker>
+                            <el-form-item label="签约日期" prop="signDate">
+                                <el-date-picker v-model="ruleForm.signDate" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="合同类型">
                                 <el-input v-model="ruleForm.contractType" :disabled="true"></el-input>
                             </el-form-item>
                             
-                            <el-form-item label="认购期限" prop="subscribdate">
-                                <el-date-picker v-model="ruleForm.subscribdate" type="date" placeholder="选择日期"></el-date-picker>
+                            <el-form-item label="认购期限" prop="subscriptionTerm">
+                                <el-date-picker v-model="ruleForm.subscriptionTerm" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
-                            <el-form-item label="认购总价" prop="subscribmoney">
-                                <el-input v-model.number="ruleForm.subscribmoney" type="number" clearable>
+                            <el-form-item label="认购总价" prop="subscriptionPrice">
+                                <el-input v-model.number="ruleForm.subscriptionPrice" type="number" clearable>
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item label="意向金金额" prop="intentmoney">
-                                <el-input v-model.number="ruleForm.intentmoney" type="number" clearable>
+                            <el-form-item label="意向金金额" prop="dealPrice">
+                                <el-input v-model.number="ruleForm.dealPrice" type="number" clearable>
                                     <i slot="suffix" class="yuan">元</i>
-                                    <template slot="append">{{ruleForm.intentmoney | moneyFormat}}</template>
+                                    <template slot="append">{{ruleForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
                             </el-form-item>
                         </div>
@@ -38,7 +38,7 @@
                         <div class="form-cont">
                             <el-form-item>
                                 <el-form-item label="房源编号" prop="houseno">
-                                    <el-button type="primary" v-model="ruleForm.houseno">请选择房源</el-button>
+                                    <el-button type="primary" v-model="ruleForm.houseno" @click="toLayerHouse()">请选择房源</el-button>
                                 </el-form-item>
                                 <el-form-item label="物业地址">
                                     <el-input v-model="ruleForm.address1" clearable class="big-input"></el-input>
@@ -72,7 +72,7 @@
                         <div class="form-cont">
                             <el-form-item>
                                 <el-form-item label="客源编号"  prop="custno">
-                                        <el-button type="primary"  v-model="ruleForm.custno">请选择客源</el-button>
+                                        <el-button type="primary"  v-model="ruleForm.custno" @click="toLayerGuest()">请选择客源</el-button>
                                 </el-form-item>
                                 <el-form-item label="成交经纪人" required>
                                     <el-form-item prop="item1">
@@ -115,25 +115,29 @@
 
             
         </div>
-       
-            
+        <!-- 房源弹框 -->
+        <houseGuest :dialogVisible="layerhouse" :dialogType="dialogType"  @closeHouseGuest="closeCommission" v-if='layerhouse'></houseGuest>
+          
     </div>
     
 </template>
 
 <script>
+import houseGuest from '../contractDialog/houseGuest';
 import { TOOL } from "@/assets/js/common";
 export default {
     data() {
         return {
+            layerhouse:false,
+            dialogType: '',
             ruleForm: {
-                signdate: '', //签约日期
+                signDate: '', //签约日期
                 contractType: '', //合同类型
                 item1: '',    //选择门店
                 item2: '',  //选择成交人
-                subscribdate: '', //认购期限
-                subscribmoney: '', //认购总价
-                intentmoney: '', //意向金金额
+                subscriptionTerm: '', //认购期限
+                subscriptionPrice: '', //认购总价
+                dealPrice: '', //意向金金额
                 houseno: '', //房源编号
                 address1: '', //物业地址
                 address2: '', //产权地址
@@ -168,23 +172,18 @@ export default {
             }],
             // 表单校验规则
             rules: {
-                signdate: [
+                signDate: [
                     { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
                 ],
-                item1: [
-                    { required: true, message: '请选择门店', trigger: 'change' }
-                ],
-                item2: [
-                    { required: true, message: '请选择经纪人', trigger: 'change' }
-                ],
-                subscribdate: [
+                
+                subscriptionTerm: [
                     { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
                 ],
-                subscribmoney: [
+                subscriptionPrice: [
                     { required: true, message: '请输入认购总价' },
                     // { min: 0, max: 12, message: '输入总价在0-999999999.99之间', trigger: 'blur' }
                 ],
-                intentmoney: [
+                dealPrice: [
                     { required: true, message: '请输入意向金金额' },
                     // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
                 ],
@@ -206,6 +205,12 @@ export default {
                 custno: [
                     { required: true, message: '请选择客源', trigger: 'click' },
                 ],
+                item1: [
+                    { required: true, message: '请选择门店', trigger: 'change' }
+                ],
+                item2: [
+                    { required: true, message: '请选择经纪人', trigger: 'change' }
+                ],
                 custname: [
                     { required: true, message: '请输入客户姓名' },
                 ],
@@ -218,6 +223,10 @@ export default {
         
             },
         }
+    },
+
+    components: {
+        houseGuest
     },
    
     computed: {
@@ -235,6 +244,21 @@ export default {
     },
 
     methods: {
+        //选择房源弹框
+        toLayerHouse(){
+            this.layerhouse = true
+            this.dialogType = "house"
+        },
+
+        toLayerGuest(){
+            this.layerhouse = true
+            this.dialogType = "guest"
+        },
+
+         //关闭选择房源客源弹窗
+        closeCommission(){
+             this.layerhouse = false;
+        },
 
         //预览事件
         onPreview() {
@@ -248,63 +272,72 @@ export default {
        
         // 新增意向金接口（post）
         onSubmit(ruleForm) {
-            this.$refs[ruleForm].validate((valid) => {
-                if (valid) {
+            // this.$refs[ruleForm].validate((valid) => {
+            //     if (valid) {
                     let param = { 
                         igdCont:{      
-                        "id": 23,		//这是合同ID，在修改时才会用到，新增时使用不会报错
-                        "type":5,
-                        "houseinfoCode":"UUS001",
-                        "guestinfoCode":"SQH001",
-                        "signDate":"2018/11/04",
-                        "subscriptionTerm":"2018/11/18",
-                        "subscriptionPrice": "300",		//意向/定金金额
-                        "dealAgentStoreId":"10",
-                        "dealAgentStoreName":"当代一店",
-                        "subscriptionTerm":"2011-11-11",
-                        "dealPrice":"3200.50",			//成交总价
-                        "remarks":"意向备注",
-                        "houseInfo":{
-                            "houseinfoId": "100",
-                            "estateName":"中天国际",
-                            "propertyRightAddr": "产权地址",
-                            "building":"楚河汉街万达环球国际中心",
-                            "unit":"三单元",
-                            "number": "804",
-                            "price":"875"
-                        },
-                        "guestInfo":{
-                            "guestinfoId": "87"
-                        },
-                        "contPersons": [
-                            {
-                                "name": "test",
-                                "uId": 13,
-                                "relation": 2,
-                                "type": 2,
-                                "mobile": "13098120011"
+                            "id": 23,		//这是合同ID，在修改时才会用到，新增时使用不会报错
+                            "type":4,       //合同类型 ZL("租赁", 1), MM("买卖", 2), DB("代办", 3), YX("意向", 4)
+                            "houseinfoCode":"UUS001",                //房源编号
+                            "guestinfoCode":"SQH001",                //客源编号
+                            "signDate":"2018/11/04",                 //签约日期
+                            "subscriptionTerm":"2018/11/18",         //认购期限
+                            "subscriptionPrice": "300",		         //成交总价
+                            "dealAgentStoreId":"10",                 //成交经纪人门店ID
+                            "dealAgentStoreName":"当代一店",          //成交经纪人门店名字
+                            "dealPrice":"3200.50",			         //（意向/定金金额）
+                            "remarks":"意向备注",                     //（意向备注）
+                            "houseInfo":{
+                                "houseinfoId": "100",
+                                "estateName":"中天国际",
+                                "propertyRightAddr": "产权地址",
+                                "building":"楚河汉街万达环球国际中心",
+                                "unit":"三单元",
+                                "number": "804",
+                                "price":"875"
                             },
-                            {
-                                "name": "test2",
-                                "relation": 1,
-                                "type": 2,
-                                "mobile": "13001864012"
-                            }
-                        ]
-                        
-                    },
-                    type:1
+                            "guestInfo":{
+                                "guestinfoId": "87",
+                                "dealAgentId": 1,
+                                "dealAgentName": "成交人姓名啊"
+                            },
+                            "contPersons": [
+                                {
+                                    "name": "胡业主",
+                                    "type": 1,
+                                    "mobile": "15527279348",
+                                    "identifyCode": "",
+                                    "uId": 1,
+                                    "relation": 1
+                                },
+                                {
+                                    "name": "李客户",
+                                    "type": 2,
+                                    "mobile": "13245687452",
+                                    "identifyCode": "",
+                                    "uId": 1,
+                                    "relation": 1
+                                },
+                            ]
+                            
+                        },
+                        type:1
                     }
-                    this.$confirm('确定保存已创建合同?', '', {
+                    this.$confirm('确定保存已创建合同?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'info',
-                        center: true
+                        roundButton: true
+
                     }).then(() => {
                         this.$ajax
                         .postJSON("/api/contract/editIgdCont", param)
                         .then(res => {
-                            console.log(res)
+                            // console.log(res)
+                            this.$message({
+                                type: 'success',
+                                message: '已保存!'
+                            });
                         }).catch(error => {
                             console.log(error)
                         })
@@ -312,10 +345,10 @@ export default {
                     }).catch(() => {
 
                     })
-                }else{
-                    return false
-                }
-            })
+            //     }else{
+            //         return false
+            //     }
+            // })
             
             
             
@@ -327,7 +360,46 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+    
+.el-message-box{
+    .el-message-box__headerbtn{
+        top: 12px;
+        .el-message-box__close{
+            font-size: 22px;
+        }
+    }
+    .el-message-box__header{
+        border-bottom: 1px solid #EDECF0;
+    }
+    .el-message-box__status.el-icon-info{
+        color: transparent;
+    }
+    .el-message-box__status+.el-message-box__message{
+        padding: 50px 0 40px;
+        text-align: center;
+        p{
+            color: #233241;
+            font-size: 16px;
+        }
+    }
+    .el-message-box__btns{
+        text-align: center;
+        padding-bottom: 20px;
+        button{
+            width: 100px;
+            height: 38px;
+            font-size: 16px;
+            line-height: 38px;
+            padding: 0;
+            &:nth-child(2){
+                margin-left: 24px;
+            }
+        }
+    }
+
+}
+#newIntention{
     .fr{
         float: right;
     }
@@ -401,6 +473,10 @@ export default {
         
         
     }
+}
+        
+    
+    
 </style>
 
 
