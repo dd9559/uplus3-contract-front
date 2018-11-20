@@ -92,7 +92,7 @@
                   <el-table-column prop="name" label="客户姓名"></el-table-column>
                   <el-table-column label="电话">
                     <template slot-scope="scope">
-                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}<i class="el-icon-phone-outline" @click="call(scope.row.mobile)"></i>
+                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} <i class="iconfont icon-icon_contract_phone" @click="call(scope.row.mobile)"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -108,7 +108,7 @@
           <div class="content">
             <div class="one_">
               <p><span class="tag">扣合作费：</span><span class="text">2018元</span></p>
-              <p><span class="tag">类型：</span><span class="text">{{contractDetail.otherCooperationInfo.type}}</span></p>
+              <p><span class="tag">类型：</span><span class="text" v-if='contractDetail.otherCooperationInfo'>{{contractDetail.otherCooperationInfo.type}}</span></p>
             </div>
             <div class="one_">
               <p><span class="tag">合作方姓名：</span><span class="text">{{contractDetail.otherCooperationInfo.name}}</span></p>
@@ -159,16 +159,16 @@
         </div>
         <div class="footer">
           <div>
-            <p><span>录入时间：</span>2018/9/11 12:20</p>
-            <p><span>录入人：</span>当代一店-夏雨天</p>
-            <p><span>最后修改：</span>2018/9/11 12:20</p>
+            <p><span>录入时间：</span>{{contractDetail.createTime|formatTime}}</p>
+            <p><span>录入人：</span>{{contractDetail.dealAgentStoreName}}-{{contractDetail.dealAgentName}}</p>
+            <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
           </div>
           <div>
             <el-button round class="search_btn" @click="goPreview">预览</el-button>
-            <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)">解约</el-button>
-            <el-button round type="danger" @click="dialogInvalid=true" class="search_btn">无效</el-button>
-            <el-button round class="search_btn" @click="goChangeCancel(1)">变更</el-button>
-            <el-button type="primary" round class="search_btn" @click="goEdit">编辑</el-button>
+            <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)" v-if="contractDetail.contState.value===3">解约</el-button>
+            <el-button round type="danger" @click="dialogInvalid=true" class="search_btn" v-if="contractDetail.contState.value!=3">无效</el-button>
+            <el-button round class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
+            <el-button type="primary" round class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
           </div>
         </div>
       </el-tab-pane>
@@ -201,7 +201,7 @@
     </el-tabs>
     <div class="functionTable">
       <el-button round class="search_btn">打印成交报告</el-button>
-      <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button>
+      <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng">分成</el-button>
     </div>
 
@@ -218,8 +218,8 @@
       </div>
     </el-dialog>
 
-    <!-- 资金监管弹窗 -->
-    <el-dialog title="资金监管" :visible.sync="dialogSupervise" width="740px">
+    <!-- 资金监管弹窗(暂缓) -->
+    <!-- <el-dialog title="资金监管" :visible.sync="dialogSupervise" width="740px">
       <div class="download">
         <p>资金监管合同模板下载</p>
       </div>
@@ -230,7 +230,7 @@
         <el-button @click="dialogSupervise = false">取 消</el-button>
         <el-button type="primary" @click="dialogSupervise = false">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
 
     <!-- 合同无效弹窗 -->
     <el-dialog title="合同无效" :visible.sync="dialogInvalid" width="740px">
@@ -250,7 +250,7 @@
     </el-dialog>
 
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
-    <achDialog :shows="shows" v-on:close="shows=false" :dialogType="dialogType"></achDialog>
+    <achDialog :shows="shows" v-on:close="shows=false" :contractCode="code" :dialogType="dialogType"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel" @closeChangeCancel="changeCancelDialog"></changeCancel>
   </div>
@@ -273,7 +273,12 @@ export default {
       textarea: "",
       activeName: "first",
       //合同信息
-      contractDetail:{},
+      contractDetail:{
+        contType:{},
+        houseInfo:{},
+        otherCooperationInfo:{},
+        contState:{}
+      },
       //业主信息
       ownerData: [],
       //客户信息
@@ -302,7 +307,9 @@ export default {
       contType: 2,
       //合同id
       id:'',
+      //分成
       shows: false,
+      code:'',
       dialogType: 3,
       canceldialogType: "",
       changeCancel: false,
@@ -339,6 +346,7 @@ export default {
     fencheng() {
       this.dialogType = 3;
       this.shows = true;
+      this.code=this.contractDetail.code
     },
     // 合同编辑
     goEdit() {
@@ -464,6 +472,7 @@ export default {
         }
         i {
           font-size: 16px;
+          padding-left: 5px;
           color: #54d384;
           cursor: pointer;
         }

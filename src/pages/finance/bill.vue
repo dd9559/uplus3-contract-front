@@ -25,7 +25,7 @@
               </el-option>
             </el-select>
             <el-date-picker
-              v-model="searchForm.signTime"
+              v-model="searchForm.timeRange"
               type="daterange"
               size="small"
               value-format="yyyy-MM-dd"
@@ -184,6 +184,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -198,19 +207,17 @@
       return {
         activeView:'',
         searchForm: {
-          moneyType: '',
-          billStatus: '',
-          checkStatus: '',
           contType: '',
+          timeType: '',
+          deptId: '',
+          empId: '',
+          billStatus: '',
+          proAccount: '',
+          checkStatus: '',
+          moneyType: '',
+          payMethod: '',
           keyword: '',
-          deptId:'',
-          empId:'',
-          payMethod:'',
-          proAccount:'',
-          signTime:'',
-          timeType:'',
-          startTime:'',
-          endTime:''
+          timeRange:'',
         },
         tableTotal:{},
         list: [
@@ -229,10 +236,19 @@
             state: "未收"
           }
         ],
-        dictionary:{ //数据字典
-          '10':'',
-          '33':''
-        }
+        dictionary: {
+          '10': '',
+          '33': '',
+          '32': '',
+          '23': '',
+          '24': '',
+          '25': '',
+          '507': ''
+        },
+        //分页
+        total:0,
+        currentPage:1,
+        pageSize:10
       }
     },
     created() {
@@ -240,11 +256,28 @@
       this.getDictionary()
     },
     methods: {
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.currentPage = val
+        this.getData()
+      },
       getData: function () {
-        this.$ajax.get('/api/payInfo/selectPayInfoList',this.searchForm).then(res => {
+        let param = JSON.parse(JSON.stringify(this.searchForm))
+        if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+        }
+        delete param.timeRange
+        param.pageNum = this.currentPage
+        param.pageSize = this.pageSize
+        this.$ajax.get('/api/payInfo/selectPayInfoList',param).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list = res.data.page.list
+            this.total = res.data.page.total
             this.tableTotal = Object.assign({},res.data.payMentDataList,res.data.paymentDataList)
           }
         }).catch(error => {
@@ -256,12 +289,11 @@
        * @param row
        */
       toDetails:function (row) {
-        // debugger
         this.$router.push({
           path:'billDetails',
           query:{
             id:row.id,
-            tab:'收款信息'
+            tab:row.type===1?'收款信息':'付款信息'
           }
         })
       },
