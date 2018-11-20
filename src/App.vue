@@ -24,7 +24,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  user-select: none;
+  /*user-select: none;*/
   width: 100%;
   height: 100%;
 }
@@ -49,6 +49,8 @@ p {
 input.no-style {
   border: 0px;
   outline: none;
+  display: inline-block;
+  width: 100%;
 }
 
 .input-group {

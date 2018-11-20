@@ -11,7 +11,6 @@ function get_suffix(filename) {
 //设置请求参数
 function set_upload_param(up,param, filename)
 {
-  debugger
 	if (filename != '') {
 		let suffix = get_suffix(filename);
 		param.key = `${param.key}${suffix}`;
