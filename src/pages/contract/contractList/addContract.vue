@@ -361,7 +361,13 @@
       </el-dialog>
     </el-dialog> -->
     <!-- 房源客源弹窗 -->
-    <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog"></houseGuest>
+    <houseGuest
+    :dialogType="dialogType"
+    :dialogVisible="isShowDialog"
+    :contractType="contractType"
+    @closeHouseGuest="closeHouseGuest"
+    v-if="isShowDialog">
+    </houseGuest>
     <custom-input v-model="text"></custom-input>
   </div>
 </template>
@@ -583,7 +589,8 @@ export default {
         '517':'',//第三方合作类型
         '12':'',//第三方合作类型
       },
-      transFlowList:[]
+      transFlowList:[],
+      contractType:''
     };
   },
   created() {
@@ -668,8 +675,13 @@ export default {
     },
     //房源客源弹窗
     showDialog(value){
+      if(this.contractForm.type===1){
+        this.contractType='求租'
+      }else{
+        this.contractType='求购'
+      }
       this.isShowDialog=true;
-      this.dialogType=value
+      this.dialogType=value;
     },
     //关闭房源客源弹窗
     closeHouseGuest(){

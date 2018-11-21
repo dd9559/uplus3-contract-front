@@ -98,7 +98,7 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown placement="bottom" @command="toAddcontract">
-            <el-button round>
+            <el-button round type="primary">
               创建正式合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
