@@ -31,8 +31,8 @@
                                    class="mr">
                                        <el-select v-model="propForm.department"  class="w200" filterable @change="selUser">
                                            <el-option 
-                                             v-for="item in departs" 
-                                              :key="item.id"
+                                             v-for="(item,index) in departs" 
+                                              :key="index"
                                               :label="item.name"
                                               :value="item.id"></el-option>
                                        </el-select>
@@ -709,16 +709,17 @@ export default {
     };
   },
   created() {
+    // 获取部门列表
+    this.$ajax.get("/api/access/deps").then(res => {
+      if (res.status == 200) {
+        console.log(res.data.data);
+        this.departs = res.data.data;
+      }
+    });
     // 获取应收列表数据
     this.getData();
     // 字典初始化
     this.getDictionary();
-    // 获取部门列表
-    this.$ajax.get("/api/access/deps").then(res => {
-      if (res.status == 200) {
-        this.departs = res.data.data;
-      }
-    });
   },
   components: {
     achDialog,
