@@ -493,13 +493,16 @@ export default {
     padding-bottom: 0;
     position: relative;
     .btn {
-      width: 50px;
-      height: 12px;
-      background-color: gray;
+      width: 56px;
+      height: 17px;
       position: absolute;
-      bottom: -12px;
+      bottom: -17px;
       left: 50%;
-      margin-left: -25px;
+      margin-left: -28px;
+      z-index: 9;
+      background: url(../../assets/img/icon-dowm.png) no-repeat center center;
+      background-size: 56px auto;
+      cursor: pointer;
     }
     .filter-left {
       h1 {

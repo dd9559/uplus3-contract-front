@@ -34,15 +34,15 @@
                             style="width: 100%">
                            <el-table-column
                              label="角色类型"
-                             width="140">
+                             width="160">
                             <template slot-scope="scope">
                               <!-- filterable -->
                                  <el-select v-model="scope.row.role_type" placeholder="请选择">
                                         <el-option
-                                           v-for="item in rules.role_type"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value"
+                                           v-for="item in roleType0"
+                                          :key="item.id"
+                                          :label="item.description"
+                                          :value="item.id"
                                          >
                                         </el-option>
                                   </el-select> 
@@ -61,17 +61,17 @@
 
                            <el-table-column
                              label="经纪人"
-                             width="120">
+                             width="140">
                                 <template slot-scope="scope">
-                                       <el-select v-model="scope.row.dealName" placeholder="请选择">
-                                          <el-option                                   
-                                            v-for="item in rules.dealName"
-                                            :key="item.value"
-                                            :label="item.label"
-                                            :value="item.value">
-                                          </el-option>
-                                       </el-select>
-                                </template>
+                                           <el-autocomplete
+                                            class="inline-input"
+                                            v-model="scope.row.dealName"
+                                            :fetch-suggestions="querySearch"
+                                            placeholder="请输入内容"
+                                            :trigger-on-focus="false"
+                                            @select="handleSelect"
+                                          ></el-autocomplete>
+                                  </template>
                            </el-table-column>
 
                            <el-table-column
@@ -83,6 +83,7 @@
                                           v-for="item in rules.isJob"
                                           :key="item.value"
                                           :label="item.label"
+                                          @select="handleSelect"
                                           :value="item.value">
                                         </el-option>
                                   </el-select> 
@@ -92,32 +93,32 @@
                            
                            <el-table-column
                              label="门店"
-                             width="110">
+                             width="140">
                              <template slot-scope="scope">
-                                 <el-select v-model="scope.row.level3" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.level3"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
+                                     <el-autocomplete
+                                            class="inline-input"
+                                            v-model="scope.row.level3"          
+                                            :fetch-suggestions="queryInfo(3)"
+                                            placeholder="请输入内容"
+                                            :trigger-on-focus="false"
+                                            @select="handleSelect"
+                                     ></el-autocomplete>
                              </template>
                            </el-table-column>
 
 
                             <el-table-column
                              label="店长"
-                             width="110">
+                             width="140">
                              <template slot-scope="scope">
-                                   <el-select v-model="scope.row.shopowner" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.shopowner"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
+                                     <el-autocomplete
+                                            class="inline-input"
+                                            v-model="scope.row.shopowner"          
+                                            :fetch-suggestions="queryInfo(2)"
+                                            placeholder="请输入内容"
+                                            :trigger-on-focus="false"
+                                            @select="handleSelect"
+                                     ></el-autocomplete>
                              </template>
                            </el-table-column>
 
@@ -125,14 +126,14 @@
                              label="单组"
                              width="150">
                               <template slot-scope="scope">
-                                  <el-select v-model="scope.row.level4" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.level4"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
+                                   <el-autocomplete
+                                            class="inline-input"
+                                            v-model="scope.row.level4"          
+                                            :fetch-suggestions="queryInfo(4)"
+                                            placeholder="请输入内容"
+                                            :trigger-on-focus="false"
+                                            @select="handleSelect"
+                                    ></el-autocomplete>
                              </template>
                            </el-table-column>
 
@@ -142,14 +143,14 @@
                              label="区经"
                              width="100"> 
                              <template slot-scope="scope">
-                                  <el-select v-model="scope.row.amaldar" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.amaldar"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
+                                 <el-autocomplete
+                                            class="inline-input"
+                                            v-model="scope.row.amaldar"          
+                                            :fetch-suggestions="queryInfo(1)"
+                                            placeholder="请输入内容"
+                                            :trigger-on-focus="false"
+                                            @select="handleSelect"
+                                ></el-autocomplete>
                              </template>
                            </el-table-column>
 
@@ -158,14 +159,14 @@
                              label="区总"
                              width="100"> 
                              <template slot-scope="scope">
-                                  <el-select v-model="scope.row.manager" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.manager"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
+                                  <el-autocomplete
+                                            class="inline-input"
+                                            v-model="scope.row.manager"          
+                                            :fetch-suggestions="queryInfo(0)"
+                                            placeholder="请输入内容"
+                                            :trigger-on-focus="false"
+                                            @select="handleSelect"
+                                ></el-autocomplete>
                              </template>
                            </el-table-column>
 
@@ -203,168 +204,169 @@
                            </div>
 
                              <div class="ach-divide-list">
-                                                        <el-table                                      
-                            :data="achDetail"
-                            style="width: 100%">
-                           <el-table-column
-                             label="角色类型"
-                             width="140">
-                            <template slot-scope="scope">
-                              <!-- filterable -->
-                                 <el-select v-model="scope.row.role_type" placeholder="请选择">
-                                        <el-option
-                                           v-for="item in rules.role_type"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value"
-                                         >
-                                        </el-option>
-                                  </el-select> 
-                             </template>
-                           </el-table-column>
+                                   <el-table                                      
+                                           :data="achDetail1"
+                                           style="width: 100%">
+                                          <el-table-column
+                                            label="角色类型"
+                                            width="160">
+                                           <template slot-scope="scope">
+                                             <!-- filterable -->
+                                                <el-select v-model="scope.row.role_type" placeholder="请选择">
+                                                       <el-option
+                                                          v-for="item in roleType0"
+                                                         :key="item.id"
+                                                         :label="item.description"
+                                                         :value="item.id"
+                                                        >
+                                                       </el-option>
+                                                 </el-select> 
+                                            </template>
+                                          </el-table-column>
 
-                           <el-table-column
-                             label="分成比例"
-                             width="100">
-                              <template slot-scope="scope">
-                                  <el-input v-model.number="scope.row.radio" placeholder="请输入数字"
-                                     @keyup.native="filterNumber(scope.$index,scope.row.radio)" 
-                                    oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"></el-input>
-                              </template>
-                           </el-table-column>
+                                          <el-table-column
+                                            label="分成比例"
+                                            width="100">
+                                             <template slot-scope="scope">
+                                                 <el-input v-model.number="scope.row.radio" placeholder="请输入数字"
+                                                    @keyup.native="filterNumber(scope.$index,scope.row.radio)" 
+                                                   oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"></el-input>
+                                             </template>
+                                          </el-table-column>
 
-                           <el-table-column
-                             label="经纪人"
-                             width="120">
-                                <template slot-scope="scope">
-                                       <el-select v-model="scope.row.dealName" placeholder="请选择">
-                                          <el-option                                   
-                                            v-for="item in rules.dealName"
-                                            :key="item.value"
-                                            :label="item.label"
-                                            :value="item.value">
-                                          </el-option>
-                                       </el-select>
-                                </template>
-                           </el-table-column>
+                                          <el-table-column
+                                            label="经纪人"
+                                            width="140">
+                                               <template slot-scope="scope">
+                                                          <el-autocomplete
+                                                           class="inline-input"
+                                                           v-model="scope.row.dealName"
+                                                           :fetch-suggestions="querySearch"
+                                                           placeholder="请输入内容"
+                                                           :trigger-on-focus="false"
+                                                           @select="handleSelect"
+                                                         ></el-autocomplete>
+                                                 </template>
+                                          </el-table-column>
 
-                           <el-table-column
-                             label="在职状况"
-                             width="110">
-                              <template slot-scope="scope">
-                                 <el-select v-model="scope.row.isJob" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.isJob"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
-                             </template>
-                           </el-table-column>
-
-                           
-                           <el-table-column
-                             label="门店"
-                             width="110">
-                             <template slot-scope="scope">
-                                 <el-select v-model="scope.row.level3" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.level3"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
-                             </template>
-                           </el-table-column>
+                                          <el-table-column
+                                            label="在职状况"
+                                            width="110">
+                                             <template slot-scope="scope">
+                                                <el-select v-model="scope.row.isJob" placeholder="请选择" filterable>
+                                                       <el-option
+                                                         v-for="item in rules.isJob"
+                                                         :key="item.value"
+                                                         :label="item.label"
+                                                         @select="handleSelect"
+                                                         :value="item.value">
+                                                       </el-option>
+                                                 </el-select> 
+                                            </template>
+                                          </el-table-column>
 
 
-                            <el-table-column
-                             label="店长"
-                             width="110">
-                             <template slot-scope="scope">
-                                   <el-select v-model="scope.row.shopowner" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.shopowner"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
-                             </template>
-                           </el-table-column>
+                                          <el-table-column
+                                            label="门店"
+                                            width="140">
+                                            <template slot-scope="scope">
+                                                    <el-autocomplete
+                                                           class="inline-input"
+                                                           v-model="scope.row.level3"          
+                                                           :fetch-suggestions="queryInfo(3)"
+                                                           placeholder="请输入内容"
+                                                           :trigger-on-focus="false"
+                                                           @select="handleSelect"
+                                                    ></el-autocomplete>
+                                            </template>
+                                          </el-table-column>
 
-                           <el-table-column
-                             label="单组"
-                             width="150">
-                              <template slot-scope="scope">
-                                  <el-select v-model="scope.row.level4" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.level4"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
-                             </template>
-                           </el-table-column>
 
-                         
+                                           <el-table-column
+                                            label="店长"
+                                            width="140">
+                                            <template slot-scope="scope">
+                                                    <el-autocomplete
+                                                           class="inline-input"
+                                                           v-model="scope.row.shopowner"          
+                                                           :fetch-suggestions="queryInfo(2)"
+                                                           placeholder="请输入内容"
+                                                           :trigger-on-focus="false"
+                                                           @select="handleSelect"
+                                                    ></el-autocomplete>
+                                            </template>
+                                          </el-table-column>
 
-                          <el-table-column
-                             label="区经"
-                             width="100"> 
-                             <template slot-scope="scope">
-                                  <el-select v-model="scope.row.amaldar" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.amaldar"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
-                             </template>
-                           </el-table-column>
+                                          <el-table-column
+                                            label="单组"
+                                            width="150">
+                                             <template slot-scope="scope">
+                                                  <el-autocomplete
+                                                           class="inline-input"
+                                                           v-model="scope.row.level4"          
+                                                           :fetch-suggestions="queryInfo(4)"
+                                                           placeholder="请输入内容"
+                                                           :trigger-on-focus="false"
+                                                           @select="handleSelect"
+                                                   ></el-autocomplete>
+                                            </template>
+                                          </el-table-column>
 
-                           
-                          <el-table-column
-                             label="区总"
-                             width="100"> 
-                             <template slot-scope="scope">
-                                  <el-select v-model="scope.row.manager" placeholder="请选择" filterable>
-                                        <el-option
-                                          v-for="item in rules.manager"
-                                          :key="item.value"
-                                          :label="item.label"
-                                          :value="item.value">
-                                        </el-option>
-                                  </el-select> 
-                             </template>
-                           </el-table-column>
 
-                          <el-table-column
-                             label="门店/公司公共业绩"
-                             width="170"> 
-                             <template slot-scope="scope">
-                                   <el-radio-group v-model="scope.row.isChoose">
-                                     <el-radio :label="0">门店</el-radio>
-                                     <el-radio :label="1">公司</el-radio>
-                                  </el-radio-group>
-                             </template>
-                           </el-table-column>
 
-                            <el-table-column
-                               prop="manager"
-                               label="操作"
-                               width="80"> 
-                                <template slot-scope="scope">
-                                   <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail)">删除</a>
-                                   <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
-                               </template>
-                           </el-table-column>
-                         </el-table>
-                       </div>
+                                         <el-table-column
+                                            label="区经"
+                                            width="100"> 
+                                            <template slot-scope="scope">
+                                                <el-autocomplete
+                                                           class="inline-input"
+                                                           v-model="scope.row.amaldar"          
+                                                           :fetch-suggestions="queryInfo(1)"
+                                                           placeholder="请输入内容"
+                                                           :trigger-on-focus="false"
+                                                           @select="handleSelect"
+                                               ></el-autocomplete>
+                                            </template>
+                                          </el-table-column>
+
+
+                                         <el-table-column
+                                            label="区总"
+                                            width="100"> 
+                                            <template slot-scope="scope">
+                                                 <el-autocomplete
+                                                           class="inline-input"
+                                                           v-model="scope.row.manager"          
+                                                           :fetch-suggestions="queryInfo(0)"
+                                                           placeholder="请输入内容"
+                                                           :trigger-on-focus="false"
+                                                           @select="handleSelect"
+                                               ></el-autocomplete>
+                                            </template>
+                                          </el-table-column>
+
+                                         <el-table-column
+                                            label="门店/公司公共业绩"
+                                            width="170"> 
+                                            <template slot-scope="scope">
+                                                  <el-radio-group v-model="scope.row.isChoose">
+                                                    <el-radio :label="0">门店</el-radio>
+                                                    <el-radio :label="1">公司</el-radio>
+                                                 </el-radio-group>
+                                            </template>
+                                          </el-table-column>
+
+                                           <el-table-column
+                                              prop="manager"
+                                              label="操作"
+                                              width="80"> 
+                                               <template slot-scope="scope">
+                                                  <a  class="delete" style="color:#478de3;text-decoration:underline;" @click="deleteHouse(scope.$index,achDetail)">删除</a>
+                                                  <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
+                                              </template>
+                                          </el-table-column>
+                                        </el-table>
+                             </div>
                      </div> 
 
                            <!-- 业绩审核底部 -->
@@ -427,8 +429,7 @@
                                         <el-table
                                            :data="mansList"
                                            style="width: 100%"
-                                           @selection-change="handleSelectionChange">
-                                                
+                                           @selection-change="handleSelectionChange">                                              
                                                  <el-table-column
                                                    type="selection"
                                                    width="70">
@@ -482,11 +483,11 @@ export default {
     return {
       achDetail: [
         {
-          role_type: "协议方",
+          role_type: "金融业绩分成人",
           radio: 10,
-          dealName: "经纪人1",
+          dealName: "经纪人",
           isJob: "在职",
-          level3: "门店1",
+          level3: "权限设置二店",
           shopowner: "店长1",
           level4: "单组1",
           amaldar: "区经1",
@@ -494,11 +495,37 @@ export default {
           isChoose: 0
         },
         {
-          role_type: "协议方",
+          role_type: "金融业绩分成人",
+          radio: 10,
+          dealName: "经纪人",
+          isJob: "在职",
+          level3: "新家武昌大片区",
+          shopowner: "店长1",
+          level4: "单组1",
+          amaldar: "区经1",
+          manager: "区总1",
+          isChoose: 1
+        }
+      ],
+      achDetail1: [
+        {
+          role_type: "维护人",
+          radio: 10,
+          dealName: "经纪人",
+          isJob: "在职",
+          level3: "新家武昌大片区",
+          shopowner: "店长1",
+          level4: "单组1",
+          amaldar: "区经1",
+          manager: "区总1",
+          isChoose: 0
+        },
+        {
+          role_type: "维护人",
           radio: 10,
           dealName: "经纪人1",
           isJob: "在职",
-          level3: "门店1",
+          level3: "新家武昌大片区",
           shopowner: "店长1",
           level4: "单组1",
           amaldar: "区经1",
@@ -510,48 +537,14 @@ export default {
       houseMansArr: [],
       clientMansArr: [],
       showTips: false,
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
+      roleType0: [],
+      roleType1: [],
       value: "",
       input: "",
       value1: "",
       textarea: "",
       // 筛选选项
       rules: {
-        role_type: [
-          {
-            label: "协议方",
-            value: "1"
-          },
-          {
-            label: "房源录入人",
-            value: "2"
-          },
-          {
-            label: "主客方",
-            value: "3"
-          }
-        ],
         dealName: [
           {
             label: "经纪人1",
@@ -744,17 +737,68 @@ export default {
     closeDialog() {
       this.$emit("close");
     },
-    handleSelectionChange() {
-      this.multipleSelection = val;
+    handleSelectionChange(val) {
+      //返回的是选择当行的对象
+      console.log(val);
     },
-    // 审核，反审核，编辑，分成点进去的房源，客源
     codeBaseInfo(val) {
+      // 审核，反审核，编辑，分成点进去的房源，客源
       let param = { code: val };
-      this.$ajax.get("/api//achievement/selectDisAgents", param).then(res => {
-        console.log(res);
+      this.$ajax.get("/api/achievement/selectDisAgents", param).then(res => {
         if (res.status === 200) {
         }
       });
+      // 角色类型
+      this.$ajax.get("/api/role/types").then(res => {
+        console.log(res.status);
+        if (res.status === 200) {
+          console.log(res.data.data[0]);
+          this.roleType0 = res.data.data[0];
+          this.roleType1 = res.data.data[1];
+        }
+      });
+    },
+    handleSelect(item) {
+      console.log(item);
+    },
+    // 经纪人模糊查询
+    querySearch(queryString, cb) {
+      let list = [{}];
+      let param = {
+        keyword: queryString
+      };
+      this.$ajax.get("/api/organize/employee/agent", param).then(res => {
+        console.log(res.status);
+        if (res.status === 200) {
+          console.log(res.data.data);
+          for (let i of res.data.data) {
+            i.value = i.name; //将想要展示的数据作为value
+          }
+          list = res.data.data;
+          cb(list);
+        }
+      });
+    },
+    //门店，店长，单组，区经，区总模糊查询
+    queryInfo(roleId) {
+      return (queryString, cb) => {
+        let list = [{}];
+        let param = {
+          roleId: roleId,
+          keyword: queryString
+        };
+        this.$ajax.get("/api/organize/employees", param).then(res => {
+          console.log(res.status);
+          if (res.status === 200) {
+            console.log(res.data.data);
+            for (let i of res.data.data) {
+              i.value = i.depName; //将想要展示的数据作为value
+            }
+            list = res.data.data;
+            cb(list);
+          }
+        });
+      };
     }
   },
   watch: {
