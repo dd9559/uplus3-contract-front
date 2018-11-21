@@ -23,7 +23,7 @@
                                    <h1>房源方分成</h1>
                          </div>
                          <div class="house-right f_r">
-                                  <el-button type="primary" @click="relativeMans">相关人员</el-button>
+                                  <el-button type="primary" @click="houseRelativeMans">相关人员</el-button>
                                   <el-button type="primary"  @click="addMansHouse">添加分配人</el-button>
                          </div>
                      </div>
@@ -197,7 +197,7 @@
                                          <h1>客源方分成</h1>
                                </div>
                                <div class="house-right f_r">
-                                        <el-button type="primary" @click="relativeMans">相关人员</el-button>
+                                        <el-button type="primary" @click="clientRelativeMans">相关人员</el-button>
                                         <el-button type="primary" @click="addMansClient">添加分配人</el-button>
                                </div>
                            </div>
@@ -364,7 +364,7 @@
                                </template>
                            </el-table-column>
                          </el-table>
-                           </div>
+                       </div>
                      </div> 
 
                            <!-- 业绩审核底部 -->
@@ -428,47 +428,34 @@
                                            :data="mansList"
                                            style="width: 100%"
                                            @selection-change="handleSelectionChange">
-                                                <!-- <el-table-column
-                                                  prop="role_type"
-                                                  width="70">
-                                                       <template slot-scope="scope">
-                                                            <el-checkbox v-model="checked"></el-checkbox>
-                                                       </template>
-                                                       <template slot="header" slot-scope="slot">
-                                                            <el-checkbox v-model="checked"></el-checkbox> 
-                                                      </template>
-                                                 </el-table-column> -->
                                                 
-                                                    <el-table-column
-                                                      type="selection"
-                                                      width="70">
-                                                    </el-table-column>
+                                                 <el-table-column
+                                                   type="selection"
+                                                   width="70">
+                                                 </el-table-column>
                                                                                                 
 
                                                  <el-table-column
                                                    label="经纪人"
-                                                   prop="distributionList"
                                                    width="90">
                                                    <template slot-scope="scope">
-                                                            <p>{{scope.row.agent}}</p>
+                                                            <p>{{scope.row.EmpName}}</p>
                                                    </template>
                                                   </el-table-column>
 
                                                   <el-table-column
                                                      label="门店"
-                                                     prop="distributionList"
                                                      width="120">
                                                      <template slot-scope="scope">
-                                                           <p>{{scope.row.mendian}}</p>
+                                                           <p>{{scope.row.DeptName}}</p>
                                                      </template>
                                                   </el-table-column>
 
                                                   <el-table-column
                                                     label="角色类型"
-                                                    prop="distributionList"
                                                     width="120">
                                                     <template slot-scope="scope">
-                                                             <p>{{scope.row.type}}</p>
+                                                             <p>{{scope.row.RoleText}}</p>
                                                     </template>
                                                   </el-table-column>
                                      </el-table>
@@ -519,23 +506,9 @@ export default {
           isChoose: 1
         }
       ],
-      mansList: [
-        {
-          agent: "春天风",
-          mendian: "楚河汉街一店",
-          type: "房源录入人"
-        },
-        {
-          agent: "春天风",
-          mendian: "楚河汉街一店",
-          type: "房源录入人"
-        },
-        {
-          agent: "春天风",
-          mendian: "楚河汉街一店",
-          type: "房源录入人"
-        }
-      ],
+      mansList: [],
+      houseMansArr: [],
+      clientMansArr: [],
       showTips: false,
       options: [
         {
@@ -676,6 +649,7 @@ export default {
       }
     };
   },
+  created() {},
   props: {
     shows: Boolean,
     dialogType: Number,
@@ -694,7 +668,33 @@ export default {
         this.achDetail[index].radio = 1;
       }
     },
-    relativeMans() {
+    getMans(type) {
+      let param = {
+        contCode: this.contractCode
+      };
+      this.$ajax.get("/api/achievement/employees", param).then(res => {
+        console.log(res);
+        let data = res.data;
+        console.log(data.status);
+        if (data.status === 200) {
+          if (type == 1) {
+            this.mansList = data.data.house;
+          } else {
+            this.mansList = data.data.customer;
+          }
+        }
+      });
+    },
+    // 房源选择相关人
+    houseRelativeMans() {
+      this.mansList = [];
+      this.getMans(1);
+      this.showTips = true;
+    },
+    // 客源选择相关人
+    clientRelativeMans() {
+      this.mansList = [];
+      this.getMans(2);
       this.showTips = true;
     },
     addMansHouse() {
@@ -758,8 +758,10 @@ export default {
   },
   watch: {
     contractCode(val) {
-      this.code = val;
-      this.codeBaseInfo(val);
+      if (val) {
+        this.code = val;
+        this.codeBaseInfo(val);
+      }
     }
   }
 };
