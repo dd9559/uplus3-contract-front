@@ -32,16 +32,26 @@
             @click="choseType(item)">{{item.name}}
         </li>
       </ul>
-      <el-table border :data="moneyType" :span-method="collapseRow" style="width: 100%"
+      <el-table class="collapse-cell" border :data="activeType===1?moneyType:moneyTypeOther" :span-method="collapseRow" style="width: 100%"
                 header-row-class-name="theader-bg">
-        <el-table-column align="center" label="款类（大类）"></el-table-column>
+        <el-table-column align="center" prop="name" label="款类（大类）"></el-table-column>
         <el-table-column align="center" label="款类（小类）">
-          <template slot-scope="scope"></template>
+          <template slot-scope="scope">
+            <ul>
+              <li v-for="item in scope.row.moneyTypes">
+                <el-radio v-model="form.moneyTypePid" :label="item.key">{{item.name}}</el-radio>
+              </li>
+            </ul>
+          </template>
         </el-table-column>
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-if="false">
-            <span>请输入</span>
+            <ul>
+              <li v-for="item in scope.row.moneyTypes">
+                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyTypePid===item.key">
+                <span v-else>请输入</span>
+              </li>
+            </ul>
           </template>
         </el-table-column>
         <el-table-column align="center" :label="activeType===1?'金额大写':'收款方式'">
@@ -104,8 +114,11 @@
     <div class="input-group" v-if="activeType===2">
       <p><label>付款凭证</label></p>
       <ul class="upload-list">
-        <li>
-          <p>+</p>
+        <li id="selectfiles">
+          <div class="upload-context">
+            <i class="iconfont icon-shangchuan"></i>
+            <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
+          </div>
         </li>
       </ul>
     </div>
@@ -135,6 +148,7 @@
         ],
         activeType: 1,
         moneyType:[],
+        moneyTypeOther:[],
         list: [{}],
         show: false
       }
@@ -150,7 +164,14 @@
         this.$ajax.get('/api/payInfo/selectMoneyType').then(res=>{
           res=res.data
           if(res.status===200){
-            this.moneyType = res.data
+            this.moneyType = this.moneyType.concat(res.data)
+            res.data.forEach((item,index)=>{
+              if(item.name==='代收代付'){
+                debugger
+                this.moneyType.splice(index,1)
+                this.moneyTypeOther = res.data.splice(index,1)
+              }
+            })
           }
         })
       },
@@ -164,20 +185,13 @@
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
-        // debugger
-        /*let param = {
-          rowIndex:rowIndex,
-          rowTotal:rowTotal,
-          collapse:collapse,
-
-          type:'info'
+        if(columnIndex>=3&&this.activeType===1){
+          if (rowIndex === 0) {
+            return [this.moneyType.length,1]
+          } else {
+            return [0,0]
+          }
         }
-        if (columnIndex === 0) {
-          return TOOL.collapseRow(param)
-        } else if ((columnIndex === 3 || columnIndex === 4)&&this.activeMoneyType===1) {
-          param.type='all'
-          return TOOL.collapseRow(param)
-        }*/
       }
     }
   }
@@ -185,7 +199,26 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
-
+  /deep/.collapse-cell{
+    .el-table__row{
+      >td{
+        padding: 0;
+        .cell{
+          padding: 0;
+          >ul{
+            >li{
+              padding: 12px 10px;
+              border-bottom: 1px solid #ebeef5;
+              text-align: left;
+              &:last-of-type{
+                border: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .checkbox-info {
     display: flex;
     align-items: center;
@@ -283,11 +316,43 @@
       margin: 20px 0;
       > li {
         border: 1px dashed @color-D6;
-        width: 200px;
-        height: 140px;
+        width: 250px;
+        height: 170px;
         display: flex;
         align-items: center;
         justify-content: center;
+        .upload-context{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          >i{
+            color: @bg-th;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            overflow: hidden;
+            &.iconfont{
+              position: relative;
+              display: flex;
+              align-items: center;
+              &:before{
+                font-size: 58px;
+              }
+            }
+          }
+          >p{
+            font-size: @size-12;
+            color: @color-99A;
+            padding: 12px 20px;
+            >span{
+              &:first-of-type{
+                font-size: @size-base;
+                color: @color-blue;
+              }
+            }
+          }
+        }
       }
     }
     /deep/ .el-table, .el-textarea {

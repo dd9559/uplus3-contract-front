@@ -27,7 +27,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <el-radio v-model="form.moneyTypePid" :label="item.key">{{item.name}}</el-radio>
+                <el-radio v-model="form.moneyType" :label="item.key">{{item.name}}</el-radio>
               </li>
             </ul>
           </template>
@@ -36,7 +36,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyTypePid===item.key">
+                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===item.key">
                 <span v-else>请输入</span>
               </li>
             </ul>
@@ -120,7 +120,7 @@
           moneyType:'',
           moneyTypePid:'',
           smallAmount:'',
-          filePath:'',
+          filePath:'123',
         },
         //收款账户
         bankCount:{
@@ -163,6 +163,11 @@
           res=res.data
           if(res.status===200){
             this.moneyType = res.data
+            res.data.forEach((item,index)=>{
+              if(item.name==='代收代付'){
+                this.moneyType.splice(index,1)
+              }
+            })
           }
         })
       },
@@ -217,7 +222,7 @@
        * 获取相应小类的大类
        */
       getRowMsg:function (row) {
-        this.form.moneyType = row.id
+        this.form.moneyTypePid = row.id
       },
       goResult:function () {
         let param = Object.assign({},this.form)
