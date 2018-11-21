@@ -4,6 +4,7 @@ let uploader = null
 
 const UPLOAD={
   mounted() {
+    debugger
     uploader = new plupload.Uploader({
       runtimes: 'html5,flash,silverlight,html4',
       browse_button: 'selectfiles', //选择文件按钮
