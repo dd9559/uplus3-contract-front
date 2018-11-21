@@ -194,7 +194,7 @@ let TOOL = {
     }else {
       let time = new Date(val)
       let y = time.getFullYear()
-      let M = time.getMonth()
+      let M = time.getMonth() + 1
       let D = time.getDate()
       return `${y}-${M>9?M:'0'+M}-${D>9?D:'0'+D}`
     }
@@ -205,7 +205,7 @@ let TOOL = {
     }else {
       let time = new Date(val)
       let y = time.getFullYear()
-      let M = time.getMonth()
+      let M = time.getMonth() + 1
       let D = time.getDate()
       let h = time.getHours()
       let m = time.getMinutes()
