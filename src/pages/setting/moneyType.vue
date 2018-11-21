@@ -14,8 +14,10 @@
                             <el-switch
                             v-model="scope.row.status"
                             :active-value="0"
+                            inactive-value="1"
                             active-color="rgba(71,141,227,1)"
-                            inactive-color="rgba(141,144,148,1)">
+                            inactive-color="rgba(141,144,148,1)"
+                            @change="leftChange(scope.row)">
                             </el-switch>
                         </div>
                         <div v-else>--</div>
@@ -38,6 +40,7 @@
                             <el-switch
                                 v-model="scope.row.status"
                                 :active-value="0"
+                                @change='smallChange(scope.row)'
                                 active-color="rgba(71,141,227,1)"
                                 inactive-color="rgba(141,144,148,1)"
                                 >
@@ -54,7 +57,6 @@
                             <el-button type="text" size="medium" @click='operation(scope.row,2)'>编辑</el-button>
                             <el-button type="text" size="medium" @click="delYj(scope.row)">删除</el-button>
                         </div>
-                        <!-- <el-button type="text" size="medium" @click='operation(scpoe.row,1)'>新增</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -73,11 +75,10 @@
                 <div class="input-group">
                     <label>是否启用：</label>
                     <div>
-                        <!-- <el-radio label="0" v-model="addForm.status">是</el-radio>
-                        <el-radio label="1" v-model="addForm.status">否</el-radio> -->
                         <el-switch
                                 v-model="addForm.status"
                                 :active-value="0"
+                                :inactive-value='1'
                                 active-color="rgba(71,141,227,1)"
                                 inactive-color="rgba(141,144,148,1)"
                                 >
@@ -98,14 +99,13 @@
         mixins: [FILTER],
         data() {
             return {
-                tableData: [
-                    
-                ],
+                tableData: [],
                 value2:'',
                 moneyTypes: [],
                 cityName: "",
                 isSF:true,
                 title:'',
+                smallId:'',
                 addDialog:false,
                 bigId:'',
                 addForm:{
@@ -118,7 +118,6 @@
         },
         created(){
            this.initList()
-         
         },
         methods: {
             // 初始化数据
@@ -133,23 +132,13 @@
                             this.moneyTypes=res.data.data
                             console.log(this.moneyTypes);
                         }
-                        // this.value2=this.moneyTypes.status==0?true:false
                         this.moneyTypes.forEach(item=>{
                             this.value2=item.status==0?true:false
                         })
                         console.log(this.value2,'value2');
-                        // this.addForm.parentId=this.moneyTypes[0].parentId
-                        this.addForm.parentId=this.bigId==''?16:this.bigId
+                        this.bigId=this.bigId==''?18:this.bigId
                     }
-                    console.log(res);
                 })
-            },
-            valueChange(){
-                debugger
-            },
-            //城市设置弹框 确定
-            confirm() {
-
             },
             tableRowClassName({row, rowIndex}){
                 row.index = rowIndex;
@@ -162,16 +151,33 @@
                     this.addForm.status=0
                     this.addForm.remark=''
                     this.addForm.parentId=this.bigId
-                }else{
-                    this.title='编辑小类'
+                }else if(type==2){
+                    this.title='编辑小类',
+                    this.smallId=row.id
                     this.addForm.name=row.name
                     this.addForm.status=row.status
                     this.addForm.remark=row.remark
                     this.addForm.parentId=row.parentId
                 }
             },
+            leftChange(row){
+                let param={
+                    id:row.id,
+                    status:row.status
+                }
+                 this.statusOp(param,'转换成功')
+            },
+            smallChange(row){
+                console.log(row);
+                let status2 = row.status===false?1:0
+                let param={
+                    id:row.id,
+                    status:status2
+                }
+                this.statusOp(param,'转换成功')
+            },
             submitForm(){
-                this.addForm.status=this.addForm.status?0:1
+                // this.addForm.status=this.addForm.status?1:0
                 if(this.title=='新增小类'){
                     this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
                     if(res.status==200){
@@ -183,10 +189,18 @@
                         this.initList()
                     }
                   })
-                }else{
-                    this.$ajax.post('',this.addForm).then(res=>{
+                }else if(this.title=='编辑小类'){
+                    console.log(this.addForm,'addform1');
+                    let param={
+                        id:this.smallId,
+                        status:this.addForm.status,
+                        name:this.addForm.name,
+                        remark:this.addForm.remark
+                    }
+                    console.log(param,'this.param2');
 
-                    })
+                    this.statusOp(param,'修改成功')
+                    this.addDialog=false
                 }
                 
             },
@@ -204,22 +218,31 @@
 
                 })
             },
+            
             delYj(row){
                 // console.log(row,'删除记录');
                 this.popMsg('确定删除此记录吗？',(row)=>{
                     console.log(row,'删除记录');
-                   this.$ajax.get('/api/setting/moneyType/updateStatus',{id:row.id,status:2})
+                    let param={
+                        id:row.id,
+                        status:2
+                    }
+                    this.statusOp(param,'删除成功!')
+                },row)
+            },
+            statusOp(param,message){
+                 this.$ajax.get('/api/setting/moneyType/update',param)
                    .then((res)=>{
                        console.log(res,'res');
                         if (res.status === 200) {
                             this.$message({
                             type: 'success',
-                            message: '删除成功!'
+                            message: message
                             })
                             this.initList()
                         }
+                        
                    })
-                },row)
             },
             //表格第一行加样式
             tableStyle({row, rowIndex}){

@@ -57,10 +57,18 @@ input.no-style {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  > label {
+  >label {
     &:first-of-type {
       min-width: 80px;
     }
+  }
+}
+.form-label{
+  position: relative;
+  &:before{
+    content:'*';
+    display: inline-block;
+    color: red;
   }
 }
 // 清除浮动
