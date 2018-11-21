@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <el-dialog :title="title" :visible="getDialogVisible" @close='close'>
+    <el-dialog :title="title" :visible="getDialogVisible" @close='close' width="1000px">
       <!-- 选择房源弹窗 -->
       <div v-if="getDialogType==='house'">
         <el-form :inline="true" :model="searchForm" class="search-form" size="mini">

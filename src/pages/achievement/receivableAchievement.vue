@@ -43,27 +43,27 @@
 
 
                                     <!-- 部门 -->
+                              <!-- 部门 -->
                                    <el-form-item 
                                    label="部门" 
-                                   prop="department"
                                    class="mr">
-                                       <el-select v-model="propForm.department"  class="w200" filterable>
+                                       <el-select v-model="propForm.department"  class="w200" filterable @change="selUser">
                                            <el-option 
-                                           v-for="item in rules.department" 
-                                           :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                             v-for="item in departs" 
+                                              :key="item.id"
+                                              :label="item.name"
+                                              :value="item.id"></el-option>
                                        </el-select>
                                    </el-form-item>
 
-                                   <el-form-item 
-                                   prop="departmentDetail">
+                                   <el-form-item>
                                        <el-select v-model="propForm.departmentDetail" class="w100" filterable>
                                            <el-option 
-                                           v-for="item in rules.departmentDetail" 
-                                           :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                            v-for="(item,index) in users" 
+                                            :key="index"
+                                             ref="user" 
+                                            :label="item.name"
+                                            :value="item.empId"></el-option>
                                        </el-select>
                                    </el-form-item>
                                
@@ -293,14 +293,15 @@
                                </el-table-column>
 
                                  <!-- agentPlatformFee -->
-                                <el-table-column
+                                 
+                                <!-- <el-table-column
                                  label="特许服务费(元)"
                                  width="120"
                                  >
                                    <template slot-scope="scope">
                                          <p v-for="item in scope.row.distributionFroms">{{item.agentPlatformFee}}</p>
                                   </template>
-                               </el-table-column>
+                               </el-table-column> -->
 
                                  <!-- agentPayFee -->
                                 <el-table-column
@@ -336,6 +337,9 @@ export default {
       receivableList: [], //实收数据列表数组
       countData: [], //数据统计数组
       filterShow: true,
+      departs: [],
+      depUser: "",
+      users: [],
       // 筛选条件
       propForm: {
         department: "", //部门
@@ -385,7 +389,9 @@ export default {
     };
   },
   created() {
+    // 字典初始化
     this.getDictionary();
+    // 实收列表
     let param = {
       pageNum: 1,
       pageSize: 10
@@ -396,6 +402,12 @@ export default {
       if (res.status === 200) {
         this.receivableList = data.data.list;
         this.countData = data.data.list[0].contractCount;
+      }
+    });
+    // 查询部门
+    this.$ajax.get("/api/access/deps").then(res => {
+      if (res.status == 200) {
+        this.departs = res.data.data;
       }
     });
   },
@@ -411,6 +423,19 @@ export default {
         keyword: this.propForm.search //关键字
       };
       console.log(param);
+    },
+    // 查询部门员工
+    selUser() {
+      this.propForm.departmentDetail = "";
+      this.$ajax
+        .get("/api/organize/employees", { depId: this.department })
+        .then(res => {
+          console.log(res);
+          if (res.status == 200) {
+            this.users = res.data.data;
+            console.log(this.users);
+          }
+        });
     },
     //分页
     handleSizeChange(val) {

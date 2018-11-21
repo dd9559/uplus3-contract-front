@@ -9,31 +9,19 @@
         </el-form-item>
         <el-form-item label="合同类型">
           <el-select v-model="contractForm.contType" placeholder="请选择合同类型" :clearable="true" style="width:150px">
-            <el-option
-            v-for="item in dictionary['10']"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key">
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
-          </el-select>  
+          </el-select>
         </el-form-item>
         <el-form-item label="合同状态">
           <el-select v-model="contractForm.contState" placeholder="请选择合同状态" :clearable="true" style="width:150px">
-            <el-option
-            v-for="item in dictionary['9']"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key">
+            <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用途">
           <el-select v-model="contractForm.houseinfoPurpose" placeholder="请选择用途" :clearable="true" style="width:150px">
-            <el-option
-            v-for="item in dictionary['538']"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key">
+            <el-option v-for="item in dictionary['538']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -41,7 +29,7 @@
           <el-input v-model="keyword" placeholder="关键字" style="width:250px"></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="contractForm.recordDept" placeholder="请选择部门"  filterable style="width:200px">
+          <el-select v-model="contractForm.recordDept" placeholder="请选择部门" filterable style="width:200px">
             <!-- <el-option label="起草中" value="1"></el-option> -->
           </el-select>
         </el-form-item>
@@ -54,51 +42,31 @@
         </el-form-item>
         <el-form-item label="审核状态">
           <el-select v-model="contractForm.toExamineState" placeholder="请选择审核状态" :clearable="true" style="width:150px">
-            <el-option
-            v-for="item in dictionary['17']"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key">
+            <el-option v-for="item in dictionary['17']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="变更/解约">
           <el-select v-model="contractForm.contChangeState" placeholder="" :clearable="true" style="width:150px">
-            <el-option
-            v-for="item in dictionary['6']"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key">
+            <el-option v-for="item in dictionary['6']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="结算状态">
           <el-select v-model="contractForm.resultState" placeholder="" :clearable="true" style="width:150px">
-            <el-option
-            v-for="item in dictionary['14']"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key">
+            <el-option v-for="item in dictionary['14']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="收佣状态">
           <el-select v-model="contractForm.receiveAmountState" placeholder="" :clearable="true" style="width:150px">
-            <el-option
-            v-for="item in dictionary['13']"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key">
+            <el-option v-for="item in dictionary['13']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="业绩状态">
           <el-select v-model="contractForm.achievementState" placeholder="" :clearable="true" style="width:150px">
-            <el-option
-            v-for="item in dictionary['2']"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key">
+            <el-option v-for="item in dictionary['2']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -125,17 +93,17 @@
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
-              {{item.value}}
+                {{item.value}}
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-dropdown  placement="bottom" @command="toAddcontract">
+          <el-dropdown placement="bottom" @command="toAddcontract">
             <el-button round>
               创建正式合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
-              {{item.value}}
+                {{item.value}}
               </el-dropdown-item>
               <!-- <el-dropdown-item command="1">租赁</el-dropdown-item>
               <el-dropdown-item command="2">买卖</el-dropdown-item>
@@ -222,7 +190,7 @@
         </el-table-column>
         <el-table-column align="left" label="结算状态" width="100">
           <template slot-scope="scope">
-             <el-button type="text" size="medium">{{scope.row.resultState.label}}</el-button>
+            <el-button type="text" size="medium">{{scope.row.resultState.label}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="业绩状态" width="100">
@@ -236,22 +204,17 @@
               <el-button type="text" size="medium" v-if="scope.row.contState.value!=3" @click="upload(scope.row.code)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview">预览</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===1" @click="goCheck">审核</el-button>
-              <el-button type="text" size="medium" @click="toLayerAudit(scope.row.code)">调佣</el-button>
+              <el-button type="text" size="medium" @click="toLayerAudit(scope.row)">调佣</el-button>
               <el-button type="text" size="medium">提交审核</el-button>
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-      class="pagination-info"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      layout="total, prev, pager, next, jumper"
-      :total="total">
-    </el-pagination>
+      <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
+      </el-pagination>
     </div>
     <!-- 流水明细弹框 -->
-    <flowAccount :dialogTableVisible="liushui" @closeRunningWater="closeWater"></flowAccount>
+    <flowAccount :dialogTableVisible="water" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 调佣弹框 -->
     <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
     <!-- 变更/解约查看弹窗 -->
@@ -260,12 +223,12 @@
 </template>
            
 <script>
-import ScreeningTop from '@/components/ScreeningTop';
-import flowAccount from '@/components/flowAccount';
-import layerAudit from '../contractDialog/layerAudit';
-import changeCancel from '../contractDialog/changeCancel';
-import {TOOL} from "@/assets/js/common";
-import {MIXINS} from "@/assets/js/mixins";
+import ScreeningTop from "@/components/ScreeningTop";
+import flowAccount from "@/components/flowAccount";
+import layerAudit from "../contractDialog/layerAudit";
+import changeCancel from "../contractDialog/changeCancel";
+import { TOOL } from "@/assets/js/common";
+import { MIXINS } from "@/assets/js/mixins";
 
 export default {
   mixins: [MIXINS],
@@ -275,117 +238,136 @@ export default {
     layerAudit,
     changeCancel
   },
-  data(){
-    return{
-      contractForm:{},
-      keyword:'',
-      signDate:[],
-      tableData:[],
-      total:0,
-      currentPage:1,
-      pageSize:10,
-      liushui:false,
-      contractCode:'',
-      tiaoyong:false,
-      changeCancel:false,
-      dialogType:'',
-      dictionary:{ //数据字典
-        '10':'',//合同类型
-        '9':'',//合同状态
-        '17':'',//审核状态
-        '6':'',//变更/解约
-        '14':'',//结算状态
-        '13':'',//收佣状态
-        '2':'',//业绩状态
-        '538':'',//用途
+  data() {
+    return {
+      contractForm: {},
+      keyword: "",
+      signDate: [],
+      tableData: [],
+      total: 0,
+      currentPage: 1,
+      pageSize: 10,
+      water: false,
+      contractCode: "",
+      tiaoyong: false,
+      changeCancel: false,
+      dialogType: "",
+      dictionary: {
+        //数据字典
+        "10": "", //合同类型
+        "9": "", //合同状态
+        "17": "", //审核状态
+        "6": "", //变更/解约
+        "14": "", //结算状态
+        "13": "", //收佣状态
+        "2": "", //业绩状态
+        "538": "" //用途
       }
-    }
+    };
   },
-  created(){
+  created() {
     this.getContractList();
-    this.getDictionary()
+    this.getDictionary();
   },
-  methods:{
+  methods: {
     //获取合同列表
-    getContractList(){
+    getContractList() {
       let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
-        keyword:this.keyword
-      }
-      param = Object.assign({},param,this.contractForm)
-      if(this.signDate.length>0){
-        param.beginDate=this.signDate[0];
-        param.endDate=this.signDate[1];
+        keyword: this.keyword
+      };
+      param = Object.assign({}, param, this.contractForm);
+      if (this.signDate.length > 0) {
+        param.beginDate = this.signDate[0];
+        param.endDate = this.signDate[1];
       }
       //console.log(param)
-      this.$ajax.postJSON('/api/contract/contractList', param).then(res=>{
-        res=res.data
-        if(res.status===200){
-          this.tableData=res.data.list
-          this.total=res.data.count
+      this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.tableData = res.data.list;
+          this.total = res.data.count;
         }
-      })
+      });
     },
     //重置
     resetFormFn() {
       TOOL.clearForm(this.contractForm);
-      this.keyword='';
-      this.signDate=[];
+      this.keyword = "";
+      this.signDate = [];
     },
     // 查询
     queryFn() {
-      console.log(this.signDate)
+      console.log(this.signDate);
       // if(this.signDate.length>0){
       //   this.contractForm.beginDate=this.signDate[0].replace(/-/g,"/");
       //   this.contractForm.endDate=this.signDate[1].replace(/-/g,"/");
       // }
       //console.log(this.contractForm)
-      this.getContractList()
+      this.getContractList();
     },
     //流水
-    runningWater(){
-      this.liushui=true
+    runningWater() {
+      this.water = true;
     },
     //收款
-    gathering(){},
+    gathering() {},
     //付款
-    payment(){},
+    payment() {},
     //合同详情页
-    toDetail(value){
-      this.$router.push({
-        path:'/contractDetails',
-        query:{
+    toDetail(value) {
+      console.log(value)
+      if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
+        this.$router.push({
+          path: "/contractDetails",
+          query: {
+            id: value.id,
+            contType: value.contType.value
+          }
+        });
+      }else{
+        this.$router.push({
+        path: "/detailIntention",
+        query: {
           id: value.id,
-          contType:value.contType.value
+          contType: value.contType.value
         }
-      })
+      });
+      }
     },
-    uploadData(value){
+    uploadData(value) {
       // console.log(value)
-       this.$router.push({
-        path:'/contractDetails',
-        query:{
-          type:'dataBank',
+      this.$router.push({
+        path: "/contractDetails",
+        query: {
+          type: "dataBank",
           id: value.id,
-          contType:value.contType.value
+          contType: value.contType.value
         }
-      })
+      });
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
-      this.currentPage=val;
-      this.getContractList()
+      this.currentPage = val;
+      this.getContractList();
     },
     //新增合同
-    toAddcontract(command){
-      if(command===1||command===2){
+    toAddcontract(command) {
+      if (command === 1 || command === 2 || command === 3) {
         this.$router.push({
-          path:'/addContract',
-          query:{
-            type:command
+          path: "/addContract",
+          query: {
+            contType: command
           }
-        })
+        });
+      } else if (command === 4 || command === 5) {
+        this.$router.push({
+          path: "/newIntention",
+          query: {
+            contType: command
+          }
+        });
       }
     },
     //合同预览
@@ -398,50 +380,53 @@ export default {
       });
     },
     //合同审核
-    goCheck(){
-
-    },
+    goCheck() {},
     //关闭流水弹窗
-    closeWater(){
-      this.liushui=false
+    closeWater() {
+      this.water = false;
     },
     //调佣弹窗
-    toLayerAudit(code){
-      this.contractCode=code
-      this.tiaoyong=true
+    //Z171231001
+    toLayerAudit(item) {
+      if(item.isCanChangeCommission===1){
+        this.contractCode = item.code;
+        this.tiaoyong = true;
+      }else{
+        this.$alert('存在未审核的调佣申请,请处理后重试', '提示', {
+          confirmButtonText: '确定',
+        });
+      }
     },
     //关闭调佣弹窗
-    closeCommission(){
-      this.tiaoyong=false;
-      this.contractCode='';
+    closeCommission() {
+      this.tiaoyong = false;
+      this.contractCode = "";
     },
     //关闭变更解约弹窗
-    ChangeCancelDialog(){
-      this.changeCancel=false
+    ChangeCancelDialog() {
+      this.changeCancel = false;
     },
     //字典查询
-    getDictionaries(){
-      this.$ajas.get('/api/dictionary/batchQuery',param).then(res=>{
-        
-      })
+    getDictionaries() {
+      this.$ajas.get("/api/dictionary/batchQuery", param).then(res => {});
     },
     //变更解约弹窗
-    goChangeCancel(item){
+    goChangeCancel(item) {
       console.log(item.contChangeState.value);
       //debugger
-      if(item.contChangeState.value===1){
-        this.changeCancel=true;
-        this.dialogType='changeLook';
-      }else if(item.contChangeState.value===2){
-        this.changeCancel=true;
-        this.dialogType='cancelLook';
+      if (item.contChangeState.value === 1) {
+        this.changeCancel = true;
+        this.dialogType = "changeLook";
+      } else if (item.contChangeState.value === 2) {
+        this.changeCancel = true;
+        this.dialogType = "cancelLook";
       }
     },
     //上传合同主体
-    upload(code){
-      console.log(code)
-      this.changeCancel=true;
-      this.dialogType='upload'
+    upload(code) {
+      console.log(code);
+      this.changeCancel = true;
+      this.dialogType = "upload";
     }
   }
 };
@@ -449,80 +434,80 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 
-.view-container{
+.view-container {
   //padding: 0 20px;
 }
-/deep/.paper-box{
+/deep/.paper-box {
   padding-top: 10px !important;
   margin-bottom: 10px;
   background-color: #fff;
-  border-radius:2px;
+  border-radius: 2px;
   box-sizing: border-box;
-  box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
-  .paper-set-tit{
+  box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
+  .paper-set-tit {
     padding-bottom: 10px;
   }
 }
 .contract-list {
-  margin-top:20px;
+  margin-top: 20px;
   background-color: #fff;
   padding: 10px;
-  border-radius:2px;
-  box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
+  border-radius: 2px;
+  box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   > p {
     padding: 10px 0 10px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-    .title{
+    .title {
       font-size: 18px;
       color: @color-blank;
-      i{
+      i {
         padding-right: 8px;
       }
     }
-    .text{
+    .text {
       font-size: 14px;
-      color:@color-6c;
+      color: @color-6c;
       padding-left: 10px;
     }
-    .data{
+    .data {
       font-size: 14px;
       color: @color-blue;
     }
   }
-  .name-wrapper{
-    width:160px;
-    height:65px;
+  .name-wrapper {
+    width: 160px;
+    height: 65px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
   }
 }
-.contract-msglist{
-  >li{
+.contract-msglist {
+  > li {
     text-align: left;
   }
 }
-.blue{
+.blue {
   color: @color-blue;
 }
-.yellow{
+.yellow {
   color: @color-yellow;
 }
-.green{
+.green {
   color: @color-green;
 }
-.red{
+.red {
   color: @color-warning;
 }
-.btn{
+.btn {
   color: @color-blue;
   cursor: pointer;
 }
 /deep/ .el-table th {
-  background:@bg-th;
+  background: @bg-th;
 }
 </style>

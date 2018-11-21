@@ -48,6 +48,7 @@ const contractPreview = () => import("@/pages/contract/contractList/contractPrev
 const layerAudit = () => import("@/pages/contract/contractDialog/layerAudit");
 const layerSettle = () => import("@/pages/contract/contractDialog/layerSettle");
 const changeCancel = () => import("@/pages/contract/contractDialog/changeCancel");
+const routingRecord = () => import("@/pages/contract/contractList/routingRecord");
 Vue.use(Router)
 
 export default new Router({
@@ -204,6 +205,11 @@ export default new Router({
         {
           path: "changeCancel",
           component: changeCancel
+        },
+        //分账记录
+        {
+          path: "routingRecord",
+          component: routingRecord
         }
       ]
     }

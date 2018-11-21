@@ -4,7 +4,7 @@
     <section>
       <div class="input-group">
         <label>收款方</label>
-        <el-select v-model="form.person" placeholder="请选择">
+        <el-select v-model="form.inObjType" placeholder="请选择" @change="getOption">
           <el-option
             v-for="item in dropdown"
             :key="item.value"
@@ -21,13 +21,13 @@
     <div class="input-group">
       <label>款类</label>
       <el-table class="collapse-cell" :span-method="collapse" border :data="moneyType" style="width: 100%"
-                header-row-class-name="theader-bg">
+                header-row-class-name="theader-bg" @row-click="getRowMsg">
         <el-table-column align="center" label="款类（大类）" prop="name"></el-table-column>
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <el-radio v-model="form.radio" :label="item.key">{{item.name}}</el-radio>
+                <el-radio v-model="form.moneyType" :label="item.key">{{item.name}}</el-radio>
               </li>
             </ul>
           </template>
@@ -35,9 +35,15 @@
         <el-table-column align="center" label="付款金额（元） ">
           <template slot-scope="scope">
             <ul>
-              <li v-for="item in scope.row.moneyTypes"><input type="text" class="no-style" placeholder="请输入"></li>
+              <li v-for="item in scope.row.moneyTypes">
+                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===item.key">
+                <span v-else>请输入</span>
+              </li>
             </ul>
           </template>
+        </el-table-column>
+        <el-table-column align="center" label="金额大写">
+          <template slot-scope="scope"></template>
         </el-table-column>
         <el-table-column align="center" label="可支配金额">
           <template slot-scope="scope"></template>
@@ -56,35 +62,38 @@
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="收款银行">
           <template slot-scope="scope">
-            <span>-</span>
+            <span>{{bankCount.bankName|formatNull}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入">
+            <input type="text" class="no-style" placeholder="请输入" v-model="bankCount.userName">
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-model="form.bankCard" @input="getBank">
+            <input type="text" class="no-style" placeholder="请输入6228480059053520074" v-model="bankCount.cardNumber" @input="getBank">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入">
+            <span>{{bankCount.amount}}</span>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="input-group">
       <p><label>备注信息</label></p>
-      <el-input placeholder="请填写备注信息" type="textarea"></el-input>
+      <el-input placeholder="请填写备注信息" type="textarea" v-model="form.remark"></el-input>
     </div>
     <div class="input-group">
       <p><label>付款凭证</label></p>
       <ul class="upload-list">
-        <li>
-          <p>+</p>
+        <li id="selectfiles">
+          <div class="upload-context">
+            <i class="iconfont icon-shangchuan"></i>
+            <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
+          </div>
         </li>
       </ul>
     </div>
@@ -96,13 +105,29 @@
 </template>
 
 <script>
+  import {UPLOAD} from "@/assets/js/uploadMixins";
+
   export default {
+    mixins: [UPLOAD],
     data() {
       return {
         form: {
-          person: '',
-          radio:'',
-          bankCard:''
+          contId:2,
+          remark:'',
+          inObj:'',
+          inObjId:'',
+          inObjType:'',
+          moneyType:'',
+          moneyTypePid:'',
+          smallAmount:'',
+          filePath:'123',
+        },
+        //收款账户
+        bankCount:{
+          bankName:'',
+          userName:'',
+          cardNumber:'',
+          amount:10000
         },
         moneyType: [],
         list:[
@@ -138,6 +163,11 @@
           res=res.data
           if(res.status===200){
             this.moneyType = res.data
+            res.data.forEach((item,index)=>{
+              if(item.name==='代收代付'){
+                this.moneyType.splice(index,1)
+              }
+            })
           }
         })
       },
@@ -146,12 +176,14 @@
        */
       getBank:function () {
         let param = {
-          cardNumber:this.form.bankCard
+          cardNumber:this.bankCount.cardNumber
         }
-        if(this.form.bankCard.length>=16){
+        if(this.bankCount.cardNumber.length>=16){
           this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
-            // debugger
-
+            res=res.data
+            if(res.status===200){
+              this.bankCount.bankName = res.data.bankName
+            }
           })
         }
       },
@@ -159,7 +191,7 @@
        * 合并所有行
        */
       collapse:function ({ rowIndex, columnIndex }) {
-        if(columnIndex===3){
+        if(columnIndex>=3){
           if (rowIndex === 0) {
             return [this.moneyType.length,1]
           } else {
@@ -167,9 +199,41 @@
           }
         }
       },
+      /**
+       * 获取下拉框选择对象
+       * @param item
+       */
+      getOption:function (item) {
+        let obj = {
+          inObjId:'',
+          inObj:''
+        }
+        console.log(obj)
+        this.dropdown.find(tip=>{
+          if(tip.value===item&&!!tip.custId){
+            obj.inObjId = tip.custId
+            obj.inObj = tip.custName
+            return
+          }
+        })
+        this.form = Object.assign({},this.form,obj)
+      },
+      /**
+       * 获取相应小类的大类
+       */
+      getRowMsg:function (row) {
+        this.form.moneyTypePid = row.id
+      },
       goResult:function () {
-        this.$router.push({
-          path:'payResult'
+        let param = Object.assign({},this.form)
+        param.account = JSON.stringify([].concat(this.bankCount))
+        this.$ajax.post('/api/payInfo/savePayment',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.$router.push({
+              path: 'payResult'
+            })
+          }
         })
       }
     }
@@ -239,11 +303,43 @@
       margin: 20px 0;
       >li{
         border: 1px dashed @color-D6;
-        width: 200px;
-        height: 140px;
+        width: 250px;
+        height: 170px;
         display: flex;
         align-items: center;
         justify-content: center;
+        .upload-context{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          >i{
+            color: @bg-th;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            overflow: hidden;
+            &.iconfont{
+              position: relative;
+              display: flex;
+              align-items: center;
+              &:before{
+                font-size: 58px;
+              }
+            }
+          }
+          >p{
+            font-size: @size-12;
+            color: @color-99A;
+            padding: 12px 20px;
+            >span{
+              &:first-of-type{
+                font-size: @size-base;
+                color: @color-blue;
+              }
+            }
+          }
+        }
       }
     }
     /deep/ .el-table,.el-textarea{

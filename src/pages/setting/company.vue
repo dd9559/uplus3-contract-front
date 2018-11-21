@@ -78,13 +78,13 @@
         </el-table-column>
       </el-table>
       <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="pageNum"
-      :page-sizes="[5, 10, 15, 20]"
-      :page-size="pageSize"
-      layout="prev, pager, next,  total, sizes, jumper"
-      :total="count">
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageNum"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="count">
       </el-pagination>
     </div>
     <!-- 添加和编辑公司信息 弹出框 -->
@@ -310,7 +310,7 @@
       return {
         // 搜索表单中的数据
         searchForm: {
-          cityId: "",
+          cityId: 1,
           storeId: "",
           cooperationMode: "",
           bankCard: "",
@@ -346,14 +346,8 @@
       this.getCompanyList()
       this.selectDirectInfo()
       this.initFormList()
-      this.$ajax.get('/api/organize/cities').then(res => {
-        res = res.data
-        if(res.status === 200) {
-          this.cityList = res.data
-        }
-      })
+      this.getCityList()
       this.getDictionary()
-      console.log(this.dictionary['38'],this.dictionary['39'],this.dictionary['40']);
     },
     methods: {
       // 初始化表单 数组集合
@@ -367,16 +361,12 @@
        */
       getCompanyList: function () {
         let param = {
-          cityId: this.searchForm.cityId,
-          keyword: this.searchForm.keyword,
-          storeId: this.searchForm.storeId,
-          cooperationMode: this.searchForm.cooperationMode,
-          bankCard: this.searchForm.bankCard,
-          startTime: this.searchTime[0],
-          endTime: this.searchTime[1],
           pageSize: this.pageSize,
-          pageNum: this.pageNum
+          pageNum: this.pageNum,
+          startTime: this.searchTime[0],
+          endTime: this.searchTime[1]
         }
+        param = Object.assign({},this.searchForm,param)
         this.$ajax.get('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
@@ -385,6 +375,14 @@
           }
         }).catch(error => {
           console.log(error);
+        })
+      },
+      getCityList() {
+        this.$ajax.get('/api/organize/cities').then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.cityList = res.data
+          }
         })
       },
       getStoreList(val) {
@@ -436,10 +434,10 @@
         if(val === 1) {
           this.directSaleSelect = true
           this.companyForm.lepName = this.directInfo.lepName
-          this.companyForm.lepDocumentType = this.directInfo.lepDocumentType.value.toString()
+          this.companyForm.lepDocumentType = this.directInfo.lepDocumentType.value
           this.companyForm.lepDocumentCard = this.directInfo.lepDocumentCard
           this.companyForm.lepPhone = this.directInfo.lepPhone
-          this.companyForm.documentType = this.directInfo.documentType.value.toString()
+          this.companyForm.documentType = this.directInfo.documentType.value
           this.icRegisterShow = true
           this.documentCard = this.directInfo.documentCard
           this.companyBankList = this.directInfo.companyBankList
@@ -575,7 +573,7 @@
           cooperationMode: currentRow.cooperationMode.value,
           name: currentRow.name,
           lepName: currentRow.lepName,
-          lepDocumentType: currentRow.lepDocumentType.value,
+          lepDocumentType: type === 'init' ? currentRow.lepDocumentType.label :currentRow.lepDocumentType.value,
           lepDocumentCard: currentRow.lepDocumentCard,
           lepPhone: currentRow.lepPhone,
           documentType: currentRow.documentType.value,
@@ -642,11 +640,6 @@
       height:36px;
       border-radius:18px;
     }
-  }
-  .el-pagination {
-    height: 60px;
-    padding-top: 15px;
-    text-align: center;
   }
 }
 .dialog-info {

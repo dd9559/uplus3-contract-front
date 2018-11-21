@@ -26,52 +26,47 @@
       </div>
     </section>
     <div class="input-group">
-      <p><label>款类</label><span>（提示：分账款收款需通过创建POS刷卡订单来发起，代管款只在线上记录款项收款信息而不发起订单）</span></p>
+      <p><label>款类</label></p>
       <ul class="money-type-list">
-        <li v-for="item in moneyType" :key="item.index" :class="[activeMoneyType===item.index?'active':'']"
+        <li v-for="item in types" :key="item.id" :class="[activeType===item.id?'active':'']"
             @click="choseType(item)">{{item.name}}
         </li>
       </ul>
-      <el-table border :data="typeList" :span-method="collapseRow" style="width: 100%"
+      <el-table class="collapse-cell" border :data="activeType===1?moneyType:moneyTypeOther" :span-method="collapseRow" style="width: 100%"
                 header-row-class-name="theader-bg">
-        <el-table-column align="center" label="款类（大类）">
-          <template slot-scope="scope">
-            <span>{{scope.row.type}}</span>
-          </template>
-        </el-table-column>
+        <el-table-column align="center" prop="name" label="款类（大类）"></el-table-column>
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
-            <div class="checkbox-info" :class="[classList.indexOf(scope.row.index)>-1?'active':'']"
-                 @click="checkType(scope.row.index)">
-              <span>{{scope.row.name}}</span>
-            </div>
+            <ul>
+              <li v-for="item in scope.row.moneyTypes">
+                <el-radio v-model="form.moneyTypePid" :label="item.key">{{item.name}}</el-radio>
+              </li>
+            </ul>
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入">
+            <ul>
+              <li v-for="item in scope.row.moneyTypes">
+                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyTypePid===item.key">
+                <span v-else>请输入</span>
+              </li>
+            </ul>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="activeMoneyType===1?'合计金额':'收款方式'">
-          <template slot-scope="scope">
-            <div class="collapse-context" v-if="activeMoneyType===1">
-              <p>佣 金: 3000元</p>
-              <p>金融费: 680元</p>
-              <p>违约金: 0元</p>
-              <p>合计金额: 3680元</p>
-            </div>
-          </template>
+        <el-table-column align="center" :label="activeType===1?'金额大写':'收款方式'">
+          <template slot-scope="scope"></template>
         </el-table-column>
         <el-table-column align="center" label="收款账户">
           <template slot-scope="scope">
-            <div class="collapse-context" v-if="activeMoneyType===1">
+            <div class="collapse-context" v-if="activeType===1">
               <p>分账账户</p>
             </div>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div class="input-group" v-if="activeMoneyType===2">
+    <div class="input-group" v-if="activeType===2">
       <p><label>刷卡资料补充</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="刷卡银行">
@@ -116,11 +111,14 @@
       <p><label>备注信息</label></p>
       <el-input placeholder="请填写备注信息" type="textarea"></el-input>
     </div>
-    <div class="input-group" v-if="activeMoneyType===2">
+    <div class="input-group" v-if="activeType===2">
       <p><label>付款凭证</label></p>
       <ul class="upload-list">
-        <li>
-          <p>+</p>
+        <li id="selectfiles">
+          <div class="upload-context">
+            <i class="iconfont icon-shangchuan"></i>
+            <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
+          </div>
         </li>
       </ul>
     </div>
@@ -132,129 +130,49 @@
 </template>
 
 <script>
-  import {TOOL} from "../../assets/js/common";
-
-  let stepIndex = 0 //记录执行合并次数
-  let otherStep = 0 //除合并外，剩余行数
-  let rowTotal = 0  //总行数
-  let collapse = [] //大类合并行数
-
   export default {
     data() {
       return {
         form: {
           person: ''
         },
-        moneyType: [
+        types: [
           {
-            index: 1,
-            name: '分账款'
+            id:1,
+            name:'收入',
           },
           {
-            index: 2,
-            name: '代管款'
+            id:2,
+            name:'代收代付'
           }
         ],
-        activeMoneyType: 1,
-        list: [
-          {}
-        ],
-        typeList: [],
-        typeObj: [
-          {
-            id: 1,
-            type: '佣金',
-            child: [
-              {
-                index: 1,
-                name: '二手买卖佣金'
-              },
-              {
-                index: 2,
-                name: '二手低佣买卖佣金'
-              },
-              {
-                index: 3,
-                name: '租赁佣金'
-              },
-              {
-                index: 4,
-                name: '二手买卖佣金'
-              }
-            ]
-          },
-          {
-            id: 2,
-            type: '金融费',
-            child: [
-              {
-                index: 5,
-                name: '金融服务费'
-              }
-            ]
-          },
-          {
-            id: 3,
-            type: '违约金',
-            child: [
-              {
-                index: 6,
-                name: '违约金'
-              },
-              {
-                index: 7,
-                name: 'test1'
-              }
-            ]
-          }
-        ],
-        otherTypeObj: [
-          {
-            id: 1,
-            type: '代管类',
-            child: [
-              {
-                index: 1,
-                name: '房贷'
-              },
-              {
-                index: 2,
-                name: '物业保证金'
-              },
-              {
-                index: 3,
-                name: '定金'
-              },
-              {
-                index: 4,
-                name: '意向金'
-              }
-            ]
-          }
-        ],
-        classList: [],
+        activeType: 1,
+        moneyType:[],
+        moneyTypeOther:[],
+        list: [{}],
         show: false
       }
     },
     created() {
-      this.getData(this.typeObj)
+      this.getMoneyType()
     },
     methods: {
-      getData: function (list) {
-        stepIndex = 0 //初始化合并次数，必需，不然再表格发生重绘时，会出现第一列消失的情况
-        rowTotal = 0
-        collapse = []
-        this.typeList = []
-        let obj = JSON.parse(JSON.stringify(list))
-        console.log(obj === this.typeObj)
-        obj.forEach(item => {
-          // debugger
-          item.child.map(cell => {
-            cell.type = item.type
-          })
-          this.typeList = this.typeList.concat(item.child)
-          rowTotal = this.typeList.length
-          collapse.push(item.child.length)
+      /**
+       * 获取所有款类
+       */
+      getMoneyType:function () {
+        this.$ajax.get('/api/payInfo/selectMoneyType').then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.moneyType = this.moneyType.concat(res.data)
+            res.data.forEach((item,index)=>{
+              if(item.name==='代收代付'){
+                debugger
+                this.moneyType.splice(index,1)
+                this.moneyTypeOther = res.data.splice(index,1)
+              }
+            })
+          }
         })
       },
       goResult: function () {
@@ -263,41 +181,16 @@
         })
       },
       choseType: function (item) {
-        this.classList = []
-        this.activeMoneyType = item.index
-        if(item.index===1){
-          this.getData(this.typeObj)
-        }else {
-          this.getData(this.otherTypeObj)
-        }
-      },
-      checkType: function (id) {
-        if (this.classList.includes(id)) {
-          this.classList.find((item, index) => {
-            if (item === id) {
-              this.classList.splice(index, 1)
-              return true
-            }
-          })
-        } else {
-          this.classList.push(id)
-        }
+        this.activeType = item.id
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
-        // debugger
-        let param = {
-          rowIndex:rowIndex,
-          rowTotal:rowTotal,
-          collapse:collapse,
-
-          type:'info'
-        }
-        if (columnIndex === 0) {
-          return TOOL.collapseRow(param)
-        } else if ((columnIndex === 3 || columnIndex === 4)&&this.activeMoneyType===1) {
-          param.type='all'
-          return TOOL.collapseRow(param)
+        if(columnIndex>=3&&this.activeType===1){
+          if (rowIndex === 0) {
+            return [this.moneyType.length,1]
+          } else {
+            return [0,0]
+          }
         }
       }
     }
@@ -306,7 +199,26 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
-
+  /deep/.collapse-cell{
+    .el-table__row{
+      >td{
+        padding: 0;
+        .cell{
+          padding: 0;
+          >ul{
+            >li{
+              padding: 12px 10px;
+              border-bottom: 1px solid #ebeef5;
+              text-align: left;
+              &:last-of-type{
+                border: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .checkbox-info {
     display: flex;
     align-items: center;
@@ -404,11 +316,43 @@
       margin: 20px 0;
       > li {
         border: 1px dashed @color-D6;
-        width: 200px;
-        height: 140px;
+        width: 250px;
+        height: 170px;
         display: flex;
         align-items: center;
         justify-content: center;
+        .upload-context{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          >i{
+            color: @bg-th;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            overflow: hidden;
+            &.iconfont{
+              position: relative;
+              display: flex;
+              align-items: center;
+              &:before{
+                font-size: 58px;
+              }
+            }
+          }
+          >p{
+            font-size: @size-12;
+            color: @color-99A;
+            padding: 12px 20px;
+            >span{
+              &:first-of-type{
+                font-size: @size-base;
+                color: @color-blue;
+              }
+            }
+          }
+        }
       }
     }
     /deep/ .el-table, .el-textarea {
