@@ -11,7 +11,7 @@
                                       </h1>
                                </div>
                                <div class="filter-right f_r">
-                                  <el-button type="primary" round>重置</el-button>
+                                  <el-button type="primary" round @click="resetData">重置</el-button>
                                   <el-button type="primary" round @click="filterData">查询</el-button>
                               </div>
                            </div>
@@ -28,25 +28,24 @@
                                     <!-- 部门 -->
                                    <el-form-item 
                                    label="部门" 
-                                   prop="department"
                                    class="mr">
-                                       <el-select v-model="propForm.department"  class="w200" filterable>
+                                       <el-select v-model="propForm.department"  class="w200" filterable @change="selUser">
                                            <el-option 
-                                           v-for="item in rules.department" 
-                                           :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                             v-for="(item,index) in departs" 
+                                              :key="index"
+                                              :label="item.name"
+                                              :value="item.id"></el-option>
                                        </el-select>
                                    </el-form-item>
 
-                                   <el-form-item 
-                                   prop="departmentDetail">
+                                   <el-form-item>
                                        <el-select v-model="propForm.departmentDetail" class="w100" filterable>
                                            <el-option 
-                                           v-for="item in rules.departmentDetail" 
-                                           :key="item.value"
-                                           :label="item.label" 
-                                           :value="item.value"></el-option>
+                                            v-for="(item,index) in users" 
+                                            :key="index"
+                                             ref="user" 
+                                            :label="item.name"
+                                            :value="item.empId"></el-option>
                                        </el-select>
                                    </el-form-item>
                                
@@ -171,12 +170,12 @@
                                <el-table-column
                                  label="合同类型"
                                  width="100">
-                                 <template slot-scope="scope">
+                                  <template slot-scope="scope">
                                      <p v-if="scope.row.contType==0">租赁</p>
                                      <p v-if="scope.row.contType==1">买卖</p>
                                      <p v-if="scope.row.contType==2">代办</p>
+                                     <p v-else>-</p>
                                   </template>
-
                                </el-table-column>
 
                                 <el-table-column
@@ -322,19 +321,20 @@
                                          </div>
                                   </template>
                                </el-table-column>
-                          </el-table>
+                          </el-table>    
                       </div>
-
+                               <!-- 分页 -->
+                            <el-pagination
+                                 @size-change="handleSizeChange"
+                                 @current-change="handleCurrentChange"
+                                 :current-page="currentPage"
+                                 :page-size="pageSize"
+                                 layout="total,prev, pager, next , jumper"
+                                 :total="total">
+                            </el-pagination>
                       
-                     <!-- 分页 -->
-                      <el-pagination
-                           @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="1"
-                           :page-size="2"
-                           layout="total,prev, pager, next , jumper"
-                           :total="total">
-                      </el-pagination>
+              
+              
 
                 </div>
 
@@ -640,6 +640,9 @@
                                                       <div v-if="scope.row.result==2">
                                                          <p class="orange">已驳回</p>
                                                       </div>
+                                                       <div v-else>
+                                                         <p class="orange">-</p>
+                                                      </div>
                                                    </div>
                                              </template>
                                       </el-table-column>
@@ -657,9 +660,8 @@
                            <div class="ach-footer"></div> 
                      </el-dialog>
 
-                     <!-- 审核，编辑，反审核，业绩分成弹框 -->
-                     <achDialog :shows="shows"  @close="shows=false" :dialogType="dialogType" :contractCode="code"></achDialog>
-
+                   <!-- 审核，编辑，反审核，业绩分成弹框 -->
+                  <achDialog :shows="shows"  @close="shows=false,code=''" :dialogType="dialogType" :contractCode="code"></achDialog>
          </div>
 </template>
 
@@ -677,71 +679,20 @@ export default {
       houseArr: [], //应收详情房源数组
       clientArr: [], //应收详情客源数组
       checkArr: [], //应收详情审核信息数组
-      pageSize: 5,
-      dialogVisible: false,
+      departs: [], //部门
+      depUser: "",
+      users: [],
+      dialogVisible: false, //详情弹框
       filterShow: true,
       // 筛选条件
       propForm: {
         department: "", //部门
-        departmentDetail: "", //部门详情
+        departmentDetail: "", //部门详情（员工）
         contractType: "", //合同类型
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
         search: ""
-      },
-      // 筛选选项
-      rules: {
-        department: [
-          {
-            label: "部门1",
-            value: "1"
-          },
-          {
-            label: "部门2",
-            value: "2"
-          }
-        ],
-        departmentDetail: [
-          {
-            label: "员工1",
-            value: "1"
-          },
-          {
-            label: "员工2",
-            value: "2"
-          }
-        ],
-        contractType: [
-          {
-            label: "合同类型1",
-            value: "1"
-          },
-          {
-            label: "合同类型2",
-            value: "2"
-          }
-        ],
-        divideType: [
-          {
-            label: "分成类型1",
-            value: "1"
-          },
-          {
-            label: "分成类型2",
-            value: "2"
-          }
-        ],
-        achType: [
-          {
-            label: "业绩类型1",
-            value: "1"
-          },
-          {
-            label: "业绩类型2",
-            value: "2"
-          }
-        ]
       },
       shows: false,
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
@@ -752,11 +703,23 @@ export default {
         "10": "", //合同类型
         "21": "", //分成状态
         "2": "" //业绩状态
-      }
+      },
+      beginData: false,
+      currentPage: 1,
+      pageSize: 4
     };
   },
   created() {
+    // 获取部门列表
+    this.$ajax.get("/api/access/deps").then(res => {
+      if (res.status == 200) {
+        console.log(res.data.data);
+        this.departs = res.data.data;
+      }
+    });
+    // 获取应收列表数据
     this.getData();
+    // 字典初始化
     this.getDictionary();
   },
   components: {
@@ -766,8 +729,8 @@ export default {
   methods: {
     getData() {
       let param = {
-        pageNum: 1,
-        pageSize: 2
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
       };
       this.$ajax
         .get("/api/achievement/selectAchievementList", param)
@@ -778,7 +741,6 @@ export default {
             this.selectAchList = data.data.list;
             this.countData = data.data.list[0].contractCount;
             this.total = data.data.total;
-            console.log(data.data.total);
           }
         });
     },
@@ -816,23 +778,49 @@ export default {
       };
       console.log(param);
     },
+    resetData() {
+      this.propForm = {
+        department: "", //部门
+        departmentDetail: "", //部门详情
+        contractType: "", //合同类型
+        divideType: "", //分成类型
+        achType: "", //业绩类型
+        dateMo: "",
+        search: ""
+      };
+    },
     checkAch(code) {
+      this.beginData = true;
       this.code = code;
       this.dialogType = 0;
       console.log(this.dialogType);
       this.shows = true;
     },
     editAch(code) {
+      this.beginData = true;
       this.code = code;
       this.dialogType = 1;
       console.log(this.dialogType);
       this.shows = true;
     },
     againCheck(code) {
+      this.beginData = true;
       this.code = code;
       this.dialogType = 2;
       console.log(this.dialogType);
       this.shows = true;
+    },
+    selUser() {
+      this.propForm.departmentDetail = "";
+      this.$ajax
+        .get("/api/organize/employees", { depId: this.department })
+        .then(res => {
+          console.log(res);
+          if (res.status == 200) {
+            this.users = res.data.data;
+            console.log(this.users);
+          }
+        });
     },
     //分页
     handleSizeChange(val) {
@@ -840,6 +828,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.getData();
     }
   }
 };
@@ -890,13 +880,16 @@ export default {
     padding-bottom: 0px;
     position: relative;
     .btn {
-      width: 50px;
-      height: 12px;
-      background-color: gray;
+      width: 56px;
+      height: 17px;
       position: absolute;
-      bottom: -12px;
+      bottom: -17px;
       left: 50%;
-      margin-left: -25px;
+      margin-left: -28px;
+      z-index: 9;
+      background: url(../../assets/img/icon-dowm.png) no-repeat center center;
+      background-size: 56px auto;
+      cursor: pointer;
     }
     .filter-left {
       h1 {
