@@ -214,9 +214,10 @@ let TOOL = {
     }
   },
   nullFormat:function (val) {
-    if(!val){
+    if (!val && typeof(val) !== 'number'){
       return '--'
-    }else {
+    }
+    else {
       return val
     }
   }

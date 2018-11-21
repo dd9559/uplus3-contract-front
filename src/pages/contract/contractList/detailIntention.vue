@@ -9,13 +9,14 @@
                             <li class="tabs-title">合同信息</li>
                             <ul class="ul3">
                                 <li>
-                                    <div class="div1"><span>签约日期：</span>2018/11/07</div>
-                                    <div class="div2"><span>认购期限：</span>2018/11/07</div>
+                                    <div class="div1"><span>签约日期：</span>{{detailData.signDate | getDate}}</div>
+                                    <div class="div2"><span>认购期限：</span>{{detailData.subscriptionTerm | getDate}}</div>
                                 </li>
                                 <li>
-                                    <div class="div1"><span>合同类型：</span>意向金</div>
-                                    <div class="div2"><span>认购总价：</span>10000元</div>
-                                    <div><span>意向金金额：</span><span class="yellow mr12">10000元</span><span class="chinesemoney yellow">一万元整</span></div>
+                                    <div class="div1"><span>合同类型：</span>{{detailData.contType.label | nullData}}</div>
+                                    <div class="div2"><span>认购总价：</span>{{detailData.subscriptionPrice | nullData}}元</div>
+                                    <div v-if="this.detailData.contType.value == 4"><span>意向金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice | moneyFormat}}</span></div>
+                                    <div v-if="this.detailData.contType.value == 5"><span>定金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice | moneyFormat}}</span></div>
                                 </li>
                             </ul>
                         </ul>
@@ -23,24 +24,24 @@
                             <li class="tabs-title">房源信息</li>
                             <ul class="ul3">
                                 <li>
-                                    <div class="div1"><span>房源编号：</span><em class="blue">YGYH001163</em></div>
-                                    <div class="div22"><span>物业地址：</span>当代国际花园当代国际花园</div>
+                                    <div class="div1"><span>房源编号：</span><em class="blue">{{detailData.houseinfoCode | nullData}}</em></div>
+                                    <div class="div22"><span>物业地址：</span>{{detailData.propertyAddr | nullData}}</div>
                                 </li>
                                 <li>
-                                    <div class="div1"><span>房源价格：</span>200000元</div>
-                                    <div class="div2"><span>建筑面积：</span>155.21㎡</div>
-                                    <div class="div3"><span>套内面积：</span>155.21㎡</div>
-                                    <div><span>用途：</span>住宅</div>
+                                    <div class="div1"><span>房源价格：</span>{{detailData.houseInfo.price | nullData}}元</div>
+                                    <div class="div2"><span>建筑面积：</span>{{detailData.houseInfo.architectureArea | nullData}}㎡</div>
+                                    <div class="div3"><span>套内面积：</span>{{detailData.houseInfo.insideArea | nullData}}㎡</div>
+                                    <div><span>用途：</span>{{detailData.houseinfoPurpose | nullData}}</div>
                                 </li>
                                 <li>
-                                    <div class="div1"><span>房型：</span>3*2*2*1</div>
-                                    <div class="div2"><span>朝向：</span>东南</div>
-                                    <div class="div3"><span>装修：</span>简装</div>
-                                    <div><span>业主姓名：</span>夏雨田</div>
+                                    <div class="div1"><span>房型：</span>{{detailData.houseInfo.houseType | nullData}}</div>
+                                    <div class="div2"><span>朝向：</span>{{detailData.houseInfo.orientation | nullData}}</div>
+                                    <div class="div3"><span>装修：</span>{{detailData.houseInfo.renovation | nullData}}</div>
+                                    <div><span>业主姓名：</span>{{custInfo[0].name | nullData}}</div>
                                 </li>
                                 <li>
-                                    <div class="div1"><span>手机：</span>15527279348</div>
-                                    <div><span>产证地址：</span>当代国际花园当代国际花园</div>
+                                    <div class="div1"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
+                                    <div><span>产证地址：</span>{{detailData.houseInfo.propertyRightAddr | nullData}}</div>
                                 </li>
                             </ul>
                         </ul>
@@ -48,20 +49,20 @@
                             <li class="tabs-title">客源信息</li>
                             <ul class="ul3">
                                 <li>
-                                    <div class="div1"><span>客源编号：</span><em class="blue">YGYH001163</em></div>
-                                    <div class="div2"><span>成交经纪人：</span>当代一店·夏雨田</div>
+                                    <div class="div1"><span>客源编号：</span><em class="blue">{{detailData.guestinfoCode | nullData}}</em></div>
+                                    <div><span>成交经纪人：</span>{{detailData.dealAgentStoreName + '-' + detailData.dealAgentName | nullData}}</div>
                                     
                                 </li>
                                 <li>
-                                    <div class="div1"><span>业主姓名：</span>夏雨田</div>
-                                    <div class="div2"><span>手机：</span>15524245689</div>
-                                    <div><span>身份证号：</span>42112548775845221</div>
+                                    <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
+                                    <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
+                                    <div><span>身份证号：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
                                 </li>
                             </ul>
                         </ul>
-                        <div class="textbox">
+                        <div class="textbox" v-if="this.detailData.contType.value == 4">
                             <span>意向备注：</span>
-                            <el-input type="textarea" class="textareawidth" :disabled="true"></el-input>
+                            <el-input type="textarea" class="textareawidth" :disabled="true" v-model="detailData.remarks"></el-input>
                         </div>
                     </div>
                     <div class="fixed">
@@ -69,14 +70,14 @@
                             <div class="btnbox"> 
                                 <div class="fl">
                                     <ul>
-                                        <li>录入时间：<span>2018/09/11 12:00</span></li>
-                                        <li>录入人：<span>当代一店·夏雨田</span></li>
-                                        <li>最后修改：<span>2018/09/11 12:00</span></li>
+                                        <li>录入时间：<span>{{detailData.createTime | getDate}}</span></li>
+                                        <li>录入人：<span>{{detailData.recordName}}</span></li>
+                                        <li>最后修改：<span>{{detailData.updateTime | getDate}}</span></li>
                                     </ul>
                                 </div>
                                 <div class="fr">                  
-                                    <el-button type="primary" plain round class="btn1">预 览</el-button>
-                                    <el-button type="primary" round class="mr30 btn2">编 辑</el-button>                  
+                                    <el-button type="primary" plain round class="btn1" @click="onPreview()">预 览</el-button>
+                                    <el-button type="primary" round class="mr30 btn2" @click="onEdit(detailData.contType)">编 辑</el-button>                  
                                 </div>
                             </div>
                         </div>
@@ -211,35 +212,148 @@
 </template>
 
 <script>
-
+import {TOOL} from "@/assets/js/common";
+// import {FILTER} from "@/assets/js/filter";
 export default {
 
     data() {
         return {
-             clientHei: document.documentElement.clientHeight, //窗体高度
+            clientHei: document.documentElement.clientHeight, //窗体高度
             activeName: 'first',
             dialogImageUrl: '',
-            dialogVisible: false           
+            dialogVisible: false,
+            detailData: {
+                contType: {
+                    label: '',
+                    value: ''
+                },
+                houseInfo: {},
+                guestInfo: {},
+                contPersons: [
+                    {
+                        name: '',
+                        mobile: '',
+                        identifyCode: '',
+                        personType:{
+                            label: '',
+                            value: ''
+                        }
+                    }
+                ],
+                
+            },
+            ownerInfo:[
+                {
+                    name: '',
+                    mobile: '',
+                    identifyCode: '', 
+                }
+            ],
+            custInfo: [
+                {
+                    name: '',
+                    mobile: '',
+                    identifyCode: '', 
+                }
+            ],
+            name: '',
+        mobile: '',
+        identifyCode: '',
+
         }
     },
     
     methods: {
-       handleClick(tab, event) {
-        console.log(tab, event);
-       },
-       handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
-      },
+        handleClick(tab, event) {
+            console.log(tab, event);
+        },
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        handlePictureCardPreview(file) {
+            this.dialogImageUrl = file.url;
+            this.dialogVisible = true;
+        },
 
-      // 控制弹框body内容高度，超过显示滚动条
-      clientHeight() {        
-          return this.clientHei - 285 + 'px'
+        // 控制弹框body内容高度，超过显示滚动条
+        clientHeight() {        
+            return this.clientHei - 285 + 'px'
+        },
+
+        //预览事件
+        onPreview() {
+            this.$router.push({
+                path:'/contractPreview',
+                query:{
+                    // contractCode: value.contractCode
+                }
+            })
+        },
+
+        //预览事件
+        onEdit(e) {
+            this.$router.push({
+                path:'/editIntention',
+                query:{
+                    contractType: e.value,
+                    id: this.$route.query.id 
+                }
+            })
+        },
+
+        // 查询
+       getDetail() {
+          let param = {
+            id: this.$route.query.id                        
+          }
+          //调整佣金审核列表
+          this.$ajax         
+          .get("/api/contract/getById", param)
+          .then(res => {
+           
+            let data = res.data;
+            if (res.status === 200) {
+                this.detailData = data.data
+                var contperson = this.detailData.contPersons
+                if (contperson.length > 0) {
+                    for (let i=0; i < contperson.length; i++){
+                        if (contperson[i].personType.value == 1){
+                            this.ownerInfo.unshift(contperson[i])
+                        }else if(contperson[i].personType.value == 2){
+                            this.custInfo.unshift(contperson[i])
+                        }
+                    }
+                }
+                console.log(this.detailData)
+                console.log(this.ownerInfo)
+                console.log(this.custInfo)
+            }
+            
+          }).catch(error => {
+            console.log(error)
+          })
       },
        
+    },
+
+    filters: {
+        getDate(val) {
+            return TOOL.dateFormat(val);
+        },
+        nullData(val) {
+            return TOOL.nullFormat(val);
+        },
+        moneyFormat: function(val) {
+            if (!val) {
+                return "零";
+            } else {
+                return TOOL.toChineseNumber(val);
+            }
+        }
+    },
+
+    created() {
+        this.getDetail()
     },
 
     mounted() {

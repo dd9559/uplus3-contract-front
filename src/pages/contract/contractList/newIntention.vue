@@ -12,7 +12,8 @@
                                 <el-date-picker v-model="ruleForm.signDate" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="合同类型">
-                                <el-input v-model="ruleForm.contractType" :disabled="true"></el-input>
+                                <el-input placeholder="意向金" :disabled="true" v-if="this.$route.query.contType == 4"></el-input>
+                                <el-input placeholder="定金"  :disabled="true" v-if="this.$route.query.contType == 5"></el-input>
                             </el-form-item>
                             
                             <el-form-item label="认购期限" prop="subscriptionTerm">
@@ -23,7 +24,15 @@
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item label="意向金金额" prop="dealPrice">
+                            
+                            <el-form-item label="意向金金额" prop="dealPrice" v-if="this.$route.query.contType == 4">
+                                <el-input v-model.number="ruleForm.dealPrice" type="number" clearable>
+                                    <i slot="suffix" class="yuan">元</i>
+                                    <template slot="append">{{ruleForm.dealPrice | moneyFormat}}</template>
+                                </el-input>
+                            </el-form-item>
+
+                            <el-form-item label="定金金额" prop="dealPrice" v-if="this.$route.query.contType == 5">
                                 <el-input v-model.number="ruleForm.dealPrice" type="number" clearable>
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{ruleForm.dealPrice | moneyFormat}}</template>
@@ -41,26 +50,26 @@
                                     <el-button type="primary" v-model="ruleForm.houseno" @click="toLayerHouse()">请选择房源</el-button>
                                 </el-form-item>
                                 <el-form-item label="物业地址">
-                                    <el-input v-model="ruleForm.address1" clearable class="big-input"></el-input>
+                                    <div>当代国际花园元帅哈萨克卡覅</div>
                                 </el-form-item>
                             </el-form-item>
                             
                             <el-form-item label="产证地址" class="disb">
-                                <el-input v-model="ruleForm.address2" clearable class="big-input"></el-input>
+                                <el-input v-model="ruleForm.propertyRightAddr" clearable class="big-input"></el-input>
                             </el-form-item>
 
                             <el-form-item label="房源总价" class="disb">
-                                <el-input v-model.number="ruleForm.housemoney" clearable>
+                                <el-input v-model.number="ruleForm.price" clearable>
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
 
                             <el-form-item label="业主信息" class="disb" required>
                                 <el-form-item prop="ownname">
-                                    <el-input v-model="ruleForm.ownname" clearable placeholder="姓名" class="ownwidth"></el-input>
+                                    <el-input v-model="ruleForm.ownerInfo.name" clearable placeholder="姓名" class="ownwidth"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="ownphone">
-                                    <el-input v-model="ruleForm.ownphone" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                    <el-input v-model="ruleForm.ownerInfo.mobile" clearable placeholder="手机号" class="ownwidth"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -89,17 +98,17 @@
                             </el-form-item>
                             <el-form-item label="客户信息" class="disb" required>
                                 <el-form-item prop="custname">
-                                    <el-input v-model="ruleForm.custname" clearable placeholder="姓名" class="ownwidth"></el-input>
+                                    <el-input v-model="ruleForm.custInfo.name" clearable placeholder="姓名" class="ownwidth"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custphone">
-                                    <el-input v-model="ruleForm.custphone" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                    <el-input v-model="ruleForm.custInfo.mobile" clearable placeholder="手机号" class="ownwidth"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custidcard">
-                                    <el-input v-model="ruleForm.custidcard" clearable placeholder="身份证号" class="custwidth"></el-input>
+                                    <el-input v-model="ruleForm.custInfo.identifyCode" clearable placeholder="身份证号" class="custwidth"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
-                        <div class="form-cont mt30">
+                        <div class="form-cont mt30" v-if="this.$route.query.contType == 4">
                             <el-form-item label="意向备注" class="disb">
                                 <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请输入内容" v-model="ruleForm.textarea" class="textareawidth"></el-input>
                             </el-form-item>
@@ -140,14 +149,18 @@ export default {
                 dealPrice: '', //意向金金额
                 houseno: '', //房源编号
                 address1: '', //物业地址
-                address2: '', //产权地址
-                housemoney: '', //房源总价
-                ownname: '', //业主姓名
-                ownphone: '', //业主手机号
-                custno: '', //客源编号
-                custname: '', //客户姓名
-                custphone: '', //客户手机号
-                custidcard: '', //客户身份证号
+                propertyRightAddr: '', //产权地址
+                price: '', //房源总价
+                ownerInfo: {
+                    name: '', //业主姓名
+                    mobile: '', //业主手机号
+                },
+                custInfo: {
+                    name: '', //客户姓名
+                    mobile: '', //客户手机号
+                    identifyCode: '', //客户身份证号
+                },             
+                custno: '', //客源编号              
                 textarea: '', //备注
             
             },
@@ -193,7 +206,7 @@ export default {
                 // address1: [
                 //     { required: true, message: '请输入物业地址', trigger: 'blur' },
                 // ],
-                // address2: [
+                // propertyRightAddr: [
                 //     { required: true, message: '请输入产权地址', trigger: 'blur' },
                 // ],
                 ownname: [
@@ -235,11 +248,11 @@ export default {
 
     filters: {
         moneyFormat: function(val) {
-        if (!val) {
-            return "零";
-        } else {
-            return TOOL.toChineseNumber(val);
-        }
+            if (!val) {
+                return "零";
+            } else {
+                return TOOL.toChineseNumber(val);
+            }
         }
     },
 
@@ -269,6 +282,7 @@ export default {
                 }
             })
         },
+        
        
         // 新增意向金接口（post）
         onSubmit(ruleForm) {
@@ -276,47 +290,47 @@ export default {
             //     if (valid) {
                     let param = { 
                         igdCont:{      
-                            "id": 23,		//这是合同ID，在修改时才会用到，新增时使用不会报错
-                            "type":4,       //合同类型 ZL("租赁", 1), MM("买卖", 2), DB("代办", 3), YX("意向", 4)
-                            "houseinfoCode":"UUS001",                //房源编号
-                            "guestinfoCode":"SQH001",                //客源编号
-                            "signDate":"2018/11/04",                 //签约日期
-                            "subscriptionTerm":"2018/11/18",         //认购期限
-                            "subscriptionPrice": "300",		         //成交总价
-                            "dealAgentStoreId":"10",                 //成交经纪人门店ID
-                            "dealAgentStoreName":"当代一店",          //成交经纪人门店名字
-                            "dealPrice":"3200.50",			         //（意向/定金金额）
-                            "remarks":"意向备注",                     //（意向备注）
+                            // "id": 23,		//这是合同ID，在修改时才会用到，新增时使用不会报错
+                            "type":this.$route.query.contType,       //合同类型 ZL("租赁", 1), MM("买卖", 2), DB("代办", 3), YX("意向", 4)
+                            // "houseinfoCode":"UUS001",                //房源编号
+                            // "guestinfoCode":"SQH001",                //客源编号
+                            "signDate": this.ruleForm.signDate,                 //签约日期
+                            "subscriptionTerm": this.ruleForm.subscriptionTerm,         //认购期限
+                            "subscriptionPrice": this.ruleForm.subscriptionPrice,		         //成交总价
+                            // "dealAgentStoreId":"10",                 //成交经纪人门店ID
+                            // "dealAgentStoreName":"当代一店",          //成交经纪人门店名字
+                            "dealPrice":this.ruleForm.dealPrice,			         //（意向/定金金额）
+                            "remarks": this.ruleForm.textarea,                     //（意向备注）
                             "houseInfo":{
-                                "houseinfoId": "100",
-                                "estateName":"中天国际",
-                                "propertyRightAddr": "产权地址",
-                                "building":"楚河汉街万达环球国际中心",
-                                "unit":"三单元",
-                                "number": "804",
-                                "price":"875"
+                                // "houseinfoId": "100",
+                                // "estateName":"中天国际",                           
+                                // "building":"楚河汉街万达环球国际中心",
+                                // "unit":"三单元",
+                                // "number": "804",
+                                "propertyRightAddr": this.ruleForm.propertyRightAddr,
+                                "price": this.ruleForm.price
                             },
                             "guestInfo":{
-                                "guestinfoId": "87",
+                                // "guestinfoId": "87",
                                 "dealAgentId": 1,
                                 "dealAgentName": "成交人姓名啊"
                             },
                             "contPersons": [
                                 {
-                                    "name": "胡业主",
+                                    "name": this.ownerInfo.name,
                                     "type": 1,
-                                    "mobile": "15527279348",
-                                    "identifyCode": "",
-                                    "uId": 1,
-                                    "relation": 1
+                                    "mobile":this.ownerInfo.mobile,
+                                    // "identifyCode": "",
+                                    // "uId": 1,
+                                    // "relation": 1
                                 },
                                 {
-                                    "name": "李客户",
+                                    "name": this.ruleForm.custInfo.name,
                                     "type": 2,
-                                    "mobile": "13245687452",
-                                    "identifyCode": "",
-                                    "uId": 1,
-                                    "relation": 1
+                                    "mobile": this.ruleForm.custInfo.mobile,
+                                    "identifyCode": this.ruleForm.custInfo.identifyCode,
+                                    // "uId": 1,
+                                    // "relation": 1
                                 },
                             ]
                             
@@ -400,6 +414,11 @@ export default {
 
 }
 #newIntention{
+    .el-input-group__append{
+        background-color: transparent;
+        border: none;
+        color: #FF9039
+    }
     .fr{
         float: right;
     }
