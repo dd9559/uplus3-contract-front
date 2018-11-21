@@ -69,7 +69,7 @@
         </el-form-item>
         <el-form-item label="分配负责角色">
           <el-select v-model="addForm.dutyType">
-            <el-option v-for="(item,index) in listData" :key="index" :label="item.dutyType" :value="item.dutyType"></el-option>
+            <el-option v-for="item in roleList" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -139,6 +139,7 @@
            
 <script>
   import { FILTER } from "@/assets/js/filter";
+  import {MIXINS} from "@/assets/js/mixins";
   let stepTypeId = 1;
   let obj = {
     cityId: 1,
@@ -146,7 +147,7 @@
     dutyType: ''
   }
   export default {
-    mixins: [FILTER],
+    mixins: [FILTER,MIXINS],
     props: ["cityId"],
     data() {
       return {
@@ -246,12 +247,14 @@
             label: "Word",
             value: 7
           }
-        ]
+        ],
+        roleList: []
       }
     },
     created() {
       this.getData()
       this.addForm = JSON.parse(JSON.stringify(obj))
+      this.getRoleList()
     },
     methods: {
       //获取步骤类型列表
@@ -277,6 +280,14 @@
         }
         cell.parentNode.firstElementChild.style.background = "#478DE3"
         cell.parentNode.firstElementChild.style.color = "#fff"
+      },
+      getRoleList() {
+        this.$ajax.get('/api/roles').then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.roleList = res.data
+          }
+        })
       },
       //点击添加步骤类型
       addStepsType() {
@@ -340,6 +351,8 @@
             this.$message(msg)
             this.stepsTypeDialog = false
             this.getData()
+            // this.firstCell.style.background = "#478DE3"
+            // this.firstCell.style.color = "#fff"
           }
         }).catch(error => {
           console.log(error);
@@ -380,7 +393,7 @@
             this.stepsTypeDialog = true
             this.modalTitle = "编辑步骤类型"
             this.addForm.name = row.typeName
-            this.addForm.dutyType = row.dutyType
+            this.addForm.dutyType = +row.dutyType
           } else if (type === 2) {
             this.tradeStepsDialog = true
             this.modalTitle = "编辑交易步骤"

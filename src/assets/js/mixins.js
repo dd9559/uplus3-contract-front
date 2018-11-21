@@ -1,4 +1,9 @@
 const MIXINS = {
+  data(){
+    return{
+      userMsg:null
+    }
+  },
   methods: {
     /**
      * 收取字典id，拼接字符串
@@ -26,6 +31,17 @@ const MIXINS = {
         if (res.status === 200) {
           console.log(res.data)
           this.dictionary = Object.assign({}, res.data)
+        }
+      })
+    },
+    /**
+     * 获取当前用户信息
+     */
+    getAdmin:function () {
+      this.$ajax.get('/api/payInfo/selectLogined').then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.userMsg = res.data
         }
       })
     }

@@ -98,7 +98,7 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown placement="bottom" @command="toAddcontract">
-            <el-button round>
+            <el-button round type="primary">
               创建正式合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
@@ -204,7 +204,7 @@
               <el-button type="text" size="medium" v-if="scope.row.contState.value!=3" @click="upload(scope.row.code)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview">预览</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===1" @click="goCheck">审核</el-button>
-              <el-button type="text" size="medium" @click="toLayerAudit(scope.row.code)">调佣</el-button>
+              <el-button type="text" size="medium" @click="toLayerAudit(scope.row)">调佣</el-button>
               <el-button type="text" size="medium">提交审核</el-button>
             </div>
           </template>
@@ -386,9 +386,16 @@ export default {
       this.water = false;
     },
     //调佣弹窗
-    toLayerAudit(code) {
-      this.contractCode = code;
-      this.tiaoyong = true;
+    //Z171231001
+    toLayerAudit(item) {
+      if(item.isCanChangeCommission===1){
+        this.contractCode = item.code;
+        this.tiaoyong = true;
+      }else{
+        this.$alert('存在未审核的调佣申请,请处理后重试', '提示', {
+          confirmButtonText: '确定',
+        });
+      }
     },
     //关闭调佣弹窗
     closeCommission() {
