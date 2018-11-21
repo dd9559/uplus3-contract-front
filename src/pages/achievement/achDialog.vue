@@ -668,6 +668,7 @@ export default {
         this.achDetail[index].radio = 1;
       }
     },
+    //获取房源客源相关人员
     getMans(type) {
       let param = {
         contCode: this.contractCode
@@ -682,6 +683,7 @@ export default {
           } else {
             this.mansList = data.data.customer;
           }
+          this.showTips = true;
         }
       });
     },
@@ -689,7 +691,6 @@ export default {
     houseRelativeMans() {
       this.mansList = [];
       this.getMans(1);
-      this.showTips = true;
     },
     // 客源选择相关人
     clientRelativeMans() {
