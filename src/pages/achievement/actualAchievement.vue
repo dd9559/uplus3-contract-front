@@ -321,9 +321,17 @@
                                          </div>
                                   </template>
                                </el-table-column>
-                          </el-table>
+                          </el-table>    
                       </div>
-
+                               <!-- 分页 -->
+                            <el-pagination
+                                 @size-change="handleSizeChange"
+                                 @current-change="handleCurrentChange"
+                                 :current-page="currentPage"
+                                 :page-size="pageSize"
+                                 layout="total,prev, pager, next , jumper"
+                                 :total="total">
+                            </el-pagination>
                       
               
               
