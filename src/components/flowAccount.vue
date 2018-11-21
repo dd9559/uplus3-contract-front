@@ -63,12 +63,12 @@
 				<!-- 票据 -->
 				<el-tab-pane label="票据" name="sixth">
 					<el-table :data="gridData6" border>
-						<el-table-column prop="moneyClass" label="款类"></el-table-column>
-						<el-table-column prop="billTime" label="开票时间"> </el-table-column>
-						<el-table-column prop="billAmount" label="开票金额（元）"></el-table-column>
-						<el-table-column prop="billNo" label="票据号"></el-table-column>
-						<el-table-column prop="billState" label="票据状态"></el-table-column>
-						<el-table-column prop="billPerson" label="开票人"></el-table-column>
+						<el-table-column prop="moneyType" label="款类"></el-table-column>
+						<el-table-column prop="createTime" label="开票时间"> </el-table-column>
+						<el-table-column prop="amount" label="开票金额（元）"></el-table-column>
+						<el-table-column prop="code" label="票据号"></el-table-column>
+						<el-table-column prop="status" label="票据状态"></el-table-column>
+						<el-table-column prop="drawerName" label="开票人"></el-table-column>
 					</el-table>
 				</el-tab-pane>
 				<!-- 应实对照 -->
@@ -271,9 +271,9 @@ export default {
 				})
 			}else if(tab.name==='sixth'){
 				let param = {
-          contractCode: "Z181111001"
+          contractId: '2'
 				};
-				this.$ajax.get("/api/flows/bills", param).then(res => {
+				this.$ajax.get("/api/flows/bill", param).then(res => {
 					 res = res.data;
           if (res.status === 200) {
 						console.log(res.data)
