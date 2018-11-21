@@ -3,7 +3,7 @@
     <p>收款信息</p>
     <section>
       <div class="input-group">
-        <label>付款方</label>
+        <label class="form-label">付款方</label>
         <el-select v-model="form.person" placeholder="请选择">
           <el-option
             v-for="item in 5"
@@ -14,7 +14,7 @@
         </el-select>
       </div>
       <div class="input-group">
-        <label>收款人:</label>
+        <label class="form-label">收款人:</label>
         <el-select v-model="form.person" placeholder="请选择">
           <el-option
             v-for="item in 5"
@@ -26,7 +26,7 @@
       </div>
     </section>
     <div class="input-group">
-      <p><label>款类</label></p>
+      <p><label class="form-label">款类</label></p>
       <ul class="money-type-list">
         <li v-for="item in types" :key="item.id" :class="[activeType===item.id?'active':'']"
             @click="choseType(item)">{{item.name}}
@@ -39,7 +39,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <el-radio v-model="form.moneyTypePid" :label="item.key">{{item.name}}</el-radio>
+                <el-radio v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}</el-radio>
               </li>
             </ul>
           </template>
@@ -48,14 +48,28 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyTypePid===item.key">
+                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===item.key">
                 <span v-else>请输入</span>
               </li>
             </ul>
           </template>
         </el-table-column>
         <el-table-column align="center" :label="activeType===1?'金额大写':'收款方式'">
-          <template slot-scope="scope"></template>
+          <template slot-scope="scope">
+            <span v-if="amount&&activeType===1">{{amount.balance|formatChinese}}</span>
+            <ul v-if="activeType===2">
+              <li v-for="item in scope.row.moneyTypes">
+                <el-select v-model="form.person" placeholder="请选择">
+                  <el-option
+                    v-for="item in dictionary['534']"
+                    :key="item.key"
+                    :label="item.value"
+                    :value="item.key">
+                  </el-option>
+                </el-select>
+              </li>
+            </ul>
+          </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户">
           <template slot-scope="scope">
@@ -65,10 +79,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <ul class="table-total" v-if="activeType===2">
+        <li>现金收款:<span>3000元</span></li>
+        <li>转账收款:<span>3000元</span></li>
+        <li>POS刷卡收款:<span>3000元</span></li>
+        <li>合计金额:<span>9000元</span></li>
+      </ul>
     </div>
     <div class="input-group" v-if="activeType===2">
-      <p><label>刷卡资料补充</label></p>
-      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
+      <p><label class="form-label">刷卡资料补充</label></p>
+      <el-table border :data="cardList" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="刷卡银行">
           <template slot-scope="scope">
             <span>-</span>
@@ -101,8 +121,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text">新增</el-button>
-            <el-button type="text">删除</el-button>
+            <el-button type="text" @click="cardOpera('add')">新增</el-button>
+            <el-button type="text" @click="cardOpera('delete',scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -112,13 +132,13 @@
       <el-input placeholder="请填写备注信息" type="textarea"></el-input>
     </div>
     <div class="input-group" v-if="activeType===2">
-      <p><label>付款凭证</label></p>
+      <p><label class="form-label">付款凭证</label></p>
       <ul class="upload-list">
-        <li id="selectfiles">
-          <div class="upload-context">
+        <li>
+          <file-up class="upload-context">
             <i class="iconfont icon-shangchuan"></i>
             <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
-          </div>
+          </file-up>
         </li>
       </ul>
     </div>
@@ -130,11 +150,24 @@
 </template>
 
 <script>
+  import {MIXINS} from "@/assets/js/mixins";
+
+  let cardID = 2;
+
   export default {
+    mixins:[MIXINS],
     data() {
       return {
         form: {
-          person: ''
+          contId:2,
+          remark:'',
+          inObj:'',
+          inObjId:'',
+          inObjType:'',
+          moneyType:'',
+          moneyTypePid:'',
+          smallAmount:'',
+          filePath:'123',
         },
         types: [
           {
@@ -150,11 +183,26 @@
         moneyType:[],
         moneyTypeOther:[],
         list: [{}],
-        show: false
+        cardList:[
+          {
+            id:1,
+            bankName:'',
+            userName:'',
+            cardNumber:'',
+            amount:'',
+            orderNo:'',
+            fee:''
+          }
+        ],
+        amount: null,
+        dictionary: {
+          '534': ''
+        },
       }
     },
     created() {
       this.getMoneyType()
+      this.getDictionary()
     },
     methods: {
       /**
@@ -167,7 +215,6 @@
             this.moneyType = this.moneyType.concat(res.data)
             res.data.forEach((item,index)=>{
               if(item.name==='代收代付'){
-                debugger
                 this.moneyType.splice(index,1)
                 this.moneyTypeOther = res.data.splice(index,1)
               }
@@ -192,7 +239,48 @@
             return [0,0]
           }
         }
-      }
+      },
+      /**
+       * 刷卡资料补充
+       */
+      cardOpera:function (type,row) {
+        if(type==='add'){
+          let cell = {
+            id:cardID++,
+            bankName:'',
+            userName:'',
+            cardNumber:'',
+            amount:'',
+            orderNo:'',
+            fee:''
+          }
+          this.cardList.push(cell)
+        }else {
+          this.cardList.find((item,index)=>{
+            if(item.id===row.id){
+              this.cardList.splice(index,1)
+              return
+            }
+          })
+        }
+      },
+      getType:function (label) {
+        this.form.moneyTypePid = label.id
+        this.getAmount()
+      },
+      getAmount:function () {
+        let param={
+          contId:this.form.contId,
+          moneyTypePid:this.form.moneyTypePid,
+          moneyType:this.form.moneyType
+        }
+        this.$ajax.get('/api/payInfo/selectAvailableBalance',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.amount = res.data
+          }
+        })
+      },
     }
   }
 </script>
@@ -200,6 +288,7 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
   /deep/.collapse-cell{
+    margin-top: 13px !important;
     .el-table__row{
       >td{
         padding: 0;
@@ -276,6 +365,19 @@
             bottom: 0;
             border-top: 4px solid @color-blue;
           }
+        }
+      }
+    }
+    .table-total{
+      margin: 0 0 47px;
+      padding: 0;
+      >li{
+        display: inline-block;
+        font-weight: bold;
+        font-size: @size-base;
+        margin-right: 20px;
+        >span{
+          color: @color-red;
         }
       }
     }

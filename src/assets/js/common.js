@@ -124,17 +124,14 @@ let TOOL = {
     var chineseStr = '';
     //分离金额后用的数组，预定义
     var parts;
-    if (money == '') {
-      return '';
+    if (!money) {
+      chineseStr = cnNums[0] + cnIntLast + cnInteger;
+      return chineseStr;
     }
     money = parseFloat(money);
     if (money >= maxNum) {
       //超出最大处理数字
       return '';
-    }
-    if (money == 0) {
-      chineseStr = cnNums[0] + cnIntLast + cnInteger;
-      return chineseStr;
     }
     //转换为字符串
     money = money.toString();
