@@ -5,7 +5,7 @@
 <script>
   import {set_upload_param} from "@/assets/js/upload";
 
-  let uploader = null
+  // let uploader = null
   export default {
     props:{
       id:{
@@ -16,13 +16,14 @@
     data(){
       return{
         filePath:[],//表单提交传给后台的文件路径
+        uploader:null,
       }
     },
     mounted() {
       let that = this
       this.filePath = []
       this.$nextTick(()=>{
-        uploader = new plupload.Uploader({
+        this.uploader = new plupload.Uploader({
           runtimes: 'html5,flash,silverlight,html4',
           browse_button: that.getId, //选择文件按钮
           flash_swf_url: 'lib/plupload-2.1.2/js/Moxie.swf',
@@ -52,11 +53,12 @@
               }
             },
             Error: function(up, err) {
+              console.log(err);
               // ...
             }
           }
         });
-        uploader.init()
+        this.uploader.init()
       })
     },
     methods:{
@@ -64,13 +66,13 @@
        * 上传操作
        */
       up:function () {
-        console.log(uploader)
+        // console.log(uploader)
         let path = 'picture/'
-        if(uploader.files.length!==0){
+        if(this.uploader.files.length!==0){
           this.getUrl(path).then(res=>{
-            this.filePath.push(`${res.host}/${path}${uploader.files[0].name}`)
+            this.filePath.push(`${res.host}/${path}${this.uploader.files[0].name}`)
             console.log(this.filePath)
-            set_upload_param(uploader,res,uploader.files[0].name);
+            set_upload_param(this.uploader,res,this.uploader.files[0].name);
           })
         }
       },
@@ -97,7 +99,7 @@
     },
     computed:{
       getId:function () {
-        debugger
+        // debugger
         return this.id
       }
     }
