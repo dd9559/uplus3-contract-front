@@ -124,7 +124,7 @@
 
             
         </div>
-        <!-- 房源弹框 -->
+        <!-- 房客源弹框 -->
         <houseGuest :dialogVisible="layerhouse" :dialogType="dialogType"  @closeHouseGuest="closeCommission" v-if='layerhouse'></houseGuest>
           
     </div>
@@ -141,7 +141,7 @@ export default {
             dialogType: '',
             ruleForm: {
                 signDate: '', //签约日期
-                contractType: '', //合同类型
+                contType: '', //合同类型
                 item1: '',    //选择门店
                 item2: '',  //选择成交人
                 subscriptionTerm: '', //认购期限
