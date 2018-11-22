@@ -8,6 +8,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 import ScreeningTop from '@/components/ScreeningTop';
+import fileUp from '@/components/up'
 import {api} from '@/assets/js/ajax'
 import {TOOL} from "@/assets/js/common"
 
@@ -21,8 +22,10 @@ Vue.prototype.$tool=TOOL  //工具方法封装
 Vue.filter("formatDate", TOOL.dateFormat);
 Vue.filter("formatTime", TOOL.timeFormat);
 Vue.filter("formatNull", TOOL.nullFormat);
+Vue.filter("formatChinese", TOOL.toChineseNumber)
 
 Vue.component("ScreeningTop",ScreeningTop);
+Vue.component("fileUp",fileUp)
 
 /* eslint-disable no-new */
 new Vue({

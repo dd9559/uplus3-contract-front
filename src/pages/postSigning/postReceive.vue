@@ -13,29 +13,63 @@
                 </el-form-item>
                 <el-form-item label="交易流程" prop="time">
                     <el-select v-model="propForm.time" class="w300">
-                        <el-option v-for="item in rules.time" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        <el-option v-for="item in rules.time" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="贷款银行" prop="paper">
-                    <el-select v-model="propForm.paper" class="w262" filterable>
-                        <el-option v-for="item in rules.paper" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    <el-select 
+                    v-model="propForm.paper" 
+                    class="w262"
+                    :remote-method="remoteMethodFn"
+                    remote 
+                    clearable
+                    filterable>
+                        <el-option 
+                        v-for="item in rules.paper" 
+                        :key="item.bankId" 
+                        :label="item.bankName" 
+                        :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <div class="in-block">
                     <el-form-item label="部门" prop="region" class="mr">
-                        <el-select v-model="propForm.region" @change="regionChangeFn" class="w200" filterable>
-                            <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        <el-select 
+                        v-model="propForm.region" 
+                        class="w200" 
+                        clearable
+                        :remote-method="regionMethodFn"
+                        @change="regionChangeFn"
+                        @clear="regionClearFn"
+                        remote 
+                        filterable>
+                            <el-option 
+                            v-for="item in rules.region" 
+                            :key="item.id" 
+                            :label="item.name" 
+                            :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="regionName">
-                        <el-select v-model="propForm.regionName" class="w100" filterable>
-                            <el-option v-for="item in rules.regionName" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        <el-select 
+                        v-model="propForm.regionName" 
+                        class="w100" 
+                        clearable
+                        filterable>
+                            <el-option 
+                            v-for="item in rules.regionName" 
+                            :key="item.empId" 
+                            :label="item.name" 
+                            :value="item.empId"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
                 <el-form-item label="后期状态" prop="late" class="mr">
                     <el-select v-model="propForm.late" class="w180">
-                        <el-option v-for="item in rules.late" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                        <el-option 
+                        v-for="item in rules.late" 
+                        :key="item.key" 
+                        :label="item.label" 
+                        :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -55,6 +89,9 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="signDate" label="签约日期" min-width="154">
+                    <template slot-scope="scope">
+                        {{dateFormat(scope.row.signDate)}}
+                    </template>
                 </el-table-column>
                 <el-table-column prop="" label="后期状态" min-width="145">
                     <template slot-scope="scope">
@@ -76,17 +113,21 @@
                 </el-table-column>
                 <el-table-column label="操作" min-width="70">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="receiveFn(scope.row.statusLaterStage.value)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
+                        <el-button class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-        <el-pagination
-            :current-page="tableData.pageNum"
-            :page-size="tableData.pageSize"
-            layout="total,prev, next, jumper"
-            :total="tableData.total">
-        </el-pagination>
+        <!-- 分页 -->
+        <div>
+            <el-pagination
+                :current-page="tableData.pageNum"
+                :page-size="tableData.pageSize"
+                @current-change="currentChangeFn"
+                layout="prev, next, jumper"
+                :total="tableData.total">
+            </el-pagination>
+        </div>
         <!-- 拒绝弹层 -->
         <el-dialog :title="layer.tit" :visible.sync="layer.show" width="740px" :center="layer.center" class="layer-paper">
             <div class="layer-invalid layer-refused">
@@ -110,11 +151,11 @@
                 <el-tabs v-model="activeName" class="contract-tab">
                     <el-tab-pane label="交易流程指派">
                         <el-table :data="dealTable" border class="paper-table mt-20">
-                            <el-table-column prop="a1" align="center" label="步骤类型">
+                            <el-table-column prop="transactionStepsType" align="center" label="步骤类型">
                             </el-table-column>
-                            <el-table-column prop="a2" align="center" label="步骤名称">
+                            <el-table-column prop="transactionSteps" align="center" label="步骤名称">
                             </el-table-column>
-                            <el-table-column prop="a3" align="center" label="计划天数">
+                            <el-table-column prop="transactionStepsType" align="center" label="计划天数">
                             </el-table-column>
                             <el-table-column prop="a4" align="center" min-width="185" label="分配角色">
                                 <template slot-scope="scope">
@@ -138,7 +179,7 @@
                         </el-table>
                         <div class="receive-label">
                             <span class="cl-1 mr-10">拒绝原因：</span>
-                            <div class="receive-txt">原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？原因是什么是什么？</div>
+                            <div class="receive-txt">{{receive.refuseReasons}}</div>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="合同资料库">
@@ -219,7 +260,13 @@
                 size="medium" 
                 v-show="receiveComFn(receive.receive,0)"
                 round>接收</el-button>
-                <el-button class="paper-btn paper-btn-red" type="primary" size="medium" @click="refusedFn" round>拒绝</el-button>
+                <el-button 
+                class="paper-btn paper-btn-red" 
+                type="primary" 
+                size="medium" 
+                @click="refusedFn" 
+                v-show="receiveComFn(receive.receive,0)"
+                round>拒绝</el-button>
             </span>
         </el-dialog>
     </div>
@@ -228,6 +275,8 @@
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
     import {FILTER} from '@/assets/js/filter';
+    import {TOOL} from '@/assets/js/common';
+
     const RECEIVE = {
         receive:2,          //接收
         haveReceive:3       //已接收
@@ -237,62 +286,43 @@
         mixins: [FILTER],
         data() {
             return {
+                cityId:1,
                 // 列表数据
                 tableData:{},
                 // 列表请求的页数
                 pageNum:1,
-                pageSize:20,
+                pageSize:5,
                 // 筛选条件
                 propForm: {
                     region: '',
                     regionName: '',
                     search: '',
-                    paper: '选项1',
-                    time: '选项11',
-                    late: '选项21',
+                    paper: '',
+                    time: '',
+                    late: '',
                     dateMo: '',
                 },
                 // 筛选选项
                 rules: {
                     region: [{
-                        label: "区域一",
-                        value: "shanghai"
-                    },
-                    {
-                        label: "区域二",
-                        value: "quyuer"
+                        name: "全部",
+                        id: ""
                     }],
                     regionName: [{
-                        label: "区域一",
-                        value: "shangha"
-                    },
-                    {
-                        label: "区域二",
-                        value: "quyue"
-                    }, ],
+                        name: "全部",
+                        empId: ""
+                    }],
                     paper: [{
-                        label: "全部",
-                        value: "选项1"
-                    },
-                    {
-                        label: "区域二",
-                        value: "选项2"
+                        bankName: "全部",
+                        id: ""
                     }],
                     time: [{
-                        label: "全部",
-                        value: "选项11"
-                    },
-                    {
-                        label: "区域二",
-                        value: "选项12"
+                        name: "全部",
+                        id: ""
                     }],
-                    late: [{
-                        label: "全部",
-                        value: "选项21"
-                    },
-                    {
-                        label: "区域二",
-                        value: "选项22"
+                    late:[{
+                        label:'全部',
+                        key:''
                     }]
                 },
                 // 搜索展示内容
@@ -404,8 +434,17 @@
                 }else if(!!t){
                     return t
                 }else{
-                    '-'
+                    return '--'
                 }
+            },
+            // 时间处理
+            dateFormat(val){
+                return TOOL.dateFormat(val);
+            },
+            // 分页
+            currentChangeFn(e){
+                this.pageNum = e;
+                this.getListData();
             },
             // 接收
             receiveFn(e) {
@@ -416,8 +455,33 @@
                     rabbet: true,
                     center: false,
                     footer: true,
-                    receive:e
+                    receive:e.statusLaterStage.value,
+                    refuseReasons:e.refuseReasons
                 }
+                this.$ajax.get('/api/postSigning/clickReceive',{
+                    contractCode:e.id,
+                    transFlowCode:e.transFlowCode
+                }).then(res=>{
+                    res = res.data
+                    if(res.status === 200){
+                        let arr = res.data;
+                        let rules;
+                        this.$ajax.get("/api/roles").then(res=>{
+                            console.log(res)
+                        }).catch(err=>{
+                            console.log(err)
+                        })
+                        // arr.forEach(e => {
+                        //     e.a4 = {
+                        //         val:'',
+                        //         // rules:
+                        //     }
+                        // });
+                        console.log(res,this.tableData)
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
             },
             // 拒绝后期
             refusedFn() {
@@ -442,15 +506,74 @@
             },
             // 重置
             resetFormFn() {
-                this.$refs.propForm.resetFields()
+                this.$refs.propForm.resetFields();
+                this.getListData();
             },
             // 查询
             queryFn() {
-                console.log('查询')
+                this.getListData();
+                console.log('查询');
             },
             // 部门筛选回调
             regionChangeFn(e) {
-                console.log(e)
+                // this.propForm.regionName = '';
+                let tbox;
+                if( e !=="" || !!e){
+                    this.$ajax.get("/api/organize/employees",{
+                    cityId:this.cityId,
+                    depId:e,
+                    }).then(res=>{
+                        res = res.data
+                        if(res.status === 200){
+                            if(this.propForm.regionName === ''){
+                                let arr = [];
+                                if(res.data.length > 0){
+                                     arr = [{
+                                        name: "全部",
+                                        empId: ""
+                                    },...res.data]
+                                }
+                                this.rules.regionName = arr;
+                               
+                            }else{
+                                this.rules.regionName = res.data
+                            }
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }else{
+                    this.propForm.regionName = '';
+                    this.rules.regionName = [{
+                                        name: "全部",
+                                        empId: ""
+                                    }]
+                }
+                
+            },
+            // 部门下拉搜索
+            regionMethodFn(e){
+                this.$ajax.get("/api/access/deps",{
+                    keyword:e
+                }).then(res=>{
+                    res = res.data
+                    if(res.status === 200){
+                        if(e==='' || !e){
+                            this.rules.region = [{
+                                name: "全部",
+                                id: ""
+                            },...res.data]
+                        }else{
+                            this.rules.region = res.data
+                        }
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            },
+            // 清除部门搜索
+            regionClearFn(){
+                this.regionMethodFn('');
             },
             // 筛选搜索
             querySearch(queryString, cb) {
@@ -466,6 +589,32 @@
             },
             handleSelect(item) {
                 console.log(item);
+            },
+            // 贷款银行搜索
+            remoteMethodFn(e){
+                let t;
+                if(e === "全部"){
+                    t = '';
+                }else{
+                    t = e;
+                }
+                this.$ajax.get('/api/system/selectBankName',{
+                    keyWord:t
+                }).then(res=>{
+                    res = res.data
+                    if (res.status === 200) {
+                        if(t==='' || t==="全部" || !t){
+                            this.rules.paper = [{
+                                bankName: "全部",
+                                id: ""
+                            },...res.data]
+                        }else{
+                            this.rules.paper = res.data
+                        }
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
             },
             // 批量状态切换
             downloadStateFn(){
@@ -490,8 +639,22 @@
             },
             // 获取数据
             getListData(){
+               let signDateSta = '';
+               let signDateEnd = '';
+               if(this.propForm.dateMo.length === 2){
+                   signDateSta = TOOL.dateFormat(this.propForm.dateMo[0]);
+                   signDateEnd = TOOL.dateFormat(this.propForm.dateMo[1]);
+               }
+
                 this.$ajax.postJSON('/api/postSigning/getContract',{
-                    // keyword:'13112341234',
+                    keyword:this.propForm.search,
+                    signDateSta,
+                    signDateEnd,
+                    stepInstanceCode:this.propForm.time,
+                    stagesBankCode:this.propForm.paper,
+                    dealDeptId:this.propForm.region,
+                    dealBrokerName:this.propForm.regionName,
+                    statusLaterStage:this.propForm.late,
                     pageNum:this.pageNum,
                     pageSize:this.pageSize,
                 }).then((res)=>{
@@ -502,12 +665,62 @@
                 }).catch(err=>{
                     console.log(err)
                 })
+            },
+            // 交易流程获取数据
+            getTransactionProcess(){
+                this.$ajax.post('/api/flowmanage/selectFlowPageList',{
+                    cityId:this.cityId
+                }).then(res=>{
+                    res = res.data
+                    if (res.status === 200) {
+                        this.rules.time = [{
+                            name: "全部",
+                            id: ""
+                        },...res.data];
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            },
+            // 后期状态
+            getLateState(){
+                this.$ajax.get("/api/dictionary/query",{
+                    parentId:43
+                }).then(res=>{
+                    res = res.data
+                    if(res.status === 200){
+                        let arr = [];
+                        res.data.children.forEach(e => {
+                            if(e.key === RECEIVE.receive || e.key === RECEIVE.haveReceive){
+                                arr.push({
+                                    key:e.key,
+                                    label:this.statusLaterStageFn(e.key)
+                                })
+                            }
+                        });
+                        this.rules.late = [{
+                            label:'全部',
+                            key:''
+                        },...arr]
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
             }
         },
         components: {
             ScreeningTop
         },
         mounted() {
+            // 贷款银行
+            this.remoteMethodFn();
+            // 交易流程
+            this.getTransactionProcess();
+            // 部门搜索
+            this.regionMethodFn('');
+            // 后期状态
+            this.getLateState();
+            // 列表数据
             this.getListData();
         },
     }

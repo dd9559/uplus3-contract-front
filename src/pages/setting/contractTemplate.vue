@@ -29,7 +29,7 @@
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上传</el-button>
-            <el-button @click="rowOperation(scope.row,2)" type="text" size="small" v-if="scope.row.useNum>0">预览
+            <el-button @click="rowOperation(scope.row,2,1)" type="text" size="small" v-if="scope.row.useNum>0">预览
             </el-button>
           </template>
         </el-table-column>
@@ -60,10 +60,9 @@
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>  
               </template>
               <template v-else>
-                <p @click="upload('fileOne')">
-                  <el-button>模板</el-button><br>
-                <input type="file" ref="fileOne" @change="uploadFile" style="display: none;">
-                <span class="upMsg">上传成功</span>                  
+                <p id='selectfiles'>
+                  <span>模板</span><br>
+                <span class="upMsg">上传成功</span>
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>                  
@@ -92,7 +91,7 @@
           <el-table-column align="center" min-width="100px" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="enable">启用</el-button>
-              <el-button @click="rowOperation(scope.row,2)" type="text" size="small">预览</el-button>
+              <el-button @click="rowOperation(scope.row,2,2)" type="text" size="small">预览</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -103,10 +102,11 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
+  import {UPLOAD} from "@/assets/js/uploadMixins";
 
   export default {
     name: "contract-template",
-    mixins: [FILTER],
+    mixins: [FILTER,UPLOAD],
     data() {
       return {
         selectCity: '',
@@ -118,15 +118,18 @@
         fileList3: [],
         titleStr:'',
         citys:[],
+        uploadAddress:''
       }
     },
     created() {
       this.$ajax.get('/api/organize/cities').then((res)=>{
                 if(res.status==200){
                     this.citys=res.data.data
-                    // console.log(res);
                 }
             }),
+      // this.$ajax.get('/api/load/generateSignature').then(res=>{
+
+      // })
       this.selectCity='武汉'
       this.getList()
     },
@@ -210,7 +213,11 @@
       upload:function(type){
         this.$refs[type].click()
       },
-      uploadFile:function (file,fileList) {
+      uploadFile:function (e) {
+        UPLOAD.methods.getUrl('file').then(res=>{
+          console.log(res,'res');
+        })
+        console.log(e.target.files);
         let fileType= file.name.split('.')
         if(fileType[1]=='docx'){
           console.log('上传的是word文档');
@@ -223,8 +230,7 @@
            })
         }
         },
-      rowOperation: function (row, type) {
-        console.log(type,"type");
+      rowOperation: function (row, type,showType) {
         //上传
         this.modal = true
         this.template = type
@@ -238,7 +244,8 @@
           this.$router.push({
             path: "/contraPreview",
             query: {
-              // id: 1
+              enableTemplateId: row.enableTemplateId,
+              // showType:showType
             }
           });
           //  this.titleStr='预览合同模板'

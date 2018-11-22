@@ -18,15 +18,15 @@
               <p><span class="tag">成交总价：</span><span class="text">{{contractDetail.dealPrice}} 元</span></p>
             </div>
             <div class="one_">
-              <p v-if="contType==='2'"><span class="tag">客户保证金：</span><span class="text">{{contractDetail.custEnsure}} 元</span></p>
+              <p v-if="contType!='1'"><span class="tag">客户保证金：</span><span class="text">{{contractDetail.custEnsure}} 元</span></p>
               <p><span class="tag">客户佣金：</span><span class="text">{{contractDetail.custCommission}} 元</span></p>
               <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
               <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p>
-              <p v-if="contType==='2'">
+              <p v-if="contType!='1'">
                 <span class="tag">佣金合计：</span>
                 <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission-contractDetail.commissionPayment}} 元</span></p>
             </div>
-            <div class="one_" v-if="contType==='2'">
+            <div class="one_" v-if="contType!='1'">
               <p><span class="tag">交易流程：</span><span class="text">{{contractDetail.transFlowCode}}</span></p>
               <!-- <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
               <p><span class="tag">按揭员：</span><span class="text">夏雨天</span></p> -->
@@ -50,7 +50,7 @@
               <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.orientation}}</span></p>
               <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.renovation}}</span></p>
             </div>
-            <div class="one_" v-if="contType==='2'">
+            <div class="one_" v-if="contType!='1'">
               <p><span class="tag">产权状态：</span><span class="text">{{contractDetail.houseInfo.propertyRightStatus}}</span></p>
               <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName}}</span></p>
               <p><span class="tag">按揭欠款：</span><span class="text">{{contractDetail.houseInfo.stagesArrears}} 元</span></p>

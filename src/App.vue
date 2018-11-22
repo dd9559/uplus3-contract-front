@@ -24,7 +24,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  user-select: none;
+  /*user-select: none;*/
   width: 100%;
   height: 100%;
 }
@@ -49,16 +49,26 @@ p {
 input.no-style {
   border: 0px;
   outline: none;
+  display: inline-block;
+  width: 100%;
 }
 
 .input-group {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  > label {
+  >label {
     &:first-of-type {
       min-width: 80px;
     }
+  }
+}
+.form-label{
+  position: relative;
+  &:before{
+    content:'*';
+    display: inline-block;
+    color: red;
   }
 }
 // 清除浮动
