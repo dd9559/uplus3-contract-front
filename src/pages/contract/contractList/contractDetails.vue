@@ -79,12 +79,12 @@
           <div class="content">
             <div class="one_">
               <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
-              <p><span class="tag">付款方式：</span><span class="text">{{contractDetail.houseInfo.paymentMethod}}</span></p>
+              <p><span class="tag">付款方式：</span><span class="text">{{contractDetail.guestInfo.paymentMethod}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.guestStoreName}}</span></p>
-              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.shopownerName}}</span></p>
-              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.shopownerMobile}}</span></p>
+              <p><span class="tag">客源方门店：</span><span class="text">{{contractDetail.guestInfo.guestStoreName}}</span></p>
+              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.guestInfo.shopownerName}}</span></p>
+              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.shopownerMobile}}</span></p>
             </div>
             <div class="table">
               <template>
@@ -107,7 +107,7 @@
           <div class="title">三方合作</div>
           <div class="content">
             <div class="one_">
-              <p><span class="tag">扣合作费：</span><span class="text">2018元</span></p>
+              <p><span class="tag">扣合作费：</span><span class="text">{{contractDetail.otherCooperationCost}}元</span></p>
               <p><span class="tag">类型：</span><span class="text" v-if='contractDetail.otherCooperationInfo'>{{contractDetail.otherCooperationInfo.type}}</span></p>
             </div>
             <div class="one_">
@@ -276,6 +276,7 @@ export default {
       contractDetail:{
         contType:{},
         houseInfo:{},
+        guestInfo:{},
         otherCooperationInfo:{},
         contState:{}
       },

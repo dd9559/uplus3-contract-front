@@ -77,14 +77,14 @@
       <p>
         <span>
           <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
-          <span class="text">有效成分汇总 </span>
+          <!-- <span class="text">有效成分汇总 </span>
           <span class="text">租赁：</span> <span class="data">123165</span>
           <span class="text">买卖：</span> <span class="data">75454</span>
           <span class="text">代办：</span> <span class="data">5565</span>
           <span class="text">意向：</span> <span class="data">0</span>
           <span class="text">定金：</span> <span class="data">0</span>
           <span class="text">可分配业绩汇总：</span> <span class="data">564654</span>
-          <span class="text">单数：</span> <span class="data">13</span>
+          <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
           <el-dropdown placement="bottom">
@@ -114,13 +114,19 @@
         </span>
       </p>
       <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
-        <el-table-column align="left" label="合同信息" width="200" fixed>
+        <el-table-column align="left" label="合同信息" width="220" fixed>
           <template slot-scope="scope">
-            <ul class="contract-msglist">
-              <li>合同编号：<span>{{scope.row.code}}</span></li>
-              <li>房源编号：<span>{{scope.row.houseinfoCode}}</span></li>
-              <li>客源编号：<span>{{scope.row.guestinfoCode}}</span></li>
-            </ul>
+            <div class="contract_msg">
+              <div class="riskLabel">
+                <i class="iconfont icon-tubiao-6"></i>
+                <i class="iconfont icon-tubiao-6"></i>
+              </div>
+              <ul class="contract-msglist">
+                <li>合同编号：<span>{{scope.row.code}}</span></li>
+                <li>房源编号：<span>{{scope.row.houseinfoCode}}</span></li>
+                <li>客源编号：<span>{{scope.row.guestinfoCode}}</span></li>
+              </ul>
+            </div>
           </template>
         </el-table-column>
         <el-table-column align="left" label="合同类型" prop="contType.label" width="100" fixed>
@@ -486,11 +492,20 @@ export default {
     overflow: hidden;
   }
 }
-.contract-msglist {
-  > li {
-    text-align: left;
+.contract_msg{
+  display: flex;
+   align-items: center;
+  .riskLabel{
+    width: 20px;
+   
+  }
+  .contract-msglist {
+    > li {
+      text-align: left;
+    }
   }
 }
+
 .blue {
   color: @color-blue;
 }

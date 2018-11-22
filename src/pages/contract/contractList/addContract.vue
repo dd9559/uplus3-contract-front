@@ -242,124 +242,7 @@
         </div>
       </div>
     </el-form>
-    <!-- 选择房源弹窗 -->
-    <!-- <el-dialog title="选择房源" :visible.sync="dialogTableVisible1">
-      <el-form :inline="true" :model="searchForm1" class="search-form" size="mini">
-        <el-form-item label="关键字：">
-          <el-input v-model="searchForm1.loupan" placeholder="楼盘字典"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="searchForm1.loupan" placeholder="楼栋单元"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="searchForm1.loupan" placeholder="房号/房源编号/房东手机"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <span @click="isAttention">我的关注 <span class="attention" :class="{'attention_':attention}"></span></span>
-        </el-form-item>
-        <el-button round class="search_btn">清空</el-button>
-        <el-button type="primary" round class="search_btn">查询</el-button>
-      </el-form>
-      <div class="search_content" v-if="houseList.length>0">
-        <el-table :data="houseList" border header-row-class-name="theader-bg">
-          <el-table-column type="selection" width="50"></el-table-column>
-          <el-table-column property="houseId" label="房源编号" min-width="100"></el-table-column>
-          <el-table-column property="houseName" label="楼盘名称" min-width="150"></el-table-column>
-          <el-table-column label="状态">
-            <template slot-scope="scope">
-              <span v-if="scope.row.status===1">有效</span>
-              <span v-if="scope.row.status===2">无效</span>
-            </template>
-          </el-table-column>
-          <el-table-column property="floor" label="楼层"></el-table-column>
-          <el-table-column property="houseType" label="房型"></el-table-column>
-          <el-table-column property="area" label="面积"></el-table-column>
-          <el-table-column property="price" label="售/租价" min-width="65"></el-table-column>
-          <el-table-column property="fitment" label="装修" min-width="60"></el-table-column>
-          <el-table-column property="maintainer" label="维护人"></el-table-column>
-        </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-size="4" layout="total, prev, pager, next, jumper" :total="total">
-        </el-pagination>
-      </div>
-      <div class="noList" v-else>
-        未查到相关房源
-      </div>
-      <div class="floor_btn">
-        <el-button round class="search_btn">取消</el-button>
-        <el-button type="primary" round class="search_btn">确定</el-button>
-      </div>
-    </el-dialog> -->
 
-    <!-- 选择客源弹窗 -->
-    <!-- <el-dialog title="选择客源" :visible.sync="dialogTableVisible2">
-      <el-form :inline="true" :model="searchForm2" class="search-form" size="mini">
-        <el-form-item label="交易：">
-          <el-select v-model="searchForm2.tradeType" placeholder="">
-            <el-option label="求租" value="1"></el-option>
-            <el-option label="求购" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="关键字：">
-          <el-input v-model="searchForm2.keyWord" placeholder="客源编号/手机号/客户姓名"></el-input>
-        </el-form-item>
-        <el-button round class="search_btn">清空</el-button>
-        <el-button type="primary" round class="search_btn">查询</el-button>
-      </el-form>
-      <div class="search_content" v-if="clientList.length>0">
-        <el-table :data="clientList" border header-row-class-name="theader-bg">
-          <el-table-column type="selection" width="50"></el-table-column>
-          <el-table-column property="clientName" label="姓名"></el-table-column>
-          <el-table-column property="clientId" label="客源编号"></el-table-column>
-          <el-table-column label="交易">
-            <template slot-scope="scope">
-              <span v-if="scope.row.trade===1">求租</span>
-              <span v-if="scope.row.trade===2">求购</span>
-            </template>
-          </el-table-column>
-          <el-table-column property="area" label="意向区域" min-width="100"></el-table-column>
-          <el-table-column property="price" label="租/售价" min-width="60"></el-table-column>
-        </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-size="4" layout="total, prev, pager, next, jumper" :total="total">
-        </el-pagination>
-      </div>
-      <div class="noList" v-else>
-        <p v-if="clientStatus===1">未查到相关客源</p>
-        <p v-if="clientStatus===2">当前查询的客源为公客，请先在【客源资料】中进行激活<br> （当前查询的客源为已成交的私客，请先在【客源资料】中进行激活）</p>
-        <p v-if="clientStatus===3">系统未查询到该客源，您可以<el-button type="text" @click="innerVisible=true">快速添加该客源</el-button>
-        </p>
-      </div>
-      <div class="floor_btn">
-        <el-button round class="search_btn">取消</el-button>
-        <el-button type="primary" round class="search_btn">确定</el-button>
-      </div>
-       添加客源弹窗 -->
-      <!--<el-dialog width="30%" title="添加客源" :visible.sync="innerVisible" :modal="isModel" style="margin-top:150px" append-to-body>
-        <el-form :inline="true" :model="addclient" class="search-form" size="mini">
-          <el-form-item label="姓名：">
-            <el-input v-model="addclient.name" placeholder="请输入姓名"></el-input>
-          </el-form-item>
-          <el-form-item label="手机号：">
-            <el-input v-model="addclient.mobile" placeholder="请输入手机号"></el-input>
-          </el-form-item>
-          <el-form-item label="交易类型：">
-            <el-select v-model="addclient.tradeType" placeholder="" style="width:150px">
-              <el-option label="求租" value="1"></el-option>
-              <el-option label="求购" value="2"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="用途：">
-            <el-select v-model="addclient.tradeType" placeholder="">
-              <el-option label="求租" value="1"></el-option>
-              <el-option label="求购" value="2"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div class="client_b">
-          <el-button round class="search_btn" @click="innerVisible=false">取消</el-button>
-          <el-button type="primary" round class="search_btn" @click="innerVisible=false">确定</el-button>
-        </div>
-      </el-dialog>
-    </el-dialog> -->
     <!-- 房源客源弹窗 -->
     <houseGuest
     :dialogType="dialogType"
@@ -368,7 +251,7 @@
     @closeHouseGuest="closeHouseGuest"
     v-if="isShowDialog">
     </houseGuest>
-    <custom-input v-model="text"></custom-input>
+    <!-- <custom-input v-model="text"></custom-input> -->
   </div>
 </template>
            
@@ -386,28 +269,7 @@ export default {
   },
   data() {
     return {
-      text: "",
       contractForm: {
-        // contPersons: [
-        //   {
-        //     name: "张三",
-        //     mobile: "123456789",
-        //     idCard: "421124199801141256",
-        //     property: 100,
-        //     relation: "1",
-        //     edit: false
-        //   }
-        // ],
-        // contPersons1: [
-        //   {
-        //     name: "张三",
-        //     mobile: "123456789",
-        //     idCard: "421124199801141256",
-        //     property: 100,
-        //     relation: "1",
-        //     edit: false
-        //   }
-        // ],
         type: 2,
         houseinfoCode: "HHH002",
         guestinfoCode: "GGG002",
@@ -488,100 +350,12 @@ export default {
         ],
         peopleMsg: [{ required: true, message: "请完善信息", trigger: "blur" }],
       },
-      houseList: [
-        {
-          houseId: "YQY110635",
-          houseName: "康桥小区",
-          status: 1,
-          floor: "中层/28",
-          houseType: "2*2*2*1",
-          area: "136",
-          price: "90",
-          fitment: "精装",
-          maintainer: "当代一店下雨天"
-        },
-        {
-          houseId: "YQY110635",
-          houseName: "康桥小区",
-          status: 2,
-          floor: "中层/28",
-          houseType: "2*2*2*1",
-          area: "136",
-          price: "90",
-          fitment: "精装",
-          maintainer: "当代一店下雨天"
-        },
-        {
-          houseId: "YQY110635",
-          houseName: "康桥小区",
-          status: 1,
-          floor: "中层/28",
-          houseType: "2*2*2*1",
-          area: "136",
-          price: "90",
-          fitment: "精装",
-          maintainer: "当代一店下雨天"
-        },
-        {
-          houseId: "YQY110635",
-          houseName: "康桥小区",
-          status: 2,
-          floor: "中层/28",
-          houseType: "2*2*2*1",
-          area: "136",
-          price: "90",
-          fitment: "精装",
-          maintainer: "当代一店下雨天"
-        },
-        {
-          houseId: "YQY110635",
-          houseName: "康桥小区",
-          status: 2,
-          floor: "中层/28",
-          houseType: "2*2*2*1",
-          area: "136",
-          price: "90",
-          fitment: "精装",
-          maintainer: "当代一店下雨天"
-        },
-        {
-          houseId: "YQY110635",
-          houseName: "康桥小区",
-          status: 1,
-          floor: "中层/28",
-          houseType: "2*2*2*1",
-          area: "136",
-          price: "90",
-          fitment: "精装",
-          maintainer: "当代一店下雨天"
-        }
-      ],
-      //houseList:[],
-      clientList: [
-        // {clientName:'张三', clientId:'YQY110635', trade:1, area:'武昌 汉街', price:'96万'},
-        // {clientName:'张三', clientId:'YQY110635', trade:2, area:'武昌 汉街', price:'96万'},
-        // {clientName:'张三', clientId:'YQY110635', trade:2, area:'武昌 汉街', price:'96万'},
-        // {clientName:'张三', clientId:'YQY110635', trade:1, area:'武昌 汉街', price:'96万'},
-      ],
-      // clientStatus: 3,
-      //房源搜索
-      // searchForm1: {},
-      //客源搜索
-      // searchForm2: {},
-      // dialogTableVisible1: false,
-      // dialogTableVisible2: false,
-      // attention: false,
-      // total: 5,
       dialogType:'',
       isShowDialog:false,
       //三方合作
       cooperation: false,
       //操作类型  默认是添加
       type: 1,
-      //添加客源
-      // innerVisible: false,
-      // isModel: false,
-      // addclient: {},
       dictionary:{ //数据字典
         '514':'',//产权状态
         '534':'',//支付方式
@@ -602,9 +376,6 @@ export default {
     this.getTransFlow()
   },
   methods: {
-    showVal: function(val) {
-      console.log(val);
-    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -626,15 +397,6 @@ export default {
     },
     deleteRowcommissionData1(index) {
       this.contractForm.contPersons.splice(index, 1);
-    },
-    isAttention() {
-      this.attention = !this.attention;
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
     },
     toCooperation() {
       this.cooperation = !this.cooperation;
@@ -683,9 +445,37 @@ export default {
       this.isShowDialog=true;
       this.dialogType=value;
     },
+    //根据房源id获取房源信息
+    getHousedetail(id){
+      console.log('房源')
+      let param = {
+        houseId:id
+      }
+      this.$ajax.get('/api/resource/houses/one', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          let houseMsg =res.data;
+          console.log(houseMsg);
+          this.contractForm.houseinfoCode=houseMsg.PropertyNo;  //房源编号
+          
+        }
+      })
+    },
+    //根据客源id获取客源信息
+    getGuestDetail(id){
+      console.log('客源')
+    },
     //关闭房源客源弹窗
-    closeHouseGuest(){
-      this.isShowDialog=false
+    closeHouseGuest(value){
+      console.log(value)
+      if(value.dialogType==='house'){
+        this.isShowDialog=false
+        this.getHousedetail(value.selectCode)
+      }else if(value.dialogType==='guest'){
+        this.isShowDialog=false
+        this.getGuestDetail(value.selectCode)
+      }
+      
     }
   },
   filters: {

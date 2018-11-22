@@ -225,9 +225,6 @@
           console.log(error)
         })
       },
-      // upload:function(type){
-      //   this.$refs[type].click()
-      // },
       rowOperation: function (row, type,showType) {
         //上传
         this.modal = true
