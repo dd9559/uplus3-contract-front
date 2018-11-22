@@ -48,7 +48,7 @@
             <div class="file-upload-opera">
               <div v-if="uploadType">
                 <p>
-                  <fileUp id='mmai' class='fileup'>买卖</fileUp>
+                  <fileUp @getUrl='getAdd' id='mmai' class='fileup'>买卖</fileUp>
                 </p>
                 <p>
                    <fileUp id='jjian' class='fileup'>居间</fileUp>
@@ -59,7 +59,7 @@
               </div>
               <div v-else>
                 <p>
-                  <fileUp id='mban' class='fileup'>模板</fileUp>
+                  <fileUp id='mban' @getUrl='getAdd' class='fileup'>模板</fileUp>
                   <span class="upMsg">上传成功</span>
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
@@ -116,7 +116,9 @@
         fileList3: [],
         titleStr:'',
         citys:[],
-        uploadAddress:''
+        uploadAddress:'',
+        contraType:'',
+        templateAddress:'',
       }
     },
     created() {
@@ -130,13 +132,13 @@
     },
 
     methods: {
+      getAdd(obj){
+        this.templateAddress=obj.param[obj.param.length-1];
+      },
       selCity(){
             console.log(this.selectCity,'selectCity');
             this.getList()
       },
-      /**
-       * 弹框
-       */
       popMsg(msg,callback){
         this.$confirm(msg,'提示',{
           confirmButtonText: '确定',
@@ -168,16 +170,22 @@
        * 上传
        */
       sureUp(){      
-       this.popMsg('确定要上传此类型模板吗？',()=>{
-         console.log('上传');
          this.modal=false
-       })
+         console.log(this.filePath)
+         this.$router.push({
+            path: "/contraPreview",
+            query: {
+              templateAddress: this.templateAddress,
+              type:this.contraType,
+              show:1
+            }
+          });
+
       },
       /**
        * 启用
        */
       enable(row){
-        console.log(row,'row');
         let param={
           id:this.bigId,
           enableTemplateId:row.id,
@@ -225,6 +233,7 @@
         this.modal = true
         this.template = type
         if(type===1){
+            this.contraType=row.type.value
             this.titleStr='上传合同模板'
             this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
         }

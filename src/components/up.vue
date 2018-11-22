@@ -50,6 +50,8 @@
                 that.$message({
                   message:'上传成功'
                 })
+                that.uploader.splice(0,1)
+                console.log(that.uploader)
               }
             },
             Error: function(up, err) {
@@ -72,6 +74,7 @@
           this.getUrl(path).then(res=>{
             this.filePath.push(`${res.host}/${path}${this.uploader.files[0].name}`)
             console.log(this.filePath)
+            this.$emit('getUrl',{param:this.filePath})
             set_upload_param(this.uploader,res,this.uploader.files[0].name);
           })
         }
