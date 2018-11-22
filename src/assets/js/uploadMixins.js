@@ -62,7 +62,8 @@ const UPLOAD={
       let path = 'picture/'
       if(uploader.files.length!==0){
         this.getUrl(path).then(res=>{
-          this.filePath.push(`${res.host}/${path}${uploader.files[0].name}`)
+          debugger
+          this.filePath.push(`${res.host}${res.key}${uploader.files[0].name.split('.')[1]}`)
           console.log(this.filePath)
           set_upload_param(uploader,res,uploader.files[0].name);
         })
