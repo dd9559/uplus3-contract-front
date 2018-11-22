@@ -19,7 +19,7 @@
         <el-table-column align="center" label="合同类型" prop="typeName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同版本号" prop="version" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="上传人" prop="uploadByName" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="上传人" prop="currentUpdateByName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="上传时间" :formatter="nullFormatter">
           <template slot-scope="scope">
             {{scope.row.uploadTime | formatDate}}
@@ -46,36 +46,34 @@
           <div class="file-upload">
             <label>上传：</label>
             <div class="file-upload-opera">
-              <template v-if="uploadType">
-                <p @click="upload('fileOne')">
-                  <el-button>买卖</el-button>
-                  <input type="file" ref="fileOne" @change="uploadFile" style="display: none;">
+              <div v-if="uploadType">
+                <p>
+                  <fileUp id='mmai' class='fileup'>买卖</fileUp>
                 </p>
-                <p @click="upload('fileTwo')">
-                   <el-button>居间</el-button>
-                   <input type="file" ref="fileTwo" style="display: none;"><br>
+                <p>
+                   <fileUp id='jjian' class='fileup'>居间</fileUp>
                    <span class="upMsg">上传成功</span> 
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>  
-              </template>
-              <template v-else>
-                <p id='selectfiles'>
-                  <span>模板</span><br>
-                <span class="upMsg">上传成功</span>
+              </div>
+              <div v-else>
+                <p>
+                  <fileUp id='mban' class='fileup'>模板</fileUp>
+                  <span class="upMsg">上传成功</span>
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>                  
-              </template>
+              </div>
             </div>
           </div>
         </div>
       </template>
-      <template v-if="template===2">
+      <!-- <template v-if="template===2">
         sssssssssssss
-      </template>
+      </template> -->
       <template v-if="template===3">
-        <el-table :data="list" class="contractType">
+        <el-table :data="rowData" class="contractType">
           <el-table-column align="center" min-width="100px" label="合同版本号" prop="version"
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="合同名称" prop="name"
@@ -90,7 +88,7 @@
           </el-table-column>
           <el-table-column align="center" min-width="100px" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="enable">启用</el-button>
+              <el-button type="text" size="small" @click="enable(scope.row)">启用</el-button>
               <el-button @click="rowOperation(scope.row,2,2)" type="text" size="small">预览</el-button>
             </template>
           </el-table-column>
@@ -127,9 +125,6 @@
                     this.citys=res.data.data
                 }
             }),
-      // this.$ajax.get('/api/load/generateSignature').then(res=>{
-
-      // })
       this.selectCity='武汉'
       this.getList()
     },
@@ -138,12 +133,6 @@
       selCity(){
             console.log(this.selectCity,'selectCity');
             this.getList()
-            // this.$ajax.get('/api/organize/cities').then((res)=>{
-            //     if(res.status==200){
-            //         this.citys=res.data.data
-            //         // console.log(res);
-            //     }
-            // })
       },
       /**
        * 弹框
@@ -187,9 +176,25 @@
       /**
        * 启用
        */
-      enable(){
+      enable(row){
+        console.log(row,'row');
+        let param={
+          id:this.bigId,
+          enableTemplateId:row.id,
+          name:row.name,
+          uploadByName:row.uploadByName,
+          uploadTime:row.uploadTime
+        }
         this.popMsg('确定要启用此类型模板吗？',()=>{
-         console.log('启用');
+        this.$ajax.get('/api/setting/contractTemplate/enable',param).then(res=>{
+          if(res.status==200){
+            this.$message({
+                type: 'success',
+                message: '启用成功！'
+                })
+                this.getList()
+          }
+        })
          this.modal=false
        })
       },
@@ -198,6 +203,8 @@
        * @param row
        */
       getRowDetails: function (row, column, cell, event) {
+          // alert(this.bigId)
+          this.bigId=row.id
           this.$ajax.get('/api/setting/contractTemplate/listByType', {id: row.id,cityName:row.cityName}).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -210,26 +217,9 @@
           console.log(error)
         })
       },
-      upload:function(type){
-        this.$refs[type].click()
-      },
-      uploadFile:function (e) {
-        UPLOAD.methods.getUrl('file').then(res=>{
-          console.log(res,'res');
-        })
-        console.log(e.target.files);
-        let fileType= file.name.split('.')
-        if(fileType[1]=='docx'){
-          console.log('上传的是word文档');
-          const file = e.target.files[0];
-          console.log(file,'form数据');
-           let da = new FormData()
-           da.append("files",this.file)
-           this.$ajax.post('/setting/contractTemplate/upload',this.da).then(()=>{
-
-           })
-        }
-        },
+      // upload:function(type){
+      //   this.$refs[type].click()
+      // },
       rowOperation: function (row, type,showType) {
         //上传
         this.modal = true
@@ -372,19 +362,19 @@
       &-opera{
         display: flex;
         flex-direction: column;
-        >p{
+        p{
           /deep/
-          .el-button{
+          .fileup{
             width:86px;
             height:32px;
-            line-height: 7px;
+            line-height: 32px;
             background:rgba(71,141,227,1);
             border-radius:16px;
             color: white;
-            text-align: center;
+            text-align: center !important
           }
         }
-        >p:nth-child(2){
+        p:nth-child(2){
           margin-top: 30px;
         }
         span{
@@ -393,6 +383,7 @@
           font-weight:400;
           color:rgba(108,121,134,1);
           line-height:42px;
+          padding-left: 14px;
         }
          .sureUp{
             width:86px;
@@ -424,5 +415,8 @@
           }
         }
     }
+.wordtip{
+  padding-left: 0 !important
+}
   }
 </style>
