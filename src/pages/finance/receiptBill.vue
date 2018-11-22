@@ -32,7 +32,7 @@
             @click="choseType(item)">{{item.name}}
         </li>
       </ul>
-      <el-table class="collapse-cell" border :data="activeType===1?moneyType:moneyTypeOther" :span-method="collapseRow" style="width: 100%"
+      <el-table v-if="activeType===1" class="collapse-cell" border :data="moneyType" :span-method="collapseRow" style="width: 100%"
                 header-row-class-name="theader-bg">
         <el-table-column align="center" prop="name" label="款类（大类）"></el-table-column>
         <el-table-column align="center" label="款类（小类）">
@@ -56,19 +56,7 @@
         </el-table-column>
         <el-table-column align="center" :label="activeType===1?'金额大写':'收款方式'">
           <template slot-scope="scope">
-            <span v-if="amount&&activeType===1">{{amount.balance|formatChinese}}</span>
-            <ul v-if="activeType===2">
-              <li v-for="item in scope.row.moneyTypes">
-                <el-select v-model="form.person" placeholder="请选择">
-                  <el-option
-                    v-for="item in dictionary['534']"
-                    :key="item.key"
-                    :label="item.value"
-                    :value="item.key">
-                  </el-option>
-                </el-select>
-              </li>
-            </ul>
+            <span v-if="amount">{{amount.balance|formatChinese}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户">
@@ -76,6 +64,47 @@
             <div class="collapse-context" v-if="activeType===1">
               <p>分账账户</p>
             </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-table v-else class="collapse-cell" border :data="moneyTypeOther" :span-method="collapseRow" style="width: 100%"
+                header-row-class-name="theader-bg" key="other">
+        <el-table-column align="center" label="款类（大类）">
+          <template slot-scope="scope">代收代付</template>
+        </el-table-column>
+        <el-table-column align="center" label="款类（小类）">
+          <template slot-scope="scope">
+            <el-radio v-model="form.moneyType" @change="getType(scope.row)">{{scope.row.name}}</el-radio>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="收款金额（元） ">
+          <template slot-scope="scope">
+            <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount">
+            <!--<span v-else>请输入</span>-->
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="收款方式">
+          <template slot-scope="scope">
+            <el-select v-model="form.person" placeholder="请选择">
+              <el-option
+                v-for="item in 5"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="收款账户">
+          <template slot-scope="scope">
+            <el-select v-model="form.person" placeholder="请选择">
+              <el-option
+                v-for="item in 5"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </template>
         </el-table-column>
       </el-table>
@@ -198,6 +227,7 @@
         dictionary: {
           '534': ''
         },
+        activeSelect:'',
       }
     },
     created() {
@@ -216,7 +246,7 @@
             res.data.forEach((item,index)=>{
               if(item.name==='代收代付'){
                 this.moneyType.splice(index,1)
-                this.moneyTypeOther = res.data.splice(index,1)
+                this.moneyTypeOther = res.data.splice(index,1)[0].moneyTypes
               }
             })
           }
@@ -239,6 +269,9 @@
             return [0,0]
           }
         }
+      },
+      showSelect:function (row) {
+        this.activeSelect = this.activeSelect===row.key?'':row.key
       },
       /**
        * 刷卡资料补充
@@ -330,6 +363,38 @@
     > span {
       line-height: initial;
       margin-left: 10px;
+    }
+  }
+  .select-info{
+    position: relative;
+    &-list{
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: @bg-white;
+      height: 90px;
+      overflow-y: auto;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      >li{
+        height: 30px;
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        &:hover{
+          background-color: #f5f7fa;
+        }
+      }
+    }
+    &-input{
+      text-align: center;
+      .iconfont{
+        font-size: @size-12;
+        color: #A1A1A1;
+        margin-left: 20px;
+      }
     }
   }
 

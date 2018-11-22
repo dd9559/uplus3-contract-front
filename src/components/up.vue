@@ -1,5 +1,5 @@
 <template>
-  <div id="selectfiles"><slot></slot></div>
+  <div :id="getId"><slot></slot></div>
 </template>
 
 <script>
@@ -7,6 +7,12 @@
 
   let uploader = null
   export default {
+    props:{
+      id:{
+        type:String,
+        default:'selectfiles'
+      }
+    },
     data(){
       return{
         filePath:[],//表单提交传给后台的文件路径
@@ -18,7 +24,7 @@
       this.$nextTick(()=>{
         uploader = new plupload.Uploader({
           runtimes: 'html5,flash,silverlight,html4',
-          browse_button: 'selectfiles', //选择文件按钮
+          browse_button: that.getId, //选择文件按钮
           flash_swf_url: 'lib/plupload-2.1.2/js/Moxie.swf',
           silverlight_xap_url: 'lib/plupload-2.1.2/js/Moxie.xap',
           url: 'http://oss.aliyuncs.com',
@@ -87,6 +93,12 @@
         this.$http.get('/api/load/generateAccessURL',{url:path}).then(res=>{
 
         })
+      }
+    },
+    computed:{
+      getId:function () {
+        debugger
+        return this.id
       }
     }
   }
