@@ -37,10 +37,10 @@
           <el-form-item label="业主佣金：" prop="">
             <el-input v-model="contractForm.ownerCommission" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
           </el-form-item>
+          <br>
           <el-form-item label="佣金支付费：" prop="">
             <el-input v-model="contractForm.commissionPayment" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
           </el-form-item>
-          <br>
           <el-form-item label="交易流程：" prop="transaction" v-if="contractForm.type===2">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程">
               <el-option
@@ -193,7 +193,7 @@
       </div>
       <!-- 三方合作 -->
       <div class="houseMsg">
-        <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention" :class="{'attention_':cooperation}"></span></p>
+        <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':cooperation}"></span></p>
         <div class="cooperation">
           <div v-show="cooperation">
             <el-form-item label="扣合作费：" prop="">
@@ -225,6 +225,9 @@
             </el-form-item>
           </div>
         </div>
+      </div>
+      <div class="houseMsg">
+        <p>扩展参数</p>
       </div>
       <div class="btn">
         <div>
@@ -368,7 +371,7 @@ export default {
     };
   },
   created() {
-    this.contractForm.type = Number(this.$route.query.contType);
+    this.contractForm.type = Number(this.$route.query.type);
     if (this.$route.query.operateType) {
       this.type = this.$route.query.operateType;
     }
@@ -492,7 +495,7 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 .view-container {
-  padding: 0 20px 20px 20px;
+  padding: 0 20px 20px 0;
   .add-form {
     padding: 10px;
     font-size: 14px;
@@ -505,6 +508,7 @@ export default {
     padding-bottom: 10px;
     padding-left: 20px;
     font-size: 14px;
+    font-weight: bold;
   }
   .form-content {
     padding-left: 30px;
@@ -529,9 +533,17 @@ export default {
   > p {
     padding: 20px 0 10px 20px;
     font-size: 14px;
+    font-weight: bold;
   }
   .thirdParty {
     display: inline-block;
+    .attention{
+      color: #ccc;
+      font-weight: normal;
+    }
+    .attention_{
+      color:@color-blue;
+    }
   }
   .form-content {
     padding-left: 30px;

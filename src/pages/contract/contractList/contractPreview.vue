@@ -5,14 +5,19 @@
         <p><span>合同预览</span>合同需签章打印且双方签字后生效</p>
       </div>
       <div class="type">
-          <span :class="{'active':isActive===1}" @click="changeType(1)">居间合同</span>
-          <span :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</span>
+        <span :class="{'active':isActive===1}" @click="changeType(1)">居间合同</span>
+        <span :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</span>
       </div>
-      <div class="btn">
+      <div class="btn" v-if="!operationType">
         <el-button type="primary" round style="width:100px">编 辑</el-button>
-        <el-button type="primary" round style="width:100px" @click="dialogCheck = true">审核</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogInvalid = true">无 效</el-button>
         <el-button round style="width:100px">提交审核</el-button>
+        <el-button round style="width:100px">变更</el-button>
+        <el-button round style="width:100px">解约</el-button>
+        <el-button round style="width:100px">签章打印</el-button>
+      </div>
+      <div class="btn" v-else>
+        <el-button type="primary" round style="width:100px" @click="dialogCheck = true">审核</el-button>
       </div>
     </div>
     <div class="content"></div>
@@ -21,14 +26,7 @@
       <div class="top">
         <p>合同无效原因</p>
         <div class="reason">
-          <el-input
-          type="textarea"
-          :rows="5"
-          placeholder="请填写合同无效原因，最多100字 "
-          v-model="textarea"
-          resize='none'
-          style="width:597px"
-          maxlength="100">
+          <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="textarea" resize='none' style="width:597px" maxlength="100">
           </el-input>
           <span>{{textarea.length}}/100</span>
           <p><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
@@ -48,20 +46,13 @@
       <div class="checkBottom">
         <p><span>*</span>审核备注</p>
         <div class="reason">
-          <el-input
-          type="textarea"
-          :rows="5"
-          placeholder="请填写审核原因以及风险单原因，最多100字 "
-          v-model="textarea"
-          resize='none'
-          style="width:624px"
-          maxlength="100">
+          <el-input type="textarea" :rows="5" placeholder="请填写审核原因以及风险单原因，最多100字 " v-model="textarea" resize='none' style="width:624px" maxlength="100">
           </el-input>
           <span>{{textarea.length}}/100</span>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button round @click="dialogInvalid = false">驳回</el-button>
+        <el-button round @click="checked(0)">驳回</el-button>
         <el-button round type="success" @click="dialogInvalid = false">通过</el-button>
       </span>
     </el-dialog>
@@ -70,23 +61,72 @@
            
 <script>
 export default {
-  data(){
-    return{
-      isActive:1,
+  data() {
+    return {
+      isActive: 1,
       dialogInvalid: false,
-      dialogCheck:false,
-      textarea:'',
-      isSign:false
+      dialogCheck: false,
+      textarea: "",
+      isSign: 0,
+      operationType: "",
+      contractId: ""
+    };
+  },
+  created() {
+    this.contractId = this.$route.query.id;
+    if (this.$route.query.operationType) {
+      this.operationType = this.$route.query.operationType;
     }
   },
-  methods:{
-    changeType(value){
-      this.isActive=value
+  methods: {
+    //居间买卖切换
+    changeType(value) {
+      this.isActive = value;
     },
-    sign(){
-      this.isSign=!this.isSign
+    //标记风险单
+    sign() {
+      if (this.isSign) {
+        this.isSign = 0;
+      } else {
+        this.isSign = 1;
+      }
+    },
+    //通过驳回
+    toChecked(param){
+      this.$ajax.post('/api/contract/examine', param).then(res=>{
+        res=res.data
+        if(res.status===200){
+
+        }
+      })
+    },
+    checked(num) {
+      if (!num || !this.isSign) {
+        if (this.textarea.length) {
+          let param = {
+            contractId: this.contractId,
+            result: num,
+            isRisk: this.isSign, //风险单
+            remarks: this.textarea
+          };
+          this.toChecked()
+        }
+      } else {
+        let param = {
+          contractId: this.contractId,
+          result: num,
+          isRisk: this.isSign, //风险单
+          remarks: this.textarea
+        };
+      }
+      let param = {
+        contractId: this.contractId,
+        result: num,
+        isRisk: this.isSign, //风险单
+        remarks: this.textarea
+      };
     }
-  },
+  }
   // watch:{
   //   textarea:function(val){
   //     if(val.length>10){
@@ -99,26 +139,26 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 
-.view-container{
+.view-container {
   background: @bg-white;
-  .header{
+  .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
     border-bottom: 2px solid @border-CE;
-    .title{
-      > p{
+    .title {
+      > p {
         font-size: 12px;
         color: @color-6c;
-        > span{
+        > span {
           color: @color-blank;
           font-size: 18px;
           padding-right: 10px;
         }
       }
     }
-    .type{
+    .type {
       width: 200px;
       height: 36px;
       align-items: center;
@@ -127,7 +167,7 @@ export default {
       border-radius: 18px;
       overflow: hidden;
       display: flex;
-      > span{
+      > span {
         width: 50%;
         height: 36px;
         line-height: 36px;
@@ -135,83 +175,83 @@ export default {
         font-size: 14px;
         color: @color-blue;
       }
-      .active{
+      .active {
         background: @color-blue;
         color: @color-white;
       }
     }
-    .btn{
-      /deep/.el-button.is-round{
-        padding: 10px 23px
+    .btn {
+      /deep/.el-button.is-round {
+        padding: 10px 23px;
       }
     }
   }
-  /deep/.el-dialog__header{
+  /deep/.el-dialog__header {
     border-bottom: 1px solid @border-ED;
   }
-  .top{
+  .top {
     display: flex;
-    > p{
+    > p {
       padding-right: 15px;
       font-size: 14px;
       width: 90px;
       color: @color-6c;
     }
-    >.reason{
+    > .reason {
       position: relative;
-      > span{
+      > span {
         position: absolute;
         top: 90px;
         right: 10px;
         color: @color-6c;
       }
-      > p{
+      > p {
         padding-top: 10px;
         color: @color-6c;
         font-size: 12px;
-        > span{
+        > span {
           color: @color-blank;
         }
       }
     }
   }
-  .checkTop{
+  .checkTop {
     padding-bottom: 20px;
     display: flex;
-    i{
+    i {
       padding-right: 5px;
     }
-    > p{
+    > p {
       width: 75px;
     }
-    .sign{
+    .sign {
       color: @color-blue;
     }
   }
-  .checkBottom{
+  .checkBottom {
     display: flex;
-    > p{
+    > p {
       font-size: 14px;
       width: 75px;
       color: @color-6c;
-      >span{
-        color:red;
+      > span {
+        color: red;
         font-size: 16px;
       }
     }
-    >.reason{
+    > .reason {
       position: relative;
-      > span{
+      > span {
         position: absolute;
         top: 90px;
         right: 10px;
         color: @color-6c;
       }
-      > p{
+      > p {
         padding-top: 10px;
         color: @color-6c;
         font-size: 12px;
-        > span{
+        > span {
           color: @color-blank;
         }
       }
