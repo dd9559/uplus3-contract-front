@@ -58,35 +58,43 @@
 export default{
         data(){
           return{
-            enableTemplateId:'',
-            modalDialog:true,
+            templateAddress:'',
+            modalDialog:false,
             isNessary:'',
             format:'',
             tableDate:[],
-            showType:'',
+            show:'',
+            type:'',
           }
         },
         created(){
-            this.enableTemplateId = this.$route.query.enableTemplateId
-            // this.showType=this.$route.query.showType
-            // if(this.showType==1){
-            //     this.modalDialog=false
-            // }else{
-            //     this.modalDialog=true
-            // }
-            this.$ajax.get('/api/setting/contractTemplate/checkTemplate',{url:'http://jjw-test.oss-cn-shenzhen.aliyuncs.com/test/20181120/zb.docx'}).then(res=>{
-              console.log(res)
-              this.tableDate=res.data.data.unPlaceholders
-              console.log(this.tableDate);
+            this.templateAddress = this.$route.query.templateAddress
+            this.type = this.$route.query.type
+            this.show=this.$route.query.show
+            if(this.show==1){
+                this.modalDialog=true
+            }
+            let param={
+                templateAddress:{address:this.templateAddress},
+                type:this.type
+            }
+            console.log(param,'param');
+            this.$ajax.get('/api/setting/contractTemplate/checkTemplate',param).then(res=>{
+              if(res.status==200){
+                  console.log(res.data.data);
+              }
+            //   console.log(res)
+            //   this.tableDate=res.data.data.unPlaceholders
+            //   console.log(this.tableDate);
             })
-            this.initList()
+            // this.initList()
         },
         methods:{
-            initList(){
-              this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:this.enableTemplateId}).then(res=>{
-              console.log(res)
-              })
-            }
+            // initList(){
+            //   this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:this.enableTemplateId}).then(res=>{
+            //   console.log(res)
+            //   })
+            // }
         }
         
 }

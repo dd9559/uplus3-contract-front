@@ -50,6 +50,8 @@
                 that.$message({
                   message:'上传成功'
                 })
+                that.uploader.splice(0,1)
+                console.log(that.uploader)
               }
             },
             Error: function(up, err) {
@@ -70,8 +72,9 @@
         let path = 'picture/'
         if(this.uploader.files.length!==0){
           this.getUrl(path).then(res=>{
-            this.filePath.push(`${res.host}/${path}${this.uploader.files[0].name}`)
+            this.filePath.push(`${res.host}/${res.key}.${this.uploader.files[0].name.split('.')[1]}`)
             console.log(this.filePath)
+            this.$emit('getUrl',{param:this.filePath})
             set_upload_param(this.uploader,res,this.uploader.files[0].name);
           })
         }
