@@ -4,9 +4,9 @@
     <section>
       <div class="input-group">
         <label class="form-label">付款方</label>
-        <el-select v-model="form.person" placeholder="请选择">
+        <el-select v-model="form.outObjType" placeholder="请选择" @change="getOption">
           <el-option
-            v-for="item in 5"
+            v-for="item in dropdown"
             :key="item.value"
             :label="item.label"
             :value="item.value">
@@ -15,7 +15,7 @@
       </div>
       <div class="input-group">
         <label class="form-label">收款人:</label>
-        <el-select v-model="form.person" placeholder="请选择">
+        <el-select v-model="form.inObjId" placeholder="请选择" @change="">
           <el-option
             v-for="item in 5"
             :key="item.value"
@@ -54,9 +54,9 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="activeType===1?'金额大写':'收款方式'">
+        <el-table-column align="center" label="金额大写">
           <template slot-scope="scope">
-            <span v-if="amount">{{amount.balance|formatChinese}}</span>
+            <span>{{form.smallAmount|formatChinese}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户">
@@ -67,85 +67,95 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-table v-else class="collapse-cell" border :data="moneyTypeOther" :span-method="collapseRow" style="width: 100%"
+      <el-table v-else class="collapse-cell" border :data="moneyTypeOther[0].moneyTypes" :span-method="collapseRow" style="width: 100%"
                 header-row-class-name="theader-bg" key="other">
         <el-table-column align="center" label="款类（大类）">
-          <template slot-scope="scope">代收代付</template>
+          <template slot-scope="scope">{{moneyTypeOther[0].name}}</template>
         </el-table-column>
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
-            <el-radio v-model="form.moneyType" @change="getType(scope.row)">{{scope.row.name}}</el-radio>
+            <div class="box box-left">
+              <el-radio v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">{{scope.row.name}}</el-radio>
+            </div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount">
-            <!--<span v-else>请输入</span>-->
+            <div class="box">
+              <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===scope.row.key">
+              <span v-else>请输入</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款方式">
           <template slot-scope="scope">
-            <el-select v-model="form.person" placeholder="请选择">
-              <el-option
-                v-for="item in 5"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+            <div class="box">
+              <el-select v-model="form.proceedsType" placeholder="请选择" v-if="form.moneyType===scope.row.key">
+                <el-option
+                  v-for="item in dictionary['534']"
+                  :key="item.key"
+                  :label="item.value"
+                  :value="item.key">
+                </el-option>
+              </el-select>
+              <span v-else>请选择<i class="iconfont icon-xialazhankai"></i></span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户">
           <template slot-scope="scope">
-            <el-select v-model="form.person" placeholder="请选择">
-              <el-option
-                v-for="item in 5"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+            <div class="box">
+              <el-select v-model="activeAdmin" placeholder="请选择" v-if="form.moneyType===scope.row.key">
+                <el-option
+                  v-for="item in account"
+                  :key="item.id"
+                  :value="`${item.bankAccountName} ${item.bankBranchName} ${item.bankCard}`">
+                  {{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
+                </el-option>
+              </el-select>
+              <span v-else>请选择<i class="iconfont icon-xialazhankai"></i></span>
+            </div>
           </template>
         </el-table-column>
       </el-table>
-      <ul class="table-total" v-if="activeType===2">
+      <!--<ul class="table-total" v-if="activeType===2">
         <li>现金收款:<span>3000元</span></li>
         <li>转账收款:<span>3000元</span></li>
         <li>POS刷卡收款:<span>3000元</span></li>
         <li>合计金额:<span>9000元</span></li>
-      </ul>
+      </ul>-->
     </div>
     <div class="input-group" v-if="activeType===2">
       <p><label class="form-label">刷卡资料补充</label></p>
       <el-table border :data="cardList" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="刷卡银行">
           <template slot-scope="scope">
-            <span>-</span>
+            <span>{{scope.row.bankName|formatNull}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.userName" class="no-style" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="账户 ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.cardNumber" class="no-style" placeholder="请输入" @input="getBank(scope.row,scope.$index)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.amount" class="no-style" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="订单编号">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.orderNo" class="no-style" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="手续费（元）">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.fee" class="no-style" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
@@ -158,7 +168,7 @@
     </div>
     <div class="input-group">
       <p><label>备注信息</label></p>
-      <el-input placeholder="请填写备注信息" type="textarea"></el-input>
+      <el-input v-model="form.remark" placeholder="请填写备注信息" type="textarea"></el-input>
     </div>
     <div class="input-group" v-if="activeType===2">
       <p><label class="form-label">付款凭证</label></p>
@@ -188,15 +198,19 @@
     data() {
       return {
         form: {
-          contId:2,
+          contId:'',
           remark:'',
           inObj:'',
           inObjId:'',
-          inObjType:'',
+          // inObjType:'',
+          outObj:'',
+          outObjId:'',
+          outObjType:'',
           moneyType:'',
           moneyTypePid:'',
           smallAmount:'',
-          filePath:'123',
+          proceedsType:'',
+          filePath:'',
         },
         types: [
           {
@@ -223,16 +237,22 @@
             fee:''
           }
         ],
-        amount: null,
+        amount: {
+          balance:0
+        },
         dictionary: {
           '534': ''
         },
-        activeSelect:'',
+        activeAdmin:'',
+        account:[],
+        dropdown:[],
       }
     },
     created() {
       this.getMoneyType()
       this.getDictionary()
+      this.getAcount()
+      this.getDropdown()
     },
     methods: {
       /**
@@ -246,19 +266,33 @@
             res.data.forEach((item,index)=>{
               if(item.name==='代收代付'){
                 this.moneyType.splice(index,1)
-                this.moneyTypeOther = res.data.splice(index,1)[0].moneyTypes
+                this.moneyTypeOther = res.data.splice(index,1)
               }
             })
           }
         })
       },
-      goResult: function () {
-        this.$router.push({
-          path: 'receiptResult'
+      goResult:function () {
+        let param = Object.assign({},this.form)
+        //测试用
+        param.contId = 2
+        param.inObj = 'x'
+        param.inObjId = 1
+        param.filePath = '123'
+
+        param.account = JSON.stringify([].concat(this.cardList))
+        this.$ajax.post('/api/payInfo/saveProceeds',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.$router.push({
+              path: 'receiptResult'
+            })
+          }
         })
       },
       choseType: function (item) {
         this.activeType = item.id
+        this.$tool.clearForm(this.form)
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
@@ -269,9 +303,54 @@
             return [0,0]
           }
         }
+        if(columnIndex===0&&this.activeType===2){
+          if(rowIndex===0){
+            return [this.moneyTypeOther[0].moneyTypes.length,1]
+          }else {
+            return [0,0]
+          }
+        }
       },
-      showSelect:function (row) {
-        this.activeSelect = this.activeSelect===row.key?'':row.key
+      /**
+       * 获取下拉框数据
+       */
+      getDropdown:function () {
+        let param = {
+          contId:18
+        }
+        this.$ajax.get('/api/payInfo/selectValue',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.dropdown = res.data
+          }
+        })
+      },
+      /**
+       * 获取收款账户
+       */
+      getAcount:function () {
+        this.$ajax.get('/api/payInfo/selectProceedsAccount').then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.account = res.data
+          }
+        })
+      },
+      /**
+       * 获取下拉框选择对象
+       * @param item
+       */
+      getOption:function (item) {
+        let obj = {}
+        console.log(obj)
+        this.dropdown.find(tip=>{
+          if(tip.value===item&&!!tip.custId){
+            obj.outObjId = tip.custId
+            obj.outObj = tip.custName
+            return
+          }
+        })
+        this.form = Object.assign({},this.form,obj)
       },
       /**
        * 刷卡资料补充
@@ -297,22 +376,29 @@
           })
         }
       },
-      getType:function (label) {
-        this.form.moneyTypePid = label.id
-        this.getAmount()
-      },
-      getAmount:function () {
-        let param={
-          contId:this.form.contId,
-          moneyTypePid:this.form.moneyTypePid,
-          moneyType:this.form.moneyType
+      /**
+       * 根据卡号获取银行信息
+       */
+      getBank:function (row,index) {
+        let param = {
+          cardNumber:row.cardNumber
         }
-        this.$ajax.get('/api/payInfo/selectAvailableBalance',param).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.amount = res.data
-          }
-        })
+        if(param.cardNumber.length>=16){
+          this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
+            res=res.data
+            if(res.status===200){
+              debugger
+              this.cardList[index].bankName = res.data.bankName
+            }
+          })
+        }
+      },
+      getType:function (label,type='init') {
+        if(type==='init'){
+          this.form.moneyTypePid = label.id
+        }else {
+          this.form.moneyTypePid = this.moneyTypeOther[0].id
+        }
       },
     }
   }
@@ -365,36 +451,15 @@
       margin-left: 10px;
     }
   }
-  .select-info{
-    position: relative;
-    &-list{
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      background-color: @bg-white;
-      height: 90px;
-      overflow-y: auto;
-      &::-webkit-scrollbar {
-        display: none;
-      }
-      >li{
-        height: 30px;
-        padding: 0 10px;
-        display: flex;
-        align-items: center;
-        &:hover{
-          background-color: #f5f7fa;
-        }
-      }
-    }
-    &-input{
-      text-align: center;
-      .iconfont{
-        font-size: @size-12;
-        color: #A1A1A1;
-        margin-left: 20px;
-      }
+  .iconfont{
+    color: #A1A1A1;
+    font-size: @size-12;
+    margin-left: 10px;
+  }
+  .box{
+    padding: 10px;
+    &-left{
+      text-align: left;
     }
   }
 

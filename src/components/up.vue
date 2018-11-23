@@ -97,7 +97,6 @@
     },
     computed:{
       getId:function () {
-        debugger
         return this.id
       }
     }
