@@ -8,19 +8,19 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
-          <el-select v-model="contractForm.contType" placeholder="请选择合同类型" :clearable="true" style="width:150px">
+          <el-select v-model="contractForm.contType" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="合同状态">
-          <el-select v-model="contractForm.contState" placeholder="请选择合同状态" :clearable="true" style="width:150px">
+          <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用途">
-          <el-select v-model="contractForm.houseinfoPurpose" placeholder="请选择用途" :clearable="true" style="width:150px">
+          <el-select v-model="contractForm.houseinfoPurpose" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['538']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
@@ -29,43 +29,58 @@
           <el-input v-model="keyword" placeholder="关键字" style="width:250px"></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="contractForm.recordDept" placeholder="请选择部门" filterable style="width:200px">
-            <!-- <el-option label="起草中" value="1"></el-option> -->
-          </el-select>
+          <el-select
+            v-model="contractForm.dealAgentStoreId"
+            :multiple='false'
+            clearable
+            filterable
+            remote
+            reserve-keyword
+            @change="getBroker"
+            placeholder="部门"
+            :remote-method="remoteMethod"
+            :loading="loading">
+              <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+                >
+              </el-option>
+            </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="contractForm.recordDept" placeholder="请选择" style="width:100px">
-            <!-- <el-option label="起草中" value="1"></el-option>
-            <el-option label="已签章" value="2"></el-option>
-            <el-option label="已上传" value="3"></el-option> -->
+          <el-select v-model="contractForm.dealAgentId" placeholder="请选择" style="width:100px">
+            <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="审核状态">
-          <el-select v-model="contractForm.toExamineState" placeholder="请选择审核状态" :clearable="true" style="width:150px">
+          <el-select v-model="contractForm.toExamineState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['17']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="变更/解约">
-          <el-select v-model="contractForm.contChangeState" placeholder="" :clearable="true" style="width:150px">
+          <el-select v-model="contractForm.contChangeState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['6']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="结算状态">
-          <el-select v-model="contractForm.resultState" placeholder="" :clearable="true" style="width:150px">
+          <el-select v-model="contractForm.resultState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['14']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="收佣状态">
-          <el-select v-model="contractForm.receiveAmountState" placeholder="" :clearable="true" style="width:150px">
+          <el-select v-model="contractForm.receiveAmountState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['13']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="业绩状态">
-          <el-select v-model="contractForm.achievementState" placeholder="" :clearable="true" style="width:150px">
+          <el-select v-model="contractForm.achievementState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['2']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
@@ -77,14 +92,14 @@
       <p>
         <span>
           <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
-          <span class="text">有效成分汇总 </span>
+          <!-- <span class="text">有效成分汇总 </span>
           <span class="text">租赁：</span> <span class="data">123165</span>
           <span class="text">买卖：</span> <span class="data">75454</span>
           <span class="text">代办：</span> <span class="data">5565</span>
           <span class="text">意向：</span> <span class="data">0</span>
           <span class="text">定金：</span> <span class="data">0</span>
           <span class="text">可分配业绩汇总：</span> <span class="data">564654</span>
-          <span class="text">单数：</span> <span class="data">13</span>
+          <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
           <el-dropdown placement="bottom">
@@ -114,13 +129,19 @@
         </span>
       </p>
       <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
-        <el-table-column align="left" label="合同信息" width="200" fixed>
+        <el-table-column align="left" label="合同信息" width="220" fixed>
           <template slot-scope="scope">
-            <ul class="contract-msglist">
-              <li>合同编号：<span>{{scope.row.code}}</span></li>
-              <li>房源编号：<span>{{scope.row.houseinfoCode}}</span></li>
-              <li>客源编号：<span>{{scope.row.guestinfoCode}}</span></li>
-            </ul>
+            <div class="contract_msg">
+              <div class="riskLabel">
+                <i class="iconfont icon-tubiao-6"></i>
+                <i class="iconfont icon-tubiao-6"></i>
+              </div>
+              <ul class="contract-msglist">
+                <li>合同编号：<span>{{scope.row.code}}</span></li>
+                <li>房源编号：<span>{{scope.row.houseinfoCode}}</span></li>
+                <li>客源编号：<span>{{scope.row.guestinfoCode}}</span></li>
+              </ul>
+            </div>
           </template>
         </el-table-column>
         <el-table-column align="left" label="合同类型" prop="contType.label" width="100" fixed>
@@ -203,9 +224,9 @@
             <div style="text-align:center">
               <el-button type="text" size="medium" v-if="scope.row.contState.value!=3" @click="upload(scope.row.code)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview">预览</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===1" @click="goCheck">审核</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===2" @click="goCheck(scope.row.id)">审核</el-button>
               <el-button type="text" size="medium" @click="toLayerAudit(scope.row)">调佣</el-button>
-              <el-button type="text" size="medium">提交审核</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===1" @click="submitAudit(scope.row.id)">提审</el-button>
             </div>
           </template>
         </el-table-column>
@@ -262,12 +283,18 @@ export default {
         "13": "", //收佣状态
         "2": "", //业绩状态
         "538": "" //用途
-      }
+      },
+      loading:false,
+      //部门选择列表
+      options:[],
+      //经纪人列表
+      brokersList:[]
     };
   },
   created() {
     this.getContractList();
     this.getDictionary();
+    //his.getDeps('');
   },
   methods: {
     //获取合同列表
@@ -358,7 +385,7 @@ export default {
         this.$router.push({
           path: "/addContract",
           query: {
-            contType: command
+            type: command
           }
         });
       } else if (command === 4 || command === 5) {
@@ -380,7 +407,16 @@ export default {
       });
     },
     //合同审核
-    goCheck() {},
+    goCheck(contId) {
+      debugger
+      this.$router.push({
+        path:'/contractPreview',
+        query:{
+          id:contId,
+          operationType:'check'
+        }
+      })
+    },
     //关闭流水弹窗
     closeWater() {
       this.water = false;
@@ -388,6 +424,7 @@ export default {
     //调佣弹窗
     //Z171231001
     toLayerAudit(item) {
+      debugger
       if(item.isCanChangeCommission===1){
         this.contractCode = item.code;
         this.tiaoyong = true;
@@ -427,6 +464,51 @@ export default {
       console.log(code);
       this.changeCancel = true;
       this.dialogType = "upload";
+    },
+    //获取当前部门
+    getDeps(key){
+      let param = {
+        keyword:key
+      }
+      this.$ajax.get('/api/access/deps', param).then(res=>{
+        this.loading=false;
+        res=res.data
+        if(res.status===200){
+          this.options=res.data
+        }
+      })
+    },
+    remoteMethod(query){
+      if (query !== '') {
+        this.loading = true;
+        this.getDeps(query)
+      } else{
+
+      }
+    },
+    getBroker(id){
+      console.log(id)
+      let param = {
+        depId:id
+      }
+      this.$ajax.get('/api/organize/employees', param).then(res=>{
+        res=res.data
+        if(res.status===200){
+
+        }
+      })
+    },
+    //提审
+    submitAudit(id){
+      let param = {
+        contractId:id
+      }
+      this.$ajax.post('/api/contract/contExamine', param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.getContractList()
+        }
+      })
     }
   }
 };
@@ -486,11 +568,20 @@ export default {
     overflow: hidden;
   }
 }
-.contract-msglist {
-  > li {
-    text-align: left;
+.contract_msg{
+  display: flex;
+   align-items: center;
+  .riskLabel{
+    width: 20px;
+   
+  }
+  .contract-msglist {
+    > li {
+      text-align: left;
+    }
   }
 }
+
 .blue {
   color: @color-blue;
 }

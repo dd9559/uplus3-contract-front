@@ -38,17 +38,17 @@
           <div class="content">
             <div class="one_">
               <p><span class="tag">房源编号：</span><span class="serialNumber">{{contractDetail.houseinfoCode}}</span></p>
-              <p class="address"><span class="tag">物业地址：</span><span class="text">{{contractDetail.houseInfo.building}}</span></p>
+              <p class="address"><span class="tag">物业地址：</span><span class="text">{{contractDetail.propertyAddr}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.architectureArea}} m²</span></p>
-              <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.insideArea}} m²</span></p>
+              <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.square}} m²</span></p>
+              <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.squareUse}} m²</span></p>
               <p><span class="tag">用 途：</span><span class="text">住宅</span></p>
             </div>
             <div class="one_">
               <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.houseType}}</span></p>
               <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.orientation}}</span></p>
-              <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.renovation}}</span></p>
+              <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.decorateType}}</span></p>
             </div>
             <div class="one_" v-if="contType!='1'">
               <p><span class="tag">产权状态：</span><span class="text">{{contractDetail.houseInfo.propertyRightStatus}}</span></p>
@@ -58,15 +58,15 @@
             </div>
             <div class="one_">
               <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.houseStoreName}}</span></p>
-              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.shopownerName}}</span></p>
-              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.shopownerMobile}}</span></p>
+              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.shopOwnerName}}</span></p>
+              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.shopOwnerMobile}}</span></p>
             </div>
             <div class="table">
               <template>
                 <el-table :data="ownerData" border header-row-class-name="theader-bg">
                   <el-table-column prop="name" label="业主姓名"></el-table-column>
                   <el-table-column prop="mobile" label="电话"></el-table-column>
-                  <el-table-column prop="relation" label="关系"></el-table-column>
+                  <el-table-column prop="personType.label" label="关系"></el-table-column>
                   <el-table-column prop="propertyRightRatio" label="产权比"></el-table-column>
                   <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
                 </el-table>
@@ -79,12 +79,12 @@
           <div class="content">
             <div class="one_">
               <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
-              <p><span class="tag">付款方式：</span><span class="text">{{contractDetail.houseInfo.paymentMethod}}</span></p>
+              <p><span class="tag">付款方式：</span><span class="text">{{contractDetail.guestInfo.paymentMethod}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.guestStoreName}}</span></p>
-              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.shopownerName}}</span></p>
-              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.shopownerMobile}}</span></p>
+              <p><span class="tag">客源方门店：</span><span class="text">{{contractDetail.guestInfo.guestStoreName}}</span></p>
+              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.guestInfo.shopOwnerName}}</span></p>
+              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.shopOwnerMobile}}</span></p>
             </div>
             <div class="table">
               <template>
@@ -95,7 +95,7 @@
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} <i class="iconfont icon-icon_contract_phone" @click="call(scope.row.mobile)"></i>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="relation" label="关系"></el-table-column>
+                  <el-table-column prop="personType.label" label="关系"></el-table-column>
                   <el-table-column prop="propertyRightRatio" label="产权比"></el-table-column>
                   <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
                 </el-table>
@@ -107,7 +107,7 @@
           <div class="title">三方合作</div>
           <div class="content">
             <div class="one_">
-              <p><span class="tag">扣合作费：</span><span class="text">2018元</span></p>
+              <p><span class="tag">扣合作费：</span><span class="text">{{contractDetail.otherCooperationCost}}元</span></p>
               <p><span class="tag">类型：</span><span class="text" v-if='contractDetail.otherCooperationInfo'>{{contractDetail.otherCooperationInfo.type}}</span></p>
             </div>
             <div class="one_">
@@ -276,6 +276,7 @@ export default {
       contractDetail:{
         contType:{},
         houseInfo:{},
+        guestInfo:{},
         otherCooperationInfo:{},
         contState:{}
       },
