@@ -53,7 +53,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="checked(0)">驳回</el-button>
-        <el-button round type="success" @click="dialogInvalid = false">通过</el-button>
+        <el-button round type="success" @click="checked(1)">通过</el-button>
       </span>
     </el-dialog>
   </div>
@@ -93,15 +93,16 @@ export default {
     },
     //通过驳回
     toChecked(param){
-      this.$ajax.post('/api/contract/examine', param).then(res=>{
+      this.$ajax.post('/api/contract/contExamineResult', param).then(res=>{
         res=res.data
         if(res.status===200){
-
+          this.dialogCheck=false
         }
       })
     },
     checked(num) {
-      if (!num || !this.isSign) {
+      //驳回/风险单
+      if (!num || this.isSign) {
         if (this.textarea.length) {
           let param = {
             contractId: this.contractId,
@@ -109,7 +110,12 @@ export default {
             isRisk: this.isSign, //风险单
             remarks: this.textarea
           };
-          this.toChecked()
+          this.toChecked(param)
+        }else{
+          this.$message({
+            message: '请填写审核原因以及风险单原因',
+            type: 'warning'
+          });
         }
       } else {
         let param = {
@@ -118,13 +124,8 @@ export default {
           isRisk: this.isSign, //风险单
           remarks: this.textarea
         };
+        this.toChecked(param);
       }
-      let param = {
-        contractId: this.contractId,
-        result: num,
-        isRisk: this.isSign, //风险单
-        remarks: this.textarea
-      };
     }
   }
   // watch:{
@@ -174,6 +175,7 @@ export default {
         text-align: center;
         font-size: 14px;
         color: @color-blue;
+        cursor: pointer;
       }
       .active {
         background: @color-blue;
