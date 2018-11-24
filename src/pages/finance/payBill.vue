@@ -79,7 +79,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入6228480059053520074" v-model="bankCount.cardNumber" @input="getBank">
+            <input type="text" class="no-style" placeholder="请输入6228480059053520074" maxlength="20" v-model="bankCount.cardNumber" @input="getBank">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -91,7 +91,7 @@
     </div>
     <div class="input-group">
       <p><label>备注信息</label></p>
-      <el-input placeholder="请填写备注信息" type="textarea" v-model="form.remark"></el-input>
+      <el-input placeholder="请填写备注信息" type="textarea" maxlength="200" v-model="form.remark"></el-input>
     </div>
     <div class="input-group">
       <p><label class="form-label">付款凭证</label></p>
@@ -114,6 +114,30 @@
 <script>
   import {UPLOAD} from "@/assets/js/uploadMixins";
   import {MIXINS} from "@/assets/js/mixins";
+
+  const rule={
+    inObjType:{
+      name:'收款方',
+    },
+    moneyType:{
+      name:'款类',
+    },
+    smallAmount:{
+      name:'付款金额',
+      type:'money'
+    },
+    userName:{
+      name:'户名',
+      type:'mobile'
+    },
+    cardNumber:{
+      name:'收账账户',
+      type:'bankCard'
+    },
+    filePath:{
+      name:'付款凭证',
+    },
+  }
 
   export default {
     mixins: [UPLOAD,MIXINS],
@@ -156,7 +180,7 @@
        */
       getDropdown:function () {
         let param = {
-          contId:18
+          contId:15
         }
         this.$ajax.get('/api/payInfo/selectValue',param).then(res=>{
           res=res.data
@@ -248,13 +272,26 @@
       goResult:function () {
         let param = Object.assign({},this.form)
         param.account = JSON.stringify([].concat(this.bankCount))
-        this.$ajax.post('/api/payInfo/savePayment',param).then(res=>{
+        /*this.$ajax.post('/api/payInfo/savePayment',param).then(res=>{
           res=res.data
           if(res.status===200){
             this.$router.push({
               path: 'payResult'
             })
           }
+        })*/
+        this.$tool.checkForm(this.form,rule).then(()=>{
+          this.$tool.checkForm(this.bankCount,rule).then(()=>{
+
+          }).catch((error)=>{
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
+          })
+        }).catch((error)=>{
+          this.$message({
+            message:`${error.title}${error.msg}`
+          })
         })
       }
     }
