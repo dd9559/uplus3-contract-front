@@ -1,445 +1,419 @@
 <template>
-    <div class="paper-set">
-        <!-- 筛选 -->
-        <!-- 
-                * 参数     类型       默认值
-                * min      Number    61    
-
-                * 事件
-                * propQueryFn           点击查询回调
-                * propResetFormFn       点击重置回调
-             -->
-        <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
-            <!-- 筛选条件 -->
-            <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
-                <div class="in-block">
-                    <el-form-item label="部门" prop="region" class="mr">
-                        <el-select v-model="propForm.region" @change="regionChangeFn" class="w200">
-                            <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item prop="regionName">
-                        <el-select v-model="propForm.regionName" class="w100">
-                            <el-option v-for="item in rules.regionName" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </div>
-                <el-form-item label="关键字" prop="search">
-                    <el-autocomplete class="w312" v-model="propForm.search" :fetch-suggestions="querySearch" placeholder="开票人员/合同编号/票据编" :trigger-on-focus="false" @select="handleSelect" clearable></el-autocomplete>
-                </el-form-item>
-                <el-form-item label="票据状态" prop="paper">
-                    <el-select v-model="propForm.paper" class="w120">
-                        <el-option v-for="item in rules.paper" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <div class="in-block">
-                    <el-form-item label="查询时间" prop="time" class="mr">
-                        <el-select v-model="propForm.time" class="w120">
-                            <el-option v-for="item in rules.time" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item prop="dateMo" class="mr">
-                        <el-date-picker v-model="propForm.dateMo" class="w330" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-                        </el-date-picker>
-                    </el-form-item>
-                </div>
-            </el-form>
-        </ScreeningTop>
-        <!-- 列表 -->
-        <div class="paper-table-box">
-            <div class="paper-set-tit">
-                <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
-            </div>
-            <el-table :data="tableData" class="paper-table mt-20">
-                <el-table-column fixed align="center" label="序号" min-width="70">
-                    <template slot-scope="scope">
-                        <p class="tc">{{scope.row.a0}}</p>
-                    </template>
-                </el-table-column>
-                <el-table-column fixed label="合同编号" min-width="124">
-                    <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="contractFn">{{scope.row.a1}}</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column fixed label="票据编号" min-width="137">
-                    <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="paperFn">{{scope.row.a2}}</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column fixed label="收款ID" min-width="135">
-                    <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="collectionFn">{{scope.row.a3}}</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column fixed prop="a4" label="物业地址" min-width="124">
-                </el-table-column>
-                <el-table-column fixed prop="a5" label="客户姓名" min-width="84">
-                </el-table-column>
-                <el-table-column fixed prop="a6" label="票据状态" min-width="84">
-                </el-table-column>
-                <el-table-column prop="a7" label="收款人" min-width="71">
-                </el-table-column>
-                <el-table-column prop="a8" label="开票人员" min-width="86">
-                </el-table-column>
-                <el-table-column prop="a9" label="门店" min-width="85">
-                </el-table-column>
-                <el-table-column prop="a10" label="开盘金额（元）" min-width="122">
-                </el-table-column>
-                <el-table-column prop="a11" label="开票日期" min-width="150">
-                </el-table-column>
-                <el-table-column prop="a12" label="打印次数" min-width="85">
-                </el-table-column>
-                <el-table-column prop="a13" label="打印人" min-width="72">
-                </el-table-column>
-                <el-table-column prop="a14" label="打印日期" min-width="152">
-                </el-table-column>
-                <el-table-column prop="a15" label="回收日期" min-width="152">
-                </el-table-column>
-                <el-table-column prop="a16" label="核销日期" min-width="148">
-                </el-table-column>
-                <el-table-column prop="a17" label="作废日期" min-width="152">
-                </el-table-column>
-                <el-table-column prop="a18" label="作废原因" min-width="100">
-                </el-table-column>
-                <el-table-column label="操作人/时间" min-width="146">
-                    <template slot-scope="scope">
-                        <p>{{scope.row.a19}}</p>
-                        <p>{{scope.row.a20}}</p>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" min-width="148">
-                    <template slot-scope="scope">
-                        <!-- 已开票 -->
-                        <template v-if="scope.row.paperState===STATE.start">
-                            <!-- 门店 -->
-                            <template v-if="loginState">
-                                <el-button class="blue" type="text" @click="invalidFn">作废</el-button>
-                            </template>
-                            <!-- 财务 -->
-                            <template v-else>
-                                <el-button class="blue" type="text" @click="cancelFn">核销</el-button>
-                                <span class="line"></span>
-                                <el-button class="blue" type="text" @click="irecyclingFn">回收</el-button>
-                                <span class="line"></span>
-                                <el-button class="blue" type="text" @click="invalidFn">作废</el-button>
-                            </template>
-                        </template>
-                        <!-- 已作废 -->
-                        <template v-else-if="scope.row.paperState===STATE.invalid">
-                            <!-- 门店 -->
-                            <template v-if="loginState">
-                                <el-button class="blue" type="text" @click="startFn">开票</el-button>
-                            </template>
-                            <!-- 财务 -->
-                            <template v-else>
-                                <el-button class="blue" type="text" @click="irecyclingFn">回收</el-button>
-                                <span class="line"></span>
-                                <el-button class="blue" type="text" @click="startFn">开票</el-button>
-                            </template>
-                        </template>
-                        <!-- 已回收 和 已核销 -->
-                        <template v-else>-</template>
-                    </template>
-                </el-table-column>
-            </el-table>
+  <div class="paper-set">
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
+      <div class="content">
+        <div class="input-group">
+          <label>部门:</label>
+          <el-select size="small" v-model="propForm.depId" placeholder="请选择">
+            <el-option
+              v-for="item in 5"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <el-select class="margin-left-10 w100" size="small" v-model="propForm.empId" placeholder="请选择">
+            <el-option
+              v-for="item in 5"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </div>
-        <!-- 弹层 -->
-        <el-dialog :title="layer.tit" :visible.sync="layer.show" :width="layer.proWidth" :center="layer.center" class="layer-paper">
-            <div v-if="layer.rabbet" class="layer-invalid">
-                <ul class="ul">
-                    <li>
-                        <span class="cl-1 mr-10">票据编号：</span>
-                        <span class="cl-2 mr-40">SJ201809301289</span>
-                    </li>
-                    <li>
-                        <span class="cl-1 mr-10">合同编号：</span>
-                        <span class="cl-2 mr-40">201809301289</span>
-                    </li>
-                    <li>
-                        <span class="cl-1 mr-10">收款时间：</span>
-                        <span class="cl-2">2018/09/30</span>
-                    </li>
-                </ul>
-                <div class="input-box">
-                    <span class="cl-1 mr-10">作废备注：</span>
-                    <div class="input">
-                        <el-input type="textarea" resize="none" placeholder="请输入核销理由" :maxlength="invalidMax" v-model="invalidInput" class="input">
-                        </el-input>
-                        <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
-                    </div>
-                </div>
-            </div>
-            <div v-else class="txt">{{layer.msg}}</div>
-            <span slot="footer">
-                <el-button class="paper-btn" type size="medium" @click="propCloseFn" round>取消</el-button>
-                <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="propCloseFn(layer.tit)" round>确定</el-button>
-            </span>
-        </el-dialog>
-        <!-- 开票 -->
-        <LayerInvoice ref="invoice"></LayerInvoice>
-        <!-- 票据编号弹层 -->
-        <el-dialog 
-            title="票据详情" 
-            :visible.sync="paperInfoData.show" 
-            width="1000px" 
-            class="layer-paper">
-            <LayerPaperInfo 
-                :number="paperInfoData.contCode"
-                :name="paperInfoData.payerName"
-                :collectionTime="paperInfoData.paymentTime"
-                :invoiceTime="paperInfoData.createTime"
-                :paper="paperInfoData.paper"
-                :project="paperInfoData.name"
-                :hide="paperInfoData.hide"
-                :address="paperInfoData.address"
-                :money="paperInfoData.money"
-                :moneyZh="paperInfoData.moneyZh"
-                :create="paperInfoData.createBy"
-                :rules="paperInfoData.val"
-                :payerType="paperInfoData.payerType"
-                ></LayerPaperInfo>
-            <span slot="footer">
-                <el-button class="paper-btn" type size="medium" @click="paperCloseFn" round>取消</el-button>
-                <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="paperBtnFn" round>打印</el-button>
-            </span>
-        </el-dialog>
+        <div class="input-group">
+          <label>关键字:</label>
+          <el-input size="small" v-model="propForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+        </div>
+        <div class="input-group">
+          <label>票据状态:</label>
+          <el-select size="small" v-model="propForm.state" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['33']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>查询时间:</label>
+          <div class="time-picker">
+            <el-select class="w120" size="small" v-model="propForm.dateType" placeholder="请选择">
+              <el-option
+                v-for="item in $tool.dropdown.dateType"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-date-picker
+              class="margin-left-10"
+              v-model="propForm.timeRange"
+              type="daterange"
+              size="small"
+              value-format="yyyy-MM-dd"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </div>
+        </div>
+      </div>
+    </ScreeningTop>
+    <!-- 列表 -->
+    <div class="paper-table-box">
+      <div class="paper-set-tit">
+        <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
+      </div>
+      <el-table :data="tableData" class="paper-table mt-20">
+        <el-table-column fixed align="center" label="序号" min-width="70">
+          <template slot-scope="scope">
+            <p class="tc">{{scope.$index}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column fixed label="合同编号" min-width="124">
+          <template slot-scope="scope">
+            <el-button class="blue" type="text" @click="cellOpera('contract')">{{scope.row.contNo}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column fixed label="票据编号" min-width="137">
+          <template slot-scope="scope">
+            <el-button class="blue" type="text" @click="cellOpera('paper',scope.row)">{{scope.row.billCode}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column fixed label="收款ID" min-width="135">
+          <template slot-scope="scope">
+            <el-button class="blue" type="text" @click="cellOpera('bill')">{{scope.row.proceedsId}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column fixed prop="address" label="物业地址" min-width="124">
+        </el-table-column>
+        <el-table-column fixed prop="cName" label="客户姓名" min-width="84">
+        </el-table-column>
+        <el-table-column fixed prop="state" label="票据状态" min-width="84" :formatter="nullFormatter">
+        </el-table-column>
+        <el-table-column prop="payeeName" label="收款人" min-width="71">
+        </el-table-column>
+        <el-table-column prop="drawerName" label="开票人员" min-width="86">
+        </el-table-column>
+        <el-table-column prop="drawerDepName" label="门店" min-width="85">
+        </el-table-column>
+        <el-table-column prop="amount" label="开票金额（元）" min-width="122">
+        </el-table-column>
+        <el-table-column prop="createTime" label="开票日期" min-width="150">
+        </el-table-column>
+        <el-table-column prop="printTimes" label="打印次数" min-width="85">
+        </el-table-column>
+        <el-table-column prop="printByName" label="打印人" min-width="72">
+        </el-table-column>
+        <el-table-column prop="printTime" label="打印日期" min-width="152">
+        </el-table-column>
+        <el-table-column prop="recycleTime" label="回收日期" min-width="152">
+        </el-table-column>
+        <el-table-column prop="cavTime" label="核销日期" min-width="148">
+        </el-table-column>
+        <el-table-column prop="invalidTime" label="作废日期" min-width="152">
+        </el-table-column>
+        <el-table-column prop="invalidReason" label="作废原因" min-width="100">
+        </el-table-column>
+        <el-table-column label="操作人/时间" min-width="146">
+          <template slot-scope="scope">
+            <p>{{scope.row.updateByName}}</p>
+            <p>{{scope.row.updateTime}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" min-width="148">
+          <template slot-scope="scope">
+            <!-- 已开票 -->
+            <template v-if="scope.row.state.value===2">
+              <el-button type="text" @click="btnOpera(scope.row,1)">核销</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)">回收</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,3)">作废</el-button>
+            </template>
+            <!-- 已作废 -->
+            <template v-else-if="scope.row.state.value===4">
+              <el-button type="text" @click="btnOpera(scope.row,4)">开票</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)">回收</el-button>
+            </template>
+            <!-- 已回收 和 已核销 -->
+            <template v-else>--</template>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
+    <!-- 弹层 -->
+    <el-dialog :title="layer.title" :visible.sync="layer.show" :width="layer.title==='票据作废'?'740px':'460px'" class="layer-paper" @close="propCloseFn">
+      <div v-if="layer.title==='票据作废'" class="layer-invalid">
+        <ul class="ul">
+          <li>
+            <span class="cl-1 mr-10">票据编号：</span>
+            <span class="cl-2 mr-40">{{activeRow.billCode}}</span>
+          </li>
+          <li>
+            <span class="cl-1 mr-10">合同编号：</span>
+            <span class="cl-2 mr-40">{{activeRow.contNo}}</span>
+          </li>
+          <li>
+            <span class="cl-1 mr-10">收款时间：</span>
+            <span class="cl-2">--</span>
+          </li>
+        </ul>
+        <div class="input-box">
+          <span class="cl-1 mr-10">作废备注：</span>
+          <div class="input">
+            <el-input type="textarea" resize="none" placeholder="请输入核销理由" :maxlength="invalidMax" v-model="layer.reason"
+                      class="input">
+            </el-input>
+            <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
+          </div>
+        </div>
+      </div>
+      <div v-else class="txt">{{layer.msg}}</div>
+      <p slot="footer" :class="[layer.title!=='票据作废'?'center':'']">
+        <el-button round  size="medium" class="paper-btn" @click="layer.show=false">取消</el-button>
+        <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="submitForm">确定</el-button>
+      </p>
+    </el-dialog>
+    <!-- 开票 -->
+    <LayerInvoice ref="invoice"></LayerInvoice>
+    <!-- 票据编号弹层 -->
+    <el-dialog
+      :title="!paperType?'票据详情':'开票信息填写'"
+      :visible.sync="paperShow"
+      width="1000px"
+      class="layer-paper"
+      @close="propCloseFn">
+      <div class="paper-edit-box" v-if="paperType">
+        <ul>
+          <li v-for="item in paperInfoList">{{item}}</li>
+        </ul>
+      </div>
+      <LayerPaperInfo
+        :number="paperInfoData.contCode"
+        :name="paperInfoData.payerName"
+        :collectionTime="paperInfoData.paymentTime"
+        :invoiceTime="paperInfoData.createTime"
+        :paper="paperInfoData.paper"
+        :project="paperInfoData.name"
+        :hide="paperInfoData.hide"
+        :address="paperInfoData.address"
+        :money="paperInfoData.money"
+        :moneyZh="paperInfoData.moneyZh"
+        :create="paperInfoData.createByName"
+        :rules="paperInfoData.val"
+        :payerType="paperInfoData.payerType"
+      ></LayerPaperInfo>
+      <p slot="footer">
+        <el-button round  size="medium" class="paper-btn">取消</el-button>
+        <el-button round  size="medium" class="paper-btn paper-btn-blue">打印</el-button>
+      </p>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-    import ScreeningTop from '@/components/ScreeningTop';
-    import LayerInvoice from '@/components/LayerInvoice';
-    import LayerPaperInfo from '@/components/LayerPaperInfo';
-    const STATE = {
-        start: 0, //已开票
-        invalid: 1, //已作废
-    }
-    export default {
-        data() {
-            return {
-                // loginState 登入角色
-                loginState: false, // true:门店 false:财务
-                // 票据状态变量
-                STATE,
-                // 列表数据
-                tableData: [{
-                    a0: '1',
-                    a1: '201809301289',
-                    a2: 'SK201809301289',
-                    a3: 'SJ201809301289',
-                    a4: '汉街二路289号 1栋2单元',
-                    a5: '陈晓东',
-                    a6: '已开票',
-                    a7: '张明明',
-                    a8: '东野圭吾',
-                    a9: '汉街二店',
-                    a10: '5000',
-                    a11: '2018/09/30 12:00',
-                    a12: '2',
-                    a13: '陈晓茹',
-                    a14: '2018/09/30 12:00',
-                    a15: '2018/09/30 12:00',
-                    a16: '2018/09/30 12:00',
-                    a17: '2018/09/30 12:00',
-                    a18: '写错了抬头',
-                    a19: '陈晓玲',
-                    a20: '2018/08/09 17:22',
-                    // state 票据状态
-                    paperState: 1, // 0:已开票 1:已作废 2:已回收 3:已核销
-                }, {
-                    a0: '2',
-                    a1: '201809301289',
-                    a2: 'SK201809301289',
-                    a3: 'SJ201809301289',
-                    a4: '汉街二路289号 1栋2单元',
-                    a5: '陈晓东',
-                    a6: '已开票',
-                    a7: '张明明',
-                    a8: '东野圭吾',
-                    a9: '汉街二店',
-                    a10: '5000',
-                    a11: '2018/09/30 12:00',
-                    a12: '2',
-                    a13: '陈晓茹',
-                    a14: '2018/09/30 12:00',
-                    a15: '2018/09/30 12:00',
-                    a16: '2018/09/30 12:00',
-                    a17: '2018/09/30 12:00',
-                    a18: '写错了抬头',
-                    a19: '陈晓玲',
-                    a20: '2018/08/09 17:22',
-                    // state 票据状态
-                    paperState: 0, // 0:已开票 1:已作废 2:已回收 3:已核销
-                },],
-                // 筛选条件
-                propForm: {
-                    region: '',
-                    regionName: '',
-                    search: '',
-                    paper: '选项1',
-                    time: '选项11',
-                    dateMo: '',
-                },
-                // 筛选选项
-                rules: {
-                    region: [{
-                        label: "区域一",
-                        value: "shanghai"
-                    },
-                    {
-                        label: "区域二",
-                        value: "quyuer"
-                    }],
-                    regionName: [{
-                        label: "区域一",
-                        value: "shangha"
-                    },
-                    {
-                        label: "区域二",
-                        value: "quyue"
-                    }, ],
-                    paper: [{
-                        label: "全部",
-                        value: "选项1"
-                    },
-                    {
-                        label: "区域二",
-                        value: "选项2"
-                    }],
-                    time: [{
-                        label: "开票日期",
-                        value: "选项11"
-                    },
-                    {
-                        label: "区域二",
-                        value: "选项21"
-                    }]
-                },
-                // 搜索展示内容
-                restaurants: [{
-                    "value": "1111111",
-                }],
-                // 作废弹层输入框
-                invalidMax: 150,
-                invalidInput: '',
-                // 弹层
-                layer: {
-                    show: false,
-                },
-                invoice:false,
-                paperInfoData:{
-                    show:false,
-                    contCode:'201809301289',
-                    payerName:'张小茹',
-                    address:'东湖开发区安逸小区12幢4单元806',
-                    paymentTime:'2018-11-13',
-                    createTime:'2018-11-13',
-                    createBy:'张小茹',
-                    payerType:'客户身份',
-                    name:'房款',
-                    money:100000,
-                    val:'',
-                    paper:'10086'
-                }
-            }
+  import {FILTER} from "@/assets/js/filter";
+  import {MIXINS} from "@/assets/js/mixins";
+  import ScreeningTop from '@/components/ScreeningTop';
+  import LayerInvoice from '@/components/LayerInvoice';
+  import LayerPaperInfo from '@/components/LayerPaperInfo';
+
+  export default {
+    mixins: [FILTER, MIXINS],
+    data() {
+      return {
+        // 列表数据
+        tableData: [],
+        // 筛选条件
+        propForm: {
+          depId: '',
+          empId: '',
+          keyword: '',
+          state: '',
+          dateType: '',
+          timeRange: '',
         },
-        computed: {
-            invalidNumber() {
-                return this.invalidInput.length
-            }
+        //分页
+        pageSize: 10,
+        pageNum: 1,
+        total: 0,
+        // 筛选选项
+        dictionary: {
+          '33': '',
         },
-        methods: {
-            // 作废
-            invalidFn() {
-                this.layer = {
-                    show: true,
-                    tit: '票据作废',
-                    proWidth: '740px',
-                    rabbet: true,
-                    center: false,
-                }
-            },
-            // 回收
-            irecyclingFn() {
-                this.layer = {
-                    show: true,
-                    tit: '票据回收',
-                    msg: '确认要收回该票据吗？'
-                }
-            },
-            // 核销
-            cancelFn() {
-                this.layer = {
-                    show: true,
-                    tit: '票据核销',
-                    msg: '确认要核销该票据吗？',
-                }
-            },
-            // 开票
-            startFn() {
-                this.$refs.invoice.propCloseFn();
-            },
-            // 合同编号
-            contractFn() {
-                console.log('合同编号')
-            },
-            // 票据编号
-            paperFn() {
-                this.paperInfoData.show = true;
-                // console.log('票据编号')
-            },
-            // 收款ID
-            collectionFn() {
-                console.log('收款ID')
-            },
-            // 重置
-            resetFormFn() {
-                this.$refs.propForm.resetFields()
-            },
-            // 查询
-            queryFn() {
-                console.log('查询')
-            },
-            // 部门筛选回调
-            regionChangeFn(e) {
-                console.log(e)
-            },
-            // 筛选搜索
-            querySearch(queryString, cb) {
-                var restaurants = this.restaurants;
-                var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter(queryString) {
-                return (restaurant) => {
-                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-                };
-            },
-            handleSelect(item) {
-                console.log(item);
-            },
-            // 弹层关闭
-            propCloseFn() {
-                this.layer.show = !this.layer.show
-            },
-            //票据详情 取消
-            paperCloseFn(){
-                this.paperInfoData.show = false;
-            },
-            // 票据详情 打印
-            paperBtnFn(){
-                console.log('打印')
-            }
+        // 作废弹层输入框
+        invalidMax: 150,
+        // 弹层
+        layer: {
+          show: false,
+          title: '',
+          msg:'',
+          reason:''
         },
-        components: {
-            ScreeningTop,
-            LayerInvoice,
-            LayerPaperInfo
+        activeRow:{},
+        paperShow: false,
+        paperType:false,//false预览 true开票
+        paperInfoData: {},
+        paperInfoList:[]
+      }
+    },
+    computed: {
+      invalidNumber() {
+        return this.layer.reason.length
+      }
+    },
+    created() {
+      this.getData()
+      this.getDictionary()
+    },
+    methods: {
+      reset: function () {
+        this.$tool.clearForm(this.propForm)
+      },
+      getData: function () {
+        let param = Object.assign({}, this.propForm)
+        param.pageNum = this.pageNum
+        param.pageSize = this.pageSize
+        if (param.timeRange) {
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+          delete param.timeRange
         }
+        this.$ajax.get('/api/bills', param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.tableData = res.data.list
+          }
+        })
+      },
+      btnOpera: function (row,type) {
+        this.activeRow = Object.assign({},row)
+        if(type===4){
+          this.paperShow = true
+          this.paperType = true
+          this.paperList()
+          return
+        }else {
+          this.layer.show = true
+        }
+        switch (type) {
+          case 1:
+            this.layer.title = '票据核销'
+            this.layer.msg = '确认要核销该票据吗?'
+            break
+          case 2:
+            this.layer.title = '票据回收'
+            this.layer.msg = '确认要收回该票据吗?'
+            break
+          case 3:
+            this.layer.title = '票据作废'
+            break
+        }
+      },
+      // 编号操作
+      cellOpera(type,row) {
+        if (type === 'contract') {
+
+        } else if (type === 'paper') {
+          this.getPaperDetails(row)
+        } else {
+
+        }
+      },
+      // 获取开票列表
+      paperList:function () {
+        this.$ajax.get('/api/bills/tobe',{id:this.activeRow.proceedsId}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.paperInfoList = res.data.list
+          }
+        })
+      },
+      // 弹层关闭
+      propCloseFn() {
+        this.$tool.clearForm(this.layer)
+        this.paperType = false
+      },
+      // dialog确定
+      submitForm:function () {
+        debugger
+        console.log(this.activeRow)
+        let param = {
+          id:this.activeRow.id
+        }
+        switch (this.layer.title){
+          case '票据核销':
+            param.state = 3
+            break
+          case '票据回收':
+            param.state = 4
+            break
+          case '票据作废':
+            param.state = 5
+            param.reason = this.layer.reason
+            break
+        }
+        this.$ajax.put('/api/bills/state',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.layer.show=false
+            this.getData()
+          }
+        })
+      },
+      /**
+       * 票据详情
+       * @param row
+       */
+      getPaperDetails:function (row) {
+        this.$ajax.get(`/api/bills/${row.id}`).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.paperInfoData=Object.assign({},res.data)
+            this.paperShow = true
+          }
+        })
+      },
+      //票据详情 取消
+      paperCloseFn() {
+        this.paperInfoData.show = false;
+      },
+      // 票据详情 打印
+      paperBtnFn() {
+        console.log('打印')
+      }
+    },
+    components: {
+      ScreeningTop,
+      LayerInvoice,
+      LayerPaperInfo
     }
+  }
 </script>
 
 <style lang="less" scoped>
-    @import "~@/assets/less/lsx.less";
+  @import "~@/assets/less/lsx.less";
+
+  .content {
+    display: flex;
+    flex-wrap: wrap;
+    .input-group {
+      margin-right: 10px;
+      > label {
+        text-align: center;
+      }
+      /*/deep/ .el-select, .el-input {
+        width: 200px;
+      }*/
+    }
+  }
+  .layer-paper{
+    .center{
+      text-align: center;
+    }
+    .paper-btn-blue{
+      color: @color-white;
+    }
+  }
 </style>
