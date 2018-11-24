@@ -329,9 +329,9 @@ export default {
                         },
                         "contPersons": [
                             {
-                                "name": this.ownerInfo.name,
+                                "name": this.detailData.ownerInfo.name,
                                 "type": 1,
-                                "mobile":this.ownerInfo.mobile,
+                                "mobile":this.detailData.ownerInfo.mobile,
                                 // "identifyCode": "",
                                 // "uId": 1,
                                 // "relation": 1
