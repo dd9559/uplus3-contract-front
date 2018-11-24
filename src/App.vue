@@ -53,6 +53,12 @@ input.no-style {
   width: 100%;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
 .input-group {
   display: flex;
   align-items: center;
@@ -62,6 +68,13 @@ input.no-style {
       min-width: 80px;
     }
   }
+}
+.margin-left-10{
+  margin-left:10px;
+}
+.time-picker{
+  display: flex;
+  align-items: center;
 }
 .form-label{
   position: relative;

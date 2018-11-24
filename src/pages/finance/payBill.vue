@@ -79,7 +79,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入6228480059053520074" maxlength="20" v-model="bankCount.cardNumber" @input="getBank">
+            <input type="number" class="no-style" placeholder="请输入6228480059053520074" maxlength="20" v-model="bankCount.cardNumber" @input="getBank">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -96,11 +96,11 @@
     <div class="input-group">
       <p><label class="form-label">付款凭证</label></p>
       <ul class="upload-list">
-        <li id="selectfiles">
-          <div class="upload-context">
+        <li>
+          <file-up class="upload-context">
             <i class="iconfont icon-shangchuan"></i>
             <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
-          </div>
+          </file-up>
         </li>
       </ul>
     </div>
@@ -128,7 +128,6 @@
     },
     userName:{
       name:'户名',
-      type:'mobile'
     },
     cardNumber:{
       name:'收账账户',
@@ -229,13 +228,16 @@
         let param = {
           cardNumber:this.bankCount.cardNumber
         }
-        if(this.bankCount.cardNumber.length>=16){
+        if(this.bankCount.cardNumber.length>=16&&this.bankCount.cardNumber.length<=20){
           this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
             res=res.data
             if(res.status===200){
               this.bankCount.bankName = res.data.bankName
             }
           })
+        }
+        if(this.bankCount.cardNumber.length>20){
+          this.bankCount.cardNumber = this.bankCount.cardNumber.substr(0,20)
         }
       },
       /**
@@ -272,17 +274,17 @@
       goResult:function () {
         let param = Object.assign({},this.form)
         param.account = JSON.stringify([].concat(this.bankCount))
-        /*this.$ajax.post('/api/payInfo/savePayment',param).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.$router.push({
-              path: 'payResult'
-            })
-          }
-        })*/
+
         this.$tool.checkForm(this.form,rule).then(()=>{
           this.$tool.checkForm(this.bankCount,rule).then(()=>{
-
+            this.$ajax.post('/api/payInfo/savePayment', param).then(res => {
+              res = res.data
+              if (res.status === 200) {
+                this.$router.push({
+                  path: 'payResult'
+                })
+              }
+            })
           }).catch((error)=>{
             this.$message({
               message:`${error.title}${error.msg}`

@@ -4,7 +4,7 @@
     <section>
       <div class="input-group">
         <label class="form-label">付款方</label>
-        <el-select v-model="form.outObjType" placeholder="请选择" @change="getOption">
+        <el-select v-model="form.outObjType" placeholder="请选择" @change="getOption(form.outObjType,1)">
           <el-option
             v-for="item in dropdown"
             :key="item.value"
@@ -15,12 +15,12 @@
       </div>
       <div class="input-group">
         <label class="form-label">收款人:</label>
-        <el-select v-model="form.inObjId" placeholder="请选择" @change="">
+        <el-select v-model="form.inObjectId" placeholder="请选择" @change="getOption(form.inObjectId,2)">
           <el-option
-            v-for="item in 5"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in receiptMan"
+            :key="item.empId"
+            :label="item.name"
+            :value="item.empId">
           </el-option>
         </el-select>
       </div>
@@ -109,7 +109,8 @@
                 <el-option
                   v-for="item in account"
                   :key="item.id"
-                  :value="`${item.bankAccountName} ${item.bankBranchName} ${item.bankCard}`">
+                  :label="`${item.bankAccountName} ${item.bankBranchName} ${item.bankCard}`"
+                  :value="item.id">
                   {{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
                 </el-option>
               </el-select>
@@ -182,7 +183,7 @@
       </ul>
     </div>
     <p>
-      <el-button type="primary" @click="goResult">录入信息并提交审核</el-button>
+      <el-button type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
       <el-button>取消</el-button>
     </p>
   </div>
@@ -201,7 +202,7 @@
           contId:'',
           remark:'',
           inObj:'',
-          inObjId:'',
+          inObjectId:'',
           // inObjType:'',
           outObj:'',
           outObjId:'',
@@ -246,6 +247,7 @@
         activeAdmin:'',
         account:[],
         dropdown:[],
+        receiptMan:[]
       }
     },
     created() {
@@ -253,6 +255,7 @@
       this.getDictionary()
       this.getAcount()
       this.getDropdown()
+      this.getReceiptman()
     },
     methods: {
       /**
@@ -275,12 +278,26 @@
       goResult:function () {
         let param = Object.assign({},this.form)
         //测试用
-        param.contId = 2
-        param.inObj = 'x'
-        param.inObjId = 1
+        param.contId = 15
         param.filePath = '123'
 
-        param.account = JSON.stringify([].concat(this.cardList))
+        if(this.activeType===1){
+          delete param.proceedsType
+        }
+        if(this.activeType===2){
+          param.accountOut = JSON.stringify([].concat(this.cardList))
+          this.account.find(item=>{
+            if(item.id===this.activeAdmin){
+              let obj = {
+                bankName:item.bankBranchName,
+                userName:item.bankAccountName,
+                cardNumber:item.bankCard,
+                amount:this.form.smallAmount
+              }
+              param.accountIn = JSON.stringify([].concat(obj))
+            }
+          })
+        }
         this.$ajax.post('/api/payInfo/saveProceeds',param).then(res=>{
           res=res.data
           if(res.status===200){
@@ -316,12 +333,23 @@
        */
       getDropdown:function () {
         let param = {
-          contId:18
+          contId:15
         }
         this.$ajax.get('/api/payInfo/selectValue',param).then(res=>{
           res=res.data
           if(res.status===200){
             this.dropdown = res.data
+          }
+        })
+      },
+      /**
+       * 获取收款人
+       */
+      getReceiptman:function () {
+        this.$ajax.get('/api/organize/currentdep/employee').then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.receiptMan = res.data
           }
         })
       },
@@ -340,16 +368,21 @@
        * 获取下拉框选择对象
        * @param item
        */
-      getOption:function (item) {
+      getOption:function (item,type) {
         let obj = {}
-        console.log(obj)
-        this.dropdown.find(tip=>{
-          if(tip.value===item&&!!tip.custId){
-            obj.outObjId = tip.custId
-            obj.outObj = tip.custName
+        let list = type===1?this.dropdown:this.receiptMan
+        list.find(tip=>{
+          if(tip[type===1?'value':'empId']===item){
+            if(type===1){
+              obj.outObjId = tip.custId
+              obj.outObj = tip.custName
+            }else {
+              obj.inObj = tip.name
+            }
             return
           }
         })
+
         this.form = Object.assign({},this.form,obj)
       },
       /**
@@ -387,7 +420,6 @@
           this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
             res=res.data
             if(res.status===200){
-              debugger
               this.cardList[index].bankName = res.data.bankName
             }
           })
