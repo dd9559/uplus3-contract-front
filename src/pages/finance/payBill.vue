@@ -3,7 +3,7 @@
     <p>付款信息</p>
     <section>
       <div class="input-group">
-        <label>收款方</label>
+        <label class="form-label">收款方</label>
         <el-select v-model="form.inObjType" placeholder="请选择" @change="getOption">
           <el-option
             v-for="item in dropdown"
@@ -14,20 +14,20 @@
         </el-select>
       </div>
       <div class="input-group">
-        <label>申请人:</label>
-        <p>东野圭吾</p>
+        <label class="form-label">申请人:</label>
+        <p v-if="userMsg">{{userMsg.name}}</p>
       </div>
     </section>
     <div class="input-group">
-      <label>款类</label>
+      <label class="form-label">款类</label>
       <el-table class="collapse-cell" :span-method="collapse" border :data="moneyType" style="width: 100%"
-                header-row-class-name="theader-bg" @row-click="getRowMsg">
+                header-row-class-name="theader-bg">
         <el-table-column align="center" label="款类（大类）" prop="name"></el-table-column>
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <el-radio v-model="form.moneyType" :label="item.key">{{item.name}}</el-radio>
+                <el-radio v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}</el-radio>
               </li>
             </ul>
           </template>
@@ -43,10 +43,17 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额大写">
-          <template slot-scope="scope"></template>
+          <template slot-scope="scope">
+            <span v-if="amount">{{amount.balance|formatChinese}}</span>
+          </template>
         </el-table-column>
         <el-table-column align="center" label="可支配金额">
-          <template slot-scope="scope"></template>
+          <template slot-scope="scope">
+            <div v-if="amount" style="margin: 0 10px;">
+              <p><span>款类大类余额：{{amount.balance}}元</span></p>
+              <p><span>合同余额：{{amount.contractBalance}}元</span></p>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -58,7 +65,7 @@
       </div>
     </div>-->
     <div class="input-group">
-      <p><label>收款账户</label></p>
+      <p><label class="form-label">收款账户</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="收款银行">
           <template slot-scope="scope">
@@ -72,28 +79,28 @@
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入6228480059053520074" v-model="bankCount.cardNumber" @input="getBank">
+            <input type="number" class="no-style" placeholder="请输入6228480059053520074" maxlength="20" v-model="bankCount.cardNumber" @input="getBank">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
           <template slot-scope="scope">
-            <span>{{bankCount.amount}}</span>
+            <span>{{form.smallAmount}}</span>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="input-group">
       <p><label>备注信息</label></p>
-      <el-input placeholder="请填写备注信息" type="textarea" v-model="form.remark"></el-input>
+      <el-input placeholder="请填写备注信息" type="textarea" maxlength="200" v-model="form.remark"></el-input>
     </div>
     <div class="input-group">
-      <p><label>付款凭证</label></p>
+      <p><label class="form-label">付款凭证</label></p>
       <ul class="upload-list">
-        <li id="selectfiles">
-          <div class="upload-context">
+        <li>
+          <file-up class="upload-context">
             <i class="iconfont icon-shangchuan"></i>
             <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
-          </div>
+          </file-up>
         </li>
       </ul>
     </div>
@@ -106,9 +113,33 @@
 
 <script>
   import {UPLOAD} from "@/assets/js/uploadMixins";
+  import {MIXINS} from "@/assets/js/mixins";
+
+  const rule={
+    inObjType:{
+      name:'收款方',
+    },
+    moneyType:{
+      name:'款类',
+    },
+    smallAmount:{
+      name:'付款金额',
+      type:'money'
+    },
+    userName:{
+      name:'户名',
+    },
+    cardNumber:{
+      name:'收账账户',
+      type:'bankCard'
+    },
+    filePath:{
+      name:'付款凭证',
+    },
+  }
 
   export default {
-    mixins: [UPLOAD],
+    mixins: [UPLOAD,MIXINS],
     data() {
       return {
         form: {
@@ -127,18 +158,20 @@
           bankName:'',
           userName:'',
           cardNumber:'',
-          amount:10000
+          amount:''
         },
         moneyType: [],
         list:[
           {}
         ],
-        dropdown:[]
+        dropdown:[],
+        amount:null
       }
     },
     created(){
       this.getDropdown()
       this.getMoneyType()
+      this.getAdmin()
     },
     methods:{
       /**
@@ -146,7 +179,7 @@
        */
       getDropdown:function () {
         let param = {
-          contId:18
+          contId:15
         }
         this.$ajax.get('/api/payInfo/selectValue',param).then(res=>{
           res=res.data
@@ -171,6 +204,23 @@
           }
         })
       },
+      getType:function (label) {
+        this.form.moneyTypePid = label.id
+        this.getAmount()
+      },
+      getAmount:function () {
+        let param={
+          contId:this.form.contId,
+          moneyTypePid:this.form.moneyTypePid,
+          moneyType:this.form.moneyType
+        }
+        this.$ajax.get('/api/payInfo/selectAvailableBalance',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.amount = res.data
+          }
+        })
+      },
       /**
        * 根据卡号获取银行信息
        */
@@ -178,13 +228,16 @@
         let param = {
           cardNumber:this.bankCount.cardNumber
         }
-        if(this.bankCount.cardNumber.length>=16){
+        if(this.bankCount.cardNumber.length>=16&&this.bankCount.cardNumber.length<=20){
           this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
             res=res.data
             if(res.status===200){
               this.bankCount.bankName = res.data.bankName
             }
           })
+        }
+        if(this.bankCount.cardNumber.length>20){
+          this.bankCount.cardNumber = this.bankCount.cardNumber.substr(0,20)
         }
       },
       /**
@@ -218,22 +271,29 @@
         })
         this.form = Object.assign({},this.form,obj)
       },
-      /**
-       * 获取相应小类的大类
-       */
-      getRowMsg:function (row) {
-        this.form.moneyTypePid = row.id
-      },
       goResult:function () {
         let param = Object.assign({},this.form)
         param.account = JSON.stringify([].concat(this.bankCount))
-        this.$ajax.post('/api/payInfo/savePayment',param).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.$router.push({
-              path: 'payResult'
+
+        this.$tool.checkForm(this.form,rule).then(()=>{
+          this.$tool.checkForm(this.bankCount,rule).then(()=>{
+            this.$ajax.post('/api/payInfo/savePayment', param).then(res => {
+              res = res.data
+              if (res.status === 200) {
+                this.$router.push({
+                  path: 'payResult'
+                })
+              }
             })
-          }
+          }).catch((error)=>{
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
+          })
+        }).catch((error)=>{
+          this.$message({
+            message:`${error.title}${error.msg}`
+          })
         })
       }
     }

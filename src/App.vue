@@ -53,14 +53,35 @@ input.no-style {
   width: 100%;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
 .input-group {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  > label {
+  >label {
     &:first-of-type {
       min-width: 80px;
     }
+  }
+}
+.margin-left-10{
+  margin-left:10px;
+}
+.time-picker{
+  display: flex;
+  align-items: center;
+}
+.form-label{
+  position: relative;
+  &:before{
+    content:'*';
+    display: inline-block;
+    color: red;
   }
 }
 // 清除浮动

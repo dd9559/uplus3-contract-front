@@ -30,19 +30,18 @@
         <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px">
           <div class="manage-title">
             <label>结算百分比 : </label>
-            <el-input v-model="manageForm.settlePercent"></el-input>%
+            <el-input v-model="settlePercent"></el-input>%
           </div>
           <div class="manage-list">
             <el-table :data="manageData">
               <el-table-column align="center" type="index" label="序号"></el-table-column>
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
-              <el-table-column align="center" label="步骤名称" prop="name"></el-table-column>
+              <el-table-column align="center" label="步骤名称" prop="stepsName"></el-table-column>
               <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
               <el-table-column align="center" label="是否可以结算">
                 <template slot-scope="scope">
-                  <el-select v-model="manageForm.isRequired">
-                    <el-option label="是" value="1"></el-option>
-                    <el-option label="否" value="2"></el-option>
+                  <el-select v-model="scope.row.isSettle">
+                    <el-option v-for="item in isSettleOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-select>
                 </template>
               </el-table-column>
@@ -56,8 +55,8 @@
             </el-table>
           </div>
           <div slot="footer" class="dialog-footer">
-              <el-button @click="ProcessStepVisible = true" class="addBtn">添加</el-button>
-              <el-button class="confirmBtn">确定</el-button>
+              <el-button @click="addBtn" class="addBtn">添加</el-button>
+              <el-button class="confirmBtn" @click="confirmSteps('flow')">确定</el-button>
           </div>
         </el-dialog>
         <!-- 添加流程步骤 弹出框 -->
@@ -79,7 +78,7 @@
             </el-table-column>
           </el-table>
           <div slot="footer" class="dialog-footer">
-              <el-button class="confirmBtn" @click="confirmSteps">确定</el-button>
+              <el-button class="confirmBtn" @click="confirmSteps('steps')">确定</el-button>
           </div>
         </el-dialog>
     </div>
@@ -122,13 +121,21 @@
         ProcessStepVisible: false, //添加流程步骤
         //流程管理列表
         manageData: [],
-        manageForm: {
-          settlePercent: "",
-          isRequired: ""
-        },
+        settlePercent: "",
+        isSettleOption: [
+          {
+            value: 0,
+            label: '否'
+          },
+          {
+            value: 1,
+            label: '是'
+          }
+        ],
         //流程步骤选项
         StepsOption: [],
-        stepsTypeName: ""
+        flowCount: 0,
+        currentFlowId: 0
       };
     },
     created() {
@@ -162,6 +169,7 @@
           this.addForm.name = row.name
         } else if(type === 'init') {
           this.dialogManageVisible = true
+          this.currentFlowId = row.id
           let param = {
             flowId: row.id
           }
@@ -169,6 +177,7 @@
             res = res.data
             if(res.status === 200) {
               this.manageData = res.data
+              this.flowCount = this.manageData.length
             }
           })
         } else if(type === 'delete') {
@@ -241,6 +250,9 @@
           this.manageData.splice(index, 1)
         }
       },
+      addBtn() {
+        this.ProcessStepVisible = true
+      },
       // 全选
       allSelect(i,bool) {
         let arr = this.StepsOption[i]
@@ -260,8 +272,76 @@
         let bool = obj.stepsList.length === arr.length
         obj.stepsSelect = bool
       },
-      confirmSteps() {
-        
+      confirmSteps(type) {
+        if(type === 'steps') {
+          this.manageData = []
+          let arr = []
+          let id = 1
+          this.ProcessStepVisible = false
+          this.StepsOption.forEach(e => {
+            e.stepsTypeList.forEach(i => {
+              arr.push({
+                id: id++,
+                name: i
+              })
+            })
+          })
+          this.StepsOption.forEach(item => {
+            if(item.stepsTypeList.length) {
+              item.stepsTypeList.forEach(i => {
+                item.stepsList.forEach(v => {
+                  if(i === v.name) {
+                    this.manageData.push({
+                      isSettle: 0,
+                      overTimeDays: v.overTimeDays,
+                      planDays: v.planDays,
+                      stepsName: v.name,
+                      stepsTypeName: v.stepsTypeName,
+                      transStepsId: v.id
+                    })
+                  }
+                })
+              })
+            }
+          })
+          this.manageData.forEach(item => {
+            arr.forEach(value => {
+              if(item.stepsName === value.name) {
+                item.sort = value.id
+              }
+            })
+          })
+        } else if(type === 'flow') {
+          let arr = []
+          this.manageData.forEach(item => {
+            if(this.flowCount === 0) {
+              arr.push({
+                transStepsId: item.transStepsId,
+                sort: item.sort,
+                isSettle: item.isSettle
+              })
+            } else {
+              arr.push({
+                transStepsId: item.transStepsId,
+                sort: item.sort,
+                id: item.id ? item.id : null
+              })
+            }
+          })
+          let param = {
+            transFlowId: this.currentFlowId,
+            transStepsList: arr
+          }
+          if(this.flowCount === 0) {
+            this.$ajax.postJSON('/api/flowmanage/insertFLowSteps', param).then(res => {
+
+            })
+          } else {
+            this.$ajax.postJSON('/api/flowmanage/updateFLowSteps', param).then(res => {
+
+            })
+          }
+        }
       }
     }
   };

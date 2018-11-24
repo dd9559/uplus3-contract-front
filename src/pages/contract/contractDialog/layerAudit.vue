@@ -20,7 +20,7 @@
           </div>
           <div class="col-li">
             <p>调整类型：<span>佣金调整</span></p>
-            <p><el-checkbox :v-model="auditForm.checked">有解除协议</el-checkbox></p>
+            <p><el-checkbox v-model="checked">有解除协议</el-checkbox></p>
           </div>
           <div class="textareabox">
             <span>调整原因</span>
@@ -46,15 +46,15 @@
                 <td>{{layerAudit.ownerCommission}}元</td>
                 <td>{{layerAudit.custCommission}}元</td>
                 <!-- <td>另外出<span>;</span>客户<span>;</span>0元</td> -->
-                <td>{{layerAudit.otherCooperationCost}}0元</td>
+                <td>{{layerAudit.otherCooperationCost}}元</td>
               </tr>
               <tr>
                 <td>调整为</td>
                 <td>
-                  <div><el-input v-model="auditForm.money1" placeholder="输入金额" class="width70"></el-input>元</div>
+                  <div><el-input v-model="auditForm.money1" placeholder="输入金额" class="width70" type="number"></el-input>元</div>
                 </td>
                 <td>
-                  <div><el-input v-model="auditForm.money2" placeholder="输入金额" class="width70"></el-input>元</div>
+                  <div><el-input v-model="auditForm.money2" placeholder="输入金额" class="width70"  type="number"></el-input>元</div>
                 </td>
                 <!-- <td class="flex">       
                     <div>
@@ -75,7 +75,7 @@
                   
                 </td> -->
                 <td>
-                  <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70"></el-input>元</div>
+                  <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70"  type="number"></el-input>元</div>
                 </td>
               </tr>
             </tbody>
@@ -101,7 +101,7 @@
            
       </div>
       <div class="btnbox">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="close">取 消</el-button>
         <el-button type="primary" @click="auditApply()">保 存</el-button>  
       </div> 
     </el-dialog>
@@ -132,14 +132,18 @@ export default {
 
           auditForm: {
               textarea: '', //备注
-              checked: '', //是否有解除协议
+              
               money1: '', //业主佣金
               money2: '', //客户佣金
               money3: '', //按揭收费
               money4: '', //合作费扣除
           },
+          checked: false, //是否有解除协议
           layerAudit:{
-
+            ownerCommission: '',
+            custCommission: '',
+            otherCooperationCost: ''
+            
           },
           // 弹框里用到的
           dialogImageUrl: '',
@@ -186,8 +190,11 @@ export default {
           .then(res => {
             console.log(res);
             let data = res.data;
-            if (res.status === 200) {
+            if (res.data.status === 200) {
               this.layerAudit = data.data
+              this.auditForm.money1 = this.layerAudit.ownerCommission
+              this.auditForm.money2 = this.layerAudit.custCommission
+              this.auditForm.money4 = this.layerAudit.otherCooperationCost
             }
             
 
@@ -203,24 +210,48 @@ export default {
           contractCode: this.contractCode,
           reason: this.auditForm.textarea,
           vouchers: '',
-          relieve: this.auditForm.checked, 
+          relieve: this.checked, 
           newOwnerCommission: this.auditForm.money1,
           newCustCommission: this.auditForm.money2,
           newOtherCooperationCost: this.auditForm.money4
         }
-        this.$ajax         
-        .postJSON("/api/commission/waitUpdate", param)
-        .then(res => {
-          console.log(res);
-          let tips = res.data.data;
-          if (res.status === 200) {
-             this.$message(res.data.data);
-          }
-          
+        if(this.auditForm.textarea !== ""){
+          // if (this.auditForm.money1 !== null && this.auditForm.money2 !== null && this.auditForm.money3 !== null){ 
+            this.$ajax         
+            .postJSON("/api/commission/waitUpdate", param)
+            .then(res => {
 
-        }).catch(error => {
-          console.log(error)
-        })
+
+                      
+                if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {           
+                  
+                   this.$message('没有金额记录调整并且申请成功');
+                    setTimeout(() => {
+                    this.$emit('closeCentCommission')
+                  }, 1500); 
+                }else{
+                  if (res.data.status === 200) {
+                    this.$message('已申请');
+                    setTimeout(() => {
+                      this.$emit('closeCentCommission')
+                    }, 1500); 
+                    
+                  }
+               
+                }
+            
+              
+
+            }).catch(error => {
+              console.log(error)
+            })
+          // }else{
+          //     this.$message('调整后的金额不能为空');
+          // }
+        }else if(this.auditForm.textarea === ""){
+           this.$message('请填写调整原因'); 
+        }
+       
       }
     },
 

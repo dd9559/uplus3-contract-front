@@ -2,87 +2,127 @@
   <div class="view-container">
     <el-dialog :title="title" :visible="getDialogVisible" @close='close' width="1000px">
       <!-- 选择房源弹窗 -->
-      <div v-if="getDialogType==='house'">
+      <div v-if="getDialogType==='house'" class="dataList">
         <el-form :inline="true" :model="searchForm" class="search-form" size="mini">
           <el-form-item label="关键字：">
-            <el-input v-model="searchForm.loupan" placeholder="楼盘字典"></el-input>
+            <el-select
+            v-model="estateCode"
+            :multiple='false'
+            clearable
+            filterable
+            remote
+            reserve-keyword
+            @change="getBuildList"
+            placeholder="楼盘名称"
+            :remote-method="remoteMethod"
+            :loading="loading">
+              <el-option
+                v-for="item in options"
+                :key="item.EstateCode"
+                :label="item.EstateName"
+                :value="item.EstateCode"
+                >
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="searchForm.loupan" placeholder="楼栋单元"></el-input>
+            <el-select v-model="BuildingCode" placeholder="楼栋单元" :clearable="true">
+              <el-option
+              v-for="item in buildList"
+              :key="item.BuildingCode"
+              :label="item.BuildingName"
+              :value="item.BuildingCode">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="searchForm.loupan" placeholder="房号/房源编号/房东手机"></el-input>
+            <el-input v-model="keyword" placeholder="房号/房源编号/房东手机"></el-input>
           </el-form-item>
           <el-form-item>
             <span @click="isAttention">我的关注 <span class="attention" :class="{'attention_':attention}"></span></span>
           </el-form-item>
           <el-button round class="search_btn">清空</el-button>
-          <el-button type="primary" round class="search_btn">查询</el-button>
+          <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
         </el-form>
         <div class="search_content" v-if="dataList.length>0">
-          <el-table :data="houseList" border header-row-class-name="theader-bg">
-            <el-table-column type="selection" width="50"></el-table-column>
-            <el-table-column property="houseId" label="房源编号" min-width="100"></el-table-column>
-            <el-table-column property="houseName" label="楼盘名称" min-width="150"></el-table-column>
-            <el-table-column label="状态">
+          <el-table :data="dataList" border header-row-class-name="theader-bg" @row-click="selectItem">
+            <el-table-column width="40">
               <template slot-scope="scope">
-                <span v-if="scope.row.status===1">有效</span>
-                <span v-if="scope.row.status===2">无效</span>
+                <span class="outSide">
+                  <span class="inLine" :class="{'inLineBg':selectCode===scope.row.PropertyCode}"></span>
+                </span>
               </template>
             </el-table-column>
-            <el-table-column property="floor" label="楼层"></el-table-column>
-            <el-table-column property="houseType" label="房型"></el-table-column>
-            <el-table-column property="area" label="面积"></el-table-column>
-            <el-table-column property="price" label="售/租价" min-width="65"></el-table-column>
-            <el-table-column property="fitment" label="装修" min-width="60"></el-table-column>
-            <el-table-column property="maintainer" label="维护人"></el-table-column>
+            <el-table-column prop="PropertyNo" label="房源编号" width="150"></el-table-column>
+            <el-table-column prop="EstateName" label="楼盘名称" width="150"></el-table-column>
+            <el-table-column label="状态" prop="RunningStatus" width="60"></el-table-column>
+            <el-table-column prop="FloorNum" label="楼层" width="80"></el-table-column>
+            <el-table-column prop="HouseType" label="房型" width="80"></el-table-column>
+            <el-table-column label="面积" width="70">
+              <template slot-scope="scope">
+                {{scope.row.Square}} ㎡
+              </template>
+            </el-table-column>
+            <el-table-column :label="priceType" width="80">
+              <template slot-scope="scope">
+                {{scope.row.Price}} {{scope.row.TradeInt===3?'元':'万元'}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="DecorateType" label="装修" width="60"></el-table-column>
+            <el-table-column prop="Emp1" label="维护人"></el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-size="4" layout="total, prev, pager, next, jumper" :total="total">
+          <el-pagination class="pagination-info" @current-change="handleCurrentChange1" :current-page="1" :page-size="4" layout="total, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
         <div class="noList" v-else>
           未查到相关房源
         </div>
-        <div class="floor_btn">
-          <el-button round class="search_btn">取消</el-button>
-          <el-button type="primary" round class="search_btn">确定</el-button>
-        </div>
       </div>
       <!-- 选择客源弹窗 -->
-      <div v-if="getDialogType==='guest'">
+      <div v-if="getDialogType==='guest'" class="dataList">
         <el-form :inline="true" :model="searchForm" class="search-form_" size="mini">
           <div>
             <el-form-item label="交易：">
-              <el-select v-model="searchForm.tradeType" placeholder="">
-                <el-option label="求租" value="1"></el-option>
-                <el-option label="求购" value="2"></el-option>
+              <el-select v-model="guestType" placeholder="" :disabled="contractType!=''">
+                <el-option
+                v-for="item in guestTypeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                >
+                </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="关键字：">
-              <el-input v-model="searchForm.keyWord" placeholder="客源编号/手机号/客户姓名"></el-input>
+              <el-input v-model="keyword" placeholder="客源编号/手机号/客户姓名"></el-input>
             </el-form-item>
           </div>
           <div>
             <el-button round class="search_btn">清空</el-button>
             <el-button type="primary" round class="search_btn">查询</el-button>
           </div>
-          
         </el-form>
         <div class="search_content" v-if="dataList.length>0">
-          <el-table :data="clientList" border header-row-class-name="theader-bg">
-            <el-table-column type="selection" width="50"></el-table-column>
-            <el-table-column property="clientName" label="姓名"></el-table-column>
-            <el-table-column property="clientId" label="客源编号"></el-table-column>
-            <el-table-column label="交易">
+          <el-table :data="dataList" border header-row-class-name="theader-bg" @row-click="selectItem">
+            <el-table-column width="40">
               <template slot-scope="scope">
-                <span v-if="scope.row.trade===1">求租</span>
-                <span v-if="scope.row.trade===2">求购</span>
+                <span class="outSide">
+                  <span class="inLine" :class="{'inLineBg':selectCode===scope.row.InquiryCode}"></span>
+                </span>
               </template>
             </el-table-column>
-            <el-table-column property="area" label="意向区域" min-width="100"></el-table-column>
-            <el-table-column property="price" label="租/售价" min-width="60"></el-table-column>
+            <el-table-column prop="CustName" label="姓名"></el-table-column>
+            <el-table-column prop="InquiryNo" label="客源编号"></el-table-column>
+            <el-table-column prop="Trade" label="交易">
+            </el-table-column>
+            <el-table-column prop="DistrictName" label="意向区域" min-width="100"></el-table-column>
+            <el-table-column :label="priceType" min-width="60">
+              <template slot-scope="scope">
+                {{scope.row.PriceMin}}-{{scope.row.PriceMax}}{{scope.row.Trade==='求租'?'元':'万元'}}
+              </template>
+            </el-table-column>
           </el-table>
-          <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
+          <el-pagination class="pagination-info" @current-change="handleCurrentChange2" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
         <div class="noList" v-else>
@@ -91,10 +131,10 @@
           <p v-if="clientStatus===3">系统未查询到该客源，您可以<el-button type="text" @click="innerVisible=true">快速添加该客源</el-button>
           </p>
         </div>
-        <div class="floor_btn">
+        <!-- <div class="floor_btn">
           <el-button round class="search_btn">取消</el-button>
           <el-button type="primary" round class="search_btn">确定</el-button>
-        </div>
+        </div> -->
         <!-- 添加客源弹窗 -->
         <el-dialog width="30%" title="添加客源" :visible.sync="innerVisible" :modal="isModel" style="margin-top:150px" append-to-body>
           <el-form :inline="true" :model="addclient" class="search-form" size="mini">
@@ -123,6 +163,10 @@
           </div>
         </el-dialog>
       </div>
+      <div class="floor_btn">
+        <el-button round class="search_btn" @click="close">取消</el-button>
+        <el-button type="primary" round class="search_btn" @click="confirm">确定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -137,6 +181,10 @@ export default {
     dialogType: {
       type: String,
       default: "" //房源 house  客源 guest
+    },
+    contractType: {
+      type: String,
+      default: "" //求租  求购
     }
   },
   data() {
@@ -150,20 +198,53 @@ export default {
       addclient: {},
       //添加客源弹窗
       innerVisible: false,
-      clientStatus: 3,
+      clientStatus: 1,
       isModel: false,
       currentPage: 1,
-      pageSize: 10,
+      pageSize: 5,
       total: 0,
-      attention: false
+      attention: false,
+      //房源类型  2 出售  3 租价
+      housetType:'',
+      //客源类型  1 求租  2 求购
+      guestType:'',
+      guestTypeList:[
+        {label:'求租', value:1},
+        {label:'求购', value:2}
+      ],
+      priceType:'',
+      keyword:'',
+      //楼盘
+      options:[],
+      loading:false,
+      //楼盘id
+      estateCode:'',
+      //楼栋
+      buildList:[],
+      //楼栋id
+      BuildingCode:'',
+      selectCode:''
     };
   },
   created() {
     console.log("222");
+    if(this.contractType==='求租'){
+      this.housetType=3
+      this.guestType=1
+      this.priceType='租价'
+    }else if(this.contractType==='求购'){
+      this.housetType=2
+      this.guestType=2
+      this.priceType='售价'
+    }else{
+      this.priceType='租/售价'
+    }
     if (this.dialogType === "house") {
       this.title = "选择房源";
+      this.getHouseList()
     } else if (this.dialogType === "guest") {
       this.title = "选择客源";
+      this.getGuestList()
     }
   },
   methods: {
@@ -173,9 +254,122 @@ export default {
     //我的关注
     isAttention() {
       this.attention = !this.attention;
+      this.getHouseList()
     },
-    handleCurrentChange(val) {
+    handleCurrentChange1(val) {
       console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.getHouseList()
+    },
+    handleCurrentChange2(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.getGuestList()
+    },
+    //房源列表
+    getHouseList(){
+      let param = {
+        pageSize:this.pageSize,
+        pageIndex:this.currentPage,
+        keyword:this.keyword,
+        contType:this.housetType,
+        isFocus:this.attention,
+        estateCode:this.estateCode,
+        buildingCode:this.BuildingCode
+      }
+      this.$ajax.get('/api/resource/houses', param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          //alert('222')
+          if(res.data.TotalCount>0){
+            this.dataList=res.data.list
+          }else{
+            this.dataList=[]
+          }
+          this.total=res.data.TotalCount
+        }
+      })
+    },
+    //客源列表
+    getGuestList(){
+      let param = {
+        pageSize:this.pageSize,
+        pageIndex:this.currentPage,
+        type:this.guestType
+      }
+      this.$ajax.get('/api/resource/customers', param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          //alert('222')
+          if(res.data.list){
+            this.dataList=res.data.list
+          }
+          this.total=res.data.TotalCount
+        }
+      })
+    },
+    //楼盘名称
+    remoteMethod(query){
+      if (query !== '') {
+        this.loading = true;
+        let param = {
+          keyword:query
+        }
+        this.$ajax.get('/api/resource/buildings', param).then(res=>{
+          res=res.data;
+          this.loading=false;
+          if(res.status===200){
+            this.options=res.data
+          }
+        })
+      } 
+    },
+    //楼栋
+    getBuildList(id){
+      console.log(id);
+      for(let i=0;i<this.options.length;i++){
+        if(this.options[i].EstateCode===id){
+          this.buildList=this.options[i].BuildingList
+        }
+      }
+    },
+    //房源查询
+    inquireHouse(){
+      this.getHouseList()
+    },
+    //选中房源客源
+    selectItem(value){
+      console.log(value);
+      if(this.dialogType==='house'){
+        if(this.selectCode===value.PropertyCode){
+          this.selectCode=''
+        }else{
+          this.selectCode=value.PropertyCode
+        }
+      }else if(this.dialogType==='guest'){
+        if(this.selectCode===value.InquiryCode){
+          this.selectCode=''
+        }else{
+          this.selectCode=value.InquiryCode
+        }
+      }
+    },
+    //确定选择
+    confirm(){
+      if(this.selectCode){
+        this.$emit("closeHouseGuest",{selectCode:this.selectCode,dialogType:this.dialogType})
+      }else{
+        if(this.dialogType==='house'){
+          this.$alert('请先选择房源', '提示', {
+            confirmButtonText: '确定',
+          });
+        }else if(this.dialogType==='guest'){
+          this.$alert('请先选择带看客源', '提示', {
+            confirmButtonText: '确定',
+          });
+        }
+        
+      }
     }
   },
   computed: {
@@ -184,6 +378,9 @@ export default {
     },
     getDialogType: function() {
       return this.dialogType;
+    },
+    getContractType: function() {
+      return this.contractType;
     }
   }
 };
@@ -192,6 +389,31 @@ export default {
 @import "~@/assets/common.less";
 
 .view-container {
+  .dataList{
+    height: 450px;
+    overflow-y: auto;
+  }
+  .outSide{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    //box-sizing: border-box;
+    //padding: 2px;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    .inLine{
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      
+    }
+    .inLineBg{
+      background: @color-blue;
+    }
+  }
   .search_btn {
     padding: 8px 20px;
   }
@@ -224,7 +446,8 @@ export default {
 }
 /deep/.el-dialog {
   .el-dialog__header {
-    padding-top: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
     .el-dialog__title {
       color: @color-blue;
     }
@@ -240,5 +463,9 @@ export default {
       padding: 8px 20px;
     }
   }
+}
+/deep/ .pagination-info{
+  text-align: center;
+  margin-top: 30px;
 }
 </style>

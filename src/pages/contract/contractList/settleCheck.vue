@@ -8,22 +8,39 @@
           <el-date-picker v-model="adjustForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="合同类型">
+        <!-- <el-form-item label="合同类型">
           <el-select v-model="adjustForm.contType" placeholder="全部" class="width150">
             <el-option label="租赁" value="1"></el-option>
             <el-option label="买卖" value="2"></el-option>
             <el-option label="代办" value="3"></el-option>
             <el-option label="意向" value="4"></el-option>
           </el-select>  
-        </el-form-item>         
-        <el-form-item label="部门">
+        </el-form-item>  -->
+        <el-form-item label="合同类型">
+          <el-select v-model="adjustForm.tradeType" placeholder="全部" class="width150" clearable>
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>  
+
+        <!-- <el-form-item label="部门">
           <el-select v-model="adjustForm.item1" clearable filterable placeholder="请选择门店" class="width200">
               <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
           <el-select v-model="adjustForm.item2" clearable filterable placeholder="经纪人" class="width100">
               <el-option v-for="item in option2" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
+        </el-form-item> -->
+
+        <el-form-item label="部门">
+          <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" class="width200">
+              <el-option v-for="item in adjustForm.getDepName" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+          <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" class="width100">
+              <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
+          </el-select>
         </el-form-item>
+
         <el-form-item label="审核状态">
           <el-select v-model="adjustForm.toExamineState" placeholder="全部" class="width150">
             <el-option label="未审核" value="1"></el-option>
@@ -40,34 +57,52 @@
     <!-- 数据列表 -->
     <div class="contract-list">  
       <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="tableData.list" style="width: 100%">
         <el-table-column label="合同编号" width="150" fixed>
           <template slot-scope="scope">
-            <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractNo}}</div>
+            <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型">
-          <template slot-scope="scope">
+        <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter">
+          <!-- <template slot-scope="scope">
             <span v-if="scope.row.contType===1">租赁</span>
             <span v-if="scope.row.contType===2">买卖</span>
             <span v-if="scope.row.contType===3">代办</span>
             <span v-if="scope.row.contType===4">意向</span>
+          </template> -->
+        </el-table-column>
+
+        <el-table-column label="成交总价" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p v-if="scope.row.tradeType !== '租赁'">{{scope.row.dealPrice}}元</p>
+            <p v-if="scope.row.tradeType === '租赁'">{{scope.row.dealPrice}}元/季度</p>
+          </template>
+        </el-table-column>
+       
+        <el-table-column label="成交经纪人" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.dealAgentStoreName}}</p>
+            <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="成交总价" prop="dealPrice">
-        </el-table-column>
-       
-        <el-table-column label="成交经纪人" prop="dealPerson" width="180">
-        </el-table-column>
-
-        <el-table-column label="发起日期" prop="sponsorDate">
+        <el-table-column label="发起日期">
+          <template slot-scope="scope">
+            <p>{{scope.row.contResults.sponsorDate | getDate}}</p>
+          </template>
         </el-table-column>
 
-        <el-table-column label="发起人" prop="sponsorPerson" width="180">
+        <el-table-column label="发起人" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.contResults.sponsorStoreName}}</p>
+            <p>{{scope.row.contResults.sponsorName}}</p>
+          </template>
         </el-table-column>
 
-        <el-table-column label="实际结算" prop="realSettle">
+        <el-table-column label="实际结算" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.contResults.amount}}</p>
+          </template>
         </el-table-column>
 
         <el-table-column label="审核状态" prop="toExamineState">
@@ -78,32 +113,37 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="审核日期" prop="examineDate">
+        <el-table-column label="审核日期" prop="examineDate" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.contResults.examineState | getDate}}</p>
+          </template>
         </el-table-column>
         
-        <el-table-column label="审核人" prop="examinePerson" width="180">
+        <el-table-column label="审核人" :formatter="nullFormatter"  width="180">
+          <template slot-scope="scope">
+            <p>{{scope.row.contResults.examineStoreName}}</p>
+            <p>{{scope.row.contResults.examineName}}</p>
+          </template>
         </el-table-column>
 
         <el-table-column label="审核备注" width="200">
           <template slot-scope="scope">
-            {{scope.row.remarks?scope.row.remarks:'-'}}
+            {{scope.row.contResults.remarks?scope.row.contResults.remarks:'-'}}
           </template>
         </el-table-column>
               
         <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope">
+          <template slot-scope="scope" v-if="scope.row.toExamineState === 1">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :page-size="50"
-      :pager-count="11"
-      :current-page="currentPage"
+      :page-size="tableData.pageSize"
+      :current-page="tableData.pageNum"
       layout="total, prev, pager, next, jumper"
-      :total="total">
+      :total="tableData.total">
      </el-pagination>
     </div>
 
@@ -138,7 +178,7 @@
 
         <!-- 表格 -->
         <div class="audit-col">
-          <el-table :data="jiesuanData" border style="width: 100%" class="table">
+          <el-table :data="tableData.list" border style="width: 100%" class="table">
           <el-table-column prop="a1" label="合作门店"></el-table-column>
           <el-table-column prop="a2" label="分成比例"></el-table-column>
           <el-table-column prop="a3" label="本次违约金"></el-table-column>
@@ -180,29 +220,41 @@
       
 <script>
   import ScreeningTop from '@/components/ScreeningTop';
+  import {FILTER} from "@/assets/js/filter";
+  import {TOOL} from "@/assets/js/common";
+  import { MIXINS } from "@/assets/js/mixins";
   export default {
+    name: "settle-check",
+    mixins: [FILTER,MIXINS],
     data(){
       return{
         clientHei: document.documentElement.clientHeight, //窗体高度
-        adjustForm:{
+         adjustForm:{
           signDate: '', //发起日期
-          contType: '', //合同类型
-          item1: '',    //选择门店
-          item2: '',  //选择成交人
-          toExamineState: '',  //审核状态
+          tradeType: '', //合同类型
+          getDepName: [{
+            name: "全部",
+            id: ""
+          }],    //选择门店
+          getAgentName: [{
+            name: "全部",
+            empId: ""
+          }], 
+          checkState: '',  //审核状态
           keyWord: ''   //关键字
 
         },
-
-        auditForm: {
-          textarea: '', //备注
-          item1: '', //另外出-佣金扣-无
-          item2: '', //客户-业主-无
-          money1: '', //业主佣金
-          money2: '', //客户佣金
-          money3: '', //按揭收费
-          money4: '', //合作费扣除
+        Form :{
+          getDepName: '',
+          getAgentName: ''
         },
+        dictionary: {
+          //数据字典
+          "10": "", //合同类型
+          "17": "", //审核状态
+        },
+
+       
         // 弹框里用到的
         dialogImageUrl: '',
         dialogVisible: false,
@@ -210,102 +262,30 @@
             show: false,
             
         },
-        checked: false, //是否有解除协议
-        // 选择门店
-        option1: [{
-            value: '选项1',
-            label: '黄金糕'
-        }, {
-            value: '选项2',
-            label: '双皮奶'
-        }],
-        // 选择经纪人
-        option2: [{
-            value: '选项1',
-            label: '黄金糕'
-        }, {
-            value: '选项2',
-            label: '双皮奶'
-        }, {
-            value: '选项3',
-            label: '蚵仔煎'
-        }],
-        jiesuanData:[{
-            a1: '当代一店',
-            a2: '20%',
-            a3: '金额*分成比例',
-            a4: '',
-            a5: '',
-            a6: '',
-
-        },
-        {
-            a1: '当代二店',
-            a2: '20%',
-            a3: '金额*分成比例',
-            a4: '400',
-            a5: '300',
-            a6: '1200',
-
-        }],
+        // checked: false, //是否有解除协议
+        
+       
         
         tableData:[{
-          contractNo:'YQYD110063', //合同编号
-          contType:1,              //合同类型
-          dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',         
-          sponsorDate:'2018/11/07',
-          sponsorPerson:'当代一店下雨天2',
-          realSettle: 2000,
-          toExamineState:1,
-          examineDate:'2018/11/07',
-          examinePerson: '当代一店下雨天3',
-          remarks:''
-        },
-        {
-          contractNo:'YQYD110063', //合同编号
-          contType:2,              //合同类型
-          dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',         
-          sponsorDate:'2018/11/07',
-          sponsorPerson:'当代一店下雨天2',
-          realSettle: 2000,
-          toExamineState:1,
-          examineDate:'2018/11/07',
-          examinePerson: '当代一店下雨天3',
-          remarks:''
-        },
-        {
-          contractNo:'YQYD110063', //合同编号
-          contType:3,              //合同类型
-          dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',         
-          sponsorDate:'2018/11/07',
-          sponsorPerson:'当代一店下雨天2',
-          realSettle: 2000,
-          toExamineState:2,
-          examineDate:'2018/11/07',
-          examinePerson: '当代一店下雨天3',
-          remarks:''
-        },
-        {
-          contractNo:'YQYD110063', //合同编号
-          contType:4,              //合同类型
-          dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',         
-          sponsorDate:'2018/11/07',
-          sponsorPerson:'当代一店下雨天2',
-          realSettle: 2000,
-          toExamineState:3,
-          examineDate:'2018/11/07',
-          examinePerson: '当代一店下雨天3',
-          remarks:''
-        },
-        ],
+          contResults: [
+            {
+            "sponsorDate": "",
+            "sponsorStoreName": "",
+            "sponsorName": "",
+            "amount": 1,
+            "examineState": "",
+            "examineDate": "",
+            "examineStoreName": "",
+            "examineName": "",
+            "remarks": ""
+          }
+          ]
+        }],
 
         // 分页
-        currentPage: 1,
-        total: 100,
+        pageNum: 1,
+        pageSize: 50,
+        total: 0,
 
         
       }
@@ -314,35 +294,116 @@
     computed: {
         
     },
+
+    filters: {
+       getDate(val) {
+         return TOOL.dateFormat(val);
+       }
+    },
   
     methods:{
-      //获取合同列表
-      // getContractList(){
-      //   let param = {
-      //     pageNum:'1',
-      //     pageSize:'10',
-      //     keyWord:'',
-      //     cont:{}
-      //   }
-      //   this.$ajax.post('/api/contract/contractList', param).then(res=>{
-
-      //   })
-      // },
+      
 
 
       // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
           return this.clientHei - 265 + 'px'
       },
+
+       // 得到部门门店和经纪人信息
+      getDepNameFn(e) {
+        this.$ajax.get("/api/access/deps", {keyword: e})
+        .then(res => {       
+          let data = res.data;         
+          if (res.data.status === 200) {  
+            if(e === '' || !e){
+              this.adjustForm.getDepName = [{
+                name: "全部",
+                id: ""
+              },...data.data]
+            }else{
+              this.adjustForm.getDepName = data.data
+            }  
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+
+      changeDepNameFn(e) {
+        if(e !== "" || !!e)
+        this.$ajax.get("/api/organize/employees",{
+          cityId:this.cityId,
+          depId: e
+        })
+        .then(res => {       
+                  
+          if (res.data.status === 200) {  
+
+            if(res.data.data.length > 0){ 
+              this.adjustForm.getAgentName = [{
+                name: "全部",
+                empId: ""
+              },...res.data.data]
+            }
+            else{
+              this.adjustForm.getAgentName = res.data.data
+            }
+          }
+
+        }).catch(err => {
+          console.log(err)
+        })
+
+      },
+
+      // 清除部门搜索
+      clearDepNameFn(){
+          this.getDepNameFn('');
+      }, 
       
+
 
       // 重置
       resetFormFn() {
           this.$refs.propForm.resetFields()
       },
+      
       // 查询
       queryFn() {
-          console.log('查询')
+        let beginDate = '';
+        let endDate = '';
+        if(this.adjustForm.signDate.length === 2){
+            beginDate = TOOL.dateFormat(this.adjustForm.signDate[0]);
+            endDate = TOOL.dateFormat(this.adjustForm.signDate[1]);
+        }
+        let param = {
+          contResultVo: {
+            contractId: 1,
+            beginDate,
+            endDate,
+            examineState: this.adjustForm.checkState,
+            contractType: this.adjustForm.tradeType,
+            dealAgentStoreId: this.Form.getDepName,
+            dealAgentId: this.Form.getAgentName,
+            keyword: this.adjustForm.keyWord
+          },
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        }
+          //结算审核列表
+          // this.$ajax         
+          // .postJSON("/api/contract/contResultList", param)
+          // .then(res => {
+          //   let data = res.data;
+          //   if (res.data.status === 200) {
+          //     this.tableData = data.data
+              
+          //   }
+      
+          // }).catch(error => {
+          //   console.log(error)
+          // })
       },
 
       // 点击审核事件
@@ -362,12 +423,12 @@
           }
         })
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+
+      handleCurrentChange(e) {
+        this.pageNum = e;
+        this.queryFn();
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
+      
 
       // 弹层里上传附件
       // handleRemove(file, fileList) {
@@ -379,6 +440,13 @@
       // }
       
     },
+
+    created() {
+      this.queryFn();
+      this.getDepNameFn();
+      this.getDictionary();
+    },
+
     mounted() {
       var _this = this;
        window.onresize = function(){
