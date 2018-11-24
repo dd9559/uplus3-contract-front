@@ -350,6 +350,7 @@ export default {
           path: "/contractDetails",
           query: {
             id: value.id,
+            code: value.code,
             contType: value.contType.value
           }
         });
@@ -408,7 +409,6 @@ export default {
     },
     //合同审核
     goCheck(contId) {
-      debugger
       this.$router.push({
         path:'/contractPreview',
         query:{
@@ -424,7 +424,6 @@ export default {
     //调佣弹窗
     //Z171231001
     toLayerAudit(item) {
-      debugger
       if(item.isCanChangeCommission===1){
         this.contractCode = item.code;
         this.tiaoyong = true;
@@ -438,6 +437,7 @@ export default {
     closeCommission() {
       this.tiaoyong = false;
       this.contractCode = "";
+      this.getContractList();
     },
     //关闭变更解约弹窗
     ChangeCancelDialog() {
