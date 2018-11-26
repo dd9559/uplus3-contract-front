@@ -68,7 +68,7 @@ export default {
       contractVisible: false,
       // 表单数据
       contractForm: {
-        cityId: 1,
+        cityId: this.cityId,
         type: "",
         name: "",
         isNecessary: ""
@@ -107,7 +107,7 @@ export default {
         if (key === "id") {
           delete this.contractForm[key];
         } else if (key === "cityId") {
-          this.contractForm[key] = 1;
+          this.contractForm[key] = this.cityId;
         } else {
           this.contractForm[key] = "";
         }
@@ -161,6 +161,12 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    }
+  },
+  watch: {
+    "cityId": function(newVal,oldVal) {
+      this.getData()
+      this.contractForm.cityId = newVal
     }
   }
 };

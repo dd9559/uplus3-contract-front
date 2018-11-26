@@ -103,7 +103,9 @@
         ProcessStepVisible: false, //添加流程步骤
         //流程管理列表
         manageData: [],
+        tempManage: [],
         settlePercent: "",
+        tempSetPercent: "",
         isSettleOption: [
           {
             value: 0,
@@ -152,6 +154,8 @@
           this.addForm.name = row.name
         } else if(type === 'init') {
           this.dialogManageVisible = true
+          this.settlePercent = row.settlePercent ? row.settlePercent : ""
+          this.tempSetPercent = row.settlePercent ? row.settlePercent : ""
           this.currentFlowId = row.id
           let param = {
             flowId: row.id
@@ -160,6 +164,7 @@
             res = res.data
             if(res.status === 200) {
               this.manageData = res.data
+              this.tempManage = JSON.parse(JSON.stringify(res.data))
               this.flowCount = this.manageData.length
             }
             this.manageData.forEach(i => {
@@ -182,7 +187,7 @@
       submitForm() {
         if(this.processTitle === "添加交易流程") {
           let param = {
-            cityId: 1
+            cityId: this.cityId
           }
           param = Object.assign({},this.addForm,param)
           this.processPost(param)
@@ -208,6 +213,7 @@
         })
       },
       getTypeSteps() {
+        this.StepsOption = []
         this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: this.cityId}).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -249,6 +255,7 @@
         this.ProcessStepVisible = true
         this.StepsOption.forEach(item => {
           item.tempList = []
+          item.stepsSelect = false
         })
         this.manageData.forEach(i => {
           this.StepsOption.forEach(v => {
@@ -360,8 +367,25 @@
             const url = "/api/flowmanage/insertFLowSteps"
             this.flowManagePost(url,param)
           } else {
-            const url = "/api/flowmanage/updateFLowSteps"
-            this.flowManagePost(url,param)
+            if(this.tempManage.toString() !== this.manageData.toString()) {
+              const url = "/api/flowmanage/updateFLowSteps"
+              this.flowManagePost(url,param)
+            }else {
+              this.$message({
+                type: 'info',
+                message: '没有做任何修改'
+              })
+            }
+          }
+          let obj = {
+            id: this.currentFlowId,
+            cityId: this.cityId,
+            settlePercent: this.settlePercent==="" ? 0 : this.settlePercent
+          }
+          if(this.tempSetPercent !== this.settlePercent || this.settlePercent === "") {
+            this.$ajax.postJSON('/api/flowmanage/insertFLow',obj).then(res => {
+
+            })
           }
         }
       },
@@ -401,6 +425,12 @@
             this.getData()
           }
         })
+      }
+    },
+    watch: {
+      "cityId": function(newVal,oldVal) {
+        this.getData()
+        this.getTypeSteps()
       }
     }
   };

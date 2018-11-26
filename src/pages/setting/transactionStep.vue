@@ -69,7 +69,7 @@
         </el-form-item>
         <el-form-item label="分配负责角色">
           <el-select v-model="addForm.dutyType">
-            <el-option v-for="item in roleList" :key="item.key" :label="item.value" :value="item.key"></el-option>
+            <el-option v-for="item in roleList" :key="item.key" :label="item.value" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -104,18 +104,19 @@
                 <template slot-scope="scope">
                   <el-select v-model="tableForm[scope.$index].type" placeholder="请选择信息类型">
                     <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                      v-for="item in dictionary['561']"
+                      :key="item.key"
+                      :label="item.value"
+                      :value="item.key">
                     </el-option>
                   </el-select>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="是否必填" min-width="120">
                 <template slot-scope="scope">
-                  <el-radio v-model="tableForm[scope.$index].isRequired" label="1">是</el-radio>
-                  <el-radio v-model="tableForm[scope.$index].isRequired" label="2">否</el-radio>
+                  <el-radio-group v-model="tableForm[scope.$index].isRequired">
+                    <el-radio v-for="item in dictionary['570']" :key="item.key" :label="item.value" :value="item.key"></el-radio>
+                  </el-radio-group>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="操作">
@@ -141,11 +142,7 @@
   import { FILTER } from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
   let stepTypeId = 1;
-  let obj = {
-    cityId: 1,
-    name: '',
-    dutyType: ''
-  }
+
   export default {
     mixins: [FILTER,MIXINS],
     props: ["cityId"],
@@ -156,7 +153,12 @@
         stepsTypeDialog: false, //添加和编辑步骤类型 弹出框
         tradeStepsDialog: false, //添加和编辑交易步骤 弹出框
         modalTitle: "", //弹出框title标题
-        addForm: {}, //新增和编辑步骤类型 表单
+        //新增和编辑步骤类型 表单
+        addForm: {
+          cityId: this.cityId,
+          name: '',
+          dutyType: ''
+        },
         currentRow: {}, //步骤类型列表当前行
         //新增和编辑交易步骤 表单
         stepBusiness: {
@@ -218,43 +220,17 @@
           }
         ],
         //交易步骤信息类型
-        options: [
-          {
-            label: "文本",
-            value: 1
-          },
-          {
-            label: "数字",
-            value: 2
-          },
-          {
-            label: "图片",
-            value: 3
-          },
-          {
-            label: "视频",
-            value: 4
-          },
-          {
-            label: "PDF",
-            value: 5
-          },
-          {
-            label: "Excel",
-            value: 6
-          },
-          {
-            label: "Word",
-            value: 7
-          }
-        ],
+        dictionary: {
+          '561':'',
+          '570':''
+        },
         roleList: []
       }
     },
     created() {
-      this.getData()
-      this.addForm = JSON.parse(JSON.stringify(obj))
       this.getRoleList()
+      this.getDictionary()
+      this.getData()
     },
     methods: {
       //获取步骤类型列表
@@ -263,10 +239,10 @@
           res = res.data
           if (res.status === 200) {
             this.listData = res.data
-            this.listData_other = this.listData[0].stepsList
+            this.listData_other = this.listData.length !== 0 ? this.listData[0].stepsList : []
             this.currentRow = this.listData[0]
             }
-          }) 
+          })
       },
       //单击步骤类型列表行单元格获取交易步骤
       cellClick(row, column, cell, event) {
@@ -293,7 +269,8 @@
       addStepsType() {
         this.stepsTypeDialog = true
         this.modalTitle = "添加步骤类型"
-        this.addForm = JSON.parse(JSON.stringify(obj))
+        this.addForm.name = ""
+        this.addForm.dutyType = ""
       },
       //点击添加交易步骤
       addTradeSteps() {
@@ -358,6 +335,9 @@
       },
       //添加和编辑交易步骤请求
       tradeStepsPost(url) {
+        this.tableForm.forEach(item => {
+          item.isRequired = item.isRequired === "是" ? 1 : 0
+        })
         let obj = {
           transStepsAttach: JSON.stringify(this.tableForm)
         }
@@ -390,13 +370,13 @@
             this.stepsTypeDialog = true
             this.modalTitle = "编辑步骤类型"
             this.addForm.name = row.typeName
-            this.addForm.dutyType = +row.dutyType
+            this.addForm.dutyType = row.dutyType
           } else if (type === 2) {
             this.tradeStepsDialog = true
             this.modalTitle = "编辑交易步骤"
             this.tableForm = JSON.parse(JSON.stringify(row.transStepsAttach))
             this.tableForm.forEach(item => {
-              item.isRequired = item.isRequired.toString()
+              item.isRequired = item.isRequired === 1 ? "是" : "否"
             })
             let obj = {
               id: row.id,
@@ -453,7 +433,13 @@
           })
         })
       }
-    }    
+    },
+    watch: {
+      "cityId": function(newVal,oldVal) {
+        this.getData()
+        this.addForm.cityId = newVal
+      }
+    }
   }  
 </script>
 
