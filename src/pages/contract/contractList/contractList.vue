@@ -129,12 +129,12 @@
         </span>
       </p>
       <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
-        <el-table-column align="left" label="合同信息" width="220" fixed>
+        <el-table-column align="left" label="合同信息" width="230" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
-                <i class="iconfont icon-tubiao-6"></i>
-                <i class="iconfont icon-tubiao-6"></i>
+                <i class="iconfont icon-tubiao_shiyong-1" v-if="scope.row.isRisk"></i>
+                <i class="iconfont icon-tubiao_shiyong-2" v-if="scope.row.contType.label===3"></i>
               </div>
               <ul class="contract-msglist">
                 <li>合同编号：<span>{{scope.row.code}}</span></li>
@@ -494,7 +494,7 @@ export default {
       this.$ajax.get('/api/organize/employees', param).then(res=>{
         res=res.data
         if(res.status===200){
-
+          this.brokersList=res.data
         }
       })
     },
