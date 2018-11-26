@@ -2,6 +2,26 @@ let stepIndex = 0 //记录执行合并次数
 let otherStep = 0 //除合并外，剩余行数
 
 let TOOL = {
+  dropdown:{
+    dateType:[
+      {
+        label:'开票日期',
+        value:1
+      },
+      {
+        label:'作废日期',
+        value:2
+      },
+      {
+        label:'核销日期',
+        value:3
+      },
+      {
+        label:'回收日期',
+        value:4
+      }
+    ]
+  },
   /**
    * 获取鼠标坐标
    * @param event

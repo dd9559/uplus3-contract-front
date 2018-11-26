@@ -6,7 +6,7 @@
         <span>步骤类型</span>
         <el-button type="primary" @click="addStepsType">添加步骤类型</el-button>
       </div>
-      <el-table :data="listData" @cell-click="cellClick" highlight-current-row>
+      <el-table :data="listData" @cell-click="cellClick">
         <el-table-column
         align="center"
         :label="item.name"
@@ -275,8 +275,8 @@
         //高亮选中的步骤类型
         let rows = cell.parentNode.parentNode.children
         for(var i = 0; i < rows.length; i++) {
-          rows[i].firstElementChild.style.background = "#fff"
-          rows[i].firstElementChild.style.color = "#606267"
+          rows[i].firstElementChild.style.background = "#F7FBFF"
+          rows[i].firstElementChild.style.color = "#478DE3"
         }
         cell.parentNode.firstElementChild.style.background = "#478DE3"
         cell.parentNode.firstElementChild.style.color = "#fff"
@@ -351,8 +351,6 @@
             this.$message(msg)
             this.stepsTypeDialog = false
             this.getData()
-            // this.firstCell.style.background = "#478DE3"
-            // this.firstCell.style.color = "#fff"
           }
         }).catch(error => {
           console.log(error);
@@ -384,7 +382,6 @@
           type: ""
         };
         this.tableForm.push(cell);
-        console.log(this.tableForm);
       },
       //点击 编辑 删除 操作
       rowOperation: function(row, opera, type) {
@@ -490,6 +487,10 @@
       tr:first-child td:first-child {
         background-color: #478DE3;
         color: #fff;
+      }
+      tr td:first-child {
+        background-color: #F7FBFF;
+        color: #478DE3;
       }
     }
   }

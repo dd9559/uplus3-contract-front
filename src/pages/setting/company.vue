@@ -164,6 +164,7 @@
               </div>
             </div>
           </div>
+          <div class="notice" v-show="noticeShow"><i class="el-icon-info notice-icon"></i>门店信息已经录入，请选择其他门店</div>
         </div>
         <div class="company-info">
           <p>添加企业银行账户</p>
@@ -207,8 +208,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li v-if="false"><img src="@/assets/logo.png" alt=""></li>
-                  <li @click="upload('imgcontract')"><span>+</span><input ref="imgcontract" type="file"  @change="uploadFile" style="display: none;"></li>
+                  <li><img :src="companyForm.contractSign" alt=""></li>
+                  <li><fileUp id="imgcontract" class="up" @getUrl="upload"><span>+</span></fileUp></li>
                 </ul>
               </div>
             </div>
@@ -217,8 +218,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li v-if="false"><img src="@/assets/logo.png" alt=""></li>
-                  <li @click="upload('imgfinance')"><span>+</span><input ref="imgfinance" type="file"  @change="uploadFile" style="display: none;"></li>
+                  <li><img src="@/assets/logo.png" alt=""></li>
+                  <li><fileUp id="imgfinance" class="up"><span>+</span></fileUp></li>
                 </ul>
               </div>
             </div>
@@ -335,6 +336,7 @@
         dialogViewVisible: false, //查看弹出框
         creditCodeShow: false,
         icRegisterShow: false,
+        noticeShow: false,
         dictionary: {
           '38':'',
           '39':'',
@@ -405,7 +407,21 @@
         this.companyForm.storeId = ""
       },
       storeSelect(val) {
-        console.log(val,123);
+        this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.noticeShow = true
+            setTimeout(() => {
+              this.noticeShow = false
+            }, 3000)
+          } else {
+            this.storeList.forEach(item => {
+              if(item.id === val) {
+                this.companyForm.storeName = item.name
+              }
+            })
+          }
+        })
       },
       //关闭模态窗
       handleClose(done) {
@@ -480,22 +496,8 @@
         this.delIds.push(JSON.stringify(this.companyBankList[index].id))
         this.companyBankList.splice(index,1)
       },
-      upload(type) {
-        this.$refs[type].click()
-      },
-      uploadFile(e) {
-        console.log(e.target.files,123)
-        const file = e.target.files[0];
-        if(!file) {
-          return
-        }
-        let fileType = file.name.split('.')[1]
-        if(fileType === 'jpg' || fileType === 'png') {
-          
-        } else {
-          this.$message('请使用jpg或者png格式的图片')
-          return
-        }
+      upload(obj) {
+        this.companyForm.contractSign = obj.param[obj.param.length - 1]
       },
       submitConfirm() {
         this.storeList.forEach(item => {
@@ -686,6 +688,26 @@
           }
         }
       }
+      /deep/ .notice {
+        width: 342px;
+        height: 56px;
+        background-color: #000;
+        position: fixed;
+        left: 40%;
+        top: 5%;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        color: #fff;
+        justify-content: center;
+        &-icon {
+          margin-right: 10px;
+          margin-top: 2px;
+          &::before {
+            color: red;
+          }
+        }
+      }
     }
     &:nth-child(2) {
       /deep/ .el-table__header-wrapper {
@@ -751,7 +773,10 @@
                 > img {
                   width: 100%;
                 }
-                > span {
+                .up {
+                  height: 160px;
+                }
+                span {
                   position: absolute;
                   left: 50%;
                   top: 50%;

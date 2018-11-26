@@ -2,7 +2,7 @@
 <template>
     <div class="editintention">
         <div class="formbox">
-            <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" :validate-on-rule-change="false" class="form-innnerbox">
+            <el-form :inline="true" :model="ruleForm" ref="ruleForm" :validate-on-rule-change="false" class="form-innnerbox">
                 <div class="form-content">
                 <!-- 合同信息 -->
                     <div class="column-form"> 
@@ -12,8 +12,8 @@
                                  <el-input v-model="detailData.signDate" placeholder="选择日期" :disabled="true"></el-input>
                             </el-form-item>
                             <el-form-item label="合同类型">
-                                <el-input placeholder="意向金" :disabled="true" v-if="this.$route.query.contractType == 4"></el-input>
-                                <el-input placeholder="定金"  :disabled="true" v-if="this.$route.query.contractType == 5"></el-input>
+                                <el-input placeholder="意向金" :disabled="true" v-if="this.$route.query.contType == 4"></el-input>
+                                <el-input placeholder="定金"  :disabled="true" v-if="this.$route.query.contType == 5"></el-input>
                             </el-form-item>
                             
                             <el-form-item label="认购期限" prop="subscribdate">
@@ -24,14 +24,14 @@
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item label="意向金金额" prop="dealPrice" v-if="this.$route.query.contractType == 4">
+                            <el-form-item label="意向金金额" prop="dealPrice" v-if="this.$route.query.contType == 4">
                                 <el-input v-model.number="ruleForm.dealPrice" type="number" clearable :placeholder="detailData.dealPrice">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{finalMoney | moneyFormat}}</template>
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item label="定金金额" prop="dealPrice" v-if="this.$route.query.contractType == 5">
+                            <el-form-item label="定金金额" prop="dealPrice" v-if="this.$route.query.contType == 5">
                                 <el-input v-model.number="ruleForm.dealPrice" type="number" clearable :placeholder="detailData.dealPrice">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{detailData.dealPrice | moneyFormat}}</template>
@@ -102,7 +102,7 @@
                                 </el-form-item>
                             </el-form-item>
                         </div>
-                        <div class="form-cont mt30" v-if="this.$route.query.contractType == 4">
+                        <div class="form-cont mt30" v-if="this.$route.query.contType == 4">
                             <el-form-item label="意向备注" class="disb">
                                 <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" :placeholder="detailData.remarks" v-model="ruleForm.textarea" class="textareawidth"></el-input>
                             </el-form-item>
@@ -134,7 +134,7 @@ export default {
         return {
             ruleForm: {
                 signdate: '', //签约日期
-                contractType: '', //合同类型
+                contType: '', //合同类型
                 item1: '',    //选择门店
                 item2: '',  //选择成交人
                 subscribdate: '', //认购期限
@@ -173,8 +173,20 @@ export default {
                 ],
                 
             },
-            ownerInfo:[],
-            custInfo: [], 
+            ownerInfo:[
+                {
+                    name: '',
+                    mobile: '',
+                    identifyCode: '', 
+                }
+            ],
+            custInfo: [
+                {
+                    name: '',
+                    mobile: '',
+                    identifyCode: '', 
+                }
+            ],
 
             // 选择门店
             option1: [{
@@ -196,52 +208,52 @@ export default {
                 label: '蚵仔煎'
             }],
             // 表单校验规则
-            rules: {
+            // rules: {
                 
-                item1: [
-                    { required: true, message: '请选择门店', trigger: 'change' }
-                ],
-                item2: [
-                    { required: true, message: '请选择经纪人', trigger: 'change' }
-                ],
-                subscribdate: [
-                    { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-                ],
-                subscribmoney: [
-                    { required: true, message: '请输入认购总价', trigger: 'change' },
-                    // { min: 0, max: 12, message: '输入总价在0-999999999.99之间', trigger: 'blur' }
-                ],
-                dealPrice: [
-                    { required: true, message: '请输入意向金金额', trigger: 'change' },
-                    // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
-                ],
+            //     item1: [
+            //         { required: true, message: '请选择门店', trigger: 'change' }
+            //     ],
+            //     item2: [
+            //         { required: true, message: '请选择经纪人', trigger: 'change' }
+            //     ],
+            //     subscribdate: [
+            //         { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+            //     ],
+            //     subscribmoney: [
+            //         { required: true, message: '请输入认购总价', trigger: 'change' },
+            //         // { min: 0, max: 12, message: '输入总价在0-999999999.99之间', trigger: 'blur' }
+            //     ],
+            //     dealPrice: [
+            //         { required: true, message: '请输入意向金金额', trigger: 'change' },
+            //         // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
+            //     ],
                
-                // address1: [
-                //     { required: true, message: '请输入物业地址', trigger: 'blur' },
-                // ],
-                // propertyRightAddr: [
-                //     { required: true, message: '请输入产权地址', trigger: 'blur' },
-                // ],
-                ownname: [
-                    { required: true, message: '请输入业主姓名', trigger: 'change' },
-                ],
-                ownphone: [
-                    { required: true, message: '请输入业主手机号', trigger: 'change' },
-                ],
-                // custno: [
-                //     { required: true, message: '请选择客源', trigger: 'click' },
-                // ],
-                custname: [
-                    { required: true, message: '请输入客户姓名', trigger: 'change' },
-                ],
-                custphone: [
-                    { required: true, message: '请输入客户手机号', trigger: 'change' },
-                ],
-                custidcard: [
-                    { required: true, message: '请输入客户身份证号', trigger: 'change' },
-                ],
+            //     // address1: [
+            //     //     { required: true, message: '请输入物业地址', trigger: 'blur' },
+            //     // ],
+            //     // propertyRightAddr: [
+            //     //     { required: true, message: '请输入产权地址', trigger: 'blur' },
+            //     // ],
+            //     ownname: [
+            //         { required: true, message: '请输入业主姓名', trigger: 'change' },
+            //     ],
+            //     ownphone: [
+            //         { required: true, message: '请输入业主手机号', trigger: 'change' },
+            //     ],
+            //     // custno: [
+            //     //     { required: true, message: '请选择客源', trigger: 'click' },
+            //     // ],
+            //     custname: [
+            //         { required: true, message: '请输入客户姓名', trigger: 'change' },
+            //     ],
+            //     custphone: [
+            //         { required: true, message: '请输入客户手机号', trigger: 'change' },
+            //     ],
+            //     custidcard: [
+            //         { required: true, message: '请输入客户身份证号', trigger: 'change' },
+            //     ],
         
-            },
+            // },
         }
     },
 
@@ -274,9 +286,9 @@ export default {
                     if (contperson.length > 0) {
                         for (let i=0; i < contperson.length; i++){
                             if (contperson[i].personType.value == 1){
-                                this.ownerInfo.push(contperson[i])
+                                this.ownerInfo.unshift(contperson[i])
                             }else if(contperson[i].personType.value == 2){
-                                this.custInfo.push(contperson[i])
+                                this.custInfo.unshift(contperson[i])
                             }
                         }
                     }
@@ -290,48 +302,52 @@ export default {
         onSubmit() {
              let param = { 
                  igdCont:{      
-                    "id": 23,		//这是合同ID，在修改时才会用到，新增时使用不会报错
-                    "type":5,
-                    "houseinfoCode":"UUS001",
-                    "guestinfoCode":"SQH001",
-                    "signDate":"2018/11/04",
-                    "subscriptionTerm":"2018/11/18",
-                    "subscriptionPrice": "300",		//意向/定金金额
-                    "dealAgentStoreId":"10",
-                    "dealAgentStoreName":"当代一店",
-                    "subscriptionTerm":"2011-11-11",
-                    "dealPrice":"3200.50",			//成交总价
-                    "remarks":"意向备注",
-                    "houseInfo":{
-                        "houseinfoId": "100",
-                        "estateName":"中天国际111",
-                        "propertyRightAddr": "产权地址",
-                        "building":"楚河汉街万达环球国际中心",
-                        "unit":"三单元",
-                        "number": "804",
-                        "price":"875"
-                    },
-                    "guestInfo":{
-                        "guestinfoId": "87"
-                    },
-                    "contPersons": [
-                        {
-                            "name": "test",
-                            "uId": 13,
-                            "relation": 2,
-                            "type": 2,
-                            "mobile": "13098120011"
+                        "id": this.$route.query.id,		//这是合同ID，在修改时才会用到，新增时使用不会报错
+                        "type": this.$route.query.contType,       //合同类型 ZL("租赁", 1), MM("买卖", 2), DB("代办", 3), YX("意向", 4)
+                        // "houseinfoCode":"UUS001",                //房源编号
+                        // "guestinfoCode":"SQH001",                //客源编号
+                        "signDate": this.detailData.signDate,                 //签约日期
+                        "subscriptionTerm": this.detailData.subscriptionTerm,         //认购期限
+                        "subscriptionPrice": this.detailData.subscriptionPrice,		         //成交总价
+                        // "dealAgentStoreId":"10",                 //成交经纪人门店ID
+                        // "dealAgentStoreName":"当代一店",          //成交经纪人门店名字
+                        "dealPrice":this.detailData.dealPrice,			         //（意向/定金金额）
+                        "remarks": this.detailData.textarea,                     //（意向备注）
+                        "houseInfo":{
+                            // "houseinfoId": "100",
+                            // "estateName":"中天国际",                           
+                            // "building":"楚河汉街万达环球国际中心",
+                            // "unit":"三单元",
+                            // "number": "804",
+                            "propertyRightAddr": this.detailData.propertyRightAddr,
+                            "price": this.detailData.price
                         },
-                        {
-                            "name": "test2",
-                            "relation": 1,
-                            "type": 2,
-                            "mobile": "13001864012"
-                        }
-                    ]
-                    
-                },
-                type:2
+                        "guestInfo":{
+                            // "guestinfoId": "87",
+                            "dealAgentId": 1,
+                            "dealAgentName": "成交人姓名啊"
+                        },
+                        "contPersons": [
+                            {
+                                "name": this.detailData.ownerInfo.name,
+                                "type": 1,
+                                "mobile":this.detailData.ownerInfo.mobile,
+                                // "identifyCode": "",
+                                // "uId": 1,
+                                // "relation": 1
+                            },
+                            {
+                                "name": this.detailData.custInfo.name,
+                                "type": 2,
+                                "mobile": this.detailData.custInfo.mobile,
+                                "identifyCode": this.detailData.custInfo.identifyCode,
+                                // "uId": 1,
+                                // "relation": 1
+                            },
+                        ]
+                        
+                    },
+                    type:2
              }
             this.$ajax
             .postJSON("/api/contract/editIgdCont", param)

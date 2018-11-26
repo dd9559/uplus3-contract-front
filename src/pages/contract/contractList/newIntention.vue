@@ -2,7 +2,7 @@
 <template>
     <div class="newintention" id="newIntention">
         <div class="formbox">
-            <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" :validate-on-rule-change="false" class="form-innnerbox">
+            <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" class="form-innnerbox">
                 <div class="form-content">
                 <!-- 合同信息 -->
                     <div class="column-form"> 
@@ -64,12 +64,12 @@
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item label="业主信息" class="disb" required>
-                                <el-form-item prop="ownname">
-                                    <el-input v-model="ruleForm.ownerInfo.name" clearable placeholder="姓名" class="ownwidth"></el-input>
+                            <el-form-item label="业主信息" class="disb">
+                                <el-form-item prop="ownerInfo.ownname">
+                                    <el-input v-model="ruleForm.ownerInfo.ownname" clearable placeholder="姓名" class="ownwidth"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="ownphone">
-                                    <el-input v-model="ruleForm.ownerInfo.mobile" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                <el-form-item prop="ownerInfo.ownphone">
+                                    <el-input v-model="ruleForm.ownerInfo.ownphone" clearable placeholder="手机号" class="ownwidth"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -83,7 +83,7 @@
                                 <el-form-item label="客源编号"  prop="custno">
                                         <el-button type="primary"  v-model="ruleForm.custno" @click="toLayerGuest()">请选择客源</el-button>
                                 </el-form-item>
-                                <el-form-item label="成交经纪人" required>
+                                <el-form-item label="成交经纪人">
                                     <el-form-item prop="item1">
                                         <el-select v-model="ruleForm.item1" clearable filterable placeholder="请选择门店">
                                             <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -96,15 +96,15 @@
                                     </el-form-item>
                                 </el-form-item>
                             </el-form-item>
-                            <el-form-item label="客户信息" class="disb" required>
-                                <el-form-item prop="custname">
-                                    <el-input v-model="ruleForm.custInfo.name" clearable placeholder="姓名" class="ownwidth"></el-input>
+                            <el-form-item label="客户信息" class="disb">
+                                <el-form-item prop="custInfo.custname">
+                                    <el-input v-model="ruleForm.custInfo.custname" clearable placeholder="姓名" class="ownwidth"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="custphone">
-                                    <el-input v-model="ruleForm.custInfo.mobile" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                <el-form-item prop="custInfo.custphone">
+                                    <el-input v-model="ruleForm.custInfo.custphone" clearable placeholder="手机号" class="ownwidth"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="custidcard">
-                                    <el-input v-model="ruleForm.custInfo.identifyCode" clearable placeholder="身份证号" class="custwidth"></el-input>
+                                <el-form-item prop="custInfo.custidcard">
+                                    <el-input v-model="ruleForm.custInfo.custidcard" clearable placeholder="身份证号" class="custwidth"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -124,7 +124,7 @@
 
             
         </div>
-        <!-- 房源弹框 -->
+        <!-- 房客源弹框 -->
         <houseGuest :dialogVisible="layerhouse" :dialogType="dialogType"  @closeHouseGuest="closeCommission" v-if='layerhouse'></houseGuest>
           
     </div>
@@ -141,24 +141,25 @@ export default {
             dialogType: '',
             ruleForm: {
                 signDate: '', //签约日期
-                contractType: '', //合同类型
+                contType: '', //合同类型
                 item1: '',    //选择门店
                 item2: '',  //选择成交人
                 subscriptionTerm: '', //认购期限
                 subscriptionPrice: '', //认购总价
                 dealPrice: '', //意向金金额
+                
                 houseno: '', //房源编号
                 address1: '', //物业地址
                 propertyRightAddr: '', //产权地址
                 price: '', //房源总价
                 ownerInfo: {
-                    name: '', //业主姓名
-                    mobile: '', //业主手机号
+                    ownname: '', //业主姓名
+                    ownphone: '', //业主手机号
                 },
                 custInfo: {
-                    name: '', //客户姓名
-                    mobile: '', //客户手机号
-                    identifyCode: '', //客户身份证号
+                    custname: '', //客户姓名
+                    custphone: '', //客户手机号
+                    custidcard: '', //客户身份证号
                 },             
                 custno: '', //客源编号              
                 textarea: '', //备注
@@ -209,12 +210,26 @@ export default {
                 // propertyRightAddr: [
                 //     { required: true, message: '请输入产权地址', trigger: 'blur' },
                 // ],
-                ownname: [
-                    { required: true, message: '请输入业主姓名' },
-                ],
-                ownphone: [
-                    { required: true, message: '请输入业主手机号' },
-                ],
+                ownerInfo: {
+                    ownname: [
+                        { required: true, message: '请输入业主姓名' },
+                    ],
+                    ownphone: [
+                        { required: true, message: '请输入业主手机号'},
+                    ],
+                },
+                custInfo: {
+                    custname: [
+                        { required: true, message: '请输入客户姓名' },
+                    ],
+                    custphone: [
+                        { required: true, message: '请输入客户手机号' },
+                    ],
+                    custidcard: [
+                        { required: true, message: '请输入客户身份证号' },
+                    ],
+                },
+                
                 custno: [
                     { required: true, message: '请选择客源', trigger: 'click' },
                 ],
@@ -224,15 +239,7 @@ export default {
                 item2: [
                     { required: true, message: '请选择经纪人', trigger: 'change' }
                 ],
-                custname: [
-                    { required: true, message: '请输入客户姓名' },
-                ],
-                custphone: [
-                    { required: true, message: '请输入客户手机号' },
-                ],
-                custidcard: [
-                    { required: true, message: '请输入客户身份证号' },
-                ],
+                
         
             },
         }
@@ -286,8 +293,8 @@ export default {
        
         // 新增意向金接口（post）
         onSubmit(ruleForm) {
-            // this.$refs[ruleForm].validate((valid) => {
-            //     if (valid) {
+            this.$refs[ruleForm].validate((valid) => {
+                if (valid) {
                     let param = { 
                         igdCont:{      
                             // "id": 23,		//这是合同ID，在修改时才会用到，新增时使用不会报错
@@ -317,10 +324,10 @@ export default {
                             },
                             "contPersons": [
                                 {
-                                    "name": this.ownerInfo.name,
+                                    "name": this.ruleForm.ownerInfo.name,
                                     "type": 1,
-                                    "mobile":this.ownerInfo.mobile,
-                                    // "identifyCode": "",
+                                    "mobile":this.ruleForm.ownerInfo.mobile,
+                                    // "custidcard": "",
                                     // "uId": 1,
                                     // "relation": 1
                                 },
@@ -328,7 +335,7 @@ export default {
                                     "name": this.ruleForm.custInfo.name,
                                     "type": 2,
                                     "mobile": this.ruleForm.custInfo.mobile,
-                                    "identifyCode": this.ruleForm.custInfo.identifyCode,
+                                    "custidcard": this.ruleForm.custInfo.custidcard,
                                     // "uId": 1,
                                     // "relation": 1
                                 },
@@ -347,11 +354,13 @@ export default {
                         this.$ajax
                         .postJSON("/api/contract/editIgdCont", param)
                         .then(res => {
-                            // console.log(res)
-                            this.$message({
-                                type: 'success',
-                                message: '已保存!'
-                            });
+                            console.log(res.status)
+                            if (res.status === 500) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '已保存!'
+                                });
+                            }
                         }).catch(error => {
                             console.log(error)
                         })
@@ -359,10 +368,10 @@ export default {
                     }).catch(() => {
 
                     })
-            //     }else{
-            //         return false
-            //     }
-            // })
+                }else{
+                    return false
+                }
+            })
             
             
             

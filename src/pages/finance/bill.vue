@@ -120,13 +120,13 @@
         <h4 title="hello">数据列表</h4>
         <ul>
           <li>
-            收款<span>{{tableTotal.payMentCount}}</span>笔，总额<span>{{tableTotal.payMentSum}}</span>元；
+            收款<span>{{tableTotal.ProceedsCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.ProceedsSum|zeroFormatter}}</span>元；
           </li>
           <li>
-            付款<span>{{tableTotal.ProceedsCount}}</span>笔，总额<span>{{tableTotal.ProceedsSum}}</span>元；
+            付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
           </li>
           <li>
-            账户余额：<span>{{tableTotal.payMentSum-tableTotal.ProceedsSum}}</span>元
+            账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter}}</span>元
           </li>
         </ul>
         <p>
@@ -309,6 +309,15 @@
           return '收款ID'
         }else {
           return '付款ID'
+        }
+      }
+    },
+    filters:{
+      zeroFormatter:function (val) {
+        if(!val){
+          return 0
+        }else {
+          return val
         }
       }
     }
