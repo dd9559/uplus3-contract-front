@@ -47,7 +47,7 @@
                         <div class="form-cont">
                             <el-form-item>
                                 <el-form-item label="房源编号" prop="houseno">
-                                    <el-button type="primary" v-model="ruleForm.houseno" @click="toLayerHouse()">请选择房源</el-button>
+                                    <el-button type="primary" v-model="ruleForm.houseno" @click="toisShowDialog()">请选择房源</el-button>
                                 </el-form-item>
                                 <el-form-item label="物业地址">
                                     <div>当代国际花园元帅哈萨克卡覅</div>
@@ -125,7 +125,7 @@
             
         </div>
         <!-- 房客源弹框 -->
-        <houseGuest :dialogVisible="layerhouse" :dialogType="dialogType"  @closeHouseGuest="closeCommission" v-if='layerhouse'></houseGuest>
+        <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
           
     </div>
     
@@ -137,7 +137,7 @@ import { TOOL } from "@/assets/js/common";
 export default {
     data() {
         return {
-            layerhouse:false,
+            isShowDialog:false,
             dialogType: '',
             ruleForm: {
                 signDate: '', //签约日期
@@ -265,19 +265,19 @@ export default {
 
     methods: {
         //选择房源弹框
-        toLayerHouse(){
-            this.layerhouse = true
+        toisShowDialog(){
+            this.isShowDialog = true
             this.dialogType = "house"
         },
 
         toLayerGuest(){
-            this.layerhouse = true
+            this.isShowDialog = true
             this.dialogType = "guest"
         },
 
          //关闭选择房源客源弹窗
         closeCommission(){
-             this.layerhouse = false;
+             this.isShowDialog = false;
         },
 
         //预览事件
