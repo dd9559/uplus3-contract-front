@@ -175,8 +175,6 @@
         <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="submitForm">确定</el-button>
       </p>
     </el-dialog>
-    <!-- 开票 -->
-    <LayerInvoice ref="invoice"></LayerInvoice>
     <!-- 票据编号弹层 -->
     <el-dialog
       :title="!paperType?'票据详情':'开票信息填写'"
@@ -186,7 +184,41 @@
       @close="propCloseFn">
       <div class="paper-edit-box" v-if="paperType">
         <ul>
-          <li v-for="item in paperInfoList">{{item}}</li>
+          <li>
+            <p><label>合同编号:</label><span>{{paperInfoData.contCode}}</span></p>
+            <p><label>物业地址:</label><span>{{paperInfoData.address}}</span></p>
+          </li>
+          <li>
+            <p><label>交款单位:</label><span>{{paperInfoData.payer}}</span></p>
+            <p><label>合计金额:</label><span>{{paperInfoData.proceedsAmount}}元</span></p>
+          </li>
+          <li v-for="(item,index) in moneyTypes" :key="index">
+            <label class="checkbox-info iconfont" :class="[item.check?'active':'']" @click="item.check=!item.check"></label>
+            <div class="type-list">
+              <p><label>款类：</label><span>{{item.typeName}}</span></p>
+              <p><label>金额：</label><span>{{item.amount}}</span></p>
+              <div class="input-group">
+                <label>开票项目：</label>
+                <el-select class="w120" size="small" v-model="item.project" placeholder="请选择">
+                  <el-option
+                    v-for="item in dictionary['542']"
+                    :key="item.key"
+                    :label="item.value"
+                    :value="item.key">
+                  </el-option>
+                </el-select>
+              </div>
+              <p><label class="checkbox-info iconfont" :class="[item.addressHidden?'active':'']" @click="item.addressHidden=!item.addressHidden"></label><span>隐藏物业地址</span></p>
+              <p><label>票据编号：</label><span>{{item.billCode}}</span></p>
+            </div>
+          </li>
+        </ul>
+        <el-button round  size="medium" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
+      </div>
+      <div class="paper-watch-tab" v-if="paperType">
+        <p>票据预览</p>
+        <ul v-if="moneyTypes.length>1">
+          <li v-for="(item,index) in moneyTypes" :key="index" :class="[index===activeType?'active':'']" @click="activeType=index">{{item.typeName}}</li>
         </ul>
       </div>
       <LayerPaperInfo
@@ -194,19 +226,19 @@
         :name="paperInfoData.payerName"
         :collectionTime="paperInfoData.paymentTime"
         :invoiceTime="paperInfoData.createTime"
-        :paper="paperInfoData.paper"
-        :project="paperInfoData.name"
+        :paper="paperInfoData.billCode"
+        :project="paperInfoData.type"
         :hide="paperInfoData.hide"
         :address="paperInfoData.address"
-        :money="paperInfoData.money"
-        :moneyZh="paperInfoData.moneyZh"
+        :money="paperInfoData.amount"
+        :moneyZh="paperInfoData.amountZh"
         :create="paperInfoData.createByName"
-        :rules="paperInfoData.val"
+        :rules="paperInfoData.remark"
         :payerType="paperInfoData.payerType"
       ></LayerPaperInfo>
       <p slot="footer">
         <el-button round  size="medium" class="paper-btn">取消</el-button>
-        <el-button round  size="medium" class="paper-btn paper-btn-blue">打印</el-button>
+        <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaper">打印</el-button>
       </p>
     </el-dialog>
   </div>
@@ -241,6 +273,7 @@
         // 筛选选项
         dictionary: {
           '33': '',
+          '542': ''
         },
         // 作废弹层输入框
         invalidMax: 150,
@@ -254,8 +287,9 @@
         activeRow:{},
         paperShow: false,
         paperType:false,//false预览 true开票
-        paperInfoData: {},
-        paperInfoList:[]
+        paperInfoData: {},//票据对象
+        moneyTypes:[],//临时存放勾选的款类
+        activeType:0,//当前预览项
       }
     },
     computed: {
@@ -323,10 +357,20 @@
       },
       // 获取开票列表
       paperList:function () {
-        this.$ajax.get('/api/bills/tobe',{id:this.activeRow.proceedsId}).then(res=>{
+        this.$ajax.get('/api/bills/tobe',{/*id:this.activeRow.proceedsId*/id:21}).then(res=>{
           res=res.data
           if(res.status===200){
-            this.paperInfoList = res.data.list
+            this.paperInfoData=Object.assign({},res.data)
+            let obj = JSON.parse(JSON.stringify(res.data))
+            this.moneyTypes=[].concat(obj.list)
+            this.moneyTypes.forEach((item,index)=>{
+              let obj = Object.assign({
+                check:true,
+                addressHidden:false,
+                project:''
+              },item)
+              this.moneyTypes.splice(index,1,obj)
+            })
           }
         })
       },
@@ -375,13 +419,37 @@
           }
         })
       },
-      //票据详情 取消
-      paperCloseFn() {
-        this.paperInfoData.show = false;
+      billing:function () {
+        let param = this.moneyTypes[this.activeType]
+        let obj = {
+          createTime:'',
+          billCode:param.billCode,
+          hide:param.addressHidden,
+          amount:param.amount,
+          amountZh:param.amountZh,
+          createByName:this.paperInfoData.createBy,
+          remark:param.remark
+        }
+        this.dictionary['542'].find(item=>{
+          if(item.key===param.project){
+            obj.type=item.value
+          }
+        })
+        this.paperInfoData=Object.assign({},this.paperInfoData,obj)
       },
       // 票据详情 打印
-      paperBtnFn() {
-        console.log('打印')
+      printPaper() {
+        let type = this.moneyTypes[this.activeType]
+        let obj={
+          code:this.activeRow.billCode,
+          payId:this.activeRow.proceedsId,
+          payDetailsId:type.payDetailsId,
+          isHiddenAddress:type.addressHidden,
+          billType:type.project
+        }
+        this.$ajax.post('/api/bills/print',obj).then(res=>{
+          debugger
+        })
       }
     },
     components: {
@@ -394,6 +462,23 @@
 
 <style lang="less" scoped>
   @import "~@/assets/less/lsx.less";
+  .checkbox-info{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid @border-e6;
+    &.active{
+      position: relative;
+      color: @color-blue;
+      &:after{
+        content: '\e65d';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+      }
+    }
+  }
 
   .content {
     display: flex;
@@ -414,6 +499,92 @@
     }
     .paper-btn-blue{
       color: @color-white;
+    }
+    .paper-btn-float{
+      position: absolute;
+      right: 0;
+      bottom: 20px;
+    }
+  }
+  .paper-edit-box{
+    margin: 0 40px;
+    padding: 20px 0 80px;
+    border-bottom: 1px solid @border-D8;
+    position: relative;
+    >ul{
+      &:first-of-type{
+        >li{
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          >label{
+            margin-right: 10px;
+          }
+          &:first-of-type,&:nth-of-type(2){
+            >p{
+              &:first-of-type{
+                width: 200px;
+              }
+            }
+          }
+          &:last-of-type{
+            margin-bottom: 0px;
+          }
+        }
+      }
+    }
+    .type-list{
+      display: flex;
+      >p{
+        min-width: 140px;
+        margin-right: 20px;
+        display: inherit;
+        align-items: center;
+        >label.checkbox-info{
+          margin-right: 10px;
+        }
+      }
+      .input-group{
+        margin-bottom: 0;
+        margin-right: 20px;
+      }
+    }
+  }
+  .paper-watch-tab{
+    >p{
+      color: @color-blue;
+      text-align: center;
+      font-size: @size-24;
+      font-weight: bold;
+      margin: 32px;
+    }
+    >ul{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 26px;
+      >li{
+        border-top: 2px solid @color-blue;
+        border-bottom: 2px solid @color-blue;
+        min-width: 100px;
+        height: 36px;
+        display: inherit;
+        align-items: center;
+        justify-content: center;
+        &:first-of-type{
+          border-left: 2px solid @color-blue;
+          border-top-left-radius: 18px;
+          border-bottom-left-radius: 18px;
+        }
+        &:last-of-type{
+          border-right: 2px solid @color-blue;
+          border-top-right-radius: 18px;
+          border-bottom-right-radius: 18px;
+        }
+        &.active{
+          background-color: @color-blue;
+          color: @color-white;
+        }
+      }
     }
   }
 </style>
