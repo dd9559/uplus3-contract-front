@@ -1,8 +1,8 @@
 <template>
   <div class="view-container">
-    <el-form :model="searchForm" class="form-head" size="small">
+    <el-form class="form-head" size="small">
       <el-form-item label="城市选择">
-        <el-select v-model="searchForm.cityId" placeholder="请选择">
+        <el-select v-model="cityId" placeholder="请选择">
           <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
         </el-select>
       </el-form-item>
@@ -10,7 +10,7 @@
     <ul class="tabs">
       <li v-for="item in tabs" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)" :key="item.id">{{item.name}}</li>
     </ul>
-    <component :is="current" :cityId="searchForm.cityId"></component>
+    <component :is="current" :cityId="cityId==='武汉' ? 1 : cityId"></component>
   </div>
 </template>
 
@@ -25,9 +25,7 @@
     data() {
       return {
         cityList: [],
-        searchForm: {
-          cityId: 1
-        },
+        cityId: "武汉",
         tabs: [
           {
             id: 1,
