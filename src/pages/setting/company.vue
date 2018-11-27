@@ -143,7 +143,7 @@
             </div>
             <div class="item">
               <el-form-item label="统一社会信用代码: " v-if="creditCodeShow">
-                <el-input size="mini" v-model="documentCard.creditCode"></el-input>
+                <el-input size="mini" v-model="documentCard.creditCode" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="工商注册号: " v-if="icRegisterShow">
                 <el-input size="mini" v-model="documentCard.icRegisterCode" :disabled="directSaleSelect"></el-input>
@@ -155,7 +155,7 @@
                 <el-input size="mini" v-model="documentCard.taxRegisterCode" :disabled="directSaleSelect"></el-input>
               </el-form-item>
             </div>
-            <div class="tip">
+            <div class="tip tip-top">
               <span>温馨提示: </span>
               <div class="message">
                 <p>1. 门店名称必须和营业执照证件上登记的名称一致；</p>
@@ -170,7 +170,7 @@
           <p>添加企业银行账户</p>
           <div class="info-content">
             <el-table style="width: 100%" :data="companyBankList" class="addBankRow">
-              <el-table-column width="270px" align="center" label="">
+              <el-table-column width="260px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
                     <el-input size="mini" maxlength="15" v-model="companyBankList[scope.$index].bankAccountName" :disabled="directSaleSelect"></el-input>
@@ -184,14 +184,14 @@
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="" min-width="280px">
+              <el-table-column align="center" label="" width="365px">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
                     <el-input size="mini" v-model="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="directSaleSelect"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column label="" width="90px">
+              <el-table-column label="" width="65px">
                 <template slot-scope="scope">
                   <span @click="addRow" class="button" :class="{'direct-sale':directSaleSelect}"><i class="icon el-icon-plus"></i></span>
                   <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':directSaleSelect}"><i class="icon el-icon-minus"></i></span>
@@ -208,8 +208,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img :src="companyForm.contractSign" alt=""></li>
-                  <li><fileUp id="imgcontract" class="up" @getUrl="upload"><span>+</span></fileUp></li>
+                  <li><img src="" alt=""></li>
+                  <li><fileUp id="imgcontract" class="up" @getUrl="uploadCon"><span>+</span></fileUp></li>
                 </ul>
               </div>
             </div>
@@ -218,8 +218,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img src="@/assets/logo.png" alt=""></li>
-                  <li><fileUp id="imgfinance" class="up"><span>+</span></fileUp></li>
+                  <li><img src="" alt=""></li>
+                  <li><fileUp id="imgfinance" class="up" @getUrl="uploadFin"><span>+</span></fileUp></li>
                 </ul>
               </div>
             </div>
@@ -311,7 +311,7 @@
       return {
         // 搜索表单中的数据
         searchForm: {
-          cityId: 1,
+          cityId: "武汉",
           storeId: "",
           cooperationMode: "",
           bankCard: "",
@@ -369,6 +369,7 @@
           endTime: this.searchTime[1]
         }
         param = Object.assign({},this.searchForm,param)
+        param.cityId = param.cityId === "武汉" ? 1 : param.cityId
         this.$ajax.get('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
@@ -459,7 +460,8 @@
           this.companyBankList = this.directInfo.companyBankList
         } else {
           this.directSaleSelect = false
-          for(let key in this.companyForm) {
+          for(let key in this.companyForm)
+          {
             if(
               key === "lepName" || key === "lepDocumentType" ||
               key === "lepDocumentCard" || key === "lepPhone" ||
@@ -496,8 +498,11 @@
         this.delIds.push(JSON.stringify(this.companyBankList[index].id))
         this.companyBankList.splice(index,1)
       },
-      upload(obj) {
+      uploadCon(obj) {
         this.companyForm.contractSign = obj.param[obj.param.length - 1]
+      },
+      uploadFin(obj) {
+        this.companyForm.financialSign = obj.param[obj.param.length - 1]
       },
       submitConfirm() {
         this.storeList.forEach(item => {
@@ -579,8 +584,8 @@
           lepDocumentCard: currentRow.lepDocumentCard,
           lepPhone: currentRow.lepPhone,
           documentType: currentRow.documentType.value,
-          contractSign: currentRow.contractSign ? currentRow.contractSign : "",
-          financialSign: currentRow.financialSign ? currentRow.financialSign : "",
+          contractSign: currentRow.contractSign,
+          financialSign: currentRow.financialSign
         }
         this.companyForm = newForm
       },
@@ -666,6 +671,9 @@
         p:nth-child(2) { margin: 10px 0; }
         span { font-weight: bold; color: #D56868; }
       }
+      &-top {
+        margin-top: 20px;
+      }
     }
     &:first-child {
       .info-content {
@@ -735,10 +743,25 @@
             font-weight: bold;
           }
         }
-        .direct-sale { display: none; }
-        &.el-table tr:first-child td:last-child {
-          span:last-child {
-            display: none;
+        .direct-sale {
+          display: none;
+        }
+        &.el-table {
+          tr:first-child td:last-child {
+            span:last-child {
+              display: none;
+            }
+          }
+          /deep/ .cell {
+            padding: 0;
+          }
+          tr td:nth-child(3) {
+            .el-form-item {
+              box-sizing: border-box;
+              .el-input {
+                width: 300px;
+              }
+            }
           }
         }
       }

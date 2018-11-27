@@ -163,6 +163,12 @@ let TOOL = {
               reject(res)
               return
             }
+          }else if(typeInfo==='idCard'){
+            if(val.length<18){
+              res.msg = '身份证号不正确'
+              reject(res)
+              return
+            }
           }
         }
         if(type==='[object Array]'){

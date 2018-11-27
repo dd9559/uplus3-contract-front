@@ -42,17 +42,23 @@
           <div class="content">
             <div class="one_">
               <p><span class="tag">房源编号：</span><span class="serialNumber">{{contractDetail.houseinfoCode}}</span></p>
-              <p class="address"><span class="tag">物业地址：</span><span class="text">{{contractDetail.propertyAddr}}</span></p>
+              <p class="address">
+                <span class="tag">物业地址：</span>
+                <span class="text">{{contractDetail.houseInfo.EstateName}}</span>
+                <span class="text">{{contractDetail.houseInfo.BuildingName}}</span>
+                <span class="text">{{contractDetail.houseInfo.Unit}}</span>
+                <span class="text">{{contractDetail.houseInfo.RoomNo}}</span>
+              </p>
             </div>
             <div class="one_">
-              <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.square}} m²</span></p>
-              <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.squareUse}} m²</span></p>
-              <p><span class="tag">用 途：</span><span class="text">住宅</span></p>
+              <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
+              <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
+              <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.houseType}}</span></p>
-              <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.orientation}}</span></p>
-              <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.decorateType}}</span></p>
+              <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType}}</span></p>
+              <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation}}</span></p>
+              <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType}}</span></p>
             </div>
             <div class="one_" v-if="contType!='1'">
               <p>
@@ -64,9 +70,9 @@
               <p><span class="tag">房产证号：</span><span class="text">{{contractDetail.propertyCard}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.houseStoreName}}</span></p>
-              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.shopOwnerName}}</span></p>
-              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.shopOwnerMobile}}</span></p>
+              <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
+              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
+              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
             </div>
             <div class="table">
               <template>
@@ -86,12 +92,15 @@
           <div class="content">
             <div class="one_">
               <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
-              <p><span class="tag">付款方式：</span><span class="text">{{contractDetail.guestInfo.paymentMethod.label}}</span></p>
+              <p>
+                <span class="tag">付款方式：</span>
+                <span class="text" v-for="item in dictionary['556']" :key="item.key" v-if="contractDetail.guestInfo.paymentMethod===item.key">{{item.value}}</span>
+              </p>
             </div>
             <div class="one_">
-              <p><span class="tag">客源方门店：</span><span class="text">{{contractDetail.guestInfo.guestStoreName}}</span></p>
-              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.guestInfo.shopOwnerName}}</span></p>
-              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.shopOwnerMobile}}</span></p>
+              <p><span class="tag">客源方门店：</span><span class="text">{{contractDetail.guestInfo.GuestStoreName}}</span></p>
+              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
+              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
             </div>
             <div class="table">
               <template>
@@ -186,12 +195,70 @@
             <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)" v-if="contractDetail.contState.value===3">解约</el-button>
             <el-button round type="danger" @click="dialogInvalid=true" class="search_btn" v-if="contractDetail.contState.value!=3">无效</el-button>
             <el-button round class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
-            <el-button type="primary" round class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
+            <el-button round type="primary"  class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
+            <el-button round type="primary"  class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value===1">提交审核</el-button>
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="合同主体" name="second">合同主体</el-tab-pane>
-      <el-tab-pane label="资料库" name="third">资料库</el-tab-pane>
+      <el-tab-pane label="合同主体" name="second">
+        <div class="contractSubject">
+          <span class="uploadSubject">
+            <i class="iconfont icon-shangchuan"></i>
+            <p>点击上传</p>
+          </span>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="资料库" name="third">
+        <div class="dataBank">
+          <div class="classify">
+            <p class="title">卖方</p>
+            <div class="one_">
+              <p><i>*</i>身份证复印件</p>
+              <span class="uploadSubject">
+                <i class="iconfont icon-shangchuan"></i>
+                <p>点击上传</p>
+              </span>
+            </div>
+            <div class="one_">
+              <p><i>*</i>资料</p>
+              <span class="uploadSubject">
+                <i class="iconfont icon-shangchuan"></i>
+                <p>点击上传</p>
+              </span>
+            </div>
+          </div>
+          <div class="classify">
+            <p class="title">买方</p>
+             <div class="one_">
+              <p><i>*</i>身份证复印件</p>
+              <span class="uploadSubject">
+                <i class="iconfont icon-shangchuan"></i>
+                <p>点击上传</p>
+              </span>
+            </div>
+            <div class="one_">
+              <p><i>*</i>购房合同</p>
+              <span class="uploadSubject">
+                <i class="iconfont icon-shangchuan"></i>
+                <p>点击上传</p>
+              </span>
+            </div>
+          </div>
+          <div class="classify">
+            <p class="title">其他</p>
+            <div class="one_">
+              <p></p>
+              <span class="uploadSubject">
+                <i class="iconfont icon-shangchuan"></i>
+                <p>点击上传</p>
+              </span>
+            </div>
+          </div>
+          <div class="classify">
+            <p>拒绝理由</p>
+          </div>
+        </div>
+      </el-tab-pane>
       <el-tab-pane label="回访录音" name="fourth">
         <div class="type">
           <span :class="{'active':isActive===1}" @click="changeType(1)">客源</span>
@@ -329,6 +396,7 @@ export default {
         //数据字典
         "514": "", //产权状态
         "517": "", //三方合作类型
+        "556": ""  //付款方式
       },
       //交易流程
       transFlowList:[],
@@ -376,7 +444,7 @@ export default {
       this.$router.push({
         path: "/addContract",
         query: {
-          id: 1,
+          id: this.contractDetail.id,
           operateType: 2,
           type: this.contType
         }
@@ -406,7 +474,7 @@ export default {
       let param={
         id:this.id
       }
-      this.$ajax.get('/api/contract/getById',param).then(res=>{
+      this.$ajax.get('/api/contract/detail',param).then(res=>{
         res=res.data
         if(res.status===200){
           this.contractDetail=res.data
@@ -462,6 +530,7 @@ export default {
   background: @bg-white;
   font-size: 14px;
   position: relative;
+  //合同详情
   .msg {
     border-bottom: 1px solid @border-ED;
     display: flex;
@@ -535,6 +604,52 @@ export default {
         background: @bg-FA;
         > p {
           color: @color-D6;
+        }
+      }
+    }
+  }
+  //合同主体
+  .contractSubject{
+    padding: 40px;
+  }
+  .uploadSubject{
+    display: inline-block;
+    text-align: center;
+    width: 140px;
+    height: 140px;
+    box-sizing: border-box;
+    padding-top: 28px;
+    border: 2px dashed @border-DE;
+    > i{
+      color: @bg-th;
+      font-size: 59px;
+    }
+    > p{
+      padding-top: 10px;
+      color:@color-324;
+      font-size: 14px;
+    }
+  }
+  //资料库
+  .dataBank{
+    padding: 0 30px 0 10px;
+    .classify{
+      padding-top: 20px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid @border-ED;
+      .title{
+        font-size: 16px;
+        color:@color-324;
+      }
+      .one_{
+        padding-left: 10px;
+        > p{
+          font-size: 14px;
+          padding: 10px 0;
+          color:@color-6c;
+          > i{
+            color:@color-FF;
+          }
         }
       }
     }
