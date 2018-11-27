@@ -19,7 +19,8 @@
         <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px" class="processDialog">
           <el-form v-model="addForm" size="small">
             <el-form-item label="名称" class="add-form-item">
-              <el-input v-model="addForm.name"></el-input>
+              <el-input v-model="addForm.name" :maxlength="inputMax"></el-input>
+              <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -120,7 +121,8 @@
         StepsOption: [],
         flowCount: 0,
         currentFlowId: 0,
-        AllSteps: []
+        AllSteps: [],
+        inputMax: 30
       };
     },
     created() {
@@ -427,6 +429,11 @@
         })
       }
     },
+    computed: {
+      validInput() {
+        return this.addForm.name.length
+      }
+    },
     watch: {
       "cityId": function(newVal,oldVal) {
         this.getData()
@@ -460,6 +467,12 @@
         display: flex;
         .el-input {
           width: 656px;
+        }
+        .text-absolute {
+          position: absolute;
+          right: 10px;
+          top: 0;
+          color: #D6D6D6;
         }
       }
     }
