@@ -1,44 +1,47 @@
 <template>
     <div id="layersettle">
+        <!-- 结算审核申请 -->
+        <!-- <el-button type="text" @click="dialogVisible = true">审核申请</el-button> -->
 
         <!-- 结算审核弹框 -->
         <el-dialog title="发起结算" :visible="getSettleDialog" width="820px" class="layer-audit" @close='close'>
         <div class="audit-box"  :style="{ height: clientHeight() }">
             <div class="audit-col">
+            <div class="col-li col-li2">
+                <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
+                <p>发起日期：<span>{{layerAudit.applicationDate | getDate}}</span></p>
+                <p>发起人：<span>{{layerAudit.initiatorDepName + '-' + layerAudit.initiatorName}}</span></p>
+                
+            </div>
             <div class="col-li">
-                <p>合同编号：<span class="blue">YQYD001163</span></p>
-                <p>物业地址：<span>当代国际花园当代国际花园当代国际花园当代国际花园当</span></p>
+                <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
+            
             </div>
             <div class="col-li col-li2">
-                <p>申请日期：<span>2018/9/14</span></p>
-                <p>发起人：<span>当代一店-夏雨天</span></p>
-                <p>合同类型：<span>出租</span></p>
+                <p>合同类型：<span>{{layerAudit.contractType}}</span></p>
+                <p>后期状态：<span>{{layerAudit.statusLaterStage}}</span></p>
+                <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
+                
+                
             </div>
             <div class="col-li col-li2">
-                <p>成交总价：<span>3000元</span></p>
-                <p>可分配业绩：<span>3000元</span></p>
-                <p>已结算：<span>3000元</span></p>
+                <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
+                <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
+                <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
             </div>
-            <div class="col-li col-li2">
-                <p>合同总实收：<span>3000元</span></p>
-                <p>本次结算：<span>3000元</span></p>
-                <p>实际结算：<span>3000元</span></p>
-            </div>
-            <div class="textareabox">
+            <!-- <div class="textareabox">
                 <span class="tit">金融服务费：</span>
                 <el-input maxlength="9"><i slot="suffix" class="i-slot">元（成本）</i></el-input>
-            </div>
+            </div> -->
             </div>
 
             <!-- 表格 -->
             <div class="audit-col">
-            <el-table :data="jiesuanData" border style="width: 100%" class="table">
-            <el-table-column prop="a1" label="合作门店"></el-table-column>
-            <el-table-column prop="a2" label="分成比例"></el-table-column>
-            <el-table-column prop="a3" label="本次违约金"></el-table-column>
-            <el-table-column prop="a4" label="本次特许服务费"></el-table-column>
-            <el-table-column prop="a5" label="本次刷卡手续费"></el-table-column>
-            <el-table-column prop="a6" label="本次实收分成"></el-table-column>
+            <el-table :data="layerAudit.storeSettle" border style="width: 100%" class="table">
+            <el-table-column prop="level4" label="合作门店"></el-table-column>
+            <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
+            <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
+            <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
             </el-table>            
             </div>
 
@@ -72,6 +75,8 @@
 </template>
 
 <script>
+  import {FILTER} from "@/assets/js/filter";
+  import {TOOL} from "@/assets/js/common";
 export default {
     props: {
         contId: {
@@ -89,24 +94,10 @@ export default {
              // 弹框里用到的
             dialogImageUrl: '',
             dialogVisible: false,
-            jiesuanData:[{
-                a1: '当代一店',
-                a2: '20%',
-                a3: '金额*分成比例',
-                a4: '',
-                a5: '',
-                a6: '',
+            
+            layerAudit:{
 
             },
-            {
-                a1: '当代二店',
-                a2: '20%',
-                a3: '金额*分成比例',
-                a4: '400',
-                a5: '300',
-                a6: '1200',
-
-            }],
         }
     },
 
@@ -119,14 +110,38 @@ export default {
         },
     },
 
+    filters: {
+       getDate(val) {
+         return TOOL.dateFormat(val);
+       }
+    },
+
     methods: {
         // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
           return this.clientHei - 265 + 'px'
       },
-      close() {
-          this.$emit("closeSettle");
-	},
+
+      //根据合同id获取结算申请弹框的内容
+      getData(){
+        let param = {
+            id: 5           
+          }
+          this.$ajax         
+          .get("/api/settlement/getSettlById", param)
+          .then(res => {
+            console.log(res);
+            let data = res.data;
+            if (res.data.status === 200) {
+              this.layerAudit = data.data
+             
+            }
+            
+
+          }).catch(error => {
+            console.log(error)
+          })
+      },
     },
 
      mounted() {
@@ -182,6 +197,16 @@ export default {
                 overflow: hidden;
                 clear: left;
                 margin-bottom: 18px;
+                &:last-child{
+                margin-bottom: 0;
+                }
+            
+            }
+
+            .col-li2{
+                p:nth-child(2n){
+                width: 250px;
+                }
                 p{
                 float: left;
                 &:first-child{
@@ -196,11 +221,7 @@ export default {
                 }
                 }
             }
-            .col-li2{
-                p:nth-child(2n){
-                width: 270px;
-                }
-            }
+
             .textareabox{
                 display: flex;
                 align-items: center;

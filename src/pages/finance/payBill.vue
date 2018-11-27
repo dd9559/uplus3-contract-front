@@ -44,7 +44,7 @@
         </el-table-column>
         <el-table-column align="center" label="金额大写">
           <template slot-scope="scope">
-            <span v-if="amount">{{amount.balance|formatChinese}}</span>
+            <span>{{form.smallAmount|formatChinese}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="可支配金额">
@@ -69,17 +69,17 @@
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="收款银行">
           <template slot-scope="scope">
-            <span>{{bankCount.bankName|formatNull}}</span>
+            <span>{{scope.row.bankName|formatNull}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-model="bankCount.userName">
+            <input type="text" class="no-style" placeholder="请输入" v-model="scope.row.userName">
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
           <template slot-scope="scope">
-            <input type="number" class="no-style" placeholder="请输入6228480059053520074" maxlength="20" v-model="bankCount.cardNumber" @input="getBank">
+            <input type="number" class="no-style" placeholder="请输入6228480059053520074" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -97,7 +97,7 @@
       <p><label class="form-label">付款凭证</label></p>
       <ul class="upload-list">
         <li>
-          <file-up class="upload-context">
+          <file-up class="upload-context" :rules="fileRules">
             <i class="iconfont icon-shangchuan"></i>
             <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
           </file-up>
@@ -143,7 +143,7 @@
     data() {
       return {
         form: {
-          contId:2,
+          contId:1,
           remark:'',
           inObj:'',
           inObjId:'',
@@ -151,35 +151,60 @@
           moneyType:'',
           moneyTypePid:'',
           smallAmount:'',
-          filePath:'123',
-        },
-        //收款账户
-        bankCount:{
-          bankName:'',
-          userName:'',
-          cardNumber:'',
-          amount:''
         },
         moneyType: [],
         list:[
-          {}
+          {
+            bankName:'',
+            userName:'',
+            cardNumber:'',
+            amount:''
+          }
         ],
         dropdown:[],
-        amount:null
+        amount:null,
+        fileRules:['.png','.jpg','.jpeg']
       }
     },
     created(){
       this.getDropdown()
       this.getMoneyType()
       this.getAdmin()
+
+      let type = this.$route.query.edit
+      if (type) {
+        this.getDetails({type: type, payId: this.$route.query.id})
+      }
     },
     methods:{
+      /**
+       * 修改款单，获取初始数据
+       */
+      getDetails: function (param) {
+        this.$ajax.get('/api/payInfo/selectPayInfoDetail', param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            let obj = {
+              remark: res.data.remark,
+              inObj: res.data.inObjName,
+              inObjId: res.data.inObjId,
+              inObjType:res.data.inObjType.value,
+              moneyType: res.data.moneyType,
+              moneyTypePid: res.data.moneyTypePid,
+              smallAmount: res.data.amount,
+              id: res.data.id
+            }
+            this.list = res.data.account
+            this.form = Object.assign({}, this.form, obj)
+          }
+        })
+      },
       /**
        * 获取下拉框数据
        */
       getDropdown:function () {
         let param = {
-          contId:15
+          contId:1
         }
         this.$ajax.get('/api/payInfo/selectValue',param).then(res=>{
           res=res.data
@@ -224,20 +249,20 @@
       /**
        * 根据卡号获取银行信息
        */
-      getBank:function () {
+      getBank:function (row) {
         let param = {
-          cardNumber:this.bankCount.cardNumber
+          cardNumber:row.cardNumber
         }
-        if(this.bankCount.cardNumber.length>=16&&this.bankCount.cardNumber.length<=20){
+        if(param.cardNumber.length>=16&&param.cardNumber.length<=20){
           this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
             res=res.data
             if(res.status===200){
-              this.bankCount.bankName = res.data.bankName
+              row.bankName = res.data.bankName
             }
           })
         }
-        if(this.bankCount.cardNumber.length>20){
-          this.bankCount.cardNumber = this.bankCount.cardNumber.substr(0,20)
+        if(param.cardNumber.length>20){
+          row.cardNumber = row.cardNumber.substr(0,20)
         }
       },
       /**
@@ -273,18 +298,34 @@
       },
       goResult:function () {
         let param = Object.assign({},this.form)
-        param.account = JSON.stringify([].concat(this.bankCount))
+        param.smallAmount = parseInt(param.smallAmount)
+        this.list[0].amount = param.smallAmount
+        param.inAccount = [].concat(this.list)
+        param.filePath = ['123']
 
-        this.$tool.checkForm(this.form,rule).then(()=>{
-          this.$tool.checkForm(this.bankCount,rule).then(()=>{
-            this.$ajax.post('/api/payInfo/savePayment', param).then(res => {
-              res = res.data
-              if (res.status === 200) {
-                this.$router.push({
-                  path: 'payResult'
-                })
-              }
-            })
+        this.$tool.checkForm(param,rule).then(()=>{
+          this.$tool.checkForm(this.list[0],rule).then(()=>{
+            if(this.$route.query.edit){
+              delete param.contId
+              this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
+                res = res.data
+                if (res.status === 200) {
+                  this.$message({
+                    message:'修改成功'
+                  })
+                  this.$router.go(-1)
+                }
+              })
+            }else {
+              this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
+                res = res.data
+                if (res.status === 200) {
+                  this.$router.push({
+                    path: 'payResult'
+                  })
+                }
+              })
+            }
           }).catch((error)=>{
             this.$message({
               message:`${error.title}${error.msg}`
@@ -295,6 +336,18 @@
             message:`${error.title}${error.msg}`
           })
         })
+      }
+    },
+    watch:{
+      list:function (val) {
+        if(val.length===0){
+          this.list.push({
+            bankName:'',
+            userName:'',
+            cardNumber:'',
+            amount:''
+          })
+        }
       }
     }
   }

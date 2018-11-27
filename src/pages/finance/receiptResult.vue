@@ -45,16 +45,11 @@
         list:[
           {}
         ],
-        type:1,//1=POS收款单
+        type:1,//1=创建 2=录入
       }
     },
     mounted(){
-      this.steps.find(item=>{
-        if(!item.state){
-          this.activeStep=item.index-1
-          return true
-        }
-      })
+
     },
     methods:{
       goBack:function (page) {

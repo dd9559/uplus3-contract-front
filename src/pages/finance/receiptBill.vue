@@ -15,7 +15,7 @@
       </div>
       <div class="input-group">
         <label class="form-label">收款人:</label>
-        <el-select v-model="form.inObjectId" placeholder="请选择" @change="getOption(form.inObjectId,2)">
+        <el-select v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjectId,2)">
           <el-option
             v-for="item in receiptMan"
             :key="item.empId"
@@ -32,14 +32,16 @@
             @click="choseType(item)">{{item.name}}
         </li>
       </ul>
-      <el-table v-if="activeType===1" class="collapse-cell" border :data="moneyType" :span-method="collapseRow" style="width: 100%"
+      <el-table v-if="activeType===1" class="collapse-cell" border :data="moneyType" :span-method="collapseRow"
+                style="width: 100%"
                 header-row-class-name="theader-bg">
         <el-table-column align="center" prop="name" label="款类（大类）"></el-table-column>
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <el-radio v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}</el-radio>
+                <el-radio v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}
+                </el-radio>
               </li>
             </ul>
           </template>
@@ -48,7 +50,8 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===item.key">
+                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount"
+                       v-if="form.moneyType===item.key">
                 <span v-else>请输入</span>
               </li>
             </ul>
@@ -67,7 +70,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-table v-else class="collapse-cell" border :data="moneyTypeOther[0].moneyTypes" :span-method="collapseRow" style="width: 100%"
+      <el-table v-else class="collapse-cell" border :data="moneyTypeOther[0].moneyTypes" :span-method="collapseRow"
+                style="width: 100%"
                 header-row-class-name="theader-bg" key="other">
         <el-table-column align="center" label="款类（大类）">
           <template slot-scope="scope">{{moneyTypeOther[0].name}}</template>
@@ -75,14 +79,17 @@
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
             <div class="box box-left">
-              <el-radio v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">{{scope.row.name}}</el-radio>
+              <el-radio v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">
+                {{scope.row.name}}
+              </el-radio>
             </div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
             <div class="box">
-              <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===scope.row.key">
+              <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount"
+                     v-if="form.moneyType===scope.row.key">
               <span v-else>请输入</span>
             </div>
           </template>
@@ -108,9 +115,9 @@
               <el-select v-model="activeAdmin" placeholder="请选择" v-if="form.moneyType===scope.row.key">
                 <el-option
                   v-for="item in account"
-                  :key="item.id"
+                  :key="item.bankCard"
                   :label="`${item.bankAccountName} ${item.bankBranchName} ${item.bankCard}`"
-                  :value="item.id">
+                  :value="item.bankCard">
                   {{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
                 </el-option>
               </el-select>
@@ -141,7 +148,8 @@
         </el-table-column>
         <el-table-column align="center" label="账户 ">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.cardNumber" class="no-style" placeholder="请输入" @input="getBank(scope.row,scope.$index)">
+            <input type="text" v-model="scope.row.cardNumber" class="no-style" placeholder="请输入"
+                   @input="getBank(scope.row,scope.$index)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -162,7 +170,7 @@
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="cardOpera('add')">新增</el-button>
-            <el-button type="text" @click="cardOpera('delete',scope.row)">删除</el-button>
+            <el-button type="text" @click="cardOpera('delete',scope.row,scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -195,59 +203,57 @@
   let cardID = 2;
 
   export default {
-    mixins:[MIXINS],
+    mixins: [MIXINS],
     data() {
       return {
         form: {
-          contId:'',
-          remark:'',
-          inObj:'',
-          inObjectId:'',
+          contId: '',
+          remark: '',
+          inObj: '',
+          inObjId: '',
           // inObjType:'',
-          outObj:'',
-          outObjId:'',
-          outObjType:'',
-          moneyType:'',
-          moneyTypePid:'',
-          smallAmount:'',
-          proceedsType:'',
-          filePath:'',
+          outObj: '',
+          outObjId: '',
+          outObjType: '',
+          moneyType: '',
+          moneyTypePid: '',
+          smallAmount: '',
+          proceedsType: '',
         },
         types: [
           {
-            id:1,
-            name:'收入',
+            id: 1,
+            name: '收入',
           },
           {
-            id:2,
-            name:'代收代付'
+            id: 2,
+            name: '代收代付'
           }
         ],
         activeType: 1,
-        moneyType:[],
-        moneyTypeOther:[],
+        moneyType: [],
+        moneyTypeOther: [],
         list: [{}],
-        cardList:[
+        cardList: [
           {
-            id:1,
-            bankName:'',
-            userName:'',
-            cardNumber:'',
-            amount:'',
-            orderNo:'',
-            fee:''
+            bankName: '',
+            userName: '',
+            cardNumber: '',
+            amount: '',
+            orderNo: '',
+            fee: ''
           }
         ],
         amount: {
-          balance:0
+          balance: 0
         },
         dictionary: {
           '534': ''
         },
-        activeAdmin:'',
-        account:[],
-        dropdown:[],
-        receiptMan:[]
+        activeAdmin: '',
+        account: [],
+        dropdown: [],
+        receiptMan: []
       }
     },
     created() {
@@ -256,88 +262,142 @@
       this.getAcount()
       this.getDropdown()
       this.getReceiptman()
+      let type = this.$route.query.edit
+      if (type) {
+        this.getDetails({type: type, payId: this.$route.query.id})
+      }
     },
     methods: {
       /**
+       * 修改款单，获取初始数据
+       */
+      getDetails: function (param) {
+        this.$ajax.get('/api/payInfo/selectPayInfoDetail', param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            let obj = {
+              remark: res.data.remark,
+              inObj: res.data.inObjName,
+              inObjId: res.data.inObjId,
+              // inObjType:'',
+              outObj: res.data.outObj,
+              outObjId: res.data.outObjId,
+              outObjType: res.data.outObjType.value,
+              moneyType: res.data.moneyType,
+              moneyTypePid: res.data.moneyTypePid,
+              smallAmount: res.data.amount,
+              proceedsType: res.data.type,
+              id: res.data.id
+            }
+            this.cardList = res.data.account
+            if(res.data.inAccount&&res.data.inAccount.length>0){
+              this.activeAdmin = res.data.inAccount[0].cardNumber
+            }
+            this.form = Object.assign({}, this.form, obj)
+          }
+        })
+      },
+      /**
        * 获取所有款类
        */
-      getMoneyType:function () {
-        this.$ajax.get('/api/payInfo/selectMoneyType').then(res=>{
-          res=res.data
-          if(res.status===200){
+      getMoneyType: function () {
+        this.$ajax.get('/api/payInfo/selectMoneyType').then(res => {
+          res = res.data
+          if (res.status === 200) {
             this.moneyType = this.moneyType.concat(res.data)
-            res.data.forEach((item,index)=>{
-              if(item.name==='代收代付'){
-                this.moneyType.splice(index,1)
-                this.moneyTypeOther = res.data.splice(index,1)
+            res.data.forEach((item, index) => {
+              if (item.name === '代收代付') {
+                this.moneyType.splice(index, 1)
+                this.moneyTypeOther = res.data.splice(index, 1)
               }
             })
           }
         })
       },
-      goResult:function () {
-        let param = Object.assign({},this.form)
-        //测试用
-        param.contId = 15
-        param.filePath = '123'
+      goResult: function () {
+        let param = Object.assign({}, this.form)
 
-        if(this.activeType===1){
-          delete param.proceedsType
+        if (this.activeType === 1) {
+          param.outAccount=[]
+          param.inAccount=[]
         }
-        if(this.activeType===2){
-          param.accountOut = JSON.stringify([].concat(this.cardList))
-          this.account.find(item=>{
-            if(item.id===this.activeAdmin){
+        if (this.activeType === 2) {
+          param.outAccount = [].concat(this.cardList)
+          this.account.find(item => {
+            if (item.bankCard === this.activeAdmin) {
               let obj = {
-                bankName:item.bankBranchName,
-                userName:item.bankAccountName,
-                cardNumber:item.bankCard,
-                amount:this.form.smallAmount
+                bankName: item.bankBranchName,
+                userName: item.bankAccountName,
+                cardNumber: item.bankCard,
+                amount: this.form.smallAmount
               }
-              param.accountIn = JSON.stringify([].concat(obj))
+              param.inAccount = [].concat(obj)
             }
           })
         }
-        this.$ajax.post('/api/payInfo/saveProceeds',param).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.$router.push({
-              path: 'receiptResult'
-            })
-          }
-        })
+        if (this.$route.query.edit) {
+          param.filePath = ['123']
+          this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
+            res=res.data
+            if(res.status===200){
+              this.$message({
+                message:'修改成功'
+              })
+              this.$router.go(-1)
+            }
+          })
+        } else {
+          //测试用
+          param.contId = 1
+          param.filePath = ['123']
+          this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              this.$router.push({
+                path: 'receiptResult'
+              })
+            }
+          })
+        }
       },
       choseType: function (item) {
+        let obj = {
+          moneyType: '',
+          moneyTypePid: '',
+          smallAmount: '',
+          proceedsType: '',
+        }
+        // this.activeAdmin = ''
         this.activeType = item.id
-        this.$tool.clearForm(this.form)
+        // this.form = Object.assign({},this.form,obj)
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
-        if(columnIndex>=3&&this.activeType===1){
+        if (columnIndex >= 3 && this.activeType === 1) {
           if (rowIndex === 0) {
-            return [this.moneyType.length,1]
+            return [this.moneyType.length, 1]
           } else {
-            return [0,0]
+            return [0, 0]
           }
         }
-        if(columnIndex===0&&this.activeType===2){
-          if(rowIndex===0){
-            return [this.moneyTypeOther[0].moneyTypes.length,1]
-          }else {
-            return [0,0]
+        if (columnIndex === 0 && this.activeType === 2) {
+          if (rowIndex === 0) {
+            return [this.moneyTypeOther[0].moneyTypes.length, 1]
+          } else {
+            return [0, 0]
           }
         }
       },
       /**
        * 获取下拉框数据
        */
-      getDropdown:function () {
+      getDropdown: function () {
         let param = {
-          contId:15
+          contId: 1
         }
-        this.$ajax.get('/api/payInfo/selectValue',param).then(res=>{
-          res=res.data
-          if(res.status===200){
+        this.$ajax.get('/api/payInfo/selectValue', param).then(res => {
+          res = res.data
+          if (res.status === 200) {
             this.dropdown = res.data
           }
         })
@@ -345,10 +405,10 @@
       /**
        * 获取收款人
        */
-      getReceiptman:function () {
-        this.$ajax.get('/api/organize/currentdep/employee').then(res=>{
-          res=res.data
-          if(res.status===200){
+      getReceiptman: function () {
+        this.$ajax.get('/api/organize/currentdep/employee').then(res => {
+          res = res.data
+          if (res.status === 200) {
             this.receiptMan = res.data
           }
         })
@@ -356,10 +416,10 @@
       /**
        * 获取收款账户
        */
-      getAcount:function () {
-        this.$ajax.get('/api/payInfo/selectProceedsAccount').then(res=>{
-          res=res.data
-          if(res.status===200){
+      getAcount: function () {
+        this.$ajax.get('/api/payInfo/selectProceedsAccount').then(res => {
+          res = res.data
+          if (res.status === 200) {
             this.account = res.data
           }
         })
@@ -368,89 +428,106 @@
        * 获取下拉框选择对象
        * @param item
        */
-      getOption:function (item,type) {
+      getOption: function (item, type) {
         let obj = {}
-        let list = type===1?this.dropdown:this.receiptMan
-        list.find(tip=>{
-          if(tip[type===1?'value':'empId']===item){
-            if(type===1){
+        let list = type === 1 ? this.dropdown : this.receiptMan
+        list.find(tip => {
+          if (tip[type === 1 ? 'value' : 'empId'] === item) {
+            if (type === 1) {
               obj.outObjId = tip.custId
               obj.outObj = tip.custName
-            }else {
+            } else {
               obj.inObj = tip.name
             }
             return
           }
         })
 
-        this.form = Object.assign({},this.form,obj)
+        this.form = Object.assign({}, this.form, obj)
       },
       /**
        * 刷卡资料补充
        */
-      cardOpera:function (type,row) {
-        if(type==='add'){
+      cardOpera: function (type, row,index) {
+        if (type === 'add') {
           let cell = {
-            id:cardID++,
-            bankName:'',
-            userName:'',
-            cardNumber:'',
-            amount:'',
-            orderNo:'',
-            fee:''
+            bankName: '',
+            userName: '',
+            cardNumber: '',
+            amount: '',
+            orderNo: '',
+            fee: ''
           }
           this.cardList.push(cell)
-        }else {
-          this.cardList.find((item,index)=>{
-            if(item.id===row.id){
-              this.cardList.splice(index,1)
-              return
-            }
-          })
+        } else {
+          this.cardList.splice(index, 1)
         }
       },
       /**
        * 根据卡号获取银行信息
        */
-      getBank:function (row,index) {
+      getBank: function (row, index) {
         let param = {
-          cardNumber:row.cardNumber
+          cardNumber: row.cardNumber
         }
-        if(param.cardNumber.length>=16){
-          this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
-            res=res.data
-            if(res.status===200){
+        if (param.cardNumber.length >= 16) {
+          this.$ajax.get('/api/system/selectBankNameByCard', param).then(res => {
+            res = res.data
+            if (res.status === 200) {
               this.cardList[index].bankName = res.data.bankName
             }
           })
         }
       },
-      getType:function (label,type='init') {
-        if(type==='init'){
+      getType: function (label, type = 'init') {
+        let obj = {
+          /*moneyType: '',
+          moneyTypePid: '',*/
+          smallAmount: '',
+          proceedsType: '',
+        }
+        this.activeAdmin = ''
+        this.form = Object.assign({},this.form,obj)
+        if (type === 'init') {
           this.form.moneyTypePid = label.id
-        }else {
+        } else {
           this.form.moneyTypePid = this.moneyTypeOther[0].id
         }
       },
+    },
+    watch:{
+      cardList:function (val) {
+        if(val.length===0){
+          this.cardList.push({
+            bankName: '',
+            userName: '',
+            cardNumber: '',
+            amount: '',
+            orderNo: '',
+            fee: ''
+          })
+        }
+      }
     }
   }
 </script>
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
-  /deep/.collapse-cell{
+
+  /deep/ .collapse-cell {
     margin-top: 13px !important;
-    .el-table__row{
-      >td{
+    .el-table__row {
+      > td {
         padding: 0;
-        .cell{
+        .cell {
           padding: 0;
-          >ul{
-            >li{
+          > ul {
+            > li {
               padding: 12px 10px;
               border-bottom: 1px solid #ebeef5;
               text-align: left;
-              &:last-of-type{
+              &:last-of-type {
                 border: 0;
               }
             }
@@ -459,6 +536,7 @@
       }
     }
   }
+
   .checkbox-info {
     display: flex;
     align-items: center;
@@ -483,14 +561,16 @@
       margin-left: 10px;
     }
   }
-  .iconfont{
+
+  .iconfont {
     color: #A1A1A1;
     font-size: @size-12;
     margin-left: 10px;
   }
-  .box{
+
+  .box {
     padding: 10px;
-    &-left{
+    &-left {
       text-align: left;
     }
   }
@@ -530,15 +610,15 @@
         }
       }
     }
-    .table-total{
+    .table-total {
       margin: 0 0 47px;
       padding: 0;
-      >li{
+      > li {
         display: inline-block;
         font-weight: bold;
         font-size: @size-base;
         margin-right: 20px;
-        >span{
+        > span {
           color: @color-red;
         }
       }
@@ -585,32 +665,32 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        .upload-context{
+        .upload-context {
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          >i{
+          > i {
             color: @bg-th;
             width: 58px;
             height: 58px;
             border-radius: 50%;
             overflow: hidden;
-            &.iconfont{
+            &.iconfont {
               position: relative;
               display: flex;
               align-items: center;
-              &:before{
+              &:before {
                 font-size: 58px;
               }
             }
           }
-          >p{
+          > p {
             font-size: @size-12;
             color: @color-99A;
             padding: 12px 20px;
-            >span{
-              &:first-of-type{
+            > span {
+              &:first-of-type {
                 font-size: @size-base;
                 color: @color-blue;
               }

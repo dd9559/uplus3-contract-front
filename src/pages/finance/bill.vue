@@ -1,24 +1,24 @@
 <template>
   <div class="view">
-    <ScreeningTop>
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
       <div class="content">
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select size="small" v-model="searchForm.contType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
             <el-option
               v-for="item in dictionary['10']"
               :key="item.key"
               :label="item.value"
-              :value="item.parentId">
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>查询时间:</label>
           <div class="time-picker">
-            <el-select size="small" v-model="searchForm.timeType" placeholder="请选择">
+            <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
               <el-option
-                v-for="item in 5"
+                v-for="item in $tool.dropdown.dateType"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -37,15 +37,15 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select size="small" v-model="searchForm.deptId" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.deptId" placeholder="请选择">
             <el-option
-              v-for="item in dictionary['10']"
+              v-for="item in 5"
               :key="item.value"
               :label="item.label"
               :value="item.value">
             </el-option>
           </el-select>
-          <el-select class="margin-left-10" size="small" v-model="searchForm.empId" placeholder="请选择" v-show="searchForm.deptId">
+          <el-select :clearable="true" class="margin-left-10" size="small" v-model="searchForm.empId" placeholder="请选择" v-show="searchForm.deptId">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -56,68 +56,68 @@
         </div>
         <div class="input-group">
           <label>票据状态:</label>
-          <el-select size="small" v-model="searchForm.billStatus" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.billStatus" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['33']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收款账户:</label>
-          <el-select size="small" v-model="searchForm.proAccount" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.proAccount" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['32']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付状态:</label>
-          <el-select size="small" v-model="searchForm.checkStatus" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.checkStatus" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['23']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付款类:</label>
-          <el-select size="small" v-model="searchForm.moneyType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['25']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付方式:</label>
-          <el-select size="small" v-model="searchForm.payMethod" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.payMethod" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['24']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
     <div class="view-context">
       <div class="table-tool">
-        <h4 title="hello">数据列表</h4>
+        <h4><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <ul>
           <li>
             收款<span>{{tableTotal.ProceedsCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.ProceedsSum|zeroFormatter}}</span>元；
@@ -179,8 +179,8 @@
         <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
             <el-button type="text" v-show="scope.row.type===1">开票</el-button>
-            <el-button type="text">修改</el-button>
-            <el-button type="text">作废</el-button>
+            <el-button type="text" @click="btnOpera(scope.row,1)">修改</el-button>
+            <el-button type="text" @click="btnOpera(scope.row,2)">作废</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -256,6 +256,9 @@
       this.getDictionary()
     },
     methods: {
+      reset: function () {
+        this.$tool.clearForm(this.searchForm)
+      },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
@@ -297,9 +300,31 @@
           }
         })
       },
-      operation:function (opera) {
-        if(opera==='reset'){
-          this.$tool.clearForm(this.searchForm)
+      btnOpera:function (row,type) {
+        if(type===1){
+          this.$router.push({
+            path:row.type===1?'receiptBill':'payBill',
+            query:{
+              edit:row.type,
+              id:row.id
+            }
+          })
+        }else {
+          this.$confirm('是否要作废','提示',{
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(()=>{
+            this.$ajax.put('/api/payInfo/updateCheckStatus',{payId:row.id},2).then(res=>{
+              res=res.data
+              debugger
+              if(res.status===200){
+                this.getData()
+              }
+            })
+          }).catch(()=>{
+
+          })
         }
       }
     },
@@ -382,6 +407,11 @@
       position: relative;
       display: flex;
       align-items: center;
+      >h4{
+        >i{
+          margin-right: 8px;
+        }
+      }
       >ul{
         display: flex;
         margin-left: 20px;

@@ -79,6 +79,12 @@
       </div>
     </ScreeningTop>
     <div class="view-context">
+      <div class="table-tool">
+        <h4><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
+        <p>
+          <el-button type="primary">导出</el-button>
+        </p>
+      </div>
       <el-table :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
@@ -195,11 +201,28 @@
   }
   .view-context{
     background-color: @color-white;
-    padding: 20px;
+    padding: 0 20px 20px;
     /deep/ .theader-bg{
       >th{
         background-color: @bg-th;
       }
+    }
+  }
+  .table-tool{
+    height: 60px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    >h4{
+      >i{
+        margin-right: 8px;
+      }
+    }
+    >p{
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform:translateY(-50%);
     }
   }
 </style>

@@ -91,6 +91,9 @@
     .el-form-item {
       display: flex;
       margin-bottom: 0;
+      /deep/ .el-input {
+        width: 150px;
+      }
     }
   }
   .tabs {
