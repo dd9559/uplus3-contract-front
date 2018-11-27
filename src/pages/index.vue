@@ -169,7 +169,7 @@
                 path:'operationLog'
               },
               {
-                name:'审批流程',
+                name:'审核流程',
                 path:'approvalProcess'
               }
             ]
