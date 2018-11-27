@@ -211,7 +211,7 @@
         </el-table-column>
         <el-table-column align="left" label="结算状态" width="100">
           <template slot-scope="scope">
-            <el-button type="text" size="medium">{{scope.row.resultState.label}}</el-button>
+            <el-button type="text" size="medium" @click="closeAccount">{{scope.row.resultState.label}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="业绩状态" width="100">
@@ -428,7 +428,7 @@ export default {
         this.contractCode = item.code;
         this.tiaoyong = true;
       }else{
-        this.$alert('存在未审核的调佣申请,请处理后重试', '提示', {
+        this.$alert('已存在未审核的调佣申请，不允许重复提交！', '提示', {
           confirmButtonText: '确定',
         });
       }
@@ -509,6 +509,10 @@ export default {
           this.getContractList()
         }
       })
+    },
+    //发起结算
+    closeAccount(){
+
     }
   }
 };
