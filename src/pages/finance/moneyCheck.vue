@@ -18,9 +18,9 @@
           <div class="time-picker">
             <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
               <el-option
-                v-for="item in 5"
+                v-for="item in $tool.dropdown.dateType"
                 :key="item.value"
-                :label="item.value"
+                :label="item.label"
                 :value="item.value">
               </el-option>
             </el-select>
@@ -108,6 +108,12 @@
       </div>
     </ScreeningTop>
     <div class="view-context">
+      <div class="table-tool">
+        <h4><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
+        <p>
+          <el-button type="primary">导出</el-button>
+        </p>
+      </div>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" min-width="150" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
@@ -333,11 +339,28 @@
 
   .view-context {
     background-color: @color-white;
-    padding: 20px;
+    padding: 0 20px 20px;
     /deep/ .theader-bg {
       > th {
         background-color: @bg-th;
       }
+    }
+  }
+  .table-tool{
+    height: 60px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    >h4{
+      >i{
+        margin-right: 8px;
+      }
+    }
+    >p{
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform:translateY(-50%);
     }
   }
 </style>

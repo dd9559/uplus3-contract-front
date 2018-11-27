@@ -69,17 +69,17 @@
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="收款银行">
           <template slot-scope="scope">
-            <span>{{bankCount.bankName|formatNull}}</span>
+            <span>{{scope.row.bankName|formatNull}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-model="bankCount.userName">
+            <input type="text" class="no-style" placeholder="请输入" v-model="scope.row.userName">
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
           <template slot-scope="scope">
-            <input type="number" class="no-style" placeholder="请输入6228480059053520074" maxlength="20" v-model="bankCount.cardNumber" @input="getBank">
+            <input type="number" class="no-style" placeholder="请输入6228480059053520074" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -152,16 +152,14 @@
           moneyTypePid:'',
           smallAmount:'',
         },
-        //收款账户
-        bankCount:{
-          bankName:'',
-          userName:'',
-          cardNumber:'',
-          amount:''
-        },
         moneyType: [],
         list:[
-          {}
+          {
+            bankName:'',
+            userName:'',
+            cardNumber:'',
+            amount:''
+          }
         ],
         dropdown:[],
         amount:null,
@@ -194,7 +192,6 @@
               moneyType: res.data.moneyType,
               moneyTypePid: res.data.moneyTypePid,
               smallAmount: res.data.amount,
-              filePath: '',
               id: res.data.id
             }
             this.list = res.data.account
@@ -252,20 +249,20 @@
       /**
        * 根据卡号获取银行信息
        */
-      getBank:function () {
+      getBank:function (row) {
         let param = {
-          cardNumber:this.bankCount.cardNumber
+          cardNumber:row.cardNumber
         }
-        if(this.bankCount.cardNumber.length>=16&&this.bankCount.cardNumber.length<=20){
+        if(param.cardNumber.length>=16&&param.cardNumber.length<=20){
           this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
             res=res.data
             if(res.status===200){
-              this.bankCount.bankName = res.data.bankName
+              row.bankName = res.data.bankName
             }
           })
         }
-        if(this.bankCount.cardNumber.length>20){
-          this.bankCount.cardNumber = this.bankCount.cardNumber.substr(0,20)
+        if(param.cardNumber.length>20){
+          row.cardNumber = row.cardNumber.substr(0,20)
         }
       },
       /**
@@ -301,20 +298,34 @@
       },
       goResult:function () {
         let param = Object.assign({},this.form)
-        param.inAccoun = JSON.stringify([].concat(this.bankCount))
-        param.filePath = JSON.stringify(['123'])
-        // param.filePath = ['123']
+        param.smallAmount = parseInt(param.smallAmount)
+        this.list[0].amount = param.smallAmount
+        param.inAccount = [].concat(this.list)
+        param.filePath = ['123']
 
-        this.$tool.checkForm(this.form,rule).then(()=>{
-          this.$tool.checkForm(this.bankCount,rule).then(()=>{
-            this.$ajax.postJSON('/api/payInfo/savePayment', param,2).then(res => {
-              res = res.data
-              if (res.status === 200) {
-                this.$router.push({
-                  path: 'payResult'
-                })
-              }
-            })
+        this.$tool.checkForm(param,rule).then(()=>{
+          this.$tool.checkForm(this.list[0],rule).then(()=>{
+            if(this.$route.query.edit){
+              delete param.contId
+              this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
+                res = res.data
+                if (res.status === 200) {
+                  this.$message({
+                    message:'修改成功'
+                  })
+                  this.$router.go(-1)
+                }
+              })
+            }else {
+              this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
+                res = res.data
+                if (res.status === 200) {
+                  this.$router.push({
+                    path: 'payResult'
+                  })
+                }
+              })
+            }
           }).catch((error)=>{
             this.$message({
               message:`${error.title}${error.msg}`
@@ -325,6 +336,18 @@
             message:`${error.title}${error.msg}`
           })
         })
+      }
+    },
+    watch:{
+      list:function (val) {
+        if(val.length===0){
+          this.list.push({
+            bankName:'',
+            userName:'',
+            cardNumber:'',
+            amount:''
+          })
+        }
       }
     }
   }

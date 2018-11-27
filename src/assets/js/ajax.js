@@ -41,12 +41,12 @@ let api = {
         return res
       })
   },
-  put: function(url, param) {
-    return axios.put(url, JSON.stringify(param),{
-      headers:{
-        'Content-Type':'application/x-www-form-urlcoded'
-      }
-    }).then(res => {
+  put: function(url, param,type=1) {
+    let header={}
+    if(type===1){
+      header['Content-Type']='application/json'
+    }
+    return axios.put(url, type===1?JSON.stringify(param):qs.stringify(param),{headers:header}).then(res => {
       return res
     })
   }
