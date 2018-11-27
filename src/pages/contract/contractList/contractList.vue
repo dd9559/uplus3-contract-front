@@ -211,7 +211,7 @@
         </el-table-column>
         <el-table-column align="left" label="结算状态" width="100">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="closeAccount">{{scope.row.resultState.label}}</el-button>
+            <el-button type="text" size="medium" @click="closeAccount(scope.row.id)">{{scope.row.resultState.label}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="业绩状态" width="100">
@@ -222,7 +222,7 @@
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
             <div style="text-align:center">
-              <el-button type="text" size="medium" v-if="scope.row.contState.value!=3" @click="upload(scope.row.code)">上传</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.contState.value!=3" @click="upload(scope.row.id)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview">预览</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===2" @click="goCheck(scope.row.id)">审核</el-button>
               <el-button type="text" size="medium" @click="toLayerAudit(scope.row)">调佣</el-button>
@@ -238,8 +238,10 @@
     <flowAccount :dialogTableVisible="water" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 调佣弹框 -->
     <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
-    <!-- 变更/解约查看弹窗 -->
-    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <!-- 结算弹窗 -->
+    <layerSettle :settleDialog="jiesuan" :contId="settleId" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
+    <!-- 变更/解约查看 合同主体上传弹窗 -->
+    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
   </div>
 </template>
            
@@ -247,6 +249,7 @@
 import ScreeningTop from "@/components/ScreeningTop";
 import flowAccount from "@/components/flowAccount";
 import layerAudit from "../contractDialog/layerAudit";
+import layerSettle from "../contractDialog/layerSettle";
 import changeCancel from "../contractDialog/changeCancel";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
@@ -257,6 +260,7 @@ export default {
     ScreeningTop,
     flowAccount,
     layerAudit,
+    layerSettle,
     changeCancel
   },
   data() {
@@ -271,6 +275,7 @@ export default {
       water: false,
       contractCode: "",
       tiaoyong: false,
+      jiesuan: false,
       changeCancel: false,
       dialogType: "",
       dictionary: {
@@ -288,7 +293,10 @@ export default {
       //部门选择列表
       options:[],
       //经纪人列表
-      brokersList:[]
+      brokersList:[],
+      //合同id
+      contId:'',
+      settleId:''
     };
   },
   created() {
@@ -460,10 +468,11 @@ export default {
       }
     },
     //上传合同主体
-    upload(code) {
-      console.log(code);
+    upload(id) {
+      //console.log(code);
       this.changeCancel = true;
       this.dialogType = "upload";
+      this.contId = id
     },
     //获取当前部门
     getDeps(key){
@@ -510,9 +519,17 @@ export default {
         }
       })
     },
-    //发起结算
-    closeAccount(){
-
+    //发起结算弹窗
+    closeAccount(id){
+      console.log(id);
+      this.jiesuan=true;
+      this.settleId=id;
+    },
+    //关闭结算弹窗
+    closeSettle(){
+      this.jiesuan = false;
+      this.settleId = "";
+      this.getContractList();
     }
   }
 };
