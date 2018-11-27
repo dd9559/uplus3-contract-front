@@ -32,6 +32,7 @@
             <el-option label="驳回" value="3"></el-option>
           </el-select>
         </el-form-item>
+        
         <el-form-item label="关键字">
           <el-input v-model="adjustForm.keyWord" clearable placeholder="合同编号/房源编号/客源编号"  class="width250"></el-input>
         </el-form-item>
@@ -119,7 +120,7 @@
             <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
           <div class="col-li">
-            <p>申请日期：<span>{{layerAudit.createTime}}</span></p>
+            <p>申请日期：<span>{{layerAudit.createTime | getDate}}</span></p>
             <p>申请人：<span>{{layerAudit.createByDepName + '-' + layerAudit.createByName}}</span></p>
           </div>
           <div class="col-li">
@@ -129,7 +130,7 @@
           </div>
           <div class="col-li">
             <p>调整类型：<span>佣金调整</span></p>
-            <p><el-checkbox v-model="layerAudit.relieve" :disabled="true">有解除协议</el-checkbox></p>
+            <p><el-checkbox v-model="relieveFn" :disabled="true">有解除协议</el-checkbox></p>
           </div>
           <div class="textareabox">
             <span>调整原因</span>
@@ -260,11 +261,6 @@
 
         auditForm: {
           textarea: '', //备注
-
-          money1: '', //业主佣金
-          money2: '', //客户佣金
-          money3: '', //按揭收费
-          money4: '', //合作费扣除
         },
         // 弹框里用到的
         dialogImageUrl: '',
@@ -280,7 +276,13 @@
     },
 
     computed: {
-      
+      relieveFn() {
+        if(this.layerAudit.relieve === 1){
+          return true
+        }else if(this.layerAudit.relieve === 0){
+          return false
+        }
+      }
     },
 
     filters: {
@@ -421,7 +423,7 @@
         if(this.auditForm.textarea !== ""){
           this.$ajax.get("/api/commission/updateReject", param)
           .then(res => {
-            let tips = res.data.message;
+
             if (res.data.status === 200) {
               this.$message('已驳回');
               let _this = this
@@ -446,7 +448,7 @@
         }
         this.$ajax.get("/api/commission/update", param)
         .then(res => {
-          let tips = res.data.message;
+
           if (res.data.status === 200) {
             console.log(res)
             this.$message('已通过');
@@ -466,7 +468,9 @@
         this.$router.push({
           path:'/contractDetails',
           query:{
-            id: value.contractCode
+            id: value.contId,
+            code: value.contractCode,
+            contType: value.tradeType
           }
         })
       },
