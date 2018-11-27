@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import {set_upload_param} from "@/assets/js/upload";
+  import {set_upload_param,get_suffix} from "@/assets/js/upload";
 
   // let uploader = null
   export default {
@@ -11,6 +11,12 @@
       id:{
         type:String,
         default:'selectfiles'
+      },
+      rules:{
+        type:Array,
+        default:function () {
+          return []
+        }
       }
     },
     data(){
@@ -31,12 +37,23 @@
           url: 'http://oss.aliyuncs.com',
 
           filters: {
-            prevent_duplicates: true //不允许选取重复文件
+            prevent_duplicates : true //不允许选取重复文件
           },
           init:{
             FilesAdded: function(up, files) {
               // 选择文件后执行
-              that.up()
+              let fileType=get_suffix(files[0].name)
+              if(that.rules.length>0){
+                if(that.rules.indexOf(fileType)>-1){
+                  that.up()
+                }else {
+                  that.$message({
+                    message:'上传文件格式不正确'
+                  })
+                }
+              }else {
+                that.up()
+              }
             },
             BeforeUpload: function(up, file) {
               // 点击上传前执行
@@ -72,10 +89,13 @@
         let path = 'picture/'
         if(this.uploader.files.length!==0){
           this.getUrl(path).then(res=>{
-            this.filePath.push(`${res.host}/${res.key}.${this.uploader.files[0].name.split('.')[1]}`)
+            this.filePath.push({
+              path:`${res.host}/${res.key}${get_suffix(this.uploader.files[0].name)}`,
+              name:this.uploader.files[0].name
+            })
             console.log(this.filePath)
             this.$emit('getUrl',{param:this.filePath})
-            set_upload_param(this.uploader,res,this.uploader.files[0].name);
+            // set_upload_param(this.uploader,res,this.uploader.files[0].name);
           })
         }
       },

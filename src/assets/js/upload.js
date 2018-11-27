@@ -33,5 +33,6 @@ function set_upload_param(up,param, filename)
 }
 
 export {
-  set_upload_param
+  set_upload_param,
+  get_suffix
 }

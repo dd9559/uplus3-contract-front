@@ -4,7 +4,7 @@
         <!-- <el-button type="text" @click="dialogVisible = true">审核申请</el-button> -->
 
         <!-- 结算审核弹框 -->
-        <el-dialog title="发起结算" :visible.sync="dialogVisible" width="820px" class="layer-audit">
+        <el-dialog title="发起结算" :visible="getSettleDialog" width="820px" class="layer-audit" @close='close'>
         <div class="audit-box"  :style="{ height: clientHeight() }">
             <div class="audit-col">
             <div class="col-li col-li2">
@@ -67,7 +67,7 @@
 
         </div>
         <div class="btnbox">
-            <el-button @click="dialogVisible = true">取 消</el-button>
+            <el-button @click="close">取 消</el-button>
             <el-button type="primary" @click="dialogVisible = true">提交审核</el-button>  
         </div> 
         </el-dialog>
@@ -78,18 +78,16 @@
   import {FILTER} from "@/assets/js/filter";
   import {TOOL} from "@/assets/js/common";
 export default {
-     props: {
-        dialogVisible: {
+    props: {
+        contId: {
+            type: Number,
+            default: ""
+        },
+        settleDialog: {
             type: Boolean,
             default: false
-        },
-        id: {
-          type: Number,
-          default:''
         }
     },
-
-
     data() {
         return {
             clientHei: document.documentElement.clientHeight, //窗体高度
@@ -104,7 +102,12 @@ export default {
     },
 
     computed: {
-        
+        getContId() {
+            return this.contId;
+        },
+        getSettleDialog() {
+            return this.settleDialog;
+        },
     },
 
     filters: {

@@ -4,9 +4,9 @@
             <el-button type="primary" @click="addProcess('添加交易流程')">添加</el-button>
         </div>
         <el-table :data="listData" style="width: 100%" class="list1">
-          <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
-                          v-for="item in tHeader" :key="item.id">
-          </el-table-column>
+          <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
               <el-button @click="rowOperation(scope.row,'init')" type="text" size="small">交易流程管理</el-button>
@@ -71,7 +71,7 @@
             </el-table-column>
             <el-table-column label="交易步骤">
               <template slot-scope="scope">
-                <el-checkbox-group v-model="scope.row.stepsTypeList" @change="select(scope.$index,$event)">
+                <el-checkbox-group v-model="scope.row.tempList" @change="multiSelect(scope.$index,$event)">
                   <p v-for="item in scope.row.stepsList" :key="item.id"><el-checkbox :label="item.name">{{ item.name }}</el-checkbox></p>
                 </el-checkbox-group>
               </template>
@@ -93,24 +93,6 @@
       return {
         //交易流程列表
         listData: [], 
-        //交易流程列表表头
-        tHeader: [
-          {
-            id: 1,
-            prop: "id",
-            name: "序号"
-          },
-          {
-            id: 2,
-            prop: 'name',
-            name: '名称'
-          },
-          {
-            id: 3,
-            prop: "stepsNum",
-            name: "交易步骤数"
-          }
-        ],
         addForm: {
           name: ""
         },
@@ -121,7 +103,9 @@
         ProcessStepVisible: false, //添加流程步骤
         //流程管理列表
         manageData: [],
+        tempManage: [],
         settlePercent: "",
+        tempSetPercent: "",
         isSettleOption: [
           {
             value: 0,
@@ -135,7 +119,8 @@
         //流程步骤选项
         StepsOption: [],
         flowCount: 0,
-        currentFlowId: 0
+        currentFlowId: 0,
+        AllSteps: []
       };
     },
     created() {
@@ -169,6 +154,8 @@
           this.addForm.name = row.name
         } else if(type === 'init') {
           this.dialogManageVisible = true
+          this.settlePercent = row.settlePercent ? row.settlePercent : ""
+          this.tempSetPercent = row.settlePercent ? row.settlePercent : ""
           this.currentFlowId = row.id
           let param = {
             flowId: row.id
@@ -177,8 +164,16 @@
             res = res.data
             if(res.status === 200) {
               this.manageData = res.data
+              this.tempManage = JSON.parse(JSON.stringify(res.data))
               this.flowCount = this.manageData.length
             }
+            this.manageData.forEach(i => {
+              this.AllSteps.forEach((v,index) => {
+                if(i.stepsName === v.name) {
+                  i.sort = ++index
+                }
+              })
+            })
           })
         } else if(type === 'delete') {
           const param = {
@@ -192,7 +187,7 @@
       submitForm() {
         if(this.processTitle === "添加交易流程") {
           let param = {
-            cityId: 1
+            cityId: this.cityId
           }
           param = Object.assign({},this.addForm,param)
           this.processPost(param)
@@ -218,6 +213,7 @@
         })
       },
       getTypeSteps() {
+        this.StepsOption = []
         this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: this.cityId}).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -225,9 +221,14 @@
               this.StepsOption.push({
                 typeId: item.typeId,
                 stepsSelect: false,
-                stepsTypeList: [],
+                tempList: [],
                 typeName: item.typeName,
                 stepsList: item.stepsList
+              })
+            })
+            this.StepsOption.forEach(item => {
+              item.stepsList.forEach(e => {
+                this.AllSteps.push(e)
               })
             })
           }
@@ -252,6 +253,22 @@
       },
       addBtn() {
         this.ProcessStepVisible = true
+        this.StepsOption.forEach(item => {
+          item.tempList = []
+          item.stepsSelect = false
+        })
+        this.manageData.forEach(i => {
+          this.StepsOption.forEach(v => {
+            if(i.stepsTypeName === v.typeName) {
+              v.tempList.push(i.stepsName)
+            }
+            if(v.tempList.length === v.stepsList.length) {
+              v.stepsSelect = true
+            } else {
+              v.stepsSelect = false
+            }
+          })
+        })
       },
       // 全选
       allSelect(i,bool) {
@@ -261,56 +278,69 @@
           arr.stepsList.forEach(item => {
             ar.push(item.name)
           })
-          arr.stepsTypeList = ar
+          arr.tempList = ar
         } else {
-          arr.stepsTypeList = []
+          arr.tempList = []
         }
       },
       // 多选
-      select(i,arr) {
+      multiSelect(i,arr) {
         let obj = this.StepsOption[i]
         let bool = obj.stepsList.length === arr.length
         obj.stepsSelect = bool
       },
       confirmSteps(type) {
         if(type === 'steps') {
-          this.manageData = []
-          let arr = []
-          let id = 1
+          let arr1 = []
+          let arr2 = []
+          this.manageData.forEach(i => {
+            arr1.push(i.stepsName)
+          })
+          this.StepsOption.forEach(v => {
+            v.tempList.forEach(e => {
+              arr2.push(e)
+            })
+          })
+          function getArrDifference(m,n) {
+            return arr1.concat(arr2).filter(function(v,i,arr) {
+              return arr.indexOf(v) === arr.lastIndexOf(v)
+            })
+          }
+          let arr = getArrDifference(arr1,arr2)
+          
+          if(arr1.length < arr2.length) {
+            this.managePush(arr)
+          } else if(arr1.length > arr2.length) {
+            let ar = []
+            arr.forEach(i => {
+              this.manageData.forEach(v => {
+                if(i === v.stepsName) {
+                  ar.push(v)
+                }
+              })
+            })
+            this.manageSplice(ar)
+          } else {
+            let ar1 = []
+            let ar2 = []
+            arr.forEach(i => {
+              this.manageData.forEach(v => {
+                if(i === v.stepsName) {
+                  ar1.push(v)
+                }
+              })
+            })
+            arr.forEach(i => {
+              arr2.forEach(v => {
+                if(i === v) {
+                  ar2.push(i)
+                }
+              })
+            })
+            this.manageSplice(ar1)
+            this.managePush(ar2)
+          }
           this.ProcessStepVisible = false
-          this.StepsOption.forEach(e => {
-            e.stepsTypeList.forEach(i => {
-              arr.push({
-                id: id++,
-                name: i
-              })
-            })
-          })
-          this.StepsOption.forEach(item => {
-            if(item.stepsTypeList.length) {
-              item.stepsTypeList.forEach(i => {
-                item.stepsList.forEach(v => {
-                  if(i === v.name) {
-                    this.manageData.push({
-                      isSettle: 0,
-                      overTimeDays: v.overTimeDays,
-                      planDays: v.planDays,
-                      stepsName: v.name,
-                      stepsTypeName: v.stepsTypeName,
-                      transStepsId: v.id
-                    })
-                  }
-                })
-              })
-            }
-          })
-          this.manageData.forEach(item => {
-            arr.forEach(value => {
-              if(item.stepsName === value.name) {
-                item.sort = value.id
-              }
-            })
-          })
         } else if(type === 'flow') {
           let arr = []
           this.manageData.forEach(item => {
@@ -324,6 +354,7 @@
               arr.push({
                 transStepsId: item.transStepsId,
                 sort: item.sort,
+                isSettle: item.isSettle,
                 id: item.id ? item.id : null
               })
             }
@@ -333,15 +364,73 @@
             transStepsList: arr
           }
           if(this.flowCount === 0) {
-            this.$ajax.postJSON('/api/flowmanage/insertFLowSteps', param).then(res => {
-
-            })
+            const url = "/api/flowmanage/insertFLowSteps"
+            this.flowManagePost(url,param)
           } else {
-            this.$ajax.postJSON('/api/flowmanage/updateFLowSteps', param).then(res => {
+            if(this.tempManage.toString() !== this.manageData.toString()) {
+              const url = "/api/flowmanage/updateFLowSteps"
+              this.flowManagePost(url,param)
+            }else {
+              this.$message({
+                type: 'info',
+                message: '没有做任何修改'
+              })
+            }
+          }
+          let obj = {
+            id: this.currentFlowId,
+            cityId: this.cityId,
+            settlePercent: this.settlePercent==="" ? 0 : this.settlePercent
+          }
+          if(this.tempSetPercent !== this.settlePercent || this.settlePercent === "") {
+            this.$ajax.postJSON('/api/flowmanage/insertFLow',obj).then(res => {
 
             })
           }
         }
+      },
+      manageSplice(array) {
+        array.forEach(i => {
+          this.manageData.forEach((v,index) => {
+            if(i.stepsName === v.stepsName) {
+              this.manageData.splice(index,1)
+            }
+          })
+        })
+      },
+      managePush(array) {
+        array.forEach(i => {
+          this.AllSteps.forEach((item,index) => {
+            if(i === item.name) {
+              this.manageData.push({
+                isSettle: 0,
+                isSms: 0,
+                overTimeDays: item.overTimeDays,
+                planDays: item.planDays,
+                stepsName: item.name,
+                stepsTypeName: item.stepsTypeName,
+                transStepsId: item.id,
+                sort: ++index
+              })
+            }
+          })
+        })
+      },
+      flowManagePost(url,param) {
+        this.$ajax.postJSON(url, param).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.$message(res.message)
+            this.dialogManageVisible = false
+            this.getData()
+          }
+        })
+      }
+    },
+    watch: {
+      "cityId": function(newVal,oldVal) {
+        this.getData()
+        this.getTypeSteps()
       }
     }
   };

@@ -72,7 +72,7 @@
 					</el-table>
 				</el-tab-pane>
 				<!-- 应实对照 -->
-				<el-tab-pane label="应实对照" name="seventh">
+				<!-- <el-tab-pane label="应实对照" name="seventh">
 					<el-table :data="gridData7" border>
 						<el-table-column prop="moneyClass" label="款类"></el-table-column>
 						<el-table-column prop="realReceive" label="实收"> </el-table-column>
@@ -82,7 +82,7 @@
 						<el-table-column prop="surPlus" label="结余"></el-table-column>
 						<el-table-column prop="receiveNote" label="备注"></el-table-column>
 					</el-table>
-				</el-tab-pane>
+				</el-tab-pane> -->
 				<!-- 佣金明细 -->
 				<!-- <el-tab-pane label="佣金明细" name="eighth">
                 <el-table :data="gridData8" border>
@@ -166,26 +166,6 @@ export default {
           billNo: "", //票据号
           billState: "", //票据状态
           billPerson: "" //开票人
-        }
-      ],
-      gridData7: [
-        {
-          moneyClass: "", //款类
-          realReceive: "", //实收
-          realPay: "", //实付
-          shouldReceive: "", //应收
-          shouldPay: "", //应付
-          surPlus: "", //结余
-          receiveNote: "" //备注
-        }
-      ],
-      gridData8: [
-        {
-          moneyClass: "", //款类
-          divideAmount: "", //分佣金额（元）
-          divideTime: "", //分佣时间
-          divideName: "", //被拆名称
-          originalAmount: "" //原始金额
         }
       ]
     };

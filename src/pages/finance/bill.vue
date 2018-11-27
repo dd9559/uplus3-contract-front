@@ -179,8 +179,8 @@
         <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
             <el-button type="text" v-show="scope.row.type===1">开票</el-button>
-            <el-button type="text">修改</el-button>
-            <el-button type="text">作废</el-button>
+            <el-button type="text" @click="btnOpera(scope.row,1)">修改</el-button>
+            <el-button type="text" @click="btnOpera(scope.row,2)">作废</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -297,9 +297,15 @@
           }
         })
       },
-      operation:function (opera) {
-        if(opera==='reset'){
-          this.$tool.clearForm(this.searchForm)
+      btnOpera:function (row,type) {
+        if(type===1){
+          this.$router.push({
+            path:row.type===1?'receiptBill':'payBill',
+            query:{
+              edit:row.type,
+              id:row.id
+            }
+          })
         }
       }
     },

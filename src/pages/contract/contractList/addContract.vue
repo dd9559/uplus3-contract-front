@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <el-form :inline="true" :model="contractForm" class="add-form" size="mini">
+    <el-form :inline="true" :model="contractForm" class="add-form" size="small">
       <!-- 合同信息 -->
       <div class="contractMsg">
         <p>合同信息</p>
@@ -37,7 +37,7 @@
           <el-form-item label="佣金支付费：">
             <el-input v-model="contractForm.commissionPayment" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
           </el-form-item>
-          <el-form-item label="交易流程：" v-if="contractForm.type===2" class="form-label">
+          <el-form-item label="交易流程：" class="form-label">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程">
               <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
@@ -65,9 +65,14 @@
             <el-input v-model="contractForm.houseInfo.SquareUse" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input>
           </el-form-item>
           <el-form-item label="房源方门店：" class="form-label">
-            <el-select v-model="contractForm.houseInfo.houseStoreName" placeholder="请选择状态">
-              <el-option label="光谷一店" value="1"></el-option>
+            <el-select v-model="contractForm.houseInfo.HouseStoreCode" :multiple='false' clearable filterable remote reserve-keyword @change="getShop" placeholder="部门" :remote-method="remoteMethod" :loading="loading">
+              <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+              </el-option>
             </el-select>
+            <!-- <el-input v-model="contractForm.houseInfo.HouseStoreName"></el-input> -->
+            <!-- <el-select v-model="contractForm.houseInfo.houseStoreName" placeholder="请选择状态">
+              <el-option label="光谷一店" value="1"></el-option>
+            </el-select> -->
           </el-form-item>
           <el-form-item label="店长：">
             {{contractForm.houseInfo.ShopOwnerName}} {{contractForm.houseInfo.ShopOwnerMobile}}
@@ -113,15 +118,16 @@
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.mobile" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
-                  <el-option label="本人" value="1"></el-option>
+                  <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
+                  </el-option>
                 </el-select>
                 <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" :disabled="type===2&&!item.edit?true:false"><i slot="suffix">%</i></el-input>
-                <input v-model="item.identifyCode" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                 <span @click.stop="addcommissionData" class="icon">
-                  <i class="el-icon-plus"></i>
+                  <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
                 <span @click.stop="deleteRowcommissionData(index)" v-if="ownerList.length>1" class="icon delete">
                   <i class="el-icon-minus"></i>
@@ -136,18 +142,19 @@
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" class="form-label">
-            <span class="select" @click="showDialog('guest')" v-if="type===1">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择房源'}}</span>
+            <span class="select" @click="showDialog('guest')" v-if="type===1">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
             <span class="select" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
           <el-form-item label="付款方式：" class="form-label">
             <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px">
-              <el-option v-for="item in dictionary['534']" :key="item.key" :label="item.value" :value="item.key">
+              <el-option v-for="item in dictionary['556']" :key="item.key" :label="item.value" :value="item.key">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="客源方门店：" class="form-label">
-            <el-select v-model="contractForm.guestInfo.guestStoreName" placeholder="请选择状态">
-              <el-option label="光谷一店" value="1"></el-option>
+            <el-select v-model="contractForm.guestInfo.GuestStoreCode" :multiple='false' clearable filterable remote reserve-keyword @change="getShop_" placeholder="部门" :remote-method="remoteMethod_" :loading="loading">
+              <el-option v-for="item in options_" :key="item.id" :label="item.name" :value="item.id">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="店长：">
@@ -159,18 +166,19 @@
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.mobile" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
-                  <el-option label="本人" value="1"></el-option>
+                  <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
+                  </el-option>
                 </el-select>
                 <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"><i slot="suffix">%</i></el-input>
-                <input v-model="item.identifyCode" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                <input v-model="item.identifyCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                 <span @click.stop="addcommissionData1" class="icon">
-                  <i class="el-icon-plus"></i>
+                  <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
                 <span @click.stop="deleteRowcommissionData1(index)" v-if="guestList.length>1" class="icon delete">
-                  <i class="el-icon-minus"></i>
+                  <i class="iconfont icon-tubiao_shiyong-"></i>
                 </span>
               </li>
             </ul>
@@ -222,8 +230,7 @@
         <div>
           <el-button round>预览</el-button>
           <el-button type="success" round>提交审核</el-button>
-          <el-button type="primary" round @click="submitForm">保存</el-button>
-          <el-button type="primary" round @click="addContract">保存1</el-button>
+          <el-button type="primary" round @click="isSave">保存</el-button>
         </div>
       </div>
     </el-form>
@@ -231,6 +238,14 @@
     <!-- 房源客源弹窗 -->
     <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
     </houseGuest>
+    <!-- 保存合同确认框 -->
+    <el-dialog title="提示" :visible.sync="dialogSave" width="460px">
+      <span>确定保存已创建合同？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogSave = false">取 消</el-button>
+        <el-button type="primary" @click="saveCont">确 定</el-button>
+      </span>
+    </el-dialog>
     <!-- <custom-input v-model="text"></custom-input> -->
   </div>
 </template>
@@ -240,6 +255,41 @@ import { TOOL } from "@/assets/js/common";
 import customInput from "./customInput";
 import { MIXINS } from "@/assets/js/mixins";
 import houseGuest from "../contractDialog/houseGuest";
+const rule = {
+  signDate: {
+    name: "签约日期"
+  },
+  dealPrice: {
+    name: "成交总价",
+    type: "money"
+  },
+  transFlowCode: {
+    name: "交易流程"
+  },
+  houseinfoCode: {
+    name: "房源"
+  },
+  guestinfoCode: {
+    name: "客源"
+  },
+  name: {
+    name: "姓名"
+  },
+  mobile: {
+    name: "电话号码",
+    type: "mobile"
+  },
+  relation: {
+    name: "关系"
+  },
+  propertyRightRatio: {
+    name: "产权比"
+  },
+  identifyCode: {
+    name: "身份证号",
+    type: "idCard"
+  }
+};
 
 export default {
   mixins: [MIXINS],
@@ -251,92 +301,49 @@ export default {
     return {
       contractForm: {
         // type: 2,
-        // houseinfoCode: "HHH002",
-        // guestinfoCode: "GGG002",
-        // signDate: "2018/11/11",
+        houseinfoCode: "",
+        guestinfoCode: "",
+        signDate: "",
+        transFlowCode: "",
         // custCommission: "161.00",
         // ownerCommission: "109.00",
         // commissionPayment: "28.00",
         // otherCooperationCost: "27.00",
         // timeUnit: 1,
-        // dealPrice: "1030",
-        contPersons: [
-          // {
-          //   pid: 45,
-          //   name: "张小宝",
-          //   uId: 13,
-          //   relation: 2,
-          //   type: 2,
-          //   mobile: "13098120011"
-          // },
-          // {
-          //   pid: 46,
-          //   name: "牛锦涛",
-          //   relation: 1,
-          //   type: 1,
-          //   mobile: "13001864012"
-          // }
-        ],
+        dealPrice: "",
+        contPersons: [],
         houseInfo: {
-          // houseinfoId: "901",
-          // architectureArea: "130",
-          // insideArea: "120",
-          // houseType: "三室一厅",
-          // orientation: "东北",
-          // renovation: "简装",
-          // houseStoreId: "302",
-          // houseStoreCode: "YqY091",
-          // houseStoreName: "房源当代一店",
-          // shopownerName: "夏雨天",
-          // shopownerMobile: "13588888888",
-          // building: "楚河汉街万达环球国际中心",
-          // unit: "三单元",
-          // number: "804"
+          HouseStoreCode: ""
         },
-        guestInfo: {
-          // guestinfoId: "802",
-          // paymentMethod: 1,
-          // guestStoreId: "211",s
-          // guestStoreCode: "Qsy481",
-          // guestStoreName: "客源当代一店",
-          // shopownerName: "夏冰雹",
-          // shopownerMobile: "15992233445",
-          // dealAgentName: "戚琪"
-        },
-        otherCooperationInfo: {
-          // type: 1,
-          // name: "Hibernate",
-          // mobile: "17720546921",
-          // identifyCode: "420621199603070921",
-          // remarks: "三方合作"
-        }
-        // isHavaCooperation:0
+        guestInfo: {},
+        otherCooperationInfo: {},
+        isHavaCooperation: 0
       },
       //业主信息
       ownerList: [
-        {type: 1}
-        // {
-        //   pid: 45,
-        //   name: "张小宝",
-        //   uId: 13,
-        //   relation: 2,
-        //   type: 1,
-        //   mobile: "13098120011"
-        // }
+        {
+          type: 1,
+          identifyCode: "",
+          mobile: "",
+          relation: "",
+          name: "",
+          propertyRightRatio: ""
+        }
       ],
       //客户信息
       guestList: [
-        {type:2}
-        // {
-        //   pid: 46,
-        //   name: "牛锦涛",
-        //   relation: 1,
-        //   type: 2,
-        //   mobile: "13001864012"
-        // }
+        {
+          type: 2,
+          identifyCode: "",
+          mobile: "",
+          relation: "",
+          name: "",
+          propertyRightRatio: ""
+        }
       ],
       dialogType: "",
       isShowDialog: false,
+      dialogSave: false,
       //三方合作
       cooperation: false,
       //操作类型  默认是添加
@@ -344,33 +351,76 @@ export default {
       dictionary: {
         //数据字典
         "514": "", //产权状态
-        "534": "", //支付方式
         "507": "", //时间单位
         "517": "", //第三方合作类型
-        "12": "" //第三方合作类型
+        "12": "", //第三方合作类型
+        "556": "" //付款方式
       },
       transFlowList: [],
-      contractType: ""
+      contractType: "",
+      loading: false,
+      //门店选择列表
+      options: [],
+      options_: [],
+      //人员关系列表
+      relationList: [],
+      //编辑时的合同id
+      id:''
     };
   },
   created() {
     this.contractForm.type = Number(this.$route.query.type);
     if (this.$route.query.operateType) {
       this.type = this.$route.query.operateType;
+      if (this.type === 2) {
+        this.id=this.$route.query.id
+        this.getContractDetail();
+      }
     }
     this.getDictionary();
     this.getTransFlow();
+    this.getRelation();
   },
   methods: {
     submitForm() {},
     addcommissionData() {
-      this.ownerList.push({ edit: true, type: 1 });
+      if (this.ownerList.length < 5) {
+        this.ownerList.push({
+          edit: true,
+          type: 1,
+          identifyCode: "",
+          mobile: "",
+          relation: "",
+          name: "",
+          propertyRightRatio: ""
+        });
+      } else {
+        this.$message({
+          message: "已达到最大数量",
+          type: "warning"
+        });
+      }
     },
     deleteRowcommissionData(index) {
       this.ownerList.splice(index, 1);
     },
     addcommissionData1() {
-      this.guestList.push({ edit: true, type: 2 });
+      if (this.guestList.length < 5) {
+        this.guestList.push({
+          edit: true,
+          type: 2,
+          identifyCode: "",
+          mobile: "",
+          relation: "",
+          name: "",
+          propertyRightRatio: ""
+        });
+      } else {
+        this.$message({
+          message: "已达到最大数量",
+          type: "warning"
+        });
+      }
     },
     deleteRowcommissionData1(index) {
       this.guestList.splice(index, 1);
@@ -383,15 +433,158 @@ export default {
         this.contractForm.isHavaCooperation = 1;
       }
     },
+    //验证合同信息
+    isSave() {
+      //验证合同信息
+      this.$tool
+        .checkForm(this.contractForm, rule)
+        .then(() => {
+          // debugger
+          if (
+            this.contractForm.custCommission > 0 ||
+            this.contractForm.ownerCommission > 0
+          ) {
+            if (this.contractForm.houseInfo.HouseStoreCode) {
+              //业主产权比
+              let ownerRightRatio = 0;
+
+              let isOk;
+              this.ownerList.forEach(element => {
+                isOk = false;
+                if (element.name) {
+                  if (element.mobile.length === 11) {
+                    if (element.relation) {
+                      if (element.propertyRightRatio) {
+                        if (element.identifyCode) {
+                          isOk = true;
+                          ownerRightRatio += element.propertyRightRatio - 0;
+                        } else {
+                          this.$message({
+                            message: "身份证号不正确"
+                          });
+                        }
+                      } else {
+                        this.$message({
+                          message: "产权比不能为空"
+                        });
+                      }
+                    } else {
+                      this.$message({
+                        message: "关系不能为空"
+                      });
+                    }
+                  } else {
+                    this.$message({
+                      message: "电话号码不正确"
+                    });
+                  }
+                } else {
+                  this.$message({
+                    message: "姓名不能为空"
+                  });
+                }
+              });
+              if (isOk) {
+                console.log(ownerRightRatio);
+                if (ownerRightRatio === 100) {
+                  if (this.contractForm.guestInfo.paymentMethod) {
+                    if (this.contractForm.guestInfo.GuestStoreCode) {
+                      //客户产权比
+                      let guestRightRatio = 0;
+                      let isOk_;
+                      this.guestList.forEach(element => {
+                        isOk_ = false;
+                        if (element.name) {
+                          if (element.mobile.length === 11) {
+                            if (element.relation) {
+                              if (element.propertyRightRatio) {
+                                if (element.identifyCode) {
+                                  isOk_ = true;
+                                  guestRightRatio +=
+                                    element.propertyRightRatio - 0;
+                                } else {
+                                  this.$message({
+                                    message: "身份证号不正确"
+                                  });
+                                }
+                              } else {
+                                this.$message({
+                                  message: "产权比不能为空"
+                                });
+                              }
+                            } else {
+                              this.$message({
+                                message: "关系不能为空"
+                              });
+                            }
+                          } else {
+                            this.$message({
+                              message: "电话号码不正确"
+                            });
+                          }
+                        } else {
+                          this.$message({
+                            message: "姓名不能为空"
+                          });
+                        }
+                      });
+                      if (isOk_) {
+                        console.log(guestRightRatio);
+                        if (guestRightRatio === 100) {
+                          this.dialogSave = true;
+                        } else {
+                          this.$message({
+                            message: "客户产权比和必须为100%"
+                          });
+                        }
+                      }
+                    } else {
+                      this.$message({
+                        message: "客源方门店不能为空"
+                      });
+                    }
+                  } else {
+                    this.$message({
+                      message: "付款方式不能为空"
+                    });
+                  }
+                } else {
+                  this.$message({
+                    message: "业主产权比和必须为100%"
+                  });
+                }
+              }
+            } else {
+              this.$message({
+                message: "房源方门店不能为空"
+              });
+            }
+          } else {
+            this.$message({
+              message: "佣金不能为零"
+            });
+          }
+        })
+        .catch(error => {
+          this.$message({
+            message: `${error.title}${error.msg}`
+          });
+        });
+    },
+    saveCont() {
+      this.addContract()
+    },
     /* 新增/编辑合同 */
     addContract() {
+      //debugger
+      this.contractForm.contPersons=[]
       this.ownerList.forEach(element => {
-        console.log('22')
-        this.contractForm.contPersons.push(element)
+        console.log("22");
+        this.contractForm.contPersons.push(element);
       });
       this.guestList.forEach(element => {
-        console.log('11')
-        this.contractForm.contPersons.push(element)
+        console.log("11");
+        this.contractForm.contPersons.push(element);
       });
       /* 新增/编辑租赁合同 */
       if (this.contractForm.type === 1) {
@@ -399,15 +592,57 @@ export default {
           leaseCont: this.contractForm,
           type: this.type
         };
-        this.$ajax.postJSON("/api/contract/editSaleCont", param).then(res => {});
+        if(this.type===2){
+          delete param.leaseCont.contChangeState;
+          delete param.leaseCont.contState;
+          delete param.leaseCont.contType;
+          delete param.leaseCont.laterStageState;
+          delete param.leaseCont.toExamineState;
+          delete param.leaseCont.previewImg;
+          delete param.leaseCont.updateTimes;
+          delete param.leaseCont.propertyRightRatios;
+          delete param.leaseCont.pids;
+          delete param.leaseCont.pmobiles;
+          delete param.leaseCont.pnames;
+        }
+        console.log(param);
+        this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {
+          res = res.data;
+          if (res.status === 200) {
+            this.dialogSave=false
+            this.$message({
+              message: "操作成功",
+              type: "success"
+            });
+          }
+        });
       }
       /* 新增/编辑买卖合同 */
-      if (this.contractForm.type === 2) {
+      if (this.contractForm.type === 2 || this.contractForm.type === 3) {
         let param = {
           saleCont: this.contractForm,
           type: this.type
         };
-        this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {});
+        debugger
+        if(this.type===2){
+          delete param.saleCont.contChangeState;
+          delete param.saleCont.contState;
+          delete param.saleCont.contType;
+          delete param.saleCont.laterStageState;
+          delete param.saleCont.toExamineState;
+          delete param.saleCont.previewImg;
+        }
+
+        this.$ajax.postJSON("/api/contract/editSaleCont", param).then(res => {
+          res = res.data;
+          if (res.status === 200) {
+            this.dialogSave=false
+            this.$message({
+              message: "操作成功",
+              type: "success"
+            });
+          }
+        });
       }
     },
     //获取所在城市的交易类型
@@ -417,6 +652,18 @@ export default {
         if (res.status === 200) {
           console.log(res.data);
           this.transFlowList = res.data;
+        }
+      });
+    },
+    //获取所在城市的人员关系
+    getRelation() {
+      let param = {
+        type: "Relation"
+      };
+      this.$ajax.get("/api/dictionary/uplus", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.relationList = res.data;
         }
       });
     },
@@ -443,11 +690,16 @@ export default {
           console.log(houseMsg);
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           this.contractForm.houseInfo = houseMsg;
-          this.ownerList[0]={
+          this.ownerList[0] = {
             name: houseMsg.OwnerInfo.OwnerName,
             mobile: houseMsg.OwnerInfo.OwnerMobile,
-            type:1
-          }
+            type: 1,
+            relation: houseMsg.OwnerInfo.Relation
+          };
+          this.options.push({
+            name: houseMsg.HouseStoreName,
+            id: houseMsg.HouseStoreCode
+          });
         }
       });
     },
@@ -456,7 +708,7 @@ export default {
       console.log("客源");
       let param = {
         customerId: id
-      }
+      };
       this.$ajax.get("/api/resource/customers/one", param).then(res => {
         res = res.data;
         if (res.status === 200) {
@@ -464,11 +716,16 @@ export default {
           console.log(guestMsg);
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
-          this.guestList[0]={
+          this.guestList[0] = {
             name: guestMsg.OwnerInfo.CustName,
             mobile: guestMsg.OwnerInfo.CustMobile,
-            type:2
-          }
+            type: 2,
+            relation: guestMsg.OwnerInfo.CustRelation
+          };
+          this.options_.push({
+            name: guestMsg.GuestStoreName,
+            id: guestMsg.GuestStoreCode
+          });
         }
       });
     },
@@ -483,9 +740,108 @@ export default {
           this.isShowDialog = false;
           this.getGuestDetail(value.selectCode);
         }
-      }else{
+      } else {
         this.isShowDialog = false;
       }
+    },
+    //获取门店
+    getShopList(value,type) {
+      let param = {
+        keyword: value
+      };
+      this.$ajax.get("/api/contract/getDepsByCityId", param).then(res => {
+        this.loading = false;
+        res = res.data;
+        if (res.status === 200) {
+          res.data.forEach(element => {
+            if (type === "house") {
+              this.options.push(element);
+            } else if (type === "guest") {
+              this.options_.push(element);
+            }
+          });
+        }
+      });
+    },
+    remoteMethod(query) {
+      if (query !== "") {
+        this.loading = true;
+        this.getShopList(query,'house');
+      }
+    },
+    remoteMethod_(query) {
+      if (query !== "") {
+        this.loading = true;
+        this.getShopList(query,'guest');
+      }
+    },
+    getShop(id) {
+      console.log(id);
+      this.options.forEach(element => {
+        if(element.id===id){
+          this.contractForm.houseInfo.HouseStoreName=element.name
+        }
+      });
+      let param = {
+        depId: id
+      };
+      // this.$ajax.get('/api/organize/employees', param).then(res=>{
+      //   res=res.data
+      //   if(res.status===200){
+
+      //   }
+      // })
+    },
+    getShop_(id) {
+      console.log(id);
+      this.options.forEach(element => {
+        if(element.id===id){
+          this.contractForm.guestInfo.GuestStoreName=element.name
+        }
+      });
+      let param = {
+        depId: id
+      };
+      // this.$ajax.get('/api/organize/employees', param).then(res=>{
+      //   res=res.data
+      //   if(res.status===200){
+
+      //   }
+      // })
+    },
+    //获取合同信息
+    getContractDetail() {
+      let param = {
+        id: this.id
+      };
+      this.$ajax.get("/api/contract/detail", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.contractForm = res.data;
+          this.contractForm.signDate = res.data.signDate.substr(0, 10);
+          this.contractForm.type=res.data.contType.value;
+          this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
+          this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
+          if(res.data.isHavaCooperation){
+            this.cooperation=true
+          }
+          for (var i = 0; i < this.contractForm.contPersons.length; i++) {
+            if (this.contractForm.contPersons[i].personType.value === 1) {
+              this.ownerList[0].name = this.contractForm.contPersons[i].name;
+              this.ownerList[0].mobile = this.contractForm.contPersons[i].mobile;
+              this.ownerList[0].relation = this.contractForm.contPersons[i].relation;
+              this.ownerList[0].propertyRightRatio = this.contractForm.contPersons[i].propertyRightRatio;
+              this.ownerList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+            } else if (this.contractForm.contPersons[i].personType.value === 2) {
+              this.guestList[0].name = this.contractForm.contPersons[i].name;
+              this.guestList[0].mobile = this.contractForm.contPersons[i].mobile;
+              this.guestList[0].relation = this.contractForm.contPersons[i].relation;
+              this.guestList[0].propertyRightRatio = this.contractForm.contPersons[i].propertyRightRatio;
+              this.guestList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+            }
+          }
+        }
+      });
     }
   },
   filters: {
@@ -559,7 +915,7 @@ export default {
       text-align: center;
       color: @color-white;
       width: 140px;
-      padding: 4px 0;
+      padding: 2px 0;
       background: @color-blue;
       border-radius: 2px;
     }
@@ -581,11 +937,11 @@ export default {
       margin-bottom: 10px;
       .merge {
         border: 1px solid #dcdfe6;
-        padding: 5px 0;
+        padding: 7px 0;
         border-radius: 3px;
       }
       input {
-        padding: 5px 0;
+        padding: 6px 0;
         color: #606266;
       }
     }
@@ -608,7 +964,8 @@ export default {
       width: 90px;
     }
     .idCard_ {
-      width: 140px;
+      width: 160px;
+      padding: 7px 5px;
       padding-left: 5px;
       border: 1px solid #dcdfe6;
       border-radius: 3px;
@@ -618,16 +975,12 @@ export default {
     }
     .icon {
       display: inline-block;
-      padding: 0 7px;
-      border-radius: 15px;
-      border: 1px solid @color-blue;
-      i {
+      .icon-tubiao_shiyong-14 {
+        font-size: 22px;
         color: @color-blue;
-        font-weight: bold;
       }
     }
     .delete {
-      border: 1px solid @color-FF5;
       i {
         color: @color-FF5;
       }
