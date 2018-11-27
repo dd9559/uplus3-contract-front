@@ -153,8 +153,8 @@
         <el-table-column align="left" label="财务收付" width="100" fixed>
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
-            <div class="btn" @click="gathering(scope.row)">收款</div>
-            <div class="btn" @click="payment(scope.row)">付款</div>
+            <div class="btn" @click="gathering(scope.row.id)">收款</div>
+            <div class="btn" @click="payment(scope.row.id)">付款</div>
           </template>
         </el-table-column>
         <el-table-column align="left" label="成交经纪人" width="150 ">
@@ -198,7 +198,7 @@
             <span v-else>{{scope.row.laterStageState.label}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="后期进度" width="100">
+        <el-table-column align="left" label="后期进度" width="150">
           <template slot-scope="scope">
             <span v-if="scope.row.stepInstanceName==='-'">-</span>
             <el-button v-else type="text" size="medium">{{scope.row.stepInstanceName}}</el-button>
@@ -211,10 +211,10 @@
         </el-table-column>
         <el-table-column align="left" label="结算状态" width="100">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="closeAccount(scope.row.id)">{{scope.row.resultState.label}}</el-button>
+            <el-button type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="业绩状态" width="100">
+        <el-table-column align="left" label="业绩状态" width="110">
           <template slot-scope="scope">
             {{scope.row.achievementState.label}}
           </template>
@@ -347,9 +347,21 @@ export default {
       this.water = true;
     },
     //收款
-    gathering() {},
+    gathering(id) {
+      console.log(id);
+      this.$router.push({
+        path:'/receiptBill',
+        id:id
+      })
+    },
     //付款
-    payment() {},
+    payment(id) {
+      console.log(id);
+       this.$router.push({
+        path:'/paytBill',
+        id:id
+      })
+    },
     //合同详情页
     toDetail(value) {
       console.log(value)
@@ -520,10 +532,17 @@ export default {
       })
     },
     //发起结算弹窗
-    closeAccount(id){
-      console.log(id);
-      this.jiesuan=true;
-      this.settleId=id;
+    closeAccount(item){
+      console.log(item);
+      if(item.resultState.value===1){
+        this.$message({
+          message:'已结算完成，无需发起结算'
+        })
+      }else{
+        this.jiesuan=true;
+        this.settleId=item.id;
+      }
+      
     },
     //关闭结算弹窗
     closeSettle(){
