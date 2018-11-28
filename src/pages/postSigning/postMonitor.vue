@@ -99,7 +99,7 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
-            <el-table :data="tableData" class="paper-table mt-20">
+            <el-table :data="tableData.list" class="paper-table mt-20">
                 <el-table-column label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <el-button class="blue" type="text" @click="contractFn">{{scope.row.code}}</el-button>
@@ -149,6 +149,16 @@
                     </template>
                 </el-table-column>
             </el-table>
+        </div>
+        <!-- 分页 -->
+        <div class="pagination" v-if="tableData.total">
+            <el-pagination
+                :current-page="tableData.pageNum"
+                :page-size="tableData.pageSize"
+                @current-change="currentChangeFn"
+                layout=" total, prev, next, jumper"
+                :total="tableData.total">
+            </el-pagination>
         </div>
         <!-- 后期进度弹层 -->
         <el-dialog :title="layer.tit" :visible.sync="layer.show" width="1000px"  class="layer-paper">
@@ -293,7 +303,7 @@
                     lateName:[]
                 },
                 // 列表数据
-                tableData:[],
+                tableData:{},
                 // 后期进度弹层
                 layer:{
                     tit:'查看交易流程',
@@ -314,6 +324,17 @@
             }
         },
         methods:{
+            // 成功提示
+            successMeFn(e){
+                this.$message({
+                    message: e,
+                    type: 'success'
+                });
+            },
+            // 错误提示
+            errMeFn(e){
+                this.$message.error(e);
+            },
             // 重置
             resetFormFn() {
                 this.$refs.propForm.resetFields();
@@ -360,6 +381,11 @@
             dateFormat(val){
                 return TOOL.dateFormat(val);
             },
+            // 分页
+            currentChangeFn(e){
+                this.pageNum = e;
+                this.getListData();
+            },
             // 经纪人
             agentFn(s,t){
                 if(!!s && !!t){
@@ -401,6 +427,11 @@
                 }).catch(err=>{
                     console.log(err)
                 })
+            },
+            // 分页
+            currentChangeFn(e){
+                this.pageNum = e;
+                this.getListData();
             },
             // 交易步骤获取数据
             getTradingSteps(){
