@@ -95,7 +95,7 @@
             })
             console.log(this.filePath)
             this.$emit('getUrl',{param:this.filePath})
-            // set_upload_param(this.uploader,res,this.uploader.files[0].name);
+            set_upload_param(this.uploader,res,this.uploader.files[0].name);
           })
         }
       },

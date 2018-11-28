@@ -97,7 +97,7 @@
       <p><label class="form-label">付款凭证</label></p>
       <ul class="upload-list">
         <li>
-          <file-up class="upload-context" :rules="fileRules">
+          <file-up class="upload-context" :rules="fileRules" @getUrl="getFiles">
             <i class="iconfont icon-shangchuan"></i>
             <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
           </file-up>
@@ -163,7 +163,8 @@
         ],
         dropdown:[],
         amount:null,
-        fileRules:['.png','.jpg','.jpeg']
+        fileRules:['.png','.jpg','.jpeg'],
+        files:[]
       }
     },
     created(){
@@ -194,10 +195,18 @@
               smallAmount: res.data.amount,
               id: res.data.id
             }
+            debugger
+            console.log(JSON.parse(res.data.filePath))
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
           }
         })
+      },
+      /**
+       * 获取上传文件
+       */
+      getFiles:function (payload) {
+        this.files=[].concat(payload.param)
       },
       /**
        * 获取下拉框数据
@@ -298,33 +307,38 @@
       },
       goResult:function () {
         let param = Object.assign({},this.form)
-        param.smallAmount = parseInt(param.smallAmount)
         this.list[0].amount = param.smallAmount
         param.inAccount = [].concat(this.list)
-        param.filePath = ['123']
 
-        this.$tool.checkForm(param,rule).then(()=>{
+        this.$tool.checkForm(param,rule).then((res)=>{
           this.$tool.checkForm(this.list[0],rule).then(()=>{
-            if(this.$route.query.edit){
-              delete param.contId
-              this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
-                res = res.data
-                if (res.status === 200) {
-                  this.$message({
-                    message:'修改成功'
-                  })
-                  this.$router.go(-1)
-                }
+            if(this.files.length===0){
+              this.$message({
+                message:'付款凭证不能为空'
               })
             }else {
-              this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
-                res = res.data
-                if (res.status === 200) {
-                  this.$router.push({
-                    path: 'payResult'
-                  })
-                }
-              })
+              param.filePath = [].concat(this.$tool.getFilePath(this.files))
+              if(this.$route.query.edit){
+                delete param.contId
+                this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
+                  res = res.data
+                  if (res.status === 200) {
+                    this.$message({
+                      message:'修改成功'
+                    })
+                    this.$router.go(-1)
+                  }
+                })
+              }else {
+                this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
+                  res = res.data
+                  if (res.status === 200) {
+                    this.$router.push({
+                      path: 'payResult'
+                    })
+                  }
+                })
+              }
             }
           }).catch((error)=>{
             this.$message({
