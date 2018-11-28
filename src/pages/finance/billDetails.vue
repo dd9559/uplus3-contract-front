@@ -210,7 +210,7 @@
     methods: {
       getData:function () {
         let param = {
-          payId:this.activeItem==='收款信息'?33:3,
+          payId:this.billId,
           type:this.activeItem==='收款信息'?1:2
         }
         this.$ajax.get('/api/payInfo/selectPayInfoDetail',param).then(res=>{

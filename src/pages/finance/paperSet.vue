@@ -189,7 +189,7 @@
             <p><label>物业地址:</label><span>{{paperInfoData.address}}</span></p>
           </li>
           <li>
-            <p><label>交款单位:</label><span>{{paperInfoData.payer}}</span></p>
+            <p><label>交款单位:</label><span>{{paperInfoData.payerName}}</span></p>
             <p><label>合计金额:</label><span>{{paperInfoData.proceedsAmount}}元</span></p>
           </li>
           <li v-for="(item,index) in moneyTypes" :key="index">

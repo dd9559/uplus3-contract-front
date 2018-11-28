@@ -15,7 +15,7 @@
       </div>
       <div class="input-group">
         <label class="form-label">收款人:</label>
-        <el-select v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjectId,2)">
+        <el-select v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjId,2)">
           <el-option
             v-for="item in receiptMan"
             :key="item.empId"
@@ -200,7 +200,54 @@
 <script>
   import {MIXINS} from "@/assets/js/mixins";
 
-  let cardID = 2;
+  const rule={
+    outObj:{
+      name:'付款方'
+    },
+    inObj:{
+      name:'收款人',
+    },
+    moneyType:{
+      name:'款类',
+    },
+    smallAmount:{
+      name:'付款金额',
+      type:'money'
+    }
+  }
+  const otherRule={
+    outObj:{
+      name:'付款方'
+    },
+    inObj:{
+      name:'收款人',
+    },
+    moneyType:{
+      name:'款类',
+    },
+    smallAmount:{
+      name:'付款金额',
+      type:'money'
+    },
+    proceedsType:{
+      name:'收款方式'
+    },
+    userName:{
+      name:'户名'
+    },
+    cardNumber:{
+      name:'账户'
+    },
+    amount:{
+      name:'金额'
+    },
+    orderNo:{
+      name:'订单号'
+    },
+    fee:{
+      name:'手续费'
+    }
+  }
 
   export default {
     mixins: [MIXINS],
@@ -233,7 +280,6 @@
         activeType: 1,
         moneyType: [],
         moneyTypeOther: [],
-        list: [{}],
         cardList: [
           {
             bankName: '',
@@ -315,12 +361,11 @@
         })
       },
       goResult: function () {
+        let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
 
-        if (this.activeType === 1) {
-          param.outAccount=[]
-          param.inAccount=[]
-        }
+        param.outAccount=[]
+        param.inAccount=[]
         if (this.activeType === 2) {
           param.outAccount = [].concat(this.cardList)
           this.account.find(item => {
@@ -332,33 +377,59 @@
                 amount: this.form.smallAmount
               }
               param.inAccount = [].concat(obj)
+              return true
             }
           })
         }
-        if (this.$route.query.edit) {
-          param.filePath = ['123']
-          this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
-            res=res.data
-            if(res.status===200){
+        this.$tool.checkForm(param,RULE).then(()=>{
+          // debugger
+          if(this.activeType===2){
+            if(param.inAccount.length===0){
               this.$message({
-                message:'修改成功'
+                message:'收账账户不能为空'
               })
-              this.$router.go(-1)
-            }
-          })
-        } else {
-          //测试用
-          param.contId = 1
-          param.filePath = ['123']
-          this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.$router.push({
-                path: 'receiptResult'
+            }else {
+              param.outAccount.find((item,index)=>{
+                this.$tool.checkForm(item,RULE).then(()=>{
+
+                }).catch(error=>{
+                  this.$message({
+                    message:`${index>0?`刷卡资料补充第${index+1}行数据填写不全`:''}  ${error.title}${error.msg}`
+                  })
+                  return true
+                })
               })
             }
+          }
+          /*if (this.$route.query.edit) {
+            param.filePath = ['123']
+            this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
+              res=res.data
+              if(res.status===200){
+                this.$message({
+                  message:'修改成功'
+                })
+                this.$router.go(-1)
+              }
+            })
+          } else {
+            //测试用
+            param.contId = 1
+            param.filePath = ['123']
+            this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
+              res = res.data
+              if (res.status === 200) {
+                this.$router.push({
+                  path: 'receiptResult'
+                })
+              }
+            })
+          }*/
+        }).catch(error=>{
+          this.$message({
+            message:`${error.title}${error.msg}`
           })
-        }
+        })
       },
       choseType: function (item) {
         let obj = {
