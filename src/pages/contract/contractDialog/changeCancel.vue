@@ -11,9 +11,10 @@
 				<div class="uploadfile">
 					<div class="uploadtitle">上传变更协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
 					<div class="uploadbtn">
-						<el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" multiple>
+						<file-up class="uploadSubject" @getUrl="uploadSubject" >
 							<i class="iconfont icon-shangchuan"></i>
-						</el-upload>
+							<p>点击上传</p>
+						</file-up>
 					</div>
 				</div>
 			</div>
@@ -137,21 +138,36 @@ export default {
 		},
 		//获取文件路径数组
 		uploadSubject(data){
-			console.log(data.param[0]);
-			this.uploadList=data.param;
-			this.isImg=true
+			//console.log(data.param[0]);
+			this.uploadList.push(data.param[0].path);
+			//this.isImg=true
 		},
 		//保存上传文件
 		saveFile(){
 			if(this.dialogType==="upload"){
+				//上传合同主体
 				var url = "/api/upload/contractBody";
 				var param = {
 					contractId:this.contId,
 					vouchers:this.uploadList
 				}
+			}else if(this.dialogType==="changeEdit"){
+				//上传合变更协议
+				var url = "/api/contract/contChange";
+				var param = {
+					id:this.contId,
+					vouchers:this.uploadList,
+					type:1
+				}
 			}
 			this.$ajax.postJSON(url,param).then(res=>{
-
+				res=res.data;
+				if(res.status===200){
+					this.$message({
+						message:'上传成功'
+					});
+					this.close();
+				}
 			})
 		}
   },

@@ -45,7 +45,7 @@
         </el-table-column>
         <el-table-column align="center" label="信息类型">
           <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.transStepsAttach" :key="index">{{item.type}}</p>     
+            <p v-for="(item,index) in scope.row.transStepsAttach" :key="index">{{item.type|getValue}}</p>     
           </template>
         </el-table-column>
         <el-table-column align="center" label="是否必须">
@@ -87,7 +87,8 @@
           </div>
           <div class="input-group">
             <label>步骤名称：</label>
-            <el-input type="text" v-model="stepBusiness.name"></el-input>
+            <el-input type="text" v-model="stepBusiness.name" :maxlength="inputMax"></el-input>
+            <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
           </div>
           <div class="input-group">
             <label>计划天数：</label>
@@ -142,6 +143,7 @@
   import { FILTER } from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
   let stepTypeId = 1;
+  const infoType = ["文本","数字","日期","图片","视频","PDF","EXCEL","Word"]
 
   export default {
     mixins: [FILTER,MIXINS],
@@ -224,7 +226,8 @@
           '561':'',
           '570':''
         },
-        roleList: []
+        roleList: [],
+        inputMax: 30
       }
     },
     created() {
@@ -434,10 +437,24 @@
         })
       }
     },
+    computed: {
+      validInput() {
+        return this.stepBusiness.name.length
+      }
+    },
     watch: {
       "cityId": function(newVal,oldVal) {
         this.getData()
         this.addForm.cityId = newVal
+      }
+    },
+    filters: {
+      getValue(val) {
+        for(var i = 0; i < infoType.length; i++) {
+          if(val === i) {
+            return infoType[i]
+          }
+        }
       }
     }
   }  
@@ -556,6 +573,11 @@
           height: 32px;
         }
       }
+    }
+    .text-absolute {
+      position: absolute;
+      right: 25px;
+      color: #D6D6D6;
     }
     .menu-table {
       p {

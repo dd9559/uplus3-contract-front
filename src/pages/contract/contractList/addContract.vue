@@ -9,7 +9,9 @@
             <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" v-model="contractForm.signDate" :disabled="type===2?true:false" style="width:140px"></el-date-picker>
           </el-form-item>
           <el-form-item label="合同类型：">
-            <el-input placeholder="请输入内容" :value="contractForm.type===1?'租赁':'买卖'" :disabled="true" style="width:140px"></el-input>
+            <el-input placeholder="请输入内容" value="租赁" :disabled="true" style="width:140px" v-if="contractForm.type===1"></el-input>
+            <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
+            <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
           <el-form-item label="成交总价：" class="form-label">
             <el-input v-model="contractForm.dealPrice" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
@@ -753,13 +755,18 @@ export default {
         this.loading = false;
         res = res.data;
         if (res.status === 200) {
-          res.data.forEach(element => {
-            if (type === "house") {
-              this.options.push(element);
-            } else if (type === "guest") {
-              this.options_.push(element);
-            }
-          });
+          if(type === "house"){
+            this.options=res.data
+          }else if(type === "guest"){
+            this.options_=res.data
+          }
+          // res.data.forEach(element => {
+          //   if (type === "house") {
+          //     this.options.push(element);
+          //   } else if (type === "guest") {
+          //     this.options_.push(element);
+          //   }
+          // });
         }
       });
     },
@@ -782,15 +789,20 @@ export default {
           this.contractForm.houseInfo.HouseStoreName=element.name
         }
       });
-      let param = {
-        depId: id
-      };
-      // this.$ajax.get('/api/organize/employees', param).then(res=>{
-      //   res=res.data
-      //   if(res.status===200){
-
-      //   }
-      // })
+      if(id){
+        let param = {
+          depId: id,
+          briefInfo:false,
+          roleId:2
+        };
+        this.$ajax.get('/api/organize/employees', param).then(res=>{
+          res=res.data  
+          if(res.status===200){
+            this.contractForm.houseInfo.ShopOwnerName=res.data[0].name;
+            this.contractForm.houseInfo.ShopOwnerMobile=res.data[0].mobile;
+          }
+        })
+      }
     },
     getShop_(id) {
       console.log(id);

@@ -170,7 +170,7 @@
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="cardOpera('add')">新增</el-button>
-            <el-button type="text" @click="cardOpera('delete',scope.row)">删除</el-button>
+            <el-button type="text" @click="cardOpera('delete',scope.row,scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -236,7 +236,6 @@
         list: [{}],
         cardList: [
           {
-            id: 1,
             bankName: '',
             userName: '',
             cardNumber: '',
@@ -319,11 +318,11 @@
         let param = Object.assign({}, this.form)
 
         if (this.activeType === 1) {
-          delete param.proceedsType
+          param.outAccount=[]
+          param.inAccount=[]
         }
         if (this.activeType === 2) {
-          param.outAccount = JSON.stringify([].concat(this.cardList))
-          debugger
+          param.outAccount = [].concat(this.cardList)
           this.account.find(item => {
             if (item.bankCard === this.activeAdmin) {
               let obj = {
@@ -332,7 +331,7 @@
                 cardNumber: item.bankCard,
                 amount: this.form.smallAmount
               }
-              param.inAccount = JSON.stringify([].concat(obj))
+              param.inAccount = [].concat(obj)
             }
           })
         }
@@ -351,7 +350,7 @@
           //测试用
           param.contId = 1
           param.filePath = ['123']
-          this.$ajax.postJSON('/api/payInfo/saveProceeds', param,2).then(res => {
+          this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
             res = res.data
             if (res.status === 200) {
               this.$router.push({
@@ -368,9 +367,9 @@
           smallAmount: '',
           proceedsType: '',
         }
-        this.activeAdmin = ''
+        // this.activeAdmin = ''
         this.activeType = item.id
-        this.form = Object.assign({},this.form,obj)
+        // this.form = Object.assign({},this.form,obj)
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
@@ -449,10 +448,9 @@
       /**
        * 刷卡资料补充
        */
-      cardOpera: function (type, row) {
+      cardOpera: function (type, row,index) {
         if (type === 'add') {
           let cell = {
-            id: cardID++,
             bankName: '',
             userName: '',
             cardNumber: '',
@@ -462,12 +460,7 @@
           }
           this.cardList.push(cell)
         } else {
-          this.cardList.find((item, index) => {
-            if (item.id === row.id) {
-              this.cardList.splice(index, 1)
-              return
-            }
-          })
+          this.cardList.splice(index, 1)
         }
       },
       /**
@@ -487,12 +480,34 @@
         }
       },
       getType: function (label, type = 'init') {
+        let obj = {
+          /*moneyType: '',
+          moneyTypePid: '',*/
+          smallAmount: '',
+          proceedsType: '',
+        }
+        this.activeAdmin = ''
+        this.form = Object.assign({},this.form,obj)
         if (type === 'init') {
           this.form.moneyTypePid = label.id
         } else {
           this.form.moneyTypePid = this.moneyTypeOther[0].id
         }
       },
+    },
+    watch:{
+      cardList:function (val) {
+        if(val.length===0){
+          this.cardList.push({
+            bankName: '',
+            userName: '',
+            cardNumber: '',
+            amount: '',
+            orderNo: '',
+            fee: ''
+          })
+        }
+      }
     }
   }
 </script>

@@ -268,7 +268,7 @@ let TOOL = {
     }
     return chineseStr;
   },
-  dateFormat:function (val) {
+  dateFormat:function (val,type=1) {
     if(!val){
       return '--'
     }else {
@@ -276,7 +276,7 @@ let TOOL = {
       let y = time.getFullYear()
       let M = time.getMonth() + 1
       let D = time.getDate()
-      return `${y}-${M>9?M:'0'+M}-${D>9?D:'0'+D}`
+      return type===1?`${y}-${M>9?M:'0'+M}-${D>9?D:'0'+D}`:`${y}/${M>9?M:'0'+M}/${D>9?D:'0'+D}`
     }
   },
   timeFormat:function (val) {
