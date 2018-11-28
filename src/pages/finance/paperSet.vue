@@ -84,7 +84,7 @@
         </el-table-column>
         <el-table-column fixed label="收款ID" min-width="135">
           <template slot-scope="scope">
-            <el-button class="blue" type="text" @click="cellOpera('bill')">{{scope.row.proceedsId}}</el-button>
+            <el-button class="blue" type="text" @click="cellOpera('bill',scope.row)">{{scope.row.proceedsId}}</el-button>
           </template>
         </el-table-column>
         <el-table-column fixed prop="address" label="物业地址" min-width="124">
@@ -352,7 +352,13 @@
         } else if (type === 'paper') {
           this.getPaperDetails(row)
         } else {
-
+          this.$router.push({
+            path:'billDetails',
+            query:{
+              id:row.proceedsId,
+              tab:'收款信息'
+            }
+          })
         }
       },
       // 获取开票列表
@@ -439,13 +445,20 @@
       },
       // 票据详情 打印
       printPaper() {
-        let type = this.moneyTypes[this.activeType]
-        let obj={
-          code:this.activeRow.billCode,
-          payId:this.activeRow.proceedsId,
-          payDetailsId:type.payDetailsId,
-          isHiddenAddress:type.addressHidden,
-          billType:type.project
+        let obj={}
+        if(!this.paperType){
+          obj={
+            code:this.paperInfoData.billCode
+          }
+        }else {
+          let type = this.moneyTypes[this.activeType]
+          obj={
+            code:this.activeRow.billCode,
+            payId:this.activeRow.proceedsId,
+            payDetailsId:type.payDetailsId,
+            isHiddenAddress:type.addressHidden,
+            billType:type.project
+          }
         }
         this.$ajax.post('/api/bills/print',obj).then(res=>{
           debugger

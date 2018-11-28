@@ -68,11 +68,11 @@
       </li>
       <li v-if="activeItem==='收款信息'">
         <h4>合计金额</h4>
-        <p class="total-text">合计：<span>23680</span>元</p>
+        <p class="total-text">合计：<span>{{billMsg.amount}}</span>元</p>
         <el-table border :data="billMsg.inAccount" header-row-class-name="theader-bg">
           <el-table-column align="center" label="款类">
             <template slot-scope="scope">
-              <span>{{billMsg.moneyType}}</span>
+              <span>{{billMsg.moneyTypeName}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="票据">

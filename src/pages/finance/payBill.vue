@@ -195,6 +195,8 @@
               smallAmount: res.data.amount,
               id: res.data.id
             }
+            debugger
+            console.log(JSON.parse(res.data.filePath))
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
           }
@@ -315,7 +317,7 @@
                 message:'付款凭证不能为空'
               })
             }else {
-              param.filePath = [].concat(this.files)
+              param.filePath = [].concat(this.$tool.getFilePath(this.files))
               if(this.$route.query.edit){
                 delete param.contId
                 this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {

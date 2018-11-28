@@ -183,7 +183,7 @@
       <p><label class="form-label">付款凭证</label></p>
       <ul class="upload-list">
         <li>
-          <file-up class="upload-context">
+          <file-up class="upload-context" @getUrl="getFiles">
             <i class="iconfont icon-shangchuan"></i>
             <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
           </file-up>
@@ -253,6 +253,7 @@
     mixins: [MIXINS],
     data() {
       return {
+        contId:'',
         form: {
           contId: '',
           remark: '',
@@ -290,19 +291,18 @@
             fee: ''
           }
         ],
-        amount: {
-          balance: 0
-        },
         dictionary: {
           '534': ''
         },
         activeAdmin: '',
         account: [],
         dropdown: [],
-        receiptMan: []
+        receiptMan: [],
+        files:[]
       }
     },
     created() {
+      this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
       this.getMoneyType()
       this.getDictionary()
       this.getAcount()
@@ -360,6 +360,12 @@
           }
         })
       },
+      /**
+       * 获取上传文件
+       */
+      getFiles:function (payload) {
+        this.files=[].concat(payload.param)
+      },
       goResult: function () {
         let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
@@ -383,6 +389,7 @@
         }
         this.$tool.checkForm(param,RULE).then(()=>{
           // debugger
+          let state = false
           if(this.activeType===2){
             if(param.inAccount.length===0){
               this.$message({
@@ -391,7 +398,14 @@
             }else {
               param.outAccount.find((item,index)=>{
                 this.$tool.checkForm(item,RULE).then(()=>{
-
+                  if(this.files.length===0){
+                    this.$message({
+                      message:'收款凭证不能为空'
+                    })
+                  }else {
+                    param.filePath = [].concat(this.$tool.getFilePath(this.files))
+                    this.getResult(param,this.$route.query.edit?'edit':'')
+                  }
                 }).catch(error=>{
                   this.$message({
                     message:`${index>0?`刷卡资料补充第${index+1}行数据填写不全`:''}  ${error.title}${error.msg}`
@@ -401,8 +415,17 @@
               })
             }
           }
-          /*if (this.$route.query.edit) {
-            param.filePath = ['123']
+          if(this.activeType===1){
+            this.getResult(param,this.$route.query.edit?'edit':'')
+          }
+        }).catch(error=>{
+          this.$message({
+            message:`${error.title}${error.msg}`
+          })
+        })
+      },
+      getResult:function (param,type='add') {
+        if (type==='edit') {
             this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
               res=res.data
               if(res.status===200){
@@ -413,23 +436,19 @@
               }
             })
           } else {
-            //测试用
-            param.contId = 1
-            param.filePath = ['123']
             this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
               res = res.data
               if (res.status === 200) {
                 this.$router.push({
-                  path: 'receiptResult'
+                  path: 'receiptResult',
+                  query:{
+                    type:this.activeType,
+                    content:JSON.stringify(res.data)
+                  }
                 })
               }
             })
-          }*/
-        }).catch(error=>{
-          this.$message({
-            message:`${error.title}${error.msg}`
-          })
-        })
+          }
       },
       choseType: function (item) {
         let obj = {

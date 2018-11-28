@@ -300,7 +300,14 @@ let TOOL = {
     else {
       return val
     }
-  }
+  },
+  getFilePath:function (arr) {
+    let newArr = []
+    arr.forEach(item=>{
+      newArr.push(`${item.path}?${item.name}`)
+    })
+    return newArr
+  },
 }
 
 export {
