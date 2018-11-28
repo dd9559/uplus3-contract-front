@@ -530,7 +530,7 @@ export default {
     //获取文件路径数组
 		uploadSubject(data){
 			console.log(data.param[0]);
-			this.uploadList=data.param;
+			this.uploadList.push(data.param[0].path);
 			//this.isImg=true
 		},
 		//保存上传文件

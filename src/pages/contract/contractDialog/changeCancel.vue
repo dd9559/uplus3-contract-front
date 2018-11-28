@@ -139,16 +139,25 @@ export default {
 		//获取文件路径数组
 		uploadSubject(data){
 			//console.log(data.param[0]);
-			this.uploadList.push(data.param[0]);
+			this.uploadList.push(data.param[0].path);
 			//this.isImg=true
 		},
 		//保存上传文件
 		saveFile(){
 			if(this.dialogType==="upload"){
+				//上传合同主体
 				var url = "/api/upload/contractBody";
 				var param = {
 					contractId:this.contId,
 					vouchers:this.uploadList
+				}
+			}else if(this.dialogType==="changeEdit"){
+				//上传合变更协议
+				var url = "/api/contract/contChange";
+				var param = {
+					id:this.contId,
+					vouchers:this.uploadList,
+					type:1
 				}
 			}
 			this.$ajax.postJSON(url,param).then(res=>{
