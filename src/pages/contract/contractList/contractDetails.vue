@@ -15,7 +15,13 @@
                 <span class="text" v-if="contractDetail.contType.value===4">意向</span>
                 <span class="text" v-if="contractDetail.contType.value===5">定金</span>
               </p>
-              <p><span class="tag">成交总价：</span><span class="text">{{contractDetail.dealPrice}} 元</span></p>
+              <p style="width:500px">
+                <span class="tag">成交总价：</span>
+                <span class="dealPrice">{{contractDetail.dealPrice}} 元
+                  <i v-for="item in dictionary['507']" :key="item.key" v-if="item.key===contractDetail.timeUnit&&contractDetail.contType.value===1"> / {{item.value}}</i>
+                  <i>{{contractDetail.dealPrice|moneyFormat}}</i>
+                </span>
+              </p>
             </div>
             <div class="one_">
               <p v-if="contType!='1'"><span class="tag">客户保证金：</span><span class="text">{{contractDetail.custEnsure}} 元</span></p>
@@ -79,7 +85,7 @@
                 <el-table :data="ownerData" border header-row-class-name="theader-bg">
                   <el-table-column prop="name" label="业主姓名"></el-table-column>
                   <el-table-column prop="mobile" label="电话"></el-table-column>
-                  <el-table-column prop="personType.label" label="关系"></el-table-column>
+                  <el-table-column prop="relation" label="关系"></el-table-column>
                   <el-table-column prop="propertyRightRatio" label="产权比"></el-table-column>
                   <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
                 </el-table>
@@ -111,7 +117,7 @@
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} <i class="iconfont icon-icon_contract_phone" @click="call(scope.row.mobile)"></i>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="personType.label" label="关系"></el-table-column>
+                  <el-table-column prop="relation" label="关系"></el-table-column>
                   <el-table-column prop="propertyRightRatio" label="产权比"></el-table-column>
                   <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
                 </el-table>
@@ -148,38 +154,38 @@
             </div>
             <div class="table">
               <p>房源方分成</p>
-              <el-table :data="employeeData.house" border header-row-class-name="theader-bg">
+              <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
                 <el-table-column prop="category" label="角色类型">
                   <template slot-scope="scope">
                     房源录入人
                   </template>
                 </el-table-column>
-                <el-table-column prop="Royalties" label="分成比例"></el-table-column>
-                <el-table-column prop="EmpName" label="经纪人"></el-table-column>
-                <el-table-column prop="ZFStatus" label="在职状态"></el-table-column>
-                <el-table-column prop="DeptName" label="门店"></el-table-column>
-                <el-table-column prop="DeptManage" label="店长"></el-table-column>
-                <el-table-column prop="GroupName" label="单组"></el-table-column>
-                <el-table-column prop="PartitionManager" label="区经"></el-table-column>
-                <el-table-column prop="RegionalDirector" label="区总"></el-table-column>
+                <el-table-column prop="ratio" label="分成比例"></el-table-column>
+                <el-table-column prop="assignor" label="经纪人"></el-table-column>
+                <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
+                <el-table-column prop="level3" label="门店"></el-table-column>
+                <el-table-column prop="shopkeeper" label="店长"></el-table-column>
+                <el-table-column prop="level4" label="单组"></el-table-column>
+                <el-table-column prop="amaldar" label="区经"></el-table-column>
+                <el-table-column prop="manager" label="区总"></el-table-column>
               </el-table>
             </div>
             <div class="table">
               <p>客源方分成</p>
-              <el-table :data="employeeData.customer" border header-row-class-name="theader-bg">
+              <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg">
                 <el-table-column prop="category" label="角色类型">
                   <template slot-scope="scope">
                     客源录入人
                   </template>
                 </el-table-column>
-                <el-table-column prop="Royalties" label="分成比例"></el-table-column>
-                <el-table-column prop="EmpName" label="经纪人"></el-table-column>
-                <el-table-column prop="ZFStatus" label="在职状态"></el-table-column>
-                <el-table-column prop="DeptName" label="门店"></el-table-column>
-                <el-table-column prop="DeptManage" label="店长"></el-table-column>
-                <el-table-column prop="GroupName" label="单组"></el-table-column>
-                <el-table-column prop="PartitionManager" label="区经"></el-table-column>
-                <el-table-column prop="RegionalDirector" label="区总"></el-table-column>
+                 <el-table-column prop="ratio" label="分成比例"></el-table-column>
+                <el-table-column prop="assignor" label="经纪人"></el-table-column>
+                <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
+                <el-table-column prop="level3" label="门店"></el-table-column>
+                <el-table-column prop="shopkeeper" label="店长"></el-table-column>
+                <el-table-column prop="level4" label="单组"></el-table-column>
+                <el-table-column prop="amaldar" label="区经"></el-table-column>
+                <el-table-column prop="manager" label="区总"></el-table-column>
               </el-table>
             </div>
           </div>
@@ -194,18 +200,18 @@
             <el-button round class="search_btn" @click="goPreview">预览</el-button>
             <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)" v-if="contractDetail.contState.value===3">解约</el-button>
             <el-button round type="danger" @click="dialogInvalid=true" class="search_btn" v-if="contractDetail.contState.value!=3">无效</el-button>
-            <el-button round class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
-            <el-button round type="primary"  class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
-            <el-button round type="primary"  class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value===1">提交审核</el-button>
+            <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
+            <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
+            <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value===1">提交审核</el-button>
           </div>
         </div>
       </el-tab-pane>
       <el-tab-pane label="合同主体" name="second">
         <div class="contractSubject">
-          <span class="uploadSubject">
+          <file-up class="uploadSubject" @getUrl="uploadSubject">
             <i class="iconfont icon-shangchuan"></i>
             <p>点击上传</p>
-          </span>
+          </file-up>
         </div>
       </el-tab-pane>
       <el-tab-pane label="资料库" name="third">
@@ -337,7 +343,7 @@
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog :shows="shows" v-on:close="shows=false" :contractCode="contCode" :dialogType="dialogType"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
-    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel" @closeChangeCancel="changeCancelDialog"></changeCancel>
+    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel"></changeCancel>
   </div>
 </template>
            
@@ -345,6 +351,7 @@
 import achDialog from "./../../achievement/achDialog";
 import changeCancel from "../contractDialog/changeCancel";
 import { MIXINS } from "@/assets/js/mixins";
+import { TOOL } from "@/assets/js/common";
 export default {
   mixins: [MIXINS],
   components: {
@@ -367,7 +374,8 @@ export default {
           paymentMethod:{}
         },
         otherCooperationInfo:{},
-        contState:{}
+        contState:{},
+        toExamineState:{}
       },
       //业主信息
       ownerData: [],
@@ -384,6 +392,8 @@ export default {
       contType: 2,
       //合同id
       id:'',
+      //变更解约id
+      changeCancelId:'',
       //合同编号
       contCode:'',
       //分成
@@ -396,12 +406,15 @@ export default {
         //数据字典
         "514": "", //产权状态
         "517": "", //三方合作类型
-        "556": ""  //付款方式
+        "556": "",  //付款方式
+        "507": "", //时间单位
       },
       //交易流程
       transFlowList:[],
       //分成人员
-      employeeData:{}
+      employeeData:{},
+      //合同主体上传文件路径
+      uploadList:[]
     };
   },
   created() {
@@ -414,11 +427,12 @@ export default {
     this.getContractDetail();
     this.getDictionary();
     this.getTransFlow();
-    //this.getAchievement();
+    this.getAchievement();
+    this.getContDataType()
   },
   methods: {
     handleClick(tab, event) {
-      // console.log(tab, event);
+      console.log(tab, event);
     },
     //打电话
     call(value) {
@@ -452,6 +466,7 @@ export default {
     },
     // 变更解约弹窗
     goChangeCancel(value) {
+      this.changeCancelId=this.id;
       if (value === 1) {
         this.canceldialogType = "changeEdit";
         this.changeCancel = true;
@@ -464,6 +479,7 @@ export default {
     changeCancelDialog() {
       this.changeCancel = false;
       this.canceldialogType = "";
+      this.changeCancelId='';
     },
     //房源客源切换
     changeType(value){
@@ -504,12 +520,53 @@ export default {
       let param = {
         contCode:this.contCode
       }
-      this.$ajax.get('/apiachievement/employee', param).then(res=>{
+      this.$ajax.get('/api/achievement/employees', param).then(res=>{
         res=res.data;
         if(res.status===200){
           this.employeeData=res.data
         }
       })
+    },
+    //获取文件路径数组
+		uploadSubject(data){
+			console.log(data.param[0]);
+			this.uploadList.push(data.param[0].path);
+			//this.isImg=true
+		},
+		//保存上传文件
+		saveFile(){
+			if(this.dialogType==="upload"){
+				var url = "/api/upload/contractBody";
+				var param = {
+					contractId:this.id,
+					vouchers:this.uploadList
+				}
+			}
+			this.$ajax.postJSON(url,param).then(res=>{
+				res=res.data;
+				if(res.status===200){
+					this.$message({
+						message:'上传成功'
+					});
+					this.close();
+				}
+			})
+    },
+    //获取合同资料库类型列表
+    getContDataType(){
+      this.$ajax.get('/api/contract/getContDataType').then(res=>{
+        res=res.data;
+        console.log(res.data)
+      })
+    }
+  },
+  filters: {
+    moneyFormat: function(val) {
+      if (!val) {
+        return "零";
+      } else {
+        return TOOL.toChineseNumber(val);
+      }
     }
   }
 };
@@ -558,6 +615,9 @@ export default {
           }
           .text {
             color: @color-blank;
+          }
+          .dealPrice{
+            color:@color-yellow;
           }
           .serialNumber {
             color: @color-blue;
@@ -730,6 +790,32 @@ export default {
   .record{
     width: 950px;
     padding-top: 20px;
+  }
+  .top {
+    display: flex;
+    > p {
+      padding-right: 15px;
+      font-size: 14px;
+      width: 90px;
+      color: @color-6c;
+    }
+    > .reason {
+      position: relative;
+      > span {
+        position: absolute;
+        top: 90px;
+        right: 10px;
+        color: @color-6c;
+      }
+      > p {
+        padding-top: 10px;
+        color: @color-6c;
+        font-size: 12px;
+        > span {
+          color: @color-blank;
+        }
+      }
+    }
   }
 }
 </style>

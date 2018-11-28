@@ -121,12 +121,12 @@
             </el-table>
         </div>
         <!-- 分页 -->
-        <div>
+        <div class="pagination" v-if="tableData.total">
             <el-pagination
                 :current-page="tableData.pageNum"
                 :page-size="tableData.pageSize"
                 @current-change="currentChangeFn"
-                layout="prev, next, jumper"
+                layout=" total, prev, next, jumper"
                 :total="tableData.total">
             </el-pagination>
         </div>
@@ -430,6 +430,17 @@
             }
         },
         methods: {
+            // 成功提示
+            successMeFn(e){
+                this.$message({
+                    message: e,
+                    type: 'success'
+                });
+            },
+            // 错误提示
+            errMeFn(e){
+                this.$message.error(e);
+            },
             // 接收状态显示
             receiveComFn(state,bol){
                 if(bol){
@@ -589,15 +600,12 @@
                 this.$ajax.postJSON('/api/postSigning/saveStepFlow',arr).then(res=>{
                     res = res.data;
                     if(res.status === 200){
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        });
+                        this.successMeFn(res.message)
                         this.receive.show = false;
                         // 数据刷新
                         this.getListData();
                     }else{
-                        this.$message.error(res.message);
+                        this.errMeFn(res.message);
                     }
                 }).catch(err=>{
                     console.log(err)
@@ -620,20 +628,17 @@
                     // e.rules = [];
                 })
                 if(!bool){
-                    this.$message.error('请将交易步骤分配完，才能接收并开始办理后期');
+                    this.errMeFn('请将交易步骤分配完，才能接收并开始办理后期');
                 }else{
                     this.$ajax.postJSON('/api/postSigning/addStepFlow',arr).then(res=>{
                         res = res.data;
                         if(res.status === 200){
-                            this.$message({
-                                message: res.message,
-                                type: 'success'
-                            });
+                            this.successMeFn(res.message);
                             this.receive.show = false;
                             // 数据刷新
                             this.getListData();
                         }else{
-                            this.$message.error(res.message);
+                            this.errMeFn(res.message);
                         }
                     }).catch(err=>{
                         console.log(err)
@@ -654,7 +659,7 @@
             propCloseFn(bool) {
                 if(bool){
                     if(this.invalidInput.length < 1){
-                        this.$message.error('输入不能为空');
+                        this.errMeFn('输入不能为空');
                     }else{
                         this.$ajax.post('/api/postSigning/refuseReceive',{
                             contractCode:this.receive.e.id,
@@ -662,16 +667,13 @@
                         }).then(res=>{
                             res = res.data;
                             if(res.status === 200){
-                                this.$message({
-                                    message: res.message,
-                                    type: 'success'
-                                });
+                                this.successMeFn(res.message);
                                 this.receive.show = false;
                                 this.layer.show = false;
                                 // 数据刷新
                                 this.getListData();
                             }else{
-                                this.$message.error(res.message);
+                                this.errMeFn(res.message);
                             }
                         }).catch(err=>{
                             console.log(err)
