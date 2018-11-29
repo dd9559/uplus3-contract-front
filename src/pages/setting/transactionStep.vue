@@ -2,6 +2,7 @@
   <div class="data-list">
     <!-- 左侧 步骤类型 -->
     <div class="stepsType gap">
+      <span class="sanjiao"></span>
       <div class="title">
         <span>步骤类型</span>
         <el-button type="primary" @click="addStepsType">添加步骤类型</el-button>
@@ -65,10 +66,10 @@
     <el-dialog :title="modalTitle" :visible.sync="stepsTypeDialog" width="740px" class="steps-type">
       <el-form :model="addForm" class="addform" size="small">
         <el-form-item label="步骤类型">
-          <el-input v-model="addForm.name" autocomplete="off"></el-input>
+          <el-input v-model="addForm.name" autocomplete="off" maxlength="30"></el-input>
         </el-form-item>
         <el-form-item label="分配负责角色">
-          <el-select v-model="addForm.dutyType">
+          <el-select v-model="addForm.dutyType" filterable>
             <el-option v-for="item in roleList" :key="item.key" :label="item.value" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -133,7 +134,7 @@
         </template>
       </div>
       <div slot="footer" class="modal-footer">
-        <el-button @click="submitForm" class="confirmBtn">确 定</el-button>
+        <el-button @click="confirmForm" class="confirmBtn">确 定</el-button>
       </div>
     </el-dialog> 
   </div>
@@ -227,7 +228,8 @@
           '570':''
         },
         roleList: [],
-        inputMax: 30
+        inputMax: 30,
+        allRows: {}
       }
     },
     created() {
@@ -253,12 +255,21 @@
         this.currentRow = row
         //高亮选中的步骤类型
         let rows = cell.parentNode.parentNode.children
+        this.allRows = rows
         for(var i = 0; i < rows.length; i++) {
           rows[i].firstElementChild.style.background = "#F7FBFF"
           rows[i].firstElementChild.style.color = "#478DE3"
         }
         cell.parentNode.firstElementChild.style.background = "#478DE3"
         cell.parentNode.firstElementChild.style.color = "#fff"
+      },
+      firstCellLight() {
+        for(var i = 1; i < this.allRows.length; i++) {
+          this.allRows[i].firstElementChild.style.background = "#F7FBFF"
+          this.allRows[i].firstElementChild.style.color = "#478DE3"
+        }
+        this.allRows[0].firstElementChild.style.background = "#478DE3"
+        this.allRows[0].firstElementChild.style.color = "#fff"
       },
       getRoleList() {
         this.$ajax.get('/api/roles').then(res => {
@@ -302,25 +313,37 @@
        * 提交表单
        */
       submitForm: function() {
-        if(this.modalTitle === "添加步骤类型") {
-          const url = "/api/flowmanage/insertStepsType"
-          let param = this.addForm
-          const msg = "添加步骤类型成功"
-          this.stepsTypePost(url,param,msg)
-        } else if(this.modalTitle === "编辑步骤类型") {
-          const url = "/api/flowmanage/updateStepsType"
-          let param = {
-            id: this.currentRow.typeId
+        if(this.addForm.name === "") {
+            this.$message("步骤类型不能为空")
+          } else {
+            if(this.modalTitle === "添加步骤类型") {
+              const url = "/api/flowmanage/insertStepsType"
+              const msg = "添加步骤类型成功"
+              this.stepsTypePost(url,this.addForm,msg)
+              this.firstCellLight()
+            } else {
+              const url = "/api/flowmanage/updateStepsType"
+              let param = {
+                id: this.currentRow.typeId
+              }
+              param = Object.assign({},this.addForm,param)
+              const msg = "编辑步骤类型成功"
+              this.stepsTypePost(url,param,msg)
+              this.firstCellLight()
+            }  
           }
-          param = Object.assign({},this.addForm,param)
-          const msg = "编辑步骤类型成功"
-          this.stepsTypePost(url,param,msg)
-        } else if (this.modalTitle === "添加交易步骤") {
-          let url = "/api/flowmanage/insertSteps"
-          this.tradeStepsPost(url)
-        } else if (this.modalTitle === "编辑交易步骤") {
-          let url = "/api/flowmanage/updateSteps"
-          this.tradeStepsPost(url)
+      },
+      confirmForm() {
+        if(this.stepBusiness.name === "") {
+          this.$message("步骤名称不能为空")
+        } else {
+          if (this.modalTitle === "添加交易步骤") {
+            const url = "/api/flowmanage/insertSteps"
+            this.tradeStepsPost(url)
+          } else {
+            const url = "/api/flowmanage/updateSteps"
+            this.tradeStepsPost(url)
+          }
         }
       },
       //添加和编辑步骤类型请求
@@ -468,6 +491,16 @@
   .stepsType {
     min-width: 29%;
     background-color: #fff;
+    position: relative;
+    .sanjiao {
+      width:0;
+      right:-14px;
+      top: 15px;
+      position: absolute;
+      border-width:7px;
+      border-style:solid;
+      border-color:transparent transparent transparent white;
+    }
     .title {
       height: 63px;
       line-height: 63px;
