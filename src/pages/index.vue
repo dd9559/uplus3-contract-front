@@ -118,10 +118,10 @@
                 name:'实收业绩',
                 path:'receivableAchievement'
               },
-              {
-                name:'门店实收',
-                path:'storeReceive'
-              }
+              // {
+              //   name:'门店实收',
+              //   path:'storeReceive'
+              // }
             ]
           },
           {
