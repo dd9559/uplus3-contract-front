@@ -202,7 +202,7 @@
             <el-button round type="danger" @click="dialogInvalid=true" class="search_btn" v-if="contractDetail.contState.value!=3">无效</el-button>
             <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
             <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
-            <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value===1">提交审核</el-button>
+            <!-- <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value===1">提交审核</el-button> -->
           </div>
         </div>
       </el-tab-pane>
@@ -549,11 +549,16 @@ export default {
     },
     //获取合同资料库类型列表
     getContDataType(){
-      this.$ajax.get('/api/contract/getContDataType').then(res=>{
+      let param = {
+        id:this.id
+      }
+      this.$ajax.get('/api/contract/getContDataTypeById', param).then(res=>{
         res=res.data;
         if(res.status===200){
-          console.log(res.data)
-          res.data.forEach(element => {
+          let address = JSON.parse(res.data.address);
+          console.log(address);
+          
+          address.forEach(element => {
             if(element.type==='买方'){
               this.buyerList.push(element);
             }else if(element.type==="卖方"){

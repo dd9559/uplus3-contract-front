@@ -224,9 +224,9 @@
             <div style="text-align:center">
               <el-button type="text" size="medium" v-if="scope.row.contState.value!=3" @click="upload(scope.row.id)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview">预览</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===6" @click="goCheck(scope.row)">审核</el-button> 
+              <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===6" @click="goCheck(scope.row)">审核</el-button>  -->
               <el-button type="text" size="medium" @click="toLayerAudit(scope.row)">调佣</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===8" @click="submitAudit(scope.row)">提审</el-button>
+              <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===8" @click="submitAudit(scope.row)">提审</el-button> -->
             </div>
           </template>
         </el-table-column>
@@ -359,7 +359,7 @@ export default {
       console.log(id);
       this.$router.push({
         path:'/receiptBill',
-        id:id
+        contId:id
       })
     },
     //付款
@@ -367,7 +367,7 @@ export default {
       console.log(id);
        this.$router.push({
         path:'/paytBill',
-        id:id
+        contId:id
       })
     },
     //合同详情页
