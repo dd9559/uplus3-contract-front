@@ -1,15 +1,15 @@
 <template>
   <div class="view">
-    <ScreeningTop>
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
       <div class="content">
         <div class="input-group">
           <label>收付款类:</label>
           <el-select size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['25']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
@@ -17,10 +17,10 @@
           <label>收款状态:</label>
           <el-select size="small" v-model="searchForm.status" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['23']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
@@ -39,10 +39,10 @@
           <label>合同类型:</label>
           <el-select size="small" v-model="searchForm.contractType" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['10']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
@@ -79,6 +79,12 @@
       </div>
     </ScreeningTop>
     <div class="view-context">
+      <div class="table-tool">
+        <h4><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
+        <p>
+          <el-button type="primary">导出</el-button>
+        </p>
+      </div>
       <el-table :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
@@ -110,6 +116,11 @@
     mixins: [FILTER],
     data() {
       return {
+        dictionary:{
+          '10': '',
+          '23': '',
+          '25': '',
+        },
         searchForm: {
           moneyType: '',
           status: '',
@@ -119,27 +130,17 @@
           collectionTime: '',
           keyword: ''
         },
-        list: [
-          {
-            contractId: '201809301289',
-            houseId: "HRYY000039",
-            customerId: "HRYY000039",
-            contractType: "买卖&居间",
-            collectionType: "佣金",
-            broker: "东野圭吾-当代一店",
-            accounts_receivable: 1000,
-            payment_received: 1000,
-            for_collection: 1000,
-            operation_time: "2018/09/30 12:00",
-            state: "未收"
-          }
-        ]
+        list: []
       }
     },
     created() {
       // this.getData()
+      this.getDictionary()
     },
     methods: {
+      reset:function () {
+        this.$tool.clearForm(this.searchForm)
+      },
       getData: function () {
         let param={
           moneyType: this.searchForm.moneyType,
@@ -195,11 +196,28 @@
   }
   .view-context{
     background-color: @color-white;
-    padding: 20px;
+    padding: 0 20px 20px;
     /deep/ .theader-bg{
       >th{
         background-color: @bg-th;
       }
+    }
+  }
+  .table-tool{
+    height: 60px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    >h4{
+      >i{
+        margin-right: 8px;
+      }
+    }
+    >p{
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform:translateY(-50%);
     }
   }
 </style>

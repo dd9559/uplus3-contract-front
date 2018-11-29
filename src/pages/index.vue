@@ -167,6 +167,10 @@
               {
                 name:'操作日志',
                 path:'operationLog'
+              },
+              {
+                name:'审核流程',
+                path:'approvalProcess'
               }
             ]
           }

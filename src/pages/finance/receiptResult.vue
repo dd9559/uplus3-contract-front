@@ -1,66 +1,92 @@
 <template>
   <div class="view">
     <div class="view-context">
+      <h1><i class="iconfont icon-chenggong"></i></h1>
       <h3>{{type===1?'POS收款订单创建成功':'收款信息录入成功'}}</h3>
       <p>已成功生成收款单</p>
       <div class="bill-result-table">
         <p v-if="type===1">请在POS机上进行收款</p>
-        <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
+        <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" v-if="type===2">
           <el-table-column align="center" label="现金">
             <template slot-scope="scope">
-              <span>-</span>
+              <span>{{result.type==='现金'?result.amount:'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="转账">
             <template slot-scope="scope">
-
+              <span>{{result.type==='转账'?result.amount:'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="POS刷卡">
             <template slot-scope="scope">
-
+              <span>{{result.type==='POS刷卡'?result.amount:'--'}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="合计金额">
+            <template slot-scope="scope">
+              <span>{{result.amount}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" key="other" v-else>
+          <el-table-column min-width="160" align="center" label="订单编号">
+            <template slot-scope="scope">
+              <span>{{result.payCode}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column min-width="160" align="center" label="订单金额">
+            <template slot-scope="scope">
+              <span>{{result.amount}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column min-width="160" align="center" label="订单条码">
             <template slot-scope="scope">
 
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <p>
-        <el-button type="primary">开票</el-button>
-        <el-button @click="goBack('contract')">返回合同列表</el-button>
-        <el-button @click="goBack('bill')">返回收付款列表</el-button>
+      <p class="tool-bar">
+        <el-button round class="make-bill" type="primary" v-if="type===1">开票</el-button>
+        <el-button round @click="goBack('contractList')">返回合同列表</el-button>
+        <el-button round @click="goBack('bill')">返回收付款列表</el-button>
+        <span class="btn-question" @click="answer">支付遇到问题？</span>
       </p>
     </div>
+    <el-dialog
+      title="提示"
+      :visible.sync="confirm"
+      width="460px"
+      class="dialog-answer">
+      <p>支付遇到问题？您可以拨打以下客服电话处理咨询：</p>
+      <h4>400 112 5883</h4>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   export default {
     name: "receipt-result",
-    data(){
-      return{
-        list:[
-          {}
-        ],
-        type:1,//1=POS收款单
+    data() {
+      return {
+        list: [{}],
+        type: 1,//1=创建 2=录入
+        result: {},
+        confirm: false
       }
     },
-    mounted(){
-      this.steps.find(item=>{
-        if(!item.state){
-          this.activeStep=item.index-1
-          return true
-        }
-      })
+    created() {
+      this.type = parseInt(this.$route.query.type)
+      this.result = JSON.parse(this.$route.query.content)
     },
-    methods:{
-      goBack:function (page) {
+    methods: {
+      goBack: function (page) {
         this.$router.push({
-          path:page
+          path: page
         })
+      },
+      answer: function () {
+        this.confirm = true
       }
     }
   }
@@ -68,35 +94,75 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
-  .view{
+
+  .view {
     background-color: @bg-white;
     position: relative;
-    &-context{
+    &-context {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform:translate(-50%,-50%);
+      transform: translate(-50%, -50%);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      >h3{
-        color: @color-324;
+      >h1{
+        margin-bottom: 41px;
+        .iconfont{
+          color: @color-58b;
+          font-size: 89px;
+        }
       }
-      >p{
-        &:first-of-type{
+      > h3 {
+        color: @color-324;
+        font-size: 28px;
+      }
+      > p {
+        &:first-of-type {
           color: @color-99A;
           margin: 20px 0;
+          font-size: 18px;
         }
       }
-      .bill-result-table{
+      .bill-result-table {
         margin: 70px 0;
         text-align: center;
-        >p{
+        > p {
           color: @color-324;
           margin-bottom: 20px;
+          font-size: 18px;
         }
       }
+    }
+  }
+
+  .make-bill {
+    min-width: 150px;
+  }
+
+  .tool-bar {
+    position: relative;
+    padding-right: 130px;
+    white-space: nowrap;
+    .btn-question {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      color: @color-blue;
+      font-size: @size-base;
+      cursor: pointer;
+    }
+  }
+  .dialog-answer{
+    p{
+      text-align: center;
+    }
+    h4{
+      margin: 28px 0;
+      text-align: center;
+      font-weight: bold;
+      font-size: @size-24;
     }
   }
 </style>

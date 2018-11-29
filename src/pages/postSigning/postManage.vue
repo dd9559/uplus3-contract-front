@@ -4,7 +4,7 @@
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
                 <el-form-item label="关键字" prop="search">
-                    <el-autocomplete class="w322" v-model="propForm.search" :fetch-suggestions="querySearch" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" :trigger-on-focus="false" @select="handleSelect" clearable></el-autocomplete>
+                    <el-input class="w322" v-model="propForm.search" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" clearable></el-input>
                 </el-form-item>
                 <div class="in-block">
                     <el-form-item prop="region" class="mr">
@@ -203,9 +203,10 @@
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
             <el-table 
-            :data="tableData" 
+            :data="tableData.list" 
+            v-loading="loadingList"
             @cell-dblclick="dblclickFn"
-            :formatter="nullFormatter"
+            :formatter="nullFormatterData"
             class="paper-table mt-20">
                 <el-table-column prop="code" label="合同编号" min-width="130">
                     <template slot-scope="scope">
@@ -247,10 +248,10 @@
                 <el-table-column prop="stepInstanceName" label="后期进度" min-width="182">
                     <template slot-scope="scope">
                         <template v-if="scope.row.statusLaterStage.label === STATE.start">
-                            <el-button class="blue" type="text" @click="progressFn">查看交易流程</el-button>
+                            <el-button class="blue" type="text" @click="progressFn(scope.row)">查看交易流程</el-button>
                         </template>
                         <template v-else>
-                            <p>当前步骤：<el-button class="blue" type="text" @click="transactionFn">{{scope.row.stepInstanceName}}</el-button></p>
+                            <p>当前步骤：<el-button class="blue" type="text" @click="transactionFn(scope.row.stepInstanceid)">{{scope.row.stepInstanceName}}</el-button></p>
                             <p>{{nextStepFn(scope.row.nextStepName)}}</p>
                         </template>
                     </template>
@@ -260,6 +261,16 @@
                 <el-table-column prop="personLiableName" label="当前步骤责任人" min-width="120">
                 </el-table-column>
             </el-table>
+        </div>
+        <!-- 分页 -->
+        <div class="pagination" v-if="tableData.total">
+            <el-pagination
+                :current-page="tableData.pageNum"
+                :page-size="tableData.pageSize"
+                @current-change="currentChangeFn"
+                layout=" total, prev, next, jumper"
+                :total="tableData.total">
+            </el-pagination>
         </div>
         <!-- 后期进度弹层 -->
         <el-dialog title="后期进度" :visible.sync="layerShow" width="1000px"  class="layer-paper">
@@ -292,62 +303,62 @@
                 <el-table 
                 border
                 :data="tableProgress" 
-                :formatter="nullFormatter"
+                v-loading="loadingProgress"
                 class="paper-table mt-20">
                     <el-table-column 
                     label="步骤类型" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime?'red':'cl-2'">{{scope.row.transactionStepsType}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionStepsType)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="步骤名称" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime?'red':'cl-2'">{{scope.row.transactionSteps}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionSteps)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="操作人" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime?'red':'cl-2'">{{scope.row.operatorName}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.operatorName)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="操作日期" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime?'red':'cl-2'">{{dateFormat(scope.row.handleDatetime)}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.operationTime)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="责任人" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime?'red':'cl-2'">{{scope.row.personLiableName}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.personLiableName)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="确定日期" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime?'red':'cl-2'">{{dateFormat(scope.row.endDatetime)}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.endDatetime)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="办理天数" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime?'red':'cl-2'">{{scope.row.remindDay}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.actualDay)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="规定天数" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime?'red':'cl-2'">{{scope.row.specifiedDay}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.specifiedDay)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
@@ -356,19 +367,19 @@
                     align="center">
                         <template slot-scope="scope">
                             <template v-if="scope.row.stepState.value === OPERATION.start">
-                                <el-button class="blue" type="text" @click="operationFn">查看</el-button>
+                                <el-button class="blue" type="text" @click="operationFn(scope.row.id)">查看</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.backlog">
-                                <el-button class="blue" type="text" @click="transactionFn">办理</el-button><el-button class="blue" type="text" @click="upFn(scope)">上</el-button><el-button class="blue" type="text" @click="downFn(scope)">下</el-button>
+                                <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" @click="downFn(scope)">下</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.sure">
-                                <el-button class="blue" type="text" @click="sureFn">确认</el-button>
+                                <el-button class="blue" type="text" @click="sureFn(scope.row.id)">确认</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.not">
-                                <el-button class="blue" type="text" @click="upFn(scope)">上</el-button><el-button class="blue" type="text" @click="downFn(scope)">下</el-button>
+                                <el-button class="blue" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1" class="blue" type="text" @click="downFn(scope)">下</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.amend">
-                                <el-button class="blue" type="text" @click="amendFn">修改</el-button>
+                                <el-button class="blue" type="text" @click="amendFn(scope.row.id)">修改</el-button>
                             </template>
                         </template>
                     </el-table-column>
@@ -377,7 +388,7 @@
         </el-dialog>
         <!-- 更换交易流程弹层 -->
         <el-dialog title="选择交易流程" :visible.sync="replaceShow" width="740px"  class="layer-paper">
-            <div class="replace-box">
+            <div class="replace-box" v-loading="loadingReplace">
                 <div>
                     <div class="tit">交易流程</div>
                     <ul class="ul">
@@ -390,7 +401,7 @@
                 </div>
                 <div>
                     <div class="tit">交易步骤</div>
-                    <ul class="ul-box">
+                    <ul class="ul-box pr">
                         <li 
                         v-for="item in replaceData.children"
                         :key="'jybz'+item.id">
@@ -400,6 +411,9 @@
                             <span v-show="replaceData.index !== replaceData.transFlowCode">
                                 {{item.stepsName}}
                             </span>
+                        </li>
+                        <li v-show="replaceData.children.length === 0" class="no-data">
+                            <div class="cl-1">暂无数据</div>
                         </li>
                     </ul>
                 </div>
@@ -412,138 +426,159 @@
         <!-- 办理 -->
         <el-dialog :title="stepsData.tit" :visible.sync="stepsData.show" width="740px"  class="layer-paper">
             <div class="steps-from">
-                <div 
-                v-for="(item,index) in stepsFrom"
-                :key="item.tit"
-                class="steps-li">
-                    <div class="steps-li-fl">
-                        <span class="steps-fl">{{item.tit}}：</span>
-                        <div class="steps-mandatory" v-if="item.bool">*</div>
-                    </div>
-                    <div class="steps-fr">
-                        <!-- 办理 编辑 -->
-                        <template v-if="stepsData.tit !== STEPS.end">
-                            <template v-if="item.type === STEPSINPUT.start">
-                                <el-input 
-                                v-model="item.val"
-                                size="small"
-                                ></el-input>
-                            </template>
-                            <template v-else-if="item.type === STEPSINPUT.time">
-                                <el-date-picker
-                                v-model="item.val"
-                                size="small"
-                                type="date"
-                                class="w160"
-                                placeholder="选择日期">
-                                </el-date-picker>
-                            </template>
-                            <template v-else-if="item.type === STEPSINPUT.textarea">
-                                <div class="steps-input">
+                    <el-form 
+                    ref="stepsFrom"
+                    :model="stepsFrom"
+                    v-loading="LookStepLoad"
+                    label-width="150px">
+                        <el-form-item
+                            v-for="(item,index) in stepsFrom.list"
+                            :prop="'list.' + index + '.val'"
+                            :key="'bl'+item.id + index"
+                            :label="item.title+ '：'"
+                            :rules="item.rules"
+                        >
+                            <!-- 办理 编辑 -->
+                            <template v-if="stepsData.tit !== STEPS.end">
+                                <template v-if="item.type === STEPSINPUT.start">
                                     <el-input 
-                                    type="textarea" 
-                                    resize="none" 
-                                    :maxlength="invalidMax" 
-                                    v-model="item.val" 
-                                    class="input">
-                                    </el-input>
-                                    <div class="text-absloute">{{item.val.length}}/{{invalidMax}}</div>
-                                </div>
+                                    v-model="item.val"
+                                    size="small"
+                                    ></el-input>
+                                </template>
+                                <template v-if="item.type === STEPSINPUT.num">
+                                    <el-input 
+                                    type="number"
+                                    v-model="item.val"
+                                    size="small"
+                                    ></el-input>
+                                </template>
+                                <template v-else-if="item.type === STEPSINPUT.time">
+                                    <el-date-picker
+                                    v-model="item.val"
+                                    size="small"
+                                    type="date"
+                                    class="w160"
+                                    placeholder="选择日期">
+                                    </el-date-picker>
+                                </template>
+                                <template v-else-if="item.type === STEPSINPUT.textarea">
+                                    <div class="steps-input">
+                                        <el-input 
+                                        type="textarea" 
+                                        resize="none" 
+                                        :maxlength="invalidMax" 
+                                        v-model="item.val" 
+                                        class="input">
+                                        </el-input>
+                                        <div class="text-absloute">{{item.val.length}}/{{invalidMax}}</div>
+                                    </div>
+                                </template>
+                                <template v-else-if="item.type === STEPSINPUT.img">
+                                    <div>
+                                        <fileUp 
+                                        :id="'fileUp'+index"
+                                        @getUrl="imgBtnFn"
+                                        class="fileUp">
+                                            <el-button 
+                                            @click="stepsIndexBtnFn(index)" 
+                                            class="paper-btn paper-btn-blue" 
+                                            type="primary" 
+                                            size="medium">上传图片</el-button>
+                                        </fileUp>
+                                    </div>
+                                    <ul class="steps-img">
+                                        <li 
+                                        class="steps-img-li"
+                                        v-for="(i,n) in item.val"
+                                        @click="clearFn(index,n)"
+                                        :key="i.name"
+                                        >
+                                            <i class="iconfont icon-tubiao-6"></i>
+                                            <img :src="i.src">
+                                        </li>
+                                    </ul>
+                                </template>
+                                <template v-else>
+                                    <div>
+                                        <template v-if="item.type === STEPSINPUT.mp4">
+                                            <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传视频</el-button>
+                                        </template>
+                                        <template v-if="item.type === STEPSINPUT.excel">
+                                            <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传Word</el-button>
+                                        </template>
+                                        <template v-if="item.type === STEPSINPUT.word">
+                                            <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传Excel</el-button>
+                                        </template>
+                                        <template v-if="item.type === STEPSINPUT.pdf">
+                                            <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传PDF</el-button>
+                                        </template>
+                                    </div>
+                                    <ul class="steps-img">
+                                        <li 
+                                        class="steps-mp4-li"
+                                        v-for="(i,n) in item.val"
+                                        @click="clearFn(index,n)"
+                                        :key="i.name"
+                                        >  
+                                            <img 
+                                            class="icon-steps" 
+                                            v-if="item.type === STEPSINPUT.mp4"
+                                            src="../../assets/img/icon-steps01.png">
+                                            <img 
+                                            class="icon-steps" 
+                                            v-if="item.type === STEPSINPUT.excel"
+                                            src="../../assets/img/icon-steps02.png">
+                                            <img 
+                                            class="icon-steps" 
+                                            v-if="item.type === STEPSINPUT.word"
+                                            src="../../assets/img/icon-steps03.png">
+                                            <img 
+                                            class="icon-steps" 
+                                            v-if="item.type === STEPSINPUT.pdf"
+                                            src="../../assets/img/icon-steps04.png">
+                                            <span class="fl">{{i.name}}</span>
+                                            <i class="iconfont icon-tubiao-7"></i>
+                                        </li>
+                                    </ul>
+                                </template>
                             </template>
-                            <template v-else-if="item.type === STEPSINPUT.img">
-                                <div><el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传图片</el-button></div>
-                                <ul class="steps-img">
-                                    <li 
-                                    class="steps-img-li"
-                                    v-for="(i,n) in item.list"
-                                    @click="clearFn(index,n)"
-                                    :key="i.name"
-                                    >
-                                        <i class="iconfont icon-tubiao-6"></i>
-                                        <img :src="i.src">
-                                    </li>
-                                </ul>
-                            </template>
+                            <!-- 查看 -->
                             <template v-else>
-                                <div>
-                                    <template v-if="item.type === STEPSINPUT.mp4">
-                                        <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传视频</el-button>
-                                    </template>
-                                    <template v-if="item.type === STEPSINPUT.excel">
-                                        <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传Word</el-button>
-                                    </template>
-                                    <template v-if="item.type === STEPSINPUT.word">
-                                        <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传Excel</el-button>
-                                    </template>
-                                    <template v-if="item.type === STEPSINPUT.pdf">
-                                        <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传PDF</el-button>
-                                    </template>
-                                </div>
-                                <ul class="steps-img">
-                                    <li 
-                                    class="steps-mp4-li"
-                                    v-for="(i,n) in item.list"
-                                    @click="clearFn(index,n)"
-                                    :key="i.name"
-                                    >  
-                                        <img 
-                                        class="icon-steps" 
-                                        v-if="item.type === STEPSINPUT.mp4"
-                                        src="../../assets/img/icon-steps01.png">
-                                        <img 
-                                        class="icon-steps" 
-                                        v-if="item.type === STEPSINPUT.excel"
-                                        src="../../assets/img/icon-steps02.png">
-                                        <img 
-                                        class="icon-steps" 
-                                        v-if="item.type === STEPSINPUT.word"
-                                        src="../../assets/img/icon-steps03.png">
-                                        <img 
-                                        class="icon-steps" 
-                                        v-if="item.type === STEPSINPUT.pdf"
-                                        src="../../assets/img/icon-steps04.png">
-                                        <span class="fl">{{i.name}}</span>
-                                        <i class="iconfont icon-tubiao-7"></i>
-                                    </li>
-                                </ul>
+                                <template v-if="item.type === STEPSINPUT.start || item.type === STEPSINPUT.time || item.type === STEPSINPUT.textarea || item.type === STEPSINPUT.num">
+                                    <div class="steps-see">{{item.val}}</div>
+                                </template>
+                                <template v-else>
+                                    <ul class="steps-img">
+                                        <li 
+                                        class="steps-mp4-li"
+                                        v-for="(i,n) in item.val"
+                                        @click="clearFn(index,n)"
+                                        :key="i.name"
+                                        >  
+                                            <img 
+                                            class="icon-steps" 
+                                            v-if="item.type === STEPSINPUT.mp4"
+                                            src="../../assets/img/icon-steps01.png">
+                                            <img 
+                                            class="icon-steps" 
+                                            v-if="item.type === STEPSINPUT.excel"
+                                            src="../../assets/img/icon-steps02.png">
+                                            <img 
+                                            class="icon-steps" 
+                                            v-if="item.type === STEPSINPUT.word"
+                                            src="../../assets/img/icon-steps03.png">
+                                            <img 
+                                            class="icon-steps" 
+                                            v-if="item.type === STEPSINPUT.pdf"
+                                            src="../../assets/img/icon-steps04.png">
+                                            <span class="fl">{{i.name}}</span>
+                                        </li>
+                                    </ul>
+                                </template>
                             </template>
-                        </template>
-                        <!-- 查看 -->
-                        <template v-else>
-                            <template v-if="item.type === STEPSINPUT.start || item.type === STEPSINPUT.time || item.type === STEPSINPUT.textarea">
-                                <div class="steps-see">{{item.val}}</div>
-                            </template>
-                            <template v-else>
-                                <ul class="steps-img">
-                                    <li 
-                                    class="steps-mp4-li"
-                                    v-for="(i,n) in item.list"
-                                    @click="clearFn(index,n)"
-                                    :key="i.name"
-                                    >  
-                                        <img 
-                                        class="icon-steps" 
-                                        v-if="item.type === STEPSINPUT.mp4"
-                                        src="../../assets/img/icon-steps01.png">
-                                        <img 
-                                        class="icon-steps" 
-                                        v-if="item.type === STEPSINPUT.excel"
-                                        src="../../assets/img/icon-steps02.png">
-                                        <img 
-                                        class="icon-steps" 
-                                        v-if="item.type === STEPSINPUT.word"
-                                        src="../../assets/img/icon-steps03.png">
-                                        <img 
-                                        class="icon-steps" 
-                                        v-if="item.type === STEPSINPUT.pdf"
-                                        src="../../assets/img/icon-steps04.png">
-                                        <span class="fl">{{i.name}}</span>
-                                    </li>
-                                </ul>
-                            </template>
-                        </template>
-                    </div>
-                </div>
+                        </el-form-item>
+                    </el-form>
             </div>
             <span slot="footer">
                 <!-- 办理 -->
@@ -562,13 +597,12 @@
         :visible.sync="adjustShow" 
         width="740px"  
         class="layer-paper">
-            <div class="layer-chekbox-box">
+            <div class="layer-chekbox-box" v-loading="loadingAdjust">
                 <el-table
                 :data="adjustData"
                 class="paper-table" 
                 border>
                     <el-table-column
-                        prop="id"
                         class="layer-all-chekbox" 
                         align="center"
                         width="250px"
@@ -577,12 +611,11 @@
                             <p class="check-all">
                                 <el-checkbox 
                                 v-model="scope.row.bool" 
-                                @change="adjustAllChange(scope.$index,$event)">{{scope.row.id}}</el-checkbox>
+                                @change="adjustAllChange(scope.$index,$event)">{{scope.row.typeName}}</el-checkbox>
                             </p>
                         </template>
                     </el-table-column>
                     <el-table-column
-                        prop="name"
                         align="center"
                         label="内容">
                         <template slot-scope="scope">
@@ -591,10 +624,11 @@
                             v-model="scope.row.list"
                             @change="adjustChange(scope.$index,$event)">
                                 <p 
-                                v-for="item in scope.row.children" 
+                                v-for="item in scope.row.stepsList" 
                                 :key="item.name">
                                     <el-checkbox 
-                                    :label="item.name">{{item.name}}</el-checkbox>
+                                    :disabled="item.disabled"
+                                    :label="item">{{item.name}}</el-checkbox>
                                 </p>
                             </el-checkbox-group>
                         </template>
@@ -639,13 +673,14 @@
     // 办理输入框
     const STEPSINPUT = {
         start:0,        //input 文本输入框
-        time:1,         //时间选择
-        textarea:2,      //文本框输入
+        num:1,        //input number类型
+        time:2,         //时间选择
         img:3,          //图片
         mp4:4,          //视频
-        excel:5,        //表格
-        word:6,         //文档
-        pdf:7,          //pdf文件
+        pdf:5,          //pdf文件
+        excel:6,        //表格
+        word:7,         //文档
+        textarea:8,      //文本框输入
     }
     // 变更节约状态
     const STATUSCHANGE = 3;
@@ -654,6 +689,8 @@
         start:0,
         end:1,
     }
+    // 是否超时
+    const ISOVERTIME = 1;
 
     export default {
         mixins: [FILTER,MIXINS],
@@ -667,6 +704,11 @@
                 // 加载
                 loading:false,
                 loading2:false,
+                LookStepLoad:false,
+                loadingList:false,
+                loadingProgress:false,
+                loadingAdjust:false,
+                loadingReplace:false,
                 // 枚举数据
                 dictionary:{
                     '6':'合同变更状态',
@@ -675,6 +717,8 @@
                     '22':'是否超时',
                     '44':'后期状态',
                     '48':'数据范围',
+                    '561':'步骤附属信息类型',
+                    '570':'是否必填',
                 },
                 // 筛选结果
                 propForm:{
@@ -741,28 +785,13 @@
                     }],
                 },
                 // 列表数据
-                tableData:[{
-                    statusLaterStage:{
-                        label:''
-                    }
-                }],
+                tableData:{},
                 // 状态
                 STATE,
                 // 接收日期切换
                 RECEIVINGDATE,
                 // 后期进度列表
-                tableProgress:[{
-                    state:false,
-                    a1:'担保流程',
-                    a2:'资料准备',
-                    a3:'李四',
-                    a4:'2018-09-08',
-                    a5:'李四',
-                    a6:'2018-09-08',
-                    a7:'8',
-                    a8:'7',
-                    stepState:0
-                }],
+                tableProgress:[],
                 // 后期进度弹层
                 layerShow:false,
                 layerBtn:true,
@@ -783,72 +812,17 @@
                     transFlowCode:0,
                     instances:[],
                 },
+                ISOVERTIME,
                 // 步骤管理弹层数据
                 stepsData:{
                     show:false,
                     tit:'办理'
                 },
-                stepsFrom:[{
-                    // 默认input输入文字
-                    val:'111',
-                    //输入文字 
-                    tit:'办理地址测试文件',
-                    // 是否必填
-                    bool:true,
-                    //输入类型 
-                    type:0,
-                },{
-                    val:'',
-                    tit:'图片上传',
-                    bool:true,
-                    type:3,
-                    list:[{
-                        src:'https://img.zcool.cn/community/00deeb5bebe86ca80121ab5d829701.png@260w_195h_1c_1e_1o_100sh.jpg',
-                        name:'图片名称',
-                    }]
-                },{
-                    val:'',
-                    tit:'视频上传',
-                    bool:true,
-                    type:4,
-                    list:[{
-                        name:'视频名称',
-                    }]
-                },{
-                    val:'',
-                    tit:'表格上传',
-                    bool:true,
-                    type:5,
-                    list:[{
-                        name:'表格名称',
-                    }]
-                },{
-                    val:'',
-                    tit:'文档上传',
-                    bool:true,
-                    type:6,
-                    list:[{
-                        name:'文档名称',
-                    }]
-                },{
-                    val:'',
-                    tit:'PDF上传',
-                    bool:true,
-                    type:7,
-                    list:[{
-                        name:'pdf名称',
-                    }]
-                },{
-                    val:'',
-                    tit:'办理日期',
-                    bool:true,
-                    type:1,
-                },{
-                    val:'',
-                    tit:'备注',
-                    bool:false,
-                    type:2,
-                }],
+                stepsFrom:{
+                    list:[],
+                    index:0,
+                    id:'',
+                },
                 // 办理状态
                 STEPS,
                 // 办理输入形式
@@ -857,37 +831,18 @@
                 invalidMax:200,
                 // 调整步骤
                 adjustShow:false,
-                adjustData:[{
-                    id:"0001",
-                    bool:false,
-                    list:[],
-                    children:[{
-                        name:'测试'
-                    },{
-                        name:'柯南',
-                    }]
-                },{
-                    id:"0002",
-                    bool:false,
-                    list:[],
-                    children:[{
-                        name:'路飞'
-                    }]
-                },{
-                    id:"0003",
-                    bool:true,
-                    list:[],
-                    children:[{
-                        name:'基德',
-                    },{
-                        name:'猫咪老师',
-                    },{
-                        name:'香吉士',
-                    }]
-                }]
+                adjustData:[]
             }
         },
         methods:{
+            // 是否必选
+            isRequiredFn(bool){
+                if(bool){
+                    return true;
+                }else{
+                    return false;
+                }
+            },
             // 时间处理
             dateFormat(val){
                 return TOOL.dateFormat(val);
@@ -912,6 +867,17 @@
                     return e.label
                 }
             },
+            // 成功提示
+            successMeFn(e){
+                this.$message({
+                    message: e,
+                    type: 'success'
+                });
+            },
+            // 错误提示
+            errMeFn(e){
+                this.$message.error(e);
+            },
             // 重置
             resetFormFn() {
                 this.$refs.propForm.resetFields()
@@ -923,21 +889,6 @@
                 this.pageNum = 1;
                 this.getDataList();
             },
-            // 筛选搜索
-            querySearch(queryString, cb) {
-                var restaurants = this.restaurants;
-                var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter(queryString) {
-                return (restaurant) => {
-                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-                };
-            },
-            handleSelect(item) {
-                console.log(item);
-            },
             // 部门回调
             departmentChangeFn(){
                 console.log('部门回调')
@@ -947,14 +898,81 @@
                 console.log('合同编号')
             },
             // 办理
-            transactionFn(){
-                console.log('办理')
+            transactionFn(id){
+                this.stepsData = {
+                    show:true,
+                    tit:'办理'
+                }
+                this.getLookStepFn(id);
+            },
+            getLookStepFn(id){
+                this.LookStepLoad = true;
+                this.$ajax.get('/api/postSigning/lookStep',{
+                    id,
+                }).then(res=>{
+                    res = res.data;
+                    if(res.status === 200){
+                        let resData = res.data;
+                        let arr = [...resData.transAtepsAttach];
+                        let arr2 = [{
+                                    val:resData.handleDatetime,
+                                    title:'办理日期',
+                                    isRequired:true,
+                                    type:2,
+                                    id:'bj'+resData.id + 1,
+                                    rules:{
+                                        required: true, 
+                                        message: `请输入办理日期`
+                                    }
+                                },{
+                                    val:'',
+                                    title:'备注',
+                                    isRequired:false,
+                                    type:8,
+                                    id:'bj' + resData.id + 2,
+                                    rules:{
+                                        required: false 
+                                    }
+                                }]
+
+                        arr.map(e=>{
+                            let j = {};
+                            if(e.type === STEPSINPUT.start || e.type === STEPSINPUT.time || e.type === STEPSINPUT.textarea || e.type === STEPSINPUT.num){
+                                e.val = e.value;
+                                j.message = `请输入${e.title}`;
+                            }else{
+                                if(e.value){
+                                    e.val = e.value.split(',');
+                                }else{
+                                    e.val = [];
+                                }
+                                j.message = `请上传${e.title}`;
+                            }
+                            if(e.isRequired){
+                                j.required = true;
+                                j.trigger= 'blur';
+                            }else{
+                                j.required = false;
+                            }
+                            e.rules = j;
+                        })
+                        this.stepsFrom = {
+                            list:[...arr,...arr2],
+                            id:resData.id
+                        };
+                        this.LookStepLoad = false;
+                        this.$refs.stepsFrom.resetFields();
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
             },
             // 后期进度
-            progressFn(){
+            progressFn(row){
                 this.layerShow = true;
-                this.layerBtn = false;               
-                console.log('后期进度')
+                this.layerBtn = false;  
+                this.layerShowData = row;
+                this.lateProgressFn();             
             },
             // 下一步骤显示
             nextStepFn(e){
@@ -982,12 +1000,17 @@
                 }
             },
             // 查看
-            operationFn(){
-                console.log('查看')
+            operationFn(id){
+                this.stepsData = {
+                    show:true,
+                    tit:'查看'
+                }
+                this.getLookStepFn(id);
             },
             // 更换交易流程
             replaceFn(){
                 this.replaceShow = true;
+                this.loadingReplace = true;
                 this.$ajax.get('/api/postSigning/getStepList',{
                     id:this.layerShowData.id
                 }).then(res=>{
@@ -1000,37 +1023,78 @@
                         this.replaceData.transFlowCode = i;
                         this.replaceData.index = i;
                     }
+                    this.loadingReplace = false;
                 }).catch(err=>{
                     console.log(err)
                 })
             },
             // 步骤管理
             managementFn(){
+                // 显示弹层
                 this.adjustShow = true;
-                console.log('步骤管理')
+                this.loadingAdjust = true;
+                this.$ajax.post('/api/flowmanage/selectTypeStepsList',{
+                    cityId:this.cityId
+                }).then(res=>{
+                    res = res.data;
+                    if(res.status === 200){
+                        let arr = [...res.data];
+                        let arr2 = [];
+                        arr.map(e=>{
+                            let n = 0;
+                            e.list = [];
+                            e.disabledList = [];
+                            e.stepsList.map(i=>{
+                                this.tableProgress.forEach(t=>{
+                                    if(t.transactionStepsCode === i.id){
+                                        n++;
+                                        e.list.push(i);
+                                        arr2.push(i.id);
+                                        if(t.stepState.value !== OPERATION.not && t.stepState.value !== OPERATION.backlog){
+                                            i.disabled = true;
+                                            e.disabledList.push(i);
+                                        }
+                                        if(n === e.stepsList.length){
+                                            e.bool = true;
+                                        }
+                                    }
+                                })
+                            })
+                        })
+                        this.adjustData = [...arr];
+                        this.copyAdjustData= arr2.join();
+                    }
+                    this.loadingAdjust = false;
+                }).catch(err=>{
+                    console.log(err)
+                })
             },
             // 确认
-            sureFn(){
-                console.log('确认')
+            sureFn(id){
+                this.stepsData = {
+                    show:true,
+                    tit:'修改'
+                }
+                this.getLookStepFn(id);
             },
             // 上
             upFn(e){
                 let index = e.$index;
-                if(index !== 0){
-                    let upId = e.row.id;
-                    let downId = this.tableProgress[index-1].id;
-                    this.oderStepFn(upId,downId);
-                }
+                // if(bool){
+                let upId = e.row.id;
+                let downId = this.tableProgress[index-1].id;
+                this.oderStepFn(upId,downId);
+                // }
             },
             // 下
             downFn(e){
                 let index = e.$index;
                 let n = e.row.length;
-                if(index !== n){
-                    let upId = this.tableProgress[index+1].id;
-                    let downId = e.row.id;
-                    this.oderStepFn(upId,downId);
-                }
+                // if(index !== n){
+                let upId = this.tableProgress[index+1].id;
+                let downId = e.row.id;
+                this.oderStepFn(upId,downId);
+                // }
             },
             oderStepFn(upId,downId){
                 this.$ajax.post('/api/postSigning/oderStep',{
@@ -1039,21 +1103,22 @@
                 }).then(res=>{
                     res = res.data;
                     if(res.status === 200){
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        });
+                        this.successMeFn(res.message);
                         this.lateProgressFn();
                     }else{
-                        this.$message.error(res.message);
+                        this.errMeFn(res.message);
                     }
                 }).catch(err=>{
                     console.log(err)
                 })
             },
             // 修改
-            amendFn(){
-                console.log('修改')
+            amendFn(id){
+                this.stepsData = {
+                    show:true,
+                    tit:'修改'
+                }
+                this.getLookStepFn(id);
             },
             // 选择交易流程 取消
             replaceCloseFn(){
@@ -1064,19 +1129,36 @@
                 if(this.replaceData.transFlowCode===this.replaceData.index){
                     this.replaceShow = false;
                 }else{
+                    let name = '';
+                    let arr = [...this.replaceData.tit];
+                    arr.map(res=>{
+                        if(res.id === this.replaceData.index){
+                            name = res.name;
+                        }
+                    })
                     this.$ajax.post('/api/postSigning/updateTransFlow',{
                         contractCode:this.layerShowData.id,
                         transFlowCode:this.replaceData.index,
                     }).then(res=>{
                         res = res.data;
                         if(res.status === 200){
-                            console.log(res)
+                            // 步骤名
+                            this.layerShowData.transFlowName = name;
+                            // 接收弹层列表数据刷新
+                            this.lateProgressFn();
+                            // 列表刷新
+                            this.getDataList();
+                            // 成功提示
+                            this.successMeFn(res.message);
+                            this.replaceShow = false;
+                        }else{
+                            this.errMeFn(res.message);
+                            this.replaceShow = false;
                         }
                     }).catch(err=>{
                         console.log(err)
                     })
                 }
-                console.log('选择交易流程 确定')
             },
             // 选择交易切换
             replaceTabFn(i){
@@ -1103,17 +1185,68 @@
             },
             // 办理确定
             handleBtnFn(){
-                console.log('办理确定')
-                this.stepsData.show = false;
+                this.confirmStepFn();
+            },
+            // 办理数据提交
+            confirmStepFn(url='/api/postSigning/confirmStep'){
+                this.$refs['stepsFrom'].validate((valid) => {
+                    if (valid) {
+                        let id = this.stepsFrom.id;
+                        let transAtepsAttach = [...this.stepsFrom.list];
+                        // 添加备注和时间
+                        let handleDatetime = this.dateFormat(transAtepsAttach[transAtepsAttach.length-2].val);
+                        let remarks = transAtepsAttach[transAtepsAttach.length-1].val;
+                        // 删除多余的数组
+                        transAtepsAttach.splice(-2,2);
+                        transAtepsAttach.map(e=>{
+                            if(e.type === STEPSINPUT.start || e.type === STEPSINPUT.time || e.type === STEPSINPUT.textarea || e.type === STEPSINPUT.num){
+                                e.value = e.val;
+                            }else{
+                                if(e.val.length === 0){
+                                    e.value = '';
+                                }else{
+                                    e.value = e.val.join();
+                                }
+                            }
+                        })
+                        
+                        this.$ajax.postJSON(url,{
+                            handleDatetime,
+                            remarks,
+                            transAtepsAttach,
+                            id,
+                        }).then(res=>{
+                            res = res.data;
+                            if(res.status === 200){
+                                this.successMeFn(res.message);
+                                this.lateProgressFn();
+                                this.getDataList();
+                                this.stepsData.show = false;
+                            }else{
+                                this.errMeFn(res.message);
+                            }
+                        }).catch(err=>{
+                            console.log(err)
+                        })
+                    }
+                });
             },
             // 编辑确定
             editorBtnFn(){
-                console.log('编辑确定')
-                this.stepsData.show = false;
+                this.confirmStepFn('/postSigning/updateStep');
+            },
+            // 选择第几个上传
+            stepsIndexBtnFn(i){
+                this.stepsFrom.index = i;
             },
             // 图片上传
-            imgBtnFn(){
-                console.log('图片上传')
+            imgBtnFn(e){
+                let arr = this.stepsFrom.list[this.stepsFrom.index];
+                arr.val.push({
+                    name:'newdata'+ e.param.length,
+                    src:e.param[e.param.length-1],
+                });
+                console.log('图片上传',this.stepsFrom,e.param[e.param.length-1])
             },
             // 视频上传
             mp4BtnFn(){
@@ -1134,32 +1267,70 @@
             // 删除
             clearFn(i,n){
                 let arr = [...this.stepsFrom];
-                arr[i].list.splice(n,1)
+                arr[i].val.splice(n,1)
                 this.stepsFrom = arr;
             },
             // 调整步骤确定
             adjustBtnFn(){
-                this.adjustShow = false;
-                console.log('调整步骤确定')
+                let arr= [];
+                let arr2 = [...this.adjustData];
+                let steps = [];
+                arr2.map(e=>{
+                    e.list.map(i=>{
+                        arr.push(i.id);
+                        i.transStepsAttach = '';
+                    })
+                    steps = [...steps,...e.list];
+                })
+                // 是否修改了
+                if(this.copyAdjustData === arr.join()){
+                    // 没有修改
+                    this.adjustShow = false;
+                }else{
+                    // 修改了
+                    this.$ajax.postJSON('/api/postSigning/updateStepInstance',{
+                        contractCode:this.layerShowData.id,
+                        steps,
+                    }).then(res=>{
+                        res = res.data;
+                        if(res.status === 200){
+                            // 接收弹层列表数据刷新
+                            this.lateProgressFn();
+                            // 列表刷新
+                            this.getDataList();
+                            // 成功提示
+                            this.successMeFn(res.message);
+                            this.adjustShow = false;
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }
             },
             // 多选
             adjustChange(i,arr){
                 let adj = this.adjustData[i];
-                let bool = adj.children.length === arr.length;
-                adj.bool = bool;
+                let bool = adj.stepsList.length === arr.length;
+                this.adjustData[i].bool = bool;
+                this.$set(this.adjustData,i,this.adjustData[i])
             },
             // 全选
             adjustAllChange(i,bool){
                 let arr = this.adjustData[i]
                 if(bool){
                     let ar = []
-                    arr.children.forEach(e => {
-                        ar.push(e.name)
+                    arr.stepsList.forEach(e => {
+                        ar.push(e)
                     });
                     arr.list = ar;
                 }else{
-                    arr.list = [];
+                    arr.list = [...arr.disabledList];
                 }
+            },
+            // 分页
+            currentChangeFn(e){
+                this.pageNum = e;
+                this.getListData();
             },
             // 接收日期改变的时候
             receivingdateChangeFn(){
@@ -1167,6 +1338,7 @@
             },
             // 列表数据
             getDataList(){
+                this.loadingList = true;
                 let handleTimeEnd = '';
                 let handleTimeStar = '';
                 let receiveTimeEnd = '';
@@ -1205,10 +1377,16 @@
                 }).then(res=>{
                     res = res.data;
                     if(res.status === 200){
-                        this.tableData = res.data.list
+                        this.tableData = res.data
                     }else{
-                        this.tableData = [];
+                        this.tableData = {
+                            list:[],
+                            pageNum:1,
+                            pageSize:1,
+                            total:0,
+                        };
                     }
+                    this.loadingList = false;
                 }).catch(err=>{
                     console.log(err)
                 })
@@ -1317,6 +1495,7 @@
             },
             // 后期进度获取数据
             lateProgressFn(){
+                this.loadingProgress = true;
                 this.$ajax.get('/api/postSigning/getLastStepList',{
                     id:this.layerShowData.id
                 }).then(res=>{
@@ -1324,6 +1503,7 @@
                     if(res.status === 200){
                         this.tableProgress = res.data;
                     }
+                    this.loadingProgress = false;
                 }).catch(err=>{
                     console.log(err)
                 })

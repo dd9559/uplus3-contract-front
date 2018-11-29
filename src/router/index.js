@@ -12,6 +12,7 @@ const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
 const moneyType = () => import('@/pages/setting/moneyType')
 const operationLog = () => import('@/pages/setting/operationLog')
+const approvalProcess = () => import('@/pages/setting/approvalProcess')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet')
@@ -81,6 +82,10 @@ export default new Router({
         {
           path: "operationLog",
           component: operationLog
+        },
+        {
+          path: "approvalProcess",
+          component: approvalProcess
         },
         //设置模块 end
         {

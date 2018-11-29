@@ -7,7 +7,7 @@
         </li>
       </ul>
       <p>
-        <el-button type="primary">审核</el-button>
+        <el-button type="primary" @click="layer.show=true">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -61,18 +61,18 @@
           </el-table-column>
           <el-table-column align="center" label="款类" v-if="activeItem==='付款信息'">
             <template slot-scope="scope">
-              <span>{{billMsg.moneyType}}</span>
+              <span>{{billMsg.moneyTypeName}}</span>
             </template>
           </el-table-column>
         </el-table>
       </li>
       <li v-if="activeItem==='收款信息'">
         <h4>合计金额</h4>
-        <p class="total-text">合计：<span>23680</span>元</p>
+        <p class="total-text">合计：<span>{{billMsg.amount}}</span>元</p>
         <el-table border :data="billMsg.inAccount" header-row-class-name="theader-bg">
           <el-table-column align="center" label="款类">
             <template slot-scope="scope">
-              <span>{{billMsg.moneyType}}</span>
+              <span>{{billMsg.moneyTypeName}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="票据">
@@ -176,6 +176,26 @@
         </el-table>
       </li>
     </ul>
+    <el-dialog
+      title="审核"
+      :visible.sync="layer.show"
+      width="740px"
+      @close="clearLayer">
+      <div class="reasion-dialog">
+        <label>备注：</label>
+        <div class="input">
+          <el-input type="textarea" resize="none" placeholder="请输入同意/退回理由" :maxlength="invalidMax"
+                    v-model="layer.reasion"
+                    class="input-textarea">
+          </el-input>
+          <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+    <el-button round @click="checkBill(1)">拒 绝</el-button>
+    <el-button round type="primary" @click="checkBill(2)">同 意</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -193,14 +213,19 @@
       return {
         tabs: ['审核信息'],
         activeItem: '',
-        billId:0,
-        billMsg:{},
+        billId: 0,
+        billMsg: {},
         list: [
           {}
-        ]
+        ],
+        layer: {
+          show: false,
+          reasion: ''
+        },
+        invalidMax: 200,
       }
     },
-    created(){
+    created() {
       // debugger
       this.activeItem = this.$route.query.tab
       this.billId = this.$route.query.id
@@ -208,22 +233,47 @@
       this.getData()
     },
     methods: {
-      getData:function () {
+      getData: function () {
         let param = {
-          payId:this.activeItem==='收款信息'?33:3,
-          type:this.activeItem==='收款信息'?1:2
+          payId: this.billId,
+          type: this.activeItem === '收款信息' ? 1 : 2
         }
-        this.$ajax.get('/api/payInfo/selectPayInfoDetail',param).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.billMsg = Object.assign({},res.data)
+        this.$ajax.get('/api/payInfo/selectPayInfoDetail', param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.billMsg = Object.assign({}, res.data)
           }
         })
       },
-
+      /**
+       * 审核
+       */
+      checkBill: function (type) {
+        let param = {
+          bizId: '',
+          bizCode: '',
+          flowId: '',
+          sort: '',
+          ApprovalForm: {
+            result: type,
+            remark: this.layer.reasion
+          }
+        }
+        debugger
+        /*this.$ajax.postJSON('/api/machine/audit',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.layer.show=false
+          }
+        })*/
+      },
+      clearLayer:function () {
+        this.layer.reasion=''
+        this.layer.show=false
+      },
       choseTab: function (item) {
         // this.activeItem = item
-        if(item!=='审核信息'){
+        if (item !== '审核信息') {
           return
         }
         target = this.$refs.checkBox.offsetTop
@@ -232,17 +282,22 @@
         console.log(`容器：${scrollHeight}`)
         this.scrollTop()
       },
-      scrollTop:function () {
+      scrollTop: function () {
         let scrollTop = document.querySelector('.view').parentNode.scrollTop
-        document.querySelector('.view').parentNode.scrollTop = scrollTop+30
+        document.querySelector('.view').parentNode.scrollTop = scrollTop + 30
         console.log(scrollTop)
-        if(scrollTop+scrollHeight>=target){
+        if (scrollTop + scrollHeight >= target) {
           clearTimeout(timer)
-        }else {
-          timer = setTimeout(()=>{
+        } else {
+          timer = setTimeout(() => {
             this.scrollTop()
-          },50)
+          }, 50)
         }
+      }
+    },
+    computed: {
+      invalidNumber() {
+        return this.layer.reasion.length
       }
     }
   }
@@ -250,23 +305,44 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
-  .input-group{
+
+  .input-group {
     align-items: flex-start;
     max-width: 812px;
-    &:first-of-type{
+    &:first-of-type {
       margin-bottom: 20px;
     }
-    >label{
+    > label {
       color: @color-6c;
     }
-    >p{
+    > p {
       line-height: 1.6;
     }
-    ul.image-list{
-      >li{
+    ul.image-list {
+      > li {
         width: 146px;
         height: 104px;
         background-color: @bg-grey;
+      }
+    }
+  }
+
+  .reasion-dialog {
+    display: flex;
+    /deep/ .input {
+      flex: 1;
+      position: relative;
+      &-textarea {
+        .el-textarea__inner {
+          border: 0;
+          height: 235px;
+          background-color: @bg-FA;
+        }
+      }
+      .text-absloute {
+        position: absolute;
+        bottom: 11px;
+        right: 14px;
       }
     }
   }
@@ -311,16 +387,17 @@
       transform: translateY(-50%);
     }
   }
-  .bill-details-content{
+
+  .bill-details-content {
     padding: 0 20px;
-    >li{
-      h4{
+    > li {
+      h4 {
         margin: 30px 0 20px;
         font-weight: bold;
       }
-      .total-text{
+      .total-text {
         margin-bottom: 10px;
-        >span{
+        > span {
           color: @color-orange;
         }
       }
