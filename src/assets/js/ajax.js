@@ -16,13 +16,13 @@ let api = {
         return res
       })
   },
-  postJSON: function(url, param) {
+  postJSON: function(url, param,type=1) {
     let jsonParam = JSON.stringify(param)
     console.log(jsonParam)
     let headers = {
       post: {}
     }
-    headers.post['Content-Type'] = 'application/json'
+    headers.post['Content-Type'] = type===1?'application/json':'application/x-www-form-urlcoded'
     return axios.post(url, jsonParam, { headers: headers }).then(res => {
       return res
     })
@@ -41,8 +41,12 @@ let api = {
         return res
       })
   },
-  put: function(url, param) {
-    return axios.put(url, qs.stringify(param)).then(res => {
+  put: function(url, param,type=1) {
+    let header={}
+    if(type===1){
+      header['Content-Type']='application/json'
+    }
+    return axios.put(url, type===1?JSON.stringify(param):qs.stringify(param),{headers:header}).then(res => {
       return res
     })
   }

@@ -256,10 +256,6 @@ export default {
                     identifyCode: '', 
                 }
             ],
-            name: '',
-        mobile: '',
-        identifyCode: '',
-
         }
     },
     
@@ -295,7 +291,7 @@ export default {
             this.$router.push({
                 path:'/editIntention',
                 query:{
-                    contractType: e.value,
+                    contType: e.value,
                     id: this.$route.query.id 
                 }
             })
@@ -324,9 +320,9 @@ export default {
                         }
                     }
                 }
-                console.log(this.detailData)
-                console.log(this.ownerInfo)
-                console.log(this.custInfo)
+                // console.log(this.detailData)
+                // console.log(this.ownerInfo)
+                // console.log(this.custInfo)
             }
             
           }).catch(error => {

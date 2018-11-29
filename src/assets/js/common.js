@@ -2,6 +2,26 @@ let stepIndex = 0 //记录执行合并次数
 let otherStep = 0 //除合并外，剩余行数
 
 let TOOL = {
+  dropdown:{
+    dateType:[
+      {
+        label:'开票日期',
+        value:1
+      },
+      {
+        label:'作废日期',
+        value:2
+      },
+      {
+        label:'核销日期',
+        value:3
+      },
+      {
+        label:'回收日期',
+        value:4
+      }
+    ]
+  },
   /**
    * 获取鼠标坐标
    * @param event
@@ -99,6 +119,69 @@ let TOOL = {
       }
     }
   },
+  /**
+   * 表单校验 rule{'propName':{name:'label',type:'变量类型'}}
+   */
+  checkForm:function (form,rule) {
+    return new Promise((resolve,reject)=>{
+      for(let item in rule){
+        let val = form[item]
+        let type = Object.prototype.toString.call(val)
+        let typeInfo = rule[item].type
+        let res = {
+          title:rule[item].name,
+          msg:''
+        }
+        // debugger
+        if(type==='[object Number]'){
+          if(val<=0){
+            res.msg = '请输入大于0的数字'
+            reject(res)
+            return
+          }
+        }
+        if(type==='[object String]'){
+          if(!val){
+            res.msg='不能为空'
+            reject(res)
+            return
+          }else if(typeInfo==='money'){
+            if(parseFloat(val)<=0){
+              res.msg = '请输入大于0的数字'
+              reject(res)
+              return
+            }
+          }else if(typeInfo==='bankCard'){
+            if(val.length<16){
+              res.msg = '银行卡号位数不正确'
+              reject(res)
+              return
+            }
+          }else if(typeInfo==='mobile'){
+            if(val.length<11){
+              res.msg = '手机号不正确'
+              reject(res)
+              return
+            }
+          }else if(typeInfo==='idCard'){
+            if(val.length<18){
+              res.msg = '身份证号不正确'
+              reject(res)
+              return
+            }
+          }
+        }
+        if(type==='[object Array]'){
+          if(val.length===0){
+            res.msg='不能为空'
+            reject(res)
+            return
+          }
+        }
+      }
+      resolve()
+    })
+  },
 
   //数字转中文数字
   toChineseNumber: function(money) {
@@ -185,7 +268,7 @@ let TOOL = {
     }
     return chineseStr;
   },
-  dateFormat:function (val) {
+  dateFormat:function (val,type=1) {
     if(!val){
       return '--'
     }else {
@@ -193,7 +276,7 @@ let TOOL = {
       let y = time.getFullYear()
       let M = time.getMonth() + 1
       let D = time.getDate()
-      return `${y}-${M>9?M:'0'+M}-${D>9?D:'0'+D}`
+      return type===1?`${y}-${M>9?M:'0'+M}-${D>9?D:'0'+D}`:`${y}/${M>9?M:'0'+M}/${D>9?D:'0'+D}`
     }
   },
   timeFormat:function (val) {
@@ -217,7 +300,14 @@ let TOOL = {
     else {
       return val
     }
-  }
+  },
+  getFilePath:function (arr) {
+    let newArr = []
+    arr.forEach(item=>{
+      newArr.push(`${item.path}?${item.name}`)
+    })
+    return newArr
+  },
 }
 
 export {

@@ -1,24 +1,24 @@
 <template>
   <div class="view">
-    <ScreeningTop>
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
       <div class="content">
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select size="small" v-model="searchForm.contType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
             <el-option
               v-for="item in dictionary['10']"
               :key="item.key"
               :label="item.value"
-              :value="item.parentId">
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>查询时间:</label>
           <div class="time-picker">
-            <el-select size="small" v-model="searchForm.timeType" placeholder="请选择">
+            <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
               <el-option
-                v-for="item in 5"
+                v-for="item in $tool.dropdown.dateType"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -37,15 +37,15 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select size="small" v-model="searchForm.deptId" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.deptId" placeholder="请选择">
             <el-option
-              v-for="item in dictionary['10']"
+              v-for="item in 5"
               :key="item.value"
               :label="item.label"
               :value="item.value">
             </el-option>
           </el-select>
-          <el-select class="margin-left-10" size="small" v-model="searchForm.empId" placeholder="请选择" v-show="searchForm.deptId">
+          <el-select :clearable="true" class="margin-left-10" size="small" v-model="searchForm.empId" placeholder="请选择" v-show="searchForm.deptId">
             <el-option
               v-for="item in 5"
               :key="item.value"
@@ -56,77 +56,77 @@
         </div>
         <div class="input-group">
           <label>票据状态:</label>
-          <el-select size="small" v-model="searchForm.billStatus" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.billStatus" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['33']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收款账户:</label>
-          <el-select size="small" v-model="searchForm.proAccount" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.proAccount" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['32']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付状态:</label>
-          <el-select size="small" v-model="searchForm.checkStatus" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.checkStatus" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['23']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付款类:</label>
-          <el-select size="small" v-model="searchForm.moneyType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['25']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付方式:</label>
-          <el-select size="small" v-model="searchForm.payMethod" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.payMethod" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['24']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
     <div class="view-context">
       <div class="table-tool">
-        <h4 title="hello">数据列表</h4>
+        <h4><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <ul>
           <li>
-            收款<span>{{tableTotal.payMentCount}}</span>笔，总额<span>{{tableTotal.payMentSum}}</span>元；
+            收款<span>{{tableTotal.ProceedsCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.ProceedsSum|zeroFormatter}}</span>元；
           </li>
           <li>
-            付款<span>{{tableTotal.ProceedsCount}}</span>笔，总额<span>{{tableTotal.ProceedsSum}}</span>元；
+            付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
           </li>
           <li>
-            账户余额：<span>{{tableTotal.payMentSum-tableTotal.ProceedsSum}}</span>元
+            账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter}}</span>元
           </li>
         </ul>
         <p>
@@ -176,11 +176,21 @@
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="票据状态" prop="billStatus.label"></el-table-column>
         <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
-            <el-button type="text" v-show="scope.row.type===1">开票</el-button>
-            <el-button type="text">修改</el-button>
-            <el-button type="text">作废</el-button>
+            <template v-if="scope.row.type===1">
+              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">开票</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="scope.row.auditBy==='-1'&&scope.row.inAccountType===4">修改</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="scope.row.auditBy==='-1'&&scope.row.inAccountType===4">作废</el-button>
+            </template>
+            <template v-else-if="scope.row.auditBy==='-1'">
+              <el-button type="text" @click="btnOpera(scope.row,1)">修改</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)">作废</el-button>
+            </template>
+            <template v-else>
+              --
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -194,15 +204,84 @@
         :total="total">
       </el-pagination>
     </div>
+    <!-- 票据编号弹层 -->
+    <el-dialog
+      title="开票信息填写"
+      :visible.sync="paperShow"
+      width="1000px"
+      class="layer-paper">
+      <div class="paper-edit-box">
+        <ul>
+          <li>
+            <p><label>合同编号:</label><span>{{paperInfoData.contCode}}</span></p>
+            <p><label>物业地址:</label><span>{{paperInfoData.address}}</span></p>
+          </li>
+          <li>
+            <p><label>交款单位:</label><span>{{paperInfoData.payerName}}</span></p>
+            <p><label>合计金额:</label><span>{{paperInfoData.proceedsAmount}}元</span></p>
+          </li>
+          <li v-for="(item,index) in moneyTypes" :key="index">
+            <label class="checkbox-info iconfont" :class="[item.check?'active':'']" @click="item.check=!item.check"></label>
+            <div class="type-list">
+              <p><label>款类：</label><span>{{item.typeName}}</span></p>
+              <p><label>金额：</label><span>{{item.amount}}</span></p>
+              <div class="input-group">
+                <label>开票项目：</label>
+                <el-select class="w120" size="small" v-model="item.project" placeholder="请选择">
+                  <el-option
+                    v-for="item in dictionary['542']"
+                    :key="item.key"
+                    :label="item.value"
+                    :value="item.key">
+                  </el-option>
+                </el-select>
+              </div>
+              <p><label class="checkbox-info iconfont" :class="[item.addressHidden?'active':'']" @click="item.addressHidden=!item.addressHidden"></label><span>隐藏物业地址</span></p>
+              <p><label>票据编号：</label><span>{{item.billCode}}</span></p>
+            </div>
+          </li>
+        </ul>
+        <el-button round  size="medium" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
+      </div>
+      <div class="paper-watch-tab">
+        <p>票据预览</p>
+        <ul v-if="moneyTypes.length>1">
+          <li v-for="(item,index) in moneyTypes" :key="index" :class="[index===activeType?'active':'']" @click="activeType=index">{{item.typeName}}</li>
+        </ul>
+      </div>
+      <LayerPaperInfo
+        :number="paperInfoData.contCode"
+        :name="paperInfoData.payerName"
+        :collectionTime="paperInfoData.paymentTime"
+        :invoiceTime="paperInfoData.createTime"
+        :paper="paperInfoData.billCode"
+        :project="paperInfoData.type"
+        :hide="paperInfoData.hide"
+        :address="paperInfoData.address"
+        :money="paperInfoData.amount"
+        :moneyZh="paperInfoData.amountZh"
+        :create="paperInfoData.createByName"
+        :rules="paperInfoData.remark"
+        :payerType="paperInfoData.payerType"
+      ></LayerPaperInfo>
+      <p slot="footer">
+        <el-button round  size="medium" class="paper-btn">取消</el-button>
+        <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaper">打印</el-button>
+      </p>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import {FILTER} from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
+  import LayerPaperInfo from '@/components/LayerPaperInfo';
 
   export default {
     mixins: [FILTER,MIXINS],
+    components:{
+      LayerPaperInfo
+    },
     data() {
       return {
         activeView:'',
@@ -243,12 +322,18 @@
           '23': '',
           '24': '',
           '25': '',
-          '507': ''
+          '507': '',
+          '542':''
         },
         //分页
         total:0,
         currentPage:1,
-        pageSize:10
+        pageSize:10,
+        //开票
+        paperShow: false,
+        paperInfoData: {},//票据对象
+        moneyTypes:[],//临时存放勾选的款类
+        activeType:0,//当前预览项
       }
     },
     created() {
@@ -256,6 +341,9 @@
       this.getDictionary()
     },
     methods: {
+      reset: function () {
+        this.$tool.clearForm(this.searchForm)
+      },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
@@ -297,10 +385,86 @@
           }
         })
       },
-      operation:function (opera) {
-        if(opera==='reset'){
-          this.$tool.clearForm(this.searchForm)
+      btnOpera:function (row,type) {
+        if(type===1){
+          this.$router.push({
+            path:row.type===1?'receiptBill':'payBill',
+            query:{
+              edit:row.type,
+              id:row.id
+            }
+          })
+        }else if(type===2) {
+          this.$confirm('是否要作废','提示',{
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(()=>{
+            this.$ajax.put('/api/payInfo/updateCheckStatus',{payId:row.id},2).then(res=>{
+              res=res.data
+              debugger
+              if(res.status===200){
+                this.getData()
+              }
+            })
+          }).catch(()=>{
+
+          })
+        }else if(type===3){
+          this.paperShow=true
+          this.paperList(row.id)
         }
+      },
+      // 获取开票列表
+      paperList:function (id) {
+        this.$ajax.get('/api/bills/tobe',{id:id}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.paperInfoData=Object.assign({},res.data)
+            let obj = JSON.parse(JSON.stringify(res.data))
+            this.moneyTypes=[].concat(obj.list)
+            this.moneyTypes.forEach((item,index)=>{
+              let obj = Object.assign({
+                check:true,
+                addressHidden:false,
+                project:''
+              },item)
+              this.moneyTypes.splice(index,1,obj)
+            })
+          }
+        })
+      },
+      billing:function () {
+        let param = this.moneyTypes[this.activeType]
+        let obj = {
+          createTime:'',
+          billCode:param.billCode,
+          hide:param.addressHidden,
+          amount:param.amount,
+          amountZh:param.amountZh,
+          createByName:this.paperInfoData.createBy,
+          remark:param.remark
+        }
+        this.dictionary['542'].find(item=>{
+          if(item.key===param.project){
+            obj.type=item.value
+          }
+        })
+        this.paperInfoData=Object.assign({},this.paperInfoData,obj)
+      },
+      // 票据详情 打印
+      printPaper() {
+        let type = this.moneyTypes[this.activeType]
+        let obj={
+          code:type.billCode,
+          payId:this.paperInfoData.payId,
+          payDetailsId:type.payDetailsId,
+          isHiddenAddress:type.addressHidden,
+          billType:type.project
+        }
+        this.$ajax.post('/api/bills/print',obj).then(res=>{
+          debugger
+        })
       }
     },
     computed:{
@@ -311,14 +475,135 @@
           return '付款ID'
         }
       }
+    },
+    filters:{
+      zeroFormatter:function (val) {
+        if(!val){
+          return 0
+        }else {
+          return val
+        }
+      }
     }
   }
 </script>
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  @import "~@/assets/less/lsx.less";
   .margin-left-10{
     margin-left:10px;
+  }
+  .checkbox-info{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid @border-e6;
+    &.active{
+      position: relative;
+      color: @color-blue;
+      &:after{
+        content: '\e65d';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+      }
+    }
+  }
+  .layer-paper{
+    .center{
+      text-align: center;
+    }
+    .paper-btn-blue{
+      color: @color-white;
+    }
+    .paper-btn-float{
+      position: absolute;
+      right: 0;
+      bottom: 20px;
+    }
+  }
+  .paper-edit-box{
+    margin: 0 40px;
+    padding: 20px 0 80px;
+    border-bottom: 1px solid @border-D8;
+    position: relative;
+    >ul{
+      &:first-of-type{
+        >li{
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          >label{
+            margin-right: 10px;
+          }
+          &:first-of-type,&:nth-of-type(2){
+            >p{
+              &:first-of-type{
+                width: 200px;
+              }
+            }
+          }
+          &:last-of-type{
+            margin-bottom: 0px;
+          }
+        }
+      }
+    }
+    .type-list{
+      display: flex;
+      >p{
+        min-width: 140px;
+        margin-right: 20px;
+        display: inherit;
+        align-items: center;
+        >label.checkbox-info{
+          margin-right: 10px;
+        }
+      }
+      .input-group{
+        margin-bottom: 0;
+        margin-right: 20px;
+      }
+    }
+  }
+  .paper-watch-tab{
+    >p{
+      color: @color-blue;
+      text-align: center;
+      font-size: @size-24;
+      font-weight: bold;
+      margin: 32px;
+    }
+    >ul{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 26px;
+      >li{
+        border-top: 2px solid @color-blue;
+        border-bottom: 2px solid @color-blue;
+        min-width: 100px;
+        height: 36px;
+        display: inherit;
+        align-items: center;
+        justify-content: center;
+        &:first-of-type{
+          border-left: 2px solid @color-blue;
+          border-top-left-radius: 18px;
+          border-bottom-left-radius: 18px;
+        }
+        &:last-of-type{
+          border-right: 2px solid @color-blue;
+          border-top-right-radius: 18px;
+          border-bottom-right-radius: 18px;
+        }
+        &.active{
+          background-color: @color-blue;
+          color: @color-white;
+        }
+      }
+    }
   }
 
   .contract-msglist{
@@ -373,6 +658,11 @@
       position: relative;
       display: flex;
       align-items: center;
+      >h4{
+        >i{
+          margin-right: 8px;
+        }
+      }
       >ul{
         display: flex;
         margin-left: 20px;

@@ -11,29 +11,28 @@
 
         </el-form-item>
         <el-form-item label="合同类型">
-          <el-select v-model="adjustForm.tradeType" placeholder="全部" class="width150">
-            <el-option label="租赁" value="1"></el-option>
-            <el-option label="买卖" value="2"></el-option>
-            <el-option label="代办" value="3"></el-option>
-            <el-option label="意向" value="4"></el-option>
-            <el-option label="定金" value="5"></el-option>
-          </el-select>  
+          <el-select v-model="adjustForm.tradeType" placeholder="全部" class="width150" clearable>
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
         </el-form-item>         
         <el-form-item label="部门">
-          <el-select v-model="adjustForm.item1" clearable filterable placeholder="请选择门店" class="width200">
-              <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" class="width200">
+              <el-option v-for="item in adjustForm.getDepName" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
-          <el-select v-model="adjustForm.item2" clearable filterable placeholder="经纪人" class="width100">
-              <el-option v-for="item in option2" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" class="width100">
+              <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="审核状态">
-          <el-select v-model="adjustForm.checkState" placeholder="全部" class="width150">
+          <el-select v-model="adjustForm.checkState" placeholder="全部" class="width150" clearable>
             <el-option label="未审核" value="1"></el-option>
             <el-option label="通过" value="2"></el-option>
             <el-option label="驳回" value="3"></el-option>
           </el-select>
         </el-form-item>
+        
         <el-form-item label="关键字">
           <el-input v-model="adjustForm.keyWord" clearable placeholder="合同编号/房源编号/客源编号"  class="width250"></el-input>
         </el-form-item>
@@ -43,7 +42,7 @@
     <!-- 数据列表 -->
     <div class="contract-list">  
       <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
-      <el-table :data="tableData" style="width: 100%" >
+      <el-table :data="tableData.list" style="width: 100%" >
         <el-table-column label="合同编号" width="150" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
@@ -80,9 +79,9 @@
         </el-table-column>
         <el-table-column label="审核状态" :formatter="nullFormatter" align="center">
           <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.checkState === '未审核'">未审核</span>
-            <span class="green" v-if="scope.row.checkState === '通过'">通过</span>
-            <span class="red" v-if="scope.row.checkState === '驳回'">驳回</span>
+            <span class="blue" v-if="scope.row.checkState === 1">未审核</span>
+            <span class="green" v-if="scope.row.checkState === 2">通过</span>
+            <span class="red" v-if="scope.row.checkState === 3">驳回</span>
           </template>
         </el-table-column>
         <el-table-column label="审核日期">
@@ -98,19 +97,17 @@
         </el-table-column>
         <el-table-column label="审核备注" width="200" prop="checkRemark" :formatter="nullFormatter"></el-table-column>             
         <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope">
+          <template slot-scope="scope" v-if="scope.row.checkState === 1">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :page-size="50"
-      :pager-count="11"
-      :current-page="currentPage"
+      :page-size="tableData.pageSize"
+      :current-page="tableData.pageNum"
       layout="total, prev, pager, next, jumper"
-      :total="total">
+      :total="tableData.total">
      </el-pagination>
     </div>
 
@@ -123,7 +120,7 @@
             <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
           <div class="col-li">
-            <p>申请日期：<span>{{layerAudit.createTime}}</span></p>
+            <p>申请日期：<span>{{layerAudit.createTime | getDate}}</span></p>
             <p>申请人：<span>{{layerAudit.createByDepName + '-' + layerAudit.createByName}}</span></p>
           </div>
           <div class="col-li">
@@ -133,7 +130,7 @@
           </div>
           <div class="col-li">
             <p>调整类型：<span>佣金调整</span></p>
-            <p><el-checkbox v-model="layerAudit.relieve" :disabled="true">有解除协议</el-checkbox></p>
+            <p><el-checkbox v-model="relieveFn" :disabled="true">有解除协议</el-checkbox></p>
           </div>
           <div class="textareabox">
             <span>调整原因</span>
@@ -167,14 +164,14 @@
                 <td>{{layerAudit.newCustCommission}}</td>
                 <!-- <td class="flex">       
                     <div>
-                      <el-select v-model="auditForm.item1" class="width70 mr10" :disabled="true">
+                      <el-select v-model="auditForm.getDepName" class="width70 mr10" :disabled="true">
                         <el-option label="另外出" value="另外出"></el-option>
                         <el-option label="佣金扣" value="佣金扣"></el-option>
                         <el-option label="无" value="无"></el-option>
                       </el-select>
                     </div>
                     <div>
-                      <el-select v-model="auditForm.item2" class="width70 mr10" :disabled="true">
+                      <el-select v-model="auditForm.getAgentName" class="width70 mr10" :disabled="true">
                         <el-option label="客户" value="客户"></el-option>
                         <el-option label="业主" value="业主"></el-option>
                         <el-option label="无" value="无"></el-option>
@@ -202,8 +199,8 @@
         </div>  
       </div>
       <div class="btnbox">
-        <el-button class="refuse" @click="refuseFn">驳 回</el-button>
-        <el-button type="primary"  @click="receptFn" class="recept">通 过</el-button>  
+        <el-button class="refuse" @click="refuseFn()">驳 回</el-button>
+        <el-button type="primary"  @click="receptFn()" class="recept">通 过</el-button>  
       </div> 
     </el-dialog>
 
@@ -218,86 +215,74 @@
 
   import {FILTER} from "@/assets/js/filter";
   import {TOOL} from "@/assets/js/common";
+  import { MIXINS } from "@/assets/js/mixins";
+  
   export default {
     name: "adjust-check",
-    mixins: [FILTER],
+    // mixins: [FILTER],
+    mixins: [FILTER,MIXINS],
     data(){
       return{   
         clientHei: document.documentElement.clientHeight, //窗体高度
-        
+        cityId: 1,
+        // 分页
+        pageNum: 1,
+        pageSize: 50,
+        total: 0,
+        Form :{
+          getDepName: '',
+          getAgentName: ''
+        },
         adjustForm:{
           signDate: '', //发起日期
           tradeType: '', //合同类型
-          item1: '',    //选择门店
-          item2: '',  //选择成交人
+          getDepName: [{
+            name: "全部",
+            id: ""
+          }],    //选择门店
+          getAgentName: [{
+            name: "全部",
+            empId: ""
+          }], 
           checkState: '',  //审核状态
           keyWord: ''   //关键字
 
         },
+        dictionary: {
+          //数据字典
+          "10": "", //合同类型
+          "17": "", //审核状态
+        },
+      
         layerAudit:{
 
         },
+        myCheckId: '',
 
         auditForm: {
           textarea: '', //备注
-          item1: '', //另外出-佣金扣-无
-          item2: '', //客户-业主-无
-          money1: '', //业主佣金
-          money2: '', //客户佣金
-          money3: '', //按揭收费
-          money4: '', //合作费扣除
         },
         // 弹框里用到的
         dialogImageUrl: '',
         dialogVisible: false,
         // checked: false, //是否有解除协议
-        // 选择门店
-        option1: [{
-            value: '选项1',
-            label: '黄金糕'
-        }, {
-            value: '选项2',
-            label: '双皮奶'
-        }],
-        // 选择经纪人
-        option2: [{
-            value: '选项1',
-            label: '黄金糕'
-        }, {
-            value: '选项2',
-            label: '双皮奶'
-        }, {
-            value: '选项3',
-            label: '蚵仔煎'
-        }],
-        
-        tableData:[
-        //   {
-        //     // contractCode:'YQYD110063', //合同编号
-        //     // tradeType:1,              //合同类型
-        //     // dealPrice:'12345121',
-        //     // dealPerson:'当代一店下雨天1',
-        //     // signDate:'2018/11/07',
-        //     // createTime:'2018/11/07',
-        //     // createByName:'当代一店下雨天2',
-        //     // checkState:1,
-        //     // checkTime:'2018/11/07',
-        //     // checkByName: '当代一店下雨天3',
-        //     // checkRemark:''
-        // },
-        
-        ],
+       
+        tableData:[],
 
-        // 分页
-        currentPage: 1,
-        total: 100,
+        
 
         
       }
     },
 
     computed: {
-      
+      relieveFn() {
+        if(this.layerAudit.relieve === 1){
+          return true
+        }else if(this.layerAudit.relieve === 0){
+          return false
+        }
+      }
     },
 
     filters: {
@@ -316,27 +301,58 @@
       },
 
       // 得到部门门店和经纪人信息
-      getData() {
-        // this.$ajax.get("/api/access/deps")
-        // .then(res => {
-        //   console.log(res.data.data);
-        //   let data = res.data;
-        //   if (res.status === 200) {
-        //     this.option1 = data.data
-        //     // console.log(this.option1)
-        //   }
-        // });
-        // this.$ajax.get("/api/organize/employee/agent")
-        // .then(res => {
-        //   console.log(res.data.data);
-        //   let data = res.data;
-        //   if (res.status === 200) {
-        //     this.option2 = data.data
-        //     // console.log(this.option1)
-        //   }
-        // });
+      getDepNameFn(e) {
+        this.$ajax.get("/api/access/deps", {keyword: e})
+        .then(res => {       
+          let data = res.data;         
+          if (res.data.status === 200) {  
+            if(e === '' || !e){
+              this.adjustForm.getDepName = [{
+                name: "全部",
+                id: ""
+              },...data.data]
+            }else{
+              this.adjustForm.getDepName = data.data
+            }  
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+
+      changeDepNameFn(e) {
+        if(e !== "" || !!e)
+        this.$ajax.get("/api/organize/employees",{
+          cityId:this.cityId,
+          depId: e
+        })
+        .then(res => {       
+                  
+          if (res.data.status === 200) {  
+
+            if(res.data.data.length > 0){ 
+              this.adjustForm.getAgentName = [{
+                name: "全部",
+                empId: ""
+              },...res.data.data]
+            }
+            else{
+              this.adjustForm.getAgentName = res.data.data
+            }
+          }
+
+        }).catch(err => {
+          console.log(err)
+        })
 
       },
+
+      
+      // 清除部门搜索
+      clearDepNameFn(){
+          this.getDepNameFn('');
+      }, 
+
 
       // 重置
       resetFormFn() {
@@ -345,28 +361,33 @@
 
       // 查询
       queryFn() {
+        let startTime = '';
+        let endTime = '';
+        if(this.adjustForm.signDate.length === 2){
+            startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
+            endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
+        }
           let param = {
-            "pageNum": 1,                 
-            "pageSize": 50,          
-            "deptId": '',              
-            "empId": '',               
-            "startTime": "",    
-            "endTime": "",      
-            "contractType": this.adjustForm.tradeType,           
-            "checkState": this.adjustForm.checkState,                              
-            "keyword": this.adjustForm.keyWord             
+            pageNum: this.pageNum,                 
+            pageSize: this.pageSize,          
+            deptId: this.Form.getDepName,              
+            empId: this.Form.getAgentName,               
+            startTime,    
+            endTime,      
+            contractType: this.adjustForm.tradeType,           
+            checkState: this.adjustForm.checkState,                              
+            keyword: this.adjustForm.keyWord             
           }
           //调整佣金审核列表
           this.$ajax         
           .get("/api/commission/updateList", param)
           .then(res => {
-            console.log(res);
             let data = res.data;
-            if (res.status === 200) {
-              this.tableData = data.data.list
+            if (res.data.status === 200) {
+              this.tableData = data.data
+              
             }
-            
-
+      
           }).catch(error => {
             console.log(error)
           })
@@ -383,9 +404,10 @@
         .then(res => {
           console.log(e);
           let data = res.data;
-          if (res.status === 200) {
+          if (res.data.status === 200) {
             console.log(data.data)
             this.layerAudit = data.data;
+            this.myCheckId = data.data.checkId;
           }
         }).catch(error => {
           console.log(error)
@@ -395,39 +417,45 @@
       // 驳回操作
       refuseFn() {
         let param = {
-          checkId: 5,
+          checkId: this.myCheckId,
           remark: this.auditForm.textarea
         }
-        this.$ajax.get("/api/commission/updateReject", param)
-        .then(res => {
-          let tips = res.data.message;
-          if (res.status === 200) {
-            this.$message(tips);
-            // let _this = this
-            // setTimeout(() => {
-            //   _this.dialogVisible = false
-            // }, 2000);
-          }
-        }).catch(error => {
-          console.log(error)
-        });
+        if(this.auditForm.textarea !== ""){
+          this.$ajax.get("/api/commission/updateReject", param)
+          .then(res => {
+
+            if (res.data.status === 200) {
+              this.$message('已驳回');
+              let _this = this
+              setTimeout(() => {
+                _this.dialogVisible = false
+              }, 2000);
+            }
+          }).catch(error => {
+            console.log(error)
+          });
+        }else{
+          this.$message('调整原因不能为空');
+        }
+        
       },
 
       // 通过操作
       receptFn() {
         let param = {
-          checkId: 5,
+          checkId: this.myCheckId,
           remark: this.auditForm.textarea
         }
         this.$ajax.get("/api/commission/update", param)
         .then(res => {
-          let tips = res.data.message;
-          if (res.status === 200) {
-            this.$message(tips);
-            // let _this = this
-            // setTimeout(() => {
-            //   _this.dialogVisible = false
-            // }, 2000);
+
+          if (res.data.status === 200) {
+            console.log(res)
+            this.$message('已通过');
+            let _this = this
+            setTimeout(() => {
+              _this.dialogVisible = false
+            }, 2000);
           }
         }).catch(error => {
           console.log(error)
@@ -440,15 +468,16 @@
         this.$router.push({
           path:'/contractDetails',
           query:{
-            id: value.contractCode
+            id: value.contId,
+            code: value.contractCode,
+            contType: value.tradeType
           }
         })
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+      
+      handleCurrentChange(e) {
+        this.pageNum = e;
+        this.queryFn();
       },
 
       
@@ -456,7 +485,10 @@
     },
 
     created() {
-      this.getData();
+      this.queryFn();
+      this.getDepNameFn();
+      this.getDictionary();
+      
     },
 
     mounted() {

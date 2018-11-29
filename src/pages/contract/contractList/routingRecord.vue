@@ -13,15 +13,30 @@
           </el-select>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="searchForm.recordDept" placeholder="请选择部门" filterable style="width:200px">
-            <!-- <el-option label="起草中" value="1"></el-option> -->
-          </el-select>
+          <el-select
+            v-model="searchForm.dealAgentStoreId"
+            :multiple='false'
+            clearable
+            filterable
+            remote
+            reserve-keyword
+            @change="getBroker"
+            placeholder="部门"
+            :remote-method="remoteMethod"
+            :loading="loading">
+              <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+                >
+              </el-option>
+            </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchForm.recordDept" placeholder="请选择" style="width:100px">
-            <!-- <el-option label="起草中" value="1"></el-option>
-            <el-option label="已签章" value="2"></el-option>
-            <el-option label="已上传" value="3"></el-option> -->
+          <el-select v-model="searchForm.dealAgentId" placeholder="请选择" style="width:100px">
+            <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
@@ -98,7 +113,12 @@ export default {
       dictionary: {
         //数据字典
         "10": "" //合同类型
-      }
+      },
+      loading:false,
+      //部门选择列表
+      options:[],
+      //经纪人列表
+      brokersList:[]
     };
   },
   created() {
@@ -115,7 +135,40 @@ export default {
     //合同详情
     goContractDetail(item){
       console.log('111')
-    }
+    },
+    //获取当前部门
+    getDeps(key){
+      let param = {
+        keyword:key
+      }
+      this.$ajax.get('/api/access/deps', param).then(res=>{
+        this.loading=false;
+        res=res.data
+        if(res.status===200){
+          this.options=res.data
+        }
+      })
+    },
+    remoteMethod(query){
+      if (query !== '') {
+        this.loading = true;
+        this.getDeps(query)
+      } else{
+
+      }
+    },
+    getBroker(id){
+      console.log(id)
+      let param = {
+        depId:id
+      }
+      this.$ajax.get('/api/organize/employees', param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.brokersList=res.data
+        }
+      })
+    },
   }
 };
 </script>

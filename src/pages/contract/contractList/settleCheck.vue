@@ -8,27 +8,31 @@
           <el-date-picker v-model="adjustForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
+
         <el-form-item label="合同类型">
-          <el-select v-model="adjustForm.contType" placeholder="全部" class="width150">
-            <el-option label="租赁" value="1"></el-option>
-            <el-option label="买卖" value="2"></el-option>
-            <el-option label="代办" value="3"></el-option>
-            <el-option label="意向" value="4"></el-option>
-          </el-select>  
-        </el-form-item>         
-        <el-form-item label="部门">
-          <el-select v-model="adjustForm.item1" clearable filterable placeholder="请选择门店" class="width200">
-              <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          <el-select v-model="adjustForm.contType" placeholder="全部" class="width150" clearable>
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
-          <el-select v-model="adjustForm.item2" clearable filterable placeholder="经纪人" class="width100">
-              <el-option v-for="item in option2" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        </el-form-item>  
+
+        <el-form-item label="部门">
+          <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" class="width200">
+              <el-option v-for="item in adjustForm.getDepName" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+          <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" class="width100">
+              <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="审核状态">
-          <el-select v-model="adjustForm.toExamineState" placeholder="全部" class="width150">
-            <el-option label="未审核" value="1"></el-option>
-            <el-option label="通过" value="2"></el-option>
-            <el-option label="驳回" value="3"></el-option>
+          <el-select v-model="examineState" placeholder="全部" class="width150">
+             <el-option
+              v-for="item in toExamineState"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
@@ -40,48 +44,68 @@
     <!-- 数据列表 -->
     <div class="contract-list">  
       <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="tableData.list" style="width: 100%">
         <el-table-column label="合同编号" width="150" fixed>
           <template slot-scope="scope">
-            <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractNo}}</div>
+            <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型">
-          <template slot-scope="scope">
-            <span v-if="scope.row.contType===1">租赁</span>
-            <span v-if="scope.row.contType===2">买卖</span>
-            <span v-if="scope.row.contType===3">代办</span>
-            <span v-if="scope.row.contType===4">意向</span>
-          </template>
+        <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter">
+          
         </el-table-column>
 
-        <el-table-column label="成交总价" prop="dealPrice">
+        <el-table-column label="成交总价" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p v-if="scope.row.contType.label !== '租赁'">{{scope.row.dealPrice}}元</p>
+            <p v-if="scope.row.contType.label === '租赁'">{{scope.row.dealPrice}}元/季度</p>
+          </template>
         </el-table-column>
        
-        <el-table-column label="成交经纪人" prop="dealPerson" width="180">
-        </el-table-column>
-
-        <el-table-column label="发起日期" prop="sponsorDate">
-        </el-table-column>
-
-        <el-table-column label="发起人" prop="sponsorPerson" width="180">
-        </el-table-column>
-
-        <el-table-column label="实际结算" prop="realSettle">
-        </el-table-column>
-
-        <el-table-column label="审核状态" prop="toExamineState">
+        <el-table-column label="成交经纪人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.toExamineState===1">未提审</span>
-            <span class="green" v-if="scope.row.toExamineState===2">通过</span>
-            <span class="red" v-if="scope.row.toExamineState===3">驳回</span>
+            <p>{{scope.row.dealAgentStoreName}}</p>
+            <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="审核日期" prop="examineDate">
+        <el-table-column label="发起日期">
+          <template slot-scope="scope">
+            <p>{{scope.row.sponsorDate | getDate}}</p>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="发起人" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.sponsorStoreName}}</p>
+            <p>{{scope.row.sponsorName}}</p>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="实际结算" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.amount}}</p>
+          </template>
+        </el-table-column>
+
+        <!-- <el-table-column label="审核状态">
+          <template slot-scope="scope">
+            <span class="blue" v-if="scope.row.examineState.value===1">未提审</span>
+            <span class="green" v-if="scope.row.examineState.value===2">通过</span>
+            <span class="red" v-if="scope.row.examineState.value===3">驳回</span>
+          </template>
+        </el-table-column> -->
+
+        <el-table-column label="审核日期" prop="examineDate" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p>{{scope.row.examineDate | getDate}}</p>
+          </template>
         </el-table-column>
         
-        <el-table-column label="审核人" prop="examinePerson" width="180">
+        <el-table-column label="审核人" :formatter="nullFormatter"  width="180">
+          <template slot-scope="scope">
+            <p>{{scope.row.examineStoreName}}</p>
+            <p>{{scope.row.examineName}}</p>
+          </template>
         </el-table-column>
 
         <el-table-column label="审核备注" width="200">
@@ -90,61 +114,61 @@
           </template>
         </el-table-column>
               
-        <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope">
+        <!-- <el-table-column label="操作" width="100" fixed="right">
+          <template slot-scope="scope" v-if="scope.row.examineState.value=== 1">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
+        
       </el-table>
       <el-pagination
-      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :page-size="50"
-      :pager-count="11"
-      :current-page="currentPage"
+      :page-size="tableData.pageSize"
+      :current-page="tableData.pageNum"
       layout="total, prev, pager, next, jumper"
-      :total="total">
+      :total="tableData.count">
      </el-pagination>
     </div>
 
     <!-- 结算审核弹框 -->
-    <el-dialog title="结算审核" :visible.sync="layer.show" width="820px" class="layer-audit">
+    <el-dialog title="结算审核" :visible.sync="dialogVisible" width="820px" class="layer-audit">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
+          <div class="col-li col-li2">
+            <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
+            <p>发起日期：<span>{{layerAudit.createTime | getDate}}</span></p>
+            <p>发起人：<span>{{layerAudit.sponsorStoreName + '-' + layerAudit.sponsorName}}</span></p>
+            
+          </div>
           <div class="col-li">
-            <p>合同编号：<span class="blue">YQYD001163</span></p>
-            <p>物业地址：<span>当代国际花园当代国际花园当代国际花园当代国际花园当</span></p>
+            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
+           
           </div>
           <div class="col-li col-li2">
-            <p>申请日期：<span>2018/9/14</span></p>
-            <p>发起人：<span>当代一店-夏雨天</span></p>
-            <p>合同类型：<span>出租</span></p>
+            <p>合同类型：<span>{{layerAudit.contractType}}</span></p>
+            <p>后期状态：<span>{{layerAudit.statusLaterStage}}</span></p>
+            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
+            
+            
           </div>
           <div class="col-li col-li2">
-            <p>成交总价：<span>3000元</span></p>
-            <p>可分配业绩：<span>3000元</span></p>
-            <p>已结算：<span>3000元</span></p>
+            <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
+            <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
+            <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
           </div>
-          <div class="col-li col-li2">
-            <p>合同总实收：<span>3000元</span></p>
-            <p>本次结算：<span>3000元</span></p>
-            <p>实际结算：<span>3000元</span></p>
-          </div>
-          <div class="textareabox">
+          <!-- <div class="textareabox">
             <span class="tit">金融服务费：</span>
             <el-input maxlength="9" :disabled="true"><i slot="suffix" class="i-slot">元（成本）</i></el-input>
-          </div>
+          </div> -->
         </div>
 
         <!-- 表格 -->
         <div class="audit-col">
-          <el-table :data="jiesuanData" border style="width: 100%" class="table">
-          <el-table-column prop="a1" label="合作门店"></el-table-column>
-          <el-table-column prop="a2" label="分成比例"></el-table-column>
-          <el-table-column prop="a3" label="本次违约金"></el-table-column>
-          <el-table-column prop="a4" label="本次特许服务费"></el-table-column>
-          <el-table-column prop="a5" label="本次刷卡手续费"></el-table-column>
-          <el-table-column prop="a6" label="本次实收分成"></el-table-column>
+          <el-table :data="layerAudit.settlementFroms" border style="width: 100%" class="table">
+          <el-table-column prop="level4" label="合作门店"></el-table-column>
+          <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
+          <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
+          <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
         </el-table>            
         </div>
 
@@ -159,17 +183,25 @@
         </div>
 
         <!-- 结算备注 -->
+        <div class="audit-col">
+          <div class="textareabox2 mt0">
+            <span><em>*</em>结算备注</span>
+            <el-input type="textarea" :rows="6" class="textarea" maxlength=200 v-model="layerAudit.settlementRemarks" :disabled="true"></el-input>
+          </div>
+        </div>
+
+        <!-- 审核备注 -->
         <div class="audit-col bordernone">
           <div class="textareabox2">
-            <span><em>*</em>结算备注</span>
-            <el-input type="textarea" :rows="6" class="textarea" maxlength=200 placeholder="请填写备注审核"></el-input>
+            <span><em>*</em>审核备注</span>
+            <el-input type="textarea" :rows="6" class="textarea" maxlength=200 placeholder="请填写备注审核" v-model="auditForm.textarea"></el-input>
           </div>
         </div>
 
       </div>
       <div class="btnbox">
-        <el-button @click="dialogVisible = true" class="refuse">驳 回</el-button>
-        <el-button type="primary" @click="dialogVisible = true" class="recept">通 过</el-button>  
+        <el-button class="refuse" @click="refuseFn()">驳 回</el-button>
+        <el-button type="primary" class="recept"  @click="receptFn()">通 过</el-button>  
       </div> 
     </el-dialog>
 
@@ -180,132 +212,74 @@
       
 <script>
   import ScreeningTop from '@/components/ScreeningTop';
+  import {FILTER} from "@/assets/js/filter";
+  import {TOOL} from "@/assets/js/common";
+  import { MIXINS } from "@/assets/js/mixins";
   export default {
+    name: "settle-check",
+    mixins: [FILTER,MIXINS],
     data(){
       return{
         clientHei: document.documentElement.clientHeight, //窗体高度
-        adjustForm:{
+        cityId: 1,
+         adjustForm:{
           signDate: '', //发起日期
           contType: '', //合同类型
-          item1: '',    //选择门店
-          item2: '',  //选择成交人
-          toExamineState: '',  //审核状态
+          getDepName: [{
+            name: "全部",
+            id: ""
+          }],    //选择门店
+          getAgentName: [{
+            name: "全部",
+            empId: ""
+          }], 
+                     //审核状态
           keyWord: ''   //关键字
 
         },
+        toExamineState: [{
+          value: 1,
+          label: '未提审'
+        }, {
+          value: 2,
+          label: '通过'
+        }, {
+          value: 3,
+          label: '驳回'
+        }], 
 
+        examineState: '',
+        Form :{
+          getDepName: '',
+          getAgentName: ''
+        },
+        dictionary: {
+          //数据字典
+          "10": "", //合同类型
+          "17": "", //审核状态
+        },
+        layerAudit:{
+
+        },
+        myCheckId: '',
+        
         auditForm: {
           textarea: '', //备注
-          item1: '', //另外出-佣金扣-无
-          item2: '', //客户-业主-无
-          money1: '', //业主佣金
-          money2: '', //客户佣金
-          money3: '', //按揭收费
-          money4: '', //合作费扣除
         },
+
         // 弹框里用到的
         dialogImageUrl: '',
         dialogVisible: false,
-        layer: {
-            show: false,
-            
-        },
-        checked: false, //是否有解除协议
-        // 选择门店
-        option1: [{
-            value: '选项1',
-            label: '黄金糕'
-        }, {
-            value: '选项2',
-            label: '双皮奶'
-        }],
-        // 选择经纪人
-        option2: [{
-            value: '选项1',
-            label: '黄金糕'
-        }, {
-            value: '选项2',
-            label: '双皮奶'
-        }, {
-            value: '选项3',
-            label: '蚵仔煎'
-        }],
-        jiesuanData:[{
-            a1: '当代一店',
-            a2: '20%',
-            a3: '金额*分成比例',
-            a4: '',
-            a5: '',
-            a6: '',
-
-        },
-        {
-            a1: '当代二店',
-            a2: '20%',
-            a3: '金额*分成比例',
-            a4: '400',
-            a5: '300',
-            a6: '1200',
-
-        }],
+      
         
-        tableData:[{
-          contractNo:'YQYD110063', //合同编号
-          contType:1,              //合同类型
-          dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',         
-          sponsorDate:'2018/11/07',
-          sponsorPerson:'当代一店下雨天2',
-          realSettle: 2000,
-          toExamineState:1,
-          examineDate:'2018/11/07',
-          examinePerson: '当代一店下雨天3',
-          remarks:''
-        },
-        {
-          contractNo:'YQYD110063', //合同编号
-          contType:2,              //合同类型
-          dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',         
-          sponsorDate:'2018/11/07',
-          sponsorPerson:'当代一店下雨天2',
-          realSettle: 2000,
-          toExamineState:1,
-          examineDate:'2018/11/07',
-          examinePerson: '当代一店下雨天3',
-          remarks:''
-        },
-        {
-          contractNo:'YQYD110063', //合同编号
-          contType:3,              //合同类型
-          dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',         
-          sponsorDate:'2018/11/07',
-          sponsorPerson:'当代一店下雨天2',
-          realSettle: 2000,
-          toExamineState:2,
-          examineDate:'2018/11/07',
-          examinePerson: '当代一店下雨天3',
-          remarks:''
-        },
-        {
-          contractNo:'YQYD110063', //合同编号
-          contType:4,              //合同类型
-          dealPrice:'12345121',
-          dealPerson:'当代一店下雨天1',         
-          sponsorDate:'2018/11/07',
-          sponsorPerson:'当代一店下雨天2',
-          realSettle: 2000,
-          toExamineState:3,
-          examineDate:'2018/11/07',
-          examinePerson: '当代一店下雨天3',
-          remarks:''
-        },
-        ],
+       
+        
+        tableData:[],
 
         // 分页
-        currentPage: 1,
-        total: 100,
+        pageNum: 1,
+        pageSize: 50,
+        count: 0,
 
         
       }
@@ -314,60 +288,210 @@
     computed: {
         
     },
+
+    filters: {
+       getDate(val) {
+         return TOOL.dateFormat(val);
+       }
+    },
   
     methods:{
-      //获取合同列表
-      // getContractList(){
-      //   let param = {
-      //     pageNum:'1',
-      //     pageSize:'10',
-      //     keyWord:'',
-      //     cont:{}
-      //   }
-      //   this.$ajax.post('/api/contract/contractList', param).then(res=>{
-
-      //   })
-      // },
+      
 
 
       // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
           return this.clientHei - 265 + 'px'
       },
+
+       // 得到部门门店和经纪人信息
+      getDepNameFn(e) {
+        this.$ajax.get("/api/access/deps", {keyword: e})
+        .then(res => {       
+          let data = res.data;         
+          if (res.data.status === 200) {  
+            if(e === '' || !e){
+              this.adjustForm.getDepName = [{
+                name: "全部",
+                id: ""
+              },...data.data]
+            }else{
+              this.adjustForm.getDepName = data.data
+            }  
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+
+      changeDepNameFn(e) {
+        if(e !== "" || !!e)
+        this.$ajax.get("/api/organize/employees",{
+          cityId:this.cityId,
+          depId: e
+        })
+        .then(res => {       
+                  
+          if (res.data.status === 200) {  
+
+            if(res.data.data.length > 0){ 
+              this.adjustForm.getAgentName = [{
+                name: "全部",
+                empId: ""
+              },...res.data.data]
+            }
+            else{
+              this.adjustForm.getAgentName = res.data.data
+            }
+          }
+
+        }).catch(err => {
+          console.log(err)
+        })
+
+      },
+
+      // 清除部门搜索
+      clearDepNameFn(){
+          this.getDepNameFn('');
+      }, 
       
+
 
       // 重置
       resetFormFn() {
-          this.$refs.propForm.resetFields()
+          this.$refs.adjustForm.resetFields()
       },
+      
       // 查询
       queryFn() {
-          console.log('查询')
+        let beginDate;
+        let endDate;
+        if(this.adjustForm.signDate.length === 2){
+            beginDate = TOOL.dateFormat(this.adjustForm.signDate[0]);
+            endDate = TOOL.dateFormat(this.adjustForm.signDate[1]);
+        }else if(this.adjustForm.signDate.length === 0){
+            beginDate = null
+            endDate = null
+        }
+        let param = {
+          contResultVo: {
+            beginDate,
+            endDate,
+            examineState: this.examineState,    //this.toExamineState.value,
+            contractType: this.adjustForm.contType,    //this.adjustForm.contType.key,
+            dealAgentStoreId:this.Form.getDepName,    //this.Form.getDepName.id,
+            dealAgentId: this.Form.getAgentName,    //this.Form.getAgentName.empId,
+            keyword: this.adjustForm.keyWord
+            
+          },
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+          
+        }
+          // 结算审核列表
+          this.$ajax         
+          .postJSON("/api/contract/contResultList", param)
+          .then(res => {
+            let data = res.data;
+            if (res.data.status === 200) {
+              this.tableData = data.data
+              
+            }
+      
+          }).catch(error => {
+            console.log(error)
+          })
       },
 
       // 点击审核事件
       auditApply(e){
-        this.layer = {
-            show: true,
+        this.dialogVisible = true
+        let param = {
+          id: e.id,
         }
+        this.$ajax.get("/api/settlement/applyExamineById", param)
+        .then(res => {
+          let data = res.data;
+          if (res.data.status === 200) {
+            console.log(data.data)
+            this.layerAudit = data.data;
+            this.myCheckId = data.data.id; //结算id
+          }
+        }).catch(error => {
+          console.log(error)
+        });
       },
 
+      // 驳回操作
+      refuseFn() {
+        let param = {
+          checkId: this.myCheckId,
+          examine: 3, //驳回
+          examineRemark: this.auditForm.textarea
+        }
+        if(this.auditForm.textarea !== ""){
+          this.$ajax.post("/api/settlement/examineSettlement", param)
+          .then(res => {
+           
+            if (res.data.status === 200) {
+              this.$message('已驳回');
+              let _this = this
+              setTimeout(() => {
+                _this.dialogVisible = false
+              }, 2000);
+            }
+          }).catch(error => {
+            console.log(error)
+          });
+        }else{
+          this.$message('审核备注不能为空');
+        }
+        
+      },
+
+      // 通过操作
+      receptFn() {
+        let param = {
+          checkId: this.myCheckId,
+          examine: 2, //通过
+          examineRemark: this.auditForm.textarea
+        }
+        this.$ajax.post("/api/settlement/examineSettlement", param)
+        .then(res => {
+
+          if (res.data.status === 200) {
+            console.log(res)
+            this.$message('已通过');
+            let _this = this
+            setTimeout(() => {
+              _this.dialogVisible = false
+            }, 2000);
+          }
+        }).catch(error => {
+          console.log(error)
+        });
+      },
+
+
       //跳转合同详情页
-      goContractDetail(value){
-        console.log(value)
+      goContractDetail(e){
+        console.log(e)
         this.$router.push({
           path:'/contractDetails',
-          query:{
-            id: value.contractNo
+          query: {
+            id: e.contractId,
+            code: e.code,
+            contType: e.contType.value
           }
         })
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+
+      handleCurrentChange(e) {
+        this.pageNum = e;
+        this.queryFn();
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
+      
 
       // 弹层里上传附件
       // handleRemove(file, fileList) {
@@ -379,6 +503,13 @@
       // }
       
     },
+
+    created() {
+      this.queryFn();
+      this.getDepNameFn();
+      this.getDictionary();
+    },
+
     mounted() {
       var _this = this;
        window.onresize = function(){
@@ -529,7 +660,7 @@
       }
   }
   .audit-box{
-    padding: 0 20px 0px 20px;
+    padding: 0 30px 0px 30px;
     overflow-y: auto;
     .audit-col{
       padding: 30px 0;
@@ -542,6 +673,15 @@
         overflow: hidden;
         clear: left;
         margin-bottom: 18px;
+        &:last-child{
+          margin-bottom: 0;
+        }
+       
+      }
+      .col-li2{
+        p:nth-child(2n){
+          width: 250px;
+        }
         p{
           float: left;
           &:first-child{
@@ -554,11 +694,6 @@
               }
             }
           }
-        }
-      }
-      .col-li2{
-        p:nth-child(2n){
-          width: 270px;
         }
       }
       .textareabox{
@@ -637,6 +772,9 @@
     display: flex;
     align-items: flex-start;
     margin-bottom: 30px;
+    &.mt0{
+      margin-bottom: 0;
+    }
     span{
       width: 84px;
       em{

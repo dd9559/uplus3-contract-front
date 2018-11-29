@@ -15,19 +15,29 @@
                 <span class="text" v-if="contractDetail.contType.value===4">意向</span>
                 <span class="text" v-if="contractDetail.contType.value===5">定金</span>
               </p>
-              <p><span class="tag">成交总价：</span><span class="text">{{contractDetail.dealPrice}} 元</span></p>
+              <p style="width:500px">
+                <span class="tag">成交总价：</span>
+                <span class="dealPrice">{{contractDetail.dealPrice}} 元
+                  <i v-for="item in dictionary['507']" :key="item.key" v-if="item.key===contractDetail.timeUnit&&contractDetail.contType.value===1"> / {{item.value}}</i>
+                  <i>{{contractDetail.dealPrice|moneyFormat}}</i>
+                </span>
+              </p>
             </div>
             <div class="one_">
               <p v-if="contType!='1'"><span class="tag">客户保证金：</span><span class="text">{{contractDetail.custEnsure}} 元</span></p>
               <p><span class="tag">客户佣金：</span><span class="text">{{contractDetail.custCommission}} 元</span></p>
               <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
               <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p>
-              <p v-if="contType!='1'">
-                <span class="tag">佣金合计：</span>
-                <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission-contractDetail.commissionPayment}} 元</span></p>
             </div>
             <div class="one_" v-if="contType!='1'">
-              <p><span class="tag">交易流程：</span><span class="text">{{contractDetail.transFlowCode}}</span></p>
+              <p v-if="contType!='1'">
+                <span class="tag">佣金合计：</span>
+                <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission-contractDetail.commissionPayment}} 元</span>
+              </p>
+              <p class="address">
+                <span class="tag">交易流程：</span>
+                <span class="text" v-for="item in transFlowList" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span>
+              </p>
               <!-- <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
               <p><span class="tag">按揭员：</span><span class="text">夏雨天</span></p> -->
             </div>
@@ -38,28 +48,37 @@
           <div class="content">
             <div class="one_">
               <p><span class="tag">房源编号：</span><span class="serialNumber">{{contractDetail.houseinfoCode}}</span></p>
-              <p class="address"><span class="tag">物业地址：</span><span class="text">{{contractDetail.houseInfo.building}}</span></p>
+              <p class="address">
+                <span class="tag">物业地址：</span>
+                <span class="text">{{contractDetail.houseInfo.EstateName}}</span>
+                <span class="text">{{contractDetail.houseInfo.BuildingName}}</span>
+                <span class="text">{{contractDetail.houseInfo.Unit}}</span>
+                <span class="text">{{contractDetail.houseInfo.RoomNo}}</span>
+              </p>
             </div>
             <div class="one_">
-              <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.architectureArea}} m²</span></p>
-              <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.insideArea}} m²</span></p>
-              <p><span class="tag">用 途：</span><span class="text">住宅</span></p>
+              <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
+              <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
+              <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.houseType}}</span></p>
-              <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.orientation}}</span></p>
-              <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.renovation}}</span></p>
+              <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType}}</span></p>
+              <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation}}</span></p>
+              <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType}}</span></p>
             </div>
             <div class="one_" v-if="contType!='1'">
-              <p><span class="tag">产权状态：</span><span class="text">{{contractDetail.houseInfo.propertyRightStatus}}</span></p>
+              <p>
+                <span class="tag">产权状态：</span>
+                <span class="text" v-for="item in dictionary['514']" :key="item.key" v-if="item.key===contractDetail.houseInfo.propertyRightStatus">{{item.value}}</span>
+              </p>
               <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName}}</span></p>
               <p><span class="tag">按揭欠款：</span><span class="text">{{contractDetail.houseInfo.stagesArrears}} 元</span></p>
               <p><span class="tag">房产证号：</span><span class="text">{{contractDetail.propertyCard}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.houseStoreName}}</span></p>
-              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.shopownerName}}</span></p>
-              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.shopownerMobile}}</span></p>
+              <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
+              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
+              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
             </div>
             <div class="table">
               <template>
@@ -79,12 +98,15 @@
           <div class="content">
             <div class="one_">
               <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
-              <p><span class="tag">付款方式：</span><span class="text">{{contractDetail.guestInfo.paymentMethod}}</span></p>
+              <p>
+                <span class="tag">付款方式：</span>
+                <span class="text" v-for="item in dictionary['556']" :key="item.key" v-if="contractDetail.guestInfo.paymentMethod===item.key">{{item.value}}</span>
+              </p>
             </div>
             <div class="one_">
-              <p><span class="tag">客源方门店：</span><span class="text">{{contractDetail.guestInfo.guestStoreName}}</span></p>
-              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.guestInfo.shopownerName}}</span></p>
-              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.shopownerMobile}}</span></p>
+              <p><span class="tag">客源方门店：</span><span class="text">{{contractDetail.guestInfo.GuestStoreName}}</span></p>
+              <p><span class="tag">店 长：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
+              <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
             </div>
             <div class="table">
               <template>
@@ -103,12 +125,15 @@
             </div>
           </div>
         </div>
-        <div class="msg">
+        <div class="msg" v-if="contractDetail.isHavaCooperation">
           <div class="title">三方合作</div>
           <div class="content">
             <div class="one_">
               <p><span class="tag">扣合作费：</span><span class="text">{{contractDetail.otherCooperationCost}}元</span></p>
-              <p><span class="tag">类型：</span><span class="text" v-if='contractDetail.otherCooperationInfo'>{{contractDetail.otherCooperationInfo.type}}</span></p>
+              <p>
+                <span class="tag">类型：</span>
+                <span class="text" v-for="item in dictionary['517']" :key="item.key" v-if='item.key===contractDetail.otherCooperationInfo.type'>{{item.value}}</span>
+              </p>
             </div>
             <div class="one_">
               <p><span class="tag">合作方姓名：</span><span class="text">{{contractDetail.otherCooperationInfo.name}}</span></p>
@@ -125,34 +150,42 @@
           <div class="title">业绩分成</div>
           <div class="content">
             <div class="one_ performance">
-              <p>(可分配业绩：<span class="orange">30000</span>元)</p>
+              <p>(可分配业绩：<span class="orange">{{contractDetail.distributableAchievement}}</span>元)</p>
             </div>
             <div class="table">
               <p>房源方分成</p>
-              <el-table :data="performanceData" border header-row-class-name="theader-bg">
-                <el-table-column prop="category" label="角色类型"></el-table-column>
-                <el-table-column prop="proportion" label="分成比例"></el-table-column>
-                <el-table-column prop="broker" label="经纪人"></el-table-column>
-                <el-table-column prop="status" label="在职状态"></el-table-column>
-                <el-table-column prop="store" label="门店"></el-table-column>
-                <el-table-column prop="storer" label="店长"></el-table-column>
-                <el-table-column prop="address" label="单组"></el-table-column>
-                <el-table-column prop="manager" label="区经"></el-table-column>
-                <el-table-column prop="generalManager" label="区总"></el-table-column>
+              <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
+                <el-table-column prop="category" label="角色类型">
+                  <template slot-scope="scope">
+                    房源录入人
+                  </template>
+                </el-table-column>
+                <el-table-column prop="ratio" label="分成比例"></el-table-column>
+                <el-table-column prop="assignor" label="经纪人"></el-table-column>
+                <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
+                <el-table-column prop="level3" label="门店"></el-table-column>
+                <el-table-column prop="shopkeeper" label="店长"></el-table-column>
+                <el-table-column prop="level4" label="单组"></el-table-column>
+                <el-table-column prop="amaldar" label="区经"></el-table-column>
+                <el-table-column prop="manager" label="区总"></el-table-column>
               </el-table>
             </div>
             <div class="table">
               <p>客源方分成</p>
-              <el-table :data="performanceData" border header-row-class-name="theader-bg">
-                <el-table-column prop="category" label="角色类型"></el-table-column>
-                <el-table-column prop="proportion" label="分成比例"></el-table-column>
-                <el-table-column prop="broker" label="经纪人"></el-table-column>
-                <el-table-column prop="status" label="在职状态"></el-table-column>
-                <el-table-column prop="store" label="门店"></el-table-column>
-                <el-table-column prop="storer" label="店长"></el-table-column>
-                <el-table-column prop="address" label="单组"></el-table-column>
-                <el-table-column prop="manager" label="区经"></el-table-column>
-                <el-table-column prop="generalManager" label="区总"></el-table-column>
+              <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg">
+                <el-table-column prop="category" label="角色类型">
+                  <template slot-scope="scope">
+                    客源录入人
+                  </template>
+                </el-table-column>
+                 <el-table-column prop="ratio" label="分成比例"></el-table-column>
+                <el-table-column prop="assignor" label="经纪人"></el-table-column>
+                <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
+                <el-table-column prop="level3" label="门店"></el-table-column>
+                <el-table-column prop="shopkeeper" label="店长"></el-table-column>
+                <el-table-column prop="level4" label="单组"></el-table-column>
+                <el-table-column prop="amaldar" label="区经"></el-table-column>
+                <el-table-column prop="manager" label="区总"></el-table-column>
               </el-table>
             </div>
           </div>
@@ -167,13 +200,57 @@
             <el-button round class="search_btn" @click="goPreview">预览</el-button>
             <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)" v-if="contractDetail.contState.value===3">解约</el-button>
             <el-button round type="danger" @click="dialogInvalid=true" class="search_btn" v-if="contractDetail.contState.value!=3">无效</el-button>
-            <el-button round class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
-            <el-button type="primary" round class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
+            <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
+            <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
+            <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value===1">提交审核</el-button>
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="合同主体" name="second">合同主体</el-tab-pane>
-      <el-tab-pane label="资料库" name="third">资料库</el-tab-pane>
+      <el-tab-pane label="合同主体" name="second">
+        <div class="contractSubject">
+          <file-up class="uploadSubject" @getUrl="uploadSubject">
+            <i class="iconfont icon-shangchuan"></i>
+            <p>点击上传</p>
+          </file-up>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="资料库" name="third">
+        <div class="dataBank">
+          <div class="classify">
+            <p class="title">卖方</p>
+            <div class="one_" v-for="item in sellerList" :key="item.id">
+              <p><i>*</i>{{item.name}}</p>
+              <file-up class="uploadSubject" :id="'fileup'+item.id">
+                <i class="iconfont icon-shangchuan"></i>
+                <p>点击上传</p>
+              </file-up>
+            </div>
+          </div>
+          <div class="classify">
+            <p class="title">买方</p>
+             <div class="one_" v-for="item in buyerList" :key="item.id">
+              <p><i>*</i>{{item.name}}</p>
+              <span class="uploadSubject">
+                <i class="iconfont icon-shangchuan"></i>
+                <p>点击上传</p>
+              </span>
+            </div>
+          </div>
+          <div class="classify">
+            <p class="title">其他</p>
+            <div class="one_" v-for="item in otherList" :key="item.id">
+              <p></p>
+              <span class="uploadSubject">
+                <i class="iconfont icon-shangchuan"></i>
+                <p>点击上传</p>
+              </span>
+            </div>
+          </div>
+          <div class="classify">
+            <p>拒绝理由</p>
+          </div>
+        </div>
+      </el-tab-pane>
       <el-tab-pane label="回访录音" name="fourth">
         <div class="type">
           <span :class="{'active':isActive===1}" @click="changeType(1)">客源</span>
@@ -250,16 +327,19 @@
     </el-dialog>
 
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
-    <achDialog :shows="shows" v-on:close="shows=false" :contractCode="code" :dialogType="dialogType"></achDialog>
+    <achDialog :shows="shows" v-on:close="shows=false" :contractCode="contCode" :dialogType="dialogType"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
-    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel" @closeChangeCancel="changeCancelDialog"></changeCancel>
+    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
   </div>
 </template>
            
 <script>
 import achDialog from "./../../achievement/achDialog";
 import changeCancel from "../contractDialog/changeCancel";
+import { MIXINS } from "@/assets/js/mixins";
+import { TOOL } from "@/assets/js/common";
 export default {
+  mixins: [MIXINS],
   components: {
     achDialog,
     changeCancel
@@ -276,27 +356,17 @@ export default {
       contractDetail:{
         contType:{},
         houseInfo:{},
-        guestInfo:{},
+        guestInfo:{
+          paymentMethod:{}
+        },
         otherCooperationInfo:{},
-        contState:{}
+        contState:{},
+        toExamineState:{}
       },
       //业主信息
       ownerData: [],
       //客户信息
       clientrData: [],
-      performanceData: [
-        {
-          category: "房源录入人",
-          proportion: "10%",
-          broker: "夏雨天",
-          status: "在职",
-          store: "当代一店",
-          storer: "夏雨天",
-          address: "波光园二店",
-          manager: "夏雨天",
-          generalManager: "夏雨天"
-        }
-      ],
       //录音
       recordData:[
         {visitTime:'2018/11/11',visitPeople:'万科四季花城-夏雨天',visitMobile:'18571606238',remakes:'萨瓦迪卡哈哈哈'},
@@ -308,26 +378,56 @@ export default {
       contType: 2,
       //合同id
       id:'',
+      //变更解约id
+      changeCancelId:'',
+      //合同编号
+      contCode:'',
       //分成
       shows: false,
-      code:'',
       dialogType: 3,
       canceldialogType: "",
-      changeCancel: false,
-      isActive:1
+      changeCancel_: false,
+      isActive:1,
+      dictionary: {
+        //数据字典
+        "514": "", //产权状态
+        "517": "", //三方合作类型
+        "556": "",  //付款方式
+        "507": "", //时间单位
+      },
+      //交易流程
+      transFlowList:[],
+      //分成人员
+      employeeData:{
+        houseAgents:[],
+        customerAgents:[]
+      },
+      //合同主体上传文件路径
+      uploadList:[],
+      //买方类型
+      buyerList:[],
+      //卖方类型
+      sellerList:[],
+      //其他类型
+      otherList:[]
     };
   },
   created() {
     this.contType = this.$route.query.contType.toString();
-    this.id = this.$route.query.id
+    this.id = this.$route.query.id;
+    this.contCode = this.$route.query.code;
     if (this.$route.query.type === "dataBank") {
       this.activeName = "third";
     }
-    this.getContractDetail()
+    this.getContractDetail();
+    this.getDictionary();
+    this.getTransFlow();
+    this.getAchievement();
+    this.getContDataType()
   },
   methods: {
     handleClick(tab, event) {
-      // console.log(tab, event);
+      console.log(tab, event);
     },
     //打电话
     call(value) {
@@ -347,14 +447,13 @@ export default {
     fencheng() {
       this.dialogType = 3;
       this.shows = true;
-      this.code=this.contractDetail.code
     },
     // 合同编辑
     goEdit() {
       this.$router.push({
         path: "/addContract",
         query: {
-          id: 1,
+          id: this.contractDetail.id,
           operateType: 2,
           type: this.contType
         }
@@ -362,18 +461,20 @@ export default {
     },
     // 变更解约弹窗
     goChangeCancel(value) {
+      this.changeCancelId=Number(this.id);
       if (value === 1) {
         this.canceldialogType = "changeEdit";
-        this.changeCancel = true;
+        this.changeCancel_ = true;
       } else if (value === 2) {
         this.canceldialogType = "cancelEdit";
-        this.changeCancel = true;
+        this.changeCancel_ = true;
       }
     },
     // 关闭变更解约弹窗
     changeCancelDialog() {
-      this.changeCancel = false;
+      this.changeCancel_ = false;
       this.canceldialogType = "";
+      this.changeCancelId='';
     },
     //房源客源切换
     changeType(value){
@@ -384,7 +485,7 @@ export default {
       let param={
         id:this.id
       }
-      this.$ajax.get('/api/contract/getById',param).then(res=>{
+      this.$ajax.get('/api/contract/detail',param).then(res=>{
         res=res.data
         if(res.status===200){
           this.contractDetail=res.data
@@ -398,6 +499,80 @@ export default {
           }
         }
       })
+    },
+     //获取所在城市的交易类型
+    getTransFlow(){
+      this.$ajax.get('/api/contract/getTransFlowListByCity').then(res=>{
+        res=res.data;
+        if(res.status===200){
+          console.log(res.data)
+          this.transFlowList=res.data
+        }
+      })
+    },
+    //业绩分成
+    getAchievement(){
+      let param = {
+        contCode:this.contCode
+      }
+      this.$ajax.get('/api/achievement/employees', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.employeeData=res.data
+        }
+      })
+    },
+    //获取文件路径数组
+		uploadSubject(data){
+			console.log(data.param[0]);
+			this.uploadList.push(data.param[0].path);
+			//this.isImg=true
+		},
+		//保存上传文件
+		saveFile(){
+			if(this.dialogType==="upload"){
+				var url = "/api/upload/contractBody";
+				var param = {
+					contractId:this.id,
+					vouchers:this.uploadList
+				}
+			}
+			this.$ajax.postJSON(url,param).then(res=>{
+				res=res.data;
+				if(res.status===200){
+					this.$message({
+						message:'上传成功'
+					});
+					this.close();
+				}
+			})
+    },
+    //获取合同资料库类型列表
+    getContDataType(){
+      this.$ajax.get('/api/contract/getContDataType').then(res=>{
+        res=res.data;
+        if(res.status===200){
+          console.log(res.data)
+          res.data.forEach(element => {
+            if(element.type==='买方'){
+              this.buyerList.push(element);
+            }else if(element.type==="卖方"){
+              this.sellerList.push(element);
+            }else if(element.type==="其他"){
+              this.otherList.push(element);
+            }
+          });
+        }
+      })
+    }
+  },
+  filters: {
+    moneyFormat: function(val) {
+      if (!val) {
+        return "零";
+      } else {
+        return TOOL.toChineseNumber(val);
+      }
     }
   }
 };
@@ -418,6 +593,7 @@ export default {
   background: @bg-white;
   font-size: 14px;
   position: relative;
+  //合同详情
   .msg {
     border-bottom: 1px solid @border-ED;
     display: flex;
@@ -445,6 +621,9 @@ export default {
           }
           .text {
             color: @color-blank;
+          }
+          .dealPrice{
+            color:@color-yellow;
           }
           .serialNumber {
             color: @color-blue;
@@ -491,6 +670,52 @@ export default {
         background: @bg-FA;
         > p {
           color: @color-D6;
+        }
+      }
+    }
+  }
+  //合同主体
+  .contractSubject{
+    padding: 40px;
+  }
+  .uploadSubject{
+    display: inline-block;
+    text-align: center;
+    width: 140px;
+    height: 140px;
+    box-sizing: border-box;
+    padding-top: 28px;
+    border: 2px dashed @border-DE;
+    > i{
+      color: @bg-th;
+      font-size: 59px;
+    }
+    > p{
+      padding-top: 10px;
+      color:@color-324;
+      font-size: 14px;
+    }
+  }
+  //资料库
+  .dataBank{
+    padding: 0 30px 0 10px;
+    .classify{
+      padding-top: 20px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid @border-ED;
+      .title{
+        font-size: 16px;
+        color:@color-324;
+      }
+      .one_{
+        padding-left: 10px;
+        > p{
+          font-size: 14px;
+          padding: 10px 0;
+          color:@color-6c;
+          > i{
+            color:@color-FF;
+          }
         }
       }
     }
@@ -571,6 +796,32 @@ export default {
   .record{
     width: 950px;
     padding-top: 20px;
+  }
+  .top {
+    display: flex;
+    > p {
+      padding-right: 15px;
+      font-size: 14px;
+      width: 90px;
+      color: @color-6c;
+    }
+    > .reason {
+      position: relative;
+      > span {
+        position: absolute;
+        top: 90px;
+        right: 10px;
+        color: @color-6c;
+      }
+      > p {
+        padding-top: 10px;
+        color: @color-6c;
+        font-size: 12px;
+        > span {
+          color: @color-blank;
+        }
+      }
+    }
   }
 }
 </style>

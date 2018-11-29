@@ -72,7 +72,7 @@
 					</el-table>
 				</el-tab-pane>
 				<!-- 应实对照 -->
-				<el-tab-pane label="应实对照" name="seventh">
+				<!-- <el-tab-pane label="应实对照" name="seventh">
 					<el-table :data="gridData7" border>
 						<el-table-column prop="moneyClass" label="款类"></el-table-column>
 						<el-table-column prop="realReceive" label="实收"> </el-table-column>
@@ -82,7 +82,7 @@
 						<el-table-column prop="surPlus" label="结余"></el-table-column>
 						<el-table-column prop="receiveNote" label="备注"></el-table-column>
 					</el-table>
-				</el-tab-pane>
+				</el-tab-pane> -->
 				<!-- 佣金明细 -->
 				<!-- <el-tab-pane label="佣金明细" name="eighth">
                 <el-table :data="gridData8" border>
@@ -105,6 +105,10 @@ export default {
     dialogTableVisible: {
       type: Boolean,
       default: false
+    },
+    contCode: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -112,82 +116,10 @@ export default {
       activeName: "first",
       //dialogTableVisible: false,
       gridData1: [],
-      gridData2: [
-        {
-          moneyClass: "佣金",
-          collectMoney: "666",
-          payMoney: "0",
-          totalMoney: "666"
-        },
-        {
-          moneyClass: "佣金",
-          collectMoney: "666",
-          payMoney: "0",
-          totalMoney: "666"
-        },
-        {
-          moneyClass: "佣金",
-          collectMoney: "666",
-          payMoney: "0",
-          totalMoney: "666"
-        }
-      ],
-      gridData4: [
-        {
-          moneyClass: "", //款类
-          billNo: "", //收付款编号
-          categoryType: "", //类型
-          businessTime: "", //业务日期
-          businessObj: "", //业务对象
-          collectMoney: "", //收款（元）
-          payMoney: "", //付款（元）
-          totalMoney: "", //金额（元）
-          checkStatus: "" //审核状态
-        }
-      ],
-      gridData5: [
-        {
-          entryName: "", //录入人
-          entryDep: "", //录入门店
-          entryTime: "", //录入日期
-          flowType: "", //类型
-          flowBusiness: "", //业务对象
-          moneyType: "", //款类
-          flowAmount: "", //金额（元）
-          billStatus: "", //票据状态
-          payStatus: "" //状态
-        }
-      ],
-      gridData6: [
-        {
-          billType: "", //款类
-          billTime: "", //开票时间
-          billAmount: "", //开票金额（元）
-          billNo: "", //票据号
-          billState: "", //票据状态
-          billPerson: "" //开票人
-        }
-      ],
-      gridData7: [
-        {
-          moneyClass: "", //款类
-          realReceive: "", //实收
-          realPay: "", //实付
-          shouldReceive: "", //应收
-          shouldPay: "", //应付
-          surPlus: "", //结余
-          receiveNote: "" //备注
-        }
-      ],
-      gridData8: [
-        {
-          moneyClass: "", //款类
-          divideAmount: "", //分佣金额（元）
-          divideTime: "", //分佣时间
-          divideName: "", //被拆名称
-          originalAmount: "" //原始金额
-        }
-      ]
+      gridData2: [],
+      gridData4: [],
+      gridData5: [],
+      gridData6: []
     };
   },
   created() {
@@ -211,7 +143,7 @@ export default {
       } else if (tab.name === "second" || tab.name === "third") {
         //业主分类账
         let param = {
-          contractCode: "Z181111001",
+          contractCode: this.contCode,
           type: tab.name === "second" ? 1 : 2
         };
         this.$ajax.get("/api/flows/account", param).then(res => {
@@ -236,7 +168,7 @@ export default {
         });
       } else if (tab.name === "fourth") {
         let param = {
-          contractCode: "Z181111001"
+          contractCode: this.contCode
         };
         this.$ajax.get("/api/flows/waterAccount", param).then(res => {
           res = res.data;
@@ -260,7 +192,7 @@ export default {
         });
       }else if (tab.name === "fifth") {
         let param = {
-          contractCode: "Z181111001"
+          contractCode: this.contCode
 				};
 				this.$ajax.get("/api/flows/water", param).then(res => {
 					 res = res.data;
@@ -285,7 +217,7 @@ export default {
     //流水明细
     getFlowwater() {
       let param = {
-        contractCode: "Z181111001"
+        contractCode: this.contCode
       };
       this.$ajax.get("/apiflows/account", param).then(res => {
         res = res.data;
