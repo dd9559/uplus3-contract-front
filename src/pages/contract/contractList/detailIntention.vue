@@ -286,13 +286,14 @@ export default {
             })
         },
 
-        //预览事件
+        //编辑事件
         onEdit(e) {
             this.$router.push({
-                path:'/editIntention',
+                path:'/newIntention',
                 query:{
                     contType: e.value,
-                    id: this.$route.query.id 
+                    id: this.$route.query.id,
+                    operateType: 2,
                 }
             })
         },
@@ -320,9 +321,6 @@ export default {
                         }
                     }
                 }
-                // console.log(this.detailData)
-                // console.log(this.ownerInfo)
-                // console.log(this.custInfo)
             }
             
           }).catch(error => {

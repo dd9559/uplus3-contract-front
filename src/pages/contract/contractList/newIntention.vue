@@ -2,40 +2,40 @@
 <template>
     <div class="newintention" id="newIntention">
         <div class="formbox">
-            <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" class="form-innnerbox">
+            <el-form :inline="true" :model="contractForm" ref="contractForm" class="form-innnerbox">
                 <div class="form-content">
                 <!-- 合同信息 -->
                     <div class="column-form"> 
                         <div class="column-title">合同信息</div>
                         <div class="form-cont">
-                            <el-form-item label="签约日期" prop="signDate">
-                                <el-date-picker v-model="ruleForm.signDate" type="date" placeholder="选择日期"></el-date-picker>
+                            <el-form-item label="签约日期：" prop="signDate">
+                                <el-date-picker v-model="contractForm.signDate" type="date" value-format="yyyy/MM/dd" :disabled="type===2?true:false" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
-                            <el-form-item label="合同类型">
+                            <el-form-item label="合同类型：">
                                 <el-input placeholder="意向金" :disabled="true" v-if="this.$route.query.contType == 4"></el-input>
                                 <el-input placeholder="定金"  :disabled="true" v-if="this.$route.query.contType == 5"></el-input>
                             </el-form-item>
                             
-                            <el-form-item label="认购期限" prop="subscriptionTerm">
-                                <el-date-picker v-model="ruleForm.subscriptionTerm" type="date" placeholder="选择日期"></el-date-picker>
+                            <el-form-item label="认购期限：" prop="subscriptionTerm">
+                                <el-date-picker v-model="contractForm.subscriptionTerm" value-format="yyyy/MM/dd" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
-                            <el-form-item label="认购总价" prop="subscriptionPrice">
-                                <el-input v-model.number="ruleForm.subscriptionPrice" type="number" clearable>
+                            <el-form-item label="认购总价：" prop="subscriptionPrice">
+                                <el-input v-model.number="contractForm.subscriptionPrice" type="number" clearable>
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
                             
-                            <el-form-item label="意向金金额" prop="dealPrice" v-if="this.$route.query.contType == 4">
-                                <el-input v-model.number="ruleForm.dealPrice" type="number" clearable>
+                            <el-form-item label="意向金金额：" prop="dealPrice" v-if="this.$route.query.contType == 4">
+                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable>
                                     <i slot="suffix" class="yuan">元</i>
-                                    <template slot="append">{{ruleForm.dealPrice | moneyFormat}}</template>
+                                    <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item label="定金金额" prop="dealPrice" v-if="this.$route.query.contType == 5">
-                                <el-input v-model.number="ruleForm.dealPrice" type="number" clearable>
+                            <el-form-item label="定金金额：" prop="dealPrice" v-if="this.$route.query.contType == 5">
+                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable>
                                     <i slot="suffix" class="yuan">元</i>
-                                    <template slot="append">{{ruleForm.dealPrice | moneyFormat}}</template>
+                                    <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
                             </el-form-item>
                         </div>
@@ -46,30 +46,31 @@
                         <div class="column-title">房源信息</div>
                         <div class="form-cont">
                             <el-form-item>
-                                <el-form-item label="房源编号" prop="houseno">
-                                    <el-button type="primary" v-model="ruleForm.houseno" @click="toisShowDialog()">请选择房源</el-button>
+                                <el-form-item label="房源编号：" prop="houseno">
+                                    <el-button type="primary" @click="toLayerHouse()" v-if="type===1">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</el-button>
+                                    <el-button type="text" v-if="type===2">{{contractForm.houseinfoCode}}</el-button>
                                 </el-form-item>
-                                <el-form-item label="物业地址">
-                                    <div>当代国际花园元帅哈萨克卡覅</div>
+                                <el-form-item label="物业地址：" class="ml30">
+                                    <div>{{contractForm.houseInfo.Address}}</div>
                                 </el-form-item>
                             </el-form-item>
                             
-                            <el-form-item label="产证地址" class="disb">
-                                <el-input v-model="ruleForm.propertyRightAddr" clearable class="big-input"></el-input>
+                            <el-form-item label="产证地址：" class="disb">
+                                <el-input v-model="contractForm.houseInfo.EstateNameA" clearable class="big-input"></el-input>
                             </el-form-item>
 
-                            <el-form-item label="房源总价" class="disb">
-                                <el-input v-model.number="ruleForm.price" clearable>
+                            <el-form-item label="房源总价：" class="disb">
+                                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable disabled>
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item label="业主信息" class="disb">
-                                <el-form-item prop="ownerInfo.ownname">
-                                    <el-input v-model="ruleForm.ownerInfo.ownname" clearable placeholder="姓名" class="ownwidth"></el-input>
+                            <el-form-item label="业主信息：" class="disb" required>
+                                <el-form-item prop="name">
+                                    <el-input v-model="contractForm.contPersons[0].name" clearable placeholder="姓名" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="ownerInfo.ownphone">
-                                    <el-input v-model="ruleForm.ownerInfo.ownphone" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                <el-form-item prop="mobile">
+                                    <el-input v-model.number="contractForm.contPersons[0].mobile" type="number" clearable placeholder="手机号" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -80,44 +81,45 @@
                         <div class="column-title">客源信息</div>
                         <div class="form-cont">
                             <el-form-item>
-                                <el-form-item label="客源编号"  prop="custno">
-                                        <el-button type="primary"  v-model="ruleForm.custno" @click="toLayerGuest()">请选择客源</el-button>
+                                <el-form-item label="客源编号：" prop="custno" required>
+                                        <el-button type="primary"  @click="toLayerGuest()" v-if="type===1">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</el-button>
+                                        <el-button type="text" v-if="type===2">{{contractForm.guestinfoCode}}</el-button>
                                 </el-form-item>
-                                <el-form-item label="成交经纪人">
+                                <el-form-item label="成交经纪人：" required>
                                     <el-form-item prop="item1">
-                                        <el-select v-model="ruleForm.item1" clearable filterable placeholder="请选择门店">
-                                            <el-option v-for="item in option1" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                        <el-select v-model="contractForm.guestInfo.GuestStoreName" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
+                                            <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item prop="item2" class="small-input">
-                                        <el-select v-model="ruleForm.item2" clearable filterable placeholder="请选择经纪人">
-                                            <el-option v-for="item in option2" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" @change="getAgent">
+                                            <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-form-item>
                             </el-form-item>
-                            <el-form-item label="客户信息" class="disb">
-                                <el-form-item prop="custInfo.custname">
-                                    <el-input v-model="ruleForm.custInfo.custname" clearable placeholder="姓名" class="ownwidth"></el-input>
+                            <el-form-item label="客户信息：" class="disb" required>
+                                <el-form-item prop="guestList_name">
+                                    <el-input v-model="contractForm.contPersons[1].name" clearable placeholder="姓名" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="custInfo.custphone">
-                                    <el-input v-model="ruleForm.custInfo.custphone" clearable placeholder="手机号" class="ownwidth"></el-input>
+                                <el-form-item prop="guestList_mobile">
+                                    <el-input v-model="contractForm.contPersons[1].mobile" clearable placeholder="手机号" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="custInfo.custidcard">
-                                    <el-input v-model="ruleForm.custInfo.custidcard" clearable placeholder="身份证号" class="custwidth"></el-input>
+                                <el-form-item prop="guestList_identifyCode">
+                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="身份证号" class="custwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
                         <div class="form-cont mt30" v-if="this.$route.query.contType == 4">
-                            <el-form-item label="意向备注" class="disb">
-                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请输入内容" v-model="ruleForm.textarea" class="textareawidth"></el-input>
+                            <el-form-item label="意向备注：" class="disb">
+                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth"></el-input>
                             </el-form-item>
                         </div>
                     </div>
                 </div>
                 <div class="form-btn">                   
-                        <el-button type="primary" plain round @click="onPreview()">预 览</el-button>
-                        <el-button type="primary" round @click="onSubmit('ruleForm')">保 存</el-button>                  
+                        <el-button type="primary" plain round @click="onPreview()" v-if="type===1">预 览</el-button>
+                        <el-button type="primary" round @click="onSubmit('contractForm')">保 存</el-button>                  
                 </div>
             </el-form>
 
@@ -125,7 +127,7 @@
             
         </div>
         <!-- 房客源弹框 -->
-        <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
+        <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
           
     </div>
     
@@ -139,109 +141,104 @@ export default {
         return {
             isShowDialog:false,
             dialogType: '',
-            ruleForm: {
-                signDate: '', //签约日期
-                contType: '', //合同类型
-                item1: '',    //选择门店
-                item2: '',  //选择成交人
-                subscriptionTerm: '', //认购期限
-                subscriptionPrice: '', //认购总价
-                dealPrice: '', //意向金金额
-                
-                houseno: '', //房源编号
-                address1: '', //物业地址
-                propertyRightAddr: '', //产权地址
-                price: '', //房源总价
-                ownerInfo: {
-                    ownname: '', //业主姓名
-                    ownphone: '', //业主手机号
+            loading: false,
+            type: 1,
+            //编辑时的合同id
+            id:'',
+            contractForm: {
+                type: this.$route.query.contType,
+                signDate: "",
+                houseinfoCode: "",
+                guestinfoCode: "",
+                subscriptionTerm: "",                       
+                subscriptionPrice: "",
+                dealPrice: "",
+                remarks: "",
+
+                houseInfo: {
+               
                 },
-                custInfo: {
-                    custname: '', //客户姓名
-                    custphone: '', //客户手机号
-                    custidcard: '', //客户身份证号
-                },             
-                custno: '', //客源编号              
-                textarea: '', //备注
-            
+                guestInfo: {
+                    
+                },
+                //合同人员相关信息
+                contPersons: [
+                    //业主信息
+                    {
+                        name: '',
+                        mobile: '',
+                        identifyCode: '',
+                        type: 1,
+                        relation: ''
+                    },
+                    //客户信息
+                    {
+                        name: '',
+                        mobile: '',
+                        identifyCode: '',
+                        type: 2,
+                        relation: ''
+                    }
+                ],
+                               
             },
-            // 选择门店
-            option1: [{
-                value: '选项1',
-                label: '黄金糕'
-            }, {
-                value: '选项2',
-                label: '双皮奶'
-            }],
-            // 选择经纪人
-            option2: [{
-                value: '选项1',
-                label: '黄金糕'
-            }, {
-                value: '选项2',
-                label: '双皮奶'
-            }, {
-                value: '选项3',
-                label: '蚵仔煎'
-            }],
+            
+            
+            
+
+            //门店选择列表
+            
+            
+            option2: [],
+            option3: [],
+            
             // 表单校验规则
-            rules: {
-                signDate: [
-                    { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-                ],
+            // rules: {
+            //     signDate: [
+            //         { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+            //     ],
                 
-                subscriptionTerm: [
-                    { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-                ],
-                subscriptionPrice: [
-                    { required: true, message: '请输入认购总价' },
-                    // { min: 0, max: 12, message: '输入总价在0-999999999.99之间', trigger: 'blur' }
-                ],
-                dealPrice: [
-                    { required: true, message: '请输入意向金金额' },
-                    // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
-                ],
-                // houseno: [
-                //     { required: true, message: '请选择房源', trigger: 'click' },
-                // ],
-                // address1: [
-                //     { required: true, message: '请输入物业地址', trigger: 'blur' },
-                // ],
-                // propertyRightAddr: [
-                //     { required: true, message: '请输入产权地址', trigger: 'blur' },
-                // ],
-                ownerInfo: {
-                    ownname: [
-                        { required: true, message: '请输入业主姓名' },
-                    ],
-                    ownphone: [
-                        { required: true, message: '请输入业主手机号'},
-                    ],
-                },
-                custInfo: {
-                    custname: [
-                        { required: true, message: '请输入客户姓名' },
-                    ],
-                    custphone: [
-                        { required: true, message: '请输入客户手机号' },
-                    ],
-                    custidcard: [
-                        { required: true, message: '请输入客户身份证号' },
-                    ],
-                },
+            //     subscriptionTerm: [
+            //         { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+            //     ],
+            //     subscriptionPrice: [
+            //         { required: true, message: '请输入认购总价'},
+            //         // { min: 0, max: 12, message: '输入总价在0-999999999.99之间', trigger: 'blur' }
+            //     ],
+            //     dealPrice: [
+            //         { required: true, message: '请输入意向金金额'},
+            //         // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
+            //     ],
                 
-                custno: [
-                    { required: true, message: '请选择客源', trigger: 'click' },
-                ],
-                item1: [
-                    { required: true, message: '请选择门店', trigger: 'change' }
-                ],
-                item2: [
-                    { required: true, message: '请选择经纪人', trigger: 'change' }
-                ],
+            //     name: [
+            //         { required: true, message: '请输入业主姓名', trigger: 'submit'},
+            //     ],
+            //     mobile: [
+            //         { required: true, message: '请输入业主手机号', trigger: 'submit'},
+            //     ],
+
+            //     guestList_name: [
+            //         { required: true, message: '请输入客户姓名', trigger: 'submit' },
+            //     ],
+            //     guestList_mobile: [
+            //         { required: true, message: '请输入客户手机号', trigger: 'submit'  },
+            //     ],
+            //     guestList_identifyCode: [
+            //         { required: true, message: '请输入客户身份证号', trigger: 'submit'  },
+            //     ],
+                
+            //     custno: [
+            //         { required: true, message: '请选择客源', trigger: 'click' },
+            //     ],
+            //     item1: [
+            //         { required: true, message: '请选择门店', trigger: 'submit' }
+            //     ],
+            //     item2: [
+            //         { required: true, message: '请选择经纪人', trigger: 'submit' }
+            //     ],
                 
         
-            },
+            // },
         }
     },
 
@@ -250,7 +247,14 @@ export default {
     },
    
     computed: {
-        
+        getEmpName(){
+            let EmpName = this.contractForm.guestInfo.EmpName
+            if(!EmpName){
+                return ''
+            }else{
+                return EmpName
+            }
+        }
     },
 
     filters: {
@@ -265,7 +269,7 @@ export default {
 
     methods: {
         //选择房源弹框
-        toisShowDialog(){
+        toLayerHouse(){
             this.isShowDialog = true
             this.dialogType = "house"
         },
@@ -275,9 +279,162 @@ export default {
             this.dialogType = "guest"
         },
 
+        //根据房源id获取房源信息
+        getHousedetail(id) {
+            console.log("房源");
+            let param = {
+                houseId: id
+            };
+            this.$ajax.get("/api/resource/houses/one", param).then(res => {
+                res = res.data;
+                if (res.status === 200) {
+                let houseMsg = res.data;
+                console.log(houseMsg);
+                this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
+                this.contractForm.houseInfo = houseMsg;
+                this.contractForm.contPersons[0] = {
+                    name: houseMsg.OwnerInfo.OwnerName,
+                    mobile: houseMsg.OwnerInfo.OwnerMobile,
+                    relation: houseMsg.OwnerInfo.Relation,
+                    type: 1,
+                };
+                
+                }
+            });
+        },
+
+         //根据客源id获取客源信息
+        getGuestDetail(id) {
+            console.log("客源");
+            let param = {
+                customerId: id
+            };
+            this.$ajax.get("/api/resource/customers/one", param).then(res => {
+                res = res.data;
+                if (res.status === 200) {
+                let guestMsg = res.data;
+                console.log(guestMsg);
+                this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
+                this.contractForm.guestInfo = guestMsg;
+                this.contractForm.contPersons[1] = {
+                    name: guestMsg.OwnerInfo.CustName,
+                    mobile: guestMsg.OwnerInfo.CustMobile,
+                    relation: guestMsg.OwnerInfo.CustRelation,
+                    type: 2,
+                };
+                // this.option2.push({
+                //     name: guestMsg.GuestStoreName,
+                //     id: guestMsg.GuestStoreCode
+                // });
+                // this.option3.push({
+                //     name: guestMsg.EmpName,
+                //     empId: guestMsg.EmpCode
+                // });
+                }
+            });
+        },
+
+
+        //根据合同id查询合同详细信息
+        getContractDetail() {
+            let param = {
+                id: this.id
+            };
+            this.$ajax.get("/api/contract/detail", param).then(res => {
+                res = res.data;
+                if (res.status === 200) {
+                    this.contractForm = res.data;
+                    this.contractForm.signDate = res.data.signDate.substr(0, 10);
+                    this.contractForm.type=res.data.contType.value;
+                    this.option2.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
+                    this.option3.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
+                    
+                    for (var i = 0; i < this.contractForm.contPersons.length; i++) {
+                        if (this.contractForm.contPersons[i].personType.value === 1) {
+                            this.ownerList[0].name = this.contractForm.contPersons[i].name;
+                            this.ownerList[0].mobile = this.contractForm.contPersons[i].mobile;
+                            this.ownerList[0].relation = this.contractForm.contPersons[i].relation;
+                            this.ownerList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+                        } else if (this.contractForm.contPersons[i].personType.value === 2) {
+                            this.guestList[0].name = this.contractForm.contPersons[i].name;
+                            this.guestList[0].mobile = this.contractForm.contPersons[i].mobile;
+                            this.guestList[0].relation = this.contractForm.contPersons[i].relation;
+                            this.guestList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+                        }
+                    }
+                }
+            });
+        },
+
+        //获取门店
+        getShopList(e) {
+            let param = {
+                keyword: e
+            };
+            this.$ajax.get("/api/contract/getDepsByCityId", param).then(res => {
+                
+                res = res.data;
+                if (res.status === 200) {
+                    this.loading = false;
+
+                     if(e === '' || !e){
+                        if(res.data.length > 0){ 
+                            this.option2 = res.data;       
+                        }
+                     }else{
+                         this.option2.push({
+                            name: guestMsg.GuestStoreName,
+                            id: guestMsg.GuestStoreCode
+                        });
+                     }
+                    
+                   
+                }
+            });
+        },
+
+        //获取门店更改时的
+        getShop_(id) {
+           
+            if(id !== "" || !!id){
+                
+                this.guestInfo.EmpName = ''
+                this.loading2 = true;
+                let param = {
+                    depId: id
+                };
+                this.$ajax.get('/api/organize/employees', param).then(res=>{
+                res=res.data
+                if(res.status===200){                 
+                     
+                    this.option3 = res.data; 
+                    this.loading = false;       
+                                                     
+                }
+                })
+            }
+            
+         },
+
+         getAgent(id){
+             this.contractForm.guestInfo.EmpName = id
+         },
+
+       
+
          //关闭选择房源客源弹窗
-        closeCommission(){
-             this.isShowDialog = false;
+        closeCommission(value){
+            if (value) {
+                if (value.dialogType === "house") {
+                    this.isShowDialog = false;
+                    this.getHousedetail(value.selectCode);
+                } else if (value.dialogType === "guest") {
+                    this.isShowDialog = false;
+                    this.getGuestDetail(value.selectCode);
+                }
+            } else {
+                this.isShowDialog = false;
+            }
         },
 
         //预览事件
@@ -292,59 +449,15 @@ export default {
         
        
         // 新增意向金接口（post）
-        onSubmit(ruleForm) {
-            this.$refs[ruleForm].validate((valid) => {
-                if (valid) {
+        onSubmit(contractForm) {
+            // this.$refs[contractForm].validate((valid) => {
+            //     if (valid) {                  
+                    
                     let param = { 
-                        igdCont:{      
-                            // "id": 23,		//这是合同ID，在修改时才会用到，新增时使用不会报错
-                            "type":this.$route.query.contType,       //合同类型 ZL("租赁", 1), MM("买卖", 2), DB("代办", 3), YX("意向", 4)
-                            // "houseinfoCode":"UUS001",                //房源编号
-                            // "guestinfoCode":"SQH001",                //客源编号
-                            "signDate": this.ruleForm.signDate,                 //签约日期
-                            "subscriptionTerm": this.ruleForm.subscriptionTerm,         //认购期限
-                            "subscriptionPrice": this.ruleForm.subscriptionPrice,		         //成交总价
-                            // "dealAgentStoreId":"10",                 //成交经纪人门店ID
-                            // "dealAgentStoreName":"当代一店",          //成交经纪人门店名字
-                            "dealPrice":this.ruleForm.dealPrice,			         //（意向/定金金额）
-                            "remarks": this.ruleForm.textarea,                     //（意向备注）
-                            "houseInfo":{
-                                // "houseinfoId": "100",
-                                // "estateName":"中天国际",                           
-                                // "building":"楚河汉街万达环球国际中心",
-                                // "unit":"三单元",
-                                // "number": "804",
-                                "propertyRightAddr": this.ruleForm.propertyRightAddr,
-                                "price": this.ruleForm.price
-                            },
-                            "guestInfo":{
-                                // "guestinfoId": "87",
-                                "dealAgentId": 1,
-                                "dealAgentName": "成交人姓名啊"
-                            },
-                            "contPersons": [
-                                {
-                                    "name": this.ruleForm.ownerInfo.name,
-                                    "type": 1,
-                                    "mobile":this.ruleForm.ownerInfo.mobile,
-                                    // "custidcard": "",
-                                    // "uId": 1,
-                                    // "relation": 1
-                                },
-                                {
-                                    "name": this.ruleForm.custInfo.name,
-                                    "type": 2,
-                                    "mobile": this.ruleForm.custInfo.mobile,
-                                    "custidcard": this.ruleForm.custInfo.custidcard,
-                                    // "uId": 1,
-                                    // "relation": 1
-                                },
-                            ]
-                            
-                        },
-                        type:1
+                        igdCont: this.contractForm,
+                        type: this.type                            
                     }
-                    this.$confirm('确定保存已创建合同?', '提示', {
+                    this.$confirm('确定保存合同?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'info',
@@ -354,8 +467,8 @@ export default {
                         this.$ajax
                         .postJSON("/api/contract/editIgdCont", param)
                         .then(res => {
-                            console.log(res.status)
-                            if (res.status === 500) {
+                            
+                            if (res.data.status === 200) {
                                 this.$message({
                                     type: 'success',
                                     message: '已保存!'
@@ -365,20 +478,26 @@ export default {
                             console.log(error)
                         })
                     
-                    }).catch(() => {
-
+                    }).catch((err) => {
+                        console.log(err)
                     })
-                }else{
-                    return false
-                }
-            })
-            
-            
-            
+            //     }else{
+            //         return false
+            //     }
+            // })
+                       
         },
     },
-    mounted() {
+    created() {
+        this.getShopList();
         
+        if (this.$route.query.operateType) {
+        this.type = this.$route.query.operateType;
+            if (this.type === 2) {
+                this.id=this.$route.query.id
+                this.getContractDetail();
+            }
+        }
     },
 }
 </script>
@@ -392,6 +511,7 @@ export default {
             font-size: 22px;
         }
     }
+    
     .el-message-box__header{
         border-bottom: 1px solid #EDECF0;
     }
@@ -428,13 +548,18 @@ export default {
         border: none;
         color: #FF9039
     }
+    .el-button--text{
+        font-weight: 700;
+    }
     .fr{
         float: right;
     }
     .mr20{
         margin-right: 20px;
     }
-
+    .ml30{
+        margin-left: 30px;
+    }
     .form-innnerbox{
         background-color: #fff; 
         border-radius: 5px;
