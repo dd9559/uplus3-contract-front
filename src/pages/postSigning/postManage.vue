@@ -4,7 +4,7 @@
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
                 <el-form-item label="关键字" prop="search">
-                    <el-autocomplete class="w322" v-model="propForm.search" :fetch-suggestions="querySearch" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" :trigger-on-focus="false" @select="handleSelect" clearable></el-autocomplete>
+                    <el-input class="w322" v-model="propForm.search" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" clearable></el-input>
                 </el-form-item>
                 <div class="in-block">
                     <el-form-item prop="region" class="mr">
@@ -204,8 +204,9 @@
             </div>
             <el-table 
             :data="tableData.list" 
+            v-loading="loadingList"
             @cell-dblclick="dblclickFn"
-            :formatter="nullFormatter"
+            :formatter="nullFormatterData"
             class="paper-table mt-20">
                 <el-table-column prop="code" label="合同编号" min-width="130">
                     <template slot-scope="scope">
@@ -247,7 +248,7 @@
                 <el-table-column prop="stepInstanceName" label="后期进度" min-width="182">
                     <template slot-scope="scope">
                         <template v-if="scope.row.statusLaterStage.label === STATE.start">
-                            <el-button class="blue" type="text" @click="progressFn">查看交易流程</el-button>
+                            <el-button class="blue" type="text" @click="progressFn(scope.row)">查看交易流程</el-button>
                         </template>
                         <template v-else>
                             <p>当前步骤：<el-button class="blue" type="text" @click="transactionFn(scope.row.stepInstanceid)">{{scope.row.stepInstanceName}}</el-button></p>
@@ -302,41 +303,41 @@
                 <el-table 
                 border
                 :data="tableProgress" 
-                :formatter="nullFormatter"
+                v-loading="loadingProgress"
                 class="paper-table mt-20">
                     <el-table-column 
                     label="步骤类型" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{scope.row.transactionStepsType}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionStepsType)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="步骤名称" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{scope.row.transactionSteps}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionSteps)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="操作人" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{scope.row.operatorName}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.operatorName)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="操作日期" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.handleDatetime)}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.operationTime)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="责任人" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{scope.row.personLiableName}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.personLiableName)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
@@ -350,14 +351,14 @@
                     label="办理天数" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{scope.row.remindDay}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.actualDay)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
                     label="规定天数" 
                     align="center">
                         <template slot-scope="scope">
-                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{scope.row.specifiedDay}}</span>
+                           <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.specifiedDay)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column 
@@ -369,13 +370,13 @@
                                 <el-button class="blue" type="text" @click="operationFn(scope.row.id)">查看</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.backlog">
-                                <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" @click="upFn(scope)">上</el-button><el-button class="blue" type="text" @click="downFn(scope)">下</el-button>
+                                <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" @click="downFn(scope)">下</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.sure">
                                 <el-button class="blue" type="text" @click="sureFn(scope.row.id)">确认</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.not">
-                                <el-button class="blue" type="text" @click="upFn(scope)">上</el-button><el-button class="blue" type="text" @click="downFn(scope)">下</el-button>
+                                <el-button class="blue" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1" class="blue" type="text" @click="downFn(scope)">下</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.amend">
                                 <el-button class="blue" type="text" @click="amendFn(scope.row.id)">修改</el-button>
@@ -387,7 +388,7 @@
         </el-dialog>
         <!-- 更换交易流程弹层 -->
         <el-dialog title="选择交易流程" :visible.sync="replaceShow" width="740px"  class="layer-paper">
-            <div class="replace-box">
+            <div class="replace-box" v-loading="loadingReplace">
                 <div>
                     <div class="tit">交易流程</div>
                     <ul class="ul">
@@ -400,7 +401,7 @@
                 </div>
                 <div>
                     <div class="tit">交易步骤</div>
-                    <ul class="ul-box">
+                    <ul class="ul-box pr">
                         <li 
                         v-for="item in replaceData.children"
                         :key="'jybz'+item.id">
@@ -410,6 +411,9 @@
                             <span v-show="replaceData.index !== replaceData.transFlowCode">
                                 {{item.stepsName}}
                             </span>
+                        </li>
+                        <li v-show="replaceData.children.length === 0" class="no-data">
+                            <div class="cl-1">暂无数据</div>
                         </li>
                     </ul>
                 </div>
@@ -425,11 +429,12 @@
                     <el-form 
                     ref="stepsFrom"
                     :model="stepsFrom"
+                    v-loading="LookStepLoad"
                     label-width="150px">
                         <el-form-item
                             v-for="(item,index) in stepsFrom.list"
                             :prop="'list.' + index + '.val'"
-                            :key="item.id"
+                            :key="'bl'+item.id + index"
                             :label="item.title+ '：'"
                             :rules="item.rules"
                         >
@@ -574,7 +579,6 @@
                             </template>
                         </el-form-item>
                     </el-form>
-                <!-- </div> -->
             </div>
             <span slot="footer">
                 <!-- 办理 -->
@@ -593,7 +597,7 @@
         :visible.sync="adjustShow" 
         width="740px"  
         class="layer-paper">
-            <div class="layer-chekbox-box">
+            <div class="layer-chekbox-box" v-loading="loadingAdjust">
                 <el-table
                 :data="adjustData"
                 class="paper-table" 
@@ -700,6 +704,11 @@
                 // 加载
                 loading:false,
                 loading2:false,
+                LookStepLoad:false,
+                loadingList:false,
+                loadingProgress:false,
+                loadingAdjust:false,
+                loadingReplace:false,
                 // 枚举数据
                 dictionary:{
                     '6':'合同变更状态',
@@ -822,34 +831,7 @@
                 invalidMax:200,
                 // 调整步骤
                 adjustShow:false,
-                adjustData:[{
-                    id:"0001",
-                    bool:false,
-                    list:[],
-                    children:[{
-                        name:'测试'
-                    },{
-                        name:'柯南',
-                    }]
-                },{
-                    id:"0002",
-                    bool:false,
-                    list:[],
-                    children:[{
-                        name:'路飞'
-                    }]
-                },{
-                    id:"0003",
-                    bool:true,
-                    list:[],
-                    children:[{
-                        name:'基德',
-                    },{
-                        name:'猫咪老师',
-                    },{
-                        name:'香吉士',
-                    }]
-                }]
+                adjustData:[]
             }
         },
         methods:{
@@ -907,21 +889,6 @@
                 this.pageNum = 1;
                 this.getDataList();
             },
-            // 筛选搜索
-            querySearch(queryString, cb) {
-                var restaurants = this.restaurants;
-                var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter(queryString) {
-                return (restaurant) => {
-                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-                };
-            },
-            handleSelect(item) {
-                console.log(item);
-            },
             // 部门回调
             departmentChangeFn(){
                 console.log('部门回调')
@@ -939,6 +906,7 @@
                 this.getLookStepFn(id);
             },
             getLookStepFn(id){
+                this.LookStepLoad = true;
                 this.$ajax.get('/api/postSigning/lookStep',{
                     id,
                 }).then(res=>{
@@ -988,20 +956,23 @@
                             }
                             e.rules = j;
                         })
-                        // this.stepsFrom = [...arr,...arr2];
                         this.stepsFrom = {
                             list:[...arr,...arr2],
                             id:resData.id
                         };
+                        this.LookStepLoad = false;
+                        this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
                     console.log(err)
                 })
             },
             // 后期进度
-            progressFn(){
+            progressFn(row){
                 this.layerShow = true;
-                this.layerBtn = false;               
+                this.layerBtn = false;  
+                this.layerShowData = row;
+                this.lateProgressFn();             
             },
             // 下一步骤显示
             nextStepFn(e){
@@ -1039,6 +1010,7 @@
             // 更换交易流程
             replaceFn(){
                 this.replaceShow = true;
+                this.loadingReplace = true;
                 this.$ajax.get('/api/postSigning/getStepList',{
                     id:this.layerShowData.id
                 }).then(res=>{
@@ -1051,12 +1023,16 @@
                         this.replaceData.transFlowCode = i;
                         this.replaceData.index = i;
                     }
+                    this.loadingReplace = false;
                 }).catch(err=>{
                     console.log(err)
                 })
             },
             // 步骤管理
             managementFn(){
+                // 显示弹层
+                this.adjustShow = true;
+                this.loadingAdjust = true;
                 this.$ajax.post('/api/flowmanage/selectTypeStepsList',{
                     cityId:this.cityId
                 }).then(res=>{
@@ -1087,9 +1063,8 @@
                         })
                         this.adjustData = [...arr];
                         this.copyAdjustData= arr2.join();
-                        // 显示弹层
-                        this.adjustShow = true;
                     }
+                    this.loadingAdjust = false;
                 }).catch(err=>{
                     console.log(err)
                 })
@@ -1105,21 +1080,21 @@
             // 上
             upFn(e){
                 let index = e.$index;
-                if(index !== 0){
-                    let upId = e.row.id;
-                    let downId = this.tableProgress[index-1].id;
-                    this.oderStepFn(upId,downId);
-                }
+                // if(bool){
+                let upId = e.row.id;
+                let downId = this.tableProgress[index-1].id;
+                this.oderStepFn(upId,downId);
+                // }
             },
             // 下
             downFn(e){
                 let index = e.$index;
                 let n = e.row.length;
-                if(index !== n){
-                    let upId = this.tableProgress[index+1].id;
-                    let downId = e.row.id;
-                    this.oderStepFn(upId,downId);
-                }
+                // if(index !== n){
+                let upId = this.tableProgress[index+1].id;
+                let downId = e.row.id;
+                this.oderStepFn(upId,downId);
+                // }
             },
             oderStepFn(upId,downId){
                 this.$ajax.post('/api/postSigning/oderStep',{
@@ -1138,7 +1113,7 @@
                 })
             },
             // 修改
-            amendFn(){
+            amendFn(id){
                 this.stepsData = {
                     show:true,
                     tit:'修改'
@@ -1303,7 +1278,7 @@
                 arr2.map(e=>{
                     e.list.map(i=>{
                         arr.push(i.id);
-                        i.contractCode = this.layerShowData.code;
+                        i.transStepsAttach = '';
                     })
                     steps = [...steps,...e.list];
                 })
@@ -1313,10 +1288,12 @@
                     this.adjustShow = false;
                 }else{
                     // 修改了
-                    this.$ajax.postJSON('/api/postSigning/updateStepInstance',steps).then(res=>{
+                    this.$ajax.postJSON('/api/postSigning/updateStepInstance',{
+                        contractCode:this.layerShowData.id,
+                        steps,
+                    }).then(res=>{
                         res = res.data;
                         if(res.status === 200){
-                            console.log(res);
                             // 接收弹层列表数据刷新
                             this.lateProgressFn();
                             // 列表刷新
@@ -1361,6 +1338,7 @@
             },
             // 列表数据
             getDataList(){
+                this.loadingList = true;
                 let handleTimeEnd = '';
                 let handleTimeStar = '';
                 let receiveTimeEnd = '';
@@ -1408,6 +1386,7 @@
                             total:0,
                         };
                     }
+                    this.loadingList = false;
                 }).catch(err=>{
                     console.log(err)
                 })
@@ -1516,6 +1495,7 @@
             },
             // 后期进度获取数据
             lateProgressFn(){
+                this.loadingProgress = true;
                 this.$ajax.get('/api/postSigning/getLastStepList',{
                     id:this.layerShowData.id
                 }).then(res=>{
@@ -1523,6 +1503,7 @@
                     if(res.status === 200){
                         this.tableProgress = res.data;
                     }
+                    this.loadingProgress = false;
                 }).catch(err=>{
                     console.log(err)
                 })

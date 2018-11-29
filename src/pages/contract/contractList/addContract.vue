@@ -625,7 +625,6 @@ export default {
           saleCont: this.contractForm,
           type: this.type
         };
-        debugger
         if(this.type===2){
           delete param.saleCont.contChangeState;
           delete param.saleCont.contState;
@@ -633,6 +632,9 @@ export default {
           delete param.saleCont.laterStageState;
           delete param.saleCont.toExamineState;
           delete param.saleCont.previewImg;
+          delete param.saleCont.subscriptionTerm;
+          delete param.saleCont.updateTime;
+          param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");  
         }
 
         this.$ajax.postJSON("/api/contract/editSaleCont", param).then(res => {
