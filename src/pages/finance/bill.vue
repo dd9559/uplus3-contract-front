@@ -269,6 +269,32 @@
         <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaper">打印</el-button>
       </p>
     </el-dialog>
+    <!--作废-->
+    <el-dialog
+      title="作废"
+      :visible.sync="layer.show"
+      width="740px">
+      <div class="delete-dialog" v-if="layer.content.length>0">
+        <p>是否作废该{{layer.content[0].type===1?'收款单':'付款单'}}</p>
+        <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="other">
+          <el-table-column align="center" min-width="200px" label="收付编号" prop="payCode" :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" :label="layer.content[0].type===1?'收款金额':'付款金额'" prop="cityName" :formatter="nullFormatter">
+            <template slot-scope="scope">
+              <span>{{scope.row.amount}}元</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" :label="layer.content[0].type===1?'收款方':'付款方'" prop="cityName" :formatter="nullFormatter">
+            <template slot-scope="scope">
+              <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+    <el-button round @click="layer.show = false">返 回</el-button>
+    <el-button round type="primary" @click="obsoleteBill">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -334,6 +360,11 @@
         paperInfoData: {},//票据对象
         moneyTypes:[],//临时存放勾选的款类
         activeType:0,//当前预览项
+        //作废
+        layer:{
+          show:false,
+          content:[]
+        },
       }
     },
     created() {
@@ -395,25 +426,22 @@
             }
           })
         }else if(type===2) {
-          this.$confirm('是否要作废','提示',{
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(()=>{
-            this.$ajax.put('/api/payInfo/updateCheckStatus',{payId:row.id},2).then(res=>{
-              res=res.data
-              debugger
-              if(res.status===200){
-                this.getData()
-              }
-            })
-          }).catch(()=>{
-
-          })
+          this.layer.show=true
+          this.layer.content=[].concat(row)
         }else if(type===3){
           this.paperShow=true
           this.paperList(row.id)
         }
+      },
+      //作废
+      obsoleteBill:function () {
+        this.$ajax.put('/api/payInfo/updateCheckStatus',{payId:this.layer.content[0].id},2).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.getData()
+            this.layer.show=false
+          }
+        })
       },
       // 获取开票列表
       paperList:function (id) {
@@ -615,6 +643,14 @@
           margin-right: 10px;
         }
       }
+    }
+  }
+  .delete-dialog{
+    margin: 0 50px;
+    >p{
+      text-align: center;
+      margin-bottom: 28px;
+      font-size: @size-16;
     }
   }
 

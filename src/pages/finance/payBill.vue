@@ -334,7 +334,10 @@
                   res = res.data
                   if (res.status === 200) {
                     this.$router.push({
-                      path: 'payResult'
+                      path: 'payResult',
+                      query:{
+                        content:JSON.stringify(res.data)
+                      }
                     })
                   }
                 })
