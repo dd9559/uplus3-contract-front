@@ -301,6 +301,7 @@ let TOOL = {
       return val
     }
   },
+  //上传拼接
   getFilePath:function (arr) {
     let newArr = []
     arr.forEach(item=>{
@@ -308,6 +309,27 @@ let TOOL = {
     })
     return newArr
   },
+  cutFilePath:function (arr) {
+    let newArr=[]
+    arr.forEach(item=>{
+      let cell={
+        path:item.split('?')[0],
+        name:item.split('?')[1],
+        type:this.get_suffix(item.split('?')[1])
+      }
+      newArr.push(cell)
+    })
+    return newArr
+  },
+  //获取文件的后缀
+  get_suffix(filename) {
+    let pos = filename.lastIndexOf('.')
+    let suffix = ''
+    if (pos != -1) {
+      suffix = filename.substring(pos)
+    }
+    return suffix;
+  }
 }
 
 export {

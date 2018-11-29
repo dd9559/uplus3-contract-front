@@ -141,7 +141,10 @@
         <div class="input-group">
           <label>付款凭证:</label>
           <ul class="image-list">
-            <li></li>
+            <li v-for="item in files">
+              <upload-cell :type="item.type"></upload-cell>
+              <span>{{item.name}}</span>
+            </li>
           </ul>
         </div>
       </li>
@@ -223,6 +226,7 @@
           reasion: ''
         },
         invalidMax: 200,
+        files:[],
       }
     },
     created() {
@@ -242,6 +246,9 @@
           res = res.data
           if (res.status === 200) {
             this.billMsg = Object.assign({}, res.data)
+            if(res.data.filePath){
+              this.files=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+            }
           }
         })
       },

@@ -9,6 +9,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 import ScreeningTop from '@/components/ScreeningTop';
 import fileUp from '@/components/up'
+import uploadCell from '@/components/uploadCell'
 import {api} from '@/assets/js/ajax'
 import {TOOL} from "@/assets/js/common"
 
@@ -26,6 +27,18 @@ Vue.filter("formatChinese", TOOL.toChineseNumber)
 
 Vue.component("ScreeningTop",ScreeningTop);
 Vue.component("fileUp",fileUp)
+Vue.component("uploadCell",uploadCell)
+
+router.beforeEach((to,from,next)=>{
+  if(to.matched.some(record=>record.meta.getParent)){
+    if(from.path!=='/'){
+      localStorage.setItem('route',from.fullPath)
+    }
+    next()
+  }else {
+    next()
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({
