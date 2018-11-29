@@ -51,7 +51,6 @@
                   message:'上传成功'
                 })
                 that.uploader.splice(0,1)
-                console.log(that.uploader)
               }
             },
             Error: function(up, err) {

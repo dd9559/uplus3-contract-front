@@ -29,7 +29,7 @@
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上传</el-button>
-            <el-button @click="rowOperation(scope.row,2,1)" type="text" size="small" v-if="scope.row.useNum>0">预览
+            <el-button @click="rowOperation(scope.row,2,2)" type="text" size="small" v-if="scope.row.useNum>0">预览
             </el-button>
           </template>
         </el-table-column>
@@ -41,17 +41,17 @@
         <div class="">
           <div class="modal-context">
             <label>合同名称：</label>
-            <el-input placeholder="限制15个字符" maxlength='15'></el-input>
+            <el-input placeholder="限制15个字符" maxlength='15' v-model="contraName"></el-input>
           </div>
           <div class="file-upload">
             <label>上传：</label>
             <div class="file-upload-opera">
               <div v-if="uploadType">
                 <p>
-                  <fileUp @getUrl='getAdd' id='mmai' class='fileup'>买卖</fileUp>
+                  <fileUp @getUrl='getAdd("mmai",arguments)' id='mmai' class='fileup'>买卖</fileUp>
                 </p>
                 <p>
-                   <fileUp id='jjian' class='fileup'>居间</fileUp>
+                   <fileUp id='jjian' @getUrl='getAdd("jjian",arguments)' class='fileup' >居间</fileUp>
                    <span class="upMsg">上传成功</span> 
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span>
@@ -59,7 +59,7 @@
               </div>
               <div v-else>
                 <p>
-                  <fileUp id='mban' @getUrl='getAdd' class='fileup'>模板</fileUp>
+                  <fileUp id='mban' @getUrl='getAdd("mban",arguments)' class='fileup'>模板</fileUp>
                   <span class="upMsg">上传成功</span>
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
@@ -69,9 +69,6 @@
           </div>
         </div>
       </template>
-      <!-- <template v-if="template===2">
-        sssssssssssss
-      </template> -->
       <template v-if="template===3">
         <el-table :data="rowData" class="contractType">
           <el-table-column align="center" min-width="100px" label="合同版本号" prop="version"
@@ -115,10 +112,15 @@
         uploadType: false,//是否显示两个上传
         fileList3: [],
         titleStr:'',
+        contraName:'',
         citys:[],
         uploadAddress:'',
         contraType:'',
-        templateAddress:'',
+        // templateAddress:'',
+        mmaiAddress:'',
+        jjianAddress:'',
+        mbanAddress:'',
+        id:''
       }
     },
     created() {
@@ -132,11 +134,21 @@
     },
 
     methods: {
-      getAdd(obj){
-        this.templateAddress=obj.param[obj.param.length-1];
+      getAdd(type,obj){
+        console.log(obj[0].param,'ob1');
+        if(type=='mmai'){
+           this.mmaiAddress=obj[0].param[obj[0].param.length-1];
+           console.log(this.mmaiAddress,'mmai');
+        }else if(type=='jjian'){
+          this.jjianAddress=obj[0].param[obj[0].param.length-1]
+           console.log(this.mmaiAddress,'jjian');
+        }else if(type=='mban'){
+          this.mbanAddress=obj[0].param[obj[0].param.length-1]
+           console.log(this.mbanAddress,'mban');
+        }
       },
       selCity(){
-            console.log(this.selectCity,'selectCity');
+            // console.log(this.selectCity,'selectCity');
             this.getList()
       },
       popMsg(msg,callback){
@@ -171,13 +183,17 @@
        */
       sureUp(){      
          this.modal=false
-         console.log(this.filePath)
          this.$router.push({
             path: "/contraPreview",
             query: {
-              templateAddress: this.templateAddress,
+              mmaiAddress: this.mmaiAddress,
+              jjianAddress:this.jjianAddress,
+              mbanAddress:this.mbanAddress,
+              selectCity:this.selectCity=='武汉'?1:this.selectCity,
               type:this.contraType,
-              show:1
+              contraName:this.contraName,
+              show:1,
+              id:this.id
             }
           });
 
@@ -230,6 +246,7 @@
         this.modal = true
         this.template = type
         if(type===1){
+            this.id=row.id
             this.contraType=row.type.value
             this.titleStr='上传合同模板'
             this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
@@ -237,13 +254,15 @@
         //预览
         else if(type===2){
           //合同预览
+           console.log(row,'query');
           this.$router.push({
             path: "/contraPreview",
             query: {
-              enableTemplateId: row.enableTemplateId,
-              // showType:showType
+              enableTemplateId: row.id,
+              show:2
             }
           });
+         
           //  this.titleStr='预览合同模板'
           //  this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
           //   console.log(res)
@@ -251,6 +270,14 @@
         }
       }
     },
+    witch:{
+        templateAddress:{
+        handler(newVal,oldVal){
+
+        },
+        deep:true
+    }
+    }
   }
 </script>
 
