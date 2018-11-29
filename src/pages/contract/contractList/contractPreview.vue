@@ -17,7 +17,8 @@
         <el-button round style="width:100px">签章打印</el-button>
       </div>
       <div class="btn" v-else>
-        <el-button type="primary" round style="width:100px" @click="dialogCheck = true">审核</el-button>
+        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="!signature">审核</el-button>
+        <el-button type="primary" round style="width:100px" v-if="signature">签章</el-button>
       </div>
     </div>
     <div class="content"></div>
@@ -52,7 +53,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button round @click="checked(0)">驳回</el-button>
+        <el-button round @click="checked(2)">驳回</el-button>
         <el-button round type="success" @click="checked(1)">通过</el-button>
       </span>
     </el-dialog>
@@ -68,14 +69,21 @@ export default {
       dialogCheck: false,
       textarea: "",
       isSign: 0,
+      //审核
       operationType: "",
-      contractId: ""
+      //合同编号
+      code: "",
+      //审批流节点信息
+      auditNodeResult:{},
+      //签章
+      signature:false
     };
   },
   created() {
-    this.contractId = this.$route.query.id;
+    this.code = this.$route.query.code;
     if (this.$route.query.operationType) {
       this.operationType = this.$route.query.operationType;
+      this.getAuditNode();
     }
   },
   methods: {
@@ -93,24 +101,30 @@ export default {
     },
     //通过驳回
     toChecked(param){
-      this.$ajax.post('/api/contract/contExamineResult', param).then(res=>{
+      this.$ajax.postJSON('/api/machine/audit', param).then(res=>{
         res=res.data
         if(res.status===200){
-          this.dialogCheck=false
+          this.dialogCheck=false;
+          this.signature=true;
         }
       })
     },
     checked(num) {
       //驳回/风险单
-      if (!num || this.isSign) {
+      if (num===2 || this.isSign) {
         if (this.textarea.length) {
           let param = {
-            contractId: this.contractId,
-            result: num,
-            isRisk: this.isSign, //风险单
-            remarks: this.textarea
+            bizId:this.auditNodeResult.bizId,
+            bizCode:this.code,
+            flowId:this.auditNodeResult.flowId,
+            sort:this.auditNodeResult.nodeSort,
+            ApprovalForm:{
+              result: num,
+              isRisk: this.isSign, //风险单
+              remark: this.textarea
+            }
           };
-          this.toChecked(param)
+          this.toChecked(param);
         }else{
           this.$message({
             message: '请填写审核原因以及风险单原因',
@@ -119,13 +133,31 @@ export default {
         }
       } else {
         let param = {
-          contractId: this.contractId,
-          result: num,
-          isRisk: this.isSign, //风险单
-          remarks: this.textarea
+          bizId:this.auditNodeResult.bizId,
+          bizCode:this.code,
+          flowId:this.auditNodeResult.flowId,
+          sort:this.auditNodeResult.nodeSort,
+          ApprovalForm:{
+            result: num,
+            isRisk: this.isSign, //风险单
+            remark: this.textarea
+          }
         };
         this.toChecked(param);
       }
+    },
+    //获取当前待审节点
+    getAuditNode(){
+      let param = {
+        bizCode:this.code,
+        flowType:3
+      }
+      this.$ajax.get('/api/machine/getAuditNode', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.auditNodeResult=res.data;
+        }
+      })
     }
   }
   // watch:{
@@ -143,12 +175,17 @@ export default {
 .view-container {
   background: @bg-white;
   .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    height: 60px;
+    box-sizing: border-box;
     border-bottom: 2px solid @border-CE;
+    position: relative;
     .title {
+      position: absolute;
+      left: 30px;
+      top: 15px;
       > p {
         font-size: 12px;
         color: @color-6c;
@@ -168,6 +205,10 @@ export default {
       border-radius: 18px;
       overflow: hidden;
       display: flex;
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
       > span {
         width: 50%;
         height: 36px;
@@ -183,6 +224,9 @@ export default {
       }
     }
     .btn {
+      position: absolute;
+      right: 30px;
+      top: 12px;
       /deep/.el-button.is-round {
         padding: 10px 23px;
       }

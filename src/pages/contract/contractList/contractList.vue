@@ -57,7 +57,7 @@
         </el-form-item>
         <el-form-item label="审核状态">
           <el-select v-model="contractForm.toExamineState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['17']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -152,7 +152,7 @@
         </el-table-column>
         <el-table-column align="left" label="财务收付" width="100" fixed>
           <template slot-scope="scope">
-            <div class="btn" @click="runningWater(scope.row)">流水</div>
+            <div class="btn" @click="runningWater(scope.row.code)">流水</div>
             <div class="btn" @click="gathering(scope.row.id)">收款</div>
             <div class="btn" @click="payment(scope.row.id)">付款</div>
           </template>
@@ -224,9 +224,9 @@
             <div style="text-align:center">
               <el-button type="text" size="medium" v-if="scope.row.contState.value!=3" @click="upload(scope.row.id)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview">预览</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===2" @click="goCheck(scope.row.id)">审核</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===6" @click="goCheck(scope.row)">审核</el-button> 
               <el-button type="text" size="medium" @click="toLayerAudit(scope.row)">调佣</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===1" @click="submitAudit(scope.row.id)">提审</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===8" @click="submitAudit(scope.row)">提审</el-button>
             </div>
           </template>
         </el-table-column>
@@ -235,7 +235,7 @@
       </el-pagination>
     </div>
     <!-- 流水明细弹框 -->
-    <flowAccount :dialogTableVisible="water" @closeRunningWater="closeWater" v-if="water"></flowAccount>
+    <flowAccount :dialogTableVisible="water" :contCode="contCode" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 调佣弹框 -->
     <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
     <!-- 结算弹窗 -->
@@ -282,7 +282,7 @@ export default {
         //数据字典
         "10": "", //合同类型
         "9": "", //合同状态
-        "17": "", //审核状态
+        "51": "", //审核状态
         "6": "", //变更/解约
         "14": "", //结算状态
         "13": "", //收佣状态
@@ -296,7 +296,9 @@ export default {
       brokersList:[],
       //合同id
       contId:'',
-      settleId:''
+      settleId:'',
+      //流水用合同编号
+      contCode:''
     };
   },
   created() {
@@ -343,8 +345,14 @@ export default {
       this.getContractList();
     },
     //流水
-    runningWater() {
+    runningWater(code) {
       this.water = true;
+      this.contCode=code;
+    },
+    //关闭流水弹窗
+    closeWater() {
+      this.water = false;
+      this.contCode=''
     },
     //收款
     gathering(id) {
@@ -428,18 +436,14 @@ export default {
       });
     },
     //合同审核
-    goCheck(contId) {
+    goCheck(item) {
       this.$router.push({
         path:'/contractPreview',
         query:{
-          id:contId,
+          code:item.code,
           operationType:'check'
         }
       })
-    },
-    //关闭流水弹窗
-    closeWater() {
-      this.water = false;
     },
     //调佣弹窗
     //Z171231001
@@ -462,6 +466,7 @@ export default {
     //关闭变更解约弹窗
     ChangeCancelDialog() {
       this.changeCancel = false;
+      this.contId='';
     },
     //字典查询
     getDictionaries() {
@@ -474,9 +479,11 @@ export default {
       if (item.contChangeState.value === 1) {
         this.changeCancel = true;
         this.dialogType = "changeLook";
+        this.contId=item.id;
       } else if (item.contChangeState.value === 2) {
         this.changeCancel = true;
         this.dialogType = "cancelLook";
+        this.contId=item.id;
       }
     },
     //上传合同主体
@@ -520,11 +527,13 @@ export default {
       })
     },
     //提审
-    submitAudit(id){
+    submitAudit(item){
       let param = {
-        contractId:id
+        cityId:item.cityCode,
+        flowType:3,
+        bizCode:item.code
       }
-      this.$ajax.post('/api/contract/contExamine', param).then(res=>{
+      this.$ajax.get('/api/machine/submitAduit', param).then(res=>{
         res=res.data
         if(res.status===200){
           this.getContractList()

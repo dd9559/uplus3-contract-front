@@ -218,32 +218,18 @@
         <div class="dataBank">
           <div class="classify">
             <p class="title">卖方</p>
-            <div class="one_">
-              <p><i>*</i>身份证复印件</p>
-              <span class="uploadSubject">
+            <div class="one_" v-for="item in sellerList" :key="item.id">
+              <p><i>*</i>{{item.name}}</p>
+              <file-up class="uploadSubject" :id="'fileup'+item.id">
                 <i class="iconfont icon-shangchuan"></i>
                 <p>点击上传</p>
-              </span>
-            </div>
-            <div class="one_">
-              <p><i>*</i>资料</p>
-              <span class="uploadSubject">
-                <i class="iconfont icon-shangchuan"></i>
-                <p>点击上传</p>
-              </span>
+              </file-up>
             </div>
           </div>
           <div class="classify">
             <p class="title">买方</p>
-             <div class="one_">
-              <p><i>*</i>身份证复印件</p>
-              <span class="uploadSubject">
-                <i class="iconfont icon-shangchuan"></i>
-                <p>点击上传</p>
-              </span>
-            </div>
-            <div class="one_">
-              <p><i>*</i>购房合同</p>
+             <div class="one_" v-for="item in buyerList" :key="item.id">
+              <p><i>*</i>{{item.name}}</p>
               <span class="uploadSubject">
                 <i class="iconfont icon-shangchuan"></i>
                 <p>点击上传</p>
@@ -252,7 +238,7 @@
           </div>
           <div class="classify">
             <p class="title">其他</p>
-            <div class="one_">
+            <div class="one_" v-for="item in otherList" :key="item.id">
               <p></p>
               <span class="uploadSubject">
                 <i class="iconfont icon-shangchuan"></i>
@@ -343,7 +329,7 @@
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog :shows="shows" v-on:close="shows=false" :contractCode="contCode" :dialogType="dialogType"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
-    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
   </div>
 </template>
            
@@ -400,7 +386,7 @@ export default {
       shows: false,
       dialogType: 3,
       canceldialogType: "",
-      changeCancel: false,
+      changeCancel_: false,
       isActive:1,
       dictionary: {
         //数据字典
@@ -412,9 +398,18 @@ export default {
       //交易流程
       transFlowList:[],
       //分成人员
-      employeeData:{},
+      employeeData:{
+        houseAgents:[],
+        customerAgents:[]
+      },
       //合同主体上传文件路径
-      uploadList:[]
+      uploadList:[],
+      //买方类型
+      buyerList:[],
+      //卖方类型
+      sellerList:[],
+      //其他类型
+      otherList:[]
     };
   },
   created() {
@@ -466,18 +461,18 @@ export default {
     },
     // 变更解约弹窗
     goChangeCancel(value) {
-      this.changeCancelId=this.id;
+      this.changeCancelId=Number(this.id);
       if (value === 1) {
         this.canceldialogType = "changeEdit";
-        this.changeCancel = true;
+        this.changeCancel_ = true;
       } else if (value === 2) {
         this.canceldialogType = "cancelEdit";
-        this.changeCancel = true;
+        this.changeCancel_ = true;
       }
     },
     // 关闭变更解约弹窗
     changeCancelDialog() {
-      this.changeCancel = false;
+      this.changeCancel_ = false;
       this.canceldialogType = "";
       this.changeCancelId='';
     },
@@ -556,7 +551,18 @@ export default {
     getContDataType(){
       this.$ajax.get('/api/contract/getContDataType').then(res=>{
         res=res.data;
-        console.log(res.data)
+        if(res.status===200){
+          console.log(res.data)
+          res.data.forEach(element => {
+            if(element.type==='买方'){
+              this.buyerList.push(element);
+            }else if(element.type==="卖方"){
+              this.sellerList.push(element);
+            }else if(element.type==="其他"){
+              this.otherList.push(element);
+            }
+          });
+        }
       })
     }
   },
