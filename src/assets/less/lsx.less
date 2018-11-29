@@ -61,6 +61,19 @@
 .mr-40 {
     margin-right: 40px;
 }
+.pr{
+    position: relative;
+}
+.no-data{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 // 宽度
 .w100 {
@@ -438,6 +451,7 @@
 // 后期进度弹层
 .layer-progress {
     padding: 30px 20px;
+    line-height: 36px;
     .ul {
         display: flex;
     }
@@ -491,34 +505,40 @@
 }
 
 .steps-from {
-    padding: 0 20px 20px;
-    .steps-li {
-        padding-top: 20px;
-        overflow: hidden;
-    }
-    .steps-li-fl {
-        line-height: 32px;
-        float: left;
-        width: 140px;
-        >.steps-fl{
-            max-width: 126px;
-            text-align: right;
-            float: right;
+    // padding: 0 20px 20px;
+    padding:20px 20px 0 0;
+    // .steps-li {
+    //     padding-top: 20px;
+    //     overflow: hidden;
+    // }
+    // .steps-li-fl {
+    //     line-height: 32px;
+    //     float: left;
+    //     width: 140px;
+    //     >.steps-fl{
+    //         max-width: 126px;
+    //         text-align: right;
+    //         float: right;
+    //     }
+    // }
+    // .steps-fr{
+    //     float: right;
+    //     width: 550px;
+    // }
+    // .steps-mandatory {
+    //     float: right;
+    //     width: 14px;
+    //     color: #FF3E3E;
+    //     height: 32px;
+    // }
+    // .steps-see {
+    //     line-height: 32px;
+    //     word-break: break-all;
+    // }
+    .steps-input{
+        .text-absloute{
+            bottom: 0;
         }
-    }
-    .steps-fr{
-        float: right;
-        width: 550px;
-    }
-    .steps-mandatory {
-        float: right;
-        width: 14px;
-        color: #FF3E3E;
-        height: 32px;
-    }
-    .steps-see {
-        line-height: 32px;
-        word-break: break-all;
     }
 }
 
@@ -626,7 +646,15 @@
         }
     }
     .check-all{
-        padding-left: 70px;
+        padding:16px 0 16px 70px;
         text-align: left;
     }
+}
+
+// 分页
+.pagination{
+    text-align: center;
+}
+.fileUp{
+    display: inline-block;
 }

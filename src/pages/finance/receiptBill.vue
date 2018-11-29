@@ -15,7 +15,7 @@
       </div>
       <div class="input-group">
         <label class="form-label">收款人:</label>
-        <el-select v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjectId,2)">
+        <el-select v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjId,2)">
           <el-option
             v-for="item in receiptMan"
             :key="item.empId"
@@ -183,7 +183,7 @@
       <p><label class="form-label">付款凭证</label></p>
       <ul class="upload-list">
         <li>
-          <file-up class="upload-context">
+          <file-up class="upload-context" @getUrl="getFiles">
             <i class="iconfont icon-shangchuan"></i>
             <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
           </file-up>
@@ -200,12 +200,60 @@
 <script>
   import {MIXINS} from "@/assets/js/mixins";
 
-  let cardID = 2;
+  const rule={
+    outObj:{
+      name:'付款方'
+    },
+    inObj:{
+      name:'收款人',
+    },
+    moneyType:{
+      name:'款类',
+    },
+    smallAmount:{
+      name:'付款金额',
+      type:'money'
+    }
+  }
+  const otherRule={
+    outObj:{
+      name:'付款方'
+    },
+    inObj:{
+      name:'收款人',
+    },
+    moneyType:{
+      name:'款类',
+    },
+    smallAmount:{
+      name:'付款金额',
+      type:'money'
+    },
+    proceedsType:{
+      name:'收款方式'
+    },
+    userName:{
+      name:'户名'
+    },
+    cardNumber:{
+      name:'账户'
+    },
+    amount:{
+      name:'金额'
+    },
+    orderNo:{
+      name:'订单号'
+    },
+    fee:{
+      name:'手续费'
+    }
+  }
 
   export default {
     mixins: [MIXINS],
     data() {
       return {
+        contId:'',
         form: {
           contId: '',
           remark: '',
@@ -233,7 +281,6 @@
         activeType: 1,
         moneyType: [],
         moneyTypeOther: [],
-        list: [{}],
         cardList: [
           {
             bankName: '',
@@ -244,19 +291,18 @@
             fee: ''
           }
         ],
-        amount: {
-          balance: 0
-        },
         dictionary: {
           '534': ''
         },
         activeAdmin: '',
         account: [],
         dropdown: [],
-        receiptMan: []
+        receiptMan: [],
+        files:[]
       }
     },
     created() {
+      this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
       this.getMoneyType()
       this.getDictionary()
       this.getAcount()
@@ -314,13 +360,18 @@
           }
         })
       },
+      /**
+       * 获取上传文件
+       */
+      getFiles:function (payload) {
+        this.files=[].concat(payload.param)
+      },
       goResult: function () {
+        let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
 
-        if (this.activeType === 1) {
-          param.outAccount=[]
-          param.inAccount=[]
-        }
+        param.outAccount=[]
+        param.inAccount=[]
         if (this.activeType === 2) {
           param.outAccount = [].concat(this.cardList)
           this.account.find(item => {
@@ -332,33 +383,72 @@
                 amount: this.form.smallAmount
               }
               param.inAccount = [].concat(obj)
+              return true
             }
           })
         }
-        if (this.$route.query.edit) {
-          param.filePath = ['123']
-          this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
-            res=res.data
-            if(res.status===200){
+        this.$tool.checkForm(param,RULE).then(()=>{
+          // debugger
+          let state = false
+          if(this.activeType===2){
+            if(param.inAccount.length===0){
               this.$message({
-                message:'修改成功'
+                message:'收账账户不能为空'
               })
-              this.$router.go(-1)
-            }
-          })
-        } else {
-          //测试用
-          param.contId = 1
-          param.filePath = ['123']
-          this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.$router.push({
-                path: 'receiptResult'
+            }else {
+              param.outAccount.find((item,index)=>{
+                this.$tool.checkForm(item,RULE).then(()=>{
+                  if(this.files.length===0){
+                    this.$message({
+                      message:'收款凭证不能为空'
+                    })
+                  }else {
+                    param.filePath = [].concat(this.$tool.getFilePath(this.files))
+                    this.getResult(param,this.$route.query.edit?'edit':'')
+                  }
+                }).catch(error=>{
+                  this.$message({
+                    message:`${index>0?`刷卡资料补充第${index+1}行数据填写不全`:''}  ${error.title}${error.msg}`
+                  })
+                  return true
+                })
               })
             }
+          }
+          if(this.activeType===1){
+            this.getResult(param,this.$route.query.edit?'edit':'')
+          }
+        }).catch(error=>{
+          this.$message({
+            message:`${error.title}${error.msg}`
           })
-        }
+        })
+      },
+      getResult:function (param,type='add') {
+        if (type==='edit') {
+            this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
+              res=res.data
+              if(res.status===200){
+                this.$message({
+                  message:'修改成功'
+                })
+                this.$router.go(-1)
+              }
+            })
+          } else {
+            this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
+              res = res.data
+              if (res.status === 200) {
+                this.$router.push({
+                  path: 'receiptResult',
+                  query:{
+                    type:this.activeType,
+                    content:JSON.stringify(res.data)
+                  }
+                })
+              }
+            })
+          }
       },
       choseType: function (item) {
         let obj = {

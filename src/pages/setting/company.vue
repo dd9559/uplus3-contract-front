@@ -227,9 +227,7 @@
           <div class="tip">
             <span>温馨提示: </span>
             <div class="message">
-              <!-- <p>1. 上传前，请把图片处理成透明无底色,<span>不抠图</span>；</p> -->
               <p>请上传<span>png透明</span>格式的图片,大小不超过<span>5M</span>；</p>
-              <!-- <p>2. 请使用<span>jpg</span>或者<span>png</span>格式的图片，大小不超过<span>5M</span>；</p> -->
             </div>
           </div>
         </div>
@@ -430,7 +428,6 @@
             this.storeList = res.data
           }
         })
-        this.companyForm.cityId = val
         this.cityList.find(item => {
           if(val === item.id) {
             this.companyForm.cityName = item.name
@@ -599,6 +596,7 @@
             this.directSaleSelect = false
             this.directSaleOut = false
           }
+          this.getStoreList(row.cityId)
         }
         if(row.documentType.value === 2) {
           this.icRegisterShow = true

@@ -20,13 +20,23 @@ let FILTER={
       } else {
         return cellValue===1?'是':'否';
       }
+    },
+    nullFormatterData(row, column, cellValue){
+      return this.getDataVal(cellValue)
+    },
+    getDataVal(val) {
+      if(val == undefined || val === ''){
+        return '--'
+      }else {
+        return val
+      }
     }
   },
   filters:{
     getLabel:function (val) {
       return getVal(val)
     }
-  }
+  },
 }
 export {
   FILTER

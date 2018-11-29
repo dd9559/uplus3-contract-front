@@ -5,7 +5,7 @@
             <!-- 筛选条件 -->
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
                 <el-form-item label="关键字" prop="search">
-                    <el-autocomplete class="w322" v-model="propForm.search" :fetch-suggestions="querySearch" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" :trigger-on-focus="false" @select="handleSelect" clearable></el-autocomplete>
+                    <el-input class="w322" v-model="propForm.search" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="查询时间" prop="dateMo">
                     <el-date-picker v-model="propForm.dateMo" class="w330" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
@@ -83,37 +83,37 @@
             </div>
             <el-table 
             :data="tableData.list" 
-            class="paper-table mt-20"
-            :formatter="nullFormatter">
-                <el-table-column label="合同编号" min-width="161">
+            v-loading="loadingList"
+            class="paper-table mt-20">
+                <el-table-column :formatter="nullFormatterData" label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <el-button class="blue" type="text" @click="contractFn">{{scope.row.code}}</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column prop="signDate" label="签约日期" min-width="154">
+                <el-table-column :formatter="nullFormatterData" prop="signDate" label="签约日期" min-width="154">
                     <template slot-scope="scope">
                         {{dateFormat(scope.row.signDate)}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="" label="后期状态" min-width="145">
+                <el-table-column :formatter="nullFormatterData" label="后期状态" min-width="145">
                     <template slot-scope="scope">
                         {{statusLaterStageFn(scope.row.statusLaterStage.value)}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="propertyAddr" label="物业地址" min-width="221">
+                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" min-width="221">
                 </el-table-column>
-                <el-table-column prop="transFlowName" label="交易流程" min-width="290">
+                <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" min-width="290">
                 </el-table-column>
-                <el-table-column prop="owner" label="业主" min-width="154">
+                <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" min-width="154">
                 </el-table-column>
-                <el-table-column prop="customer" label="客户" min-width="125">
+                <el-table-column :formatter="nullFormatterData" prop="customer" label="客户" min-width="125">
                 </el-table-column>
-                <el-table-column label="成交经纪人" min-width="230">
+                <el-table-column :formatter="nullFormatterData" label="成交经纪人" min-width="230">
                     <template slot-scope="scope">
                         {{agentFn(scope.row.dealagentStoreName,scope.row.agent)}}
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" min-width="70">
+                <el-table-column :formatter="nullFormatterData" label="操作" min-width="70">
                     <template slot-scope="scope">
                         <el-button class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
                     </template>
@@ -121,12 +121,12 @@
             </el-table>
         </div>
         <!-- 分页 -->
-        <div>
+        <div class="pagination" v-if="tableData.total">
             <el-pagination
                 :current-page="tableData.pageNum"
                 :page-size="tableData.pageSize"
                 @current-change="currentChangeFn"
-                layout="prev, next, jumper"
+                layout=" total, prev, next, jumper"
                 :total="tableData.total">
             </el-pagination>
         </div>
@@ -157,15 +157,15 @@
                         <el-table 
                         :data="dealTable" 
                         border 
-                        :formatter="nullFormatter"
+                        v-loading="loadingdealTable"
                         class="paper-table mt-20">
-                            <el-table-column prop="transactionStepsType" align="center" label="步骤类型">
+                            <el-table-column :formatter="nullFormatterData" prop="transactionStepsType" align="center" label="步骤类型">
                             </el-table-column>
-                            <el-table-column prop="transactionSteps" align="center" label="步骤名称">
+                            <el-table-column :formatter="nullFormatterData" prop="transactionSteps" align="center" label="步骤名称">
                             </el-table-column>
-                            <el-table-column prop="transactionStepsType" align="center" label="计划天数">
+                            <el-table-column :formatter="nullFormatterData" prop="transactionStepsType" align="center" label="计划天数">
                             </el-table-column>
-                            <el-table-column prop="a4" align="center" min-width="185" label="分配角色">
+                            <el-table-column :formatter="nullFormatterData" prop="a4" align="center" min-width="185" label="分配角色">
                                 <template slot-scope="scope">
                                     <!-- @change="roleChangeFn(scope.$index,$event)"  -->
                                     <el-select 
@@ -184,7 +184,7 @@
                                     </el-select>
                                 </template>
                             </el-table-column>
-                            <el-table-column align="center" min-width="185" label="责任人">
+                            <el-table-column :formatter="nullFormatterData" align="center" min-width="185" label="责任人">
                                 <template slot-scope="scope">
                                     <el-select 
                                     v-model="scope.row.personLiableCode" 
@@ -204,7 +204,7 @@
                                     </el-select>
                                 </template>
                             </el-table-column>
-                            <el-table-column align="center" label="操作">
+                            <el-table-column :formatter="nullFormatterData" align="center" label="操作">
                                 <template slot-scope="scope">
                                     <el-button 
                                     class="blue" 
@@ -339,6 +339,8 @@
                 loading2:false,
                 loading3:false,
                 loading4:false,
+                loadingList:false,
+                loadingdealTable:false,
                 // 筛选条件
                 propForm: {
                     region: '',
@@ -430,6 +432,17 @@
             }
         },
         methods: {
+            // 成功提示
+            successMeFn(e){
+                this.$message({
+                    message: e,
+                    type: 'success'
+                });
+            },
+            // 错误提示
+            errMeFn(e){
+                this.$message.error(e);
+            },
             // 接收状态显示
             receiveComFn(state,bol){
                 if(bol){
@@ -501,6 +514,7 @@
                     console.log(err)
                 })
                 // 获取列表数据
+                this.loadingdealTable = true;
                 this.$ajax.get('/api/postSigning/clickReceive',{
                     contractCode:e.id,
                     transFlowCode:e.transFlowCode
@@ -516,6 +530,7 @@
                            e.roleBool = true;
                         })
                         this.dealTable = arr;
+                        this.loadingdealTable = false;
                     }
                 }).catch(err=>{
                     console.log(err)
@@ -589,15 +604,12 @@
                 this.$ajax.postJSON('/api/postSigning/saveStepFlow',arr).then(res=>{
                     res = res.data;
                     if(res.status === 200){
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        });
+                        this.successMeFn(res.message)
                         this.receive.show = false;
                         // 数据刷新
                         this.getListData();
                     }else{
-                        this.$message.error(res.message);
+                        this.errMeFn(res.message);
                     }
                 }).catch(err=>{
                     console.log(err)
@@ -620,20 +632,17 @@
                     // e.rules = [];
                 })
                 if(!bool){
-                    this.$message.error('请将交易步骤分配完，才能接收并开始办理后期');
+                    this.errMeFn('请将交易步骤分配完，才能接收并开始办理后期');
                 }else{
                     this.$ajax.postJSON('/api/postSigning/addStepFlow',arr).then(res=>{
                         res = res.data;
                         if(res.status === 200){
-                            this.$message({
-                                message: res.message,
-                                type: 'success'
-                            });
+                            this.successMeFn(res.message);
                             this.receive.show = false;
                             // 数据刷新
                             this.getListData();
                         }else{
-                            this.$message.error(res.message);
+                            this.errMeFn(res.message);
                         }
                     }).catch(err=>{
                         console.log(err)
@@ -654,7 +663,7 @@
             propCloseFn(bool) {
                 if(bool){
                     if(this.invalidInput.length < 1){
-                        this.$message.error('输入不能为空');
+                        this.errMeFn('输入不能为空');
                     }else{
                         this.$ajax.post('/api/postSigning/refuseReceive',{
                             contractCode:this.receive.e.id,
@@ -662,16 +671,13 @@
                         }).then(res=>{
                             res = res.data;
                             if(res.status === 200){
-                                this.$message({
-                                    message: res.message,
-                                    type: 'success'
-                                });
+                                this.successMeFn(res.message);
                                 this.receive.show = false;
                                 this.layer.show = false;
                                 // 数据刷新
                                 this.getListData();
                             }else{
-                                this.$message.error(res.message);
+                                this.errMeFn(res.message);
                             }
                         }).catch(err=>{
                             console.log(err)
@@ -684,7 +690,7 @@
             // 同上
             dittoFn(i,data){
                 if(i === 0){
-                    console.log('本步骤没有上一步，请手动进行分配')
+                    this.errMeFn('本步骤没有上一步，请手动进行分配');
                 }else{
                     let arr = this.dealTable[i-1];
                     let roleId = arr.roleId;
@@ -773,21 +779,6 @@
             regionClearFn(){
                 this.regionMethodFn('');
             },
-            // 筛选搜索
-            querySearch(queryString, cb) {
-                var restaurants = this.restaurants;
-                var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter(queryString) {
-                return (restaurant) => {
-                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-                };
-            },
-            handleSelect(item) {
-                console.log(item);
-            },
             // 贷款银行搜索
             remoteMethodFn(e){
                 let t;
@@ -837,31 +828,33 @@
             },
             // 获取数据
             getListData(){
-               let signDateSta = '';
-               let signDateEnd = '';
-               if(this.propForm.dateMo.length === 2){
-                   signDateSta = TOOL.dateFormat(this.propForm.dateMo[0]);
-                   signDateEnd = TOOL.dateFormat(this.propForm.dateMo[1]);
-               }
-                this.$ajax.postJSON('/api/postSigning/getContract',{
-                    keyword:this.propForm.search,
-                    signDateSta,
-                    signDateEnd,
-                    stepInstanceCode:this.propForm.time,
-                    stagesBankCode:this.propForm.paper,
-                    dealDeptId:this.propForm.region,
-                    dealBrokerName:this.propForm.regionName,
-                    statusLaterStage:this.propForm.late,
-                    pageNum:this.pageNum,
-                    pageSize:this.pageSize,
-                }).then((res)=>{
-                    res = res.data
-                    if (res.status === 200) {
-                        this.tableData = res.data;
-                    }
-                }).catch(err=>{
-                    console.log(err)
-                })
+                this.loadingList = true;
+                let signDateSta = '';
+                let signDateEnd = '';
+                if(this.propForm.dateMo.length === 2){
+                    signDateSta = TOOL.dateFormat(this.propForm.dateMo[0]);
+                    signDateEnd = TOOL.dateFormat(this.propForm.dateMo[1]);
+                }
+                    this.$ajax.postJSON('/api/postSigning/getContract',{
+                        keyword:this.propForm.search,
+                        signDateSta,
+                        signDateEnd,
+                        stepInstanceCode:this.propForm.time,
+                        stagesBankCode:this.propForm.paper,
+                        dealDeptId:this.propForm.region,
+                        dealBrokerName:this.propForm.regionName,
+                        statusLaterStage:this.propForm.late,
+                        pageNum:this.pageNum,
+                        pageSize:this.pageSize,
+                    }).then((res)=>{
+                        res = res.data
+                        if (res.status === 200) {
+                            this.tableData = res.data;
+                            this.loadingList = false;
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
             },
             // 交易流程获取数据
             getTransactionProcess(){
