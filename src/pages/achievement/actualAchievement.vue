@@ -24,7 +24,7 @@
                                :model="propForm" 
                                 class="prop-form"
                                size="small">
-                                    
+                    
                                     <!-- 部门 -->
                                    <el-form-item 
                                    label="部门" 
@@ -230,59 +230,48 @@
                                  width="130">
                                   <template slot-scope="scope">
                                           <div  v-for="item in scope.row.distributionFroms">
-                                               <div v-if="item.roleType==0">
-                                                  <p>房源维护人</p>
-                                                  <p>录入</p>
-                                               </div>
-                                               <div v-if="item.roleType==1">
-                                                  <p>房源维护人</p>
-                                                  <p>维护</p>
-                                               </div>
-                                               <div v-if="item.roleType==2">
-                                                  <p>房源维护人</p>
-                                                  <p>独家</p>
-                                               </div>
-                                                <div v-if="item.roleType==3">
-                                                  <p>房源维护人</p>
-                                                  <p>房勘</p>
-                                               </div>
-                                                <div v-if="item.roleType==4">
-                                                  <p>房源维护人</p>
-                                                  <p>钥匙</p>
-                                               </div>
-                                                <div v-if="item.roleType==5">
-                                                  <p>房源维护人</p>
-                                                  <p>委托</p>
-                                               </div>
-                                                <div v-if="item.roleType==6">
-                                                  <p>房源维护人</p>
-                                                  <p>建盘</p>
-                                               </div>
-
-                                                <div v-if="item.roleType==7">
-                                                  <p>客源维护人</p>
-                                                  <p>主客方</p>
-                                               </div>
-                                                <div v-if="item.roleType==8">
-                                                  <p>客源维护人</p>
-                                                  <p>推荐人</p>
-                                               </div>
-                                                <div v-if="item.roleType==9">
-                                                  <p>客源维护人</p>
-                                                  <p>签约人</p>
-                                               </div>
-                                                <div v-if="item.roleType==10">
-                                                  <p>客源维护人</p>
-                                                  <p>A/M</p>
-                                               </div>
-                                               <div v-if="item.roleType==11">
-                                                  <p>客源维护人</p>
-                                                  <p>协议方</p>
-                                               </div>
-                                               <div v-if="item.roleType==12">
-                                                  <p>客源维护人</p>
-                                                  <p>协议方2</p>
-                                               </div>
+                                                      <div v-if="scope.row.roleType==1">
+                                                         <p>录入</p>
+                                                      </div>
+                                                      <div v-else-if="scope.row.roleType==2">
+                                                         <p>维护</p>
+                                                      </div>
+                                                      <div v-else-if="scope.row.roleType==3">
+                                                         <p>独家</p>
+                                                      </div>
+                                                       <div v-else-if="scope.row.roleType==4">
+                                                         <p>房勘</p>
+                                                      </div>
+                                                       <div v-else-if="scope.row.roleType==5">
+                                                         <p>钥匙</p>
+                                                      </div>
+                                                       <div v-else-if="scope.row.roleType==15">
+                                                         <p>委托</p>
+                                                      </div>
+                                                       <div v-else-if="scope.row.roleType==16">
+                                                         <p>建盘</p>
+                                                      </div>
+                                                       <div v-else-if="scope.row.roleType==6">
+                                                         <p>主客方</p>
+                                                      </div>
+                                                       <div v-else-if="scope.row.roleType==10">
+                                                         <p>推荐人</p>
+                                                      </div>
+                                                       <div v-else-if="scope.row.roleType==14">
+                                                         <p>签约人</p>
+                                                      </div>
+                                                       <div v-else-if="scope.row.roleType==11">
+                                                         <p>A/M</p>
+                                                      </div>
+                                                       <div v-else-if="scope.row.roleType==7">
+                                                         <p>协议方</p>
+                                                      </div>
+                                                      <div v-else-if="scope.row.roleType==17">
+                                                         <p>协议方2</p>
+                                                      </div>
+                                                      <div v-else>
+                                                         <p>-</p>
+                                                      </div>
                                           </div>
                                   </template>
                                </el-table-column>
@@ -309,15 +298,15 @@
                                  <template slot-scope="scope">                           
                                          <!-- <p>{{scope.row.statu}}</p> -->
                                          <div v-if="scope.row.achievementState==0" class="check-btn">
-                                            <span @click.stop="checkAch(scope.row.code)">审核</span>
-                                            <span @click.stop="editAch(scope.row.code)">编辑</span>
+                                            <span @click.stop="checkAch(scope.row.code,scope.row.aId,scope.row.id)">审核</span>
+                                            <span @click.stop="editAch(scope.row.code,scope.row.aId,scope.row.id)">编辑</span>
                                          </div>
                                            <div v-if="scope.row.achievementState==1" class="check-btn">
-                                            <span @click.stop="checkAch(scope.row.code)">审核</span>
-                                            <span @click.stop="editAch(scope.row.code)">编辑</span>
+                                            <span @click.stop="againCheck(scope.row.code,scope.row.aId,scope.row.id)">反审核</span>
                                          </div>
                                           <div v-if="scope.row.achievementState==2" class="check-btn">
-                                            <span @click.stop="againCheck(scope.row.code)">反审核</span>
+                                             <span @click.stop="checkAch(scope.row.code,scope.row.aId,scope.row.id)">审核</span>
+                                            <span @click.stop="editAch(scope.row.code,scope.row.aId,scope.row.id)">编辑</span>
                                          </div>
                                   </template>
                                </el-table-column>
@@ -346,7 +335,7 @@
                           <b class="el-icon-close" @click="closeDialog"></b>
                            <div class="ach-header">
                              <h1>业绩详情</h1>  
-                             <p>可分配业绩：<span class="orange">3000元</span></p>
+                             <p>可分配业绩：<span class="orange">{{comm}}元</span></p>
                            </div> 
                            <div class="ach-body">
 
@@ -362,47 +351,9 @@
                                         label="角色类型"
                                         width="100">
                                               <template slot-scope="scope">
-                                                  <div>
-                                                      <div v-if="scope.row.roleType==0">
-                                                         <p>录入</p>
-                                                      </div>
-                                                      <div v-if="scope.row.roleType==1">
-                                                         <p>维护</p>
-                                                      </div>
-                                                      <div v-if="scope.row.roleType==2">
-                                                         <p>独家</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==3">
-                                                         <p>房勘</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==4">
-                                                         <p>钥匙</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==5">
-                                                         <p>委托</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==6">
-                                                         <p>建盘</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==7">
-                                                         <p>主客方</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==8">
-                                                         <p>推荐人</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==9">
-                                                         <p>签约人</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==10">
-                                                         <p>A/M</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==11">
-                                                         <p>协议方</p>
-                                                      </div>
-                                                      <div v-if="scope.row.roleType==12">
-                                                         <p>协议方2</p>
-                                                      </div>
-                                                   </div>
+                                                    <div>
+                                                         <p>{{scope.row.roleName}}</p>
+                                                    </div> 
                                              </template>
                                       </el-table-column>
                                        
@@ -424,18 +375,10 @@
                                         label="在职状况"
                                         width="80">
                                                <template slot-scope="scope">
-                                                  <div>
-                                                      <div v-if="scope.row.isJob==0">
-                                                         <p>离职</p>
+                                                      <div v-if="scope.row.isJob">
+                                                         <p>{{scope.row.isJob.label}}</p>
                                                       </div>
-                                                      <div v-if="scope.row.isJob==1">
-                                                         <p>在职</p>
-                                                      </div>
-                                                      <div v-if="scope.row.isJob==2">
-                                                         <p>待入职</p>
-                                                      </div>
-                                                   </div>
-                                             </template>
+                                               </template>
                                       </el-table-column>
 
                                       <!-- shopkeeper -->
@@ -484,48 +427,10 @@
                                       <el-table-column
                                         label="角色类型"
                                         width="100">
-                                              <template slot-scope="scope">
-                                                  <div>
-                                                      <div v-if="scope.row.roleType==0">
-                                                         <p>录入</p>
-                                                      </div>
-                                                      <div v-if="scope.row.roleType==1">
-                                                         <p>维护</p>
-                                                      </div>
-                                                      <div v-if="scope.row.roleType==2">
-                                                         <p>独家</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==3">
-                                                         <p>房勘</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==4">
-                                                         <p>钥匙</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==5">
-                                                         <p>委托</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==6">
-                                                         <p>建盘</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==7">
-                                                         <p>主客方</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==8">
-                                                         <p>推荐人</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==9">
-                                                         <p>签约人</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==10">
-                                                         <p>A/M</p>
-                                                      </div>
-                                                       <div v-if="scope.row.roleType==11">
-                                                         <p>协议方</p>
-                                                      </div>
-                                                      <div v-if="scope.row.roleType==12">
-                                                         <p>协议方2</p>
-                                                      </div>
-                                                   </div>
+                                              <template slot-scope="scope">                                       
+                                                      <div>
+                                                         <p>{{scope.row.roleName}}</p>
+                                                      </div>                                                                                           
                                              </template>
                                       </el-table-column>
                                        
@@ -608,7 +513,8 @@
                                         label="时间"
                                         width="200">
                                           <template slot-scope="scope">
-                                             <p>{{scope.row.examineDate|formatDate}}</p>      
+                                             <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatDate}}</p>   
+                                             <p v-else>-</p>    
                                           </template>
                                       </el-table-column>
                                       <!-- auditorDepartment -->
@@ -631,13 +537,13 @@
                                         width="170">
                                              <template slot-scope="scope">
                                                   <div>
-                                                      <div v-if="scope.row.result==0">
+                                                      <div v-if="scope.row.result.value==0">
                                                          <p class="blue">未审核</p>
                                                       </div>
-                                                      <div v-if="scope.row.result==1">
+                                                      <div v-else-if="scope.row.result.value==1">
                                                          <p class="green">已通过</p>
                                                       </div>
-                                                      <div v-if="scope.row.result==2">
+                                                      <div v-else-if="scope.row.result.value==2">
                                                          <p class="orange">已驳回</p>
                                                       </div>
                                                        <div v-else>
@@ -661,7 +567,7 @@
                      </el-dialog>
 
                    <!-- 审核，编辑，反审核，业绩分成弹框 -->
-                  <achDialog :shows="shows"  @close="shows=false,code=''" :dialogType="dialogType" :contractCode="code"></achDialog>
+                  <achDialog :shows="shows"  @close="shows=false,code2=''" :dialogType="dialogType" :contractCode="code2" :aId="aId" :contractId="contractId"></achDialog>
          </div>
 </template>
 
@@ -698,6 +604,7 @@ export default {
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
       total: 0,
       code: "",
+      code2: "",
       dictionary: {
         //数据字典
         "10": "", //合同类型
@@ -706,7 +613,10 @@ export default {
       },
       beginData: false,
       currentPage: 1,
-      pageSize: 4
+      pageSize: 10,
+      comm: "", //业绩分成
+      aId: null  , //业绩id
+      contractId:null//合同id
     };
   },
   created() {
@@ -751,16 +661,16 @@ export default {
     enterDetail(row) {
       //合同边和获取业绩详情
       this.code = row.code;
-      let param = { code: row.code };
+      let param = { contCode: row.code, entrance: 3 };
       this.$ajax
         .get("/api/achievement/selectAchievementByCode", param)
         .then(res => {
-          console.log(res);
           let data = res.data;
           if (res.status === 200) {
-            this.houseArr = data.data[0];
-            this.clientArr = data.data[1];
-            this.checkArr = data.data[2];
+            this.houseArr = data.data.houseAgents;
+            this.clientArr = data.data.customerAgents;
+            this.checkArr = data.data.achievements;
+            this.comm = data.data.comm;
           }
         });
       this.dialogVisible = true;
@@ -789,25 +699,29 @@ export default {
         search: ""
       };
     },
-    checkAch(code) {
+    checkAch(code, aId,contractId) {
       this.beginData = true;
-      this.code = code;
+      this.code2 = code;
+      this.aId=aId;
+      this.contractId=contractId;
       this.dialogType = 0;
-      console.log(this.dialogType);
       this.shows = true;
     },
-    editAch(code) {
+    editAch(code, aId,contractId) {
       this.beginData = true;
-      this.code = code;
-      this.dialogType = 1;
-      console.log(this.dialogType);
+      this.code2 = code; //合同编号
+      this.aId=aId;    //业绩id
+      this.contractId=contractId;
+      this.dialogType = 1; //弹框类型
       this.shows = true;
     },
-    againCheck(code) {
+    againCheck(code, aId,contractId) {
       this.beginData = true;
-      this.code = code;
+      this.code2 = code;
+      this.aId=aId;
+      this.contractId=contractId;
       this.dialogType = 2;
-      console.log(this.dialogType);
+      // console.log(this.dialogType);
       this.shows = true;
     },
     selUser() {
