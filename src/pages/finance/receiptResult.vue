@@ -1,6 +1,7 @@
 <template>
   <div class="view">
     <div class="view-context">
+      <h1><i class="iconfont icon-chenggong"></i></h1>
       <h3>{{type===1?'POS收款订单创建成功':'收款信息录入成功'}}</h3>
       <p>已成功生成收款单</p>
       <div class="bill-result-table">
@@ -106,13 +107,22 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      >h1{
+        margin-bottom: 41px;
+        .iconfont{
+          color: @color-58b;
+          font-size: 89px;
+        }
+      }
       > h3 {
         color: @color-324;
+        font-size: 28px;
       }
       > p {
         &:first-of-type {
           color: @color-99A;
           margin: 20px 0;
+          font-size: 18px;
         }
       }
       .bill-result-table {
@@ -121,6 +131,7 @@
         > p {
           color: @color-324;
           margin-bottom: 20px;
+          font-size: 18px;
         }
       }
     }

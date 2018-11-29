@@ -1,15 +1,15 @@
 <template>
   <div class="view">
-    <ScreeningTop>
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
       <div class="content">
         <div class="input-group">
           <label>收付款类:</label>
           <el-select size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['25']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
@@ -17,10 +17,10 @@
           <label>收款状态:</label>
           <el-select size="small" v-model="searchForm.status" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['23']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
@@ -39,10 +39,10 @@
           <label>合同类型:</label>
           <el-select size="small" v-model="searchForm.contractType" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in dictionary['10']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </div>
@@ -116,6 +116,11 @@
     mixins: [FILTER],
     data() {
       return {
+        dictionary:{
+          '10': '',
+          '23': '',
+          '25': '',
+        },
         searchForm: {
           moneyType: '',
           status: '',
@@ -125,27 +130,17 @@
           collectionTime: '',
           keyword: ''
         },
-        list: [
-          {
-            contractId: '201809301289',
-            houseId: "HRYY000039",
-            customerId: "HRYY000039",
-            contractType: "买卖&居间",
-            collectionType: "佣金",
-            broker: "东野圭吾-当代一店",
-            accounts_receivable: 1000,
-            payment_received: 1000,
-            for_collection: 1000,
-            operation_time: "2018/09/30 12:00",
-            state: "未收"
-          }
-        ]
+        list: []
       }
     },
     created() {
       // this.getData()
+      this.getDictionary()
     },
     methods: {
+      reset:function () {
+        this.$tool.clearForm(this.searchForm)
+      },
       getData: function () {
         let param={
           moneyType: this.searchForm.moneyType,

@@ -214,7 +214,7 @@
         //分页
         total:0,
         currentPage:1,
-        pageSize:20
+        pageSize:20,
       }
     },
     created() {
