@@ -1,308 +1,484 @@
 <template>
-    <el-dialog title="开票信息填写" :visible.sync="comShow" width="1000px" class="layer-paper">
-        <div class="layer-mesage">
-            <ul class="ul">
-                <li>
-                    <span class="cl-1">合同编号：</span>
-                    <span class="w-150">{{data.contCode}}</span>
-                </li>
-                <li>
-                    <span class="cl-1">物业地址：</span>
-                    <span class="w-600">{{data.address}}</span>
-                </li>
-            </ul>
-            <ul class="ul">
-                <li>
-                    <span class="cl-1">交款单位：</span>
-                    <span class="w-150">{{data.payerName}}</span>
-                </li>
-                <li>
-                    <span class="cl-1">合计金额：</span>
-                    <span>110000元</span>
-                </li>
-            </ul>
-            <ul class="ul-mesage">
-                <li v-for="item in checked" :key="item.name">
-                    <el-row>
-                        <el-col :span="5">
-                            <el-checkbox v-model="item.tab">
-                                <span class="cl-1">款类：</span>
-                                <span class="cl-2">{{item.name}}</span>
-                            </el-checkbox>
-                        </el-col>
-                        <el-col :span="4">
-                            <span class="cl-1">金额：</span>
-                            <span class="cl-2">{{item.money}}元</span>
-                        </el-col>
-                        <el-col :span="7">
-                            <span class="cl-1">开票项目：</span>
-                            <el-select v-model="item.val" size="small" class="w150">
-                                <el-option 
-                                v-for="ite in item.rules" 
-                                :key="ite.value" 
-                                :label="ite.label" 
-                                :value="ite.value"></el-option>
-                            </el-select>
-                        </el-col>
-                        <el-col :span="4">
-                            <el-checkbox v-model="item.hide">
-                                <span class="cl-1">隐藏物业地址</span>
-                            </el-checkbox>
-                        </el-col>
-                        <el-col :span="4">
-                            <span class="cl-1">票据编号：</span>
-                            <span class="cl-2">{{item.paper}}</span>
-                        </el-col>
-                    </el-row>
-                </li>
-            </ul>
-            <div class="sure-btn">
-                <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="sureFn" round>确定开票</el-button>
+    <el-dialog  
+    :title="!paperType?'票据详情':'开票信息填写'" 
+    :visible.sync="paperShow" 
+    width="1000px" 
+    class="layer-paper" 
+    @close="propCloseFn">
+        <div v-loading="loading">
+            <div class="paper-edit-box" v-if="paperType">
+                <ul>
+                    <li>
+                        <p><label>合同编号:</label><span>{{paperInfoData.contCode}}</span></p>
+                        <p><label>物业地址:</label><span>{{paperInfoData.address}}</span></p>
+                    </li>
+                    <li>
+                        <p><label>交款单位:</label><span>{{paperInfoData.payerName}}</span></p>
+                        <p><label>合计金额:</label><span>{{paperInfoData.proceedsAmount}}元</span></p>
+                    </li>
+                    <li v-for="(item,index) in moneyTypes" :key="index">
+                        <label class="checkbox-info iconfont" :class="[item.check?'active':'']" @click="item.check=!item.check"></label>
+                        <div class="type-list">
+                            <p><label>款类：</label><span>{{item.typeName}}</span></p>
+                            <p><label>金额：</label><span>{{item.amount}}</span></p>
+                            <div class="input-group">
+                                <label>开票项目：</label>
+                                <el-select class="w120" size="small" v-model="item.project" placeholder="请选择">
+                                    <el-option v-for="item in dictionary['542']" :key="item.key" :label="item.value" :value="item.key">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                            <p><label class="checkbox-info iconfont" :class="[item.addressHidden?'active':'']" @click="item.addressHidden=!item.addressHidden"></label><span>隐藏物业地址</span></p>
+                            <p><label>票据编号：</label><span>{{item.billCode}}</span></p>
+                        </div>
+                    </li>
+                </ul>
+                <el-button round size="medium" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
             </div>
-            <div class="preview" v-show="perviewShow">
-                <div class="preview-tit">票据预览</div>
-                <div class="preview-ul">
-                    <ul>
-                        <li 
-                        v-for="(item,index) in perviewMain" 
-                        :key="item.name" 
-                        :class="previewIndex === index ?'on':''"
-                        @click="tabClickFn(index)">{{item.name}}</li>
-                    </ul>
-                </div>
+            <div v-show="FooterShow">
+                <div class="paper-watch-tab" v-if="paperType">
+                <p>票据预览</p>
+                <ul v-if="moneyTypes.length>1">
+                    <li v-for="(item,index) in moneyTypes" :key="index" :class="[index===activeType?'active':'']" @click="activeType=index">{{item.typeName}}</li>
+                </ul>
+            </div>
                 <LayerPaperInfo 
-                v-for="(item,index) in perviewMain"
-                :key="item.money"
-                :number="data.contCode"
-                :name="data.payerName"
-                :collectionTime="data.paymentTime"
-                :invoiceTime="data.createTime"
-                :paper="item.paper"
-                :project="item.name"
-                :hide="item.hide"
-                :address="data.address"
-                :money="item.money"
-                :moneyZh="item.moneyZh"
-                :create="data.createBy"
-                :rules="item.val"
-                :payerType="data.payerType"
-                v-show="previewIndex === index"
-                ></LayerPaperInfo>
+                :number="paperInfoData.contCode" 
+                :name="paperInfoData.payerName" 
+                :collectionTime="paperInfoData.paymentTime" 
+                :invoiceTime="paperInfoData.createTime" 
+                :paper="paperInfoData.billCode" 
+                :project="paperInfoData.type" 
+                :hide="paperInfoData.hide" 
+                :address="paperInfoData.address" 
+                :money="paperInfoData.amount" 
+                :moneyZh="paperInfoData.amountZh" 
+                :create="paperInfoData.createByName" 
+                :rules="paperInfoData.remark" 
+                :payerType="paperInfoData.payerType"></LayerPaperInfo>
+                <!-- :imgSrc="paperInfoData.signImg" -->
+            </div>
+            <!-- <iframe id="test" :src="pdfUrl" frameborder="0"></iframe> -->
+            <div style="background-color:red">
+                <span class="iconfont icon-guanbi1"></span>
             </div>
         </div>
-        <span slot="footer" v-show="perviewShow">
-            <el-button class="paper-btn" type size="medium" @click="propCloseFn" round>取消</el-button>
-            <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="printFn" round>打印</el-button>
-        </span>
     </el-dialog>
 </template>
 
 <script>
     import LayerPaperInfo from '@/components/LayerPaperInfo';
+    import { MIXINS } from "@/assets/js/mixins";
+
     export default {
         props: {},
+        mixins: [MIXINS],
         data() {
             return {
-                comShow: false,
-                checked:[{
-                    tab:true,
-                    name:'房款',
-                    money:100000,
-                    val:'',
-                    rules:[{
-                        label:'区域1',
-                        value:'选项1'
-                    },{
-                        label:'区域2',
-                        value:'选项2'
-                    }],
-                    hide:false,
-                    paper:'10086'
-                },{
-                    tab:false,
-                    name:'房款2',
-                    money:100000,
-                    val:'',
-                    rules:[{
-                        label:'区域1',
-                        value:'选项1'
-                    },{
-                        label:'区域2',
-                        value:'选项2'
-                    }],
-                    hide:false,
-                    paper:'10000000'
-                }],
-                previewIndex:0,
-                perviewMain:[],
-                data:{
-                    contCode:'201809301289',
-                    payerName:'张小茹',
-                    address:'东湖开发区安逸小区12幢4单元806',
-                    paymentTime:'2018-11-13',
-                    createTime:'2018-11-13',
-                    createBy:'张小茹',
-                    payerType:'客户身份'
-                }
-            }
-        },
-        computed:{
-            perviewShow(){
-                if(this.perviewMain.length > 0){
-                    return true
-                }else{
-                    return false
-                }
+                dictionary: {
+                    '542': '',
+                },
+                FooterShow:true,
+                activeRow: {},
+                paperShow: false,
+                paperType: false, //false预览 true开票
+                paperInfoData: {}, //票据对象
+                moneyTypes: [], //临时存放勾选的款类
+                activeType: 0, //当前预览项
+                previewTable:false,
+                loading:false,
+                pdfUrl:'../../SJ1811290099.pdf',
             }
         },
         methods: {
-            // 取消
+            // 弹层关闭
             propCloseFn() {
-                this.comShow = !this.comShow;
+                this.$tool.clearForm(this.layer)
+                this.paperShow = false
             },
-            //打印
-            printFn(){
-                // 是否有印章
-                let src = this.perviewMain[this.previewIndex].imgSrc;
-                if(src == '' || src == undefined){
-                    this.$message.error('请先设置财务专用电子签章！');
-                }else{
-                    console.log('打印')
-                }
-            },
-            // 确定开票
-            sureFn(){
-                let bool = true;
-                let tab = false;
-                let arr = [];
-                this.checked.forEach(e => {
-                    if(e.tab){
-                        tab = true;
-                        if(e.val === ''){
-                            bool = true
-                            return false
-                        }else{
-                            bool = false
-                            arr.push({
-                                name:e.name,
-                                money:e.money,
-                                val:e.val,
-                                hide:e.hide,
-                                paper:e.paper
-                            });
+            /**
+             * 票据详情
+             * @param row
+             */
+            getPaperDetails: function(row) {
+                this.$ajax.get(`/api/bills/${row.id}`).then(res => {
+                    res = res.data
+                    if (res.status === 200) {
+                        this.paperInfoData = Object.assign({}, res.data)
+                        // this.paperShow = true
+                        if(!this.paperType){
+                            this.loading = false;
                         }
                     }
-                });
-                if(tab){
-                    if(bool){
-                        this.$message.error('请选择开票项！');
-                    }else{
-                        this.perviewMain = arr;
+                })
+            },
+            billing: function() {
+                let param = this.moneyTypes[this.activeType]
+                let obj = {
+                    createTime: '',
+                    billCode: param.billCode,
+                    hide: param.addressHidden,
+                    amount: param.amount,
+                    amountZh: param.amountZh,
+                    createByName: this.paperInfoData.createBy,
+                    remark: param.remark
+                }
+                this.previewTable = true;
+                this.dictionary['542'].find(item => {
+                    if (item.key === param.project) {
+                        obj.type = item.value
                     }
+                })
+                this.paperInfoData = Object.assign({}, this.paperInfoData, obj)
+                if(this.moneyTypes[this.activeType].check){
+                    this.FooterShow =  true
                 }else{
-                    this.previewTit = [];
+                    this.FooterShow = false
                 }
             },
-            // tab切换
-            tabClickFn(index){
-                this.previewIndex = index;
+            // 票据详情 打印
+            printPaper() {
+                if(this.pdfUrl){
+                    document.getElementById("test").contentWindow.print();
+                    return false
+                }
+                let obj = {}
+                if (!this.paperType) {
+                    obj = {
+                        code: this.paperInfoData.billCode
+                    }
+                } else {
+                    if(!this.FooterShow){
+                        this.$message.error('请勾选款类');
+                        return false
+                    }
+                    if(!this.moneyTypes[this.activeType].project){
+                        this.$message.error('请选择开票项目');
+                        return false
+                    }
+                    if(!this.previewTable){
+                        this.$message.error('请选择确定开票，预览项目');
+                        return false
+                    }
+                    // if(this.paperInfoData.signImg){
+                    //     this.$message.error('请先设置财务专用电子签章');
+                    //     return false
+                    // }
+                    let type = this.moneyTypes[this.activeType]
+                    obj = {
+                        code: this.activeRow.billCode,
+                        payId: this.activeRow.proceedsId,
+                        payDetailsId: type.payDetailsId,
+                        isHiddenAddress: type.addressHidden,
+                        billType: type.project
+                    }
+                }
+
+                this.$ajax.post('/api/bills/print', obj).then(res => {
+                    res = res.data
+                    if(res.status === 200){
+                        let url = res.data;
+                        this.$ajax.get("/access/generateAccessURL",{
+                            url
+                        }).then(res=>{
+                            res = res.data
+                            if(res.status ===200){
+                                this.pdfUrl = res.data.url;
+                                document.getElementById("test").contentWindow.print();
+                                console.log(res.data.url)
+                            }
+                            // console.log(res)
+                        }).catch(err=>{
+                            console.log(err)
+                        })
+                        // this.pdfUrl = res.data;
+                        // this.$refs.pdfUrl.contentWindow.print();
+                        // this.propCloseFn();
+                        // this.$emit('emitPaperSet');
+                        // console.log(res)
+                    }
+                }).catch(err=>{
+
+                })
             },
+            // 获取开票列表
+            paperList: function() {
+                this.$ajax.get('/api/bills/tobe', { /*id:this.activeRow.proceedsId*/ id: 21 }).then(res => {
+                    res = res.data
+                    if (res.status === 200) {
+                        this.paperInfoData = Object.assign({}, res.data)
+                        let obj = JSON.parse(JSON.stringify(res.data))
+                        this.moneyTypes = [].concat(obj.list)
+                        this.moneyTypes.forEach((item, index) => {
+                            let obj = Object.assign({
+                                check: true,
+                                addressHidden: false,
+                                project: ''
+                            }, item)
+                            this.moneyTypes.splice(index, 1, obj)
+                        })
+                        this.loading = false;
+                    }
+                })
+            },
+            // 打开
+            show(row, bool = false) {
+                this.paperType = bool;
+                this.loading = true;
+                this.paperShow = true;
+                this.pdfUrl= ""
+                this.activeRow = Object.assign({},row)
+                this.getPaperDetails(row);
+                if (bool) {
+                    this.paperList();
+                }
+            }
         },
-        components:{
+        components: {
             LayerPaperInfo
-        }
+        },
+        mounted() {
+            // 枚举类型数据获取
+            this.getDictionary();
+        },
     }
 </script>
 
 <style lang="less" scoped>
     @import "~@/assets/common.less";
+
     // 按钮
-    .paper-btn{
+    .paper-btn {
         width: 100px;
         text-align: center;
     }
-    .paper-btn-blue{
+
+    .paper-btn-blue {
         background-color: @color-blue;
         border-color: @color-blue;
+        color: #fff;
     }
-    
+
     // 开票信息填写
-    .layer-mesage{
-        .cl-1{
+    .layer-mesage {
+        .cl-1 {
             color: #6C7986;
             margin-right: 8px;
         }
-        .cl-2{
-            color:#233241;
+
+        .cl-2 {
+            color: #233241;
         }
-       .ul{
-           overflow: hidden;
-           padding: 0 40px;
-           >li{
-               float: left;
-               color:#233241;
-               padding-top: 20px;
-           }
-            .w-150{
+
+        .ul {
+            overflow: hidden;
+            padding: 0 40px;
+
+            >li {
+                float: left;
+                color: #233241;
+                padding-top: 20px;
+            }
+
+            .w-150 {
                 width: 140px;
                 padding-right: 10px;
                 display: inline-block;
             }
-            .w-600{
+
+            .w-600 {
                 width: 600px;
                 display: inline-block;
             }
-            .cl-1{
+
+            .cl-1 {
                 float: left;
             }
-       }
-       .ul-mesage{
-           padding: 10px 40px 0;
-           >li{
-               padding-top: 18px;
-               line-height: 32px;
-           }
-           .w150{
-               width: 150px;
-           }
-       }
-       .sure-btn{
-           text-align: right;
-           padding: 30px 20px 0 0;
-       }
+        }
+
+        .ul-mesage {
+            padding: 10px 40px 0;
+
+            >li {
+                padding-top: 18px;
+                line-height: 32px;
+            }
+
+            .w150 {
+                width: 150px;
+            }
+        }
+
+        .sure-btn {
+            text-align: right;
+            padding: 30px 20px 0 0;
+        }
     }
+
     // 开票预览
-    .preview{
-        margin:22px 55px 0;
+    .preview {
+        margin: 22px 55px 0;
         border-top: 1px solid #D8D8D8;
-        .preview-tit{
+
+        .preview-tit {
             font-size: 24px;
-            font-weight:400;
+            font-weight: 400;
             color: #478DE3;
             padding-top: 36px;
             text-align: center;
         }
-        .preview-ul{
+
+        .preview-ul {
             text-align: center;
             padding-top: 32px;
-           >ul{
+
+            >ul {
                 line-height: 32px;
-                border:2px solid #478DE3;
+                border: 2px solid #478DE3;
                 display: inline-block;
                 border-radius: 18px;
                 overflow: hidden;
-                >li{
+
+                >li {
                     width: 100px;
                     text-align: center;
                     color: #478DE3;
                     cursor: pointer;
                     float: left;
-                    &.on{
+
+                    &.on {
                         color: #fff;
                         background-color: #478DE3;
                     }
                 }
-           }
+            }
+        }
+    }
+
+    .paper-edit-box {
+        margin: 0 40px;
+        padding: 20px 0 80px;
+        border-bottom: 1px solid @border-D8;
+        position: relative;
+
+        .paper-btn-float{
+            position: absolute;
+            right: 0;
+            bottom: 20px;
+        }
+
+        >ul {
+            &:first-of-type {
+                >li {
+                    margin-bottom: 20px;
+                    display: flex;
+                    align-items: center;
+
+                    >label {
+                        margin-right: 10px;
+                    }
+
+                    &:first-of-type,
+                    &:nth-of-type(2) {
+                        >p {
+                            &:first-of-type {
+                                width: 200px;
+                            }
+                        }
+                    }
+
+                    &:last-of-type {
+                        margin-bottom: 0px;
+                    }
+                }
+            }
+        }
+
+        .type-list {
+            display: flex;
+
+            >p {
+                min-width: 110px;
+                margin-right: 20px;
+                display: inherit;
+                align-items: center;
+
+                >label.checkbox-info {
+                    margin-right: 10px;
+                }
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+
+            .input-group {
+                margin-bottom: 0;
+                margin-right: 20px;
+            }
+        }
+    }
+
+    .paper-watch-tab {
+        >p {
+            color: @color-blue;
+            text-align: center;
+            font-size: @size-24;
+            font-weight: bold;
+            margin: 32px;
+        }
+
+        >ul {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 26px;
+
+            >li {
+                border-top: 2px solid @color-blue;
+                border-bottom: 2px solid @color-blue;
+                min-width: 100px;
+                height: 36px;
+                display: inherit;
+                align-items: center;
+                justify-content: center;
+
+                &:first-of-type {
+                    border-left: 2px solid @color-blue;
+                    border-top-left-radius: 18px;
+                    border-bottom-left-radius: 18px;
+                }
+
+                &:last-of-type {
+                    border-right: 2px solid @color-blue;
+                    border-top-right-radius: 18px;
+                    border-bottom-right-radius: 18px;
+                }
+
+                &.active {
+                    background-color: @color-blue;
+                    color: @color-white;
+                }
+            }
+        }
+    }
+
+    .checkbox-info {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 1px solid @border-e6;
+
+        &.active {
+            position: relative;
+            color: @color-blue;
+
+            &:after {
+                content: '\e65d';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
         }
     }
 </style>

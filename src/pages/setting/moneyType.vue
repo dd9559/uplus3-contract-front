@@ -6,9 +6,9 @@
                 <span>数据列表</span>
             </p>
             <el-table :data="tableData" ref='onetable'  @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
-                <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
-                <el-table-column align="center" label="款类(大类)" prop="name" width="120"></el-table-column>
-                <el-table-column align="center" label="是否启用系统收款" width="150">
+                <el-table-column align="center" label="序号" type="index"></el-table-column>
+                <el-table-column align="center" label="款类(大类)" prop="name"></el-table-column>
+                <el-table-column align="center" label="是否启用系统收款">
                     <template slot-scope="scope">
                         <div v-if="scope.row.name=='代收代付'">
                             <el-switch
