@@ -59,10 +59,11 @@
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
             <!-- <iframe id="test" :src="pdfUrl" frameborder="0"></iframe> -->
-            <div style="background-color:red">
-                <span class="iconfont icon-guanbi1"></span>
-            </div>
         </div>
+        <p slot="footer">
+            <el-button round  size="medium" class="paper-btn">取消</el-button>
+            <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaper">打印</el-button>
+        </p>
     </el-dialog>
 </template>
 
@@ -79,7 +80,7 @@
                     '542': '',
                 },
                 FooterShow:true,
-                activeRow: {},
+                ID: '',
                 paperShow: false,
                 paperType: false, //false预览 true开票
                 paperInfoData: {}, //票据对象
@@ -100,8 +101,8 @@
              * 票据详情
              * @param row
              */
-            getPaperDetails: function(row) {
-                this.$ajax.get(`/api/bills/${row.id}`).then(res => {
+            getPaperDetails: function(id) {
+                this.$ajax.get(`/api/bills/${id}`).then(res => {
                     res = res.data
                     if (res.status === 200) {
                         this.paperInfoData = Object.assign({}, res.data)
@@ -166,8 +167,8 @@
                     // }
                     let type = this.moneyTypes[this.activeType]
                     obj = {
-                        code: this.activeRow.billCode,
-                        payId: this.activeRow.proceedsId,
+                        code: type.billCode,
+                        payId: this.ID,
                         payDetailsId: type.payDetailsId,
                         isHiddenAddress: type.addressHidden,
                         billType: type.project
@@ -203,7 +204,7 @@
             },
             // 获取开票列表
             paperList: function() {
-                this.$ajax.get('/api/bills/tobe', { /*id:this.activeRow.proceedsId*/ id: 21 }).then(res => {
+                this.$ajax.get('/api/bills/tobe', {id:this.ID}).then(res => {
                     res = res.data
                     if (res.status === 200) {
                         this.paperInfoData = Object.assign({}, res.data)
@@ -222,15 +223,16 @@
                 })
             },
             // 打开
-            show(row, bool = false) {
+            show(id, bool = false) {
                 this.paperType = bool;
                 this.loading = true;
                 this.paperShow = true;
                 this.pdfUrl= ""
-                this.activeRow = Object.assign({},row)
-                this.getPaperDetails(row);
+                this.ID = id
                 if (bool) {
                     this.paperList();
+                }else{
+                    this.getPaperDetails(id);
                 }
             }
         },

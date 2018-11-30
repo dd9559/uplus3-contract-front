@@ -251,6 +251,9 @@
         padding: 20px;
         border-bottom: 1px solid #EDECF0;
     }
+    /deep/.el-dialog__headerbtn{
+        font-size: 26px;
+    }
     .txt {
         height: 140px;
         padding: 0 20px;
@@ -561,66 +564,87 @@
     overflow: hidden;
     >li{
         float: left;
-        margin-left: 22px;
-        margin-top: 14px;
+        margin-left: 12px;
+        margin-top: 10px;
+        width: 120px;
+        height: 120px;
+        position: relative;
+        border-radius: 4px;
         &:first-child{
             margin-left: 0;
         }
         .icon-tubiao-6{
-            cursor: pointer;
-        }
-    }
-    .steps-img-li{
-        position: relative;
-        border:1px solid #EBEBEB;
-        box-sizing: border-box;
-        border-radius: 4px;
-        width: 130px;
-        height: 130px;
-        >img{
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        .icon-tubiao-6{
             position: absolute;
-            right: -14px;
-            top: -14px;
-            font-size: 28px;
+            right: 3px;
+            top: -5px;
+            font-size: 22px;
             color: #F56C6C;
-            &::after{
-                content: '';
-                position: absolute;
-                left: 50%;
-                top:50%;
-                width: 20px;
-                height: 20px;
-                margin-left: -10px;
-                margin-top: -10px;
-                background-color: #fff;
-                border-radius: 50%;
-            }
+            cursor: pointer;
             &::before{
                 position: relative;
                 z-index: 1;
             }
+            &::after{
+                content: '';
+                position: absolute;
+                left: 6px;
+                right: 6px;
+                top: 10px;
+                bottom: 10px;
+                background-color: #fff;
+                border-radius: 50%;
+            }
+        }
+        >.img{
+            position: relative;
+            top: 35px;
+            left: 30px;
+        }
+        >.p{
+            position: absolute;
+            bottom: 6px;
+            line-height: 20px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            overflow: hidden;
+            text-align: center;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        &:hover{
+            background-color: #F2F3F8;
         }
     }
-    .steps-mp4-li{
-        line-height: 20px;
-        overflow: hidden;
-        .icon-tubiao-7{
-            font-size: 20px;
-            float: left;
-            margin-left: 10px;
-            cursor: pointer;
-        }
-        .icon-steps{
-            width: 16px;
-            margin-right: 8px;
-            float: left;
-        }
-    }
+    // .steps-img-li{
+    //     position: relative;
+    //     border:1px solid #EBEBEB;
+    //     box-sizing: border-box;
+    //     border-radius: 4px;
+    //     width: 130px;
+    //     height: 130px;
+    //     >img{
+    //         display: block;
+    //         width: 100%;
+    //         height: 100%;
+    //     }
+        
+    // }
+    // .steps-mp4-li{
+    //     line-height: 20px;
+    //     overflow: hidden;
+    //     .icon-tubiao-7{
+    //         font-size: 20px;
+    //         float: left;
+    //         margin-left: 10px;
+    //         cursor: pointer;
+    //     }
+    //     .icon-steps{
+    //         width: 16px;
+    //         margin-right: 8px;
+    //         float: left;
+    //     }
+    // }
 }
 
 // 调整步骤弹层
