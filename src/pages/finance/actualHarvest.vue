@@ -4,7 +4,7 @@
       <div class="content">
         <div class="input-group">
           <label>收付款类:</label>
-          <el-select size="small" v-model="searchForm.moneyType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
               v-for="item in dictionary['25']"
               :key="item.key"
@@ -15,7 +15,7 @@
         </div>
         <div class="input-group">
           <label>收款状态:</label>
-          <el-select size="small" v-model="searchForm.status" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.receiveAmountState" placeholder="请选择">
             <el-option
               v-for="item in dictionary['23']"
               :key="item.key"
@@ -26,18 +26,26 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select size="small" v-model="searchForm.proceedsStore" placeholder="请选择">
+          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @change="getEmploye" v-model="searchForm.dealAgentStoreId" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in DepList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-select :clearable="true" size="small" v-model="searchForm.dealAgentId" placeholder="请选择">
+            <el-option
+              v-for="item in EmployeList"
+              :key="item.empId"
+              :label="item.name"
+              :value="item.empId">
             </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select size="small" v-model="searchForm.contractType" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
             <el-option
               v-for="item in dictionary['10']"
               :key="item.key"
@@ -74,7 +82,7 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -89,9 +97,9 @@
         <el-table-column align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul>
-              <li>合同编号:<span>{{scope.row.contractId}}</span></li>
-              <li>房源编号:<span>{{scope.row.houseId}}</span></li>
-              <li>客源编号:<span>{{scope.row.customerId}}</span></li>
+              <li>合同编号:<span>{{scope.row.code}}</span></li>
+              <li>房源编号:<span>{{scope.row.houseinfoCode}}</span></li>
+              <li>客源编号:<span>{{scope.row.guestinfoCode}}</span></li>
             </ul>
           </template>
         </el-table-column>
@@ -110,10 +118,11 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
+  import {MIXINS} from "@/assets/js/mixins";
 
   export default {
     name: "actual-harvest",
-    mixins: [FILTER],
+    mixins: [MIXINS,FILTER],
     data() {
       return {
         dictionary:{
@@ -122,19 +131,23 @@
           '25': '',
         },
         searchForm: {
-          moneyType: '',
-          status: '',
-          proceedsStore: '',
-          contractType: '',
+          moneyType: null,
+          contType: null,
+          dealAgentStoreId: null,
+          dealAgentId: null,
+          receiveAmountState:null,
           signTime: '',
           collectionTime: '',
-          keyword: ''
+          keyword: null
         },
-        list: []
+        list: [],
+        //分页
+        pageSize:10,
+        pageNum:1
       }
     },
     created() {
-      // this.getData()
+      this.getData()
       this.getDictionary()
     },
     methods: {
@@ -142,16 +155,22 @@
         this.$tool.clearForm(this.searchForm)
       },
       getData: function () {
-        let param={
-          moneyType: this.searchForm.moneyType,
-          status: this.searchForm.status,
-          proceedsStore: this.searchForm.proceedsStore,
-          contractType: this.searchForm.contractType,
-          operatingTimeQUERY:this.searchForm.moneyType,
-          proceedsTimeQUERY:this.searchForm.moneyType,
-          keyword: this.searchForm.keyword
+        // let param={}
+        let param=Object.assign({},this.searchForm)
+        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
+          param.beginDate = param.signTime[0]
+          param.endDate = param.signTime[1]
         }
-        this.$ajax.get('/api/finance/listCollection',param).then(res => {
+        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
+          param.beginProDate = param.collectionTime[0]
+          param.endProDate = param.collectionTime[1]
+        }
+        delete param.signTime
+        delete param.collectionTime
+        delete param.moneyType
+        param.pageNum=this.pageNum
+        param.pageSize=this.pageSize
+        this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list = res.data.list
@@ -159,7 +178,7 @@
         }).catch(error => {
           console.log(error)
         })
-      }
+      },
     }
   }
 </script>

@@ -33,12 +33,12 @@
               <el-table-column label="角色类型" width="160">
                 <template slot-scope="scope">
                   <!-- filterable -->
-                  <el-select v-model="scope.row.roleName" placeholder="请选择">
+                  <el-select v-model="scope.row.roleType" placeholder="请选择">
                     <el-option
-                      v-for="item in roleType1"
+                      v-for="item in roleType0"
                       :key="item.id"
                       :label="item.description"
-                      :value="item.id"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </template>
@@ -184,12 +184,12 @@
               <el-table-column label="角色类型" width="160">
                 <template slot-scope="scope">
                   <!-- filterable -->
-                  <el-select v-model="scope.row.roleName" placeholder="请选择">
+                  <el-select v-model="scope.row.roleType" placeholder="请选择">
                     <el-option
                       v-for="item in roleType1"
                       :key="item.id"
                       :label="item.description"
-                      :value="item.id"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </template>
@@ -328,14 +328,14 @@
           </p>
           <div class="footer-btn-layout f_r">
             <el-button type="primary" round @click="passAch" class="color-green">通过</el-button>
-            <el-button type="primary" round @click="passAch" class="color-red">驳回</el-button>
+            <el-button type="primary" round @click="rejectAch" class="color-red">驳回</el-button>
           </div>
         </div>
 
         <!-- 业绩编辑底部 -->
         <div class="ach-footer" v-if="dialogType==1">
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="passAch" class="color-blue">保存</el-button>
+            <el-button type="primary" round @click="keepAch" class="color-blue">保存</el-button>
           </div>
         </div>
         <!-- 业绩反审核底部 -->
@@ -347,7 +347,7 @@
             <el-button
               type="primary"
               round
-              @click="passAch"
+              @click="keepAch"
               class="color-blue"
               style="margin-top:20px;"
             >保存</el-button>
@@ -357,8 +357,8 @@
         <!-- 业绩分成底部      -->
         <div class="ach-footer" v-if="dialogType==3">
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="passAch" class="color-white">取消</el-button>
-            <el-button type="primary" round @click="passAch" class="color-blue">保存</el-button>
+            <el-button type="primary" round @click="keepAch" class="color-white">取消</el-button>
+            <el-button type="primary" round @click="keepAch" class="color-blue">保存</el-button>
           </div>
         </div>
 
@@ -418,9 +418,9 @@ export default {
       clientMansArr: [], //相关人员客源列表
       examineDate: "", //审核时间
       showTips: false,
-      roleType0: [],
-      roleType1: [],
-      comm: "", //可分配业绩
+      roleType0: [],  //房源角色类型
+      roleType1: [],  //客源角色类型
+      comm: "", //可分配业绩 
       addManList: [],
       dictionary: {
         //数据字典
@@ -436,7 +436,8 @@ export default {
     dialogType: Number, //弹框类型
     contractCode: String, //合同编号
     aId: Number, //业绩Id
-    contractId: Number //合同id
+    contractId: Number, //合同id
+    achIndex: Number //当前索引
   },
   methods: {
     handleClose() {
@@ -500,9 +501,12 @@ export default {
         manager: "",
         place: "",
         ratio: "",
-        roleName: "",
         roleType: "",
         shopkeeper: "",
+        amaldarId: "",
+        managerId: "",
+        shopkeeperId: "",
+        platformFeeRatio: "",
         contractId: this.contractId,
         contractCode: this.contractCode
       };
@@ -523,9 +527,12 @@ export default {
         manager: "",
         place: "",
         ratio: "",
-        roleName: "",
         roleType: "",
         shopkeeper: "",
+        amaldarId: "",
+        managerId: "",
+        shopkeeperId: "",
+        platformFeeRatio: "",
         contractId: this.contractId,
         contractCode: this.contractCode
       };
@@ -540,11 +547,10 @@ export default {
     },
     // 弹框通过操作
     passAch() {
-      console.log("ssssssssssssss");
-      console.log(this.aId);
-      console.log(this.remark);
       let resultArr = this.houseArr.concat(this.clientArr);
       console.log(resultArr);
+      console.log("sssssssssssssssss");
+      console.log(this.roleType1);
       let flag = true,
         sum = 0,
         sumFlag = false;
@@ -570,8 +576,9 @@ export default {
       }
       //flag=true代表信息都填完整，flag=false代表还有信息没有填
       // debugger;
-      console.log(sumFlag);
+      // console.log(sumFlag);
       if (flag && sumFlag) {
+        // this.$emit("close", this.achIndex, 1);
         // this.$message("操作完成");
         let param = {
           id: this.aId,
@@ -584,6 +591,7 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$message("操作完成");
+              this.$emit("close", this.achIndex, 1);
             }
           });
       } else if (!sumFlag) {
@@ -591,6 +599,58 @@ export default {
       } else {
         this.$message("请完善信息");
       }
+    },
+    //弹框驳回操作
+    rejectAch() {
+      let resultArr = this.houseArr.concat(this.clientArr);
+      let flag = true,
+        sum = 0,
+        sumFlag = false;
+      for (var i = 0; i < resultArr.length; i++) {
+        sum += resultArr[i].ratio;
+        if (
+          resultArr[i].roleName === "" ||
+          resultArr[i].ratio === "" ||
+          resultArr[i].assignor === "" ||
+          resultArr[i].isJob.label === "" ||
+          resultArr[i].level3 === "" ||
+          resultArr[i].shopkeeper === "" ||
+          resultArr[i].level4 === "" ||
+          resultArr[i].amaldar === "" ||
+          resultArr[i].manager === ""
+        ) {
+          flag = false;
+        } else if (sum == 100) {
+          sumFlag = true;
+        } else {
+          sumFlag = false;
+        }
+      }
+      if (flag && sumFlag && this.remark != "") {
+        let param = {
+          id: this.aId,
+          remark: this.remark,
+          distributions: resultArr
+        };
+        this.$ajax
+          .postJSON("/api/achievement/examineReject", param)
+          .then(res => {
+            console.log(res.data.status);
+            if (res.data.status == 200) {
+              this.$message("操作完成");
+              this.$emit("close", this.achIndex, 2);
+            }
+          });
+      } else if (!sumFlag) {
+        this.$message("请输入正确的分成比例");
+      } else if (this.remark == "") {
+        this.$message("请填写备注");
+      } else {
+        this.$message("请完善信息");
+      }
+    },
+    keepAch() {
+      alert("保存操作");
     },
     closeDialog() {
       this.$emit("close");
@@ -620,8 +680,9 @@ export default {
         console.log(res.status);
         if (res.status === 200) {
           // console.log(res.data.data[0]);
-          this.roleType0 = res.data.data[0];
-          this.roleType1 = res.data.data[1];
+   
+          this.roleType0 = res.data.data[1];   //房源角色类型
+          this.roleType1 = res.data.data[2];   //客源角色类型
         }
       });
     },
@@ -640,6 +701,10 @@ export default {
           this.houseArr[index].assignorId = data.assignorId; //经纪人id
           this.houseArr[index].storefront3Id = data.storefront3Id; //三级门店
           this.houseArr[index].storefront4Id = data.storefront4Id; //四级门店
+          this.houseArr[index].managerId = data.managerId; //区总id
+          this.houseArr[index].amaldarId = data.amaldarId; //区经id
+          this.houseArr[index].shopkeeperId = data.shopkeeperId; //店长id
+          this.houseArr[index].platformFeeRatio=data.platformFeeRatio    //平台费比率
         } else {
           this.clientArr[index].isJob = data.isJob;
           this.clientArr[index].level3 = data.level3; //门店
@@ -650,6 +715,10 @@ export default {
           this.clientArr[index].assignorId = data.assignorId; //经纪人id
           this.clientArr[index].storefront3Id = data.storefront3Id; //三级门店
           this.clientArr[index].storefront4Id = data.storefront4Id; //四级门店
+          this.clientArr[index].managerId = data.managerId; //区总id
+          this.clientArr[index].amaldarId = data.amaldarId; //区经id
+          this.clientArr[index].shopkeeperId = data.shopkeeperId; //店长id
+          this.clientArr[index].platformFeeRatio=data.platformFeeRatio    //平台费比率
         }
       });
     },

@@ -138,9 +138,7 @@
                                  label="合同类型"
                                  width="100">
                                    <template slot-scope="scope">
-                                     <p v-if="scope.row.contType==0">租赁</p>
-                                     <p v-if="scope.row.contType==1">买卖</p>
-                                     <p v-if="scope.row.contType==2">代办</p>
+                                     <p>{{scope.row.contType.label}}</p>
                                   </template>
                                </el-table-column>
 
@@ -148,7 +146,7 @@
                                 <el-table-column
                                  prop="propertyAddr"
                                  label="物业地址"
-                                 width="180">
+                                 width="140">
                                </el-table-column>
 
                                <!-- dealStorefront   dealName -->
@@ -171,7 +169,7 @@
                                    <el-table-column
                                  prop="date"
                                  label="签约日期"
-                                 width="110">
+                                 width="100">
                                  <template slot-scope="scope">
                                        <p>{{scope.row.signDate|formatDate}}</p>
                                  </template>
