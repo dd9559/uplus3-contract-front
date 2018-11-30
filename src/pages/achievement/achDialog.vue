@@ -161,7 +161,7 @@
                   <a
                     class="delete"
                     style="color:#478de3;text-decoration:underline;"
-                    @click="deleteHouse(scope.$index,houseArr)"
+                    @click="deleteHouse(scope.$index,houseArr,scope.row.id)"
                   >删除</a>
                   <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
                 </template>
@@ -312,7 +312,7 @@
                   <a
                     class="delete"
                     style="color:#478de3;text-decoration:underline;"
-                    @click="deleteHouse(scope.$index,clientArr)"
+                    @click="deleteClient(scope.$index,clientArr,scope.row.id)"
                   >删除</a>
                   <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
                 </template>
@@ -335,19 +335,24 @@
         <!-- 业绩编辑底部 -->
         <div class="ach-footer" v-if="dialogType==1">
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="keepAch" class="color-blue">保存</el-button>
+            <el-button type="primary" round @click="keepAch(2)" class="color-blue">保存</el-button>
           </div>
         </div>
         <!-- 业绩反审核底部 -->
         <div class="ach-footer" v-if="dialogType==2">
           <p class="f_l">审核日期：
-            <el-date-picker v-model="examineDate" type="date" placeholder="选择日期"></el-date-picker>
+            <el-date-picker
+              v-model="examineDate"
+              type="date"
+              placeholder="选择日期"
+              value-format="timestamp"
+            ></el-date-picker>
           </p>
           <div class="footer-btn-layout f_r">
             <el-button
               type="primary"
               round
-              @click="keepAch"
+              @click="keepAch(1)"
               class="color-blue"
               style="margin-top:20px;"
             >保存</el-button>
@@ -357,8 +362,8 @@
         <!-- 业绩分成底部      -->
         <div class="ach-footer" v-if="dialogType==3">
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="keepAch" class="color-white">取消</el-button>
-            <el-button type="primary" round @click="keepAch" class="color-blue">保存</el-button>
+            <el-button type="primary" round @click="closeDialog" class="color-white">取消</el-button>
+            <el-button type="primary" round @click="keepAchDivide" class="color-blue">保存</el-button>
           </div>
         </div>
 
@@ -418,16 +423,17 @@ export default {
       clientMansArr: [], //相关人员客源列表
       examineDate: "", //审核时间
       showTips: false,
-      roleType0: [],  //房源角色类型
-      roleType1: [],  //客源角色类型
-      comm: "", //可分配业绩 
+      roleType0: [], //房源角色类型
+      roleType1: [], //客源角色类型
+      comm: "", //可分配业绩
       addManList: [],
       dictionary: {
         //数据字典
         "20": "" //员工状态
       },
       type: "", //房源1 客源2
-      remark: ""
+      remark: "",
+      agendIds: []
     };
   },
   created() {},
@@ -437,11 +443,13 @@ export default {
     contractCode: String, //合同编号
     aId: Number, //业绩Id
     contractId: Number, //合同id
-    achIndex: Number //当前索引
+    achIndex: Number, //当前索引
+    achObj:Object   //合同详情传过来的对象（首次业绩录入需要用）
   },
   methods: {
     handleClose() {
       this.$emit("close");
+      this.agendIds = [];
     },
     //判断分成比例只能输入1-100的正整数
     filterClientNumber(index, val) {
@@ -539,18 +547,18 @@ export default {
       this.clientArr.push(obj);
     },
     // 删除按钮
-    deleteHouse(index, rows) {
+    deleteHouse(index, rows, id) {
+      this.agendIds.push(id);
       rows.splice(index, 1);
     },
-    delete1(index, rows) {
+    deleteClient(index, rows, id) {
+      this.agendIds.push(id);
       rows.splice(index, 1);
     },
     // 弹框通过操作
     passAch() {
       let resultArr = this.houseArr.concat(this.clientArr);
       console.log(resultArr);
-      console.log("sssssssssssssssss");
-      console.log(this.roleType1);
       let flag = true,
         sum = 0,
         sumFlag = false;
@@ -583,7 +591,8 @@ export default {
         let param = {
           id: this.aId,
           remark: this.remark,
-          distributions: resultArr
+          distributions: resultArr,
+          agendIds: this.agendIds
         };
         this.$ajax
           .postJSON("/api/achievement/examineAdopt", param)
@@ -626,11 +635,14 @@ export default {
           sumFlag = false;
         }
       }
+      // debugger;
+      console.log(sum);
       if (flag && sumFlag && this.remark != "") {
         let param = {
           id: this.aId,
           remark: this.remark,
-          distributions: resultArr
+          distributions: resultArr,
+          agendIds: this.agendIds
         };
         this.$ajax
           .postJSON("/api/achievement/examineReject", param)
@@ -649,8 +661,122 @@ export default {
         this.$message("请完善信息");
       }
     },
-    keepAch() {
-      alert("保存操作");
+    // 反审核，编辑的保存
+    keepAch(type) {
+      let resultArr = this.houseArr.concat(this.clientArr);
+      let flag = true,
+        sum = 0,
+        sumFlag = false;
+      for (var i = 0; i < resultArr.length; i++) {
+        sum += resultArr[i].ratio;
+        if (
+          resultArr[i].roleName === "" ||
+          resultArr[i].ratio === "" ||
+          resultArr[i].assignor === "" ||
+          resultArr[i].isJob.label === "" ||
+          resultArr[i].level3 === "" ||
+          resultArr[i].shopkeeper === "" ||
+          resultArr[i].level4 === "" ||
+          resultArr[i].amaldar === "" ||
+          resultArr[i].manager === ""
+        ) {
+          flag = false;
+        } else if (sum == 100) {
+          sumFlag = true;
+        } else {
+          sumFlag = false;
+        }
+      }
+      if (flag && sumFlag) {
+        // this.$emit("close", this.achIndex);
+        // this.$message("操作完成");
+        console.log("zzzzzzzzzzzzzzzzz");
+        console.log(this.examineDate);
+        let param = {};
+        if (type == 1) {
+          param = {
+            id: this.aId,
+            examineDate: this.examineDate,
+            distributions: resultArr,
+            agendIds: this.agendIds
+          };
+        }
+        if (type == 2) {
+          param = {
+            id: this.aId,
+            distributions: resultArr
+          };
+        }
+
+        this.$ajax.postJSON("/api/achievement/examineSave", param).then(res => {
+          console.log(res.data.status);
+          if (res.data.status == 200) {
+            this.$message("操作完成");
+            this.$emit("close", this.achIndex, 1);
+          }
+        });
+      } else if (!sumFlag) {
+        this.$message("请输入正确的分成比例");
+      } else {
+        this.$message("请完善信息");
+      }
+    },
+    // 业绩分成的保存
+    keepAchDivide() {
+      let resultArr = this.houseArr.concat(this.clientArr);
+      console.log(resultArr);
+      let flag = true,
+        sum = 0,
+        sumFlag = false;
+      for (var i = 0; i < resultArr.length; i++) {
+        sum += resultArr[i].ratio;
+        if (
+          resultArr[i].roleName === "" ||
+          resultArr[i].ratio === "" ||
+          resultArr[i].assignor === "" ||
+          resultArr[i].isJob.label === "" ||
+          resultArr[i].level3 === "" ||
+          resultArr[i].shopkeeper === "" ||
+          resultArr[i].level4 === "" ||
+          resultArr[i].amaldar === "" ||
+          resultArr[i].manager === ""
+        ) {
+          flag = false;
+        } else if (sum == 100) {
+          sumFlag = true;
+        } else {
+          sumFlag = false;
+        }
+      }
+      if (flag && sumFlag) {
+        // this.$emit("close", this.achIndex);
+        // this.$message("操作完成");
+        console.log("aaaaaaaaaaaaaaaaaa");
+        console.log(this.achObj)
+        let param = {
+          distributions: resultArr,
+          contractCode: this.contractCode,
+          contractId: this.achObj.contractId, //合同id需要详情页面带过来
+          houseCode: this.achObj.houseCode, //房源编号需要详情页面带过来
+          receivableComm: this.achObj.receivableComm, //合同应收佣金需要详情页面带过来
+          signDate: this.achObj.signDate, //合同签约时间需要详情页面带过来
+          contractType: this.achObj.contractType, //合同类型需要详情页面带过来
+          customerCode: this.achObj.customerCode //源编号需要详情页面带过来
+        };
+        this.$ajax
+          .postJSON("/api/achievement/distributionSave", param)
+          .then(res => {
+            console.log(res.data.status);
+            if (res.data.status == 200) {
+              this.$message("操作完成");
+              this.$emit("close", this.achIndex, 1);
+            }
+          });
+      } else if (!sumFlag) {
+        this.$message("请输入正确的分成比例");
+      } else {
+        this.$message("请完善信息");
+      }
     },
     closeDialog() {
       this.$emit("close");
@@ -660,7 +786,7 @@ export default {
       console.log(val);
       this.addManList = val;
     },
-    // 审核，反审核，编辑，分成点进去的房源，客源
+    // 审核，反审核，编辑点进去的房源，客源
     codeBaseInfo(contCode, entrance) {
       let param = { contCode: contCode, entrance: entrance };
       this.$ajax
@@ -671,6 +797,7 @@ export default {
             this.clientArr = res.data.data.customerAgents;
             this.comm = res.data.data.comm;
             if (res.data.data.examineDate) {
+              console.log("ssssssssss");
               this.examineDate = res.data.data.examineDate;
             }
           }
@@ -680,9 +807,8 @@ export default {
         console.log(res.status);
         if (res.status === 200) {
           // console.log(res.data.data[0]);
-   
-          this.roleType0 = res.data.data[1];   //房源角色类型
-          this.roleType1 = res.data.data[2];   //客源角色类型
+          this.roleType0 = res.data.data[1]; //房源角色类型
+          this.roleType1 = res.data.data[2]; //客源角色类型
         }
       });
     },
@@ -704,7 +830,7 @@ export default {
           this.houseArr[index].managerId = data.managerId; //区总id
           this.houseArr[index].amaldarId = data.amaldarId; //区经id
           this.houseArr[index].shopkeeperId = data.shopkeeperId; //店长id
-          this.houseArr[index].platformFeeRatio=data.platformFeeRatio    //平台费比率
+          this.houseArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
         } else {
           this.clientArr[index].isJob = data.isJob;
           this.clientArr[index].level3 = data.level3; //门店
@@ -718,7 +844,7 @@ export default {
           this.clientArr[index].managerId = data.managerId; //区总id
           this.clientArr[index].amaldarId = data.amaldarId; //区经id
           this.clientArr[index].shopkeeperId = data.shopkeeperId; //店长id
-          this.clientArr[index].platformFeeRatio=data.platformFeeRatio    //平台费比率
+          this.clientArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
         }
       });
     },
@@ -813,6 +939,16 @@ export default {
           this.codeBaseInfo(this.code, 2);
           // 业绩录入分成
         } else if (this.dialogType == 3) {
+          this.comm=this.achObj.comm  //合同详情传过来的可分配业绩
+          // 角色类型
+          this.$ajax.get("/api/role/types").then(res => {
+            console.log(res.status);
+            if (res.status === 200) {
+              // console.log(res.data.data[0]);
+              this.roleType0 = res.data.data[1]; //房源角色类型
+              this.roleType1 = res.data.data[2]; //客源角色类型
+            }
+          });
           let param = {
             contCode: this.contractCode
           };
@@ -820,11 +956,12 @@ export default {
             let data = res.data;
             if (data.status === 200) {
               console.log("zzzzz");
-              this.houseArr = data.data.houseAgents;
+
               if (data.data.customerAgents) {
                 this.clientArr = data.data.customerAgents;
-              } else {
-                this.clientArr = [];
+              }
+              if (data.data.houseAgents) {
+                this.houseArr = data.data.houseAgents;
               }
               // 需要从页面带一个分配业绩,业绩id
             }
@@ -933,6 +1070,7 @@ export default {
         border: 0;
         box-shadow: 0;
         padding: 0;
+        padding-left: 5px;
         // padding-left: 10px;
       }
       .house-divide {
