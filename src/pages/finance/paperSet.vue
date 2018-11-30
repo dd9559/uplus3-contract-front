@@ -264,7 +264,7 @@
       btnOpera: function (row,type) {
         this.activeRow = Object.assign({},row)
         if(type===4){
-          this.$refs.layerInvoice.show(row,true);
+          this.$refs.layerInvoice.show(row.proceedsId,true);
           return
         }else {
           this.layer.show = true
@@ -293,7 +293,7 @@
         if (type === 'contract') {
 
         } else if (type === 'paper') {
-          this.$refs.layerInvoice.show(row);
+          this.$refs.layerInvoice.show(row.id);
         } else {
           this.$router.push({
             path:'billDetails',

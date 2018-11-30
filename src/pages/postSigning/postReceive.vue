@@ -7,7 +7,7 @@
                 <el-form-item label="关键字" prop="search">
                     <el-input class="w322" v-model="propForm.search" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="查询时间" prop="dateMo">
+                <el-form-item label="签约日期" prop="dateMo">
                     <el-date-picker v-model="propForm.dateMo" class="w330" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
                     </el-date-picker>
                 </el-form-item>
@@ -220,7 +220,7 @@
                     </el-tab-pane>
                     <el-tab-pane label="合同资料库">
                         <div class="contract-box">
-                            <div class="contract-top" v-show="downloadState">
+                            <!-- <div class="contract-top" v-show="downloadState">
                                 <el-button 
                                     class="paper-btn paper-btn-blue" 
                                     type="primary" 
@@ -241,7 +241,7 @@
                                     size="small" 
                                     @click="downloadFn"
                                     round>下载</el-button>
-                            </div>
+                            </div> -->
                             <div class="contract-photo">
                                 <el-checkbox-group v-model="checkList">
                                     <div class="tit mt-20">{{photoTit.txt1}}</div>
@@ -839,7 +839,7 @@
                         keyword:this.propForm.search,
                         signDateSta,
                         signDateEnd,
-                        stepInstanceCode:this.propForm.time,
+                        transFlowCode:this.propForm.time,
                         stagesBankCode:this.propForm.paper,
                         dealDeptId:this.propForm.region,
                         dealBrokerName:this.propForm.regionName,

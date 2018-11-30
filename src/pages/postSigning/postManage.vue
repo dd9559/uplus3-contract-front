@@ -280,14 +280,14 @@
                         <el-button
                             class="management-btn paper-btn-blue"
                             type="primary"
-                            size="medium"
+                            size="small"
                             @click="replaceFn"
                             round>更换交易流程
                         </el-button>
                         <el-button
                             class="paper-btn paper-btn-blue"
                             type="primary"
-                            size="medium"
+                            size="small"
                             @click="managementFn"
                             round>步骤管理
                         </el-button>
@@ -419,8 +419,8 @@
                 </div>
             </div>
             <span slot="footer">
-                <el-button class="paper-btn" type size="medium" @click="replaceCloseFn" round>返回</el-button>
-                <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="replaceBtnFn" round>确定</el-button>
+                <el-button class="paper-btn" type size="small" @click="replaceCloseFn" round>返回</el-button>
+                <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="replaceBtnFn" round>确定</el-button>
             </span>
         </el-dialog>
         <!-- 办理 -->
@@ -474,49 +474,49 @@
                                         <div class="text-absloute">{{item.val.length}}/{{invalidMax}}</div>
                                     </div>
                                 </template>
-                                <template v-else-if="item.type === STEPSINPUT.img">
+                                <template v-else>
                                     <div>
                                         <fileUp 
                                         :id="'fileUp'+index"
+                                        :rules="stepsTypeImg(item.type,1)"
                                         @getUrl="imgBtnFn"
                                         class="fileUp">
                                             <el-button 
-                                            @click="stepsIndexBtnFn(index)" 
                                             class="paper-btn paper-btn-blue" 
+                                            round
                                             type="primary" 
-                                            size="medium">上传图片</el-button>
+                                            size="small">{{stepsTypeImg(item.type,2)}}</el-button>
                                         </fileUp>
                                     </div>
                                     <ul class="steps-img">
                                         <li 
-                                        class="steps-img-li"
                                         v-for="(i,n) in item.val"
                                         @click="clearFn(index,n)"
                                         :key="i.name"
                                         >
                                             <i class="iconfont icon-tubiao-6"></i>
-                                            <img :src="i.src">
+                                            <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                            <p class="p">{{i.name}}</p>
                                         </li>
                                     </ul>
                                 </template>
-                                <template v-else>
+                                <!-- <template v-else>
                                     <div>
                                         <template v-if="item.type === STEPSINPUT.mp4">
-                                            <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传视频</el-button>
+                                            <el-button class="paper-btn paper-btn-blue" round type="primary" size="small" @click="imgBtnFn">上传视频</el-button>
                                         </template>
                                         <template v-if="item.type === STEPSINPUT.excel">
-                                            <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传Word</el-button>
+                                            <el-button class="paper-btn paper-btn-blue" round type="primary" size="small" @click="imgBtnFn">上传Word</el-button>
                                         </template>
                                         <template v-if="item.type === STEPSINPUT.word">
-                                            <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传Excel</el-button>
+                                            <el-button class="paper-btn paper-btn-blue" round type="primary" size="small" @click="imgBtnFn">上传Excel</el-button>
                                         </template>
                                         <template v-if="item.type === STEPSINPUT.pdf">
-                                            <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="imgBtnFn">上传PDF</el-button>
+                                            <el-button class="paper-btn paper-btn-blue" round type="primary" size="small" @click="imgBtnFn">上传PDF</el-button>
                                         </template>
                                     </div>
                                     <ul class="steps-img">
                                         <li 
-                                        class="steps-mp4-li"
                                         v-for="(i,n) in item.val"
                                         @click="clearFn(index,n)"
                                         :key="i.name"
@@ -541,7 +541,7 @@
                                             <i class="iconfont icon-tubiao-7"></i>
                                         </li>
                                     </ul>
-                                </template>
+                                </template> -->
                             </template>
                             <!-- 查看 -->
                             <template v-else>
@@ -549,7 +549,7 @@
                                     <div class="steps-see">{{item.val}}</div>
                                 </template>
                                 <template v-else>
-                                    <ul class="steps-img">
+                                    <!-- <ul class="steps-img">
                                         <li 
                                         class="steps-mp4-li"
                                         v-for="(i,n) in item.val"
@@ -574,6 +574,17 @@
                                             src="../../assets/img/icon-steps04.png">
                                             <span class="fl">{{i.name}}</span>
                                         </li>
+                                    </ul> -->
+                                    <ul class="steps-img">
+                                        <li 
+                                        v-for="(i,n) in item.val"
+                                        @click="clearFn(index,n)"
+                                        :key="i.name"
+                                        >
+                                            <i class="iconfont icon-tubiao-6"></i>
+                                            <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                            <p class="p">{{i.name}}</p>
+                                        </li>
                                     </ul>
                                 </template>
                             </template>
@@ -583,12 +594,12 @@
             <span slot="footer">
                 <!-- 办理 -->
                 <template v-if="stepsData.tit === STEPS.start">
-                    <el-button class="paper-btn" type size="medium" @click="handleCloseFn" round>取消</el-button>
-                    <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="handleBtnFn" round>确定</el-button>
+                    <el-button class="paper-btn" type size="small" @click="handleCloseFn" round>取消</el-button>
+                    <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="handleBtnFn" round>确定</el-button>
                 </template>
                 <!--  编辑 -->
                 <template v-else-if="stepsData.tit === STEPS.sure">
-                    <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="editorBtnFn" round>确定</el-button>
+                    <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="editorBtnFn" round>确定</el-button>
                 </template>
             </span>
         </el-dialog>
@@ -636,7 +647,7 @@
                 </el-table>
             </div>
             <span slot="footer">
-                <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="adjustBtnFn" round>确定</el-button>
+                <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="adjustBtnFn" round>确定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -820,7 +831,6 @@
                 },
                 stepsFrom:{
                     list:[],
-                    index:0,
                     id:'',
                 },
                 // 办理状态
@@ -1183,6 +1193,65 @@
                 console.log('办理弹层取消')
                 this.stepsData.show = false;
             },
+            // 图片格式状态判定
+            stepsTypeImg(type,bool){
+                if(bool === 1){
+                    switch (type) {
+                        case STEPSINPUT.img:
+                            return ['.png','.jpg','.jpeg'];
+                            break;
+                        case STEPSINPUT.mp4:
+                            return ['.mp4','.avi'];
+                            break;
+                        case STEPSINPUT.excel:
+                            return ['.xlsx'];
+                            break;
+                        case STEPSINPUT.word:
+                            return ['.doc'];
+                            break;
+                        case STEPSINPUT.pdf:
+                            return ['.pdf'];
+                            break;
+                        default:
+                            return []
+                            break;
+                    }
+                }else if(bool === 2){
+                    switch (type) {
+                        case STEPSINPUT.img:
+                            return '上传图片';
+                            break;
+                        case STEPSINPUT.mp4:
+                            return '上传视频';
+                            break;
+                        case STEPSINPUT.excel:
+                            return '上传Excel';
+                            break;
+                        case STEPSINPUT.word:
+                            return '上传Word';
+                            break;
+                        case STEPSINPUT.pdf:
+                            return '上传PDF';
+                            break;
+                        default:
+                            return '错误状态'
+                            break;
+                    }
+                }else{
+                    switch (type) {
+                        case STEPSINPUT.img:
+                            return '.png'
+                            break;
+                        case STEPSINPUT.mp4:
+                            return '.mp4'
+                            break;
+                        default:
+                            return '.doc'
+                            break;
+                    }
+                }
+                
+            },
             // 办理确定
             handleBtnFn(){
                 this.confirmStepFn();
@@ -1205,7 +1274,13 @@
                                 if(e.val.length === 0){
                                     e.value = '';
                                 }else{
-                                    e.value = e.val.join();
+                                    let arr = this.$tool.getFilePath(e.val);
+                                    // let arr = [];
+                                    // e.val.map(r=>{
+                                    //     let t = `${r.path}?${r.name}`
+                                    //     arr.push(t)
+                                    // })
+                                    e.value = arr.join();
                                 }
                             }
                         })
@@ -1236,34 +1311,38 @@
                 this.confirmStepFn('/postSigning/updateStep');
             },
             // 选择第几个上传
-            stepsIndexBtnFn(i){
-                this.stepsFrom.index = i;
-            },
+            // stepsIndexBtnFn(i){
+            //     this.stepsFrom.index = i;
+            // },
             // 图片上传
             imgBtnFn(e){
-                let arr = this.stepsFrom.list[this.stepsFrom.index];
-                arr.val.push({
-                    name:'newdata'+ e.param.length,
-                    src:e.param[e.param.length-1],
-                });
-                console.log('图片上传',this.stepsFrom,e.param[e.param.length-1])
+                console.log(e)
+                let index = e.btnId.slice(6);
+                let arr = e.param[e.param.length - 1];
+                this.stepsFrom.list[index].val.push(arr)
+                // let arr = this.stepsFrom.list[this.stepsFrom.index];
+                // arr.val.push({
+                //     name:'newdata'+ e.param.length,
+                //     src:e.param[e.param.length-1],
+                // });
+                // console.log('图片上传',this.stepsFrom,e.param[e.param.length-1])
             },
-            // 视频上传
-            mp4BtnFn(){
-                console.log('视频上传')
-            },
-            // 表格上传
-            excelBtnFn(){
-                console.log('表格上传')
-            },
-            // 文档上传
-            wordBtnFn(){
-                console.log('文档上传')
-            },
-            // pdf上传
-            pdfBtnFn(){
-                console.log('pdf上传')
-            },
+            // // 视频上传
+            // mp4BtnFn(){
+            //     console.log('视频上传')
+            // },
+            // // 表格上传
+            // excelBtnFn(){
+            //     console.log('表格上传')
+            // },
+            // // 文档上传
+            // wordBtnFn(){
+            //     console.log('文档上传')
+            // },
+            // // pdf上传
+            // pdfBtnFn(){
+            //     console.log('pdf上传')
+            // },
             // 删除
             clearFn(i,n){
                 let arr = [...this.stepsFrom];
@@ -1523,20 +1602,6 @@
         components:{
             ScreeningTop
         },
-        mounted() {
-            // 贷款银行
-            this.remoteMethodFn();
-            // 交易流程
-            this.getTransactionProcess();
-            // 部门搜索
-            this.regionMethodFn('');
-            // 交易步骤
-            this.getTradingSteps();
-            // 枚举数据查询
-            this.getDictionary();
-            // 列表数据
-            this.getDataList();
-        },
         watch:{
            dictionary(newData,oldData){
                 //是否超时    
@@ -1564,7 +1629,21 @@
                 // 步骤状态
                 this.rules.stepsMo = [...newData[18]];
            }
-        }
+        },
+        mounted() {
+            // 贷款银行
+            this.remoteMethodFn();
+            // 交易流程
+            this.getTransactionProcess();
+            // 部门搜索
+            this.regionMethodFn('');
+            // 交易步骤
+            this.getTradingSteps();
+            // 枚举数据查询
+            this.getDictionary();
+            // 列表数据
+            this.getDataList();
+        },
     }
 </script>
 <style lang="less" scoped>
