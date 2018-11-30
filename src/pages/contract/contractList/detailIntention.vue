@@ -29,14 +29,14 @@
                                 </li>
                                 <li>
                                     <div class="div1"><span>房源价格：</span>{{detailData.houseInfo.price | nullData}}元</div>
-                                    <div class="div2"><span>建筑面积：</span>{{detailData.houseInfo.architectureArea | nullData}}㎡</div>
-                                    <div class="div3"><span>套内面积：</span>{{detailData.houseInfo.insideArea | nullData}}㎡</div>
-                                    <div><span>用途：</span>{{detailData.houseinfoPurpose | nullData}}</div>
+                                    <div class="div2"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
+                                    <div class="div3"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
+                                    <div><span>用途：</span>{{detailData.houseInfo.HousePurpose | nullData}}</div>
                                 </li>
                                 <li>
-                                    <div class="div1"><span>房型：</span>{{detailData.houseInfo.houseType | nullData}}</div>
-                                    <div class="div2"><span>朝向：</span>{{detailData.houseInfo.orientation | nullData}}</div>
-                                    <div class="div3"><span>装修：</span>{{detailData.houseInfo.renovation | nullData}}</div>
+                                    <div class="div1"><span>房型：</span>{{detailData.houseInfo.HouseType | nullData}}</div>
+                                    <div class="div2"><span>朝向：</span>{{detailData.houseInfo.Orientation | nullData}}</div>
+                                    <div class="div3"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
                                     <div><span>业主姓名：</span>{{custInfo[0].name | nullData}}</div>
                                 </li>
                                 <li>
@@ -286,7 +286,7 @@ export default {
             })
         },
 
-        //编辑事件
+        //预览事件
         onEdit(e) {
             this.$router.push({
                 path:'/newIntention',
@@ -321,6 +321,9 @@ export default {
                         }
                     }
                 }
+                // console.log(this.detailData)
+                // console.log(this.ownerInfo)
+                // console.log(this.custInfo)
             }
             
           }).catch(error => {
