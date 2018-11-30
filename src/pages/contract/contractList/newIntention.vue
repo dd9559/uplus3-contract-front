@@ -2,7 +2,7 @@
 <template>
     <div class="newintention" id="newIntention">
         <div class="formbox">
-            <el-form :inline="true" :model="contractForm" ref="contractForm" class="form-innnerbox">
+            <el-form :inline="true" :model="contractForm" :rules="rules" :validate-on-rule-change="false" ref="contractForm" class="form-innnerbox">
                 <div class="form-content">
                 <!-- 合同信息 -->
                     <div class="column-form"> 
@@ -56,7 +56,7 @@
                             </el-form-item>
                             
                             <el-form-item label="产证地址：" class="disb">
-                                <el-input v-model="contractForm.houseInfo.EstateNameA" clearable class="big-input"></el-input>
+                                <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input"></el-input>
                             </el-form-item>
 
                             <el-form-item label="房源总价：" class="disb">
@@ -66,11 +66,11 @@
                             </el-form-item>
 
                             <el-form-item label="业主信息：" class="disb" required>
-                                <el-form-item prop="name">
-                                    <el-input v-model="contractForm.contPersons[0].name" clearable placeholder="姓名" class="ownwidth" :disabled="type===2?true:false"></el-input>
+                                <el-form-item prop="ownname">
+                                    <el-input v-model="contractForm.ownname" clearable placeholder="姓名" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="mobile">
-                                    <el-input v-model.number="contractForm.contPersons[0].mobile" type="number" clearable placeholder="手机号" class="ownwidth" :disabled="type===2?true:false"></el-input>
+                                <el-form-item prop="ownmobile">
+                                    <el-input v-model.number="contractForm.ownmobile" type="number" clearable placeholder="手机号" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -81,32 +81,32 @@
                         <div class="column-title">客源信息</div>
                         <div class="form-cont">
                             <el-form-item>
-                                <el-form-item label="客源编号：" prop="custno" required>
-                                        <el-button type="primary"  @click="toLayerGuest()" v-if="type===1">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</el-button>
-                                        <el-button type="text" v-if="type===2">{{contractForm.guestinfoCode}}</el-button>
+                                <el-form-item label="客源编号：" prop="guestinfoCode" required>
+                                        <el-button type="primary"  @click="toLayerGuest()" v-if="type===1" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</el-button>
+                                        <el-button type="text" v-if="type===2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
                                 </el-form-item>
                                 <el-form-item label="成交经纪人：" required>
-                                    <el-form-item prop="item1">
+                                    <el-form-item prop="guestInfo.GuestStoreName">
                                         <el-select v-model="contractForm.guestInfo.GuestStoreName" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
                                             <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                         </el-select>
                                     </el-form-item>
-                                    <el-form-item prop="item2" class="small-input">
-                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" @change="getAgent">
+                                    <el-form-item prop="guestInfo.EmpName" class="small-input">
+                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" @change="changeAgent" @clear="clearEmpName">
                                             <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-form-item>
                             </el-form-item>
                             <el-form-item label="客户信息：" class="disb" required>
-                                <el-form-item prop="guestList_name">
-                                    <el-input v-model="contractForm.contPersons[1].name" clearable placeholder="姓名" class="ownwidth" :disabled="type===2?true:false"></el-input>
+                                <el-form-item prop="custname">
+                                    <el-input v-model="contractForm.custname" clearable placeholder="姓名" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="guestList_mobile">
-                                    <el-input v-model="contractForm.contPersons[1].mobile" clearable placeholder="手机号" class="ownwidth" :disabled="type===2?true:false"></el-input>
+                                <el-form-item prop="custmobile">
+                                    <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="guestList_identifyCode">
-                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="身份证号" class="custwidth" :disabled="type===2?true:false"></el-input>
+                                <el-form-item prop="contPersons.identifyCode">
+                                    <el-input v-model="contractForm.contPersons.identifyCode" clearable placeholder="身份证号" class="custwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -145,6 +145,7 @@ export default {
             type: 1,
             //编辑时的合同id
             id:'',
+
             contractForm: {
                 type: this.$route.query.contType,
                 signDate: "",
@@ -180,8 +181,24 @@ export default {
                         relation: ''
                     }
                 ],
+                //业主信息
+                ownname: '',
+                ownmobile: '',
+                // ownrelation: '',
+
+                //客户信息
+                custname: '',
+                custmobile: '',
+                // custrelation: '',
+                
+            
+
                                
             },
+
+            
+
+
             
             
             
@@ -193,52 +210,62 @@ export default {
             option3: [],
             
             // 表单校验规则
-            // rules: {
-            //     signDate: [
-            //         { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-            //     ],
+            rules: {
+                signDate: [
+                    { type: 'string', required: true, message: '请选择日期', trigger: 'change' }
+                ],
                 
-            //     subscriptionTerm: [
-            //         { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-            //     ],
-            //     subscriptionPrice: [
-            //         { required: true, message: '请输入认购总价'},
-            //         // { min: 0, max: 12, message: '输入总价在0-999999999.99之间', trigger: 'blur' }
-            //     ],
-            //     dealPrice: [
-            //         { required: true, message: '请输入意向金金额'},
-            //         // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
-            //     ],
-                
-            //     name: [
-            //         { required: true, message: '请输入业主姓名', trigger: 'submit'},
-            //     ],
-            //     mobile: [
-            //         { required: true, message: '请输入业主手机号', trigger: 'submit'},
-            //     ],
+                subscriptionTerm: [
+                    { type: 'string', required: true, message: '请选择日期', trigger: 'change' }
+                ],
+                subscriptionPrice: [
+                    { required: true, message: '请输入认购总价'},
+                    // { min: 0, max: 12, message: '输入总价在0-999999999.99之间', trigger: 'blur' }
+                ],
+                dealPrice: [
+                    { required: true, message: '请输入意向金金额'},
+                    // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
+                ],
+                ownname: [
+                    { required: true, message: '请输入业主姓名'},
+                ],
+                ownmobile: [
+                    { required: true, message: '请输入业主手机号'},
+                ],
 
-            //     guestList_name: [
-            //         { required: true, message: '请输入客户姓名', trigger: 'submit' },
-            //     ],
-            //     guestList_mobile: [
-            //         { required: true, message: '请输入客户手机号', trigger: 'submit'  },
-            //     ],
-            //     guestList_identifyCode: [
-            //         { required: true, message: '请输入客户身份证号', trigger: 'submit'  },
-            //     ],
+                custname: [
+                    { required: true, message: '请输入客户姓名'},
+                ],
+                custmobile: [
+                    { required: true, message: '请输入客户手机号' },
+                ],
                 
-            //     custno: [
-            //         { required: true, message: '请选择客源', trigger: 'click' },
-            //     ],
-            //     item1: [
-            //         { required: true, message: '请选择门店', trigger: 'submit' }
-            //     ],
-            //     item2: [
-            //         { required: true, message: '请选择经纪人', trigger: 'submit' }
-            //     ],
+                guestinfoCode: [
+                    { required: true, message: '请选择客源编号', trigger: 'click'},
+                ],
+                guestInfo: {
+                    GuestStoreName: [
+                        { required: true, message: '请选择门店' }
+                    ],
+                    EmpName: [
+                        { required: true, message: '请选择经纪人'}
+                    ],
+                    
+                    
+                    
+                },
+                contPersons:{
+                    // name: '',
+                    // mobile: '',
+                    identifyCode: [
+                        { required: true, message: '请输入客户身份证号' },
+                    ], 
+                }                    
+               
+               
                 
         
-            // },
+            },
         }
     },
 
@@ -247,14 +274,7 @@ export default {
     },
    
     computed: {
-        getEmpName(){
-            let EmpName = this.contractForm.guestInfo.EmpName
-            if(!EmpName){
-                return ''
-            }else{
-                return EmpName
-            }
-        }
+       
     },
 
     filters: {
@@ -288,16 +308,20 @@ export default {
             this.$ajax.get("/api/resource/houses/one", param).then(res => {
                 res = res.data;
                 if (res.status === 200) {
-                let houseMsg = res.data;
-                console.log(houseMsg);
-                this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
-                this.contractForm.houseInfo = houseMsg;
-                this.contractForm.contPersons[0] = {
-                    name: houseMsg.OwnerInfo.OwnerName,
-                    mobile: houseMsg.OwnerInfo.OwnerMobile,
-                    relation: houseMsg.OwnerInfo.Relation,
-                    type: 1,
-                };
+                    let houseMsg = res.data;
+                    console.log(houseMsg);
+                    this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
+                    this.contractForm.houseInfo = houseMsg;
+                    this.contractForm.contPersons[0] = {
+                        name: houseMsg.OwnerInfo.OwnerName,
+                        mobile: houseMsg.OwnerInfo.OwnerMobile,
+                        relation: houseMsg.OwnerInfo.Relation,
+                        type: 1,
+                    };
+                    
+                    this.contractForm.ownname = houseMsg.OwnerInfo.OwnerName;
+                    this.contractForm.ownmobile = houseMsg.OwnerInfo.OwnerMobile; 
+                    // this.contractForm.ownrelation = houseMsg.OwnerInfo.Relation;            
                 
                 }
             });
@@ -320,16 +344,13 @@ export default {
                     name: guestMsg.OwnerInfo.CustName,
                     mobile: guestMsg.OwnerInfo.CustMobile,
                     relation: guestMsg.OwnerInfo.CustRelation,
+                    identifyCode: this.contractForm.contPersons.identifyCode,
                     type: 2,
                 };
-                // this.option2.push({
-                //     name: guestMsg.GuestStoreName,
-                //     id: guestMsg.GuestStoreCode
-                // });
-                // this.option3.push({
-                //     name: guestMsg.EmpName,
-                //     empId: guestMsg.EmpCode
-                // });
+                this.contractForm.custname = guestMsg.OwnerInfo.CustName;
+                this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile; 
+                // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation; 
+                
                 }
             });
         },
@@ -345,21 +366,32 @@ export default {
                 if (res.status === 200) {
                     this.contractForm = res.data;
                     this.contractForm.signDate = res.data.signDate.substr(0, 10);
+                    this.contractForm.subscriptionTerm = res.data.subscriptionTerm.substr(0, 10);
                     this.contractForm.type=res.data.contType.value;
-                    this.option2.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
-                    this.option3.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
+                    this.option2=[{id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName}];
+                    this.option3=[{empId:res.data.guestInfo.EmpCode,name:res.data.guestInfo.EmpName}];
+
                     
-                    for (var i = 0; i < this.contractForm.contPersons.length; i++) {
+                    for (let i = 0; i < this.contractForm.contPersons.length; i++) {
                         if (this.contractForm.contPersons[i].personType.value === 1) {
-                            this.ownerList[0].name = this.contractForm.contPersons[i].name;
-                            this.ownerList[0].mobile = this.contractForm.contPersons[i].mobile;
-                            this.ownerList[0].relation = this.contractForm.contPersons[i].relation;
-                            this.ownerList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+                            this.contractForm.contPersons[0].name = this.contractForm.contPersons[i].name;
+                            this.contractForm.contPersons[0].mobile = this.contractForm.contPersons[i].mobile;
+                            this.contractForm.contPersons[0].relation = this.contractForm.contPersons[i].relation;
+                            this.contractForm.contPersons[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+
+                            this.contractForm.ownname = this.contractForm.contPersons[i].name;
+                            this.contractForm.ownmobile = this.contractForm.contPersons[i].mobile; 
+                            // this.contractForm.ownrelation = this.contractForm.contPersons[i].relation;
+
                         } else if (this.contractForm.contPersons[i].personType.value === 2) {
-                            this.guestList[0].name = this.contractForm.contPersons[i].name;
-                            this.guestList[0].mobile = this.contractForm.contPersons[i].mobile;
-                            this.guestList[0].relation = this.contractForm.contPersons[i].relation;
-                            this.guestList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+                            this.contractForm.contPersons[1].name = this.contractForm.contPersons[i].name;
+                            this.contractForm.contPersons[1].mobile = this.contractForm.contPersons[i].mobile;
+                            this.contractForm.contPersons[1].relation = this.contractForm.contPersons[i].relation;
+                            this.contractForm.contPersons[1].identifyCode = this.contractForm.contPersons[i].identifyCode;
+
+                            this.contractForm.custname = this.contractForm.contPersons[i].name;
+                            this.contractForm.custmobile = this.contractForm.contPersons[i].mobile; 
+                            // this.contractForm.custrelation = this.contractForm.contPersons[i].relation;
                         }
                     }
                 }
@@ -373,52 +405,61 @@ export default {
             };
             this.$ajax.get("/api/contract/getDepsByCityId", param).then(res => {
                 
-                res = res.data;
-                if (res.status === 200) {
+               
+                this.loading = true;
+                if (res.data.status === 200) {
                     this.loading = false;
 
-                     if(e === '' || !e){
-                        if(res.data.length > 0){ 
-                            this.option2 = res.data;       
-                        }
-                     }else{
-                         this.option2.push({
-                            name: guestMsg.GuestStoreName,
-                            id: guestMsg.GuestStoreCode
-                        });
-                     }
+                    if(res.data.data.length > 0){ 
+                        this.option2 = res.data.data;       
+                    }
                     
                    
                 }
             });
         },
 
+        changeAgent(id){
+              this.contractForm.guestInfo.EmpName = id
+        },
+
+        clearEmpName(){
+            this.contractForm.guestInfo.EmpName = '' 
+        },
+
         //获取门店更改时的
         getShop_(id) {
            
-            if(id !== "" || !!id){
+            // if(id !== "" || !!id){
                 
-                this.guestInfo.EmpName = ''
                 this.loading2 = true;
                 let param = {
                     depId: id
                 };
+                
+                
                 this.$ajax.get('/api/organize/employees', param).then(res=>{
-                res=res.data
-                if(res.status===200){                 
-                     
-                    this.option3 = res.data; 
-                    this.loading = false;       
-                                                     
-                }
+                    
+                    if(res.data.status===200){ 
+                                       
+                        this.loading = false; 
+
+                        if(res.data.data.length > 0){ 
+                            this.option3 = res.data.data;
+                        }         
+                                                        
+                    }
                 })
-            }
+                this.clearEmpName()
+                
+               
+            // }
             
          },
 
-         getAgent(id){
-             this.contractForm.guestInfo.EmpName = id
-         },
+         
+
+         
 
        
 
@@ -450,13 +491,20 @@ export default {
        
         // 新增意向金接口（post）
         onSubmit(contractForm) {
-            // this.$refs[contractForm].validate((valid) => {
-            //     if (valid) {                  
+            this.$refs[contractForm].validate((valid) => {
+                if (valid) {                  
                     
                     let param = { 
                         igdCont: this.contractForm,
                         type: this.type                            
                     }
+                    delete param.igdCont.ownname;
+                    delete param.igdCont.ownmobile;
+                    // delete param.igdCont.ownrelation;
+                    delete param.igdCont.custname;
+                    delete param.igdCont.custmobile;
+                    // delete param.igdCont.custrelation;
+
                     this.$confirm('确定保存合同?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
@@ -467,12 +515,14 @@ export default {
                         this.$ajax
                         .postJSON("/api/contract/editIgdCont", param)
                         .then(res => {
-                            
+                            let tips = res.data.message
                             if (res.data.status === 200) {
                                 this.$message({
                                     type: 'success',
                                     message: '已保存!'
                                 });
+                            }else{
+                                this.$message.error(tips)
                             }
                         }).catch(error => {
                             console.log(error)
@@ -481,10 +531,10 @@ export default {
                     }).catch((err) => {
                         console.log(err)
                     })
-            //     }else{
-            //         return false
-            //     }
-            // })
+                }else{
+                    return false
+                }
+            })
                        
         },
     },
