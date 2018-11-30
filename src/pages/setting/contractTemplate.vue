@@ -52,7 +52,7 @@
                 </p>
                 <p>
                    <fileUp id='jjian' @getUrl='getAdd("jjian",arguments)' class='fileup' >居间</fileUp>
-                   <span class="upMsg">上传成功</span> 
+                   <!-- <span class="upMsg">上传成功</span>  -->
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>  
@@ -60,7 +60,7 @@
               <div v-else>
                 <p>
                   <fileUp id='mban' @getUrl='getAdd("mban",arguments)' class='fileup'>模板</fileUp>
-                  <span class="upMsg">上传成功</span>
+                  <!-- <span class="upMsg">上传成功</span> -->
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>                  

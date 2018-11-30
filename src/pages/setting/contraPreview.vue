@@ -2,30 +2,30 @@
     <div class='view-container'>
       <p class='title'>
           <span>合同模板预览</span>
-          <el-button type="primary paper-btn" @click="saveAll">保存</el-button>
+          <el-button type="primary paper-btn" @click="saveAll" v-if="saveBtn">保存</el-button>
       </p>
       <div class='bodycontainer'>
-          <div class="ht-list"  ref='htlist'>
-          <el-button type="primary paper-btn" @click="showPos" v-show='!(cityId==1 && type==2)'>签章位置</el-button>
+          <div class="ht-list listone"  ref='htlist'>
+          <el-button type="primary paper-btn" @click="showPos" v-show='position'>签章位置</el-button>
           <div class='pagerUp'>
               <el-button ref='delBtn' class="el-icon-caret-top" @click="del(1)"></el-button>
               <div><span>{{count}}</span>/<span>{{total}}</span></div>
               <el-button  class="el-icon-caret-bottom paper-next" @click="add(1)"></el-button>
           </div>
           <img id='ht' src="" alt="">
-          <div class='signature'  ref='dropBtn'  v-show='sigtureShow'>
+          <div class='signature signatureone'  ref='dropBtn'  v-show='sigtureShow'>
              
           </div>
       </div>
-       <div class="ht-list" v-if='showSed' ref='htlist'>
-          <el-button type="primary paper-btn" @click="showPos">签章位置</el-button>
+       <div class="ht-list" v-show='showSed' ref='htlist'>
+          <el-button type="primary paper-btn" @click="showPos" v-show='position2'>签章位置</el-button>
           <div class='pagerUp'>
               <el-button ref='delBtn' class="el-icon-caret-top" @click="del(2)"></el-button>
               <div><span>{{count2}}</span>/<span>{{total2}}</span></div>
               <el-button  class="el-icon-caret-bottom paper-next" @click="add(2)"></el-button>
           </div>
           <img id='ht2' src="" alt="">
-          <div class='signature' ref='dropBtn' v-show='sigtureShow2'>
+          <div class='signature signaturetwo' ref='dropBtn' v-show='sigtureShow2'>
              
           </div>
         </div>
@@ -77,6 +77,9 @@ import {TOOL} from "@/assets/js/common"
 export default{
         data(){
           return{
+            saveBtn:true,
+            position:true,
+            position2:true,
             sigtureShow:false,
             sigtureShow2:false,
             id:'',
@@ -108,22 +111,40 @@ export default{
             this.mmaiAddress = this.$route.query.mmaiAddress
             this.jjianAddress = this.$route.query.jjianAddress
             this.mbanAddress = this.$route.query.mbanAddress
+            console.log(this.mbanAddress,'this.mbanAddress');
             this.type = this.$route.query.type
             this.contraName = this.$route.query.contraName
             this.show=this.$route.query.show
             this.id=this.$route.query.id
             this.enableTemplateId=this.$route.query.enableTemplateId
+        },
+        mounted(){
+            this.divWidth=document.getElementsByClassName('listone')[0].offsetWidth
+            this.divHeight=1163
             if(this.show==1){
+                
                this.getImgAdd(this.count)
             }else{
+                this.position=false
+                this.position2=false
+                this.saveBtn=false
                 this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:this.enableTemplateId}).then((res)=>{
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
-                            this.showSed=true
+                            
+                            this.showSed=true 
                             this.imgSrc=res.data.data.businessImg.url
                             this.imgSrc2=res.data.data.residenceImg.url
                             this.total=res.data.data.businessImg.count
                             this.total2=res.data.data.residenceImg.count
+                            let signPos=res.data.data.signPosition
+                            if(this.count==signPos.pageIndex){
+                                this.sigtureShow2=true
+                                let dropbtn=document.getElementsByClassName('signaturetwo')[0]
+                                dropbtn.style.left=(signPos.x*this.divWidth)+'px'
+                                dropbtn.style.top=(signPos.y*this.divHeight)+'px'
+                                console.log(dropbtn.style.left, dropbtn.style.top);
+                            }
                             let htImg=document.getElementById('ht')
                             let htImg2=document.getElementById('ht2')
                             var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
@@ -133,15 +154,21 @@ export default{
                      }else{
                            this.imgSrc=resadd.img.url
                            this.total=res.data.data.img.count
+                           let signPos=res.data.data.signPosition
+                           if(this.count==signPos.pageIndex){
+                             this.sigtureShow=true
+                             let dropbtn=document.getElementsByClassName('signatureone')[0]
+                             dropbtn.style.left=(signPos.x*this.divWidth)+'px'
+                             dropbtn.style.top=(signPos.y*this.divHeight)+'px'
+                             console.log(dropbtn.style.left, dropbtn.style.top);
+                           }
                            let htImg=document.getElementById('ht')
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
                      }
                 })
             }
-          
         },
-        mounted(){},
         methods:{
             showPos(){
                 if(this.cityId==1 && this.type==2){
@@ -149,15 +176,18 @@ export default{
                 }else{
                     this.sigtureShow=!this.sigtureShow
                 }
-                alert(this.sigtureShow)
+                // alert(this.sigtureShow)
                  this.sigtureShow2=!this.sigtureShow2
-                 this.divWidth=this.$refs.htlist.offsetWidth
-                 this.divHeight=this.$refs.htlist.offsetHeight
+            
                  this.tuozhuai()
             },
             tuozhuai(){
-                    var oDiv = this.$refs.dropBtn
-                    alert(oDiv)
+                if(this.cityId==1 && this.type==2){
+                    var oDiv=document.getElementsByClassName('signature')[1]
+                }else{
+                    var oDiv=document.getElementsByClassName('signature')[0]
+                }
+                    // var oDiv = this.$refs.dropBtn
                     var This =this 
                         oDiv.onmousedown = function(ev){
                             var disX = ev.clientX -oDiv.offsetLeft;
@@ -183,12 +213,13 @@ export default{
                         };
                 },
             saveAll(){
+                console.log(this.mmaiAddress.path,'path');
                  this.signPosition.pageIndex=this.cityId==1&&this.type==2?this.count:this.count2
                  let param={
                   address:{
-                    address:this.mbanAddress,
-                    business:this.mmaiAddress,
-                    residence:this.jjianAddress
+                    address:this.mbanAddress==''?'':this.mbanAddress.path+'?'+this.mbanAddress.name,
+                    business:this.mmaiAddress==''?'':this.mmaiAddress.path+'?'+this.mmaiAddress.name,
+                    residence:this.jjianAddress==''?'':this.jjianAddress.path+'?'+this.jjianAddress.name
                   },
                   contractSeats:this.tableDate,
                   type:this.type,
@@ -205,7 +236,21 @@ export default{
                 })
             },
             numSave(){
-                this.modalDialog=false
+                for(let i=0;i<this.tableDate.length;i++){
+                    if(this.tableDate[i].inputType==2){
+                        if(this.tableDate[i].options==''){
+                             this.$message({
+                             type: 'error',
+                             message: `第${i+1}行请输入选项值！`
+                            })
+                            this.modalDialog=true
+                            break
+                        }
+                        else{
+                             this.modalDialog=false
+                        }
+                    }
+                }
                 console.log(this.tableDate,'tabledate');
             },
             del(type){
@@ -251,7 +296,6 @@ export default{
                 }
             },
             autograph(obj,newsrc){
-                alert(obj)
                   this.$ajax.get('/api/load/generateAccessURL',{url:newsrc}).then(res=>{
                       if(res.status==200){
                           console.log(res.data.data.url,'maimaires');
@@ -263,9 +307,9 @@ export default{
             getImgAdd(count){
             let param={
                   templateAddress:{
-                    address:this.mbanAddress,
-                    business:this.mmaiAddress,
-                    residence:this.jjianAddress
+                    address:this.mbanAddress==''?'':this.mbanAddress.path,
+                    business:this.mmaiAddress==''?'':this.mmaiAddress.path,
+                    residence:this.jjianAddress==''?'':this.jjianAddress.path
                   },
                   cityId:this.cityId,
                   type:this.type
@@ -273,7 +317,12 @@ export default{
               console.log(param,'param');
               this.$ajax.get('/api/setting/contractTemplate/checkTemplate',param).then(res=>{
               if(res.status==200){
-                  this.tableDate=res.data.data.unPlaceholder
+                //   alert(res.data.data.unPlaceholder)
+                  if(res.data.data.unPlaceholder!==''){
+                      this.tableDate=res.data.data.unPlaceholder
+                  }else{
+                        this.tableDate=null
+                  }
                   var arr=[]
                   for(let i=0;i<this.tableDate.length;i++){
                       var obj={}
@@ -291,7 +340,9 @@ export default{
                     }
                  if(this.cityId==1 && this.type==2){
                     this.showSed=true
+                    this.position=false
                     // console.log(res.data.data.businessImg.url,'imgsrc');
+                    // debugger
                     this.imgSrc=res.data.data.businessImg.url
                     this.imgSrc2=res.data.data.residenceImg.url
                     // console.log(this.imgSrc2,'imgsrc2');
@@ -302,6 +353,7 @@ export default{
                     // alert(htImg2)
                     var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                     var newsrc2=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
+                    console.log(this.newsrc,this.newsrc2);
                     this.autograph(htImg,newsrc)
                     this.autograph(htImg2,newsrc2)
                     
