@@ -1,7 +1,5 @@
 <template>
     <div id="layersettle">
-        <!-- 结算审核申请 -->
-        <!-- <el-button type="text" @click="dialogVisible = true">审核申请</el-button> -->
 
         <!-- 结算审核弹框 -->
         <el-dialog title="发起结算" :visible="getSettleDialog" width="820px" class="layer-audit" @close='close'>
@@ -18,8 +16,8 @@
             
             </div>
             <div class="col-li col-li2">
-                <p>合同类型：<span>{{layerAudit.contractType}}</span></p>
-                <p>后期状态：<span>{{layerAudit.statusLaterStage}}</span></p>
+                <p>合同类型：<span>{{layerAudit.contarctType.label}}</span></p>
+                <p>后期状态：<span>{{layerAudit.laterStageStatus.label}}</span></p>
                 <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
                 
                 
@@ -29,46 +27,49 @@
                 <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
                 <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
             </div>
-            <!-- <div class="textareabox">
-                <span class="tit">金融服务费：</span>
-                <el-input maxlength="9"><i slot="suffix" class="i-slot">元（成本）</i></el-input>
-            </div> -->
+
             </div>
 
             <!-- 表格 -->
             <div class="audit-col">
-            <el-table :data="layerAudit.storeSettle" border style="width: 100%" class="table">
-            <el-table-column prop="level4" label="合作门店"></el-table-column>
-            <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
-            <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
-            <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
-            </el-table>            
+                <el-table :data="layerAudit.storeSettle" border style="width: 100%" class="table">
+                <el-table-column prop="level4" label="合作门店"></el-table-column>
+                <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
+                <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
+                <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
+                </el-table>            
             </div>
 
             <!-- 上传附件 -->
             <div class="audit-col">
-            <div class="uploadfile">
-                <div class="uploadtitle"><em>*</em>结算凭证<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
-                <div class="uploadbtn">
-                <el-upload
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    list-type="picture-card"
-                    multiple
-                    >
-                    <i class="iconfont icon-shangchuan"></i>
-                </el-upload>
-                <!-- <el-dialog :visible.sync="dialogVisible2">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                </el-dialog> -->
-                </div>
-            </div>     
+                <div class="uploadfile">
+                    <div class="uploadtitle"><em>*</em>结算凭证<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+                    <div class="uploadbtn">
+                    <el-upload
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        list-type="picture-card"
+                        multiple
+                        >
+                        <i class="iconfont icon-shangchuan"></i>
+                    </el-upload>
+                    
+                    </div>
+                </div>     
+            </div>
+
+            <!-- 审核备注 -->
+            <div class="audit-col bordernone">
+            <div class="textareabox2">
+                <span><em>*</em>审核备注</span>
+                <el-input type="textarea" :rows="6" class="textarea" maxlength=200  v-model="auditForm.textarea" placeholder="请填写审核备注"></el-input>
+            </div>
             </div>
             
 
         </div>
         <div class="btnbox">
             <el-button @click="close">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = true">提交审核</el-button>  
+            <el-button type="primary"  @click="auditApply()">提交审核</el-button>  
         </div> 
         </el-dialog>
     </div>
@@ -96,7 +97,17 @@ export default {
             dialogVisible: false,
             
             layerAudit:{
+                contarctType:{
+                    label: ""
+                },
+                laterStageStatus: {
+                    lable: ""
+                }
 
+            },
+
+            auditForm: {
+                textarea: '', //备注
             },
         }
     },
@@ -122,10 +133,14 @@ export default {
           return this.clientHei - 265 + 'px'
       },
 
+      close(){
+          this.$emit('closeSettle')
+      },
+
       //根据合同id获取结算申请弹框的内容
       getData(){
         let param = {
-            id: 5           
+            id: this.contId         
           }
           this.$ajax         
           .get("/api/settlement/getSettlById", param)
@@ -142,9 +157,43 @@ export default {
             console.log(error)
           })
       },
+
+      //发起调佣申请
+      auditApply() {
+        
+        if(this.auditForm.textarea !== ""){
+            let param = {
+                id: 1,
+                settlRemark: this.auditForm.textarea,
+                voucher: ''
+            }
+            this.$ajax         
+            .post("/api/settlement/applySettlement", param)
+            .then(res => {
+                if (res.data.status === 200) {
+                this.$message('已申请');
+                setTimeout(() => {
+                    this.$emit('closeSettle')
+                }, 1500); 
+                
+                }
+            }).catch(error => {
+              console.log(error)
+            })
+         
+        }else if(this.auditForm.textarea === ""){
+           this.$message('请填写审核备注'); 
+        }
+       
+      }
+
     },
 
-     mounted() {
+    created() {
+      this.getData()
+    },
+
+    mounted() {
       var _this = this;
        window.onresize = function(){
          _this.clientHei = document.documentElement.clientHeight;
@@ -292,6 +341,22 @@ export default {
             }   
             .bordernone{
             border-bottom: none;
+            }
+        }
+
+        .textareabox2{
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            &.mt0{
+            margin-bottom: 0;
+            }
+            span{
+            width: 84px;
+            em{
+                color: #FF3E3E;
+                margin-right: 4px;
+            }
             }
         }
         

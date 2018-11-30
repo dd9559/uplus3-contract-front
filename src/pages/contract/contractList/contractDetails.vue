@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="activeName" @tab-click="handleClick" >
       <el-tab-pane label="合同详情" name="first">
         <div class="msg">
           <div class="title">合同信息</div>
@@ -114,7 +114,8 @@
                   <el-table-column prop="name" label="客户姓名"></el-table-column>
                   <el-table-column label="电话">
                     <template slot-scope="scope">
-                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} <i class="iconfont icon-icon_contract_phone" @click="call(scope.row.mobile)"></i>
+                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
+                      <i class="iconfont icon-icon_contract_phone" @click="call(scope.row.mobile)"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -172,13 +173,13 @@
             </div>
             <div class="table">
               <p>客源方分成</p>
-              <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg">
+              <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" >
                 <el-table-column prop="category" label="角色类型">
                   <template slot-scope="scope">
                     客源录入人
                   </template>
                 </el-table-column>
-                 <el-table-column prop="ratio" label="分成比例"></el-table-column>
+                <el-table-column prop="ratio" label="分成比例"></el-table-column>
                 <el-table-column prop="assignor" label="经纪人"></el-table-column>
                 <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
                 <el-table-column prop="level3" label="门店"></el-table-column>
@@ -199,7 +200,7 @@
           <div>
             <el-button round class="search_btn" @click="goPreview">预览</el-button>
             <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)" v-if="contractDetail.contState.value===3">解约</el-button>
-            <el-button round type="danger" @click="dialogInvalid=true" class="search_btn" v-if="contractDetail.contState.value!=3">无效</el-button>
+            <el-button round type="danger" @click="invalid" class="search_btn" v-if="contractDetail.contState.value!=3">无效</el-button>
             <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
             <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
             <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value===1">提交审核</el-button>
@@ -216,39 +217,72 @@
       </el-tab-pane>
       <el-tab-pane label="资料库" name="third">
         <div class="dataBank">
-          <div class="classify">
+          <div class="classify" v-if="sellerList.length>0">
             <p class="title">卖方</p>
-            <div class="one_" v-for="item in sellerList" :key="item.id">
-              <p><i>*</i>{{item.name}}</p>
-              <file-up class="uploadSubject" :id="'fileup'+item.id">
-                <i class="iconfont icon-shangchuan"></i>
-                <p>点击上传</p>
-              </file-up>
+            <div class="one_" v-for="(item,index) in sellerList" :key="index">
+              <p><i>*</i>{{item.title}}</p>
+              <ul>
+                <li>
+                  <file-up class="uploadSubject" :id="'seller'+index"  @getUrl="addSubject">
+                    <i class="iconfont icon-shangchuan"></i>
+                    <p>点击上传</p>
+                  </file-up>
+                </li>
+                <li v-for="item_ in item.value" :key="item_.path">
+                  <div class="namePath">
+                    <i class="iconfont icon-hetong"></i>
+                    <p>{{item_.name}}</p>
+                  </div>
+                  <i class="iconfont icon-tubiao-6" @click="delectData"></i>
+                </li>
+              </ul>
             </div>
           </div>
-          <div class="classify">
+          <div class="classify" v-if="buyerList.length>0">
             <p class="title">买方</p>
-             <div class="one_" v-for="item in buyerList" :key="item.id">
-              <p><i>*</i>{{item.name}}</p>
-              <span class="uploadSubject">
-                <i class="iconfont icon-shangchuan"></i>
-                <p>点击上传</p>
-              </span>
+            <div class="one_" v-for="(item,index) in buyerList" :key="index">
+              <p><i>*</i>{{item.title}}</p>
+              <ul>
+                <li>
+                  <file-up class="uploadSubject" :id="'buyer'+index">
+                    <i class="iconfont icon-shangchuan"></i>
+                    <p>点击上传</p>
+                  </file-up>
+                </li>
+                <li v-for="item_ in item.value" :key="item_.path">
+                  <div class="namePath">
+                    <i class="iconfont icon-hetong"></i>
+                    <p>{{item_.name}}</p>
+                  </div>
+                  <i class="iconfont icon-tubiao-6"></i>
+                </li>
+              </ul>
             </div>
           </div>
-          <div class="classify">
+          <div class="classify" v-if="otherList.length>0">
             <p class="title">其他</p>
-            <div class="one_" v-for="item in otherList" :key="item.id">
-              <p></p>
-              <span class="uploadSubject">
-                <i class="iconfont icon-shangchuan"></i>
-                <p>点击上传</p>
-              </span>
+            <div class="one_" v-for="(item,index) in otherList" :key="index">
+              <p><i>*</i>{{item.title}}</p>
+              <ul>
+                <li>
+                  <file-up class="uploadSubject" :id="'other'+index">
+                    <i class="iconfont icon-shangchuan"></i>
+                    <p>点击上传</p>
+                  </file-up>
+                </li>
+                <li v-for="item_ in item.value" :key="item_.path">
+                  <div class="namePath">
+                    <i class="iconfont icon-hetong"></i>
+                    <p>{{item_.name}}</p>
+                  </div>
+                  <i class="iconfont icon-tubiao-6"></i>
+                </li>
+              </ul>
             </div>
           </div>
-          <div class="classify">
+          <!-- <div class="classifyFoot">
             <p>拒绝理由</p>
-          </div>
+          </div> -->
         </div>
       </el-tab-pane>
       <el-tab-pane label="回访录音" name="fourth">
@@ -270,16 +304,16 @@
             <el-table-column prop="record" label="录音">
               <audio src="www.baidu.com"></audio>
             </el-table-column>
-            <el-table-column prop="remakes" label="备注" width="320">
-            </el-table-column>
+            <el-table-column prop="remakes" label="备注" width="320"></el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
     </el-tabs>
     <div class="functionTable">
-      <el-button round class="search_btn">打印成交报告</el-button>
+      <el-button round class="search_btn" v-if="name==='first'">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
-      <el-button type="primary" round class="search_btn" @click="fencheng">分成</el-button>
+      <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'">分成</el-button>
+      <el-button type="primary" round class="search_btn" v-if="name==='second'">上传</el-button>
     </div>
 
     <!-- 拨号弹出框 -->
@@ -314,20 +348,19 @@
       <div class="top">
         <p>合同无效原因</p>
         <div class="reason">
-          <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="textarea" resize='none' style="width:597px" maxlength="100">
-          </el-input>
-          <span>{{textarea.length}}/100</span>
+          <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100"></el-input>
+          <span>{{invalidReason.length}}/100</span>
           <p><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogInvalid = false">取消</el-button>
-        <el-button round type="primary" @click="dialogInvalid = false">保存</el-button>
+        <el-button round type="primary" @click="setInvalid">保存</el-button>
       </span>
     </el-dialog>
 
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
-    <achDialog :shows="shows" v-on:close="shows=false" :contractCode="contCode" :dialogType="dialogType"></achDialog>
+    <achDialog :shows="shows" @close="shows=false,code2=''" :dialogType="dialogType" :contractCode="code2"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
   </div>
@@ -350,66 +383,86 @@ export default {
       dialogSupervise: false,
       //合同无效弹窗内容
       dialogInvalid: false,
-      textarea: "",
+      invalidReason: "",
       activeName: "first",
+      name:'first',
       //合同信息
-      contractDetail:{
-        contType:{},
-        houseInfo:{},
-        guestInfo:{
-          paymentMethod:{}
+      contractDetail: {
+        contType: {},
+        houseInfo: {},
+        guestInfo: {
+          paymentMethod: {}
         },
-        otherCooperationInfo:{},
-        contState:{},
-        toExamineState:{}
+        otherCooperationInfo: {},
+        contState: {},
+        toExamineState: {}
       },
       //业主信息
       ownerData: [],
       //客户信息
       clientrData: [],
       //录音
-      recordData:[
-        {visitTime:'2018/11/11',visitPeople:'万科四季花城-夏雨天',visitMobile:'18571606238',remakes:'萨瓦迪卡哈哈哈'},
-        {visitTime:'2018/11/11',visitPeople:'万科四季花城-夏雨天',visitMobile:'18571606238',remakes:'萨瓦迪卡哈哈哈'},
-        {visitTime:'2018/11/11',visitPeople:'万科四季花城-夏雨天',visitMobile:'18571606238',remakes:'萨瓦迪卡哈哈哈'},
+      recordData: [
+        {
+          visitTime: "2018/11/11",
+          visitPeople: "万科四季花城-夏雨天",
+          visitMobile: "18571606238",
+          remakes: "萨瓦迪卡哈哈哈"
+        },
+        {
+          visitTime: "2018/11/11",
+          visitPeople: "万科四季花城-夏雨天",
+          visitMobile: "18571606238",
+          remakes: "萨瓦迪卡哈哈哈"
+        },
+        {
+          visitTime: "2018/11/11",
+          visitPeople: "万科四季花城-夏雨天",
+          visitMobile: "18571606238",
+          remakes: "萨瓦迪卡哈哈哈"
+        }
       ],
       callNumber: "",
       //合同类型
       contType: 2,
       //合同id
-      id:'',
+      id: "",
       //变更解约id
-      changeCancelId:'',
+      changeCancelId: "",
       //合同编号
-      contCode:'',
+      contCode: "",
       //分成
       shows: false,
       dialogType: 3,
       canceldialogType: "",
       changeCancel_: false,
-      isActive:1,
+      isActive: 1,
       dictionary: {
         //数据字典
         "514": "", //产权状态
         "517": "", //三方合作类型
-        "556": "",  //付款方式
-        "507": "", //时间单位
+        "556": "", //付款方式
+        "507": "" //时间单位
       },
       //交易流程
-      transFlowList:[],
+      transFlowList: [],
       //分成人员
-      employeeData:{
-        houseAgents:[],
-        customerAgents:[]
+      employeeData: {
+        houseAgents: [],
+        customerAgents: []
       },
       //合同主体上传文件路径
-      uploadList:[],
+      uploadList: [],
       //买方类型
-      buyerList:[],
+      buyerList: [],
+      buyerDataList:[],
       //卖方类型
-      sellerList:[],
+      sellerList: [],
+      sellerDataList: [],
       //其他类型
-      otherList:[]
+      otherList: [],
+      otherDataList: [],
+      code2: "" //合同编号
     };
   },
   created() {
@@ -423,11 +476,12 @@ export default {
     this.getDictionary();
     this.getTransFlow();
     this.getAchievement();
-    this.getContDataType()
+    this.getContDataType();
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event);
+      console.log(tab.name);
+      this.name=tab.name;
     },
     //打电话
     call(value) {
@@ -447,6 +501,7 @@ export default {
     fencheng() {
       this.dialogType = 3;
       this.shows = true;
+      this.code2 = this.$route.query.code;
     },
     // 合同编辑
     goEdit() {
@@ -461,7 +516,7 @@ export default {
     },
     // 变更解约弹窗
     goChangeCancel(value) {
-      this.changeCancelId=Number(this.id);
+      this.changeCancelId = Number(this.id);
       if (value === 1) {
         this.canceldialogType = "changeEdit";
         this.changeCancel_ = true;
@@ -474,96 +529,191 @@ export default {
     changeCancelDialog() {
       this.changeCancel_ = false;
       this.canceldialogType = "";
-      this.changeCancelId='';
+      this.changeCancelId = "";
     },
     //房源客源切换
-    changeType(value){
-      this.isActive=value
+    changeType(value) {
+      this.isActive = value;
     },
     //合同详情
-    getContractDetail(){
-      let param={
-        id:this.id
-      }
-      this.$ajax.get('/api/contract/detail',param).then(res=>{
-        res=res.data
-        if(res.status===200){
-          this.contractDetail=res.data
-          this.contractDetail.signDate=res.data.signDate.substr(0, 10)
-          for(var i=0;i<this.contractDetail.contPersons.length;i++){
-            if(this.contractDetail.contPersons[i].personType.value===1){
-              this.ownerData.push(this.contractDetail.contPersons[i])
-            }else if(this.contractDetail.contPersons[i].personType.value===2){
-              this.clientrData.push(this.contractDetail.contPersons[i])
+    getContractDetail() {
+      let param = {
+        id: this.id
+      };
+      this.$ajax.get("/api/contract/detail", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.contractDetail = res.data;
+          this.contractDetail.signDate = res.data.signDate.substr(0, 10);
+          for (var i = 0; i < this.contractDetail.contPersons.length; i++) {
+            if (this.contractDetail.contPersons[i].personType.value === 1) {
+              this.ownerData.push(this.contractDetail.contPersons[i]);
+            } else if (
+              this.contractDetail.contPersons[i].personType.value === 2
+            ) {
+              this.clientrData.push(this.contractDetail.contPersons[i]);
             }
           }
+          if(res.data.isHaveData){
+            this.getContData()
+          }
         }
-      })
+      });
     },
-     //获取所在城市的交易类型
-    getTransFlow(){
-      this.$ajax.get('/api/contract/getTransFlowListByCity').then(res=>{
-        res=res.data;
-        if(res.status===200){
-          console.log(res.data)
-          this.transFlowList=res.data
+    //获取所在城市的交易类型
+    getTransFlow() {
+      this.$ajax.get("/api/contract/getTransFlowListByCity").then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          console.log(res.data);
+          this.transFlowList = res.data;
         }
-      })
+      });
     },
     //业绩分成
-    getAchievement(){
+    getAchievement() {
       let param = {
-        contCode:this.contCode
-      }
-      this.$ajax.get('/api/achievement/employees', param).then(res=>{
-        res=res.data;
-        if(res.status===200){
-          this.employeeData=res.data
+        contCode: this.contCode
+      };
+      this.$ajax.get("/api/achievement/employees", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.employeeData = res.data;
         }
-      })
+      });
     },
     //获取文件路径数组
-		uploadSubject(data){
-			console.log(data.param[0]);
-			this.uploadList.push(data.param[0].path);
-			//this.isImg=true
-		},
-		//保存上传文件
-		saveFile(){
-			if(this.dialogType==="upload"){
-				var url = "/api/upload/contractBody";
-				var param = {
-					contractId:this.id,
-					vouchers:this.uploadList
-				}
-			}
-			this.$ajax.postJSON(url,param).then(res=>{
-				res=res.data;
-				if(res.status===200){
-					this.$message({
-						message:'上传成功'
-					});
-					this.close();
-				}
-			})
+    uploadSubject(data) {
+      console.log(data.param[0]);
+      this.uploadList.push(data.param[0].path);
+      //this.isImg=true
+    },
+    //保存上传文件
+    saveFile() {
+      if (this.dialogType === "upload") {
+        var url = "/api/upload/contractBody";
+        var param = {
+          contractId: this.id,
+          vouchers: this.uploadList
+        };
+      }
+      this.$ajax.postJSON(url, param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.$message({
+            message: "上传成功"
+          });
+          this.close();
+        }
+      });
     },
     //获取合同资料库类型列表
-    getContDataType(){
-      this.$ajax.get('/api/contract/getContDataType').then(res=>{
-        res=res.data;
-        if(res.status===200){
-          console.log(res.data)
-          res.data.forEach(element => {
-            if(element.type==='买方'){
-              this.buyerList.push(element);
+    getContDataType() {
+      let param = {
+        id: this.id
+      };
+      this.$ajax.get("/api/contract/getContDataTypeById", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          let dataType = JSON.parse(res.data);
+          console.log(dataType);
+          dataType.forEach(element => {
+            if(element.type==="买方"){
+              let item={};
+              item.value=[];
+              item.kind=element.type;
+              item.title=element.name;
+              item.isrequire=element.isNecessary;
+              this.buyerList.push(item);
             }else if(element.type==="卖方"){
-              this.sellerList.push(element);
+              let item={};
+              item.value=[];
+              item.kind=element.type;
+              item.title=element.name;
+              item.isrequire=element.isNecessary;
+              this.sellerList.push(item);
             }else if(element.type==="其他"){
-              this.otherList.push(element);
+              let item={};
+              item.value=[];
+              item.kind=element.type;
+              item.title=element.name;
+              item.isrequire=element.isNecessary;
+              this.otherList.push(item);
             }
           });
         }
       })
+    },
+    //获取合同资料库信息
+
+    getContData() {
+      let param = {
+        id: this.id
+      };
+      this.$ajax.get("/api/contract/getContAttachmentById", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          let address = JSON.parse(res.data.address);
+          console.log(address)
+          address.forEach(element => {
+            if(element.kind==="买方"){
+              this.buyerList.forEach(ele => {
+                if(element.title===ele.title){
+                  ele.value=element.value
+                }
+              });
+              // this.buyerDataList.push(element);
+            }else if(element.kind==="卖方"){
+              this.sellerList.forEach(ele => {
+                if(element.title===ele.title){
+                  ele.value=element.value
+                }
+              });
+              // this.sellerDataList.push(element);
+            }else if(element.kind==="其他"){
+              this.otherList.forEach(ele => {
+                if(element.title===ele.title){
+                  ele.value=element.value
+                }
+              });
+              // this.otherDataList.push(element);
+            }
+          });
+        }
+      });
+    },
+    //合同资料库添加数据
+    addSubject(data,index){
+      console.log(index);
+      console.log(data);
+    },
+    delectData(){
+      console.log('触发了')
+    },
+    //合同无效弹窗
+    invalid(){
+      this.dialogInvalid=true;
+    },
+    setInvalid(){
+      if(this.invalidReason.length>0){
+        let param = {
+          id: this.id,
+          reason: this.invalidReason
+        };
+        this.$ajax.post('/api/contract/invalid', param).then(res=>{
+          res=res.data;
+          if(res.status===200){
+            this.dialogInvalid=false;
+            this.$message({
+              message:'操作成功'
+            })
+          }
+        })
+      }else{
+        this.$message({
+          message:'请填写无效原因'
+        })
+      }
     }
   },
   filters: {
@@ -622,8 +772,8 @@ export default {
           .text {
             color: @color-blank;
           }
-          .dealPrice{
-            color:@color-yellow;
+          .dealPrice {
+            color: @color-yellow;
           }
           .serialNumber {
             color: @color-blue;
@@ -675,49 +825,83 @@ export default {
     }
   }
   //合同主体
-  .contractSubject{
+  .contractSubject {
     padding: 40px;
   }
-  .uploadSubject{
+  .uploadSubject {
     display: inline-block;
     text-align: center;
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
     box-sizing: border-box;
     padding-top: 28px;
-    border: 2px dashed @border-DE;
-    > i{
+    border: 1px dashed @border-DE;
+    border-radius:1px;
+    > i {
       color: @bg-th;
-      font-size: 59px;
+      font-size: 50px;
     }
-    > p{
+    > p {
       padding-top: 10px;
-      color:@color-324;
-      font-size: 14px;
+      color: @color-324;
+      font-size: 12px;
+    }
+  }
+  .namePath{
+    display: inline-block;
+    text-align: center;
+    width: 120px;
+    height: 120px;
+    padding-top: 30px;
+    box-sizing: border-box;
+    border-radius:4px;
+    background: @color-F2;
+    > i{
+      font-size: 50px;
+      color: #54d384;
     }
   }
   //资料库
-  .dataBank{
+  .dataBank {
     padding: 0 30px 0 10px;
-    .classify{
+    height: 100%;
+    .classify {
       padding-top: 20px;
       padding-bottom: 30px;
       border-bottom: 1px solid @border-ED;
-      .title{
+      .title {
         font-size: 16px;
-        color:@color-324;
+        color: @color-324;
       }
-      .one_{
+      .one_ {
         padding-left: 10px;
-        > p{
+        >ul{
+          display: flex;
+          li{
+            margin-right: 10px;
+            position: relative;
+            > i{
+              position: absolute;
+              top: 5px;
+              right: 5px;
+              color: @color-warning;
+              font-size: 20px;
+              cursor: pointer;
+            }
+          }
+        }
+        > p {
           font-size: 14px;
           padding: 10px 0;
-          color:@color-6c;
-          > i{
-            color:@color-FF;
+          color: @color-6c;
+          > i {
+            color: @color-FF;
           }
         }
       }
+    }
+    .classifyFoot{
+
     }
   }
   .footer {
@@ -793,7 +977,7 @@ export default {
       color: @color-white;
     }
   }
-  .record{
+  .record {
     width: 950px;
     padding-top: 20px;
   }

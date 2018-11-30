@@ -14,11 +14,11 @@
         <el-button round style="width:100px">提交审核</el-button>
         <el-button round style="width:100px">变更</el-button>
         <el-button round style="width:100px">解约</el-button>
-        <el-button round style="width:100px">签章打印</el-button>
+        <el-button round style="width:100px" @click="signature">签章打印</el-button>
       </div>
       <div class="btn" v-else>
-        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="!signature">审核</el-button>
-        <el-button type="primary" round style="width:100px" v-if="signature">签章</el-button>
+        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="!isSignature">审核</el-button>
+        <el-button type="primary" round style="width:100px" v-if="isSignature">签章</el-button>
       </div>
     </div>
     <div class="content"></div>
@@ -73,14 +73,16 @@ export default {
       operationType: "",
       //合同编号
       code: "",
+      //合同id
+      id:'',
       //审批流节点信息
       auditNodeResult:{},
       //签章
-      signature:false
+      isSignature:false
     };
   },
   created() {
-    this.code = this.$route.query.code;
+    this.id = this.$route.query.id;
     if (this.$route.query.operationType) {
       this.operationType = this.$route.query.operationType;
       this.getAuditNode();
@@ -105,7 +107,21 @@ export default {
         res=res.data
         if(res.status===200){
           this.dialogCheck=false;
-          this.signature=true;
+          this.isSignature=true;
+        }
+      })
+    },
+    //签章
+    signature(){
+      let param = {
+        id:this.id
+      }
+      this.$ajax.post('/api/contract/signture', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.$message({
+            message:'操作成功'
+          })
         }
       })
     },

@@ -17,10 +17,10 @@
         </el-form-item>  
 
         <el-form-item label="部门">
-          <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" class="width200">
+          <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" :loading="loading" class="width200">
               <el-option v-for="item in adjustForm.getDepName" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
-          <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" class="width100">
+          <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select>
         </el-form-item>
@@ -87,13 +87,13 @@
           </template>
         </el-table-column>
 
-        <!-- <el-table-column label="审核状态">
+        <el-table-column label="审核状态">
           <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.examineState.value===1">未提审</span>
-            <span class="green" v-if="scope.row.examineState.value===2">通过</span>
-            <span class="red" v-if="scope.row.examineState.value===3">驳回</span>
+            <span class="blue" v-if="scope.row.examineState.value===0">未提审</span>
+            <span class="green" v-if="scope.row.examineState.value===1">通过</span>
+            <span class="red" v-if="scope.row.examineState.value===2">驳回</span>
           </template>
-        </el-table-column> -->
+        </el-table-column>
 
         <el-table-column label="审核日期" prop="examineDate" :formatter="nullFormatter">
           <template slot-scope="scope">
@@ -114,11 +114,11 @@
           </template>
         </el-table-column>
               
-        <!-- <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope" v-if="scope.row.examineState.value=== 1">
+        <el-table-column label="操作" width="100" fixed="right">
+          <template slot-scope="scope" v-if="scope.row.examineState.value=== 0">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         
       </el-table>
       <el-pagination
@@ -145,8 +145,8 @@
            
           </div>
           <div class="col-li col-li2">
-            <p>合同类型：<span>{{layerAudit.contractType}}</span></p>
-            <p>后期状态：<span>{{layerAudit.statusLaterStage}}</span></p>
+            <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
+            <p>后期状态：<span>{{layerAudit.statusLaterStage.label}}</span></p>
             <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
             
             
@@ -221,6 +221,8 @@
     data(){
       return{
         clientHei: document.documentElement.clientHeight, //窗体高度
+        loading:false,
+        loading2:false,
         cityId: 1,
          adjustForm:{
           signDate: '', //发起日期
@@ -238,13 +240,13 @@
 
         },
         toExamineState: [{
-          value: 1,
+          value: 0,
           label: '未提审'
         }, {
-          value: 2,
+          value: 1,
           label: '通过'
         }, {
-          value: 3,
+          value: 2,
           label: '驳回'
         }], 
 
@@ -259,6 +261,12 @@
           "17": "", //审核状态
         },
         layerAudit:{
+          contractType:{
+            label: ""
+          },
+          statusLaterStage: {
+            label:""
+          }
 
         },
         myCheckId: '',
@@ -304,12 +312,14 @@
           return this.clientHei - 265 + 'px'
       },
 
-       // 得到部门门店和经纪人信息
+      // 得到部门门店和经纪人信息
       getDepNameFn(e) {
+        this.loading = true;
         this.$ajax.get("/api/access/deps", {keyword: e})
         .then(res => {       
           let data = res.data;         
-          if (res.data.status === 200) {  
+          if (res.data.status === 200) { 
+            this.loading = false; 
             if(e === '' || !e){
               this.adjustForm.getDepName = [{
                 name: "全部",
@@ -317,38 +327,50 @@
               },...data.data]
             }else{
               this.adjustForm.getDepName = data.data
-            }  
+            } 
+             
           }
         }).catch(err => {
           console.log(err)
         })
       },
 
-      changeDepNameFn(e) {
-        if(e !== "" || !!e)
-        this.$ajax.get("/api/organize/employees",{
-          cityId:this.cityId,
-          depId: e
-        })
-        .then(res => {       
-                  
-          if (res.data.status === 200) {  
 
-            if(res.data.data.length > 0){ 
-              this.adjustForm.getAgentName = [{
+      changeDepNameFn(e) {
+        if(e !== "" || !!e){
+          this.loading2 = true;
+          this.$ajax.get("/api/organize/employees",{
+            cityId:this.cityId,
+            depId: e
+          })
+          .then(res => {       
+                    
+            if (res.data.status === 200) {  
+              this.loading2 = false;
+              this.Form.getAgentName = ''; 
+              if(res.data.data.length > 0){ 
+                
+                this.adjustForm.getAgentName = [{
+                  name: "全部",
+                  empId: ""
+                },...res.data.data]
+              }
+              else{
+                this.adjustForm.getAgentName = res.data.data
+              }
+              
+            }
+
+          }).catch(err => {
+            console.log(err)
+          })  
+        }else{    
+            this.Form.getAgentName = '';       
+            this.adjustForm.getAgentName = [{
                 name: "全部",
                 empId: ""
-              },...res.data.data]
-            }
-            else{
-              this.adjustForm.getAgentName = res.data.data
-            }
-          }
-
-        }).catch(err => {
-          console.log(err)
-        })
-
+            }]
+        }
       },
 
       // 清除部门搜索
@@ -378,7 +400,7 @@
           contResultVo: {
             beginDate,
             endDate,
-            examineState: this.examineState,    //this.toExamineState.value,
+            examineState: this.examineState,    //this.examineState
             contractType: this.adjustForm.contType,    //this.adjustForm.contType.key,
             dealAgentStoreId:this.Form.getDepName,    //this.Form.getDepName.id,
             dealAgentId: this.Form.getAgentName,    //this.Form.getAgentName.empId,
@@ -425,12 +447,13 @@
 
       // 驳回操作
       refuseFn() {
-        let param = {
-          checkId: this.myCheckId,
-          examine: 3, //驳回
-          examineRemark: this.auditForm.textarea
-        }
+        
         if(this.auditForm.textarea !== ""){
+          let param = {
+            id: 1,
+            examine: 2, //驳回
+            examineRemark: this.auditForm.textarea
+          }
           this.$ajax.post("/api/settlement/examineSettlement", param)
           .then(res => {
            
@@ -453,8 +476,8 @@
       // 通过操作
       receptFn() {
         let param = {
-          checkId: this.myCheckId,
-          examine: 2, //通过
+          id: 1,
+          examine: 1, //通过
           examineRemark: this.auditForm.textarea
         }
         this.$ajax.post("/api/settlement/examineSettlement", param)

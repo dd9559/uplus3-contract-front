@@ -93,7 +93,7 @@
               name:this.uploader.files[0].name
             })
             console.log(this.filePath)
-            this.$emit('getUrl',{param:this.filePath})
+            this.$emit('getUrl',{param:this.filePath,btnId:this.getId})
             set_upload_param(this.uploader,res,this.uploader.files[0].name);
           })
         }

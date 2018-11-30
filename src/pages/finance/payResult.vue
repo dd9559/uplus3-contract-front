@@ -1,16 +1,17 @@
 <template>
     <div class="view">
       <div class="view-context">
+        <h1><i class="iconfont icon-dengdai"></i></h1>
         <h3>付款单创建成功</h3>
         <p>请等待付款审核结果</p>
         <ul class="step-list">
           <li v-for="item in steps" :key="item.index" :class="[item.state?'active':'',activeStep===item.index?'active-last-step':'']">
-            <section>{{item.name}}<p v-if="item.index===1"><span>东野圭吾</span><span>2018/09/30 12:00</span></p></section>
+            <section>{{item.name}}<p v-if="item.index===1"><span>{{result.name}}</span><span>{{result.time}}</span></p></section>
           </li>
         </ul>
         <p>
-          <el-button type="primary" @click="goBack('contract')">返回合同列表</el-button>
-          <el-button @click="goBack('bill')">返回收付款列表</el-button>
+          <el-button round @click="goBack('contract')">返回合同列表</el-button>
+          <el-button round @click="goBack('bill')">返回收付款列表</el-button>
         </p>
       </div>
     </div>
@@ -29,7 +30,7 @@
           },{
             index:2,
             name:'付款审核',
-            state:true
+            state:false
           },{
             index:3,
             name:'申请成功',
@@ -41,9 +42,11 @@
           }
         ],
         activeStep:0,
+        result:{}
       }
     },
     mounted(){
+      this.result=JSON.parse(this.$route.query.content)
       this.steps.find(item=>{
         if(!item.state){
           this.activeStep=item.index-1
@@ -75,13 +78,22 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    >h1{
+      margin-bottom: 41px;
+      .iconfont{
+        color: @color-blue;
+        font-size: 89px;
+      }
+    }
     >h3{
       color: @color-324;
+      font-size: 28px;
     }
     >p{
       &:first-of-type{
         color: @color-99A;
         margin: 20px 0;
+        font-size: 18px
       }
       &:last-of-type{
         margin-top: 140px;

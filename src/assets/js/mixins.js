@@ -1,7 +1,10 @@
 const MIXINS = {
   data(){
     return{
-      userMsg:null
+      userMsg:null,
+      DepList:[],
+      EmployeList:[],
+      Loading:true,
     }
   },
   methods: {
@@ -44,9 +47,30 @@ const MIXINS = {
           this.userMsg = res.data
         }
       })
+    },
+    /**
+     * 获取部门
+     */
+    remoteMethod:function (val) {
+      this.$ajax.get('/api/access/deps',{keyword:val}).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.DepList=[].concat(res.data)
+          this.Loading=false
+        }
+      })
+    },
+    getEmploye:function (val) {
+      this.$ajax.get('/api/organize/employees',{depId:val}).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.EmployeList=res.data
+        }
+      })
     }
   }
 }
+
 export {
-  MIXINS
+  MIXINS,
 }
