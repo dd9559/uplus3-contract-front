@@ -484,6 +484,7 @@
 </script>
 
 <style lang="less" scoped>
+@import "~@/assets/common.less";
 .data-list {
   margin-top: 12px;
   display: flex;
@@ -508,7 +509,7 @@
       justify-content: space-between;
       font-family: "MicrosoftYaHei";
       span {
-        font-size: 18px;
+        font-size: @size-14;
         color: rgba(35, 50, 65, 1);
       }
       .el-button {
@@ -541,7 +542,7 @@
       line-height: 63px;
       font-family: "MicrosoftYaHei";
       span {
-        font-size: 18px;
+        font-size: @size-14;
         color: rgba(35, 50, 65, 1);
       }
       .el-button {

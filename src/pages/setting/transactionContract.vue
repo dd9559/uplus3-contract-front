@@ -27,7 +27,7 @@
                 </el-form-item>
                 <el-form-item label="是否必填">
                     <el-radio label="1" v-model="contractForm.isNecessary">是</el-radio>
-                    <el-radio label="2" v-model="contractForm.isNecessary">否</el-radio>
+                    <el-radio label="0" v-model="contractForm.isNecessary">否</el-radio>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="modal-footer">
