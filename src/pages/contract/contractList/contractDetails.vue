@@ -461,7 +461,7 @@ export default {
       //其他类型
       otherList: [],
       code2: "", //合同编号,
-      achObj:""
+      achObj:{}
     };
   },
   created() {

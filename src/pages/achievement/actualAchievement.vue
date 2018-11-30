@@ -236,12 +236,9 @@
             label="合同类型"
             width="100"
           >
-            <template slot-scope="scope">
-              <p v-if="scope.row.contType==0">租赁</p>
-              <p v-if="scope.row.contType==1">买卖</p>
-              <p v-if="scope.row.contType==2">代办</p>
-              <p v-else>-</p>
-            </template>
+              <template slot-scope="scope">
+                   <p>{{scope.row.contType.label}}</p>
+              </template>
           </el-table-column>
 
           <el-table-column
@@ -283,12 +280,12 @@
 
           <el-table-column
             label="分成人"
-            width="170"
+            width="190"
           >
             <template slot-scope="scope">
               <div v-for="item in scope.row.distributionFroms">
-                <p>{{item.level4}}</p>
-                <p>{{item.assignor}}</p>
+                <p>{{item.level4}}-{{item.assignor}}</p>
+                <!-- <p></p> -->
               </div>
             </template>
           </el-table-column>
@@ -425,8 +422,8 @@
             style="width: 100%"
           >
             <!-- roleType 分成人角色类型 :
-                                                    房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
-                                                    客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
+             房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
+             客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
             <el-table-column
               label="角色类型"
               width="100"
@@ -771,7 +768,7 @@ export default {
       console.log(val1);
       console.log(val2);
       this.shows=false;
-      this.code2=''
+      this.code2='';
       if(val1){
         this.selectAchList[val1].achievementState=val2;
       }
