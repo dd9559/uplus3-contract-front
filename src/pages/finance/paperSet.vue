@@ -29,7 +29,7 @@
           <label>票据状态:</label>
           <el-select size="small" v-model="propForm.state" placeholder="请选择">
             <el-option
-              v-for="item in dictionary['33']"
+              v-for="item in dictionaryData"
               :key="item.key"
               :label="item.value"
               :value="item.key">
@@ -66,7 +66,7 @@
       <div class="paper-set-tit">
         <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
       </div>
-      <el-table :data="tableData" class="paper-table mt-20">
+      <el-table :data="tableData.list" class="paper-table mt-20">
         <el-table-column fixed align="center" label="序号" min-width="70">
           <template slot-scope="scope">
             <p class="tc">{{scope.$index}}</p>
@@ -142,8 +142,18 @@
         </el-table-column>
       </el-table>
     </div>
+    <!-- 分页 -->
+    <div class="pagination" v-if="tableData.total">
+        <el-pagination
+            :current-page="tableData.pageNum"
+            :page-size="tableData.pageSize"
+            @current-change="currentChangeFn"
+            layout=" total, prev, next, jumper"
+            :total="tableData.total">
+        </el-pagination>
+    </div>
     <!-- 弹层 -->
-    <el-dialog :title="layer.title" :visible.sync="layer.show" :width="layer.title==='票据作废'?'740px':'460px'" class="layer-paper" @close="propCloseFn">
+    <el-dialog :title="layer.title" :visible.sync="layer.show" :width="layer.title==='票据作废'?'740px':'460px'" class="layer-paper">
       <div v-if="layer.title==='票据作废'" class="layer-invalid">
         <ul class="ul">
           <li>
@@ -162,8 +172,7 @@
         <div class="input-box">
           <span class="cl-1 mr-10">作废备注：</span>
           <div class="input">
-            <el-input type="textarea" resize="none" placeholder="请输入核销理由" :maxlength="invalidMax" v-model="layer.reason"
-                      class="input">
+            <el-input type="textarea" resize="none" placeholder="请输入核销理由" :maxlength="invalidMax" v-model="layer.reason" class="input">
             </el-input>
             <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
           </div>
@@ -175,72 +184,7 @@
         <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="submitForm">确定</el-button>
       </p>
     </el-dialog>
-    <!-- 票据编号弹层 -->
-    <el-dialog
-      :title="!paperType?'票据详情':'开票信息填写'"
-      :visible.sync="paperShow"
-      width="1000px"
-      class="layer-paper"
-      @close="propCloseFn">
-      <div class="paper-edit-box" v-if="paperType">
-        <ul>
-          <li>
-            <p><label>合同编号:</label><span>{{paperInfoData.contCode}}</span></p>
-            <p><label>物业地址:</label><span>{{paperInfoData.address}}</span></p>
-          </li>
-          <li>
-            <p><label>交款单位:</label><span>{{paperInfoData.payerName}}</span></p>
-            <p><label>合计金额:</label><span>{{paperInfoData.proceedsAmount}}元</span></p>
-          </li>
-          <li v-for="(item,index) in moneyTypes" :key="index">
-            <label class="checkbox-info iconfont" :class="[item.check?'active':'']" @click="item.check=!item.check"></label>
-            <div class="type-list">
-              <p><label>款类：</label><span>{{item.typeName}}</span></p>
-              <p><label>金额：</label><span>{{item.amount}}</span></p>
-              <div class="input-group">
-                <label>开票项目：</label>
-                <el-select class="w120" size="small" v-model="item.project" placeholder="请选择">
-                  <el-option
-                    v-for="item in dictionary['542']"
-                    :key="item.key"
-                    :label="item.value"
-                    :value="item.key">
-                  </el-option>
-                </el-select>
-              </div>
-              <p><label class="checkbox-info iconfont" :class="[item.addressHidden?'active':'']" @click="item.addressHidden=!item.addressHidden"></label><span>隐藏物业地址</span></p>
-              <p><label>票据编号：</label><span>{{item.billCode}}</span></p>
-            </div>
-          </li>
-        </ul>
-        <el-button round  size="medium" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
-      </div>
-      <div class="paper-watch-tab" v-if="paperType">
-        <p>票据预览</p>
-        <ul v-if="moneyTypes.length>1">
-          <li v-for="(item,index) in moneyTypes" :key="index" :class="[index===activeType?'active':'']" @click="activeType=index">{{item.typeName}}</li>
-        </ul>
-      </div>
-      <LayerPaperInfo
-        :number="paperInfoData.contCode"
-        :name="paperInfoData.payerName"
-        :collectionTime="paperInfoData.paymentTime"
-        :invoiceTime="paperInfoData.createTime"
-        :paper="paperInfoData.billCode"
-        :project="paperInfoData.type"
-        :hide="paperInfoData.hide"
-        :address="paperInfoData.address"
-        :money="paperInfoData.amount"
-        :moneyZh="paperInfoData.amountZh"
-        :create="paperInfoData.createByName"
-        :rules="paperInfoData.remark"
-        :payerType="paperInfoData.payerType"
-      ></LayerPaperInfo>
-      <p slot="footer">
-        <el-button round  size="medium" class="paper-btn">取消</el-button>
-        <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaper">打印</el-button>
-      </p>
-    </el-dialog>
+    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
   </div>
 </template>
 
@@ -249,7 +193,6 @@
   import {MIXINS} from "@/assets/js/mixins";
   import ScreeningTop from '@/components/ScreeningTop';
   import LayerInvoice from '@/components/LayerInvoice';
-  import LayerPaperInfo from '@/components/LayerPaperInfo';
 
   export default {
     mixins: [FILTER, MIXINS],
@@ -269,12 +212,11 @@
         //分页
         pageSize: 10,
         pageNum: 1,
-        total: 0,
         // 筛选选项
         dictionary: {
           '33': '',
-          '542': ''
         },
+        dictionaryData:[],
         // 作废弹层输入框
         invalidMax: 150,
         // 弹层
@@ -285,11 +227,6 @@
           reason:''
         },
         activeRow:{},
-        paperShow: false,
-        paperType:false,//false预览 true开票
-        paperInfoData: {},//票据对象
-        moneyTypes:[],//临时存放勾选的款类
-        activeType:0,//当前预览项
       }
     },
     computed: {
@@ -297,14 +234,17 @@
         return this.layer.reason.length
       }
     },
-    created() {
-      this.getData()
-      this.getDictionary()
+    mounted() {
+      // 枚举类型数据获取
+      this.getDictionary();
+      // 获取列表
+      this.getData();
     },
     methods: {
       reset: function () {
         this.$tool.clearForm(this.propForm)
       },
+      // 列表数据
       getData: function () {
         let param = Object.assign({}, this.propForm)
         param.pageNum = this.pageNum
@@ -317,16 +257,14 @@
         this.$ajax.get('/api/bills', param).then(res => {
           res = res.data
           if (res.status === 200) {
-            this.tableData = res.data.list
+            this.tableData = res.data
           }
         })
       },
       btnOpera: function (row,type) {
         this.activeRow = Object.assign({},row)
         if(type===4){
-          this.paperShow = true
-          this.paperType = true
-          this.paperList()
+          this.$refs.layerInvoice.show(row,true);
           return
         }else {
           this.layer.show = true
@@ -345,12 +283,17 @@
             break
         }
       },
+      // 分页
+      currentChangeFn(e){
+          this.pageNum = e;
+          this.getData();
+      },
       // 编号操作
       cellOpera(type,row) {
         if (type === 'contract') {
 
         } else if (type === 'paper') {
-          this.getPaperDetails(row)
+          this.$refs.layerInvoice.show(row);
         } else {
           this.$router.push({
             path:'billDetails',
@@ -361,137 +304,63 @@
           })
         }
       },
-      // 获取开票列表
-      paperList:function () {
-        this.$ajax.get('/api/bills/tobe',{/*id:this.activeRow.proceedsId*/id:21}).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.paperInfoData=Object.assign({},res.data)
-            let obj = JSON.parse(JSON.stringify(res.data))
-            this.moneyTypes=[].concat(obj.list)
-            this.moneyTypes.forEach((item,index)=>{
-              let obj = Object.assign({
-                check:true,
-                addressHidden:false,
-                project:''
-              },item)
-              this.moneyTypes.splice(index,1,obj)
-            })
-          }
-        })
-      },
-      // 弹层关闭
-      propCloseFn() {
-        this.$tool.clearForm(this.layer)
-        this.paperType = false
-      },
       // dialog确定
       submitForm:function () {
-        debugger
-        console.log(this.activeRow)
         let param = {
           id:this.activeRow.id
         }
+        let url = '';
         switch (this.layer.title){
           case '票据核销':
-            param.state = 3
+            // param.state = 3;
+            url = 'bills/cav';
             break
           case '票据回收':
-            param.state = 4
+            // param.state = 4;
+            url = 'bills/recycle'
             break
           case '票据作废':
-            param.state = 5
-            param.reason = this.layer.reason
+            // param.state = 5;
+            param.reason = this.layer.reason;
+            url = 'bills/invalid'
             break
         }
-        this.$ajax.put('/api/bills/state',param).then(res=>{
+        this.$ajax.put(`/api/${url}`,param,0).then(res=>{
           res=res.data
           if(res.status===200){
             this.layer.show=false
+            this.$message({
+              message: `${this.layer.title}成功`,
+              type: 'success'
+            });
             this.getData()
           }
         })
       },
-      /**
-       * 票据详情
-       * @param row
-       */
-      getPaperDetails:function (row) {
-        this.$ajax.get(`/api/bills/${row.id}`).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.paperInfoData=Object.assign({},res.data)
-            this.paperShow = true
-          }
-        })
-      },
-      billing:function () {
-        let param = this.moneyTypes[this.activeType]
-        let obj = {
-          createTime:'',
-          billCode:param.billCode,
-          hide:param.addressHidden,
-          amount:param.amount,
-          amountZh:param.amountZh,
-          createByName:this.paperInfoData.createBy,
-          remark:param.remark
-        }
-        this.dictionary['542'].find(item=>{
-          if(item.key===param.project){
-            obj.type=item.value
-          }
-        })
-        this.paperInfoData=Object.assign({},this.paperInfoData,obj)
-      },
-      // 票据详情 打印
-      printPaper() {
-        let obj={}
-        if(!this.paperType){
-          obj={
-            code:this.paperInfoData.billCode
-          }
-        }else {
-          let type = this.moneyTypes[this.activeType]
-          obj={
-            code:this.activeRow.billCode,
-            payId:this.activeRow.proceedsId,
-            payDetailsId:type.payDetailsId,
-            isHiddenAddress:type.addressHidden,
-            billType:type.project
-          }
-        }
-        this.$ajax.post('/api/bills/print',obj).then(res=>{
-          debugger
-        })
+      // 接收成功
+      emitPaperSetFn(){
+        // this.$refs.layerInvoice.propCloseFn();
+        this.getData();
       }
     },
     components: {
       ScreeningTop,
-      LayerInvoice,
-      LayerPaperInfo
+      LayerInvoice
+    },
+    watch:{
+      dictionary(n,old){
+        this.dictionaryData = [{
+          key:'',
+          value:'全部'
+        },...n[33]];
+      }
     }
   }
 </script>
 
 <style lang="less" scoped>
   @import "~@/assets/less/lsx.less";
-  .checkbox-info{
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 1px solid @border-e6;
-    &.active{
-      position: relative;
-      color: @color-blue;
-      &:after{
-        content: '\e65d';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%,-50%);
-      }
-    }
-  }
+  
 
   .content {
     display: flex;
@@ -599,4 +468,6 @@
       }
     }
   }
+
 </style>
+
