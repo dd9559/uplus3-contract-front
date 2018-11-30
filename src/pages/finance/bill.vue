@@ -130,7 +130,7 @@
           </li>
         </ul>
         <p>
-          <el-button type="primary">导出</el-button>
+          <el-button round type="primary" size="small">导出</el-button>
         </p>
       </div>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
@@ -600,7 +600,6 @@
     >p{
       color: @color-blue;
       text-align: center;
-      font-size: @size-24;
       font-weight: bold;
       margin: 32px;
     }
@@ -690,7 +689,7 @@
       }
     }
     .table-tool{
-      height: 60px;
+      height: 40px;
       position: relative;
       display: flex;
       align-items: center;

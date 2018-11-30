@@ -567,7 +567,6 @@
     >p{
       color: @color-blue;
       text-align: center;
-      font-size: @size-24;
       font-weight: bold;
       margin: 32px;
     }
