@@ -57,13 +57,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <!--<div class="input-group">
-      <p><label>付款金额</label><span>（可支配金额：1234）</span></p>
-      <div class="span-join">
-        <input type="number" class="no-style" placeholder="请填写支付金额">
-        <span>元</span>
-      </div>
-    </div>-->
     <div class="input-group">
       <p><label class="form-label">收款账户</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
@@ -97,12 +90,12 @@
       <p><label class="form-label">付款凭证</label></p>
       <ul class="upload-list">
         <li>
-          <file-up class="upload-context" :rules="fileRules" @getUrl="getFiles">
+          <file-up class="upload-context" @getUrl="getFiles">
             <i class="iconfont icon-shangchuan"></i>
             <span>点击上传</span>
           </file-up>
         </li>
-        <li v-for="item in imgList">
+        <li v-for="item in imgList" @click="getPicture">
           <upload-cell :type="item.type"></upload-cell>
           <span>{{item.name}}</span>
         </li>
@@ -113,6 +106,7 @@
       <el-button type="primary" @click="goResult">提交付款申请</el-button>
       <el-button>取消</el-button>
     </p>
+    <preview v-if="preview"></preview>
   </div>
 </template>
 
@@ -168,9 +162,9 @@
         ],
         dropdown:[],
         amount:null,
-        fileRules:['.png','.jpg','.jpeg'],
         files:[],
         imgList:[],
+        preview:false
       }
     },
     created(){
@@ -184,6 +178,12 @@
       }
     },
     methods:{
+      getPicture:function () {
+        debugger
+        this.$ajax.get('/api/load/generateAccessURLBatch',{urls:this.files},2).then(res=>{
+          debugger
+        })
+      },
       /**
        * 修改款单，获取初始数据
        */
@@ -329,7 +329,7 @@
                 message:'付款凭证不能为空'
               })
             }else {
-              param.filePath = [].concat(this.$tool.getFilePath(this.files))
+              param.filePath = [].concat(this.files)
               if(this.$route.query.edit){
                 delete param.contId
                 this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {

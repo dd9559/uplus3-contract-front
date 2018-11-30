@@ -62,6 +62,7 @@
               // 上传操作进行中
             },
             FileUploaded: function(up, file, info) {
+
               // 响应
               if(info.status===200||info.status===203){
                 that.$message({
