@@ -1,5 +1,7 @@
 <template>
   <div class="view">
+    <!--<iframe id='test' :src="test" frameborder="0"></iframe>
+    <span @click="toPrint">test</span>-->
     <div class="bill-details-tab">
       <ul>
         <li v-for="(item,index) in tabs" :key="index" :class="[activeItem===item?'active':'']"
@@ -195,8 +197,8 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-    <el-button round @click="checkBill(1)">拒 绝</el-button>
-    <el-button round type="primary" @click="checkBill(2)">同 意</el-button>
+    <el-button round @click="checkBill(2)">拒 绝</el-button>
+    <el-button round type="primary" @click="checkBill(1)">同 意</el-button>
   </span>
     </el-dialog>
   </div>
@@ -227,6 +229,7 @@
         },
         invalidMax: 200,
         files:[],
+        test:''
       }
     },
     created() {
@@ -237,6 +240,10 @@
       this.getData()
     },
     methods: {
+      toPrint:function () {
+        this.test='http://jjw-test.oss-cn-shenzhen.aliyuncs.com/bill/20181129/SJ1811290099.pdf?Expires=1543495955&OSSAccessKeyId=LTAI699jkFRmo7TI&Signature=twA%2BLRPn4RK9eR9Mz4AcTHtVN%2B4%3D'
+        document.getElementById('test').contentWindow.print()
+      },
       getData: function () {
         let param = {
           payId: this.billId,
@@ -257,22 +264,22 @@
        */
       checkBill: function (type) {
         let param = {
-          bizId: '',
-          bizCode: '',
-          flowId: '',
-          sort: '',
-          ApprovalForm: {
-            result: type,
-            remark: this.layer.reasion
-          }
+          bizId: this.billMsg.audit.bizId,
+          bizCode: this.billMsg.audit.bizCode,
+          flowId: this.billMsg.audit.flowId,
+          sort: this.billMsg.audit.nodeSort,
+        }
+        param.ApprovalForm={
+          result: type,
+          remark: this.layer.reasion
         }
         debugger
-        /*this.$ajax.postJSON('/api/machine/audit',param).then(res=>{
+        this.$ajax.postJSON('/api/machine/audit',param).then(res=>{
           res=res.data
           if(res.status===200){
             this.layer.show=false
           }
-        })*/
+        })
       },
       clearLayer:function () {
         this.layer.reasion=''
@@ -327,9 +334,19 @@
     }
     ul.image-list {
       > li {
-        width: 146px;
-        height: 104px;
+        width: 120px;
+        height: 120px;
         background-color: @bg-grey;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        span{
+          font-size: @size-12;
+          display: inline-block;
+          width: 100px;
+          word-break: break-all;
+        }
       }
     }
   }

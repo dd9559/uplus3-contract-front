@@ -1,5 +1,6 @@
 <template>
   <div class="view">
+    <preview></preview>
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
       <div class="content">
         <div class="input-group">
@@ -131,14 +132,14 @@
           '25': '',
         },
         searchForm: {
-          moneyType: null,
-          contType: null,
-          dealAgentStoreId: null,
-          dealAgentId: null,
-          receiveAmountState:null,
+          moneyType: '',
+          contType: '',
+          dealAgentStoreId: '',
+          dealAgentId: '',
+          receiveAmountState:'',
           signTime: '',
           collectionTime: '',
-          keyword: null
+          keyword: ''
         },
         list: [],
         //分页
