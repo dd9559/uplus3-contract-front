@@ -654,7 +654,7 @@
 
   .iconfont {
     color: #A1A1A1;
-    font-size: @size-12;
+    font-size: @size-base;
     margin-left: 10px;
   }
 
@@ -776,7 +776,7 @@
             }
           }
           > p {
-            font-size: @size-12;
+            font-size: @size-base;
             color: @color-99A;
             padding: 12px 20px;
             > span {

@@ -27,6 +27,7 @@ body {
   /*user-select: none;*/
   width: 100%;
   height: 100%;
+  font-size: @size-14;
 }
 h1,
 h2,

@@ -1,10 +1,10 @@
 <template>
   <div class="main">
-    <div class="nav">
+    <!--<div class="nav">
       <ul class="navbar">
         <li>退出</li>
       </ul>
-    </div>
+    </div>-->
     <div class="container">
       <div class="slider">
         <el-menu
@@ -118,10 +118,10 @@
                 name:'实收业绩',
                 path:'receivableAchievement'
               },
-              {
-                name:'门店实收',
-                path:'storeReceive'
-              }
+              // {
+              //   name:'门店实收',
+              //   path:'storeReceive'
+              // }
             ]
           },
           {
@@ -179,10 +179,14 @@
       }
     },
     beforeRouteEnter(to,from,next){
+      let path=to.fullPath
+      if(to.meta.getParent){
+        path=localStorage.getItem('route')
+      }
       next(vm=>{
         vm.views.forEach(item=>{
           item.child.forEach(tip=>{
-            if(tip.path===to.fullPath.split('/')[1]){
+            if(tip.path===path.split('/')[1]){
               vm.Index.push(item.name)
               vm.Index.push(tip.name)
             }else {
@@ -241,7 +245,7 @@
     .container {
       display: flex;
       position: absolute;
-      top: 60px;
+      top: 0;
       left: 0;
       right: 0;
       bottom: 0;
@@ -303,6 +307,16 @@
           .theader-bg{
             >th{
               background-color: @bg-th;
+
+            }
+          }
+          .el-table{
+            font-size: @size-base;
+            th,td{
+              padding: @margin-base 0;
+              >.cell{
+                white-space: nowrap;
+              }
             }
           }
           .router-view{

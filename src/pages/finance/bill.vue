@@ -37,20 +37,20 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" size="small" v-model="searchForm.deptId" placeholder="请选择">
+          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @change="getEmploye" v-model="searchForm.deptId" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in DepList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
             </el-option>
           </el-select>
-          <el-select :clearable="true" class="margin-left-10" size="small" v-model="searchForm.empId" placeholder="请选择" v-show="searchForm.deptId">
+          <el-select :clearable="true" class="margin-left-10" size="small" v-model="searchForm.empId" placeholder="请选择">
             <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in EmployeList"
+              :key="item.empId"
+              :label="item.name"
+              :value="item.empId">
             </el-option>
           </el-select>
         </div>
@@ -130,7 +130,7 @@
           </li>
         </ul>
         <p>
-          <el-button type="primary">导出</el-button>
+          <el-button round type="primary" size="small">导出</el-button>
         </p>
       </div>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
@@ -600,7 +600,6 @@
     >p{
       color: @color-blue;
       text-align: center;
-      font-size: @size-24;
       font-weight: bold;
       margin: 32px;
     }
@@ -690,7 +689,7 @@
       }
     }
     .table-tool{
-      height: 60px;
+      height: 40px;
       position: relative;
       display: flex;
       align-items: center;

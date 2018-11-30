@@ -162,7 +162,6 @@
       margin: 28px 0;
       text-align: center;
       font-weight: bold;
-      font-size: @size-24;
     }
   }
 </style>

@@ -116,7 +116,10 @@ export default new Router({
         },
         {
           path: "billDetails",
-          component: billDetails
+          component: billDetails,
+          meta:{
+            getParent:true
+          }
         },
         // 合同——合同列表——新增意向金
         {

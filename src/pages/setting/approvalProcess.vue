@@ -6,21 +6,21 @@
         <div class="content">
             <div class="input-group">
                 <label>选择城市</label>
-                <el-select size="small" v-model="searchForm.cityId">
+                <el-select size="small" v-model="searchForm.cityId" :clearable="true">
                     <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
                 </el-select>
             </div>
             <div class="input-group">
                 <label>流程名称</label>
-                <el-input size="small" v-model="searchForm.name"></el-input>
+                <el-input size="small" v-model="searchForm.name" :clearable="true"></el-input>
             </div>
             <div class="input-group">
                 <label>流程类型</label>
-                <el-select size="small" v-model="searchForm.type" @change="changeFlowType">
+                <el-select size="small" v-model="searchForm.type" @change="changeFlowType" :clearable="true">
                     <el-option label="全部" value=""></el-option>
                     <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
-                <el-select size="small" v-model="searchForm.branchCondition">
+                <el-select size="small" v-model="searchForm.branchCondition" :clearable="true">
                     <el-option label="全部" value=""></el-option>
                     <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
@@ -29,7 +29,7 @@
         </ScreeningTop>
         <div class="aduit-list">
             <p>
-                <span>数据列表</span>
+                <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
                 <el-button @click="operation('添加',1)">添加</el-button>
             </p>
             <div class="table">
@@ -401,11 +401,15 @@
 .aduit-list {
     padding: 20px 10px;
     > p {
+    padding-left: 10px;    
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
     font-size: 18px;
+    .mr-8 {
+      margin-right: 8px;
+    }
     > .el-button {
       width:100px;
       height:36px;

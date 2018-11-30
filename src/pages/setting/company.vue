@@ -6,22 +6,22 @@
     @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="searchForm" class="form-head" size="small">
         <el-form-item label="城市">
-          <el-select v-model="searchForm.cityId" filterable @change="getStoreList">
+          <el-select v-model="searchForm.cityId" filterable @change="getStoreList" :clearable="true">
             <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" filterable>
+          <el-select v-model="searchForm.storeId" filterable :clearable="true">
             <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="合作方式">
-          <el-select v-model="searchForm.cooperationMode">
+          <el-select v-model="searchForm.cooperationMode" :clearable="true">
             <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="银行账户">
-          <el-input v-model="searchForm.bankCard"></el-input>
+          <el-input v-model="searchForm.bankCard" :clearable="true"></el-input>
         </el-form-item>
         <el-form-item label="添加时间">
           <el-date-picker
@@ -34,14 +34,14 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="searchForm.keyword" maxlength="50" placeholder="添加人/开户行/开户名"></el-input>
+          <el-input v-model="searchForm.keyword" maxlength="50" placeholder="添加人/开户行/开户名" :clearable="true"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- table表格 -->
     <div class="company-list">
       <p>
-        <span>数据列表</span>
+        <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
         <el-button @click="addCompany" icon="el-icon-plus">公司信息</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%">
@@ -111,7 +111,7 @@
               </el-form-item>
               <el-form-item label="合作方式: ">
                 <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
-                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>                  
+                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
             </div>
@@ -124,7 +124,7 @@
               </el-form-item>
               <el-form-item label="证件类型: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="directSaleSelect">
-                  <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>                  
+                  <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
             </div>
@@ -208,8 +208,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img src="" alt=""></li>
-                  <li><fileUp id="imgcontract" class="up" @getUrl="uploadCon"><span>+</span></fileUp></li>
+                  <li><fileUp id="imgcontract" class="up" @getUrl="uploadCon"><i>+</i></fileUp><span>点击上传</span></li>
+                  <li><img src="@/assets/img/logo.png" alt=""><span>合同章</span></li>
                 </ul>
               </div>
             </div>
@@ -218,8 +218,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img src="" alt=""></li>
-                  <li><fileUp id="imgfinance" class="up" @getUrl="uploadFin"><span>+</span></fileUp></li>
+                  <li><fileUp id="imgfinance" class="up" @getUrl="uploadFin"><i>+</i></fileUp><span>点击上传</span></li>
+                  <li><img src="@/assets/img/logo.png" alt=""><span>财务章</span></li>
                 </ul>
               </div>
             </div>
@@ -248,7 +248,7 @@
       <div>
         <span>法人信息</span>
         <p><span>法人姓名: {{ companyForm.lepName }}</span><span>法人手机号码: {{ companyForm.lepPhone }}</span></p>
-        <p><span>证件类型: {{ companyForm.lepDocumentType }}</span><span>证件号: {{ companyForm.lepDocumentCard }}</span></p>
+        <p><span>证件类型: {{ companyForm.lepDocumentType }}</span><span class="card-no">证件号: {{ companyForm.lepDocumentCard }}</span></p>
       </div>
       <div>
         <span>营业执照信息</span>
@@ -638,9 +638,7 @@
         this.getCompanyList()
       },
       resetFormFn() {
-        for(let key in this.searchForm) {
-          this.searchForm[key] = ""
-        }
+        this.$tool.clearForm(this.searchForm)
         this.searchTime = []
       }
     }
@@ -677,6 +675,9 @@
     justify-content: space-between;
     margin-bottom: 10px;
     font-size: 18px;
+    .mr-8 {
+      margin-right: 8px;
+    }
     > .el-button {
       width:119px;
       height:36px;
@@ -689,7 +690,6 @@
 .dialog-info {
   .company-info {
     padding: 30px 20px;
-    border-top: 1px solid rgba(237,236,240,1);
     > p {
       font-size: 14px;
       font-weight: bold;
@@ -824,25 +824,46 @@
             > ul {
               display: flex;
               li {
-                width: 160px;
-                height: 160px;
-                background-color: rgba(236,238,241,1);
-                border:2px dashed rgba(198,203,209,1);
+                width: 120px;
+                height: 120px;
+                border:1px dashed #DEDDE2;
+                border-radius: 4px;
                 margin-right: 10px;
                 position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
                 > img {
-                  width: 100%;
-                }
-                .up {
-                  height: 160px;
+                  width: 60px;
+                  height: 60px;
+                  border-radius: 4px;
                 }
                 span {
                   position: absolute;
-                  left: 50%;
-                  top: 50%;
-                  transform: translate(-50%,-50%);
-                  font-size: 117px;
-                  color:rgba(217,219,221,1);
+                  font-size: @size-base;
+                  bottom: 10px;
+                  color: #233241;
+                  display: inline-block;
+                  width: 50px;
+                  text-align: center;
+                }
+                &:first-child {
+                  .up {
+                    width: 50px;
+                    height: 50px;
+                    background-color: #EEF2FB;
+                    line-height: 50px;
+                    text-align: center;
+                  }
+                  i {
+                    font-size: 56px;
+                    color:#fff;
+                  }
+                }
+                &:last-child {
+                  border: none;
+                  background-color: #F2F3F8;
                 }
               }
             }
@@ -872,6 +893,9 @@
         > span {
           flex: 1;
         }
+        .card-no {
+          padding-left: 84px;
+        }
       }
       > .stamp {
         display: inline-block;
@@ -900,7 +924,7 @@
   }
 }
 /deep/ .el-dialog__header {
-  background-color: @bg-grey;
+  border-bottom: 1px solid rgba(237,236,240,1);
 }
 /deep/ .el-table th {
   background:rgba(238,242,251,1);
