@@ -74,7 +74,7 @@
 					<p>合同变更原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
-						<el-input type="textarea" :rows="5" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
+						<el-input type="textarea" :rows="5" :disabled="true" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
 						</el-input>
 						<span>{{textarea.length}}/100</span>
 					</div>
@@ -83,7 +83,9 @@
 				<div class="uploadfile">
 					<div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
 					<div class="uploadbtn">
-
+						<span class="dataPreview" v-for="item in address.value" :key="item.path">
+							<p>{{item.name}}</p>
+						</span>
 					</div>
 				</div>
 			</div>

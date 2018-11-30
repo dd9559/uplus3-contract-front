@@ -299,43 +299,43 @@
           >
             <template slot-scope="scope">
               <div v-for="item in scope.row.distributionFroms">
-                <div v-if="scope.row.roleType==1">
+                <div v-if="item.roleType==1">
                   <p>录入</p>
                 </div>
-                <div v-else-if="scope.row.roleType==2">
+                <div v-else-if="item.roleType==2">
                   <p>维护</p>
                 </div>
-                <div v-else-if="scope.row.roleType==3">
+                <div v-else-if="item.roleType==3">
                   <p>独家</p>
                 </div>
-                <div v-else-if="scope.row.roleType==4">
+                <div v-else-if="item.roleType==4">
                   <p>房勘</p>
                 </div>
-                <div v-else-if="scope.row.roleType==5">
+                <div v-else-if="item.roleType==5">
                   <p>钥匙</p>
                 </div>
-                <div v-else-if="scope.row.roleType==15">
+                <div v-else-if="item.roleType==15">
                   <p>委托</p>
                 </div>
-                <div v-else-if="scope.row.roleType==16">
+                <div v-else-if="item.roleType==16">
                   <p>建盘</p>
                 </div>
-                <div v-else-if="scope.row.roleType==6">
+                <div v-else-if="item.roleType==6">
                   <p>主客方</p>
                 </div>
-                <div v-else-if="scope.row.roleType==10">
+                <div v-else-if="item.roleType==10">
                   <p>推荐人</p>
                 </div>
-                <div v-else-if="scope.row.roleType==14">
+                <div v-else-if="item.roleType==14">
                   <p>签约人</p>
                 </div>
-                <div v-else-if="scope.row.roleType==11">
+                <div v-else-if="item.roleType==11">
                   <p>A/M</p>
                 </div>
-                <div v-else-if="scope.row.roleType==7">
+                <div v-else-if="item.roleType==7">
                   <p>协议方</p>
                 </div>
-                <div v-else-if="scope.row.roleType==17">
+                <div v-else-if="item.roleType==17">
                   <p>协议方2</p>
                 </div>
                 <div v-else>
@@ -370,21 +370,21 @@
                 v-if="scope.row.achievementState==0"
                 class="check-btn"
               >
-                <span @click.stop="checkAch(scope.row.code,scope.row.aId,scope.row.id)">审核</span>
-                <span @click.stop="editAch(scope.row.code,scope.row.aId,scope.row.id)">编辑</span>
+                <span @click.stop="checkAch(scope.row,scope.$index)">审核</span>
+                <span @click.stop="editAch(scope.row,scope.$index)">编辑</span>
               </div>
               <div
                 v-if="scope.row.achievementState==1"
                 class="check-btn"
               >
-                <span @click.stop="againCheck(scope.row.code,scope.row.aId,scope.row.id)">反审核</span>
+                <span @click.stop="againCheck(scope.row,scope.$index)">反审核</span>
               </div>
               <div
                 v-if="scope.row.achievementState==2"
                 class="check-btn"
               >
-                <span @click.stop="checkAch(scope.row.code,scope.row.aId,scope.row.id)">审核</span>
-                <span @click.stop="editAch(scope.row.code,scope.row.aId,scope.row.id)">编辑</span>
+                <span @click.stop="checkAch(scope.row,scope.$index)">审核</span>
+                <span @click.stop="editAch(scope.row,scope.$index)">编辑</span>
               </div>
             </template>
           </el-table-column>
@@ -673,11 +673,12 @@
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog
       :shows="shows"
-      @close="shows=false,code2=''"
+      @close="close"
       :dialogType="dialogType"
       :contractCode="code2"
       :aId="aId"
       :contractId="contractId"
+      :achIndex="achIndex"
     ></achDialog>
   </div>
 </template>
@@ -727,7 +728,8 @@ export default {
       pageSize: 10,
       comm: "", //业绩分成
       aId: null, //业绩id
-      contractId: null //合同id
+      contractId: null, //合同id
+      achIndex:null
     };
   },
   created() {
@@ -764,6 +766,15 @@ export default {
             this.total = data.data.total;
           }
         });
+    },
+    close(val1,val2){
+      console.log(val1);
+      console.log(val2);
+      this.shows=false;
+      this.code2=''
+      if(val1){
+        this.selectAchList[val1].achievementState=val2;
+      }
     },
     closeDialog() {
       this.dialogVisible = false;
@@ -810,27 +821,29 @@ export default {
         search: ""
       };
     },
-    checkAch(code, aId, contractId) {
+    checkAch(value,index) {
       this.beginData = true;
-      this.code2 = code;
-      this.aId = aId;
-      this.contractId = contractId;
-      this.dialogType = 0;
+      this.code2 = value.code;//合同编号
+      this.aId = value.aId;//业绩id
+      this.contractId = value.id;//合同id
+      this.dialogType = 0;//弹框类型
+      this.achIndex=index //当前索引
       this.shows = true;
     },
-    editAch(code, aId, contractId) {
+    editAch(value,index) {
       this.beginData = true;
-      this.code2 = code; //合同编号
-      this.aId = aId; //业绩id
-      this.contractId = contractId;
-      this.dialogType = 1; //弹框类型
+      this.code2 =  value.code; 
+      this.aId =  value.aId; 
+      this.contractId =  value.id; 
+      this.dialogType = 1; 
+      this.achIndex=index  
       this.shows = true;
     },
-    againCheck(code, aId, contractId) {
+    againCheck(value,index) {
       this.beginData = true;
-      this.code2 = code;
-      this.aId = aId;
-      this.contractId = contractId;
+      this.code2 =  value.code;
+      this.aId =  value.aId;
+      this.contractId =  value.id;
       this.dialogType = 2;
       // console.log(this.dialogType);
       this.shows = true;
@@ -1111,5 +1124,8 @@ export default {
   text-align: center;
   padding-bottom: 50px;
   padding-top: 50px;
+}
+/deep/ tr.el-table__row{
+  overflow: scroll!important;
 }
 </style>
