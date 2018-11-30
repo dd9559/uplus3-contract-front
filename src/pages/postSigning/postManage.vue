@@ -491,10 +491,9 @@
                                     <ul class="steps-img">
                                         <li 
                                         v-for="(i,n) in item.val"
-                                        @click="clearFn(index,n)"
                                         :key="i.name"
                                         >
-                                            <i class="iconfont icon-tubiao-6"></i>
+                                            <i @click="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
                                             <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                             <p class="p">{{i.name}}</p>
                                         </li>
@@ -577,11 +576,11 @@
                                     </ul> -->
                                     <ul class="steps-img">
                                         <li 
-                                        v-for="(i,n) in item.val"
-                                        @click="clearFn(index,n)"
+                                        v-for="i in item.val"
                                         :key="i.name"
                                         >
-                                            <i class="iconfont icon-tubiao-6"></i>
+                                            <i 
+                                            class="iconfont icon-tubiao-6"></i>
                                             <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                             <p class="p">{{i.name}}</p>
                                         </li>
@@ -724,7 +723,6 @@
                 dictionary:{
                     '6':'合同变更状态',
                     '13':'收佣状态',
-                    '18':'步骤状态',
                     '22':'是否超时',
                     '44':'后期状态',
                     '48':'数据范围',
@@ -760,7 +758,19 @@
                         value: 1
                     }],
                     steps: [],
-                    stepsMo: [],
+                    stepsMo: [{
+                        key:1,
+                        value:'已办理'
+                    },{
+                        key:2,
+                        value:'未办理'
+                    },{
+                        key:3,
+                        value:'超时未办理'
+                    },{
+                        key:4,
+                        value:'超时已办理'
+                    },],
                     process: [{
                         label: "全部",
                         value: ""
@@ -900,9 +910,9 @@
                 this.getDataList();
             },
             // 部门回调
-            departmentChangeFn(){
-                console.log('部门回调')
-            },
+            // departmentChangeFn(){
+            //     console.log('部门回调')
+            // },
             // 合同编号
             contractFn(e){
                 console.log('合同编号')
@@ -952,7 +962,7 @@
                                 j.message = `请输入${e.title}`;
                             }else{
                                 if(e.value){
-                                    e.val = e.value.split(',');
+                                    e.val = this.$tool.cutFilePath(e.value.split(','))
                                 }else{
                                     e.val = [];
                                 }
@@ -1293,6 +1303,9 @@
                         }).then(res=>{
                             res = res.data;
                             if(res.status === 200){
+                                if(res.data){
+                                    this.layerBtn = false;
+                                }
                                 this.successMeFn(res.message);
                                 this.lateProgressFn();
                                 this.getDataList();
@@ -1345,9 +1358,9 @@
             // },
             // 删除
             clearFn(i,n){
-                let arr = [...this.stepsFrom];
+                let arr = [...this.stepsFrom.list];
                 arr[i].val.splice(n,1)
-                this.stepsFrom = arr;
+                this.stepsFrom.list = arr;
             },
             // 调整步骤确定
             adjustBtnFn(){
@@ -1626,8 +1639,6 @@
                         },...newData[6]];
                 // 数据范围
                 this.rules.range = [...newData[48]];
-                // 步骤状态
-                this.rules.stepsMo = [...newData[18]];
            }
         },
         mounted() {
