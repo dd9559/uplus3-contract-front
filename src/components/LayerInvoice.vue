@@ -1,9 +1,9 @@
 <template>
-    <el-dialog  
-    :title="!paperType?'票据详情':'开票信息填写'" 
-    :visible.sync="paperShow" 
-    width="1000px" 
-    class="layer-paper" 
+    <el-dialog
+    :title="!paperType?'票据详情':'开票信息填写'"
+    :visible.sync="paperShow"
+    width="1000px"
+    class="layer-paper"
     @close="propCloseFn">
         <div v-loading="loading">
             <div class="paper-edit-box" v-if="paperType">
@@ -42,19 +42,19 @@
                     <li v-for="(item,index) in moneyTypes" :key="index" :class="[index===activeType?'active':'']" @click="activeType=index">{{item.typeName}}</li>
                 </ul>
             </div>
-                <LayerPaperInfo 
-                :number="paperInfoData.contCode" 
-                :name="paperInfoData.payerName" 
-                :collectionTime="paperInfoData.paymentTime" 
-                :invoiceTime="paperInfoData.createTime" 
-                :paper="paperInfoData.billCode" 
-                :project="paperInfoData.type" 
-                :hide="paperInfoData.hide" 
-                :address="paperInfoData.address" 
-                :money="paperInfoData.amount" 
-                :moneyZh="paperInfoData.amountZh" 
-                :create="paperInfoData.createByName" 
-                :rules="paperInfoData.remark" 
+                <LayerPaperInfo
+                :number="paperInfoData.contCode"
+                :name="paperInfoData.payerName"
+                :collectionTime="paperInfoData.paymentTime"
+                :invoiceTime="paperInfoData.createTime"
+                :paper="paperInfoData.billCode"
+                :project="paperInfoData.type"
+                :hide="paperInfoData.hide"
+                :address="paperInfoData.address"
+                :money="paperInfoData.amount"
+                :moneyZh="paperInfoData.amountZh"
+                :create="paperInfoData.createByName"
+                :rules="paperInfoData.remark"
                 :payerType="paperInfoData.payerType"></LayerPaperInfo>
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
@@ -423,7 +423,6 @@
         >p {
             color: @color-blue;
             text-align: center;
-            font-size: @size-24;
             font-weight: bold;
             margin: 32px;
         }

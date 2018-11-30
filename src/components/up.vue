@@ -5,7 +5,7 @@
 <script>
   import {set_upload_param,get_suffix} from "@/assets/js/upload";
 
-  // let uploader = null
+  let result = null
   export default {
     props:{
       id:{
@@ -67,11 +67,22 @@
                 that.$message({
                   message:'上传成功'
                 })
+                // console.log(file)
+                that.filePath=[].concat({
+                  path:`${result.host}/${result.key}${get_suffix(file.name)}`,
+                  name:file.name
+                })
+                console.log(that.filePath)
+                that.$emit('getUrl',{param:that.filePath,btnId:that.getId})
                 that.uploader.splice(0,1)
               }
             },
             Error: function(up, err) {
-              console.log(err);
+              if(err.code===-602){
+                that.$message({
+                  message:`${err.file.name}已经上传`
+                })
+              }
               // ...
             }
           }
@@ -88,12 +99,7 @@
         let path = 'picture/'
         if(this.uploader.files.length!==0){
           this.getUrl(path).then(res=>{
-            this.filePath.push({
-              path:`${res.host}/${res.key}${get_suffix(this.uploader.files[0].name)}`,
-              name:this.uploader.files[0].name
-            })
-            console.log(this.filePath)
-            this.$emit('getUrl',{param:this.filePath,btnId:this.getId})
+            result=res
             set_upload_param(this.uploader,res,this.uploader.files[0].name);
           })
         }

@@ -152,7 +152,7 @@
       </li>
       <li ref="checkBox">
         <h4>审核信息</h4>
-        <el-table border :data="list" header-row-class-name="theader-bg">
+        <el-table border :data="checkList" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
             <template slot-scope="scope">
               <span>-</span>
@@ -223,6 +223,7 @@
         list: [
           {}
         ],
+        checkList:[],//审核信息
         layer: {
           show: false,
           reasion: ''
@@ -324,7 +325,7 @@
     align-items: flex-start;
     max-width: 812px;
     &:first-of-type {
-      margin-bottom: 20px;
+      margin-bottom: @margin-base;
     }
     > label {
       color: @color-6c;
@@ -342,7 +343,7 @@
         justify-content: center;
         align-items: center;
         span{
-          font-size: @size-12;
+          font-size: @size-base;
           display: inline-block;
           width: 100px;
           word-break: break-all;
@@ -416,7 +417,7 @@
     padding: 0 20px;
     > li {
       h4 {
-        margin: 30px 0 20px;
+        margin: @margin-base 0;
         font-weight: bold;
       }
       .total-text {

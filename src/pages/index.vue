@@ -307,6 +307,16 @@
           .theader-bg{
             >th{
               background-color: @bg-th;
+
+            }
+          }
+          .el-table{
+            font-size: @size-base;
+            th,td{
+              padding: @margin-base 0;
+              >.cell{
+                white-space: nowrap;
+              }
             }
           }
           .router-view{

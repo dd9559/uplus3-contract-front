@@ -99,10 +99,15 @@
         <li>
           <file-up class="upload-context" :rules="fileRules" @getUrl="getFiles">
             <i class="iconfont icon-shangchuan"></i>
-            <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
+            <span>点击上传</span>
           </file-up>
         </li>
+        <li v-for="item in imgList">
+          <upload-cell :type="item.type"></upload-cell>
+          <span>{{item.name}}</span>
+        </li>
       </ul>
+      <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
     </div>
     <p>
       <el-button type="primary" @click="goResult">提交付款申请</el-button>
@@ -164,7 +169,8 @@
         dropdown:[],
         amount:null,
         fileRules:['.png','.jpg','.jpeg'],
-        files:[]
+        files:[],
+        imgList:[],
       }
     },
     created(){
@@ -195,8 +201,12 @@
               smallAmount: res.data.amount,
               id: res.data.id
             }
-            debugger
-            console.log(JSON.parse(res.data.filePath))
+            if(res.data.filePath){
+              this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+            }
+            this.imgList.forEach(item=>{
+              this.files.push(`${item.path}?${item.name}`)
+            })
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
           }
@@ -206,7 +216,9 @@
        * 获取上传文件
        */
       getFiles:function (payload) {
-        this.files=[].concat(payload.param)
+        debugger
+        this.files=this.files.concat(this.$tool.getFilePath(payload.param))
+        this.imgList=this.$tool.cutFilePath(this.files)
       },
       /**
        * 获取下拉框数据
@@ -430,45 +442,42 @@
     .upload-list{
       display: flex;
       flex-wrap: wrap;
-      margin: 20px 0;
+      margin: @margin-base;
       >li{
         border: 1px dashed @color-D6;
-        width: 250px;
-        height: 170px;
+        width: 120px;
+        height: 120px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        .upload-context{
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          >i{
+        >span{
+          width: 100px;
+          word-break: break-all;
+        }
+        &:first-of-type{
+          .iconfont{
             color: @bg-th;
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            overflow: hidden;
-            &.iconfont{
-              position: relative;
-              display: flex;
-              align-items: center;
-              &:before{
-                font-size: 58px;
-              }
+            font-size: 58px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            &:before{
+
             }
           }
-          >p{
-            font-size: @size-12;
-            color: @color-99A;
-            padding: 12px 20px;
-            >span{
-              &:first-of-type{
-                font-size: @size-base;
-                color: @color-blue;
-              }
-            }
-          }
+        }
+        &:nth-of-type(n+1){
+          margin-right: @margin-base;
+        }
+      }
+    }
+    .upload-text{
+      color: @color-99A;
+      padding: @margin-base;
+      >span{
+        &:first-of-type{
+          color: @color-blue;
         }
       }
     }

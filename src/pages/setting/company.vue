@@ -111,7 +111,7 @@
               </el-form-item>
               <el-form-item label="合作方式: ">
                 <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
-                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>                  
+                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
             </div>
@@ -124,7 +124,7 @@
               </el-form-item>
               <el-form-item label="证件类型: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="directSaleSelect">
-                  <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>                  
+                  <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
             </div>
@@ -841,7 +841,7 @@
                 }
                 span {
                   position: absolute;
-                  font-size: @size-12;
+                  font-size: @size-base;
                   bottom: 10px;
                   color: #233241;
                   display: inline-block;
