@@ -122,14 +122,14 @@ export default {
     changeType(value) {
       this.isActive = value;
       if(value===1){
-        this.conut=1;
+        this.count=1;
         this.showAddress=this.residence;
         this.setSrc(this.showAddress,this.count);
         this.showTotal=this.total_r
       }else{
-        this.conut=1;
+        this.count=1;
         this.showAddress=this.business;
-        this.setSrc(this.showAddress,this.conut);
+        this.setSrc(this.showAddress,this.count);
         this.showTotal=this.total_b;
       }
     },

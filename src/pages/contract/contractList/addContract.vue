@@ -221,7 +221,7 @@
       <div class="houseMsg">
         <p>扩展参数</p>
         <div class="form-content">
-          <ul>
+          <ul class="parameter">
             <li v-for="item in parameterList" :key="item.id">
               <span class="title">{{item.name+':'}}</span>
               <!-- 输入框 -->
@@ -965,7 +965,7 @@ export default {
     .address {
       width: 500px;
     }
-    ul{
+    .parameter{
       display: flex;
       width: 800px;
       flex-wrap:wrap;
@@ -975,11 +975,15 @@ export default {
         width: 250px;
         line-height: 50px;
         > .title{
-          width: 140px;
+          width: 130px;
           text-align: right;
+          padding-right: 10px;
+          color: #606266;
         }
         > .unit{
           width: 40px;
+          padding-left: 10px;
+          color: #606266;
         }
       }
     }
