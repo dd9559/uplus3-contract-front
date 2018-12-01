@@ -41,7 +41,7 @@
           </el-table-column>
           <el-table-column min-width="160" align="center" label="订单条码">
             <template slot-scope="scope">
-
+              <img :src="result.RQcode" alt="">
             </template>
           </el-table-column>
         </el-table>

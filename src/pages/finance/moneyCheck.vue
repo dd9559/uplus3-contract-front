@@ -119,7 +119,7 @@
       <div class="table-tool">
         <h4><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button type="primary">导出</el-button>
+          <el-button round size="small" type="primary">导出</el-button>
         </p>
       </div>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
@@ -279,7 +279,8 @@
         if (this.activeView === 1) {
           param.query = {
             tab: '收款信息',
-            id:item.id
+            id:item.id,
+            type:item.inAccountType
           }
         } else {
           param.query = {

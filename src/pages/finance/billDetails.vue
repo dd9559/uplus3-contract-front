@@ -8,7 +8,7 @@
             @click="choseTab(item)">{{item}}
         </li>
       </ul>
-      <p>
+      <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
         <el-button round size="small" type="primary" @click="showDialog">审核</el-button>
       </p>
     </div>
@@ -79,7 +79,7 @@
           </el-table-column>
           <el-table-column align="center" label="票据">
             <template slot-scope="scope">
-              <span>{{billMsg.billCode}}</span>
+              <span @click="getPaper('details')">{{billMsg.billCode}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="支付方式">
@@ -109,7 +109,7 @@
           </el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-              <el-button type="text">开票</el-button>
+              <el-button type="text" @click="getPaper('create')">开票</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -189,8 +189,8 @@
         </li>
         <li>支付方式（若通过审核，则支付方式必填）</li>
         <li>
-          <el-radio v-model="radio" label="1">线上支付（联动优势）</el-radio>
-          <el-radio v-model="radio" label="2">线下支付（线下财物打款）</el-radio>
+          <el-radio v-model="payRadio" label="1">线上支付（联动优势）</el-radio>
+          <el-radio v-model="payRadio" label="2">线下支付（线下财物打款）</el-radio>
         </li>
         <li class="color-light">
           * 当支付方式为“线上支付”时，系统会对接第三方系统进行自动支付
@@ -205,10 +205,12 @@
   </span>
     </el-dialog>
     <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
+    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
   </div>
 </template>
 
 <script>
+  import LayerInvoice from '@/components/LayerInvoice'
   import {FILTER} from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
 
@@ -219,6 +221,9 @@
   export default {
     name: "bill-details",
     mixins: [FILTER,MIXINS],
+    components:{
+      LayerInvoice
+    },
     data() {
       return {
         tabs: ['审核信息'],
@@ -228,6 +233,7 @@
         list: [
           {}
         ],
+        receiptBill:0,
         checkList: [],//审核信息
         layer: {
           show: false,
@@ -236,6 +242,7 @@
         invalidMax: 200,
         files: [],
         radioMask: false,
+        payRadio:0
       }
     },
     created() {
@@ -244,6 +251,9 @@
       this.billId = this.$route.query.id
       this.tabs.unshift(this.activeItem)
       this.getData()
+      if(this.$route.query.type){
+        this.receiptBill=parseInt(this.$route.query.type)
+      }
     },
     methods: {
       previewImg:function () {
@@ -252,6 +262,18 @@
           arr.push(item.path)
         })
         this.fileSign(arr)
+      },
+      //监听点击票据打印
+      emitPaperSetFn:function () {
+
+      },
+      //开票
+      getPaper:function (type) {
+        if(type==='details'){
+          this.$refs.layerInvoice.show(this.billMsg.billId)
+        }else {
+          this.$refs.layerInvoice.show(this.billId,true)
+        }
       },
       // 判断审核弹窗显示内容
       showDialog: function () {
@@ -285,6 +307,12 @@
        * 审核
        */
       checkBill: function (type) {
+        if(this.radioMask&&!this.payRadio){
+          this.$message({
+            message:'请选择支付方式'
+          })
+          return
+        }
         let param = {
           bizId: this.billMsg.audit.bizId,
           bizCode: this.billMsg.audit.bizCode,
@@ -295,10 +323,32 @@
           result: type,
           remark: this.layer.reasion
         }
-        debugger
         this.$ajax.postJSON('/api/machine/audit', param).then(res => {
           res = res.data
           if (res.status === 200) {
+            this.getData()
+            if(this.radioMask){
+              this.secondCheck()
+            }else {
+              this.$message({
+                message:res.message
+              })
+              this.layer.show = false
+            }
+          }
+        })
+      },
+      secondCheck:function () {
+        let param={
+          payId:this.billId,
+          payMethod:parseInt(this.payRadio)
+        }
+        this.$ajax.put('/api/payInfo/auditPass',param,2).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.$message({
+              message:res.message
+            })
             this.layer.show = false
           }
         })

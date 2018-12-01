@@ -210,7 +210,7 @@
                 <ul>
                   <li><fileUp id="imgcontract" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span>
                   </li>
-                  <li v-show="companyForm.contractSign!==''"><upload-cell type=".png"></upload-cell><span class="text">{{contractName}}</span><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
+                  <li v-show="companyForm.contractSign!==''" @click="getPicture"><upload-cell type=".png"></upload-cell><span class="text">{{contractName}}</span><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -220,7 +220,7 @@
                 <span>上传电子签章图片：</span>
                 <ul>
                   <li><fileUp id="imgfinance" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span></li>
-                  <li v-show="companyForm.financialSign!==''"><upload-cell type=".png"></upload-cell><span class="text">{{financialName}}</span><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
+                  <li v-show="companyForm.financialSign!==''" @click="getPicture"><upload-cell type=".png"></upload-cell><span class="text">{{financialName}}</span><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -236,6 +236,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitConfirm">确定</el-button>
       </div>
+      <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
     <!-- 查看 弹出框 -->
     <el-dialog
@@ -261,14 +262,15 @@
         <span>电子签章信息</span>
         <div class="stamp">
           <span>合同章: </span>
-          <div><upload-cell type=".png" class="picture" v-show="companyForm.contractSign!==''"></upload-cell></div>
+          <div @click="getPicture"><upload-cell type=".png" class="picture" v-show="companyForm.contractSign!==''"></upload-cell></div>
         </div>
         <div class="stamp">
           <span>财务章: </span>
-          <div><upload-cell type=".png" class="picture" v-show="companyForm.financialSign!==''"></upload-cell></div>
+          <div @click="getPicture"><upload-cell type=".png" class="picture" v-show="companyForm.financialSign!==''"></upload-cell></div>
         </div>
       </div>
     </div>
+    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
   </div>
 </template>
@@ -373,7 +375,9 @@
           '40':''
         },
         contractName: "",
-        financialName: ""
+        financialName: "",
+        previewFiles: [],
+        preview: false
       }
     },
     created() {
@@ -636,6 +640,21 @@
           financialSign: (currentRow.financialSign.split('?')[0])
         }
         this.companyForm = newForm
+      },
+      getPicture() {
+        this.previewFiles = []
+        let pic1 = this.companyForm.contractSign
+        let pic2 = this.companyForm.financialSign
+        if(pic1 || pic2) {
+          this.preview = true
+          if(pic1.indexOf('?') > -1) {
+            this.previewFiles.push(pic1.split('?')[0],pic2.split('?')[0])
+          } else {
+            this.previewFiles.push(pic1.split('.png')[0]+`.png`, pic2.split('.png')[0]+`.png`)
+          }
+        } else {
+          this.preview = false
+        }
       },
       handleSizeChange(val) {
         this.pageSize = val
