@@ -219,7 +219,7 @@ export default {
       let param = {
         contractCode: this.contCode
       };
-      this.$ajax.get("/apiflows/account", param).then(res => {
+      this.$ajax.get("/api/flows/account", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           //console.log(res.data);
