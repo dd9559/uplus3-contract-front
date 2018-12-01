@@ -162,7 +162,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="ratio" label="分成比例"></el-table-column>
-                <el-table-column prop="assignor" label="经纪人"></el-table-column>
+                <el-table-column prop="assignor" label="经纪人" min-width="100"></el-table-column>
                 <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
                 <el-table-column prop="level3" label="门店"></el-table-column>
                 <el-table-column prop="shopkeeper" label="店长"></el-table-column>
@@ -228,12 +228,12 @@
                     <p>点击上传</p>
                   </file-up>
                 </li>
-                <li v-for="item_ in item.value" :key="item_.path">
+                <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                   <div class="namePath">
-                    <i class="iconfont icon-hetong"></i>
+                    <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
-                  <i class="iconfont icon-tubiao-6" @click="delectData"></i>
+                  <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
             </div>
@@ -249,12 +249,12 @@
                     <p>点击上传</p>
                   </file-up>
                 </li>
-                <li v-for="item_ in item.value" :key="item_.path">
+                <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                   <div class="namePath">
-                    <i class="iconfont icon-hetong"></i>
+                    <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
-                  <i class="iconfont icon-tubiao-6"></i>
+                  <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
             </div>
@@ -270,12 +270,12 @@
                     <p>点击上传</p>
                   </file-up>
                 </li>
-                <li v-for="item_ in item.value" :key="item_.path">
+                <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                   <div class="namePath">
-                    <i class="iconfont icon-hetong"></i>
+                    <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
-                  <i class="iconfont icon-tubiao-6"></i>
+                  <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
             </div>
@@ -461,7 +461,8 @@ export default {
       //其他类型
       otherList: [],
       code2: "", //合同编号,
-      achObj:{}
+      achObj:{},
+      isDelete:''
     };
   },
   created() {
@@ -664,9 +665,14 @@ export default {
           let address = JSON.parse(res.data.address);
           console.log(address)
           address.forEach(element => {
+            element.value.forEach(item => {
+              let fileType = this.$tool.get_suffix(item.name);
+              item.fileType=fileType
+            });
             if(element.kind==="买方"){
               this.buyerList.forEach(ele => {
                 if(element.title===ele.title){
+                  // let fileType = this.$tool.get_suffix(element.name)
                   ele.value=element.value
                 }
               });
@@ -694,23 +700,28 @@ export default {
     addSubject(data){
       console.log(data);
       let arr = data.param;
+      let fileType = this.$tool.get_suffix(arr[0].name);
+      arr[0].fileType = fileType;
       let num = Number(data.btnId.substring(data.btnId.length-1));
       let typeId = data.btnId.substring(0,data.btnId.length-1)
       // console.log(typeId);
       // console.log(num);
       // console.log(this.sellerList[num].value);
       if(typeId==='seller'){
-        arr.forEach(element => {
-          this.sellerList[num].value.push(element);
-        });
+        this.sellerList[num].value.push(arr[0]);
       }else if(typeId==='buyer'){
-        arr.forEach(element => {
-          this.buyerList[num].value.push(element);
-        });
+        this.buyerList[num].value.push(arr[0]);
       }else if(typeId==='other'){
-        arr.forEach(element => {
-          this.otherList[num].value.push(element);
-        });
+        this.otherList[num].value.push(arr[0]);
+      }
+    },
+    //显示删除按钮
+    moveIn(value){
+      this.isDelete=value
+    },
+    moveOut(value){
+      if(this.isDelete===value){
+        this.isDelete=''
       }
     },
     //上传合同资料库
@@ -727,9 +738,15 @@ export default {
           });
           break
         }else if(uploadContData[i].isrequire&&uploadContData[i].value.length>0){
+          uploadContData[i].value.forEach(element => {
+            delete element.fileType;
+          });
           arr_.push(uploadContData[i]);
           isOk = true;
         }else if(!uploadContData[i].isrequire&&uploadContData[i].value.length>0){
+          uploadContData[i].value.forEach(element => {
+            delete element.fileType;
+          });
           arr_.push(uploadContData[i]);
           isOk = true;
         }else{
@@ -752,8 +769,16 @@ export default {
         })
       }
     },
-    delectData(){
-      console.log('触发了')
+    delectData(index,index_,type){
+      console.log(index,index_,type);
+      if(type==="seller"){
+        this.sellerList[index].value.splice(index_,1);
+      }else if(type==="buyer"){
+        this.buyerList[index].value.splice(index_,1);
+      }else if(type==="other"){
+        this.otherList[index].value.splice(index_,1);
+      }
+
     },
     //合同无效弹窗
     invalid(){
@@ -917,10 +942,13 @@ export default {
     text-align: center;
     width: 120px;
     height: 120px;
-    padding-top: 30px;
+    padding-top: 20px;
     box-sizing: border-box;
     border-radius:4px;
     background: @color-F2;
+    > p{
+      padding-top: 5px;
+    }
     > i{
       font-size: 50px;
       color: #54d384;

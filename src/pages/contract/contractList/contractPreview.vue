@@ -4,24 +4,31 @@
       <div class="title">
         <p><span>合同预览</span>合同需签章打印且双方签字后生效</p>
       </div>
-      <div class="type">
+      <div class="type" v-if="isShowType">
         <span :class="{'active':isActive===1}" @click="changeType(1)">居间合同</span>
         <span :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</span>
       </div>
       <div class="btn" v-if="!operationType">
-        <el-button type="primary" round style="width:100px">编 辑</el-button>
+        <el-button type="primary" round style="width:100px" @click="toEdit">编 辑</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogInvalid = true">无 效</el-button>
-        <el-button round style="width:100px">提交审核</el-button>
-        <el-button round style="width:100px">变更</el-button>
-        <el-button round style="width:100px">解约</el-button>
-        <el-button round style="width:100px" @click="signature">签章打印</el-button>
+        <el-button round style="width:100px" v-if="examineState<0">提交审核</el-button>
+        <el-button round style="width:100px" v-if="contState===3">变更</el-button>
+        <el-button round style="width:100px" v-if="contState===3">解约</el-button>
+        <el-button round style="width:100px" @click="signature" v-if="examineState===7">签章打印</el-button>
       </div>
       <div class="btn" v-else>
         <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="!isSignature">审核</el-button>
         <el-button type="primary" round style="width:100px" v-if="isSignature">签章</el-button>
       </div>
     </div>
-    <div class="content"></div>
+    <div class="content">
+      <img :src="src" alt="" width="620" height="800">
+      <div class="btnList">
+        <el-button class="paging iconfont icon-tubiao_shiyong-20" @click="del"></el-button>
+        <div class="tally"><span>{{count}}</span>/<span>{{showTotal}}</span></div>
+        <el-button class="paging iconfont icon-tubiao_shiyong-22" @click="add"></el-button>
+      </div>
+    </div>
     <!-- 合同无效弹窗 -->
     <el-dialog title="合同无效" :visible.sync="dialogInvalid" width="740px">
       <div class="top">
@@ -71,14 +78,33 @@ export default {
       isSign: 0,
       //审核
       operationType: "",
-      //合同编号
-      code: "",
       //合同id
       id:'',
+      isShowType:false,
       //审批流节点信息
       auditNodeResult:{},
       //签章
-      isSignature:false
+      isSignature:false,
+      //买卖合同地址
+      business:'',
+      total_b:'',
+      //居间合同地址
+      residence:'',
+      total_r:'',
+      //其他合同地址
+      address:'',
+      total_a:'',
+      //展示地址
+      showAddress:'',
+      showTotal:'',
+      src:'',
+      count:1,
+      //合同状态
+      contState:'',
+      //审核状态
+      examineState:'',
+      //合同类型
+      contType:''
     };
   },
   created() {
@@ -87,11 +113,36 @@ export default {
       this.operationType = this.$route.query.operationType;
       this.getAuditNode();
     }
+    this.getContImg();
   },
   methods: {
     //居间买卖切换
     changeType(value) {
       this.isActive = value;
+      if(value===1){
+        this.conut=1;
+        this.showAddress=this.residence;
+        this.setSrc(this.showAddress,this.count);
+        this.showTotal=this.total_r
+      }else{
+        this.conut=1;
+        this.showAddress=this.business;
+        this.setSrc(this.showAddress,this.conut);
+        this.showTotal=this.total_b;
+      }
+    },
+    //翻页
+    add(){
+      if(this.count<this.showTotal){
+        this.count++;
+        this.setSrc(this.showAddress,this.count);
+      }
+    },
+    del(){
+      if(this.count>1){
+        this.count--;
+        this.setSrc(this.showAddress,this.count);
+      }
     },
     //标记风险单
     sign() {
@@ -174,6 +225,54 @@ export default {
           this.auditNodeResult=res.data;
         }
       })
+    },
+    //获取合同预览图片
+    getContImg(){
+      let param = {
+        id:this.id
+      };
+      this.$ajax.get('/api/contract/preview', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.examineState=res.data.examineState.value;
+          this.contState=res.data.contState.value;
+          this.contType=res.data.contType.value;
+          if(res.data.cityId===1&&res.data.contType.value===2){
+            this.isShowType=true;
+            //买卖
+            this.business=res.data.imgAddress.business;
+            this.total_b=res.data.imgCount.business;
+            //居间
+            this.residence=res.data.imgAddress.residence; 
+            this.total_r=res.data.imgCount.residence;
+            this.showAddress=res.data.imgAddress.residence;
+            this.showTotal=res.data.imgCount.residence;
+            this.setSrc(this.showAddress,this.count);
+          }else {
+            //其他
+            this.address=res.data.imgAddress.address;
+            this.total_a=res.data.imgCount.count;
+            this.showAddress=res.data.imgAddress.address;
+            this.showTotal=res.data.imgCount.count;
+            this.setSrc(this.showAddress,this.count);
+          }
+        }
+      })
+    },
+    //拼接地址
+    setSrc(value,count){
+      this.src = value.substr(0,value.lastIndexOf('.'))+count+value.substr(value.lastIndexOf('.'));
+    },
+    //编辑
+    toEdit(){
+      this.$router.push({
+        path: "/addContract",
+        query: {
+          id: this.id,
+          operateType: 2,
+          type: this.contType
+        }
+      });
     }
   }
   // watch:{
@@ -245,6 +344,31 @@ export default {
       top: 12px;
       /deep/.el-button.is-round {
         padding: 10px 23px;
+      }
+    }
+  }
+  .content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    img{
+      border: 1px solid #ccc;
+    }
+    .btnList{
+      margin-left: 20px;
+      .tally{
+        padding: 20px 0;
+      }
+      .paging{
+        width: 36px;
+        height: 36px;
+        box-sizing: border-box;
+        border-radius: 50%;
+        padding: 0;
+        font-size: 22px;
+        font-weight: bold;
+        color: @color-6c;
       }
     }
   }
