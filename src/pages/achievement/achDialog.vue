@@ -450,22 +450,22 @@ export default {
       this.agendIds = [];
     },
     //判断分成比例只能输入1-100的正整数
-    filterHouseNumber(e, val,index) {
+    filterHouseNumber(e, val, index) {
       e.target.value = e.target.value.match(/^\d*(\.?\d{0,1})/g)[0] || null;
       if (val > 100) {
-        this.houseArr[index].ratio= 100;
+        this.houseArr[index].ratio = 100;
       } else if (val == 0) {
-        this.houseArr[index].ratio= 1;
+        this.houseArr[index].ratio = 1;
       } else {
         val = e.target.value;
       }
     },
-    filterClientNumber(e, val,index) {
+    filterClientNumber(e, val, index) {
       e.target.value = e.target.value.match(/^\d*(\.?\d{0,1})/g)[0] || null;
       if (val > 100) {
-        this.clientArr[index].ratio= 100;
+        this.clientArr[index].ratio = 100;
       } else if (val == 0) {
-        this.clientArr[index].ratio= 1;
+        this.clientArr[index].ratio = 1;
       } else {
         val = e.target.value;
       }
@@ -716,7 +716,7 @@ export default {
           console.log(res.data.status);
           if (res.data.status == 200) {
             this.$message("操作完成");
-            this.$emit("close", this.achIndex, 1);
+            this.$emit("close", this.achIndex);
           }
         });
       } else if (!sumFlag) {
@@ -903,13 +903,17 @@ export default {
         addhouseArr = this.clientArr.concat(this.addManList);
       }
       let resultArr = [];
+      console.log("eeeeeeeeeeeeeeeeeeeeeeeee");
+      console.log(addhouseArr);
       // 相关人员和房源客源数组去重
       for (var i = 0; i < addhouseArr.length; i++) {
         var flag = true;
         for (var j = 0; j < resultArr.length; j++) {
           if (
             addhouseArr[i].assignorId == resultArr[j].assignorId &&
-            addhouseArr[i].roleType == resultArr[j].roleType
+            addhouseArr[i].roleType == resultArr[j].roleType &&
+            addhouseArr[i].id &&
+            addhouseArr[i].id == resultArr[j].id
           ) {
             flag = false;
           }

@@ -639,14 +639,14 @@
             >
               <template slot-scope="scope">
                 <div>
-                  <div v-if="scope.row.result.value==0">
+                  <div v-if="scope.row.result.value==6">
                     <p class="blue">未审核</p>
                   </div>
-                  <div v-else-if="scope.row.result.value==1">
-                    <p class="green">已通过</p>
+                  <div v-else-if="scope.row.result.value==7">
+                    <p class="green">通过</p>
                   </div>
-                  <div v-else-if="scope.row.result.value==2">
-                    <p class="orange">已驳回</p>
+                  <div v-else-if="scope.row.result.value==8">
+                    <p class="orange">驳回</p>
                   </div>
                   <div v-else>
                     <p class="orange">-</p>
@@ -657,12 +657,11 @@
 
             <!-- remark -->
             <el-table-column
-              prop="remark"
               label="备注"
-              width="190"
+              width="2000"
             >
                <template slot-scope="scope">
-                   {{scope.row.remarks?scope.row.remarks:'-'}}
+                   {{scope.row.remark?scope.row.remark:'-'}}
               </template>
             </el-table-column>
 
