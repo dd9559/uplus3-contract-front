@@ -40,6 +40,17 @@
 <script>
 import { FILTER } from "@/assets/js/filter";
 import {MIXINS} from "@/assets/js/mixins";
+const rule = {
+  type: {
+    name: "信息类型"
+  },
+  name: {
+    name: "资料名称"
+  },
+  isNecessary: {
+    name: "是否必填"
+  }
+}
 export default {
   mixins: [FILTER,MIXINS],
   props: ["cityId"],
@@ -138,13 +149,19 @@ export default {
     },
     // 提交表单
     submitForm() {
-      if (this.contractTitle === "添加合同资料") {
-        const url = "/api/flowmanage/insertConAttach";
-        this.conPost(url);
-      } else if (this.contractTitle === "编辑合同资料") {
-        const url = "/api/flowmanage/updateConAttach";
-        this.conPost(url);
-      }
+      this.$tool.checkForm(this.contractForm,rule).then(() => {
+        if (this.contractTitle === "添加合同资料") {
+          const url = "/api/flowmanage/insertConAttach";
+          this.conPost(url);
+        } else if (this.contractTitle === "编辑合同资料") {
+          const url = "/api/flowmanage/updateConAttach";
+          this.conPost(url);
+        }
+      }).catch(error => {
+          this.$message({
+            message: `${error.title}${error.msg}`
+          })
+        }) 
     },
     // 添加 编辑 请求
     conPost(url, param) {

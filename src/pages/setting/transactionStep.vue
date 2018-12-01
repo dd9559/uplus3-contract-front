@@ -344,6 +344,7 @@
             const url = "/api/flowmanage/updateSteps"
             this.tradeStepsPost(url)
           }
+          this.firstCellLight()
         }
       },
       //添加和编辑步骤类型请求
@@ -453,6 +454,7 @@
             if(res.status === 200) {
               this.$message(msg)
               this.getData()
+              this.firstCellLight()
             }
           }).catch(error => {
             console.log(error);
