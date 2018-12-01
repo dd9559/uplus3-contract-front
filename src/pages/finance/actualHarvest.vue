@@ -91,13 +91,13 @@
       <div class="table-tool">
         <h4><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button type="primary">导出</el-button>
+          <el-button round size="small" type="primary">导出</el-button>
         </p>
       </div>
       <el-table :data="list" style="width: 100%" header-row-class-name="theader-bg">
-        <el-table-column align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
+        <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <ul>
+            <ul class="contract-msglist">
               <li>合同编号:<span>{{scope.row.code}}</span></li>
               <li>房源编号:<span>{{scope.row.houseinfoCode}}</span></li>
               <li>客源编号:<span>{{scope.row.guestinfoCode}}</span></li>
@@ -186,6 +186,17 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .contract-msglist{
+    >li{
+      text-align: left;
+      >span{
+        &:first-of-type{
+          color: @color-blue;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
 
   .view-header {
     .title {

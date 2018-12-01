@@ -195,8 +195,8 @@
       </ul>
     </div>
     <p>
-      <el-button type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
-      <el-button>取消</el-button>
+      <el-button round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+      <el-button round size="small">取消</el-button>
     </p>
   </div>
 </template>
