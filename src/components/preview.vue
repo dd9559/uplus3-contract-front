@@ -1,6 +1,6 @@
 <template>
     <div class="preview">
-      <div class="view-container">
+      <div class="view-container" ref="drag" @mousedown="mousedown" @mousemove="mousemove" @mouseup="dragging=false">
         <img ref="img" :src="imgSrc" :style="{width:getWidth,transform:getRotate}" alt="">
       </div>
       <p class="pagination page-prev" @click="chose('prev')"><img :src="getImg('btn-prev.png')" alt=""></p>
@@ -32,7 +32,14 @@
         activePage:0,
         imgWidth:100,
         initWidth:0,
-        transform:0
+        transform:0,
+        //拖拽
+        dragging:false,
+        mousePos:{},
+        dragPos:{
+          x:0,
+          y:0
+        }
       }
     },
     mounted(){
@@ -41,6 +48,15 @@
       }
       this.$nextTick(()=>{
         this.initWidth=this.$refs.img.offsetWidth
+        document.onmousemove=function (event) {
+          event = event || window.event;
+          let dragObj = this.$refs.drag
+          console.log('test')
+          if (this.dragging) {
+            dragObj.style.left = parseInt(event.clientX - this.mousePos.x + this.dragPos.x) + "px";
+            dragObj.style.top = parseInt(event.clientY - this.mousePos.y + this.dragPos.y) + "px";
+          }
+        }.bind(this)
       })
     },
     methods:{
@@ -48,6 +64,8 @@
         return require('@/assets/img/'+src)
       },
       chose:function (type) {
+        this.imgWidth=100
+        this.transform=0
         if(type==='next'){
           if(this.activePage===this.getImages.length-1){
             this.activePage=0
@@ -73,12 +91,26 @@
             this.transform+=90
             break
           case 3:
-            this.imgWidth+=50
+            this.imgWidth+=10
             break
           case 4:
-            this.imgWidth-=50
+            this.imgWidth-=10
             break
         }
+      },
+      mousedown:function () {
+        // debugger
+        this.dragging=true
+        this.mousePos = Object.assign({},this.$tool.getMousePos())
+        let dragObj = this.$refs.drag
+        let objLeft = dragObj.style.left
+        let objTop = dragObj.style.top
+        this.dragPos.x=objLeft?parseInt(objLeft):(document.body.offsetWidth-dragObj.offsetWidth)/2
+        this.dragPos.y=objTop?parseInt(objTop):(document.body.offsetHeight-dragObj.offsetHeight)/2
+        console.log(this.mousePos,this.dragPos)
+      },
+      mousemove:function (event) {
+
       }
     },
     computed:{
@@ -86,10 +118,10 @@
         return [].concat(this.imgList)
       },
       getWidth:function () {
-        if(this.imgWidth+50===this.initWidth){
-          this.imgWidth+=50
-        }else if(this.imgWidth>300+this.initWidth){
-          this.imgWidth-=50
+        if(this.imgWidth>=150){
+          this.imgWidth=150
+        }else if(this.imgWidth<=100){
+          this.imgWidth=100
         }
         return `${this.imgWidth}%`
       },
@@ -115,6 +147,7 @@
   left: 0;
   background:rgba(0,0,0,0.6);
   z-index: 99;
+  overflow: hidden;
 }
   .pagination,.btn-close{
     position: absolute;
@@ -157,7 +190,7 @@
     }
   }
   .view-container{
-    /*width: 60%;*/
+    max-width: 60%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -165,5 +198,15 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
+    user-select: none;
+    &:after{
+      content:'';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 9;
+    }
   }
 </style>

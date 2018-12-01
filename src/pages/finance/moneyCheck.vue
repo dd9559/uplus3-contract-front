@@ -279,7 +279,8 @@
         if (this.activeView === 1) {
           param.query = {
             tab: '收款信息',
-            id:item.id
+            id:item.id,
+            type:item.inAccountType
           }
         } else {
           param.query = {
