@@ -49,8 +49,7 @@
                   <el-input
                     v-model.number="scope.row.ratio"
                     placeholder="请输入数字"
-                    @keyup.native="filterHouseNumber(scope.$index,scope.row.ratio)"
-                    oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"
+                    @blur="((e)=>{ filterHouseNumber(e,scope.row.ratio,scope.$index)})"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -200,8 +199,7 @@
                   <el-input
                     v-model.number="scope.row.ratio"
                     placeholder="请输入数字"
-                    @keyup.native="filterClientNumber(scope.$index,scope.row.ratio)"
-                    oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"
+                    @blur="((e)=>{ filterClientNumber(e,scope.row.ratio,scope.$index)})"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -444,7 +442,7 @@ export default {
     aId: Number, //业绩Id
     contractId: Number, //合同id
     achIndex: Number, //当前索引
-    achObj:Object   //合同详情传过来的对象（首次业绩录入需要用）
+    achObj: Object //合同详情传过来的对象（首次业绩录入需要用）
   },
   methods: {
     handleClose() {
@@ -452,18 +450,24 @@ export default {
       this.agendIds = [];
     },
     //判断分成比例只能输入1-100的正整数
-    filterClientNumber(index, val) {
+    filterHouseNumber(e, val,index) {
+      e.target.value = e.target.value.match(/^\d*(\.?\d{0,1})/g)[0] || null;
       if (val > 100) {
-        this.clientArr[index].ratio = 100;
-      } else if (val == "0") {
-        this.clientArr[index].ratio = 1;
+        this.houseArr[index].ratio= 100;
+      } else if (val == 0) {
+        this.houseArr[index].ratio= 1;
+      } else {
+        val = e.target.value;
       }
     },
-    filterHouseNumber(index, val) {
+    filterClientNumber(e, val,index) {
+      e.target.value = e.target.value.match(/^\d*(\.?\d{0,1})/g)[0] || null;
       if (val > 100) {
-        this.houseArr[index].ratio = 100;
-      } else if (val == "0") {
-        this.houseArr[index].ratio = 1;
+        this.clientArr[index].ratio= 100;
+      } else if (val == 0) {
+        this.clientArr[index].ratio= 1;
+      } else {
+        val = e.target.value;
       }
     },
     //获取房源客源相关人员
@@ -600,7 +604,7 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$message("操作完成");
-              this.$emit("close", this.achIndex, 1);
+              this.$emit("close", this.achIndex, 7);
             }
           });
       } else if (!sumFlag) {
@@ -650,7 +654,7 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$message("操作完成");
-              this.$emit("close", this.achIndex, 2);
+              this.$emit("close", this.achIndex, 8);
             }
           });
       } else if (!sumFlag) {
@@ -752,7 +756,7 @@ export default {
         // this.$emit("close", this.achIndex);
         // this.$message("操作完成");
         console.log("aaaaaaaaaaaaaaaaaa");
-        console.log(this.achObj)
+        console.log(this.achObj);
         let param = {
           distributions: resultArr,
           contractCode: this.contractCode,
@@ -939,7 +943,7 @@ export default {
           this.codeBaseInfo(this.code, 2);
           // 业绩录入分成
         } else if (this.dialogType == 3) {
-          this.comm=this.achObj.comm  //合同详情传过来的可分配业绩
+          this.comm = this.achObj.comm; //合同详情传过来的可分配业绩
           // 角色类型
           this.$ajax.get("/api/role/types").then(res => {
             console.log(res.status);
@@ -955,8 +959,6 @@ export default {
           this.$ajax.get("/api/achievement/employees", param).then(res => {
             let data = res.data;
             if (data.status === 200) {
-              console.log("zzzzz");
-
               if (data.data.customerAgents) {
                 this.clientArr = data.data.customerAgents;
               }
