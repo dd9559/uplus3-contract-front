@@ -4,7 +4,7 @@
     <div class="filter-layout">
       <div style="overflow:hidden;">
         <div class="filter-left f_l">
-          <h1>
+          <h1 class="f14">
             <b class="iconfont icon-tubiao-5" style="color:#55657A;font-weight:normal;"></b>
             筛选查询
           </h1>
@@ -81,7 +81,7 @@
       <div class="data-head">
         <div class="data-head-left f_l">
           <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b>
-          <span>数据列表</span>
+          <span class="f14">数据列表</span>
         </div>
         <div class="data-head-right f_l">
           <span>
@@ -105,7 +105,7 @@
       </div>
       <!-- 头部 end -->
       <!-- 表格 -->
-      <div class="data-list">
+      <div class="data-list"  v-loading="loading">
         <el-table :data="receivableList" style="width: 100%" @row-dblclick="dialogVisible = true">
           <!-- code -->
           <el-table-column label="合同信息" width="140">
@@ -287,10 +287,17 @@ export default {
       pageSize: 5,
       currentPage: 1,
       ajaxParam: {},
-      total: 0
+      total: 0,
+      loading:true
     };
   },
   created() {
+    //  实收列表
+    this.ajaxParam = {
+      pageNum: this.currentPage,
+      pageSize: this.pageSize
+    };
+    this.getData(this.ajaxParam);
     // 字典初始化
     this.getDictionary();
     // 查询部门
@@ -299,12 +306,7 @@ export default {
         this.departs = res.data.data;
       }
     });
-    //  实收列表
-    this.ajaxParam = {
-      pageNum: this.currentPage,
-      pageSize: this.pageSize
-    };
-    this.getData(this.ajaxParam);
+    this.loading=false;
   },
   components: {},
   methods: {
@@ -422,7 +424,7 @@ export default {
     .head-left {
       float: left;
       /deep/ .el-breadcrumb {
-        font-size: 12px !important;
+        // font-size: 12px !important;
       }
 
       /deep/ .el-breadcrumb__inner {
@@ -457,7 +459,6 @@ export default {
     }
     .filter-left {
       h1 {
-        font-size: 18px;
         color: #233241;
         position: relative;
         padding-left: 28px;
@@ -517,13 +518,13 @@ export default {
           color: #233241;
           display: inline-block;
           margin-top: 30px;
-          font-size: 18px;
+          // font-size: 18px;
           margin-left: 28px;
         }
       }
       .data-head-right {
-        font-size: 14px;
-        margin-top: 35px;
+        // font-size: 14px;
+        margin-top: 30px;
         margin-left: 15px;
         span {
           color: #6c7986;
@@ -539,7 +540,7 @@ export default {
   .data-list {
     width: 100%;
     /deep/ .el-table {
-      font-size: 14px !important;
+      // font-size: 14px !important;
       td,
       th {
         padding: 24px 0;

@@ -8,7 +8,7 @@
 
       <div style="overflow:hidden;">
         <div class="filter-left f_l">
-          <h1>
+          <h1 class="f14">
             <b
               class="iconfont icon-tubiao-5"
               style="color:#55657A;font-weight:normal;"
@@ -197,7 +197,7 @@
       <!-- 头部 end -->
 
       <!-- 表格 -->
-      <div class="data-list">
+      <div class="data-list"  v-loading="loading">
         <el-table
           :data="selectAchList"
           style="width: 100%"
@@ -297,7 +297,7 @@
 
           <el-table-column
             label="角色类型"
-            width="130"
+            width="120"
           >
             <template slot-scope="scope">
               <div v-for="item in scope.row.distributionFroms">
@@ -356,7 +356,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="应收分成金额" width="120">
+          <el-table-column label="应收分成金额（元）" width="150">
             <template slot-scope="scope">
               <p v-for="item in scope.row.distributionFroms">{{item.aMoney}}</p>
             </template>
@@ -420,12 +420,12 @@
         @click="closeDialog"
       ></b>
       <div class="ach-header">
-        <h1>业绩详情</h1>
-        <p>可分配业绩：<span class="orange">{{comm}}元</span></p>
+        <h1 class="f14">业绩详情</h1>
+        <p class="f14">可分配业绩：<span class="orange">{{comm}}元</span></p>
       </div>
       <div class="ach-body">
 
-        <h1>房源方分成</h1>
+        <h1 class="f14">房源方分成</h1>
         <div class="ach-divide-list">
           <el-table
             :data="houseArr"
@@ -512,7 +512,7 @@
           </el-table>
         </div>
 
-        <h1>客源方分成</h1>
+        <h1 class="f14">客源方分成</h1>
         <div class="ach-divide-list">
           <el-table
             :data="clientArr"
@@ -599,7 +599,7 @@
           </el-table>
         </div>
 
-        <h1>审核信息</h1>
+        <h1 class="f14">审核信息</h1>
 
         <div class="ach-check-list">
           <el-table
@@ -732,10 +732,16 @@ export default {
       contractId: null, //合同id
       achIndex:null,
       ajaxParam:{},
-      total:0
+      total:0,
+      loading:true
     };
   },
   created() {
+    this.ajaxParam={
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+    } 
+    this.getData(this.ajaxParam);
     // 获取部门列表
     this.$ajax.get("/api/access/deps").then(res => {
       if (res.status == 200) {
@@ -745,11 +751,8 @@ export default {
     });
     // 字典初始化
     this.getDictionary();
-    this.ajaxParam={
-        pageNum: this.currentPage,
-        pageSize: this.pageSize
-    }
-    this.getData(this.ajaxParam);
+    this.loading=false;
+  
   },
   components: {
     achDialog,
@@ -941,7 +944,7 @@ export default {
     .head-left {
       float: left;
       /deep/ .el-breadcrumb {
-        font-size: 12px !important;
+        // font-size: 12px !important;
       }
 
       /deep/ .el-breadcrumb__inner {
@@ -976,7 +979,7 @@ export default {
     }
     .filter-left {
       h1 {
-        font-size: 18px;
+        // font-size: 18px;
         color: #233241;
         position: relative;
         padding-left: 28px;
@@ -1036,13 +1039,13 @@ export default {
           color: #233241;
           display: inline-block;
           margin-top: 30px;
-          font-size: 18px;
+          // font-size: 18px;
           margin-left: 28px;
         }
       }
       .data-head-right {
-        font-size: 14px;
-        margin-top: 35px;
+        // font-size: 14px;
+        margin-top: 30px;
         margin-left: 15px;
         span {
           color: #6c7986;
@@ -1058,7 +1061,7 @@ export default {
   .data-list {
     width: 100%;
     /deep/ .el-table {
-      font-size: 14px !important;
+      // font-size: 14px !important;
       td,
       th {
         padding: 24px 0;
@@ -1101,7 +1104,7 @@ export default {
         margin: 20px 0 0 30px;
       }
       p {
-        font-size: 14px;
+        // font-size: 14px;
         color: #6c7986;
         margin: 12px 0 0 30px;
         line-height: 0;
@@ -1115,7 +1118,7 @@ export default {
       box-sizing: border-box;
       overflow-y: auto;
       /deep/ .el-table {
-        font-size: 14px !important;
+        // font-size: 14px !important;
         margin-top: 20px;
         td,
         th {

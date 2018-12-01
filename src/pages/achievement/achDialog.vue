@@ -6,7 +6,7 @@
         <b class="el-icon-close" @click="closeDialog"></b>
         <!-- 头部左边业绩分成title -->
         <div class="ach-header">
-          <h1 v-if="dialogType==0">业绩审核</h1>
+          <h1 v-if="dialogType==0" class="f14">业绩审核</h1>
           <h1 v-if="dialogType==1">业绩编辑</h1>
           <h1 v-if="dialogType==2">业绩反审核</h1>
           <h1 v-if="dialogType==3">业绩分成</h1>
@@ -20,7 +20,7 @@
         <div class="ach-body">
           <div class="house-divide">
             <div class="house-left f_l">
-              <h1>房源方分成</h1>
+              <h1 class="f14">房源方分成</h1>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="houseRelativeMans">相关人员</el-button>
@@ -170,7 +170,7 @@
 
           <div class="house-divide">
             <div class="house-left f_l">
-              <h1>客源方分成</h1>
+              <h1 class="f14">客源方分成</h1>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="clientRelativeMans">相关人员</el-button>
@@ -994,7 +994,7 @@ export default {
   h1 {
     height: 53px;
     line-height: 53px;
-    font-size: 20px;
+    // font-size: 20px;
     color: #233241;
     padding-left: 20px;
     box-sizing: border-box;
@@ -1050,12 +1050,12 @@ export default {
       border-bottom: 1px solid #edecf0;
       overflow: hidden;
       h1 {
-        font-size: 20px;
+        // font-size: 20px;
         color: #233241;
         margin: 20px 0 0 30px;
       }
       p {
-        font-size: 14px;
+        // font-size: 14px;
         color: #6c7986;
         margin: 12px 0 0 30px;
         line-height: 0;
@@ -1082,7 +1082,7 @@ export default {
           margin-top: 30px;
           margin-bottom: 30px;
           h1 {
-            font-size: 16px !important;
+            // font-size: 16px !important;
             color: #233241 !important;
             margin: 0px !important;
           }
@@ -1111,7 +1111,7 @@ export default {
         }
       }
       /deep/ .el-table {
-        font-size: 14px !important;
+        // font-size: 14px !important;
         margin-top: 20px;
         td,
         th {
@@ -1132,7 +1132,7 @@ export default {
       }
       //弹框审核信息
       h1 {
-        font-size: 16px;
+        // font-size: 16px;
         color: #233241;
         margin: 0px !important;
       }
