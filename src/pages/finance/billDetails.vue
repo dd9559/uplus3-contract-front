@@ -307,6 +307,12 @@
        * 审核
        */
       checkBill: function (type) {
+        if(this.radioMask&&!this.payRadio){
+          this.$message({
+            message:'请选择支付方式'
+          })
+          return
+        }
         let param = {
           bizId: this.billMsg.audit.bizId,
           bizCode: this.billMsg.audit.bizCode,
@@ -320,10 +326,14 @@
         this.$ajax.postJSON('/api/machine/audit', param).then(res => {
           res = res.data
           if (res.status === 200) {
-            this.layer.show = false
             this.getData()
             if(this.radioMask){
               this.secondCheck()
+            }else {
+              this.$message({
+                message:res.message
+              })
+              this.layer.show = false
             }
           }
         })
@@ -331,10 +341,16 @@
       secondCheck:function () {
         let param={
           payId:this.billId,
-          payMethod:this.payRadio
+          payMethod:parseInt(this.payRadio)
         }
-        this.$ajax.put('/api/payInfo/auditPass',param).then(res=>{
-
+        this.$ajax.put('/api/payInfo/auditPass',param,2).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.$message({
+              message:res.message
+            })
+            this.layer.show = false
+          }
         })
       },
       clearLayer: function () {

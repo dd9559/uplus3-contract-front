@@ -29,7 +29,7 @@
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上传</el-button>
-            <el-button @click="rowOperation(scope.row,2,2)" type="text" size="small" v-if="scope.row.name.length>0">预览
+            <el-button @click="rowOperation(scope.row,2,1)" type="text" size="small" v-if="scope.row.name!=='-'">预览
             </el-button>
           </template>
         </el-table-column>
@@ -247,6 +247,7 @@
             this.titleStr='合同模板详情'
             this.template = 3
           }
+          console.log(this.template,'template');
         }).catch(error => {
           console.log(error)
         })
@@ -254,8 +255,8 @@
       rowOperation: function (row, type,showType) {
         //上传
         this.modal = true
-        this.template = type
         if(type===1){
+            this.template = 1
             this.id=row.id
             this.contraType=row.type.value
             this.titleStr='上传合同模板'
@@ -264,13 +265,15 @@
         //预览
         else if(type===2){
           //合同预览
+          this.template = 3
            console.log(row,'query');
           this.$router.push({
             path: "/contraPreview",
             query: {
-              enableTemplateId: row.id,
+              enableTemplateId:showType==2?row.id:row.enableTemplateId,
               show:2
             }
+           
           });
         }
       }

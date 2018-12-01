@@ -250,8 +250,7 @@
       right: 0;
       bottom: 0;
       .slider{
-        min-width: 200px;
-        max-width: 200px;
+        width: 160px;
         border-right: 1px solid @border-e6;
         /deep/ .el-menu{
           border: 0px;
@@ -297,7 +296,7 @@
           }
         }
         &-content{
-          padding: 0px 20px;
+          padding: 0px @margin-10;
           position: absolute;
           top: 40px;
           right: 0;
@@ -307,7 +306,9 @@
           .theader-bg{
             >th{
               background-color: @bg-th;
-
+              >.cell{
+                white-space: nowrap;
+              }
             }
           }
           .el-table{

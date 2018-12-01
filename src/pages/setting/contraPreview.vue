@@ -265,9 +265,10 @@ export default{
                         else{
                              this.modalDialog=false
                         }
+                    }else{
+                        this.modalDialog=false
                     }
                 }
-                this.modalDialog=false
                 console.log(this.tableDate,'tabledate');
             },
             del(type){

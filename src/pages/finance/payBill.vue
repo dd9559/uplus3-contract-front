@@ -103,8 +103,8 @@
       <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
     </div>
     <p>
-      <el-button type="primary" @click="goResult">提交付款申请</el-button>
-      <el-button>取消</el-button>
+      <el-button round size="small" type="primary" @click="goResult">提交付款申请</el-button>
+      <el-button round size="small">取消</el-button>
     </p>
     <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
   </div>

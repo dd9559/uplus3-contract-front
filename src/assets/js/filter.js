@@ -1,7 +1,8 @@
 let getVal=function (val) {
-  if(!val){
+  let type=Object.prototype.toString.call(val)
+  if(type!=='[object Number]'&&!val){
     return '--'
-  }else if(val instanceof Object){
+  }else if(type==='[object Object]'){
     return val.label
   }else {
     return val
