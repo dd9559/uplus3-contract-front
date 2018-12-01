@@ -6,9 +6,9 @@
                 <span>数据列表</span>
             </p>
             <el-table :data="tableData" ref='onetable'  @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
-                <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
-                <el-table-column align="center" label="款类(大类)" prop="name" width="120"></el-table-column>
-                <el-table-column align="center" label="是否启用系统收款" width="150">
+                <el-table-column align="center" label="序号" type="index"></el-table-column>
+                <el-table-column align="center" label="款类(大类)" prop="name"></el-table-column>
+                <el-table-column align="center" label="是否启用系统收款">
                     <template slot-scope="scope">
                         <div v-if="scope.row.name=='代收代付'">
                             <el-switch
@@ -256,7 +256,7 @@
                 var index=row.index
                 // alert(index)
                 // debugger
-                var top=114+index*47.4
+                var top=137+index*47.4
                 var sjx=document.getElementsByClassName('sjx')
                 var paperBtn=document.getElementsByClassName('paper-btn')
                 if(row.name=='代收代付'){
@@ -304,7 +304,7 @@
         > .sjx{
                 width:0;
                 right:-14px;
-                top: 114px;
+                top: 137px;
                 position: absolute;
                 border-width:7px;
                 border-style:solid;

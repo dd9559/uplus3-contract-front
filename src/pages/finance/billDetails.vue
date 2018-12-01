@@ -1,5 +1,7 @@
 <template>
   <div class="view">
+    <!--<iframe id='test' :src="test" frameborder="0"></iframe>
+    <span @click="toPrint">test</span>-->
     <div class="bill-details-tab">
       <ul>
         <li v-for="(item,index) in tabs" :key="index" :class="[activeItem===item?'active':'']"
@@ -7,7 +9,7 @@
         </li>
       </ul>
       <p>
-        <el-button type="primary" @click="layer.show=true">审核</el-button>
+        <el-button round size="small" type="primary" @click="layer.show=true">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -140,39 +142,27 @@
         </div>
         <div class="input-group">
           <label>付款凭证:</label>
-          <ul class="image-list">
-            <li></li>
+          <ul class="image-list" v-if="files.length>0">
+            <li v-for="item in files">
+              <upload-cell :type="item.type"></upload-cell>
+              <span>{{item.name}}</span>
+            </li>
           </ul>
+          <span v-else>无</span>
         </div>
       </li>
       <li ref="checkBox">
         <h4>审核信息</h4>
-        <el-table border :data="list" header-row-class-name="theader-bg">
+        <el-table border :data="checkList" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
             <template slot-scope="scope">
-              <span>-</span>
+              <span>{{scope.row.time|formatTime}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="姓名">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="职务">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="操作">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="备注">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
+          <el-table-column align="center" prop="name" label="姓名"></el-table-column>
+          <el-table-column align="center" prop="position" label="职务"></el-table-column>
+          <el-table-column align="center" label="操作"></el-table-column>
+          <el-table-column align="center" prop="remark" label="备注"></el-table-column>
         </el-table>
       </li>
     </ul>
@@ -192,8 +182,8 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-    <el-button round @click="checkBill(1)">拒 绝</el-button>
-    <el-button round type="primary" @click="checkBill(2)">同 意</el-button>
+    <el-button round @click="checkBill(2)">拒 绝</el-button>
+    <el-button round type="primary" @click="checkBill(1)">同 意</el-button>
   </span>
     </el-dialog>
   </div>
@@ -218,11 +208,14 @@
         list: [
           {}
         ],
+        checkList:[],//审核信息
         layer: {
           show: false,
           reasion: ''
         },
         invalidMax: 200,
+        files:[],
+        test:''
       }
     },
     created() {
@@ -233,6 +226,10 @@
       this.getData()
     },
     methods: {
+      toPrint:function () {
+        this.test='http://jjw-test.oss-cn-shenzhen.aliyuncs.com/bill/20181129/SJ1811290099.pdf?Expires=1543495955&OSSAccessKeyId=LTAI699jkFRmo7TI&Signature=twA%2BLRPn4RK9eR9Mz4AcTHtVN%2B4%3D'
+        document.getElementById('test').contentWindow.print()
+      },
       getData: function () {
         let param = {
           payId: this.billId,
@@ -242,6 +239,12 @@
           res = res.data
           if (res.status === 200) {
             this.billMsg = Object.assign({}, res.data)
+            if(res.data.auditInfo){
+              this.checkList = res.data.auditInfo
+            }
+            if(res.data.filePath){
+              this.files=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+            }
           }
         })
       },
@@ -250,22 +253,22 @@
        */
       checkBill: function (type) {
         let param = {
-          bizId: '',
-          bizCode: '',
-          flowId: '',
-          sort: '',
-          ApprovalForm: {
-            result: type,
-            remark: this.layer.reasion
-          }
+          bizId: this.billMsg.audit.bizId,
+          bizCode: this.billMsg.audit.bizCode,
+          flowId: this.billMsg.audit.flowId,
+          sort: this.billMsg.audit.nodeSort,
+        }
+        param.ApprovalForm={
+          result: type,
+          remark: this.layer.reasion
         }
         debugger
-        /*this.$ajax.postJSON('/api/machine/audit',param).then(res=>{
+        this.$ajax.postJSON('/api/machine/audit',param).then(res=>{
           res=res.data
           if(res.status===200){
             this.layer.show=false
           }
-        })*/
+        })
       },
       clearLayer:function () {
         this.layer.reasion=''
@@ -310,7 +313,7 @@
     align-items: flex-start;
     max-width: 812px;
     &:first-of-type {
-      margin-bottom: 20px;
+      margin-bottom: @margin-base;
     }
     > label {
       color: @color-6c;
@@ -320,9 +323,19 @@
     }
     ul.image-list {
       > li {
-        width: 146px;
-        height: 104px;
+        width: 120px;
+        height: 120px;
         background-color: @bg-grey;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        span{
+          font-size: @size-base;
+          display: inline-block;
+          width: 100px;
+          word-break: break-all;
+        }
       }
     }
   }
@@ -392,7 +405,7 @@
     padding: 0 20px;
     > li {
       h4 {
-        margin: 30px 0 20px;
+        margin: @margin-base 0;
         font-weight: bold;
       }
       .total-text {

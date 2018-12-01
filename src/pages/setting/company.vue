@@ -6,22 +6,22 @@
     @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="searchForm" class="form-head" size="small">
         <el-form-item label="城市">
-          <el-select v-model="searchForm.cityId" filterable @change="getStoreList">
+          <el-select v-model="searchForm.cityId" filterable @change="getStoreList" :clearable="true">
             <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" filterable>
+          <el-select v-model="searchForm.storeId" filterable :clearable="true">
             <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="合作方式">
-          <el-select v-model="searchForm.cooperationMode">
+          <el-select v-model="searchForm.cooperationMode" :clearable="true">
             <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="银行账户">
-          <el-input v-model="searchForm.bankCard"></el-input>
+          <el-input v-model="searchForm.bankCard" :clearable="true"></el-input>
         </el-form-item>
         <el-form-item label="添加时间">
           <el-date-picker
@@ -34,14 +34,14 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="searchForm.keyword" maxlength="50" placeholder="添加人/开户行/开户名"></el-input>
+          <el-input v-model="searchForm.keyword" maxlength="50" placeholder="添加人/开户行/开户名" :clearable="true"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- table表格 -->
     <div class="company-list">
       <p>
-        <span>数据列表</span>
+        <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
         <el-button @click="addCompany" icon="el-icon-plus">公司信息</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%">
@@ -111,7 +111,7 @@
               </el-form-item>
               <el-form-item label="合作方式: ">
                 <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
-                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>                  
+                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
             </div>
@@ -124,7 +124,7 @@
               </el-form-item>
               <el-form-item label="证件类型: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="directSaleSelect">
-                  <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>                  
+                  <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
             </div>
@@ -208,8 +208,9 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img src="" alt=""></li>
-                  <li><fileUp id="imgcontract" class="up" @getUrl="uploadCon"><span>+</span></fileUp></li>
+                  <li><fileUp id="imgcontract" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span>
+                  </li>
+                  <li v-show="companyForm.contractSign!==''"><upload-cell type=".png"></upload-cell><span class="text">{{contractName}}</span><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -218,8 +219,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><img src="" alt=""></li>
-                  <li><fileUp id="imgfinance" class="up" @getUrl="uploadFin"><span>+</span></fileUp></li>
+                  <li><fileUp id="imgfinance" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span></li>
+                  <li v-show="companyForm.financialSign!==''"><upload-cell type=".png"></upload-cell><span class="text">{{financialName}}</span><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -248,7 +249,7 @@
       <div>
         <span>法人信息</span>
         <p><span>法人姓名: {{ companyForm.lepName }}</span><span>法人手机号码: {{ companyForm.lepPhone }}</span></p>
-        <p><span>证件类型: {{ companyForm.lepDocumentType }}</span><span>证件号: {{ companyForm.lepDocumentCard }}</span></p>
+        <p><span>证件类型: {{ companyForm.lepDocumentType }}</span><span class="card-no">证件号: {{ companyForm.lepDocumentCard }}</span></p>
       </div>
       <div>
         <span>营业执照信息</span>
@@ -260,11 +261,11 @@
         <span>电子签章信息</span>
         <div class="stamp">
           <span>合同章: </span>
-          <div><img :src="companyForm.contractSign" alt=""></div>
+          <div><upload-cell type=".png" class="picture" v-show="companyForm.contractSign!==''"></upload-cell></div>
         </div>
         <div class="stamp">
           <span>财务章: </span>
-          <div><img :src="companyForm.financialSign" alt=""></div>
+          <div><upload-cell type=".png" class="picture" v-show="companyForm.financialSign!==''"></upload-cell></div>
         </div>
       </div>
     </div>
@@ -370,7 +371,9 @@
           '38':'',
           '39':'',
           '40':''
-        }
+        },
+        contractName: "",
+        financialName: ""
       }
     },
     created() {
@@ -442,7 +445,7 @@
             this.noticeShow = true
             setTimeout(() => {
               this.noticeShow = false
-            }, 3000)
+            }, 2000)
           } else {
             this.storeList.find(item => {
               if(item.id === val) {
@@ -533,11 +536,17 @@
         this.delIds.push(JSON.stringify(this.companyBankList[index].id))
         this.companyBankList.splice(index,1)
       },
-      uploadCon(obj) {
-        this.companyForm.contractSign = obj.param[obj.param.length - 1]
+      upload(obj) {
+        if(obj.btnId === "imgcontract") {
+          this.companyForm.contractSign = obj.param[0].path+`?${obj.param[0].name}`
+          this.contractName = obj.param[0].name
+        } else {
+          this.companyForm.financialSign = obj.param[0].path+`?${obj.param[0].name}`
+          this.financialName = obj.param[0].name
+        }
       },
-      uploadFin(obj) {
-        this.companyForm.financialSign = obj.param[obj.param.length - 1]
+      delStamp(type) {
+        type === 1 ? this.companyForm.contractSign = "" : this.companyForm.financialSign = ""
       },
       submitConfirm() {
         this.$tool.checkForm(this.companyForm,rule).then(() => {
@@ -608,6 +617,8 @@
         this.documentCard = JSON.parse(JSON.stringify(row.documentCard))
         this.companyBankList = JSON.parse(JSON.stringify(row.companyBankList))
         let currentRow = JSON.parse(JSON.stringify(row))
+        this.contractName = currentRow.contractSign.split('?')[1]
+        this.financialName = currentRow.financialSign.split('?')[1]
         let newForm = {
           id: currentRow.id,
           cityId: currentRow.cityId,
@@ -621,8 +632,8 @@
           lepDocumentCard: currentRow.lepDocumentCard,
           lepPhone: currentRow.lepPhone,
           documentType: currentRow.documentType.value,
-          contractSign: currentRow.contractSign,
-          financialSign: currentRow.financialSign
+          contractSign: (currentRow.contractSign.split('?')[0]),
+          financialSign: (currentRow.financialSign.split('?')[0])
         }
         this.companyForm = newForm
       },
@@ -638,9 +649,7 @@
         this.getCompanyList()
       },
       resetFormFn() {
-        for(let key in this.searchForm) {
-          this.searchForm[key] = ""
-        }
+        this.$tool.clearForm(this.searchForm)
         this.searchTime = []
       }
     }
@@ -676,7 +685,10 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-    font-size: 18px;
+    font-size: @size-14;
+    .mr-8 {
+      margin-right: 8px;
+    }
     > .el-button {
       width:119px;
       height:36px;
@@ -689,7 +701,6 @@
 .dialog-info {
   .company-info {
     padding: 30px 20px;
-    border-top: 1px solid rgba(237,236,240,1);
     > p {
       font-size: 14px;
       font-weight: bold;
@@ -755,6 +766,7 @@
       }
     }
     &:nth-child(2) {
+      border-top: 1px solid #edecf0;
       /deep/ .el-table__header-wrapper {
         display: none;
       }
@@ -808,6 +820,7 @@
       /deep/ .el-table td { border: 0; padding: 0; }
     }
     &:last-child {
+      border-top: 1px solid #edecf0;
       > div {
         display: flex;
         margin-bottom: 20px;
@@ -824,25 +837,60 @@
             > ul {
               display: flex;
               li {
-                width: 160px;
-                height: 160px;
-                background-color: rgba(236,238,241,1);
-                border:2px dashed rgba(198,203,209,1);
+                width: 120px;
+                height: 120px;
+                border:1px dashed #DEDDE2;
+                border-radius: 4px;
                 margin-right: 10px;
                 position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
                 > img {
-                  width: 100%;
+                  width: 60px;
+                  height: 60px;
+                  border-radius: 4px;
                 }
-                .up {
-                  height: 160px;
-                }
-                span {
+                .text {
                   position: absolute;
-                  left: 50%;
-                  top: 50%;
-                  transform: translate(-50%,-50%);
-                  font-size: 117px;
-                  color:rgba(217,219,221,1);
+                  font-size: @size-base;
+                  bottom: -8px;
+                  color: #233241;
+                  display: inline-block;
+                  width: 120px;
+                  height: 32px;
+                  text-align: center;
+                }
+                .del {
+                  position: absolute;
+                  display: inline-block;
+                  width: 20px;
+                  height: 20px;
+                  background-color: #F56C6C;
+                  border-radius: 50%;
+                  right: 8px;
+                  top: 8px;
+                  text-align: center;
+                  line-height: 20px;
+                  color: #fff;
+                }
+                &:first-child {
+                  .up {
+                    width: 50px;
+                    height: 50px;
+                    background-color: #EEF2FB;
+                    line-height: 50px;
+                    text-align: center;
+                  }
+                  i {
+                    font-size: 56px;
+                    color:#fff;
+                  }
+                }
+                &:last-child {
+                  border: none;
+                  background-color: #F2F3F8;
                 }
               }
             }
@@ -872,6 +920,9 @@
         > span {
           flex: 1;
         }
+        .card-no {
+          padding-left: 84px;
+        }
       }
       > .stamp {
         display: inline-block;
@@ -884,8 +935,12 @@
           width: 160px;
           height: 160px;
           background-color: rgba(236,238,241,1);
-          > img {
-            width: 100%;
+          position: relative;
+          border-radius: 8px;
+          /deep/ .picture {
+            position: absolute;
+            top: -6px;
+            font-size: 160px!important;
           }
         }
       }
@@ -900,7 +955,7 @@
   }
 }
 /deep/ .el-dialog__header {
-  background-color: @bg-grey;
+  border-bottom: 1px solid rgba(237,236,240,1);
 }
 /deep/ .el-table th {
   background:rgba(238,242,251,1);

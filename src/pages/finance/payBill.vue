@@ -57,13 +57,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <!--<div class="input-group">
-      <p><label>付款金额</label><span>（可支配金额：1234）</span></p>
-      <div class="span-join">
-        <input type="number" class="no-style" placeholder="请填写支付金额">
-        <span>元</span>
-      </div>
-    </div>-->
     <div class="input-group">
       <p><label class="form-label">收款账户</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
@@ -97,17 +90,23 @@
       <p><label class="form-label">付款凭证</label></p>
       <ul class="upload-list">
         <li>
-          <file-up class="upload-context" :rules="fileRules" @getUrl="getFiles">
+          <file-up class="upload-context" @getUrl="getFiles">
             <i class="iconfont icon-shangchuan"></i>
-            <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
+            <span>点击上传</span>
           </file-up>
         </li>
+        <li v-for="item in imgList" @click="getPicture">
+          <upload-cell :type="item.type"></upload-cell>
+          <span>{{item.name}}</span>
+        </li>
       </ul>
+      <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
     </div>
     <p>
       <el-button type="primary" @click="goResult">提交付款申请</el-button>
       <el-button>取消</el-button>
     </p>
+    <preview v-if="preview"></preview>
   </div>
 </template>
 
@@ -163,8 +162,9 @@
         ],
         dropdown:[],
         amount:null,
-        fileRules:['.png','.jpg','.jpeg'],
-        files:[]
+        files:[],
+        imgList:[],
+        preview:false
       }
     },
     created(){
@@ -178,6 +178,12 @@
       }
     },
     methods:{
+      getPicture:function () {
+        debugger
+        this.$ajax.get('/api/load/generateAccessURLBatch',{urls:this.files},2).then(res=>{
+          debugger
+        })
+      },
       /**
        * 修改款单，获取初始数据
        */
@@ -195,8 +201,12 @@
               smallAmount: res.data.amount,
               id: res.data.id
             }
-            debugger
-            console.log(JSON.parse(res.data.filePath))
+            if(res.data.filePath){
+              this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+            }
+            this.imgList.forEach(item=>{
+              this.files.push(`${item.path}?${item.name}`)
+            })
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
           }
@@ -206,7 +216,9 @@
        * 获取上传文件
        */
       getFiles:function (payload) {
-        this.files=[].concat(payload.param)
+        debugger
+        this.files=this.files.concat(this.$tool.getFilePath(payload.param))
+        this.imgList=this.$tool.cutFilePath(this.files)
       },
       /**
        * 获取下拉框数据
@@ -317,7 +329,7 @@
                 message:'付款凭证不能为空'
               })
             }else {
-              param.filePath = [].concat(this.$tool.getFilePath(this.files))
+              param.filePath = [].concat(this.files)
               if(this.$route.query.edit){
                 delete param.contId
                 this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
@@ -430,45 +442,42 @@
     .upload-list{
       display: flex;
       flex-wrap: wrap;
-      margin: 20px 0;
+      margin: @margin-base;
       >li{
         border: 1px dashed @color-D6;
-        width: 250px;
-        height: 170px;
+        width: 120px;
+        height: 120px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        .upload-context{
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          >i{
+        >span{
+          width: 100px;
+          word-break: break-all;
+        }
+        &:first-of-type{
+          .iconfont{
             color: @bg-th;
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            overflow: hidden;
-            &.iconfont{
-              position: relative;
-              display: flex;
-              align-items: center;
-              &:before{
-                font-size: 58px;
-              }
+            font-size: 58px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            &:before{
+
             }
           }
-          >p{
-            font-size: @size-12;
-            color: @color-99A;
-            padding: 12px 20px;
-            >span{
-              &:first-of-type{
-                font-size: @size-base;
-                color: @color-blue;
-              }
-            }
-          }
+        }
+        &:nth-of-type(n+1){
+          margin-right: @margin-base;
+        }
+      }
+    }
+    .upload-text{
+      color: @color-99A;
+      padding: @margin-base;
+      >span{
+        &:first-of-type{
+          color: @color-blue;
         }
       }
     }

@@ -6,21 +6,27 @@
         <div class="content">
             <div class="input-group">
                 <label>选择城市</label>
-                <el-select size="small" v-model="searchForm.cityId">
+                <el-select size="small" v-model="searchForm.cityId" :clearable="true">
                     <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
                 </el-select>
             </div>
             <div class="input-group">
+                <label>运营模式</label>
+                <el-select size="small" v-model="searchForm.cooperationMode" :clearable="true">
+                    <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                </el-select>
+            </div>
+            <div class="input-group">
                 <label>流程名称</label>
-                <el-input size="small" v-model="searchForm.name"></el-input>
+                <el-input size="small" v-model="searchForm.name" :clearable="true"></el-input>
             </div>
             <div class="input-group">
                 <label>流程类型</label>
-                <el-select size="small" v-model="searchForm.type" @change="changeFlowType">
+                <el-select size="small" v-model="searchForm.type" @change="changeFlowType" :clearable="true">
                     <el-option label="全部" value=""></el-option>
                     <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
-                <el-select size="small" v-model="searchForm.branchCondition">
+                <el-select size="small" v-model="searchForm.branchCondition" :clearable="true">
                     <el-option label="全部" value=""></el-option>
                     <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
@@ -29,7 +35,7 @@
         </ScreeningTop>
         <div class="aduit-list">
             <p>
-                <span>数据列表</span>
+                <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
                 <el-button @click="operation('添加',1)">添加</el-button>
             </p>
             <div class="table">
@@ -75,8 +81,10 @@
                     </el-select>
                 </div>
                 <div class="aduit-input">
-                    <label>流程名称:</label>
-                    <el-input size="small" v-model="aduitForm.name"></el-input>
+                    <label>运营模式:</label>
+                    <el-select size="small" v-model="aduitForm.cooperationMode" :disabled="editDisabled">
+                        <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    </el-select>
                 </div>
                 <div class="aduit-input">
                     <label>流程类型:</label>
@@ -90,9 +98,19 @@
                         <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
-                <div class="aduit-input aduit-node">
-                    <label>分支节点:</label>
-                    <ul>
+                <div class="aduit-input">
+                    <label>流程名称:</label>
+                    <el-input size="small" v-model="aduitForm.name"></el-input>
+                </div>
+                <div class="aduit-node">
+                    <div>
+                        <label>分支节点:</label>
+                        <el-radio-group v-model="aduitForm.isRequired">
+                            <el-radio label="1">需要审核</el-radio>
+                            <el-radio label="0">无需审核</el-radio>
+                        </el-radio-group>
+                    </div>
+                    <ul v-if="aduitForm.isRequired==='1'">
                         <li v-for="(item,index) in nodeList" :key="index">
                             <el-input size="small" v-model="item.name" placeholder="设置节点名称"></el-input>
                             <el-select size="small" class="people-type" v-model="item.type" @change="getTypeOption(item.type,index)">
@@ -147,6 +165,7 @@
                 searchForm: {
                     cityId: "",
                     name: "",
+                    cooperationMode: "",
                     type: "",
                     branchCondition: "",
                     flowDesc: "",
@@ -166,8 +185,8 @@
                     },
                     {
                         id: 3,
-                        prop: "",
-                        name: "添加时间"
+                        prop: "cooperationMode",
+                        name: "运营模式"
                     },
                     {
                         id: 4,
@@ -185,15 +204,18 @@
                 aduitTitle: "",
                 aduitForm: {
                     cityId: "",
+                    cooperationMode: "",
                     name: "",
                     type: "",
                     branchCondition: "",
+                    isRequired: "",
                     flowDesc: "",
                     priority: ""
                 },
                 nodeList: [],
                 dictionary: {
                     '37':'',
+                    '39':'',
                     '573':'',
                     '580':'',
                     '586':'',
@@ -214,7 +236,7 @@
         created() {
             this.getCityList()
             this.getDictionary()
-            this.getData()
+            // this.getData()
             this.getDeps()
             this.getRoles()
         },
@@ -373,12 +395,12 @@
                 this.pageNum = val
                 this.getData()
             }
-
         }
     }
 </script>
 
 <style lang="less" scoped>
+@import "~@/assets/common.less";
 .content {
     display: flex;
     color: #6C7986;
@@ -401,11 +423,15 @@
 .aduit-list {
     padding: 20px 10px;
     > p {
+    padding-left: 10px;    
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-    font-size: 18px;
+    font-size: @size-14;
+    .mr-8 {
+      margin-right: 8px;
+    }
     > .el-button {
       width:100px;
       height:36px;
@@ -426,7 +452,7 @@
         .mr-7 {
             margin-right: 7px;
         }
-        &:nth-child(-n+4) {
+        &:nth-child(-n+5) {
             /deep/ .el-input {
                 width: 246px;
             }
@@ -438,10 +464,17 @@
         }
     }
     .aduit-node {
+        > div {
+            margin-bottom: 18px;
+            label {
+                margin-right: 10px;
+            }
+        }
         ul {
             li {
                 display: flex;
                 margin-bottom: 9px;
+                padding-left: 70px;
                 /deep/ .el-input {
                     margin-right: 7px;
                     &:first-child {
@@ -453,11 +486,11 @@
                         width: 110px;
                     }
                 }
-                .person {
-                    /deep/ .el-input {
-                        width: 115px;
-                    }
-                }
+                // .person {
+                //     /deep/ .el-input {
+                //         width: 115px;
+                //     }
+                // }
                 .other {
                     /deep/ .el-input {
                         width: 279px;
@@ -491,6 +524,9 @@
                             display: none;
                         }
                     }
+                }
+                &:last-child {
+                    margin-bottom: 18px;
                 }
             }
         }

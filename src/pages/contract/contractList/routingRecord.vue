@@ -50,7 +50,7 @@
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="left" label="合同编号" width="200">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</el-button>
+            <span class="contCode" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="合同类型" prop="contType.label" width="100">
@@ -189,7 +189,9 @@ export default {
       }
     }
   }
-  
+  .contCode{
+    color: @color-blue;
+  }
 }
 /deep/.paper-box {
   padding-top: 10px !important;
