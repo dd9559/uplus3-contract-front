@@ -137,14 +137,16 @@ export default{
                             this.imgSrc2=res.data.data.residenceImg.url
                             this.total=res.data.data.businessImg.count
                             this.total2=res.data.data.residenceImg.count
-                            let signPos=res.data.data.signPosition
-                            if(this.count==signPos.pageIndex){
+                            this.signPosition=res.data.data.signPosition
+                            if(this.count2==this.signPosition.pageIndex){
                                 this.sigtureShow2=true
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
-                                dropbtn.style.left=(signPos.x*this.divWidth)+'px'
-                                dropbtn.style.top=(signPos.y*this.divHeight)+'px'
+                                dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
+                                dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
                                 console.log(dropbtn.style.left, dropbtn.style.top);
-                            }
+                            }else{
+                               this.sigtureShow2=false
+                           }
                             let htImg=document.getElementById('ht')
                             let htImg2=document.getElementById('ht2')
                             var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
@@ -154,13 +156,16 @@ export default{
                      }else{
                            this.imgSrc=resadd.img.url
                            this.total=res.data.data.img.count
-                           let signPos=res.data.data.signPosition
-                           if(this.count==signPos.pageIndex){
+                           this.signPosition=res.data.data.signPosition
+                           console.log(this.signPosition,'signPosition');
+                           if(this.count==this.signPosition.pageIndex){
                              this.sigtureShow=true
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
-                             dropbtn.style.left=(signPos.x*this.divWidth)+'px'
-                             dropbtn.style.top=(signPos.y*this.divHeight)+'px'
+                             dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
+                             dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
                              console.log(dropbtn.style.left, dropbtn.style.top);
+                           }else{
+                               this.sigtureShow=false
                            }
                            let htImg=document.getElementById('ht')
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
@@ -171,6 +176,12 @@ export default{
         },
         methods:{
             showPos(){
+                if(this.showSed){
+                    this.signPosition.pageIndex=this.count2
+                }else{
+                    alert(this.count)
+                     this.signPosition.pageIndex=this.count
+                }
                 if(this.cityId==1 && this.type==2){
                     this.sigtureShow=false
                 }else{
@@ -213,8 +224,7 @@ export default{
                         };
                 },
             saveAll(){
-                console.log(this.mmaiAddress.path,'path');
-                 this.signPosition.pageIndex=this.cityId==1&&this.type==2?this.count:this.count2
+                 this.signPosition.pageIndex=this.showSed?this.count2:this.count
                  let param={
                   address:{
                     address:this.mbanAddress==''?'':this.mbanAddress.path+'?'+this.mbanAddress.name,
@@ -226,16 +236,22 @@ export default{
                   name:this.contraName,
                   signPosition:this.signPosition,
                   imgAddress:{"business":this.cityId==1&&this.type==2?this.imgSrc:'', "residence":this.cityId==1&&this.type==2?this.imgSrc2:'',"address":!(this.cityId==1&&this.type==2)?this.imgSrc:''},
-                  imgPage:{"business":this.cityId==1&&this.type==2?this.count:0, "residence": this.cityId==1&&this.type==2?this.count2:0,"count": !(this.cityId==1&&this.type==2)?this.count:0},
+                  imgPage:{"business":this.showSed?this.total:0, "residence": this.showSed?this.total2:0,"count": !this.showSed?this.total:0},
                   cityId:1,
                   id:this.id
               }
               console.log(param,'zuizhong');
               this.$ajax.postJSON('/api/setting/contractTemplate/insert',param).then(res=>{
-                      console.log(res);
+                  if(res.status==200){
+                         this.$router.push({
+                        path: "/contractTemplate",
+                    });
+                  }
                 })
             },
             numSave(){
+                // debugger
+               
                 for(let i=0;i<this.tableDate.length;i++){
                     if(this.tableDate[i].inputType==2){
                         if(this.tableDate[i].options==''){
@@ -251,6 +267,7 @@ export default{
                         }
                     }
                 }
+                this.modalDialog=false
                 console.log(this.tableDate,'tabledate');
             },
             del(type){
@@ -259,6 +276,15 @@ export default{
                     this.flag=0
                     if(this.count<=0){
                         this.count=1
+                    }
+                    if(this.count==this.signPosition.pageIndex){
+                             this.sigtureShow=true
+                             let dropbtn=document.getElementsByClassName('signatureone')[0]
+                             dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
+                             dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
+                             console.log(dropbtn.style.left, dropbtn.style.top);
+                           }else{
+                               this.sigtureShow=false
                     }
                     var htImg=document.getElementById('ht')
                     var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
@@ -269,6 +295,15 @@ export default{
                     if(this.count2<=0){
                         this.count2=1
                     }
+                    if(this.count2==this.signPosition.pageIndex){
+                                this.sigtureShow2=true
+                                let dropbtn=document.getElementsByClassName('signaturetwo')[0]
+                                dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
+                                dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
+                                console.log(dropbtn.style.left, dropbtn.style.top);
+                            }else{
+                               this.sigtureShow2=false
+                           }
                     var htImg2=document.getElementById('ht2')
                     var newsrc=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
                     this.autograph(htImg2,newsrc)
@@ -281,6 +316,16 @@ export default{
                     if(this.count>=this.total){
                         this.count=this.total
                     }
+                    console.log(this.signPosition,'this.signPosition');
+                    if(this.count==this.signPosition.pageIndex){
+                             this.sigtureShow=true
+                             let dropbtn=document.getElementsByClassName('signatureone')[0]
+                             dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
+                             dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
+                             console.log(dropbtn.style.left, dropbtn.style.top);
+                           }else{
+                               this.sigtureShow=false
+                    }
                     var htImg=document.getElementById('ht')
                     var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                     this.autograph(htImg,newsrc)
@@ -289,6 +334,15 @@ export default{
                     this.count2++
                     if(this.count2>=this.total2){
                         this.count2=this.total2
+                    }
+                    if(this.count2==this.signPosition.pageIndex){
+                                this.sigtureShow2=true
+                                let dropbtn=document.getElementsByClassName('signaturetwo')[0]
+                                dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
+                                dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
+                                console.log(dropbtn.style.left, dropbtn.style.top);
+                            }else{
+                               this.sigtureShow2=false
                     }
                     var htImg2=document.getElementById('ht2')
                     var newsrc=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))

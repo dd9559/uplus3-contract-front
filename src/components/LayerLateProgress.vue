@@ -55,11 +55,48 @@
                     </el-table-column>
                     <el-table-column label="操作" min-width="120px" align="center">
                         <template slot-scope="scope">
-                            <el-button class="blue" type="text">查看</el-button>
-                            <!--  @click="operationFn(scope.row.id)" -->
+                            <el-button @click="operationFn(scope.row.id)" class="blue" type="text">查看</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
+            </div>
+        </el-dialog>
+        <!-- 查看 -->
+        <el-dialog 
+        title="查看" 
+        :visible.sync="stepsDataShow" 
+        width="740px"  
+        class="layer-paper">
+            <div class="steps-from">
+                <el-form 
+                ref="stepsFrom"
+                :model="stepsFrom"
+                v-loading="LookStepLoad"
+                label-width="150px">
+                    <el-form-item
+                        v-for="(item,index) in stepsFrom.list"
+                        :prop="'list.' + index + '.val'"
+                        :key="'bl'+item.id + index"
+                        :label="item.title+ '：'"
+                        :rules="item.rules"
+                    >
+                        <!-- 查看 -->
+                            <template v-if="item.type === STEPSINPUT.start || item.type === STEPSINPUT.time || item.type === STEPSINPUT.textarea || item.type === STEPSINPUT.num">
+                                <div class="steps-see">{{item.val}}</div>
+                            </template>
+                            <template v-else>
+                                <ul class="steps-img">
+                                    <li 
+                                    v-for="i in item.val"
+                                    :key="i.name"
+                                    >
+                                        <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                        <p class="p">{{i.name}}</p>
+                                    </li>
+                                </ul>
+                            </template>
+                    </el-form-item>
+                </el-form>
             </div>
         </el-dialog>
     </div>
@@ -72,6 +109,18 @@
 
     // 是否超时
     const ISOVERTIME = 1;
+    // 办理输入框
+    const STEPSINPUT = {
+        start:0,        //input 文本输入框
+        num:1,        //input number类型
+        time:2,         //时间选择
+        img:3,          //图片
+        mp4:4,          //视频
+        pdf:5,          //pdf文件
+        excel:6,        //表格
+        word:7,         //文档
+        textarea:8,      //文本框输入
+    }
 
     export default {
         mixins: [FILTER],
@@ -90,6 +139,14 @@
                 },
                 // 加载
                 loading: true,
+                // 查看
+                STEPSINPUT,
+                stepsDataShow:false,
+                LookStepLoad:false,
+                stepsFrom:{
+                    list:[],
+                    id:'',
+                },
             }
         },
         props: {
@@ -130,7 +187,88 @@
             },
             hid() {
                 this.layerShow = false;
-            }
+            },
+            // 查看
+            operationFn(id){
+                this.stepsDataShow = true;
+                this.getLookStepFn(id);
+            },
+            getLookStepFn(id){
+                this.LookStepLoad = true;
+                this.$ajax.get('/api/postSigning/lookStep',{
+                    id,
+                }).then(res=>{
+                    res = res.data;
+                    if(res.status === 200){
+                        let resData = res.data;
+                        let arr = [...resData.transAtepsAttach];
+                        let arr2 = [{
+                                    val:resData.handleDatetime,
+                                    title:'办理日期',
+                                    isRequired:true,
+                                    type:2,
+                                    id:'bj'+resData.id + 1,
+                                    rules:{
+                                        required: true, 
+                                        message: `请输入办理日期`
+                                    }
+                                },{
+                                    val:'',
+                                    title:'备注',
+                                    isRequired:false,
+                                    type:8,
+                                    id:'bj' + resData.id + 2,
+                                    rules:{
+                                        required: false 
+                                    }
+                                }]
+
+                        arr.map(e=>{
+                            let j = {};
+                            if(e.type === STEPSINPUT.start || e.type === STEPSINPUT.time || e.type === STEPSINPUT.textarea || e.type === STEPSINPUT.num){
+                                e.val = e.value;
+                                j.message = `请输入${e.title}`;
+                            }else{
+                                if(e.value){
+                                    e.val = this.$tool.cutFilePath(e.value.split(','))
+                                }else{
+                                    e.val = [];
+                                }
+                                j.message = `请上传${e.title}`;
+                            }
+                            if(e.isRequired){
+                                j.required = true;
+                                j.trigger= 'blur';
+                            }else{
+                                j.required = false;
+                            }
+                            e.rules = j;
+                        })
+                        this.stepsFrom = {
+                            list:[...arr,...arr2],
+                            id:resData.id
+                        };
+                        this.LookStepLoad = false;
+                        this.$refs.stepsFrom.resetFields();
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            },
+            // 图片格式状态判定
+            stepsTypeImg(type){
+                switch (type) {
+                    case STEPSINPUT.img:
+                        return '.png'
+                        break;
+                    case STEPSINPUT.mp4:
+                        return '.mp4'
+                        break;
+                    default:
+                        return '.doc'
+                        break;
+                }
+            },
         },
     }
 </script>
@@ -203,6 +341,71 @@
     }
     /deep/.paper-table.el-table td {
         padding: 15px 0;
+    }
+}
+// 查看
+.steps-from {
+    padding:20px 20px 40px 0;
+}
+.steps-img{
+    overflow: hidden;
+    >li{
+        float: left;
+        margin-left: 12px;
+        margin-top: 10px;
+        width: 120px;
+        height: 120px;
+        position: relative;
+        border-radius: 4px;
+        &:first-child{
+            margin-left: 0;
+        }
+        .icon-tubiao-6{
+            display: none;
+            position: absolute;
+            right: 3px;
+            top: -5px;
+            font-size: 22px;
+            color: #F56C6C;
+            cursor: pointer;
+            &::before{
+                position: relative;
+                z-index: 1;
+            }
+            &::after{
+                content: '';
+                position: absolute;
+                left: 6px;
+                right: 6px;
+                top: 10px;
+                bottom: 10px;
+                background-color: #fff;
+                border-radius: 50%;
+            }
+        }
+        >.img{
+            position: relative;
+            top: 35px;
+            left: 30px;
+        }
+        >.p{
+            position: absolute;
+            bottom: 6px;
+            line-height: 20px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            overflow: hidden;
+            text-align: center;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        &:hover{
+            background-color: #F2F3F8;
+            .icon-tubiao-6{
+                display: block;
+            }
+        }
     }
 }
 </style>

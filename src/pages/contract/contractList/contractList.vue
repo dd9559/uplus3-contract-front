@@ -81,7 +81,7 @@
         </el-form-item>
         <el-form-item label="业绩状态">
           <el-select v-model="contractForm.achievementState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['2']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['52']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -286,7 +286,7 @@ export default {
         "6": "", //变更/解约
         "14": "", //结算状态
         "13": "", //收佣状态
-        "2": "", //业绩状态
+        "52": "", //业绩状态
         "538": "" //用途
       },
       loading:false,
@@ -582,17 +582,17 @@ export default {
 .contract-list {
   margin-top: 20px;
   background-color: #fff;
-  padding: 10px;
+  padding: 0 10px;
   border-radius: 2px;
   box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   > p {
-    padding: 10px 0 10px 10px;
+    // padding-left: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
     .title {
-      font-size: 18px;
+      font-size: 14px;
       color: @color-blank;
       i {
         padding-right: 8px;

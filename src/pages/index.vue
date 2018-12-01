@@ -315,7 +315,7 @@
             th,td{
               padding: @margin-base 0;
               >.cell{
-                white-space: nowrap;
+                // white-space: nowrap;
               }
             }
           }

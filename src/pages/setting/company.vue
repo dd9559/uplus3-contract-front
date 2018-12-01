@@ -208,8 +208,9 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgcontract" class="up" @getUrl="uploadCon"><i>+</i></fileUp><span>点击上传</span></li>
-                  <li><img src="@/assets/img/logo.png" alt=""><span>合同章</span></li>
+                  <li><fileUp id="imgcontract" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span>
+                  </li>
+                  <li v-show="companyForm.contractSign!==''"><upload-cell type=".png"></upload-cell><span class="text">{{contractName}}</span><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -218,8 +219,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgfinance" class="up" @getUrl="uploadFin"><i>+</i></fileUp><span>点击上传</span></li>
-                  <li><img src="@/assets/img/logo.png" alt=""><span>财务章</span></li>
+                  <li><fileUp id="imgfinance" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span></li>
+                  <li v-show="companyForm.financialSign!==''"><upload-cell type=".png"></upload-cell><span class="text">{{financialName}}</span><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -260,11 +261,11 @@
         <span>电子签章信息</span>
         <div class="stamp">
           <span>合同章: </span>
-          <div><img :src="companyForm.contractSign" alt=""></div>
+          <div><upload-cell type=".png" class="picture" v-show="companyForm.contractSign!==''"></upload-cell></div>
         </div>
         <div class="stamp">
           <span>财务章: </span>
-          <div><img :src="companyForm.financialSign" alt=""></div>
+          <div><upload-cell type=".png" class="picture" v-show="companyForm.financialSign!==''"></upload-cell></div>
         </div>
       </div>
     </div>
@@ -370,7 +371,9 @@
           '38':'',
           '39':'',
           '40':''
-        }
+        },
+        contractName: "",
+        financialName: ""
       }
     },
     created() {
@@ -442,7 +445,7 @@
             this.noticeShow = true
             setTimeout(() => {
               this.noticeShow = false
-            }, 3000)
+            }, 2000)
           } else {
             this.storeList.find(item => {
               if(item.id === val) {
@@ -533,11 +536,17 @@
         this.delIds.push(JSON.stringify(this.companyBankList[index].id))
         this.companyBankList.splice(index,1)
       },
-      uploadCon(obj) {
-        this.companyForm.contractSign = obj.param[obj.param.length - 1]
+      upload(obj) {
+        if(obj.btnId === "imgcontract") {
+          this.companyForm.contractSign = obj.param[0].path+`?${obj.param[0].name}`
+          this.contractName = obj.param[0].name
+        } else {
+          this.companyForm.financialSign = obj.param[0].path+`?${obj.param[0].name}`
+          this.financialName = obj.param[0].name
+        }
       },
-      uploadFin(obj) {
-        this.companyForm.financialSign = obj.param[obj.param.length - 1]
+      delStamp(type) {
+        type === 1 ? this.companyForm.contractSign = "" : this.companyForm.financialSign = ""
       },
       submitConfirm() {
         this.$tool.checkForm(this.companyForm,rule).then(() => {
@@ -608,6 +617,8 @@
         this.documentCard = JSON.parse(JSON.stringify(row.documentCard))
         this.companyBankList = JSON.parse(JSON.stringify(row.companyBankList))
         let currentRow = JSON.parse(JSON.stringify(row))
+        this.contractName = currentRow.contractSign.split('?')[1]
+        this.financialName = currentRow.financialSign.split('?')[1]
         let newForm = {
           id: currentRow.id,
           cityId: currentRow.cityId,
@@ -621,8 +632,8 @@
           lepDocumentCard: currentRow.lepDocumentCard,
           lepPhone: currentRow.lepPhone,
           documentType: currentRow.documentType.value,
-          contractSign: currentRow.contractSign,
-          financialSign: currentRow.financialSign
+          contractSign: (currentRow.contractSign.split('?')[0]),
+          financialSign: (currentRow.financialSign.split('?')[0])
         }
         this.companyForm = newForm
       },
@@ -674,7 +685,7 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-    font-size: 18px;
+    font-size: @size-14;
     .mr-8 {
       margin-right: 8px;
     }
@@ -755,6 +766,7 @@
       }
     }
     &:nth-child(2) {
+      border-top: 1px solid #edecf0;
       /deep/ .el-table__header-wrapper {
         display: none;
       }
@@ -808,6 +820,7 @@
       /deep/ .el-table td { border: 0; padding: 0; }
     }
     &:last-child {
+      border-top: 1px solid #edecf0;
       > div {
         display: flex;
         margin-bottom: 20px;
@@ -839,14 +852,28 @@
                   height: 60px;
                   border-radius: 4px;
                 }
-                span {
+                .text {
                   position: absolute;
                   font-size: @size-base;
-                  bottom: 10px;
+                  bottom: -8px;
                   color: #233241;
                   display: inline-block;
-                  width: 50px;
+                  width: 120px;
+                  height: 32px;
                   text-align: center;
+                }
+                .del {
+                  position: absolute;
+                  display: inline-block;
+                  width: 20px;
+                  height: 20px;
+                  background-color: #F56C6C;
+                  border-radius: 50%;
+                  right: 8px;
+                  top: 8px;
+                  text-align: center;
+                  line-height: 20px;
+                  color: #fff;
                 }
                 &:first-child {
                   .up {
@@ -908,8 +935,12 @@
           width: 160px;
           height: 160px;
           background-color: rgba(236,238,241,1);
-          > img {
-            width: 100%;
+          position: relative;
+          border-radius: 8px;
+          /deep/ .picture {
+            position: absolute;
+            top: -6px;
+            font-size: 160px!important;
           }
         }
       }
