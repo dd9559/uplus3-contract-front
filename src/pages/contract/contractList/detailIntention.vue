@@ -37,10 +37,10 @@
                                     <div class="div1"><span>房型：</span>{{detailData.houseInfo.HouseType | nullData}}</div>
                                     <div class="div2"><span>朝向：</span>{{detailData.houseInfo.Orientation | nullData}}</div>
                                     <div class="div3"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
-                                    <div><span>业主姓名：</span>{{custInfo[0].name | nullData}}</div>
+                                    <div><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
                                 </li>
                                 <li>
-                                    <div class="div1"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
+                                    <div class="div1"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
                                     <div><span>产证地址：</span>{{detailData.houseInfo.propertyRightAddr | nullData}}</div>
                                 </li>
                             </ul>
@@ -54,9 +54,9 @@
                                     
                                 </li>
                                 <li>
-                                    <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
-                                    <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
-                                    <div><span>身份证号：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
+                                    <div class="div1"><span>业主姓名：</span>{{custInfo[0].name | nullData}}</div>
+                                    <div class="div2"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
+                                    <div><span>身份证号：</span>{{custInfo[0].identifyCode | nullData}}</div>
                                 </li>
                             </ul>
                         </ul>
