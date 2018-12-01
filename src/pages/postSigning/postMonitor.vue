@@ -6,10 +6,10 @@
                 <el-form-item label="关键字" prop="search">
                     <el-input class="w322" v-model="propForm.search" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="查询时间" prop="dateMo">
+                <!-- <el-form-item label="查询时间" prop="dateMo">
                     <el-date-picker v-model="propForm.dateMo" class="w330" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
                     </el-date-picker>
-                </el-form-item>
+                </el-form-item> -->
                 <div class="in-block">
                     <el-form-item 
                     label="交易步骤" 
@@ -102,6 +102,7 @@
             <el-table 
             :data="tableData.list"
             v-loading="loadingList" 
+            @row-dblclick="tradingStepsFn"
             class="paper-table mt-20">
                 <el-table-column label="合同编号" min-width="161">
                     <template slot-scope="scope">
@@ -128,11 +129,10 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="guestinfo.ShopOwnerName" label="店长" min-width="70">
                 </el-table-column>
-                <el-table-column label="已超时步骤" min-width="110">
-                    <template slot-scope="scope">
-                        <!-- {{scope.row.overtimeSteps}} -->
+                <el-table-column prop="overtimeSteps" label="已超时步骤"  :formatter="nullFormatterData" min-width="110">
+                    <!-- <template slot-scope="scope">
                         <el-button class="blue" type="text" @click="tradingStepsFn(scope.row)">{{scope.row.overtimeSteps}}</el-button>
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="overtimeName" label="当前步骤责任人" min-width="130">
                 </el-table-column>
@@ -149,7 +149,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="operationFn">流水</el-button>
+                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)">流水</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -167,7 +167,7 @@
         <!-- 后期进度查看 -->
         <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
         <!-- 流水 -->
-        <flowAccount :dialogTableVisible="dialogTableVisible"></flowAccount>
+        <flowAccount :dialogTableVisible="dialogTableVisible" :contCode="contCode" @closeRunningWater="closeWater"></flowAccount>
     </div>
 </template>
 
@@ -200,7 +200,6 @@
                 // 枚举数据
                 dictionary:{
                     '13':'收佣状态',
-                    '18':'步骤状态',
                 },
                 // 筛选条件
                 propForm: {
@@ -231,14 +230,28 @@
                         id: ""
                     }],
                     late: [],
-                    lateName:[]
+                    lateName:[{
+                        key:1,
+                        value:'已办理'
+                    },{
+                        key:2,
+                        value:'未办理'
+                    },{
+                        key:3,
+                        value:'超时未办理'
+                    },{
+                        key:4,
+                        value:'超时已办理'
+                    },]
                 },
                 // 列表数据
                 tableData:{},
                 // 后期进度列表
                 tableProgress:[],
                 // 流水
-                dialogTableVisible:false
+                dialogTableVisible:false,
+                // code
+                contCode:'',
             }
         },
         methods:{
@@ -269,12 +282,16 @@
                 console.log('合同编号弹层')
             },
             // 交易步骤
-            tradingStepsFn(data){
-                this.$refs.lateProgress.show(data);
+            tradingStepsFn(row, event){
+                this.$refs.lateProgress.show(row);
             },
             // 操作
-            operationFn(){
+            operationFn(code){
+                this.contCode = code;
                 this.dialogTableVisible = true;
+            },
+            closeWater(){
+                this.dialogTableVisible = false;
             },
             // 时间处理
             dateFormat(val){
@@ -436,8 +453,6 @@
         },
         watch:{
             dictionary(newData,oldData){
-                // 步骤状态
-                this.rules.lateName = [...newData[18]];
                 // 收佣状态
                 this.rules.paper = [{
                             value: "全部",
