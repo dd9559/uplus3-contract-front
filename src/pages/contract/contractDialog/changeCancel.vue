@@ -15,10 +15,21 @@
 				<div class="uploadfile">
 					<div class="uploadtitle">上传变更协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
 					<div class="uploadbtn">
-						<file-up class="uploadSubject" @getUrl="uploadSubject" id="change_" >
-							<i class="iconfont icon-shangchuan"></i>
-							<p>点击上传</p>
-						</file-up>
+						<ul>
+							<li>
+								<file-up class="uploadSubject" @getUrl="uploadSubject" id="change_">
+									<i class="iconfont icon-shangchuan"></i>
+									<p>点击上传</p>
+								</file-up>
+							</li>
+							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
+								<div class="namePath">
+									<upload-cell :type="item.fileType"></upload-cell>
+									<p>{{item.name}}</p>
+								</div>
+								<i class="iconfont icon-tubiao-6" @click="delectData(index)" v-if="isDelete===item.title+item.path"></i>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -36,11 +47,19 @@
 				</div>
 				<!-- 上传附件 -->
 				<div class="uploadfile">
-					<div class="uploadtitle">上传变更协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+					<div class="uploadtitle">变更协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
 					<div class="uploadbtn">
-						<span class="dataPreview" v-for="item in address.value" :key="item.path">
+						<ul>
+							<li v-for="(item,index) in address.value" :key="index">
+								<div class="namePath">
+									<upload-cell :type="item.fileType"></upload-cell>
+									<p>{{item.name}}</p>
+								</div>
+							</li>
+						</ul>
+						<!-- <span class="dataPreview" v-for="item in address.value" :key="item.path">
 							<p>{{item.name}}</p>
-						</span>
+						</span> -->
 					</div>
 				</div>
 			</div>
@@ -60,10 +79,21 @@
 				<div class="uploadfile">
 					<div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
 					<div class="uploadbtn">
-						<file-up class="uploadSubject" @getUrl="uploadSubject" id="cancel_">
-							<i class="iconfont icon-shangchuan"></i>
-							<p>点击上传</p>
-						</file-up>
+						<ul>
+							<li>
+								<file-up class="uploadSubject" @getUrl="uploadSubject" id="cancel_">
+									<i class="iconfont icon-shangchuan"></i>
+									<p>点击上传</p>
+								</file-up>
+							</li>
+							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
+								<div class="namePath">
+									<upload-cell :type="item.fileType"></upload-cell>
+									<p>{{item.name}}</p>
+								</div>
+								<i class="iconfont icon-tubiao-6" @click="delectData(index)" v-if="isDelete===item.title+item.path"></i>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -83,9 +113,14 @@
 				<div class="uploadfile">
 					<div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
 					<div class="uploadbtn">
-						<span class="dataPreview" v-for="item in address.value" :key="item.path">
-							<p>{{item.name}}</p>
-						</span>
+						<ul>
+							<li v-for="(item,index) in address.value" :key="index">
+								<div class="namePath">
+									<upload-cell :type="item.fileType"></upload-cell>
+									<p>{{item.name}}</p>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -96,13 +131,21 @@
 				<div class="uploadfile uploadfile2">
 					<div class="uploadtitle">上传合同主体<span><b>注：</b>合同主体上传支持jpg、png、docx、以及pdf格式</span></div>
 					<div class="uploadbtn">
-						<file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
-							<i class="iconfont icon-shangchuan"></i>
-							<p>点击上传</p>
-						</file-up>
-						<!-- <span class="uploadSubject" v-for="item in uploadList" :key="item">
-							<img :src="item?item:'#'" alt="">
-						</span> -->
+						<ul>
+							<li>
+								<file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+									<i class="iconfont icon-shangchuan"></i>
+									<p>点击上传</p>
+								</file-up>
+							</li>
+							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
+								<div class="namePath">
+									<upload-cell :type="item.fileType"></upload-cell>
+									<p>{{item.name}}</p>
+								</div>
+								<i class="iconfont icon-tubiao-6" @click="delectData(index)" v-if="isDelete===item.title+item.path"></i>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -142,7 +185,8 @@ export default {
 			uploadList:[],
 			isImg:false,
 			textarea:'',
-			address:{}
+			address:{},
+			isDelete:''
     };
   },
 
@@ -164,10 +208,23 @@ export default {
 		},
 		//获取文件路径数组
 		uploadSubject(data){
-			//console.log(data.param[0].name);
-			this.uploadList=data.param;
-			//this.isImg=true
+      let arr = data.param;
+      let fileType = this.$tool.get_suffix(arr[0].name);
+      arr[0].fileType = fileType;
+			this.uploadList.push(arr[0])
 		},
+		moveIn(value){
+			this.isDelete=value
+		},
+		moveOut(value){
+			if(this.isDelete===value){
+        this.isDelete=''
+      }
+		},
+		delectData(index){
+      console.log(index);
+			this.uploadList.splice(index,1)
+    },
 		//提交变更解约
 		subChangeCancel(url,param){
 			this.$ajax.postJSON(url,param).then(res=>{
@@ -182,15 +239,23 @@ export default {
 		},
 		//保存上传文件
 		saveFile(){
+			this.uploadList.forEach(element => {
+				delete element.fileType
+			});
+			console.log(this.uploadList);
 			if(this.dialogType==="upload"){
 				//上传合同主体
 				if(this.uploadList.length>0){
-					var url = "/api/upload/contractBody";
+					var url = "/api/contract/uploadContBody";
 					var param = {
-						contractId:this.contId,
-						vouchers:this.uploadList
+						contId:this.contId,
+						datas:this.uploadList
 					}
 					this.subChangeCancel(url,param);
+				}else{
+					this.$message({
+						message:'请选合同主体'
+					})
 				}
 				
 			}else if(this.dialogType==="changeEdit"){
@@ -249,7 +314,15 @@ export default {
 				res=res.data;
 				if(res.status===200){
 					this.textarea=res.data.changeReason;
-					this.address=JSON.parse(res.data.address);
+
+					let address_ =JSON.parse(res.data.address);
+					//console.log(address_);
+					// let fileType = this.$tool.get_suffix(arr[0].name);
+					address_.value.forEach(element => {
+						let fileType = this.$tool.get_suffix(element.name);
+						element.fileType=fileType;
+					});
+					this.address=address_;
 				}
 			})
 		}
@@ -353,17 +426,17 @@ export default {
           .uploadSubject{
 						display: inline-block;
 						text-align: center;
-						width: 140px;
-						height: 140px;
+						width: 120px;
+						height: 120px;
 						box-sizing: border-box;
-						padding-top: 28px;
+						padding-top: 20px;
 						border: 2px dashed @border-DE;
 						> i{
 							color: @bg-th;
 							font-size: 59px;
 						}
 						> p{
-							padding-top: 10px;
+							padding-top: 5px;
 							color:@color-324;
 							font-size: 14px;
 						}
@@ -377,6 +450,34 @@ export default {
 						box-sizing: border-box;
 						background: skyblue;
 						border: 2px solid @border-DE;
+					}
+					ul{
+						display: flex;
+						li{
+							margin-right: 10px;
+							position: relative;
+							> i{
+								position: absolute;
+								top: 5px;
+								right: 5px;
+								color: @color-warning;
+								font-size: 20px;
+								cursor: pointer;
+							}
+						}
+					}
+					.namePath{
+						display: inline-block;
+						text-align: center;
+						width: 120px;
+						height: 120px;
+						padding-top: 20px;
+						box-sizing: border-box;
+						border-radius:4px;
+						background: @color-F2;
+						> p{
+							padding-top: 5px;
+						}
 					}
         }
       }

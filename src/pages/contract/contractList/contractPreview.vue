@@ -80,6 +80,7 @@ export default {
       operationType: "",
       //合同id
       id:'',
+      code:'',
       isShowType:false,
       //审批流节点信息
       auditNodeResult:{},
@@ -109,6 +110,7 @@ export default {
   },
   created() {
     this.id = this.$route.query.id;
+    this.code = this.$route.query.code;
     if (this.$route.query.operationType) {
       this.operationType = this.$route.query.operationType;
       this.getAuditNode();

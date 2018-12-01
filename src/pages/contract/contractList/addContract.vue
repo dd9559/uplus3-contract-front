@@ -220,7 +220,23 @@
       </div>
       <div class="houseMsg">
         <p>扩展参数</p>
+        <div class="form-content">
+          <ul>
+            <li v-for="item in parameterList" :key="item.id">
+              <span class="title">{{item.name+':'}}</span>
+              <!-- 输入框 -->
+              <el-input v-model="ceshi1" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <!-- 下拉框 -->
+              <el-select v-model="ceshi2" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2" size="small">
+                <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
+                </el-option>
+              </el-select>
+              <span class="unit">{{item.unit}}</span>
+            </li>
+          </ul>
+        </div>
       </div>
+
       <div class="btn">
         <div>
           <div v-if="type===2">
@@ -248,13 +264,11 @@
         <el-button type="primary" @click="saveCont">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- <custom-input v-model="text"></custom-input> -->
   </div>
 </template>
            
 <script>
 import { TOOL } from "@/assets/js/common";
-import customInput from "./customInput";
 import { MIXINS } from "@/assets/js/mixins";
 import houseGuest from "../contractDialog/houseGuest";
 const rule = {
@@ -296,11 +310,12 @@ const rule = {
 export default {
   mixins: [MIXINS],
   components: {
-    customInput,
     houseGuest
   },
   data() {
     return {
+      ceshi1:'',
+      ceshi2:'',
       contractForm: {
         // type: 2,
         houseinfoCode: "",
@@ -367,7 +382,9 @@ export default {
       //人员关系列表
       relationList: [],
       //编辑时的合同id
-      id:''
+      id:'',
+      //扩展参数
+      parameterList:[]
     };
   },
   created() {
@@ -382,9 +399,9 @@ export default {
     this.getDictionary();
     this.getTransFlow();
     this.getRelation();
+    this.getExtendParams();//扩展参数
   },
   methods: {
-    submitForm() {},
     addcommissionData() {
       if (this.ownerList.length < 5) {
         this.ownerList.push({
@@ -434,6 +451,18 @@ export default {
       } else {
         this.contractForm.isHavaCooperation = 1;
       }
+    },
+    //获取合同扩展参数
+    getExtendParams(){
+      let param = {
+        type:Number(this.$route.query.type)
+      }
+      this.$ajax.get('/api/contract/getExtendParamsByType', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.parameterList=res.data;
+        }
+      })
     },
     //验证合同信息
     isSave() {
@@ -935,6 +964,24 @@ export default {
     }
     .address {
       width: 500px;
+    }
+    ul{
+      display: flex;
+      width: 800px;
+      flex-wrap:wrap;
+      li{
+        display: flex;
+        height: 50px;
+        width: 250px;
+        line-height: 50px;
+        > .title{
+          width: 140px;
+          text-align: right;
+        }
+        > .unit{
+          width: 40px;
+        }
+      }
     }
   }
   .cooperation {

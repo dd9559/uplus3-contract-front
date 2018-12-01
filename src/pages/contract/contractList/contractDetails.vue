@@ -209,10 +209,25 @@
       </el-tab-pane>
       <el-tab-pane label="合同主体" name="second">
         <div class="contractSubject">
-          <file-up class="uploadSubject" @getUrl="uploadSubject">
+          <ul class="ulData">
+            <li>
+              <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                <i class="iconfont icon-shangchuan"></i>
+                <p>点击上传</p>
+              </file-up>
+            </li>
+            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
+              <div class="namePath">
+                <upload-cell :type="item.fileType"></upload-cell>
+                <p>{{item.name}}</p>
+              </div>
+              <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
+            </li>
+          </ul>
+          <!-- <file-up class="uploadSubject" @getUrl="uploadSubject">
             <i class="iconfont icon-shangchuan"></i>
             <p>点击上传</p>
-          </file-up>
+          </file-up> -->
         </div>
       </el-tab-pane>
       <el-tab-pane label="资料库" name="third">
@@ -221,14 +236,14 @@
             <p class="title">卖方</p>
             <div class="one_" v-for="(item,index) in sellerList" :key="index">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
-              <ul>
+              <ul class="ulData">
                 <li>
                   <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
                     <i class="iconfont icon-shangchuan"></i>
                     <p>点击上传</p>
                   </file-up>
                 </li>
-                <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                   <div class="namePath">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
@@ -242,7 +257,7 @@
             <p class="title">买方</p>
             <div class="one_" v-for="(item,index) in buyerList" :key="index">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
-              <ul>
+              <ul class="ulData">
                 <li>
                   <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
                     <i class="iconfont icon-shangchuan"></i>
@@ -263,7 +278,7 @@
             <p class="title">其他</p>
             <div class="one_" v-for="(item,index) in otherList" :key="index">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
-              <ul>
+              <ul class="ulData">
                 <li>
                   <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
                     <i class="iconfont icon-shangchuan"></i>
@@ -314,9 +329,10 @@
       <el-button round class="search_btn" v-if="name==='first'">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'">分成</el-button>
-      <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='second'||name==='third'">上传</el-button>
+      <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">上传</el-button>  <!-- 合同资料库上传 -->
+      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'">上传</el-button>  <!-- 合同主体上传 -->
     </div>
-
+    
     <!-- 拨号弹出框 -->
     <el-dialog title="提示" :visible.sync="dialogVisible" width="460px">
       <div>
@@ -472,11 +488,12 @@ export default {
     if (this.$route.query.type === "dataBank") {
       this.activeName = "third";
     }
-    this.getContractDetail();
-    this.getDictionary();
-    this.getTransFlow();
-    this.getAchievement();
-    this.getContDataType();
+    this.getContractDetail();//合同详情
+    this.getDictionary();//字典
+    this.getTransFlow();//交易类型
+    this.getAchievement();//业绩分成
+    this.getContDataType();//获取合同集料库类型
+    this.getContractBody();//获取合同主体
   },
   methods: {
     handleClick(tab, event) {
@@ -493,7 +510,7 @@ export default {
       this.$router.push({
         path: "/contractPreview",
         query: {
-          id: 1
+          id: this.id
         }
       });
     },
@@ -591,30 +608,58 @@ export default {
         }
       });
     },
-    //获取文件路径数组
+    //获取合同主体信息
+    getContractBody(){
+      let param = {
+        id:this.id
+      }
+      this.$ajax.get('/api/contract/getContractBodyById', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          let uploadList_ = res.data;
+          uploadList_.forEach(element => {
+            let fileType = this.$tool.get_suffix(element.name);
+            element.fileType=fileType;
+          });
+          this.uploadList=uploadList_;
+        }
+      })
+    },
+    //合同主体获取文件路径数组
     uploadSubject(data) {
-      console.log(data.param[0]);
-      this.uploadList.push(data.param[0].path);
-      //this.isImg=true
+      let arr = data.param;
+      let fileType = this.$tool.get_suffix(arr[0].name);
+      arr[0].fileType = fileType;
+			this.uploadList.push(arr[0])
+    },
+    //合同主体的删除
+    ZTdelectData(index){
+      this.uploadList.splice(index,1)
     },
     //保存上传文件
     saveFile() {
-      if (this.dialogType === "upload") {
-        var url = "/api/upload/contractBody";
-        var param = {
-          contractId: this.id,
-          vouchers: this.uploadList
-        };
-      }
-      this.$ajax.postJSON(url, param).then(res => {
-        res = res.data;
-        if (res.status === 200) {
-          this.$message({
-            message: "上传成功"
-          });
-          this.close();
+      if(this.uploadList.length>0){
+        this.uploadList.forEach(element => {
+          delete element.fileType
+        });
+        let param = {
+          contId:this.id,
+          datas:this.uploadList
         }
-      });
+        this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
+          res=res.data;
+          if(res.status===200){
+            this.getContractBody();
+            this.$message({
+              message:'上传成功'
+            })
+          }
+        })
+      }else{
+        this.$message({
+          message:'请选合同主体'
+        })
+      }
     },
     //获取合同资料库类型列表
     getContDataType() {
@@ -778,7 +823,6 @@ export default {
       }else if(type==="other"){
         this.otherList[index].value.splice(index_,1);
       }
-
     },
     //合同无效弹窗
     invalid(){
@@ -949,12 +993,23 @@ export default {
     > p{
       padding-top: 5px;
     }
-    > i{
-      font-size: 50px;
-      color: #54d384;
-    }
   }
   //资料库
+  .ulData{
+    display: flex;
+    li{
+      margin-right: 10px;
+      position: relative;
+      > i{
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: @color-warning;
+        font-size: 20px;
+        cursor: pointer;
+      }
+    }
+  }
   .dataBank {
     padding: 0 30px 0 10px;
     height: 100%;
@@ -968,21 +1023,6 @@ export default {
       }
       .one_ {
         padding-left: 10px;
-        >ul{
-          display: flex;
-          li{
-            margin-right: 10px;
-            position: relative;
-            > i{
-              position: absolute;
-              top: 5px;
-              right: 5px;
-              color: @color-warning;
-              font-size: 20px;
-              cursor: pointer;
-            }
-          }
-        }
         > p {
           font-size: 14px;
           padding: 10px 0;
