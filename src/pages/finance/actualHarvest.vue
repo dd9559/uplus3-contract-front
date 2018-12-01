@@ -104,15 +104,44 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合同类型" prop="contractType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="款类" prop="collectionType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="成交经纪人" prop="broker" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="应收款（元）" prop="accounts_receivable" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="已收款（元）" prop="for_collection" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="待收款（元）" prop="useNum" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="操作时间" prop="operation time" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收款状态" prop="state" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="款类" prop="collectionType">
+          <template slot-scope="scope">
+            佣金
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="成交经纪人" prop="broker">
+          <template slot-scope="scope">
+            {{scope.row.dealAgentStoreName}}-{{scope.row.dealAgentName}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="应收款（元）" prop="receivableCommission" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="已收款（元）" prop="receivedCommission" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="待收款（元）" prop="useNum" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            {{scope.row.receivableCommission-scope.row.receivedCommission}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="操作时间" prop="operation time">
+          <template slot-scope="scope">
+            {{scope.row.signDate|formatTime}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="收款状态" prop="receiveAmountState" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            {{scope.row.receivableCommission-scope.row.receivedCommission>0?'未收':'已收'}}
+          </template>
+        </el-table-column>
       </el-table>
+      <el-pagination
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -144,7 +173,8 @@
         list: [],
         //分页
         pageSize:10,
-        pageNum:1
+        currentPage:1,
+        total:0
       }
     },
     created() {
@@ -154,6 +184,13 @@
     methods: {
       reset:function () {
         this.$tool.clearForm(this.searchForm)
+      },
+      handleSizeChange:function () {
+
+      },
+      handleCurrentChange:function (val) {
+        this.currentPage = val
+        this.getData()
       },
       getData: function () {
         // let param={}
@@ -169,12 +206,13 @@
         delete param.signTime
         delete param.collectionTime
         delete param.moneyType
-        param.pageNum=this.pageNum
+        param.pageNum=this.currentPage
         param.pageSize=this.pageSize
         this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list = res.data.list
+            this.total = res.data.count
           }
         }).catch(error => {
           console.log(error)
