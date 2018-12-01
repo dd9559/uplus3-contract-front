@@ -264,7 +264,7 @@
       btnOpera: function (row,type) {
         this.activeRow = Object.assign({},row)
         if(type===4){
-          this.$refs.layerInvoice.show(row,true);
+          this.$refs.layerInvoice.show(row.proceedsId,true);
           return
         }else {
           this.layer.show = true
@@ -293,7 +293,7 @@
         if (type === 'contract') {
 
         } else if (type === 'paper') {
-          this.$refs.layerInvoice.show(row);
+          this.$refs.layerInvoice.show(row.id);
         } else {
           this.$router.push({
             path:'billDetails',
@@ -382,7 +382,92 @@
     .paper-btn-blue{
       color: @color-white;
     }
-    
+    .paper-btn-float{
+      position: absolute;
+      right: 0;
+      bottom: 20px;
+    }
+  }
+  .paper-edit-box{
+    margin: 0 40px;
+    padding: 20px 0 80px;
+    border-bottom: 1px solid @border-D8;
+    position: relative;
+    >ul{
+      &:first-of-type{
+        >li{
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          >label{
+            margin-right: 10px;
+          }
+          &:first-of-type,&:nth-of-type(2){
+            >p{
+              &:first-of-type{
+                width: 200px;
+              }
+            }
+          }
+          &:last-of-type{
+            margin-bottom: 0px;
+          }
+        }
+      }
+    }
+    .type-list{
+      display: flex;
+      >p{
+        min-width: 140px;
+        margin-right: 20px;
+        display: inherit;
+        align-items: center;
+        >label.checkbox-info{
+          margin-right: 10px;
+        }
+      }
+      .input-group{
+        margin-bottom: 0;
+        margin-right: 20px;
+      }
+    }
+  }
+  .paper-watch-tab{
+    >p{
+      color: @color-blue;
+      text-align: center;
+      font-weight: bold;
+      margin: 32px;
+    }
+    >ul{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 26px;
+      >li{
+        border-top: 2px solid @color-blue;
+        border-bottom: 2px solid @color-blue;
+        min-width: 100px;
+        height: 36px;
+        display: inherit;
+        align-items: center;
+        justify-content: center;
+        &:first-of-type{
+          border-left: 2px solid @color-blue;
+          border-top-left-radius: 18px;
+          border-bottom-left-radius: 18px;
+        }
+        &:last-of-type{
+          border-right: 2px solid @color-blue;
+          border-top-right-radius: 18px;
+          border-bottom-right-radius: 18px;
+        }
+        &.active{
+          background-color: @color-blue;
+          color: @color-white;
+        }
+      }
+    }
   }
 
 </style>
+

@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <preview></preview>
+    <!--<preview></preview>-->
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
       <div class="content">
         <div class="input-group">

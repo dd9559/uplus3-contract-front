@@ -185,8 +185,12 @@
         <li>
           <file-up class="upload-context" @getUrl="getFiles">
             <i class="iconfont icon-shangchuan"></i>
-            <p><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
+            <span>点击上传</span>
           </file-up>
+        </li>
+        <li v-for="item in imgList">
+          <upload-cell :type="item.type"></upload-cell>
+          <span>{{item.name}}</span>
         </li>
       </ul>
     </div>
@@ -298,7 +302,8 @@
         account: [],
         dropdown: [],
         receiptMan: [],
-        files:[]
+        files:[],
+        imgList:[],
       }
     },
     created() {
@@ -335,6 +340,12 @@
               proceedsType: res.data.type,
               id: res.data.id
             }
+            if(res.data.filePath){
+              this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+            }
+            this.imgList.forEach(item=>{
+              this.files.push(`${item.path}?${item.name}`)
+            })
             this.cardList = res.data.account
             if(res.data.inAccount&&res.data.inAccount.length>0){
               this.activeAdmin = res.data.inAccount[0].cardNumber
@@ -364,7 +375,8 @@
        * 获取上传文件
        */
       getFiles:function (payload) {
-        this.files=[].concat(payload.param)
+        this.files=this.files.concat(this.$tool.getFilePath(payload.param))
+        this.imgList=this.$tool.cutFilePath(this.files)
       },
       goResult: function () {
         let RULE = this.activeType===1?rule:otherRule
@@ -403,7 +415,7 @@
                       message:'收款凭证不能为空'
                     })
                   }else {
-                    param.filePath = [].concat(this.$tool.getFilePath(this.files))
+                    param.filePath = [].concat(this.files)
                     this.getResult(param,this.$route.query.edit?'edit':'')
                   }
                 }).catch(error=>{
@@ -652,9 +664,9 @@
     }
   }
 
-  .iconfont {
+  .icon-xialazhankai {
     color: #A1A1A1;
-    font-size: @size-12;
+    font-size: @size-base;
     margin-left: 10px;
   }
 
@@ -748,44 +760,41 @@
       display: flex;
       flex-wrap: wrap;
       margin: 20px 0;
-      > li {
+      >li{
         border: 1px dashed @color-D6;
-        width: 250px;
-        height: 170px;
+        width: 120px;
+        height: 120px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        .upload-context {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          > i {
+        >span{
+          width: 100px;
+          word-break: break-all;
+        }
+        &:first-of-type{
+          .iconfont{
             color: @bg-th;
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            overflow: hidden;
-            &.iconfont {
-              position: relative;
-              display: flex;
-              align-items: center;
-              &:before {
-                font-size: 58px;
-              }
+            font-size: 58px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            &:before{
+
             }
           }
-          > p {
-            font-size: @size-12;
-            color: @color-99A;
-            padding: 12px 20px;
-            > span {
-              &:first-of-type {
-                font-size: @size-base;
-                color: @color-blue;
-              }
-            }
-          }
+        }
+        &:nth-of-type(n+1){
+          margin-right: @margin-base;
+        }
+      }
+    }
+    .upload-text{
+      color: @color-99A;
+      padding: @margin-base;
+      >span{
+        &:first-of-type{
+          color: @color-blue;
         }
       }
     }

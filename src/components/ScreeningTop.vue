@@ -6,14 +6,14 @@
       <p>
         <el-button
           class="paper-btn"
-          size="medium"
+          size="small"
           @click="resetFormFn"
           round>重 置
         </el-button>
         <el-button
           class="paper-btn paper-btn-blue"
           type="primary"
-          size="medium"
+          size="small"
           @click="queryFn"
           round>查 询
         </el-button>
@@ -70,11 +70,11 @@
     &:after {
       content: '';
       width: 100%;
-      height: 20px;
+      height: 15px;
       position: absolute;
       left: 0;
       right: 0;
-      bottom: -20px;
+      bottom: -15px;
       background-color: @bg-grey;
     }
     &.collapse-on{
@@ -90,7 +90,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: @margin-base;
     }
     .btn {
       width: 56px;
@@ -107,9 +107,9 @@
   }
   .view-header {
     background-color: @color-white;
-    padding: 10px 20px;
+    padding: @margin-base;
     border-radius: @border-radius;
-    margin-bottom: 20px;
+    margin-bottom: @margin-15;
   }
 
   // 按钮

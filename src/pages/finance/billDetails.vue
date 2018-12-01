@@ -9,7 +9,7 @@
         </li>
       </ul>
       <p>
-        <el-button type="primary" @click="layer.show=true">审核</el-button>
+        <el-button round size="small" type="primary" @click="layer.show=true">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -142,42 +142,27 @@
         </div>
         <div class="input-group">
           <label>付款凭证:</label>
-          <ul class="image-list">
+          <ul class="image-list" v-if="files.length>0">
             <li v-for="item in files">
               <upload-cell :type="item.type"></upload-cell>
               <span>{{item.name}}</span>
             </li>
           </ul>
+          <span v-else>无</span>
         </div>
       </li>
       <li ref="checkBox">
         <h4>审核信息</h4>
-        <el-table border :data="list" header-row-class-name="theader-bg">
+        <el-table border :data="checkList" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
             <template slot-scope="scope">
-              <span>-</span>
+              <span>{{scope.row.time|formatTime}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="姓名">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="职务">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="操作">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="备注">
-            <template slot-scope="scope">
-
-            </template>
-          </el-table-column>
+          <el-table-column align="center" prop="name" label="姓名"></el-table-column>
+          <el-table-column align="center" prop="position" label="职务"></el-table-column>
+          <el-table-column align="center" label="操作"></el-table-column>
+          <el-table-column align="center" prop="remark" label="备注"></el-table-column>
         </el-table>
       </li>
     </ul>
@@ -223,6 +208,7 @@
         list: [
           {}
         ],
+        checkList:[],//审核信息
         layer: {
           show: false,
           reasion: ''
@@ -253,6 +239,9 @@
           res = res.data
           if (res.status === 200) {
             this.billMsg = Object.assign({}, res.data)
+            if(res.data.auditInfo){
+              this.checkList = res.data.auditInfo
+            }
             if(res.data.filePath){
               this.files=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
             }
@@ -324,7 +313,7 @@
     align-items: flex-start;
     max-width: 812px;
     &:first-of-type {
-      margin-bottom: 20px;
+      margin-bottom: @margin-base;
     }
     > label {
       color: @color-6c;
@@ -342,7 +331,7 @@
         justify-content: center;
         align-items: center;
         span{
-          font-size: @size-12;
+          font-size: @size-base;
           display: inline-block;
           width: 100px;
           word-break: break-all;
@@ -416,7 +405,7 @@
     padding: 0 20px;
     > li {
       h4 {
-        margin: 30px 0 20px;
+        margin: @margin-base 0;
         font-weight: bold;
       }
       .total-text {

@@ -1,328 +1,263 @@
-<template>   
-      <div class="layout" style="background-color: #f5f5f5">
-                 <!-- 筛选条件  -->
-                <div class="filter-layout">
-                         
-                           <div style="overflow:hidden;">
-                                 <div class="filter-left f_l">
-                                     <h1>
-                                      <b class="iconfont icon-tubiao-5" style="color:#55657A;font-weight:normal;"></b>
-                                       筛选查询
-                                      </h1>
-                               </div>
-                               <div class="filter-right f_r">
-                                  <el-button type="primary" round>重置</el-button>
-                                  <el-button type="primary" round @click="filterData">查询</el-button>
-                              </div>
-                           </div>
-                   
+<template>
+  <div class="layout" style="background-color: #f5f5f5">
+    <!-- 筛选条件  -->
+    <div class="filter-layout">
+      <div style="overflow:hidden;">
+        <div class="filter-left f_l">
+          <h1>
+            <b class="iconfont icon-tubiao-5" style="color:#55657A;font-weight:normal;"></b>
+            筛选查询
+          </h1>
+        </div>
+        <div class="filter-right f_r">
+          <el-button type="primary" round>重置</el-button>
+          <el-button type="primary" round @click="filterData">查询</el-button>
+        </div>
+      </div>
 
-                           <div class="filter-item" v-show="filterShow">
-                               <!-- 筛选条件 -->
-                               <el-form 
-                               :inline="true"
-                               ref="propForm"
-                               :model="propForm" 
-                               class="prop-form"
-                               size="small">
+      <div class="filter-item" v-show="filterShow">
+        <!-- 筛选条件 -->
+        <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
+          <el-form-item label="签约日期" prop="dateMo" class="mr">
+            <el-date-picker
+              v-model="propForm.dateMo"
+              class="w330"
+              type="daterange"
+              range-separator="至"
+              value-format="yyyy-MM-dd"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            ></el-date-picker>
+          </el-form-item>
 
-                                 <el-form-item 
-                                   label="签约日期"
-                                   prop="dateMo"
-                                   class="mr">
-                                       <el-date-picker
-                                           v-model="propForm.dateMo"
-                                           class="w330"
-                                           type="daterange"
-                                           range-separator="至"
-                                           value-format="yyyy-MM-dd"
-                                           start-placeholder="开始日期"
-                                           end-placeholder="结束日期">
-                                       </el-date-picker>
-                                   </el-form-item>  
+          <!-- 部门 -->
+          <!-- 部门 -->
+          <el-form-item label="部门" class="mr">
+            <el-select v-model="propForm.department" class="w200" filterable @change="selUser">
+              <el-option v-for="item in departs" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
 
+          <el-form-item>
+            <el-select v-model="propForm.departmentDetail" class="w100" filterable>
+              <el-option
+                v-for="(item,index) in users"
+                :key="index"
+                ref="user"
+                :label="item.name"
+                :value="item.empId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
 
-                                    <!-- 部门 -->
-                              <!-- 部门 -->
-                                   <el-form-item 
-                                   label="部门" 
-                                   class="mr">
-                                       <el-select v-model="propForm.department"  class="w200" filterable @change="selUser">
-                                           <el-option 
-                                             v-for="item in departs" 
-                                              :key="item.id"
-                                              :label="item.name"
-                                              :value="item.id"></el-option>
-                                       </el-select>
-                                   </el-form-item>
+          <el-form-item label="合同类型" prop="contractType">
+            <el-select v-model="propForm.contractType" class="w120">
+              <el-option
+                v-for="item in dictionary['10']"
+                :key="item.value"
+                :label="item.value"
+                :value="item.key"
+              ></el-option>
+            </el-select>
+          </el-form-item>
 
-                                   <el-form-item>
-                                       <el-select v-model="propForm.departmentDetail" class="w100" filterable>
-                                           <el-option 
-                                            v-for="(item,index) in users" 
-                                            :key="index"
-                                             ref="user" 
-                                            :label="item.name"
-                                            :value="item.empId"></el-option>
-                                       </el-select>
-                                   </el-form-item>
-                               
-                                    <el-form-item 
-                                   label="合同类型" 
-                                   prop="contractType">
-                                       <el-select v-model="propForm.contractType" class="w120">
-                                           <el-option 
-                                           v-for="item in dictionary['10']" 
-                                           :key="item.value"
-                                           :label="item.value" 
-                                           :value="item.key"></el-option>
-                                       </el-select>
-                                   </el-form-item>
+          <el-form-item label="关键字" prop="search">
+            <el-input
+              class="w312"
+              v-model="propForm.search"
+              placeholder="开票人员/合同编号/票据编"
+              :trigger-on-focus="false"
+              clearable
+            ></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
 
-                                  <el-form-item label="关键字" prop="search">
-                                          <el-input
-                                          class="w312"
-                                          v-model="propForm.search"
-                                          placeholder="开票人员/合同编号/票据编"
-                                          :trigger-on-focus="false"
-                                          clearable
-                                          ></el-input>
-                                 </el-form-item>
-                              
-                               </el-form>
-                           </div>
+      <div class="btn" @click="filterShow=!filterShow"></div>
+    </div>
+    <!-- 筛选条件 end -->
+    <!-- 数据列表 -->
+    <div class="data-layout">
+      <!-- 头部 -->
+      <div class="data-head">
+        <div class="data-head-left f_l">
+          <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b>
+          <span>数据列表</span>
+        </div>
+        <div class="data-head-right f_l">
+          <span>
+            总分成：
+            <b>{{countData[0]}}元</b>，
+          </span>
+          <span>分类分成：</span>
+          <span>
+            出售：
+            <b>{{countData[1]}}元</b>，
+          </span>
+          <span>
+            代办：
+            <b>{{countData[2]}}元</b>，
+          </span>
+          <span>
+            出租：
+            <b>{{countData[3]}}元</b>
+          </span>
+        </div>
+      </div>
+      <!-- 头部 end -->
+      <!-- 表格 -->
+      <div class="data-list">
+        <el-table :data="receivableList" style="width: 100%" @row-dblclick="dialogVisible = true">
+          <!-- code -->
+          <el-table-column label="合同信息" width="140">
+            <template slot-scope="scope">
+              <p>
+                <span class="blue">{{scope.row.code}}</span>
+              </p>
+            </template>
+          </el-table-column>
 
-                           <div class="btn" @click="filterShow=!filterShow"></div>
-                </div> 
-                <!-- 筛选条件 end -->
-                <!-- 数据列表 -->
-                 <div class="data-layout">
-                      <!-- 头部 -->
-                      <div class="data-head">
-                           <div class="data-head-left f_l">
-                             <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b> 
-                              <span>
+          <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
+          <el-table-column label="合同类型" width="80">
+            <template slot-scope="scope">
+              <p>{{scope.row.contType.label}}</p>
+            </template>
+          </el-table-column>
 
-                                  数据列表
-                              </span> 
-                           </div>
-                          <div class="data-head-right f_l">
-                              <span>总分成：<b>{{countData[0]}}元</b>，</span>
-                              <span>分类分成：</span>
-                              <span>出售：<b>{{countData[1]}}元</b>，</span>
-                              <span>代办：<b>{{countData[2]}}元</b>，</span>
-                              <span>出租：<b>{{countData[3]}}元</b></span>
-                          </div>      
-                      </div>
-                      <!-- 头部 end -->
+          <!-- propertyAddr -->
+          <el-table-column prop="propertyAddr" label="物业地址" width="140"></el-table-column>
 
-                      <!-- 表格 -->
-                      <div class="data-list">
-                         <el-table
-                            :data="receivableList"
-                            style="width: 100%"
-                            @row-dblclick="dialogVisible = true"
-                            >
-                               <!-- code -->
-                               <el-table-column
-                                 label="合同信息"
-                                 width="160"
-                                 >
-                                  <template slot-scope="scope">
-                                          <p><span class="blue">{{scope.row.code}}</span></p>
-                                  </template>
-                               </el-table-column>
-                                
-                                <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
-                               <el-table-column
-                                 label="合同类型"
-                                 width="100">
-                                   <template slot-scope="scope">
-                                     <p>{{scope.row.contType.label}}</p>
-                                  </template>
-                               </el-table-column>
+          <!-- dealStorefront   dealName -->
+          <el-table-column prop="man" label="成交经纪人" width="190">
+            <template slot-scope="scope">
+              <div v-if="scope.row.dealName">
+                <p>{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
+              </div>
+              <div v-else>
+                <p>暂无</p>
+              </div>
+            </template>
+          </el-table-column>
 
-                                <!-- propertyAddr -->
-                                <el-table-column
-                                 prop="propertyAddr"
-                                 label="物业地址"
-                                 width="140">
-                               </el-table-column>
+          <!-- signDate -->
+          <el-table-column prop="date" label="签约日期" width="100">
+            <template slot-scope="scope">
+              <p>{{scope.row.signDate|formatDate}}</p>
+            </template>
+          </el-table-column>
 
-                               <!-- dealStorefront   dealName -->
-                                   <el-table-column
-                                 prop="man"
-                                 label="成交经纪人"
-                                 width="150">
-                                <template slot-scope="scope">
-                                    <div v-if="scope.row.dealName">
-                                         <p>{{scope.row.dealStorefront}}</p>
-                                         <p>{{scope.row.dealName}}</p>
-                                    </div>
-                                    <div v-else>
-                                         <p>暂无</p>
-                                    </div>
-                                  </template>
-                               </el-table-column>
-
-                               <!-- signDate -->
-                                   <el-table-column
-                                 prop="date"
-                                 label="签约日期"
-                                 width="100">
-                                 <template slot-scope="scope">
-                                       <p>{{scope.row.signDate|formatDate}}</p>
-                                 </template>
-                               </el-table-column>
-
-
-                               <el-table-column
-                                 prop="receiptsCommission"
-                                 label="应收佣金(元)"
-                                 width="120">
-                               </el-table-column>
-                                <el-table-column
-                                 prop="receiptsAchievement"
-                                 label="可分配业绩(元)"
-                                 width="100">
-                                  <!-- <template slot-scope="scope">
+          <el-table-column prop="receiptsCommission" label="应收佣金(元)" width="100"></el-table-column>
+          <el-table-column prop="receiptsAchievement" label="可分配业绩(元)" width="100">
+            <!-- <template slot-scope="scope">
                                           <p>3000/5000</p>
-                                  </template> -->
-                               </el-table-column>
-                               <el-table-column
-                                 prop="amount"
-                                 label="合同实收(元)"
-                                 width="130">
-                                  <!-- <template slot-scope="scope">
+            </template>-->
+          </el-table-column>
+          <el-table-column prop="amount" label="合同实收(元)" width="130">
+            <!-- <template slot-scope="scope">
                                           <p>280000</p>
-                                  </template> -->
-                               </el-table-column>
+            </template>-->
+          </el-table-column>
 
-                                <!-- level4 assignor -->
-                                <el-table-column
-                                 label="分成人"
-                                 width="170">
-                                   <template slot-scope="scope">
-                                         <div  v-for="item in scope.row.distributionFroms">
-                                                  <p>{{item.level4}}</p>
-                                                  <p>{{item.assignor}}</p>
-                                         </div>
-                                  </template>
-                               </el-table-column>
-                                <!-- roleType -->
-                               <el-table-column
-                                 label="角色类型"
-                                 width="130">
-                                   <template slot-scope="scope">
-                                          <div  v-for="item in scope.row.distributionFroms">
-                                               <div v-if="item.roleType==0">
-                                                  <p>房源维护人</p>
-                                                  <p>录入</p>
-                                               </div>
-                                               <div v-if="item.roleType==1">
-                                                  <p>房源维护人</p>
-                                                  <p>维护</p>
-                                               </div>
-                                               <div v-if="item.roleType==2">
-                                                  <p>房源维护人</p>
-                                                  <p>独家</p>
-                                               </div>
-                                                <div v-if="item.roleType==3">
-                                                  <p>房源维护人</p>
-                                                  <p>房勘</p>
-                                               </div>
-                                                <div v-if="item.roleType==4">
-                                                  <p>房源维护人</p>
-                                                  <p>钥匙</p>
-                                               </div>
-                                                <div v-if="item.roleType==5">
-                                                  <p>房源维护人</p>
-                                                  <p>委托</p>
-                                               </div>
-                                                <div v-if="item.roleType==6">
-                                                  <p>房源维护人</p>
-                                                  <p>建盘</p>
-                                               </div>
+          <!-- level4 assignor -->
+          <el-table-column label="分成人" width="190">
+            <template slot-scope="scope">
+              <div v-for="item in scope.row.distributionFroms">
+                <p>{{item.level4}}-{{item.assignor}}</p>
+              </div>
+            </template>
+          </el-table-column>
+          <!-- roleType -->
+          <el-table-column label="角色类型" width="130">
+            <template slot-scope="scope">
+              <div v-for="item in scope.row.distributionFroms">
+                <div v-if="item.roleType==1">
+                  <p>录入</p>
+                </div>
+                <div v-else-if="item.roleType==2">
+                  <p>维护</p>
+                </div>
+                <div v-else-if="item.roleType==3">
+                  <p>独家</p>
+                </div>
+                <div v-else-if="item.roleType==4">
+                  <p>房勘</p>
+                </div>
+                <div v-else-if="item.roleType==5">
+                  <p>钥匙</p>
+                </div>
+                <div v-else-if="item.roleType==15">
+                  <p>委托</p>
+                </div>
+                <div v-else-if="item.roleType==16">
+                  <p>建盘</p>
+                </div>
+                <div v-else-if="item.roleType==6">
+                  <p>主客方</p>
+                </div>
+                <div v-else-if="item.roleType==10">
+                  <p>推荐人</p>
+                </div>
+                <div v-else-if="item.roleType==14">
+                  <p>签约人</p>
+                </div>
+                <div v-else-if="item.roleType==11">
+                  <p>A/M</p>
+                </div>
+                <div v-else-if="item.roleType==7">
+                  <p>协议方</p>
+                </div>
+                <div v-else-if="item.roleType==17">
+                  <p>协议方2</p>
+                </div>
+                <div v-else>
+                  <p>-</p>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <!-- ratio -->
+          <el-table-column label="分成比例" width="80">
+            <template slot-scope="scope">
+              <p v-for="item in scope.row.distributionFroms">{{item.ratio}}%</p>
+            </template>
+          </el-table-column>
 
-                                                <div v-if="item.roleType==7">
-                                                  <p>客源维护人</p>
-                                                  <p>主客方</p>
-                                               </div>
-                                                <div v-if="item.roleType==8">
-                                                  <p>客源维护人</p>
-                                                  <p>推荐人</p>
-                                               </div>
-                                                <div v-if="item.roleType==9">
-                                                  <p>客源维护人</p>
-                                                  <p>签约人</p>
-                                               </div>
-                                                <div v-if="item.roleType==10">
-                                                  <p>客源维护人</p>
-                                                  <p>A/M</p>
-                                               </div>
-                                                <div v-if="item.roleType==11">
-                                                  <p>客源维护人</p>
-                                                  <p>协议方</p>
-                                               </div>
-                                               <div v-if="item.roleType==12">
-                                                  <p>客源维护人</p>
-                                                  <p>协议方2</p>
-                                               </div>
-                                          </div>
-                                  </template>
-                               </el-table-column>
-                               <!-- ratio -->
-                               <el-table-column
-                                 label="分成比例"
-                                 width="80">
-                                  <template slot-scope="scope">
-                                         <p v-for="item in scope.row.distributionFroms">{{item.ratio}}%</p>
-                                  </template>
-                               </el-table-column>
+          <!-- agentReceipts -->
+          <el-table-column label="实收分成金额(元)" width="120">
+            <template slot-scope="scope">
+              <p v-for="item in scope.row.distributionFroms">{{item.agentReceipts}}</p>
+            </template>
+          </el-table-column>
 
-                               <!-- agentReceipts -->
-                               <el-table-column
-                                 label="实收分成金额(元)"
-                                 width="120"
-                                 >
-                                 <template slot-scope="scope">
-                                         <p v-for="item in scope.row.distributionFroms">{{item.agentReceipts}}</p>
-                                  </template>
-                               </el-table-column>
-
-                                 <!-- agentPlatformFee -->
-                                 
-                                <!-- <el-table-column
+          <!-- agentPlatformFee -->
+          <!-- <el-table-column
                                  label="特许服务费(元)"
                                  width="120"
                                  >
                                    <template slot-scope="scope">
                                          <p v-for="item in scope.row.distributionFroms">{{item.agentPlatformFee}}</p>
                                   </template>
-                               </el-table-column> -->
+          </el-table-column>-->
+          <!-- agentPayFee -->
+          <el-table-column label="刷卡手续费(元)" width="120">
+            <template slot-scope="scope">
+              <p v-for="item in scope.row.distributionFroms">{{item.agentPayFee}}</p>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
-                                 <!-- agentPayFee -->
-                                <el-table-column
-                                 label="刷卡手续费(元)"
-                                 width="120"
-                                 >
-                                <template slot-scope="scope">
-                                         <p v-for="item in scope.row.distributionFroms">{{item.agentPayFee}}</p>
-                                  </template>
-                               </el-table-column>
-                          </el-table>
-                      </div>
-
-                         <!-- 分页 -->
-                         <el-pagination
-                           @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="1"
-                           layout="total, prev, pager, next, jumper"
-                           :total="total">
-                        </el-pagination>
-                </div>
-         </div>
+      <!-- 分页 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total,prev, pager, next , jumper"
+        :total="total"
+      ></el-pagination>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -346,62 +281,19 @@ export default {
         dateMo: "", //时间
         search: "" //关键字
       },
-      // 筛选选项
-      rules: {
-        department: [
-          {
-            label: "部门1",
-            value: "1"
-          },
-          {
-            label: "部门2",
-            value: "2"
-          }
-        ],
-        departmentDetail: [
-          {
-            label: "员工1",
-            value: "1"
-          },
-          {
-            label: "员工2",
-            value: "2"
-          }
-        ],
-        contractType: [
-          {
-            label: "合同类型1",
-            value: "1"
-          },
-          {
-            label: "合同类型2",
-            value: "2"
-          }
-        ]
-      },
-      total: 0,
       dictionary: {
         //数据字典
         "10": "" //合同类型
-      }
+      },
+      pageSize: 5,
+      currentPage: 1,
+      total:0
     };
   },
   created() {
     // 字典初始化
     this.getDictionary();
-    // 实收列表
-    let param = {
-      pageNum: 1,
-      pageSize: 10
-    };
-    this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
-      console.log(res);
-      let data = res.data;
-      if (res.status === 200) {
-        this.receivableList = data.data.list;
-        this.countData = data.data.list[0].contractCount;
-      }
-    });
+    this.getData();
     // 查询部门
     this.$ajax.get("/api/access/deps").then(res => {
       if (res.status == 200) {
@@ -435,12 +327,29 @@ export default {
           }
         });
     },
+    getData() {
+      // 实收列表
+      let param = {
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      };
+      this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
+        console.log(res);
+        let data = res.data;
+        if (res.status === 200) {
+          this.receivableList = data.data.list;
+          this.countData = data.data.list[0].contractCount;
+          this.total = data.data.total;
+        }
+      });
+    },
     //分页
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.getData();
     }
   }
 };
