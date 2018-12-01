@@ -210,7 +210,7 @@
                 <ul>
                   <li><fileUp id="imgcontract" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span>
                   </li>
-                  <li v-show="companyForm.contractSign!==''" @click="getPicture"><upload-cell type=".png"></upload-cell><span class="text">{{contractName}}</span><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
+                  <li v-show="companyForm.contractSign!==''"><div @click="getPicture"><upload-cell type=".png"></upload-cell></div><span class="text">{{contractName}}</span><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -220,7 +220,7 @@
                 <span>上传电子签章图片：</span>
                 <ul>
                   <li><fileUp id="imgfinance" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span></li>
-                  <li v-show="companyForm.financialSign!==''" @click="getPicture"><upload-cell type=".png"></upload-cell><span class="text">{{financialName}}</span><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
+                  <li v-show="companyForm.financialSign!==''"><div @click="getPicture"><upload-cell type=".png"></upload-cell></div><span class="text">{{financialName}}</span><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -386,6 +386,7 @@
       this.initFormList()
       this.getCityList()
       this.getDictionary()
+      this.getStoreList()
     },
     methods: {
       // 初始化表单 数组集合
@@ -609,7 +610,6 @@
             this.directSaleSelect = false
             this.directSaleOut = false
           }
-          this.getStoreList(row.cityId)
         }
         if(row.documentType.value === 2) {
           this.icRegisterShow = true
