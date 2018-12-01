@@ -27,12 +27,8 @@ let api = {
       return res
     })
   },
-  get: function(url, param,type=1) {
-    let header={}
-    if(type!==1){
-      header['Content-Type']='application/json'
-    }
-    return axios.get(url,{params:param,headers:header}).then(res => {
+  get: function(url, param) {
+    return axios.get(url,{params:param}).then(res => {
       return res
     })
   },

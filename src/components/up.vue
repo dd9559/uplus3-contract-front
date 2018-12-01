@@ -100,7 +100,7 @@
         let path = 'picture/'
         if(this.uploader.files.length!==0){
           this.getUrl(path).then(res=>{
-            result=res
+            result=JSON.parse(JSON.stringify(res))
             set_upload_param(this.uploader,res,this.uploader.files[0].name);
           })
         }

@@ -269,6 +269,7 @@
         <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaper">打印</el-button>
       </p>
     </el-dialog>
+    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <!--作废-->
     <el-dialog
       title="作废"
@@ -429,8 +430,9 @@
           this.layer.show=true
           this.layer.content=[].concat(row)
         }else if(type===3){
-          this.paperShow=true
-          this.paperList(row.id)
+          /*this.paperShow=true
+          this.paperList(row.id)*/
+          this.$refs.layerInvoice.show(row.id,true)
         }
       },
       //作废

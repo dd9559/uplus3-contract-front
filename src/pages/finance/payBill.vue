@@ -106,7 +106,7 @@
       <el-button type="primary" @click="goResult">提交付款申请</el-button>
       <el-button>取消</el-button>
     </p>
-    <preview v-if="preview"></preview>
+    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
@@ -164,7 +164,6 @@
         amount:null,
         files:[],
         imgList:[],
-        preview:false
       }
     },
     created(){
@@ -179,10 +178,11 @@
     },
     methods:{
       getPicture:function () {
-        debugger
-        this.$ajax.get('/api/load/generateAccessURLBatch',{urls:this.files},2).then(res=>{
-          debugger
+        let arr=[]
+        this.imgList.forEach(item=>{
+          arr.push(item.path)
         })
+        this.fileSign(arr)
       },
       /**
        * 修改款单，获取初始数据
@@ -216,7 +216,6 @@
        * 获取上传文件
        */
       getFiles:function (payload) {
-        debugger
         this.files=this.files.concat(this.$tool.getFilePath(payload.param))
         this.imgList=this.$tool.cutFilePath(this.files)
       },

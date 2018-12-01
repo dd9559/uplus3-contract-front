@@ -9,7 +9,7 @@
         </li>
       </ul>
       <p>
-        <el-button round size="small" type="primary" @click="layer.show=true">审核</el-button>
+        <el-button round size="small" type="primary" @click="showDialog">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -143,7 +143,7 @@
         <div class="input-group">
           <label>付款凭证:</label>
           <ul class="image-list" v-if="files.length>0">
-            <li v-for="item in files">
+            <li v-for="item in files" @click="previewImg">
               <upload-cell :type="item.type"></upload-cell>
               <span>{{item.name}}</span>
             </li>
@@ -181,16 +181,36 @@
           <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
         </div>
       </div>
+      <ul class="radio-dialog" v-if="radioMask">
+        <li>
+          <p>大类可支配金额：<span></span></p>
+          <p>合同余额：<span></span></p>
+          <p>代收代付余额：<span></span></p>
+        </li>
+        <li>支付方式（若通过审核，则支付方式必填）</li>
+        <li>
+          <el-radio v-model="radio" label="1">线上支付（联动优势）</el-radio>
+          <el-radio v-model="radio" label="2">线下支付（线下财物打款）</el-radio>
+        </li>
+        <li class="color-light">
+          * 当支付方式为“线上支付”时，系统会对接第三方系统进行自动支付
+        </li>
+        <li class="color-light">
+          * 当支付方式为“线下付款”时，需财务进行线下打款
+        </li>
+      </ul>
       <span slot="footer" class="dialog-footer">
     <el-button round @click="checkBill(2)">拒 绝</el-button>
     <el-button round type="primary" @click="checkBill(1)">同 意</el-button>
   </span>
     </el-dialog>
+    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
 <script>
   import {FILTER} from "@/assets/js/filter";
+  import {MIXINS} from "@/assets/js/mixins";
 
   let timer = null
   let target = 0
@@ -198,7 +218,7 @@
 
   export default {
     name: "bill-details",
-    mixins: [FILTER],
+    mixins: [FILTER,MIXINS],
     data() {
       return {
         tabs: ['审核信息'],
@@ -208,14 +228,14 @@
         list: [
           {}
         ],
-        checkList:[],//审核信息
+        checkList: [],//审核信息
         layer: {
           show: false,
           reasion: ''
         },
         invalidMax: 200,
-        files:[],
-        test:''
+        files: [],
+        radioMask: false,
       }
     },
     created() {
@@ -226,9 +246,22 @@
       this.getData()
     },
     methods: {
-      toPrint:function () {
-        this.test='http://jjw-test.oss-cn-shenzhen.aliyuncs.com/bill/20181129/SJ1811290099.pdf?Expires=1543495955&OSSAccessKeyId=LTAI699jkFRmo7TI&Signature=twA%2BLRPn4RK9eR9Mz4AcTHtVN%2B4%3D'
-        document.getElementById('test').contentWindow.print()
+      previewImg:function () {
+        let arr=[]
+        this.files.forEach(item=>{
+          arr.push(item.path)
+        })
+        this.fileSign(arr)
+      },
+      // 判断审核弹窗显示内容
+      showDialog: function () {
+        this.layer.show = true
+        this.$ajax.get('/api/payInfo/auditOption', {payId: this.billMsg.id}).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.radioMask = res.data === 2 ? true : false
+          }
+        })
       },
       getData: function () {
         let param = {
@@ -239,11 +272,11 @@
           res = res.data
           if (res.status === 200) {
             this.billMsg = Object.assign({}, res.data)
-            if(res.data.auditInfo){
+            if (res.data.auditInfo) {
               this.checkList = res.data.auditInfo
             }
-            if(res.data.filePath){
-              this.files=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+            if (res.data.filePath) {
+              this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
             }
           }
         })
@@ -258,21 +291,21 @@
           flowId: this.billMsg.audit.flowId,
           sort: this.billMsg.audit.nodeSort,
         }
-        param.ApprovalForm={
+        param.ApprovalForm = {
           result: type,
           remark: this.layer.reasion
         }
         debugger
-        this.$ajax.postJSON('/api/machine/audit',param).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.layer.show=false
+        this.$ajax.postJSON('/api/machine/audit', param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.layer.show = false
           }
         })
       },
-      clearLayer:function () {
-        this.layer.reasion=''
-        this.layer.show=false
+      clearLayer: function () {
+        this.layer.reasion = ''
+        this.layer.show = false
       },
       choseTab: function (item) {
         // this.activeItem = item
@@ -330,7 +363,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        span{
+        span {
           font-size: @size-base;
           display: inline-block;
           width: 100px;
@@ -342,6 +375,9 @@
 
   .reasion-dialog {
     display: flex;
+    > label {
+      min-width: 46px;
+    }
     /deep/ .input {
       flex: 1;
       position: relative;
@@ -357,6 +393,24 @@
         bottom: 11px;
         right: 14px;
       }
+    }
+  }
+
+  .radio-dialog {
+    margin-left: 46px;
+    > li {
+      padding: @margin-base;
+      &:first-of-type {
+        display: flex;
+        > p {
+          span {
+            color: @color-red;
+          }
+        }
+      }
+    }
+    .color-light {
+      color: @color-red;
     }
   }
 

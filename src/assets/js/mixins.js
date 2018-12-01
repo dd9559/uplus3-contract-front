@@ -5,6 +5,8 @@ const MIXINS = {
       DepList:[],
       EmployeList:[],
       Loading:true,
+      preview:false,
+      previewFiles:[]
     }
   },
   methods: {
@@ -65,6 +67,18 @@ const MIXINS = {
         res=res.data
         if(res.status===200){
           this.EmployeList=res.data
+        }
+      })
+    },
+    /**
+     * 获取签名
+     */
+    fileSign:function (arr) {
+      this.$ajax.put('/api/load/generateAccessURLBatch',{urls:arr.join(',')},2).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.previewFiles=res.data
+          this.preview=true
         }
       })
     }

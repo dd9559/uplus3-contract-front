@@ -1,16 +1,16 @@
 <template>
     <div class="preview">
       <div class="view-container">
-        <img :src="imgSrc" alt="">
+        <img ref="img" :src="imgSrc" :style="{width:getWidth,transform:getRotate}" alt="">
       </div>
-      <p class="pagination page-prev"><img :src="getImg('btn-prev.png')" alt=""></p>
-      <p class="pagination page-next"><img :src="getImg('btn-next.png')" alt=""></p>
-      <p class="tools btn-close"><img :src="getImg('btn-close.png')" alt=""></p>
+      <p class="pagination page-prev" @click="chose('prev')"><img :src="getImg('btn-prev.png')" alt=""></p>
+      <p class="pagination page-next" @click="chose('next')"><img :src="getImg('btn-next.png')" alt=""></p>
+      <p class="tools btn-close" @click="chose('close')"><img :src="getImg('btn-close.png')" alt=""></p>
       <ul class="tools">
-        <li><i class="iconfont icon-yuanjiaojuxing"></i></li>
-        <li><i class="iconfont icon-tubiao-12"></i></li>
-        <li><i class="iconfont icon-icon-test3"></i></li>
-        <li><i class="iconfont icon-yuanjiaojuxing1"></i></li>
+        <li @click="opera(1)"><i class="iconfont icon-yuanjiaojuxing"></i></li>
+        <li @click="opera(2)"><i class="iconfont icon-tubiao-12"></i></li>
+        <li @click="opera(3)"><i class="iconfont icon-icon-test3"></i></li>
+        <li @click="opera(4)"><i class="iconfont icon-yuanjiaojuxing1"></i></li>
       </ul>
     </div>
 </template>
@@ -29,22 +29,77 @@
     data(){
       return{
         imgSrc:'',
-        activePage:0
+        activePage:0,
+        imgWidth:100,
+        initWidth:0,
+        transform:0
       }
     },
     mounted(){
       if(this.getImages.length>0){
-        this.imgSrc=this.getImages[0]
+        this.imgSrc=this.getImages[this.activePage]
       }
+      this.$nextTick(()=>{
+        this.initWidth=this.$refs.img.offsetWidth
+      })
     },
     methods:{
       getImg:function (src) {
         return require('@/assets/img/'+src)
+      },
+      chose:function (type) {
+        if(type==='next'){
+          if(this.activePage===this.getImages.length-1){
+            this.activePage=0
+          }else {
+            this.activePage+=1
+          }
+        }else if(type==='prev') {
+          if(this.activePage===0){
+            this.activePage=this.getImages.length-1
+          }else {
+            this.activePage-=1
+          }
+        }else {
+          this.$emit('close')
+        }
+      },
+      opera:function (type) {
+        switch (type){
+          case 1:
+            this.$emit('saveFile')
+            break
+          case 2:
+            this.transform+=90
+            break
+          case 3:
+            this.imgWidth+=50
+            break
+          case 4:
+            this.imgWidth-=50
+            break
+        }
       }
     },
     computed:{
       getImages:function () {
         return [].concat(this.imgList)
+      },
+      getWidth:function () {
+        if(this.imgWidth+50===this.initWidth){
+          this.imgWidth+=50
+        }else if(this.imgWidth>300+this.initWidth){
+          this.imgWidth-=50
+        }
+        return `${this.imgWidth}%`
+      },
+      getRotate:function () {
+        return `rotate(${this.transform}deg)`
+      }
+    },
+    watch:{
+      activePage:function (val) {
+        this.imgSrc=this.getImages[this.activePage]
       }
     }
   }
@@ -102,7 +157,13 @@
     }
   }
   .view-container{
-    max-width: 60%;
-    background-color: @bg-white;
+    /*width: 60%;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
   }
 </style>
