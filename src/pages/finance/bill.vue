@@ -205,70 +205,6 @@
       </el-pagination>
     </div>
     <!-- 票据编号弹层 -->
-    <el-dialog
-      title="开票信息填写"
-      :visible.sync="paperShow"
-      width="1000px"
-      class="layer-paper">
-      <div class="paper-edit-box">
-        <ul>
-          <li>
-            <p><label>合同编号:</label><span>{{paperInfoData.contCode}}</span></p>
-            <p><label>物业地址:</label><span>{{paperInfoData.address}}</span></p>
-          </li>
-          <li>
-            <p><label>交款单位:</label><span>{{paperInfoData.payerName}}</span></p>
-            <p><label>合计金额:</label><span>{{paperInfoData.proceedsAmount}}元</span></p>
-          </li>
-          <li v-for="(item,index) in moneyTypes" :key="index">
-            <label class="checkbox-info iconfont" :class="[item.check?'active':'']" @click="item.check=!item.check"></label>
-            <div class="type-list">
-              <p><label>款类：</label><span>{{item.typeName}}</span></p>
-              <p><label>金额：</label><span>{{item.amount}}</span></p>
-              <div class="input-group">
-                <label>开票项目：</label>
-                <el-select class="w120" size="small" v-model="item.project" placeholder="请选择">
-                  <el-option
-                    v-for="item in dictionary['542']"
-                    :key="item.key"
-                    :label="item.value"
-                    :value="item.key">
-                  </el-option>
-                </el-select>
-              </div>
-              <p><label class="checkbox-info iconfont" :class="[item.addressHidden?'active':'']" @click="item.addressHidden=!item.addressHidden"></label><span>隐藏物业地址</span></p>
-              <p><label>票据编号：</label><span>{{item.billCode}}</span></p>
-            </div>
-          </li>
-        </ul>
-        <el-button round  size="medium" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
-      </div>
-      <div class="paper-watch-tab">
-        <p>票据预览</p>
-        <ul v-if="moneyTypes.length>1">
-          <li v-for="(item,index) in moneyTypes" :key="index" :class="[index===activeType?'active':'']" @click="activeType=index">{{item.typeName}}</li>
-        </ul>
-      </div>
-      <LayerPaperInfo
-        :number="paperInfoData.contCode"
-        :name="paperInfoData.payerName"
-        :collectionTime="paperInfoData.paymentTime"
-        :invoiceTime="paperInfoData.createTime"
-        :paper="paperInfoData.billCode"
-        :project="paperInfoData.type"
-        :hide="paperInfoData.hide"
-        :address="paperInfoData.address"
-        :money="paperInfoData.amount"
-        :moneyZh="paperInfoData.amountZh"
-        :create="paperInfoData.createByName"
-        :rules="paperInfoData.remark"
-        :payerType="paperInfoData.payerType"
-      ></LayerPaperInfo>
-      <p slot="footer">
-        <el-button round  size="medium" class="paper-btn">取消</el-button>
-        <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaper">打印</el-button>
-      </p>
-    </el-dialog>
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <!--作废-->
     <el-dialog
@@ -303,11 +239,13 @@
   import {FILTER} from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
   import LayerPaperInfo from '@/components/LayerPaperInfo';
+  import LayerInvoice from '@/components/LayerInvoice'
 
   export default {
     mixins: [FILTER,MIXINS],
     components:{
-      LayerPaperInfo
+      LayerPaperInfo,
+      LayerInvoice
     },
     data() {
       return {
@@ -444,6 +382,9 @@
             this.layer.show=false
           }
         })
+      },
+      emitPaperSetFn:function () {
+
       },
       // 获取开票列表
       paperList:function (id) {

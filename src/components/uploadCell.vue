@@ -17,7 +17,7 @@
     },
     data(){
       return{
-        typeList:['.png','.jpg','.jpeg','.mp3','.mp4','.avi','.txt','.pdf','.xlsx','.doc','.zip']
+        typeList:['.png','.jpg','.jpeg','.mp3','.mp4','.avi','.txt','.pdf','.xlsx','.docx','.zip']
       }
     },
     computed:{

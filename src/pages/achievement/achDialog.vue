@@ -6,7 +6,7 @@
         <b class="el-icon-close" @click="closeDialog"></b>
         <!-- 头部左边业绩分成title -->
         <div class="ach-header">
-          <h1 v-if="dialogType==0">业绩审核</h1>
+          <h1 v-if="dialogType==0" class="f14">业绩审核</h1>
           <h1 v-if="dialogType==1">业绩编辑</h1>
           <h1 v-if="dialogType==2">业绩反审核</h1>
           <h1 v-if="dialogType==3">业绩分成</h1>
@@ -20,7 +20,7 @@
         <div class="ach-body">
           <div class="house-divide">
             <div class="house-left f_l">
-              <h1>房源方分成</h1>
+              <h1 class="f14">房源方分成</h1>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="houseRelativeMans">相关人员</el-button>
@@ -49,8 +49,7 @@
                   <el-input
                     v-model.number="scope.row.ratio"
                     placeholder="请输入数字"
-                    @keyup.native="filterHouseNumber(scope.$index,scope.row.ratio)"
-                    oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"
+                    @blur="((e)=>{ filterHouseNumber(e,scope.row.ratio,scope.$index)})"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -171,7 +170,7 @@
 
           <div class="house-divide">
             <div class="house-left f_l">
-              <h1>客源方分成</h1>
+              <h1 class="f14">客源方分成</h1>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="clientRelativeMans">相关人员</el-button>
@@ -200,8 +199,7 @@
                   <el-input
                     v-model.number="scope.row.ratio"
                     placeholder="请输入数字"
-                    @keyup.native="filterClientNumber(scope.$index,scope.row.ratio)"
-                    oninput="javascript:this.value=this.value.replace(/[^\d]/g,'')"
+                    @blur="((e)=>{ filterClientNumber(e,scope.row.ratio,scope.$index)})"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -444,7 +442,7 @@ export default {
     aId: Number, //业绩Id
     contractId: Number, //合同id
     achIndex: Number, //当前索引
-    achObj:Object   //合同详情传过来的对象（首次业绩录入需要用）
+    achObj: Object //合同详情传过来的对象（首次业绩录入需要用）
   },
   methods: {
     handleClose() {
@@ -452,18 +450,24 @@ export default {
       this.agendIds = [];
     },
     //判断分成比例只能输入1-100的正整数
-    filterClientNumber(index, val) {
-      if (val > 100) {
-        this.clientArr[index].ratio = 100;
-      } else if (val == "0") {
-        this.clientArr[index].ratio = 1;
-      }
-    },
-    filterHouseNumber(index, val) {
+    filterHouseNumber(e, val, index) {
+      e.target.value = e.target.value.match(/^\d*(\.?\d{0,1})/g)[0] || null;
       if (val > 100) {
         this.houseArr[index].ratio = 100;
-      } else if (val == "0") {
+      } else if (val == 0) {
         this.houseArr[index].ratio = 1;
+      } else {
+        val = e.target.value;
+      }
+    },
+    filterClientNumber(e, val, index) {
+      e.target.value = e.target.value.match(/^\d*(\.?\d{0,1})/g)[0] || null;
+      if (val > 100) {
+        this.clientArr[index].ratio = 100;
+      } else if (val == 0) {
+        this.clientArr[index].ratio = 1;
+      } else {
+        val = e.target.value;
       }
     },
     //获取房源客源相关人员
@@ -600,7 +604,7 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$message("操作完成");
-              this.$emit("close", this.achIndex, 1);
+              this.$emit("close", this.achIndex, 7);
             }
           });
       } else if (!sumFlag) {
@@ -650,7 +654,7 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$message("操作完成");
-              this.$emit("close", this.achIndex, 2);
+              this.$emit("close", this.achIndex, 8);
             }
           });
       } else if (!sumFlag) {
@@ -712,7 +716,7 @@ export default {
           console.log(res.data.status);
           if (res.data.status == 200) {
             this.$message("操作完成");
-            this.$emit("close", this.achIndex, 1);
+            this.$emit("close", this.achIndex);
           }
         });
       } else if (!sumFlag) {
@@ -752,7 +756,7 @@ export default {
         // this.$emit("close", this.achIndex);
         // this.$message("操作完成");
         console.log("aaaaaaaaaaaaaaaaaa");
-        console.log(this.achObj)
+        console.log(this.achObj);
         let param = {
           distributions: resultArr,
           contractCode: this.contractCode,
@@ -899,13 +903,17 @@ export default {
         addhouseArr = this.clientArr.concat(this.addManList);
       }
       let resultArr = [];
+      console.log("eeeeeeeeeeeeeeeeeeeeeeeee");
+      console.log(addhouseArr);
       // 相关人员和房源客源数组去重
       for (var i = 0; i < addhouseArr.length; i++) {
         var flag = true;
         for (var j = 0; j < resultArr.length; j++) {
           if (
             addhouseArr[i].assignorId == resultArr[j].assignorId &&
-            addhouseArr[i].roleType == resultArr[j].roleType
+            addhouseArr[i].roleType == resultArr[j].roleType &&
+            addhouseArr[i].id &&
+            addhouseArr[i].id == resultArr[j].id
           ) {
             flag = false;
           }
@@ -939,7 +947,7 @@ export default {
           this.codeBaseInfo(this.code, 2);
           // 业绩录入分成
         } else if (this.dialogType == 3) {
-          this.comm=this.achObj.comm  //合同详情传过来的可分配业绩
+          this.comm = this.achObj.comm; //合同详情传过来的可分配业绩
           // 角色类型
           this.$ajax.get("/api/role/types").then(res => {
             console.log(res.status);
@@ -955,8 +963,6 @@ export default {
           this.$ajax.get("/api/achievement/employees", param).then(res => {
             let data = res.data;
             if (data.status === 200) {
-              console.log("zzzzz");
-
               if (data.data.customerAgents) {
                 this.clientArr = data.data.customerAgents;
               }
@@ -992,7 +998,7 @@ export default {
   h1 {
     height: 53px;
     line-height: 53px;
-    font-size: 20px;
+    // font-size: 20px;
     color: #233241;
     padding-left: 20px;
     box-sizing: border-box;
@@ -1048,12 +1054,12 @@ export default {
       border-bottom: 1px solid #edecf0;
       overflow: hidden;
       h1 {
-        font-size: 20px;
+        // font-size: 20px;
         color: #233241;
         margin: 20px 0 0 30px;
       }
       p {
-        font-size: 14px;
+        // font-size: 14px;
         color: #6c7986;
         margin: 12px 0 0 30px;
         line-height: 0;
@@ -1080,7 +1086,7 @@ export default {
           margin-top: 30px;
           margin-bottom: 30px;
           h1 {
-            font-size: 16px !important;
+            // font-size: 16px !important;
             color: #233241 !important;
             margin: 0px !important;
           }
@@ -1109,7 +1115,7 @@ export default {
         }
       }
       /deep/ .el-table {
-        font-size: 14px !important;
+        // font-size: 14px !important;
         margin-top: 20px;
         td,
         th {
@@ -1130,7 +1136,7 @@ export default {
       }
       //弹框审核信息
       h1 {
-        font-size: 16px;
+        // font-size: 16px;
         color: #233241;
         margin: 0px !important;
       }

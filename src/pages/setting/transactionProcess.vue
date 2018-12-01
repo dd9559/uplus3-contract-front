@@ -187,19 +187,23 @@
       },
       // 提交表单
       submitForm() {
-        if(this.processTitle === "添加交易流程") {
-          let param = {
-            cityId: this.cityId
-          }
-          param = Object.assign({},this.addForm,param)
-          this.processPost(param)
+        if(this.addForm.name === "") {
+          this.$message("流程名称不能为空")
         } else {
-          let param = {
-            id: this.processId
+          if(this.processTitle === "添加交易流程") {
+            let param = {
+              cityId: this.cityId
+            }
+            param = Object.assign({},this.addForm,param)
+            this.processPost(param)
+          } else {
+            let param = {
+              id: this.processId
+            }
+            param = Object.assign({},this.addForm,param)
+            this.processPost(param)
           }
-          param = Object.assign({},this.addForm,param)
-          this.processPost(param)
-        }
+        }    
       },
       // 添加 编辑 删除 操作
       processPost(param,type) {
@@ -299,9 +303,7 @@
             arr1.push(i.stepsName)
           })
           this.StepsOption.forEach(v => {
-            v.tempList.forEach(e => {
-              arr2.push(e)
-            })
+            arr2 = arr2.concat(v.tempList)
           })
           function getArrDifference(m,n) {
             return arr1.concat(arr2).filter(function(v,i,arr) {
@@ -309,7 +311,6 @@
             })
           }
           let arr = getArrDifference(arr1,arr2)
-          
           if(arr1.length < arr2.length) {
             this.managePush(arr)
           } else if(arr1.length > arr2.length) {
@@ -365,29 +366,32 @@
             transFlowId: this.currentFlowId,
             transStepsList: arr
           }
-          if(this.flowCount === 0) {
-            const url = "/api/flowmanage/insertFLowSteps"
-            this.flowManagePost(url,param)
-          } else {
-            if(this.tempManage.toString() !== this.manageData.toString()) {
-              const url = "/api/flowmanage/updateFLowSteps"
-              this.flowManagePost(url,param)
-            }else {
-              this.$message({
-                type: 'info',
-                message: '没有做任何修改'
-              })
-            }
-          }
           let obj = {
             id: this.currentFlowId,
             cityId: this.cityId,
-            settlePercent: this.settlePercent==="" ? 0 : this.settlePercent
+            settlePercent: this.settlePercent
           }
-          if(this.tempSetPercent !== this.settlePercent || this.settlePercent === "") {
-            this.$ajax.postJSON('/api/flowmanage/insertFLow',obj).then(res => {
-
-            })
+          if(arr.length !== 0) {
+            if(this.flowCount === 0) {
+              const url = "/api/flowmanage/insertFLowSteps"
+              this.flowManagePost(url,param)
+            } else if (this.flowCount !== 0 && this.tempManage.toString() !== this.manageData.toString()) {
+              const url = "/api/flowmanage/updateFLowSteps"
+              this.flowManagePost(url,param)
+            } else if (this.tempManage.toString() == this.manageData.toString() && this.tempSetPercent == this.settlePercent) {
+              this.$message("没有做任何修改")
+            }
+            if(this.tempSetPercent != this.settlePercent) {
+              this.$ajax.postJSON('/api/flowmanage/insertFLow',obj).then(res => {
+                res = res.data
+                if(res.status === 200) {
+                  this.dialogManageVisible = false
+                  this.getData()
+                }
+              })
+            }
+          } else {
+            this.$message("没有绑定任何交易步骤")
           }
         }
       },

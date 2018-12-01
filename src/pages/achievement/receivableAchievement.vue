@@ -4,19 +4,20 @@
     <div class="filter-layout">
       <div style="overflow:hidden;">
         <div class="filter-left f_l">
-          <h1>
+          <h1 class="f14">
             <b class="iconfont icon-tubiao-5" style="color:#55657A;font-weight:normal;"></b>
             筛选查询
           </h1>
         </div>
         <div class="filter-right f_r">
-          <el-button type="primary" round>重置</el-button>
+          <el-button type="primary" round @click="resetData">重置</el-button>
           <el-button type="primary" round @click="filterData">查询</el-button>
         </div>
       </div>
 
       <div class="filter-item" v-show="filterShow">
         <!-- 筛选条件 -->
+        <!-- 部门 -->
         <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
           <el-form-item label="签约日期" prop="dateMo" class="mr">
             <el-date-picker
@@ -29,8 +30,6 @@
               end-placeholder="结束日期"
             ></el-date-picker>
           </el-form-item>
-
-          <!-- 部门 -->
           <!-- 部门 -->
           <el-form-item label="部门" class="mr">
             <el-select v-model="propForm.department" class="w200" filterable @change="selUser">
@@ -51,7 +50,7 @@
           </el-form-item>
 
           <el-form-item label="合同类型" prop="contractType">
-            <el-select v-model="propForm.contractType" class="w120">
+            <el-select v-model="propForm.contractType" class="w120" :clearable="true">
               <el-option
                 v-for="item in dictionary['10']"
                 :key="item.value"
@@ -63,9 +62,9 @@
 
           <el-form-item label="关键字" prop="search">
             <el-input
-              class="w312"
+              class="w430"
               v-model="propForm.search"
-              placeholder="开票人员/合同编号/票据编"
+              placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
               :trigger-on-focus="false"
               clearable
             ></el-input>
@@ -82,7 +81,7 @@
       <div class="data-head">
         <div class="data-head-left f_l">
           <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b>
-          <span>数据列表</span>
+          <span class="f14">数据列表</span>
         </div>
         <div class="data-head-right f_l">
           <span>
@@ -106,13 +105,13 @@
       </div>
       <!-- 头部 end -->
       <!-- 表格 -->
-      <div class="data-list">
+      <div class="data-list"  v-loading="loading">
         <el-table :data="receivableList" style="width: 100%" @row-dblclick="dialogVisible = true">
           <!-- code -->
           <el-table-column label="合同信息" width="140">
             <template slot-scope="scope">
               <p>
-                <span class="blue">{{scope.row.code}}</span>
+                <span class="blue" @click="skipContDel(scope.row)">{{scope.row.code}}</span>
               </p>
             </template>
           </el-table-column>
@@ -125,7 +124,7 @@
           </el-table-column>
 
           <!-- propertyAddr -->
-          <el-table-column prop="propertyAddr" label="物业地址" width="140"></el-table-column>
+          <el-table-column prop="propertyAddr" label="物业地址" width="220"></el-table-column>
 
           <!-- dealStorefront   dealName -->
           <el-table-column prop="man" label="成交经纪人" width="190">
@@ -147,7 +146,7 @@
           </el-table-column>
 
           <el-table-column prop="receiptsCommission" label="应收佣金(元)" width="100"></el-table-column>
-          <el-table-column prop="receiptsAchievement" label="可分配业绩(元)" width="100">
+          <el-table-column prop="receiptsAchievement" label="可分配业绩(元)" width="120">
             <!-- <template slot-scope="scope">
                                           <p>3000/5000</p>
             </template>-->
@@ -223,7 +222,7 @@
           </el-table-column>
 
           <!-- agentReceipts -->
-          <el-table-column label="实收分成金额(元)" width="120">
+          <el-table-column label="实收分成金额(元)" width="130">
             <template slot-scope="scope">
               <p v-for="item in scope.row.distributionFroms">{{item.agentReceipts}}</p>
             </template>
@@ -287,38 +286,76 @@ export default {
       },
       pageSize: 5,
       currentPage: 1,
-      total:0
+      ajaxParam: {},
+      total: 0,
+      loading:true
     };
   },
   created() {
+    //  实收列表
+    this.ajaxParam = {
+      pageNum: this.currentPage,
+      pageSize: this.pageSize
+    };
+    this.getData(this.ajaxParam);
     // 字典初始化
     this.getDictionary();
-    this.getData();
     // 查询部门
     this.$ajax.get("/api/access/deps").then(res => {
       if (res.status == 200) {
         this.departs = res.data.data;
       }
     });
+    this.loading=false;
   },
   components: {},
   methods: {
     filterData() {
-      let param = {
-        departmentId: this.propForm.department, //部门
-        employeeIdQUERY: this.propForm.departmentDetail, //员工
-        contract_type: this.propForm.contractType, //合同类型
-        start_time: this.propForm.dateMo[0], //开始时间
-        end_time: this.propForm.dateMo[1], //结束时间
-        keyword: this.propForm.search //关键字
+      console.log("ssssssssssss");
+      console.log(this.ajaxParam);
+      console.log(this.propForm);
+      if (this.propForm.dateMo) {
+        this.ajaxParam = {
+          dealAgentStoreId: this.propForm.department, //部门
+          dealAgentId: this.propForm.departmentDetail, //员工
+          contractType: this.propForm.contractType, //合同类型
+          startTime: this.propForm.dateMo[0], //开始时间
+          endTime: this.propForm.dateMo[1], //结束时间
+          keyword: this.propForm.search, //关键字
+          pageNum: this.currentPage,
+          pageSize: this.pageSize
+        };
+      } else {
+        this.ajaxParam = {
+          dealAgentStoreId: this.propForm.department, //部门
+          dealAgentId: this.propForm.departmentDetail, //员工
+          contractType: this.propForm.contractType, //合同类型
+          keyword: this.propForm.search, //关键字
+          pageNum: this.currentPage,
+          pageSize: this.pageSize
+        };
+      }
+
+      this.getData(this.ajaxParam);
+    },
+    resetData() {
+      this.ajaxParam = {
+        dealAgentStoreId: "", //部门
+        dealAgentId: "", //员工
+        contractType: "", //合同类型
+        startTime: "", //开始时间
+        endTime: "", //结束时间
+        keyword: "", //关键字
+        pageNum: "",
+        pageSize: this.pageSize
       };
-      console.log(param);
+      this.total = 0;
     },
     // 查询部门员工
     selUser() {
       this.propForm.departmentDetail = "";
       this.$ajax
-        .get("/api/organize/employees", { depId: this.department })
+        .get("/api/organize/employees", { depId: this.propForm.department })
         .then(res => {
           console.log(res);
           if (res.status == 200) {
@@ -327,19 +364,17 @@ export default {
           }
         });
     },
-    getData() {
+    getData(param) {
       // 实收列表
-      let param = {
-        pageNum: this.currentPage,
-        pageSize: this.pageSize
-      };
+      let _that = this;
       this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
-        console.log(res);
         let data = res.data;
         if (res.status === 200) {
-          this.receivableList = data.data.list;
-          this.countData = data.data.list[0].contractCount;
-          this.total = data.data.total;
+          _that.receivableList = data.data.list;
+          if (data.data.list[0]) {
+            _that.countData = data.data.list[0].contractCount;
+          }
+          _that.total = data.data.total;
         }
       });
     },
@@ -348,8 +383,19 @@ export default {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      this.currentPage = val;
-      this.getData();
+      this.ajaxParam.pageNum = val;
+      this.getData(this.ajaxParam);
+    },
+    // 跳转合同详情
+    skipContDel(value) {
+      this.$router.push({
+        path: "/contractDetails",
+        query: {
+          id: value.id,
+          code: value.code,
+          contType: value.contType.value
+        }
+      });
     }
   }
 };
@@ -378,7 +424,7 @@ export default {
     .head-left {
       float: left;
       /deep/ .el-breadcrumb {
-        font-size: 12px !important;
+        // font-size: 12px !important;
       }
 
       /deep/ .el-breadcrumb__inner {
@@ -413,7 +459,6 @@ export default {
     }
     .filter-left {
       h1 {
-        font-size: 18px;
         color: #233241;
         position: relative;
         padding-left: 28px;
@@ -473,13 +518,13 @@ export default {
           color: #233241;
           display: inline-block;
           margin-top: 30px;
-          font-size: 18px;
+          // font-size: 18px;
           margin-left: 28px;
         }
       }
       .data-head-right {
-        font-size: 14px;
-        margin-top: 35px;
+        // font-size: 14px;
+        margin-top: 30px;
         margin-left: 15px;
         span {
           color: #6c7986;
@@ -495,7 +540,7 @@ export default {
   .data-list {
     width: 100%;
     /deep/ .el-table {
-      font-size: 14px !important;
+      // font-size: 14px !important;
       td,
       th {
         padding: 24px 0;

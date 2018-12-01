@@ -320,7 +320,6 @@
               const url = "/api/flowmanage/insertStepsType"
               const msg = "添加步骤类型成功"
               this.stepsTypePost(url,this.addForm,msg)
-              this.firstCellLight()
             } else {
               const url = "/api/flowmanage/updateStepsType"
               let param = {
@@ -329,7 +328,6 @@
               param = Object.assign({},this.addForm,param)
               const msg = "编辑步骤类型成功"
               this.stepsTypePost(url,param,msg)
-              this.firstCellLight()
             }  
           }
       },
@@ -354,6 +352,7 @@
             this.$message(msg)
             this.stepsTypeDialog = false
             this.getData()
+            this.firstCellLight()
           }
         }).catch(error => {
           console.log(error);
@@ -374,6 +373,7 @@
             this.$message(res.message)
             this.tradeStepsDialog = false
             this.getData()
+            this.firstCellLight()
           }
         }).catch(error => {
             console.log(error);
@@ -453,6 +453,7 @@
             if(res.status === 200) {
               this.$message(msg)
               this.getData()
+              this.firstCellLight()
             }
           }).catch(error => {
             console.log(error);

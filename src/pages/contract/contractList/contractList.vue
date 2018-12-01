@@ -26,7 +26,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="keyword" placeholder="关键字" style="width:250px"></el-input>
+          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:420px"></el-input>
         </el-form-item>
         <el-form-item label="部门">
           <el-select
@@ -133,8 +133,12 @@
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
+                <!-- 风险单 -->
                 <i class="iconfont icon-tubiao_shiyong-1" v-if="scope.row.isRisk"></i>
-                <i class="iconfont icon-tubiao_shiyong-2" v-if="scope.row.contType.label===3"></i>
+                <!-- 代办 -->
+                <!-- <i class="iconfont icon-tubiao_shiyong-2" v-if="scope.row.contMarkState.value===1"></i> -->
+                <!-- 抵佣 -->
+                <!-- <i class="iconfont icon-tubiao_shiyong-3" v-if="scope.row.contMarkState.value===2"></i> -->
               </div>
               <ul class="contract-msglist">
                 <li>合同编号：<span>{{scope.row.code}}</span></li>
@@ -377,9 +381,9 @@ export default {
         this.$router.push({
           path: "/contractDetails",
           query: {
-            id: value.id,
-            code: value.code,
-            contType: value.contType.value
+            id: value.id,//合同id
+            code: value.code,//合同编号
+            contType: value.contType.value//合同类型
           }
         });
       }else{
@@ -441,7 +445,8 @@ export default {
         path:'/contractPreview',
         query:{
           code:item.code,
-          operationType:'check'
+          operationType:'check',
+          id:item.id
         }
       })
     },
@@ -537,6 +542,10 @@ export default {
         res=res.data
         if(res.status===200){
           this.getContractList()
+        }else{
+          this.$message({
+            message:res.message
+          })
         }
       })
     },
@@ -622,7 +631,13 @@ export default {
    align-items: center;
   .riskLabel{
     width: 20px;
-   
+    color: @color-orange;
+    > i{
+      &:first-of-type{
+        color: @color-warning;
+      }
+    }
+    
   }
   .contract-msglist {
     > li {
