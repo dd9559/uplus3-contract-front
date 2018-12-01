@@ -256,7 +256,7 @@
                 var index=row.index
                 // alert(index)
                 // debugger
-                var top=114+index*47.4
+                var top=137+index*47.4
                 var sjx=document.getElementsByClassName('sjx')
                 var paperBtn=document.getElementsByClassName('paper-btn')
                 if(row.name=='代收代付'){
@@ -304,7 +304,7 @@
         > .sjx{
                 width:0;
                 right:-14px;
-                top: 114px;
+                top: 137px;
                 position: absolute;
                 border-width:7px;
                 border-style:solid;

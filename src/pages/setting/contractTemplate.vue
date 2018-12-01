@@ -25,11 +25,11 @@
             {{scope.row.uploadTime | formatDate}}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="已使用份数" prop="useNum" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="已使用份数" prop="useNum"></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上传</el-button>
-            <el-button @click="rowOperation(scope.row,2,2)" type="text" size="small" v-if="scope.row.useNum>0">预览
+            <el-button @click="rowOperation(scope.row,2,2)" type="text" size="small" v-if="scope.row.name.length>0">预览
             </el-button>
           </template>
         </el-table-column>
@@ -70,7 +70,7 @@
         </div>
       </template>
       <template v-if="template===3">
-        <el-table :data="rowData" class="contractType">
+        <el-table :data="rowData" class="contractType detail" ref='detail' @row-click="rowClick" :row-class-name='tableStyle' highlight-current-row >
           <el-table-column align="center" min-width="100px" label="合同版本号" prop="version"
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="合同名称" prop="name"
@@ -104,6 +104,7 @@
     mixins: [FILTER,UPLOAD],
     data() {
       return {
+        rowenableId:'',
         selectCity: '',
         list: [],
         rowData: [],
@@ -134,8 +135,16 @@
     },
 
     methods: {
+      rowClick(){
+        // console.log(this.$refs.detail,'detail');
+         this.$refs.detail.$el.classList.remove('detail')
+      },
+      tableStyle({row, rowIndex}){
+        if(this.rowenableId==row.id)
+            return 'linestyle'
+       },
       getAdd(type,obj){
-        console.log(obj[0].param,'ob1');
+        // console.log(obj[0].param,'ob1');
         if(type=='mmai'){
            this.mmaiAddress=obj[0].param[obj[0].param.length-1];
            console.log(this.mmaiAddress,'mmai');
@@ -210,7 +219,7 @@
           uploadTime:row.uploadTime
         }
         this.popMsg('确定要启用此类型模板吗？',()=>{
-        this.$ajax.get('/api/setting/contractTemplate/enable',param).then(res=>{
+        this.$ajax.put('/api/setting/contractTemplate/enable',param,2).then(res=>{
           if(res.status==200){
             this.$message({
                 type: 'success',
@@ -228,6 +237,7 @@
        */
       getRowDetails: function (row, column, cell, event) {
           // alert(this.bigId)
+          this.rowenableId=row.enableTemplateId;
           this.bigId=row.id
           this.$ajax.get('/api/setting/contractTemplate/listByType', {id: row.id,cityName:row.cityName}).then(res => {
           res = res.data
@@ -262,11 +272,6 @@
               show:2
             }
           });
-         
-          //  this.titleStr='预览合同模板'
-          //  this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:row.enableTemplateId}).then(res=>{
-          //   console.log(res)
-          //   })
         }
       }
     },
@@ -451,5 +456,9 @@
 .wordtip{
   padding-left: 0 !important
 }
-  }
+
+/deep/ .detail tr.linestyle{
+    background-color: #ECF5FF;
+}
+}
 </style>
