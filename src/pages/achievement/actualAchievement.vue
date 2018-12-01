@@ -8,7 +8,7 @@
 
       <div style="overflow:hidden;">
         <div class="filter-left f_l">
-          <h1>
+          <h1 class="f14">
             <b
               class="iconfont icon-tubiao-5"
               style="color:#55657A;font-weight:normal;"
@@ -78,6 +78,8 @@
             </el-select>
           </el-form-item>
 
+          
+
           <el-form-item
             label="合同类型"
             prop="contractType"
@@ -85,6 +87,7 @@
             <el-select
               v-model="propForm.contractType"
               class="w120"
+              :clearable="true"
             >
               <el-option
                 v-for="item in dictionary['10']"
@@ -102,6 +105,7 @@
             <el-select
               v-model="propForm.divideType"
               class="w120"
+              :clearable="true"
             >
               <el-option
                 v-for="item in dictionary['21']"
@@ -119,9 +123,10 @@
             <el-select
               v-model="propForm.achType"
               class="w120"
+              :clearable="true"
             >
               <el-option
-                v-for="item in dictionary['2']"
+                v-for="item in dictionary['52']"
                 :key="item.value"
                 :label="item.value"
                 :value="item.key"
@@ -151,9 +156,9 @@
             prop="search"
           >
             <el-input
-              class="w312"
+              class="w460"
               v-model="propForm.search"
-              placeholder="开票人员/合同编号/票据编"
+              placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
               :trigger-on-focus="false"
               clearable
             ></el-input>
@@ -182,17 +187,17 @@
           </span>
         </div>
         <div class="data-head-right f_l">
-          <span>总分成：<b>{{countData[0]}}元</b>，</span>
+          <span>总分成：<b>{{countData[3]}}元</b>，</span>
           <span>分类分成：</span>
           <span>出售：<b>{{countData[1]}}元</b>，</span>
           <span>代办：<b>{{countData[2]}}元</b>，</span>
-          <span>出租：<b>{{countData[3]}}元</b></span>
+          <span>出租：<b>{{countData[0]}}元</b></span>
         </div>
       </div>
       <!-- 头部 end -->
 
       <!-- 表格 -->
-      <div class="data-list">
+      <div class="data-list"  v-loading="loading">
         <el-table
           :data="selectAchList"
           style="width: 100%"
@@ -200,7 +205,7 @@
         >
           <el-table-column
             label="合同信息"
-            width="240"
+            width="250"
           >
             <template slot-scope="scope">
               <p>合同编号：<span
@@ -218,23 +223,23 @@
           >
             <template slot-scope="scope">
               <p
-                v-if="scope.row.achievementState==0"
+                v-if="scope.row.achievementState==6"
                 class="blue"
-              >未审核</p>
+              >待审核</p>
               <p
-                v-if="scope.row.achievementState==1"
+                v-if="scope.row.achievementState==7"
                 class="green"
-              >已通过</p>
+              >通过</p>
               <p
-                v-if="scope.row.achievementState==2"
+                v-if="scope.row.achievementState==8"
                 class="orange"
-              >已驳回</p>
+              >驳回</p>
             </template>
           </el-table-column>
 
           <el-table-column
             label="合同类型"
-            width="100"
+            width="80"
           >
               <template slot-scope="scope">
                    <p>{{scope.row.contType.label}}</p>
@@ -270,7 +275,7 @@
 
           <el-table-column
             label="分成类型"
-            width="110"
+            width="80"
           >
             <template slot-scope="scope">
               <!-- 目前一期分成类型只有业绩，暂时写死 -->
@@ -292,7 +297,7 @@
 
           <el-table-column
             label="角色类型"
-            width="130"
+            width="120"
           >
             <template slot-scope="scope">
               <div v-for="item in scope.row.distributionFroms">
@@ -351,7 +356,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="应收分成金额">
+          <el-table-column label="应收分成金额（元）" width="150">
             <template slot-scope="scope">
               <p v-for="item in scope.row.distributionFroms">{{item.aMoney}}</p>
             </template>
@@ -362,27 +367,32 @@
             width="100"
           >
             <template slot-scope="scope">
-              <!-- <p>{{scope.row.statu}}</p> -->
-              <div
-                v-if="scope.row.achievementState==0"
-                class="check-btn"
-              >
-                <span @click.stop="checkAch(scope.row,scope.$index)">审核</span>
-                <span @click.stop="editAch(scope.row,scope.$index)">编辑</span>
+              <div v-if="scope.row.isModify==0">
+                       <div
+                         v-if="scope.row.achievementState==6"
+                         class="check-btn"
+                       >
+                         <span @click.stop="checkAch(scope.row,scope.$index)">审核</span>
+                         <span @click.stop="editAch(scope.row,scope.$index)">编辑</span>
+                       </div>
+                       <div
+                         v-if="scope.row.achievementState==7"
+                         class="check-btn"
+                       >
+                         <span @click.stop="againCheck(scope.row,scope.$index)">反审核</span>
+                       </div>
+                       <div
+                         v-if="scope.row.achievementState==8"
+                         class="check-btn"
+                       >
+                         <span @click.stop="checkAch(scope.row,scope.$index)">审核</span>
+                         <span @click.stop="editAch(scope.row,scope.$index)">编辑</span>
+                       </div>
               </div>
-              <div
-                v-if="scope.row.achievementState==1"
-                class="check-btn"
-              >
-                <span @click.stop="againCheck(scope.row,scope.$index)">反审核</span>
+             <div v-else>
+                   <p>-</p>
               </div>
-              <div
-                v-if="scope.row.achievementState==2"
-                class="check-btn"
-              >
-                <span @click.stop="checkAch(scope.row,scope.$index)">审核</span>
-                <span @click.stop="editAch(scope.row,scope.$index)">编辑</span>
-              </div>
+           
             </template>
           </el-table-column>
         </el-table>
@@ -410,12 +420,12 @@
         @click="closeDialog"
       ></b>
       <div class="ach-header">
-        <h1>业绩详情</h1>
-        <p>可分配业绩：<span class="orange">{{comm}}元</span></p>
+        <h1 class="f14">业绩详情</h1>
+        <p class="f14">可分配业绩：<span class="orange">{{comm}}元</span></p>
       </div>
       <div class="ach-body">
 
-        <h1>房源方分成</h1>
+        <h1 class="f14">房源方分成</h1>
         <div class="ach-divide-list">
           <el-table
             :data="houseArr"
@@ -502,7 +512,7 @@
           </el-table>
         </div>
 
-        <h1>客源方分成</h1>
+        <h1 class="f14">客源方分成</h1>
         <div class="ach-divide-list">
           <el-table
             :data="clientArr"
@@ -543,16 +553,8 @@
               width="80"
             >
               <template slot-scope="scope">
-                <div>
-                  <div v-if="scope.row.isJob==0">
-                    <p>离职</p>
-                  </div>
-                  <div v-if="scope.row.isJob==1">
-                    <p>在职</p>
-                  </div>
-                  <div v-if="scope.row.isJob==2">
-                    <p>待入职</p>
-                  </div>
+                <div v-if="scope.row.isJob">
+                   <p>{{scope.row.isJob.label}}</p>
                 </div>
               </template>
             </el-table-column>
@@ -597,7 +599,7 @@
           </el-table>
         </div>
 
-        <h1>审核信息</h1>
+        <h1 class="f14">审核信息</h1>
 
         <div class="ach-check-list">
           <el-table
@@ -659,6 +661,9 @@
               label="备注"
               width="190"
             >
+               <template slot-scope="scope">
+                   {{scope.row.remarks?scope.row.remarks:'-'}}
+              </template>
             </el-table-column>
 
           </el-table>
@@ -711,25 +716,32 @@ export default {
       },
       shows: false,
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
-      total: 0,
       code: "",
       code2: "",
       dictionary: {
         //数据字典
         "10": "", //合同类型
         "21": "", //分成状态
-        "2": "" //业绩状态
+        "52": "" //业绩状态
       },
       beginData: false,
       currentPage: 1,
-      pageSize: 10,
+      pageSize:5,
       comm: "", //业绩分成
       aId: null, //业绩id
       contractId: null, //合同id
-      achIndex:null
+      achIndex:null,
+      ajaxParam:{},
+      total:0,
+      loading:true
     };
   },
   created() {
+    this.ajaxParam={
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+    } 
+    this.getData(this.ajaxParam);
     // 获取部门列表
     this.$ajax.get("/api/access/deps").then(res => {
       if (res.status == 200) {
@@ -737,32 +749,44 @@ export default {
         this.departs = res.data.data;
       }
     });
-    // 获取应收列表数据
-    this.getData();
     // 字典初始化
     this.getDictionary();
+    this.loading=false;
+  
   },
   components: {
     achDialog,
     MIXINS
   },
   methods: {
-    getData() {
-      let param = {
-        pageNum: this.currentPage,
-        pageSize: this.pageSize
-      };
+    selUser() {
+      this.propForm.departmentDetail = "";
       this.$ajax
-        .get("/api/achievement/selectAchievementList", param)
+        .get("/api/organize/employees", { depId: this.propForm.department })
+        .then(res => {
+          console.log(res);
+          if (res.status == 200) {
+            this.users = res.data.data;
+          }
+        });
+    },
+    getData(ajaxParam) {
+      let _that=this;
+      this.$ajax
+        .get("/api/achievement/selectAchievementList", ajaxParam)
         .then(res => {
           console.log(res);
           let data = res.data;
           if (res.status === 200) {
-            this.selectAchList = data.data.list;
-            this.countData = data.data.list[0].contractCount;
-            this.total = data.data.total;
+            // debugger;
+             _that.selectAchList = data.data.list;
+             _that.total = data.data.total;
+            if(data.data.list[0]){
+                 _that.countData = data.data.list[0].contractCount;
+            }         
+           
           }
-        });
+      });
     },
     close(val1,val2){
       console.log(val1);
@@ -795,28 +819,57 @@ export default {
       this.dialogVisible = true;
     },
     filterData() {
-      let param = {
-        departmentId: this.propForm.department, //部门
-        employeeIdQUERY: this.propForm.departmentDetail, //员工
-        contract_type: this.propForm.contractType, //合同类型
-        separate_type: this.propForm.divideType, //分成类型
-        status: this.propForm.achType, //业绩类型
-        start_time: this.propForm.dateMo[0], //开始时间
-        end_time: this.propForm.dateMo[1], //结束时间
-        keyword: this.propForm.search //关键字
+    console.log(this.propForm.dateMo)
+    if(this.propForm.dateMo){
+      this.ajaxParam = {
+        dealAgentStoreId: this.propForm.department, //部门
+        dealAgentId: this.propForm.departmentDetail, //员工
+        contractType: this.propForm.contractType, //合同类型
+        distributionType: this.propForm.divideType, //分成类型
+        achievementStatus: this.propForm.achType, //业绩类型
+        startTime: this.propForm.dateMo[0], //开始时间
+        endTime: this.propForm.dateMo[1], //结束时间
+        keyword: this.propForm.search, //关键字
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
       };
-      console.log(param);
+    }else{
+       this.ajaxParam = {
+        dealAgentStoreId: this.propForm.department, //部门
+        dealAgentId: this.propForm.departmentDetail, //员工
+        contractType: this.propForm.contractType, //合同类型
+        distributionType: this.propForm.divideType, //分成类型
+        achievementStatus: this.propForm.achType, //业绩类型
+        keyword: this.propForm.search, //关键字
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      };
+    }
+
+      this.getData(this.ajaxParam)
     },
     resetData() {
-      this.propForm = {
+      this.ajaxParam = {
+        dealAgentStoreId: "", //部门
+        dealAgentId: "", //员工
+        contractType: "", //合同类型
+        distributionType: "", //分成类型
+        achievementStatus: "", //业绩类型
+        startTime: "", //开始时间
+        endTime: "", //结束时间
+        keyword: "", //关键字
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      };
+      this.propForm={
         department: "", //部门
-        departmentDetail: "", //部门详情
+        departmentDetail: "", //部门详情（员工）
         contractType: "", //合同类型
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
         search: ""
-      };
+      }
     },
     checkAch(value,index) {
       this.beginData = true;
@@ -845,26 +898,14 @@ export default {
       // console.log(this.dialogType);
       this.shows = true;
     },
-    selUser() {
-      this.propForm.departmentDetail = "";
-      this.$ajax
-        .get("/api/organize/employees", { depId: this.department })
-        .then(res => {
-          console.log(res);
-          if (res.status == 200) {
-            this.users = res.data.data;
-            console.log(this.users);
-          }
-        });
-    },
     //分页
     handleSizeChange(val) {
       console.log(val);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this.currentPage = val;
-      this.getData();
+      // console.log(`当前页: ${val}`);
+      this.ajaxParam.pageNum = val;
+      this.getData(this.ajaxParam);
     },
     skipContDel(value) {
       this.$router.push({
@@ -903,7 +944,7 @@ export default {
     .head-left {
       float: left;
       /deep/ .el-breadcrumb {
-        font-size: 12px !important;
+        // font-size: 12px !important;
       }
 
       /deep/ .el-breadcrumb__inner {
@@ -938,7 +979,7 @@ export default {
     }
     .filter-left {
       h1 {
-        font-size: 18px;
+        // font-size: 18px;
         color: #233241;
         position: relative;
         padding-left: 28px;
@@ -998,13 +1039,13 @@ export default {
           color: #233241;
           display: inline-block;
           margin-top: 30px;
-          font-size: 18px;
+          // font-size: 18px;
           margin-left: 28px;
         }
       }
       .data-head-right {
-        font-size: 14px;
-        margin-top: 35px;
+        // font-size: 14px;
+        margin-top: 30px;
         margin-left: 15px;
         span {
           color: #6c7986;
@@ -1020,7 +1061,7 @@ export default {
   .data-list {
     width: 100%;
     /deep/ .el-table {
-      font-size: 14px !important;
+      // font-size: 14px !important;
       td,
       th {
         padding: 24px 0;
@@ -1063,7 +1104,7 @@ export default {
         margin: 20px 0 0 30px;
       }
       p {
-        font-size: 14px;
+        // font-size: 14px;
         color: #6c7986;
         margin: 12px 0 0 30px;
         line-height: 0;
@@ -1077,7 +1118,7 @@ export default {
       box-sizing: border-box;
       overflow-y: auto;
       /deep/ .el-table {
-        font-size: 14px !important;
+        // font-size: 14px !important;
         margin-top: 20px;
         td,
         th {

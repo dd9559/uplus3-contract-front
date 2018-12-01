@@ -123,4 +123,7 @@ textarea {
   font-weight: 400;
   outline: none;
 }
+.f14{
+  font-size: 14px
+}
 </style>

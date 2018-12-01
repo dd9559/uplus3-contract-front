@@ -105,8 +105,12 @@
                                 <el-form-item prop="custmobile">
                                     <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
-                                <el-form-item prop="contPersons.identifyCode">
-                                    <el-input v-model="contractForm.contPersons.identifyCode" clearable placeholder="身份证号" class="custwidth" :disabled="type===2?true:false"></el-input>
+                                <el-form-item prop="custIdentifyCode" v-if="this.type===1">
+                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth"></el-input>
+                                    
+                                </el-form-item>
+                                <el-form-item v-if="this.type===2">
+                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="身份证号" class="custwidth" disabled></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -189,19 +193,9 @@ export default {
                 //客户信息
                 custname: '',
                 custmobile: '',
-                // custrelation: '',
-                
-            
-
+                custIdentifyCode: '',
                                
             },
-
-            
-
-
-            
-            
-            
 
             //门店选择列表
             
@@ -254,13 +248,14 @@ export default {
                     
                     
                 },
-                contPersons:{
-                    // name: '',
-                    // mobile: '',
-                    identifyCode: [
+                custIdentifyCode: [
                         { required: true, message: '请输入客户身份证号' },
                     ], 
-                }                    
+                // contPersons:{
+                //     // name: '',
+                //     // mobile: '',
+                    
+                // }                    
                
                
                 
@@ -288,6 +283,10 @@ export default {
     },
 
     methods: {
+        // changeIdcard (newval, oldval){
+        //     let idcard = this.contractForm.contPersons[2].identifyCode
+        //     return idcard;
+        // },
         //选择房源弹框
         toLayerHouse(){
             this.isShowDialog = true
@@ -344,7 +343,7 @@ export default {
                     name: guestMsg.OwnerInfo.CustName,
                     mobile: guestMsg.OwnerInfo.CustMobile,
                     relation: guestMsg.OwnerInfo.CustRelation,
-                    identifyCode: this.contractForm.contPersons.identifyCode,
+                    identifyCode: this.contractForm.custIdentifyCode,
                     type: 2,
                 };
                 this.contractForm.custname = guestMsg.OwnerInfo.CustName;
@@ -356,7 +355,7 @@ export default {
         },
 
 
-        //根据合同id查询合同详细信息
+        //根据合同id查询合同详细信息（编辑接口会用到）
         getContractDetail() {
             let param = {
                 id: this.id
@@ -387,7 +386,7 @@ export default {
                             this.contractForm.contPersons[1].name = this.contractForm.contPersons[i].name;
                             this.contractForm.contPersons[1].mobile = this.contractForm.contPersons[i].mobile;
                             this.contractForm.contPersons[1].relation = this.contractForm.contPersons[i].relation;
-                            this.contractForm.contPersons[1].identifyCode = this.contractForm.contPersons[i].identifyCode;
+                            this.contractForm.contPersons[1].identifyCode =  this.contractForm.contPersons[i].identifyCode,
 
                             this.contractForm.custname = this.contractForm.contPersons[i].name;
                             this.contractForm.custmobile = this.contractForm.contPersons[i].mobile; 
@@ -492,6 +491,17 @@ export default {
         // 新增意向金接口（post）
         onSubmit(contractForm) {
             this.$refs[contractForm].validate((valid) => {
+                if(this.type ===1){
+                    this.contractForm.contPersons[0].name = this.contractForm.ownname
+                    this.contractForm.contPersons[0].mobile = this.contractForm.ownmobile
+                    this.contractForm.contPersons[1].name = this.contractForm.custname
+                    this.contractForm.contPersons[1].mobile = this.contractForm.custmobile
+                    this.contractForm.contPersons[1].identifyCode = this.contractForm.custIdentifyCode
+                }else if(this.type===2){
+                //    this.contractForm.custIdentifyCode = this.contractForm.contPersons[1].identifyCode 
+                }
+                
+
                 if (valid) {                  
                     
                     let param = { 
@@ -503,7 +513,7 @@ export default {
                     // delete param.igdCont.ownrelation;
                     delete param.igdCont.custname;
                     delete param.igdCont.custmobile;
-                    // delete param.igdCont.custrelation;
+                    delete param.igdCont.custIdentifyCode;
 
                     this.$confirm('确定保存合同?', '提示', {
                         confirmButtonText: '确定',
