@@ -84,13 +84,26 @@
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="合同主体" name="second">
-                    <div class="hetong">
-
-                        <file-up class="uploadSubject" @getUrl="uploadSubject">
+                    <div class="contractSubject">
+                        <ul class="ulData">
+                            <li>
+                            <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                                <i class="iconfont icon-shangchuan"></i>
+                                <p>点击上传</p>
+                            </file-up>
+                            </li>
+                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
+                            <div class="namePath">
+                                <upload-cell :type="item.fileType"></upload-cell>
+                                <p>{{item.name}}</p>
+                            </div>
+                            <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
+                            </li>
+                        </ul>
+                        <!-- <file-up class="uploadSubject" @getUrl="uploadSubject">
                             <i class="iconfont icon-shangchuan"></i>
                             <p>点击上传</p>
-                        </file-up>
-
+                        </file-up> -->
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="资料库" name="third" class="third-tab">
@@ -101,7 +114,7 @@
                             <div class="ht-title">卖方</div>
                             <div class="small-col" v-for="(item,index) in sellerList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
-                                <ul>
+                                <ul class="ulData">
                                     <li>
                                         <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
                                             <i class="iconfont icon-shangchuan"></i>
@@ -124,7 +137,7 @@
                             <div class="ht-title">买方</div>
                             <div class="small-col" v-for="(item,index) in buyerList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
-                                <ul>
+                                <ul class="ulData">
                                     <li>
                                         <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
                                             <i class="iconfont icon-shangchuan"></i>
@@ -147,7 +160,7 @@
                             <div class="ht-title">其他</div>
                             <div class="small-col" v-for="(item,index) in buyerList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
-                                <ul>
+                                <ul class="ulData">
                                     <li>
                                         <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
                                             <i class="iconfont icon-shangchuan"></i>
@@ -237,6 +250,8 @@ export default {
             sellerList: [],
             //其他类型
             otherList: [],
+            //主体合同
+            uploadList: [],
 
             isDelete:''
         }
@@ -246,13 +261,6 @@ export default {
         handleClick(tab, event) {
             console.log(tab, event);
             this.name=tab.name;
-        },
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePictureCardPreview(file) {
-            this.dialogImageUrl = file.url;
-            this.dialogVisible = true;
         },
 
         // 控制弹框body内容高度，超过显示滚动条
@@ -342,46 +350,42 @@ export default {
 
         //获取合同资料库信息
 
-        getContData() {
-            let param = {
-                id: this.$route.query.id
-            };
-            this.$ajax.get("/api/contract/getContAttachmentById", param).then(res => {
-                res = res.data;
-                if (res.status === 200) {
-                let address = JSON.parse(res.data.address);
-                console.log(address)
-                address.forEach(element => {
-                    element.value.forEach(item => {
-                    let fileType = this.$tool.get_suffix(item.name);
-                    item.fileType=fileType
-                    });
-                    if(element.kind==="买方"){
-                    this.buyerList.forEach(ele => {
-                        if(element.title===ele.title){
-                        // let fileType = this.$tool.get_suffix(element.name)
-                        ele.value=element.value
-                        }
-                    });
-                    // this.buyerDataList.push(element);
-                    }else if(element.kind==="卖方"){
-                    this.sellerList.forEach(ele => {
-                        if(element.title===ele.title){
-                        ele.value=element.value
-                        }
-                    });
-                    // this.sellerDataList.push(element);
-                    }else if(element.kind==="其他"){
-                    this.otherList.forEach(ele => {
-                        if(element.title===ele.title){
-                        ele.value=element.value
-                        }
-                    });
-                    // this.otherDataList.push(element);
-                    }
-                });
+        //获取合同资料库类型列表
+        getContDataType() {
+        let param = {
+            id: this.$route.query.id
+        };
+        this.$ajax.get("/api/contract/getContDataTypeById", param).then(res => {
+            res = res.data;
+            if (res.status === 200) {
+            let dataType = JSON.parse(res.data);
+            console.log(dataType);
+            dataType.forEach(element => {
+                if(element.type==="买方"){
+                    let item={};
+                    item.value=[];
+                    item.kind=element.type;
+                    item.title=element.name;
+                    item.isrequire=element.isNecessary;
+                this.buyerList.push(item);
+                }else if(element.type==="卖方"){
+                    let item={};
+                    item.value=[];
+                    item.kind=element.type;
+                    item.title=element.name;
+                    item.isrequire=element.isNecessary;
+                    this.sellerList.push(item);
+                }else if(element.type==="其他"){
+                    let item={};
+                    item.value=[];
+                    item.kind=element.type;
+                    item.title=element.name;
+                    item.isrequire=element.isNecessary;
+                    this.otherList.push(item);
                 }
             });
+            }
+        })
         },
 
          //显示删除按钮
@@ -449,33 +453,62 @@ export default {
             }else if(type==="other"){
                 this.otherList[index].value.splice(index_,1);
             }
-
         },
 
-        //获取文件路径数组
+         //获取合同主体信息
+        getContractBody(){
+            let param = {
+                id:this.$route.query.id
+            }
+            this.$ajax.get('/api/contract/getContractBodyById', param).then(res=>{
+                res=res.data;
+                if(res.status===200){
+                let uploadList_ = res.data;
+                uploadList_.forEach(element => {
+                    let fileType = this.$tool.get_suffix(element.name);
+                    element.fileType=fileType;
+                });
+                this.uploadList=uploadList_;
+                }
+            })
+        },
+
+        //合同主体获取文件路径数组
         uploadSubject(data) {
-            console.log(data.param[0]);
-            this.uploadList.push(data.param[0].path);
-            //this.isImg=true
+            let arr = data.param;
+            let fileType = this.$tool.get_suffix(arr[0].name);
+            arr[0].fileType = fileType;
+            this.uploadList.push(arr[0])
+        },
+
+        //合同主体的删除
+        ZTdelectData(index){
+            this.uploadList.splice(index,1)
         },
         //保存上传文件
         saveFile() {
-            if (this.dialogType === "upload") {
-                var url = "/api/upload/contractBody";
-                var param = {
-                contractId: this.id,
-                vouchers: this.uploadList
-                };
-            }
-            this.$ajax.postJSON(url, param).then(res => {
-                res = res.data;
-                if (res.status === 200) {
-                this.$message({
-                    message: "上传成功"
+            if(this.uploadList.length>0){
+                this.uploadList.forEach(element => {
+                delete element.fileType
                 });
-                this.close();
+                let param = {
+                contId:this.id,
+                datas:this.uploadList
                 }
-            });
+                this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
+                res=res.data;
+                if(res.status===200){
+                    this.getContractBody();
+                    this.$message({
+                    message:'上传成功'
+                    })
+                }
+                })
+            }else{
+                this.$message({
+                message:'请选合同主体'
+                })
+            }
         },
         // 查询
         getDetail() {
@@ -531,6 +564,7 @@ export default {
     created() {
         this.getDetail();  //合同详细信息
         this.getContDataType();   //获取资料库里的资料类型
+        this.getContractBody();//获取合同主体
     },
 
     mounted() {
@@ -750,11 +784,28 @@ export default {
                 }
             }
         }
-        // 合同主体
-        .hetong{
-            padding: 30px 30px 130px 40px;
-            background-color: #fff;
-            height: 100%;
+         //合同主体
+        .contractSubject {
+            padding: 40px;
+        }
+        .uploadSubject {
+            display: inline-block;
+            text-align: center;
+            width: 120px;
+            height: 120px;
+            box-sizing: border-box;
+            padding-top: 28px;
+            border: 1px dashed #DEDDE2;
+            border-radius:1px;
+            > i {
+                color: #EEF2FB;
+                font-size: 50px;
+            }
+            > p {
+                padding-top: 10px;
+                color: #32485F;
+                font-size: 12px;
+            }
         }
         .third-tab{
            padding: 20px 30px 30px 30px; 
@@ -781,33 +832,25 @@ export default {
                         
                     }
                 }
-                >ul{
-                    display: flex;
-                    li{
-                        margin-right: 10px;
-                        position: relative;
-                        > i{
-                        position: absolute;
-                        top: 5px;
-                        right: 5px;
-                        color: #F56C6C;
-                        font-size: 20px;
-                        cursor: pointer;
-                        }
-                    }
-                    }
-                    > p {
-                    font-size: 14px;
-                    padding: 10px 0;
-                    color: #6C7986;
-                    > i {
-                        color: #FF554C;
-                    }
-                }
+                
             }
             
         }
-
+        .ulData{
+            display: flex;
+            li{
+                margin-right: 10px;
+                position: relative;
+                > i{
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    color: #F56C6C;
+                    font-size: 20px;
+                    cursor: pointer;
+                }
+            }
+        }
         .uploadSubject {
             display: inline-block;
             text-align: center;
@@ -838,10 +881,6 @@ export default {
             background: #F2F3F8;
             > p{
             padding-top: 5px;
-            }
-            > i{
-            font-size: 50px;
-            color: #54d384;
             }
         }
         
