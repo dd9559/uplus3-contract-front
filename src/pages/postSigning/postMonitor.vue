@@ -106,7 +106,7 @@
             class="paper-table mt-20">
                 <el-table-column label="合同编号" min-width="161">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="contractFn">{{scope.row.code}}</el-button>
+                        <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="接收日期" min-width="100">
@@ -278,8 +278,15 @@
                 this.getListData();
             },
             // 合同编号弹层
-            contractFn(){
-                console.log('合同编号弹层')
+            contractFn(value){
+                this.$router.push({
+                    path: "/contractDetails",
+                    query: {
+                        id: value.id,//合同id
+                        code: value.code,//合同编号
+                        contType: value.tradeType.value//合同类型
+                    }
+                });
             },
             // 交易步骤
             tradingStepsFn(row, event){

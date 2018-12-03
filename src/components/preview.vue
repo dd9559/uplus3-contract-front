@@ -1,12 +1,15 @@
 <template>
     <div class="preview">
-      <div class="view-container" ref="drag" @mousedown="mousedown" @mousemove="mousemove" @mouseup="dragging=false">
-        <img ref="img" :src="imgSrc" :style="{width:getWidth,transform:getRotate}" alt="">
+      <div class="view-container" :class="[type==='img'?'img-drag':'']" ref="drag" @mousedown="mousedown" @mousemove="mousemove" @mouseup="dragging=false">
+        <img ref="img" :src="imgSrc" :style="{width:getWidth,transform:getRotate}" alt="" v-if="type==='img'">
+        <video controls v-else>
+          <source  :src="imgSrc" type="video/mp4">
+        </video>
       </div>
       <p class="pagination page-prev" @click="chose('prev')"><img :src="getImg('btn-prev.png')" alt=""></p>
       <p class="pagination page-next" @click="chose('next')"><img :src="getImg('btn-next.png')" alt=""></p>
       <p class="tools btn-close" @click="chose('close')"><img :src="getImg('btn-close.png')" alt=""></p>
-      <ul class="tools">
+      <ul class="tools" v-if="type==='img'">
         <li @click="opera(1)"><i class="iconfont icon-yuanjiaojuxing"></i></li>
         <li @click="opera(2)"><i class="iconfont icon-tubiao-12"></i></li>
         <li @click="opera(3)"><i class="iconfont icon-icon-test3"></i></li>
@@ -43,22 +46,28 @@
         dragPos:{
           x:0,
           y:0
-        }
+        },
+        type:'img'
       }
     },
     mounted(){
       if(this.getImages.length>0){
         this.imgSrc=this.getImages[this.activePage]
+        if(this.imgSrc.indexOf('.mp4')>-1){
+          this.type='video'
+        }else {
+          this.type='img'
+        }
       }
       this.$nextTick(()=>{
-        this.initWidth=this.$refs.img.offsetWidth
+        // this.initWidth=this.$refs.img.offsetWidth
         document.onmousemove=function (event) {
-          event = event || window.event;
-          let dragObj = this.$refs.drag
-          console.log('test')
           if (this.dragging) {
+            event = event || window.event;
+            let dragObj = this.$refs.drag
             dragObj.style.left = parseInt(event.clientX - this.mousePos.x + this.dragPos.x) + "px";
             dragObj.style.top = parseInt(event.clientY - this.mousePos.y + this.dragPos.y) + "px";
+            console.log(dragObj.style.left,dragObj.style.top)
           }
         }.bind(this)
       })
@@ -70,6 +79,10 @@
       chose:function (type) {
         this.imgWidth=100
         this.transform=0
+        let dragObj = this.$refs.drag
+        dragObj.style.left = '50%'
+        dragObj.style.top = '50%'
+        dragObj.style.transform='translate(-50%,-50%)'
         if(type==='next'){
           if(this.activePage===this.getImages.length-1){
             this.activePage=0
@@ -109,9 +122,16 @@
         let dragObj = this.$refs.drag
         let objLeft = dragObj.style.left
         let objTop = dragObj.style.top
-        this.dragPos.x=objLeft?parseInt(objLeft):(document.body.offsetWidth-dragObj.offsetWidth)/2
-        this.dragPos.y=objTop?parseInt(objTop):(document.body.offsetHeight-dragObj.offsetHeight)/2
-        console.log(this.mousePos,this.dragPos)
+        this.dragPos.x=!objLeft||objLeft==='50%'?(document.body.offsetWidth-dragObj.offsetWidth)/2:parseInt(objLeft)
+        this.dragPos.y=!objTop||objTop==='50%'?(document.body.offsetHeight-dragObj.offsetHeight)/2:parseInt(objTop)
+        // console.log(this.mousePos,this.dragPos)
+        dragObj.style.transform='none'
+        if(!objLeft||objLeft==='50%'){
+          dragObj.style.left=this.dragPos.x+'px'
+        }
+        if(!objTop||objTop==='50%'){
+          dragObj.style.top=this.dragPos.y+'px'
+        }
       },
       mousemove:function (event) {
 
@@ -136,6 +156,11 @@
     watch:{
       activePage:function (val) {
         this.imgSrc=this.getImages[this.activePage]
+        if(this.imgSrc.indexOf('.mp4')>-1){
+          this.type='video'
+        }else {
+          this.type='img'
+        }
       }
     }
   }
@@ -203,14 +228,16 @@
     left: 50%;
     transform: translate(-50%,-50%);
     user-select: none;
-    &:after{
-      content:'';
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 9;
+    &.img-drag{
+      &:after{
+        content:'';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 9;
+      }
     }
   }
 </style>
