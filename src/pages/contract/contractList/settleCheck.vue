@@ -89,9 +89,9 @@
 
         <el-table-column label="审核状态">
           <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.examineState.value===0">未提审</span>
-            <span class="green" v-if="scope.row.examineState.value===1">通过</span>
-            <span class="red" v-if="scope.row.examineState.value===2">驳回</span>
+            <span class="blue" v-if="scope.row.examineState.value===6">未提审</span>
+            <span class="green" v-if="scope.row.examineState.value===7">通过</span>
+            <span class="red" v-if="scope.row.examineState.value===8">驳回</span>
           </template>
         </el-table-column>
 
@@ -115,7 +115,7 @@
         </el-table-column>
               
         <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope" v-if="scope.row.examineState.value=== 0">
+          <template slot-scope="scope" v-if="scope.row.examineState.value=== 6">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
         </el-table-column>
@@ -240,13 +240,13 @@
 
         },
         toExamineState: [{
-          value: 0,
+          value: 6,
           label: '未提审'
         }, {
-          value: 1,
+          value: 7,
           label: '通过'
         }, {
-          value: 2,
+          value: 8,
           label: '驳回'
         }], 
 

@@ -28,6 +28,7 @@
               v-model="searchForm.timeRange"
               type="daterange"
               size="small"
+              class="margin-left"
               value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
@@ -45,7 +46,7 @@
               :value="item.id">
             </el-option>
           </el-select>
-          <el-select :clearable="true" class="margin-left-10" size="small" v-model="searchForm.empId" placeholder="请选择">
+          <el-select :clearable="true" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"

@@ -92,14 +92,14 @@
       align-items: center;
       margin-bottom: @margin-base;
     }
-    &-content{
+    /deep/ .paper-box-content{
       font-size: @size-14;
-      /*.el-select{
+      .el-select{
         width: 140px;
       }
       .el-range-editor{
         width: 240px;
-      }*/
+      }
     }
     .btn {
       width: 56px;

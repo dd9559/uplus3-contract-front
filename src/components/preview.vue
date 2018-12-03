@@ -24,12 +24,16 @@
         default:function () {
           return []
         }
+      },
+      start:{
+        type:Number,
+        default:0
       }
     },
     data(){
       return{
         imgSrc:'',
-        activePage:0,
+        activePage:this.start,
         imgWidth:100,
         initWidth:0,
         transform:0,
