@@ -27,9 +27,9 @@
 
         <el-form-item label="审核状态">
           <el-select v-model="adjustForm.checkState" placeholder="全部" class="width150" clearable>
-            <el-option label="未审核" value="0"></el-option>
-            <el-option label="通过" value="1"></el-option>
-            <el-option label="驳回" value="2"></el-option>
+            <el-option label="未审核" value="6"></el-option>
+            <el-option label="通过" value="7"></el-option>
+            <el-option label="驳回" value="8"></el-option>
           </el-select>
         </el-form-item>
         
@@ -79,9 +79,9 @@
         </el-table-column>
         <el-table-column label="审核状态" :formatter="nullFormatter" align="center">
           <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.checkState === 0">未审核</span>
-            <span class="green" v-if="scope.row.checkState === 1">通过</span>
-            <span class="red" v-if="scope.row.checkState === 2">驳回</span>
+            <span class="blue" v-if="scope.row.checkState === 6">未审核</span>
+            <span class="green" v-if="scope.row.checkState === 7">通过</span>
+            <span class="red" v-if="scope.row.checkState === 8">驳回</span>
           </template>
         </el-table-column>
         <el-table-column label="审核日期">
@@ -97,7 +97,7 @@
         </el-table-column>
         <el-table-column label="审核备注" width="200" prop="checkRemark" :formatter="nullFormatter"></el-table-column>             
         <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope" v-if="scope.row.checkState === 0">
+          <template slot-scope="scope" v-if="scope.row.checkState === 6">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
         </el-table-column>

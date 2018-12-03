@@ -129,7 +129,7 @@
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span>{{scope.row.contCode}}</span></li>
+              <li>合同编号:<span @click="msgOpera(scope.row,'cont')">{{scope.row.contCode}}</span></li>
               <li>房源编号:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
               <li>客源编号:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
             </ul>
@@ -290,7 +290,23 @@
           }
         }
         this.$router.push(param)
-      }
+      },
+      /**
+       * 合同信息操作
+       * @param type
+       */
+      msgOpera:function (row,type) {
+        if(type==='cont'){
+          this.$router.push({
+            path:'contractDetails',
+            query:{
+              contType:row.contType,
+              id:row.contId,
+              code:row.contCode
+            }
+          })
+        }
+      },
     },
     computed: {
       getView: function () {
