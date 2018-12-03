@@ -604,7 +604,6 @@
         <div class="ach-check-list">
           <el-table
             :data="checkArr"
-            style="width: 100%"
           >
             <!-- examineDate -->
             <el-table-column
@@ -658,7 +657,6 @@
             <!-- remark -->
             <el-table-column
               label="备注"
-              width="2000"
             >
                <template slot-scope="scope">
                    {{scope.row.remark?scope.row.remark:'-'}}
@@ -1164,5 +1162,8 @@ export default {
 }
 /deep/ tr.el-table__row{
   overflow: scroll!important;
+}
+.w430{
+    width: 430px;
 }
 </style>

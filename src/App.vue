@@ -28,7 +28,7 @@
     /*user-select: none;*/
     width: 100%;
     height: 100%;
-    font-size: @size-14;
+    font-size: @size-base;
   }
 
   h1,
@@ -139,8 +139,17 @@
   .w140 {
     width: 140px;
   }
+  .w200{
+    width: 200px;
+  }
 
   .w240 {
     width: 140px;
+  }
+  .btn-info{
+    min-width: 80px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
 </style>

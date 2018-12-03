@@ -34,11 +34,11 @@
         <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
                         v-for="item in tHeader_other" :key="item.id">
         </el-table-column>
-        <el-table-column align="center" label="是否短信通知">
+        <!-- <el-table-column align="center" label="是否短信通知">
           <template slot-scope="scope">
             <div>{{scope.row.isSms==1?'是':'否'}}</div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center" label="步骤附属信息">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.transStepsAttach" :key="index">{{item.title}}</p>
@@ -215,11 +215,6 @@
             id: 3,
             prop: "planDays",
             name: "计划天数"
-          },
-          {
-            id: 4,
-            prop: "overTimeDays",
-            name: "超时提醒"
           }
         ],
         //交易步骤信息类型

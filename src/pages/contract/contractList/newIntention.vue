@@ -51,7 +51,7 @@
                                     <el-button type="text" v-if="type===2">{{contractForm.houseinfoCode}}</el-button>
                                 </el-form-item>
                                 <el-form-item label="物业地址：" class="ml30">
-                                    <div>{{contractForm.houseInfo.Address}}</div>
+                                    <div>{{contractForm.houseInfo.EstateName + contractForm.houseInfo.BuildingName + contractForm.houseInfo.Unit + contractForm.houseInfo.RoomNo}}</div>
                                 </el-form-item>
                             </el-form-item>
                             
