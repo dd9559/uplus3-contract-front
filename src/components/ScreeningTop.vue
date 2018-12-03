@@ -2,16 +2,16 @@
   <!-- 筛选 -->
   <div class="paper-box view-header" :class="[show?'collapse-on':'collapse-off']">
     <div class="paper-box-title">
-      <p><i class="iconfont icon-tubiao-5 mr-10 font-cl1"></i>筛选查询</p>
+      <p class="f14"><i class="iconfont icon-tubiao-5 mr-10 font-cl1"></i>筛选查询</p>
       <p>
         <el-button
-          class="paper-btn"
+          class="paper-btn btn-info"
           size="small"
           @click="resetFormFn"
           round>重 置
         </el-button>
         <el-button
-          class="paper-btn paper-btn-blue"
+          class="paper-btn paper-btn-blue btn-info"
           type="primary"
           size="small"
           @click="queryFn"
@@ -92,6 +92,15 @@
       align-items: center;
       margin-bottom: @margin-base;
     }
+    &-content{
+      font-size: @size-14;
+      /*.el-select{
+        width: 140px;
+      }
+      .el-range-editor{
+        width: 240px;
+      }*/
+    }
     .btn {
       width: 56px;
       height: 17px;
@@ -107,14 +116,13 @@
   }
   .view-header {
     background-color: @color-white;
-    padding: @margin-base;
+    padding: @margin-10;
     border-radius: @border-radius;
     margin-bottom: @margin-15;
   }
 
   // 按钮
   .paper-btn {
-    width: 100px;
     text-align: center;
   }
 

@@ -117,24 +117,26 @@
     </ScreeningTop>
     <div class="view-context">
       <div class="table-tool">
-        <h4><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
-        <ul>
-          <li>
-            收款<span>{{tableTotal.ProceedsCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.ProceedsSum|zeroFormatter}}</span>元；
-          </li>
-          <li>
-            付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
-          </li>
-          <li>
-            账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter}}</span>元
-          </li>
-        </ul>
+        <div class="tool-left">
+          <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
+          <ul>
+            <li>
+              收款<span>{{tableTotal.ProceedsCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.ProceedsSum|zeroFormatter}}</span>元；
+            </li>
+            <li>
+              付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
+            </li>
+            <li>
+              账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter}}</span>元
+            </li>
+          </ul>
+        </div>
         <p>
-          <el-button round type="primary" size="small">导出</el-button>
+          <el-button class="btn-info" round type="primary" size="small">导出</el-button>
         </p>
       </div>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
-        <el-table-column align="center" label="收付ID" prop="payCode" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="160" label="收付ID" prop="payCode" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
@@ -625,38 +627,43 @@
   }
   .view-context{
     background-color: @color-white;
-    padding: 0 20px 20px;
+    padding: 0 @margin-10 @margin-10;
     /deep/ .theader-bg{
       >th{
         background-color: @bg-th;
       }
     }
     .table-tool{
-      height: 40px;
       position: relative;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      >h4{
-        >i{
-          margin-right: 8px;
+      padding: @margin-base 0;
+      .tool-left{
+        display: inherit;
+        align-items: center;
+        >h4{
+          >i{
+            margin-right: 8px;
+          }
         }
-      }
-      >ul{
-        display: flex;
-        margin-left: 20px;
-        >li{
-          color: @color-6c;
-          >span{
-            color: @color-red;
+        >ul{
+          display: flex;
+          margin-left: 20px;
+          >li{
+            color: @color-6c;
+            >span{
+              color: @color-red;
+            }
           }
         }
       }
-      >p{
+      /*>p{
         position: absolute;
         top: 50%;
         right: 0;
         transform:translateY(-50%);
-      }
+      }*/
     }
   }
 </style>
