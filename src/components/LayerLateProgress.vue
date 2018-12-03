@@ -87,8 +87,9 @@
                             <template v-else>
                                 <ul class="steps-img">
                                     <li 
-                                    v-for="i in item.val"
+                                    v-for="(i,n) in item.val"
                                     :key="i.name"
+                                    @click="previewPhoto(item.val,n)"
                                     >
                                         <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                         <p class="p">{{i.name}}</p>
@@ -97,6 +98,8 @@
                             </template>
                     </el-form-item>
                 </el-form>
+                <!-- 预览 -->
+                <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
             </div>
         </el-dialog>
     </div>
@@ -106,6 +109,7 @@
 <script>
     import { FILTER } from '@/assets/js/filter';
     import { TOOL } from '@/assets/js/common';
+    import {MIXINS} from '@/assets/js/mixins';
 
     // 是否超时
     const ISOVERTIME = 1;
@@ -123,7 +127,7 @@
     }
 
     export default {
-        mixins: [FILTER],
+        mixins: [FILTER,MIXINS],
         data() {
             return {
                 // 显示隐藏

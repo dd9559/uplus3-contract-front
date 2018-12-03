@@ -148,7 +148,10 @@ export default new Router({
         },
         {
           path: "payBill",
-          component: payBill
+          component: payBill,
+          meta:{
+            getParent:true
+          }
         },
         {
           path: "payResult",
@@ -156,7 +159,10 @@ export default new Router({
         },
         {
           path: "receiptBill",
-          component: receiptBill
+          component: receiptBill,
+          meta:{
+            getParent:true
+          }
         },
         {
           path: "receiptResult",

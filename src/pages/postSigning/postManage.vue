@@ -492,8 +492,9 @@
                                         <li 
                                         v-for="(i,n) in item.val"
                                         :key="i.name"
+                                        @click="previewPhoto(item.val,n)"
                                         >
-                                            <i @click="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
+                                            <i @click.stop="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
                                             <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                             <p class="p">{{i.name}}</p>
                                         </li>
@@ -576,11 +577,10 @@
                                     </ul> -->
                                     <ul class="steps-img">
                                         <li 
-                                        v-for="i in item.val"
+                                        v-for="(i,n) in item.val"
                                         :key="i.name"
+                                        @click="previewPhoto(item.val,n)"
                                         >
-                                            <i 
-                                            class="iconfont icon-tubiao-6"></i>
                                             <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                             <p class="p">{{i.name}}</p>
                                         </li>
@@ -589,6 +589,8 @@
                             </template>
                         </el-form-item>
                     </el-form>
+                    <!-- 预览 -->
+                    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
             </div>
             <span slot="footer">
                 <!-- 办理 -->
@@ -1294,7 +1296,6 @@
                                 }
                             }
                         })
-                        
                         this.$ajax.postJSON(url,{
                             handleDatetime,
                             remarks,
@@ -1422,7 +1423,7 @@
             // 分页
             currentChangeFn(e){
                 this.pageNum = e;
-                this.getListData();
+                this.getDataList();
             },
             // 接收日期改变的时候
             receivingdateChangeFn(){

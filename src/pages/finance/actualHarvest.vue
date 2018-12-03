@@ -35,7 +35,7 @@
               :value="item.id">
             </el-option>
           </el-select>
-          <el-select :clearable="true" size="small" v-model="searchForm.dealAgentId" placeholder="请选择">
+          <el-select :clearable="true" size="small" class="margin-left" v-model="searchForm.dealAgentId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -89,9 +89,9 @@
     </ScreeningTop>
     <div class="view-context">
       <div class="table-tool">
-        <h4><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
+        <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button round size="small" type="primary">导出</el-button>
+          <el-button class="btn-info" round size="small" type="primary">导出</el-button>
         </p>
       </div>
       <el-table :data="list" style="width: 100%" header-row-class-name="theader-bg">
@@ -110,7 +110,7 @@
             佣金
           </template>
         </el-table-column>
-        <el-table-column align="center" label="成交经纪人" prop="broker">
+        <el-table-column align="center" min-width="160" label="成交经纪人" prop="broker">
           <template slot-scope="scope">
             {{scope.row.dealAgentStoreName}}-{{scope.row.dealAgentName}}
           </template>
@@ -122,7 +122,7 @@
             {{scope.row.receivableCommission-scope.row.receivedCommission}}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作时间" prop="operation time">
+        <el-table-column align="center" min-width="160" label="操作时间" prop="operation time">
           <template slot-scope="scope">
             {{scope.row.signDate|formatTime}}
           </template>
@@ -265,7 +265,7 @@
   }
   .view-context{
     background-color: @color-white;
-    padding: 0 20px 20px;
+    padding: 0 @margin-10 @margin-10;
     /deep/ .theader-bg{
       >th{
         background-color: @bg-th;
@@ -273,20 +273,21 @@
     }
   }
   .table-tool{
-    height: 60px;
     position: relative;
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    padding: @margin-base 0;
     >h4{
       >i{
         margin-right: 8px;
       }
     }
-    >p{
+    /*>p{
       position: absolute;
       top: 50%;
       right: 0;
       transform:translateY(-50%);
-    }
+    }*/
   }
 </style>
