@@ -1296,7 +1296,6 @@
                                 }
                             }
                         })
-                        
                         this.$ajax.postJSON(url,{
                             handleDatetime,
                             remarks,

@@ -90,17 +90,18 @@ const MIXINS = {
      * @param {点击第几张图片} i 
      */
     previewPhoto(arr,i){
-        let type = this.stepsTypeImg(arr[i].path)
+        let type = this.$tool.get_suffix(arr[i].path)
         if(this.imgBoolFn(type)){
             // 图片
             let arr2 = [];
             arr.map((e,n)=>{
                 if(this.imgBoolFn(type)){
                     arr2.push(e.path);
+                    if(e.path === type){
+                      i = n;
+                    }
                 }
-                if(e.path === type){
-                  i = n;
-                }
+                
             })
             this.fileSign(arr2)
         }else{
@@ -117,6 +118,9 @@ const MIXINS = {
                 return true
                 break;
             case '.jpg':
+                return true
+                break;
+            case '.jpeg':
                 return true
                 break;
             default:
