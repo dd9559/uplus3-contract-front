@@ -174,6 +174,10 @@
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
+                 <!-- <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
+                  <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
+                  </el-option>
+                </el-select> -->
                 <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"><i slot="suffix">%</i></el-input>
                 <input v-model="item.identifyCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                 <span @click.stop="addcommissionData1" class="icon">
@@ -664,6 +668,7 @@ export default {
               message: "操作成功",
               type: "success"
             });
+            this.$router.push('/contractList')
           }
         });
       }
