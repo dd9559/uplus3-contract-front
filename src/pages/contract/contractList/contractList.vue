@@ -134,11 +134,11 @@
             <div class="contract_msg">
               <div class="riskLabel">
                 <!-- 风险单 -->
-                <i class="iconfont icon-tubiao_shiyong-1" v-if="scope.row.isRisk"></i>
+                <i class="iconfont icon-tubiao_shiyong-1 risk" v-if="scope.row.isRisk"></i>
                 <!-- 代办 -->
-                <!-- <i class="iconfont icon-tubiao_shiyong-2" v-if="scope.row.contMarkState.value===1"></i> -->
-                <!-- 抵佣 -->
-                <!-- <i class="iconfont icon-tubiao_shiyong-3" v-if="scope.row.contMarkState.value===2"></i> -->
+                <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i>
+                <!-- 低佣 -->
+                <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===2"></i>
               </div>
               <ul class="contract-msglist">
                 <li>合同编号：<span>{{scope.row.code}}</span></li>
@@ -631,11 +631,11 @@ export default {
    align-items: center;
   .riskLabel{
     width: 20px;
+    padding-right: 20px;
     color: @color-orange;
-    > i{
-      &:first-of-type{
-        color: @color-warning;
-      }
+    font-size: 18px;
+    .risk{
+      color: @color-warning;
     }
     
   }
