@@ -14,6 +14,9 @@
       </el-form-item>
     </el-form>
     <div class="data-list">
+      <p>
+          <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
+      </p>
       <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="typeName" :formatter="nullFormatter"></el-table-column>
@@ -324,6 +327,20 @@
   } 
 } 
   .data-list {
+    background-color: #fff;
+    padding: 10px;
+    margin-top: 3px;
+      > p {
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 14px;
+        .mr-8 {
+             margin-right: 8px;
+        }
+    }
     /deep/ 
     .has-gutter {
         tr {
@@ -463,5 +480,6 @@
 /deep/ .detail tr.linestyle{
     background-color: #ECF5FF;
 }
+
 }
 </style>
