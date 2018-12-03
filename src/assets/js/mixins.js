@@ -81,7 +81,53 @@ const MIXINS = {
           this.preview=true
         }
       })
-    }
+    },
+    // 图片放大
+    // 这个方法的前提是你的图片json 格式是 是name ， path 分开的
+    /**
+     * 
+     * @param {图片数组} arr 
+     * @param {点击第几张图片} i 
+     */
+    previewPhoto(arr,i){
+        let type = this.$tool.get_suffix(arr[i].path)
+        if(this.imgBoolFn(type)){
+            // 图片
+            let arr2 = [];
+            arr.map((e,n)=>{
+                if(this.imgBoolFn(type)){
+                    arr2.push(e.path);
+                    if(e.path === type){
+                      i = n;
+                    }
+                }
+                
+            })
+            this.fileSign(arr2)
+        }else{
+            // 其他文件
+        }
+    },
+    // 判断图片类别
+    imgBoolFn(type){
+        switch (type) {
+            case '.png':
+                return true
+                break;
+            case '.gif':
+                return true
+                break;
+            case '.jpg':
+                return true
+                break;
+            case '.jpeg':
+                return true
+                break;
+            default:
+                return false
+                break;
+        }
+    },
   }
 }
 

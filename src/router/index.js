@@ -50,6 +50,9 @@ const layerAudit = () => import("@/pages/contract/contractDialog/layerAudit");
 const layerSettle = () => import("@/pages/contract/contractDialog/layerSettle");
 const changeCancel = () => import("@/pages/contract/contractDialog/changeCancel");
 const routingRecord = () => import("@/pages/contract/contractList/routingRecord");
+
+const Login =()=>import("@/login")
+
 Vue.use(Router)
 
 export default new Router({
@@ -57,6 +60,7 @@ export default new Router({
     {
       path: "/",
       component: Index,
+      redirect: '/login',
       children: [
         // 设置模块
         {
@@ -148,7 +152,10 @@ export default new Router({
         },
         {
           path: "payBill",
-          component: payBill
+          component: payBill,
+          meta:{
+            getParent:true
+          }
         },
         {
           path: "payResult",
@@ -156,7 +163,10 @@ export default new Router({
         },
         {
           path: "receiptBill",
-          component: receiptBill
+          component: receiptBill,
+          meta:{
+            getParent:true
+          }
         },
         {
           path: "receiptResult",
@@ -218,6 +228,10 @@ export default new Router({
         {
           path: "routingRecord",
           component: routingRecord
+        },
+        {
+          path: 'login',
+          component:Login
         }
       ]
     }

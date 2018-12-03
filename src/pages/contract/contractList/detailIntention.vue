@@ -87,23 +87,19 @@
                     <div class="contractSubject">
                         <ul class="ulData">
                             <li>
-                            <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
-                                <i class="iconfont icon-shangchuan"></i>
-                                <p>点击上传</p>
-                            </file-up>
+                                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                                    <i class="iconfont icon-shangchuan"></i>
+                                    <p>点击上传</p>
+                                </file-up>
                             </li>
-                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
-                            <div class="namePath">
-                                <upload-cell :type="item.fileType"></upload-cell>
-                                <p>{{item.name}}</p>
-                            </div>
-                            <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
+                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                                <div class="namePath">
+                                    <upload-cell :type="item.fileType"></upload-cell>
+                                    <p>{{item.name}}</p>
+                                </div>
+                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
                             </li>
                         </ul>
-                        <!-- <file-up class="uploadSubject" @getUrl="uploadSubject">
-                            <i class="iconfont icon-shangchuan"></i>
-                            <p>点击上传</p>
-                        </file-up> -->
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="资料库" name="third" class="third-tab">
@@ -121,7 +117,7 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)"  @click="previewPhoto(item.value,index_)">
                                         <div class="namePath">
                                             <upload-cell :type="item_.fileType"></upload-cell>
                                             <p>{{item_.name}}</p>
@@ -144,7 +140,7 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
                                         <div class="namePath">
                                             <upload-cell :type="item_.fileType"></upload-cell>
                                             <p>{{item_.name}}</p>
@@ -167,7 +163,7 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
                                         <div class="namePath">
                                             <upload-cell :type="item_.fileType"></upload-cell>
                                             <p>{{item_.name}}</p>
@@ -186,9 +182,12 @@
             
             <!-- 上传按钮 -->
             <div class="functionTable">
-               <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='second'||name==='third'">上传</el-button> 
+               <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">上传</el-button>
+               <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'">上传</el-button>  <!-- 合同主体上传 --> 
             </div>
             
+            <!-- 图片放大 -->
+             <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
         </div>
        
             
@@ -258,6 +257,8 @@ export default {
     },
     
     methods: {
+        // 图片放大
+       
         handleClick(tab, event) {
             console.log(tab, event);
             this.name=tab.name;
@@ -455,7 +456,7 @@ export default {
             }
         },
 
-         //获取合同主体信息
+         //获取合同主体信息（已上传后，拿到返回的文件路径）
         getContractBody(){
             let param = {
                 id:this.$route.query.id
@@ -485,7 +486,7 @@ export default {
         ZTdelectData(index){
             this.uploadList.splice(index,1)
         },
-        //保存上传文件
+        //合同主体上传文件
         saveFile() {
             if(this.uploadList.length>0){
                 this.uploadList.forEach(element => {

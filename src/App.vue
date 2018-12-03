@@ -71,6 +71,10 @@
       &:first-of-type {
         min-width: 80px;
       }
+      &.no-width{
+        min-width: initial;
+        margin-right: @margin-10;
+      }
     }
   }
 
@@ -151,5 +155,11 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+  }
+  .margin-left{
+    margin-left: @margin-10;
+  }
+  .margin-right{
+    margin-right: @margin-10;
   }
 </style>

@@ -4,17 +4,17 @@
     <span @click="toPrint">test</span>-->
     <div class="bill-details-tab">
       <ul>
-        <li v-for="(item,index) in tabs" :key="index" :class="[activeItem===item?'active':'']"
+        <li v-for="(item,index) in tabs" :key="index" class="f14" :class="[activeItem===item?'active':'']"
             @click="choseTab(item)">{{item}}
         </li>
       </ul>
       <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
-        <el-button round size="small" type="primary" @click="showDialog">审核</el-button>
+        <el-button class="btn-info" round size="small" type="primary" @click="showDialog">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
       <li>
-        <h4>{{activeItem}}</h4>
+        <h4 class="f14">{{activeItem}}</h4>
         <el-table border :data="list" header-row-class-name="theader-bg">
           <el-table-column align="center" label="合同编号">
             <template slot-scope="scope">
@@ -69,7 +69,7 @@
         </el-table>
       </li>
       <li v-if="activeItem==='收款信息'">
-        <h4>合计金额</h4>
+        <h4 class="f14">合计金额</h4>
         <p class="total-text">合计：<span>{{billMsg.amount}}</span>元</p>
         <el-table border :data="billMsg.inAccount" header-row-class-name="theader-bg">
           <el-table-column align="center" label="款类">
@@ -115,7 +115,7 @@
         </el-table>
       </li>
       <li v-if="activeItem==='收款信息'">
-        <h4>刷卡信息</h4>
+        <h4 class="f14">刷卡信息</h4>
         <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
           <el-table-column align="center" prop="bankName" label="刷卡/转账银行"></el-table-column>
           <el-table-column align="center" prop="userName" label="户名"></el-table-column>
@@ -126,7 +126,7 @@
         </el-table>
       </li>
       <li v-if="activeItem==='付款信息'">
-        <h4>账户信息</h4>
+        <h4 class="f14">账户信息</h4>
         <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
           <el-table-column align="center" prop="bankName" label="收款银行"></el-table-column>
           <el-table-column align="center" prop="userName" label="户名"></el-table-column>
@@ -135,7 +135,7 @@
         </el-table>
       </li>
       <li>
-        <h4>其他信息</h4>
+        <h4 class="f14">其他信息</h4>
         <div class="input-group">
           <label>备注信息:</label>
           <p>{{billMsg.remark}}</p>
@@ -152,7 +152,7 @@
         </div>
       </li>
       <li ref="checkBox">
-        <h4>审核信息</h4>
+        <h4 class="f14">审核信息</h4>
         <el-table border :data="checkList" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
             <template slot-scope="scope">
@@ -472,17 +472,21 @@
   .bill-details-tab {
     position: relative;
     border-bottom: 1px solid @border-CE;
-    padding: 0 20px;
+    padding: 0 @margin-10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     > ul {
       display: flex;
       > li {
         flex: 1;
         align-self: center;
-        height: 50px;
+        /*height: 50px;*/
         display: flex;
         align-items: center;
         justify-content: center;
-        max-width: 100px;
+        /*min-width: 100px;*/
+        padding: @margin-10 @margin-15;
         &.active {
           color: @color-blue;
           position: relative;
@@ -497,16 +501,16 @@
         }
       }
     }
-    > p {
+    /*> p {
       position: absolute;
       top: 50%;
       right: 20px;
       transform: translateY(-50%);
-    }
+    }*/
   }
 
   .bill-details-content {
-    padding: 0 20px;
+    padding: 0 @margin-10;
     > li {
       h4 {
         margin: @margin-base 0;
