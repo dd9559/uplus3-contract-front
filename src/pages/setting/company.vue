@@ -67,6 +67,9 @@
         <el-table-column align="center" label="合作方式" prop="cooperationMode.label" width="150">
         </el-table-column>
         <el-table-column align="center" label="添加时间" prop="createTime" width="208">
+          <template slot-scope="scope">
+            <span>{{scope.row.createTime|formatDate}}</span>
+          </template>
         </el-table-column>
         <el-table-column align="center" label="添加人" prop="createByName" width="150">
         </el-table-column>
