@@ -92,7 +92,7 @@
                                     <p>点击上传</p>
                                 </file-up>
                             </li>
-                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)"  @click="previewImg">
+                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
                                 <div class="namePath">
                                     <upload-cell :type="item.fileType"></upload-cell>
                                     <p>{{item.name}}</p>
@@ -117,7 +117,7 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)"  @click="previewPhoto(item.value,index_)">
                                         <div class="namePath">
                                             <upload-cell :type="item_.fileType"></upload-cell>
                                             <p>{{item_.name}}</p>
@@ -140,7 +140,7 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
                                         <div class="namePath">
                                             <upload-cell :type="item_.fileType"></upload-cell>
                                             <p>{{item_.name}}</p>
@@ -163,7 +163,7 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
                                         <div class="namePath">
                                             <upload-cell :type="item_.fileType"></upload-cell>
                                             <p>{{item_.name}}</p>
@@ -258,13 +258,7 @@ export default {
     
     methods: {
         // 图片放大
-        previewImg:function () {
-            let arr=[]
-            this.files.forEach(item=>{
-            arr.push(item.path)
-            })
-            this.fileSign(arr)
-        },
+       
         handleClick(tab, event) {
             console.log(tab, event);
             this.name=tab.name;
