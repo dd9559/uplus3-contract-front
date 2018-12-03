@@ -449,7 +449,7 @@
       storeSelect(val) {
         this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
           res = res.data
-          if(res.status === 200) {
+          if(res.status === 400 && res.message) {
             this.noticeShow = true
             setTimeout(() => {
               this.noticeShow = false
@@ -685,8 +685,8 @@
   background-color: #fff;
   border-radius:2px;
   box-sizing: border-box;
-  .el-form-item:nth-child(-n+4) {
-    margin-right: 30px;
+  .el-form-item:nth-child(-n+3) {
+    margin-right: 50px;
     /deep/ .el-input {
       width: 180px;
     }
@@ -702,7 +702,7 @@
   padding: 10px;
   margin-top: 20px;
   > p {
-    padding: 0 10px;
+    padding-right: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
