@@ -143,7 +143,7 @@
         <div class="input-group">
           <label>付款凭证:</label>
           <ul class="image-list" v-if="files.length>0">
-            <li v-for="item in files" @click="previewImg">
+            <li class="margin-right" v-for="item in files" @click="previewImg">
               <upload-cell :type="item.type"></upload-cell>
               <span>{{item.name}}</span>
             </li>
@@ -183,11 +183,11 @@
       </div>
       <ul class="radio-dialog" v-if="radioMask">
         <li>
-          <p>大类可支配金额：<span></span></p>
-          <p>合同余额：<span></span></p>
-          <p>代收代付余额：<span></span></p>
+          <p>大类可支配金额：<span>{{amount.CategoriesBalance}}元</span></p>
+          <p>合同余额：<span>{{amount.ContractBalance}}元</span></p>
+          <p>代收代付余额：<span>{{amount.agentBalance}}元</span></p>
         </li>
-        <li>支付方式（若通过审核，则支付方式必填）</li>
+        <li><span>支付方式</span>（若通过审核，则支付方式必填）</li>
         <li>
           <el-radio v-model="payRadio" label="1">线上支付（联动优势）</el-radio>
           <el-radio v-model="payRadio" label="2">线下支付（线下财物打款）</el-radio>
@@ -242,6 +242,7 @@
         invalidMax: 200,
         files: [],
         radioMask: false,
+        amount:{},
         payRadio:0
       }
     },
@@ -278,12 +279,21 @@
       // 判断审核弹窗显示内容
       showDialog: function () {
         this.layer.show = true
-        this.$ajax.get('/api/payInfo/auditOption', {payId: this.billMsg.id}).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.radioMask = res.data === 2 ? true : false
+        if(this.activeItem==='付款信息'){
+          let param={
+            payId: this.billMsg.id,
+            moneyType:this.billMsg.moneyType,
+            moneyTypePid:this.billMsg.moneyTypePid,
+            contId:this.billMsg.contId
           }
-        })
+          this.$ajax.get('/api/payInfo/auditOption', param).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              this.radioMask = res.data.num === 2 ? true : false
+              this.amount=Object.assign({},res.data)
+            }
+          })
+        }
       },
       getData: function () {
         let param = {
@@ -349,6 +359,7 @@
             this.$message({
               message:res.message
             })
+            this.payRadio=0
             this.layer.show = false
           }
         })
@@ -405,6 +416,8 @@
       line-height: 1.6;
     }
     ul.image-list {
+      display: flex;
+      align-items: center;
       > li {
         width: 120px;
         height: 120px;
@@ -414,10 +427,12 @@
         justify-content: center;
         align-items: center;
         span {
-          font-size: @size-base;
-          display: inline-block;
           width: 100px;
-          word-break: break-all;
+          text-align: center;
+          /*word-break: break-all;*/
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow:ellipsis;
         }
       }
     }
@@ -448,14 +463,26 @@
 
   .radio-dialog {
     margin-left: 46px;
+    color: @color-6c;
     > li {
       padding: @margin-base;
       &:first-of-type {
         display: flex;
         > p {
+          margin-right: @margin-10;
           span {
             color: @color-red;
           }
+        }
+      }
+      &:nth-of-type(2){
+        >span{
+          color: @color-233;
+        }
+      }
+      &:nth-of-type(3){
+        .el-radio{
+          color: @color-233;
         }
       }
     }
