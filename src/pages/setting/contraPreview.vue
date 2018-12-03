@@ -179,7 +179,6 @@ export default{
                 if(this.showSed){
                     this.signPosition.pageIndex=this.count2
                 }else{
-                    alert(this.count)
                      this.signPosition.pageIndex=this.count
                 }
                 if(this.cityId==1 && this.type==2){
@@ -187,7 +186,6 @@ export default{
                 }else{
                     this.sigtureShow=!this.sigtureShow
                 }
-                // alert(this.sigtureShow)
                  this.sigtureShow2=!this.sigtureShow2
             
                  this.tuozhuai()
@@ -372,7 +370,6 @@ export default{
               console.log(param,'param');
               this.$ajax.get('/api/setting/contractTemplate/checkTemplate',param).then(res=>{
               if(res.status==200){
-                //   alert(res.data.data.unPlaceholder)
                   if(res.data.data.unPlaceholder!==''){
                       this.tableDate=res.data.data.unPlaceholder
                   }else{
@@ -405,7 +402,6 @@ export default{
                     this.total2=res.data.data.residenceImg.count
                     let htImg=document.getElementById('ht')
                     let htImg2=document.getElementById('ht2')
-                    // alert(htImg2)
                     var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                     var newsrc2=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
                     console.log(this.newsrc,this.newsrc2);
