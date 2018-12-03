@@ -88,20 +88,20 @@
           </el-form-item>
           <el-form-item label="按揭银行：" v-if="contractForm.type===2" class="width-250">
             <el-select v-model="contractForm.houseInfo.stagesBankName" placeholder="请选择银行" :disabled="type===2?true:false" style="width:140px">
-              <el-option label="中国工商银行" value="1"></el-option>
-              <el-option label="中国建设银行" value="2"></el-option>
-              <el-option label="中国银行" value="3"></el-option>
-              <el-option label="中国农业银行" value="4"></el-option>
-              <el-option label="交通银行" value="5"></el-option>
-              <el-option label="招商银行" value="6"></el-option>
-              <el-option label="中信银行" value="7"></el-option>
-              <el-option label="中国民生银行" value="8"></el-option>
-              <el-option label="兴业银行" value="9"></el-option>
-              <el-option label="上海浦东发展银行" value="10"></el-option>
-              <el-option label="中国邮政储蓄银行" value="11"></el-option>
-              <el-option label="中国光大银行" value="12"></el-option>
-              <el-option label="平安银行" value="13"></el-option>
-              <el-option label="华夏银行" value="14"></el-option>
+              <el-option label="中国工商银行" value="中国工商银行"></el-option>
+              <el-option label="中国建设银行" value="中国建设银行"></el-option>
+              <el-option label="中国银行" value="中国银行"></el-option>
+              <el-option label="中国农业银行" value="中国农业银行"></el-option>
+              <el-option label="交通银行" value="交通银行"></el-option>
+              <el-option label="招商银行" value="招商银行"></el-option>
+              <el-option label="中信银行" value="中信银行"></el-option>
+              <el-option label="中国民生银行" value="中国民生银行"></el-option>
+              <el-option label="兴业银行" value="兴业银行"></el-option>
+              <el-option label="上海浦东发展银行" value="上海浦东发展银行"></el-option>
+              <el-option label="中国邮政储蓄银行" value="中国邮政储蓄银行"></el-option>
+              <el-option label="中国光大银行" value="中国光大银行"></el-option>
+              <el-option label="平安银行" value="平安银行"></el-option>
+              <el-option label="华夏银行" value="华夏银行"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="按揭欠款：" v-if="contractForm.type===2" class="width-250">
