@@ -1163,4 +1163,7 @@ export default {
 /deep/ tr.el-table__row{
   overflow: scroll!important;
 }
+.w430{
+    width: 430px;
+}
 </style>
