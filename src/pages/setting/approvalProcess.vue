@@ -12,7 +12,7 @@
             </div>
             <div class="input-group">
                 <label>运营模式</label>
-                <el-select size="small" v-model="searchForm.cooperationMode" :clearable="true">
+                <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
                     <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
@@ -26,7 +26,7 @@
                     <el-option label="全部" value=""></el-option>
                     <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
-                <el-select size="small" v-model="searchForm.branchCondition" :clearable="true">
+                <el-select size="small" v-model="searchForm.branchCondition" :clearable="true" class="branch-condition">
                     <el-option label="全部" value=""></el-option>
                     <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
@@ -40,15 +40,24 @@
             </p>
             <div class="table">
                 <el-table :data="tableData" style="width: 100%">
-                    <el-table-column
-                    :formatter="nullFormatter"
-                    v-for="item in tHeader"
-                    :key="item.id"
-                    align="center"
-                    :label="item.name"
-                    :prop="item.prop">
+                    <el-table-column align="center" label="流程名称" prop="name"></el-table-column>
+                    <el-table-column align="center" label="城市" prop="cityName">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.cityName}}</span>
+                        </template>
                     </el-table-column>
-                    <el-table-column align="center" label="分支节点">
+                    <el-table-column align="center" label="运营模式" prop="deptAttr" :formatter="nullFormatter"></el-table-column>
+                    <el-table-column align="center" label="流程类型" prop="type">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.type|getTypeName}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" label="分支条件" prop="branchCondition">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.branchCondition}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" label="分支节点" prop="name">
                         <template slot-scope="scope">
                             <p v-for="item in scope.row.branch" :key="item.sort">{{item.name}}</p>
                         </template>
@@ -56,7 +65,7 @@
                     <el-table-column align="center" label="操作">
                         <template slot-scope="scope">
                             <el-button type="text" size="medium" @click="operation('编辑',2,scope.row)">编辑</el-button>
-                            <el-button type="text" size="medium">删除</el-button>
+                            <el-button type="text" size="medium" @click="delFlow(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -82,7 +91,7 @@
                 </div>
                 <div class="aduit-input">
                     <label>运营模式:</label>
-                    <el-select size="small" v-model="aduitForm.cooperationMode" :disabled="editDisabled">
+                    <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
                         <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
@@ -105,12 +114,12 @@
                 <div class="aduit-node">
                     <div>
                         <label>分支节点:</label>
-                        <el-radio-group v-model="aduitForm.isRequired">
+                        <el-radio-group v-model="isAudit">
                             <el-radio label="1">需要审核</el-radio>
                             <el-radio label="0">无需审核</el-radio>
                         </el-radio-group>
                     </div>
-                    <ul v-if="aduitForm.isRequired==='1'">
+                    <ul v-if="isAudit==='1'">
                         <li v-for="(item,index) in nodeList" :key="index">
                             <el-input size="small" v-model="item.name" placeholder="设置节点名称"></el-input>
                             <el-select size="small" class="people-type" v-model="item.type" @change="getTypeOption(item.type,index)">
@@ -146,6 +155,7 @@
 <script>
     import {FILTER} from "@/assets/js/filter";
     import {MIXINS} from "@/assets/js/mixins";
+    let flowType = ["付款审核","付款审核","应收业绩审核","合同审核","调佣审核","结算审核"]
     let sortNo = 1
     let arr = [
         {
@@ -165,53 +175,23 @@
                 searchForm: {
                     cityId: "",
                     name: "",
-                    cooperationMode: "",
+                    deptAttr: "",
                     type: "",
-                    branchCondition: "",
-                    flowDesc: "",
-                    priority: ""
+                    branchCondition: ""
                 },
                 tableData: [],
-                tHeader: [
-                    {
-                        id: 1,
-                        prop: "name",
-                        name: "流程名称"
-                    },
-                    {
-                        id: 2,
-                        prop: "cityId",
-                        name: "城市"
-                    },
-                    {
-                        id: 3,
-                        prop: "cooperationMode",
-                        name: "运营模式"
-                    },
-                    {
-                        id: 4,
-                        prop: "type",
-                        name: "流程类型"
-                    },
-                    {
-                        id: 5,
-                        prop: "branchCondition",
-                        name: "分支条件"
-                    }
-                ],
                 cityList: [],
                 aduitDialog: false,
                 aduitTitle: "",
                 aduitForm: {
                     cityId: "",
-                    cooperationMode: "",
+                    deptAttr: "",
                     name: "",
                     type: "",
                     branchCondition: "",
-                    isRequired: "",
-                    flowDesc: "",
-                    priority: ""
+                    flowDesc: ""
                 },
+                isAudit: "",
                 nodeList: [],
                 dictionary: {
                     '37':'',
@@ -230,13 +210,14 @@
                 conditionList: [],
                 depsList: [],
                 roleList: [],
-                editDisabled: false
+                editDisabled: false,
+                currentFlowId: ""
             }
         },
         created() {
             this.getCityList()
             this.getDictionary()
-            // this.getData()
+            this.getData()
             this.getDeps()
             this.getRoles()
         },
@@ -289,18 +270,42 @@
                     this.nodeList[0].type = ""
                     this.nodeList[0].name = ""
                     this.$tool.clearForm(this.aduitForm)
+                    this.isAudit = ""
                     this.editDisabled = false
                 } else {
                     this.nodeList = [...row.branch]
                     let {...currentRow} = row
+                    this.currentFlowId = currentRow.id
                     this.aduitForm.cityId = currentRow.cityId
+                    this.aduitForm.deptAttr = currentRow.deptAttr.value
                     this.aduitForm.name = currentRow.name
                     this.aduitForm.type = currentRow.type
-                    this.aduitForm.branchCondition = +currentRow.branchCondition
+                    this.aduitForm.branchCondition = +currentRow.branchCondition.slice(-1)
+                    this.isAudit = currentRow.branch[0].isAudit.toString()
                     this.aduitForm.flowDesc = currentRow.flowDesc
                     this.setConditionList(currentRow.type)
                     this.editDisabled = true
                 }
+            },
+            delFlow(row) {
+                let param = {
+                    id: row.id
+                }
+                this.$confirm('是否删除该流程?', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    this.$ajax.post('/api/auditflow/operateFlow',param).then(res => {
+                        res = res.data
+                        if(res.status === 2013) {
+                            this.$message(res.message)
+                        } else if(res.status === 200) {
+                            this.$message(res.message)
+                            this.getData()
+                        }
+                    })
+                })   
             },
             setConditionList(val) {
                 switch(val) {
@@ -360,15 +365,23 @@
                 this.nodeList.splice(index,1)
             },
             isSave() {
+                if(this.isAudit === "1") {
+                    this.nodeList.forEach(item => {
+                        item.isAudit = this.isAudit
+                    })
+                } else {
+                    this.nodeList[0].isAudit = this.isAudit
+                }
                 let param = {
                     branch: JSON.stringify(this.nodeList)
                 }
                 param = Object.assign({},this.aduitForm,param)
+                const url = "/api/auditflow/operateFlow"
                 if(this.aduitTitle === "添加") {
-                    const url = "/api/auditflow/insertFlow"
                     this.aduitPost(url,param)
                 } else {
-                    console.log("编辑");
+                    param.id = this.currentFlowId
+                    this.aduitPost(url,param)
                 }
             },
             aduitPost(url,param) {
@@ -395,6 +408,15 @@
                 this.pageNum = val
                 this.getData()
             }
+        },
+        filters: {
+            getTypeName(val) {
+                for(var i = 0; i < flowType.length; i++) {
+                    if(val === i) {
+                        return flowType[i]
+                    }
+                }
+            }
         }
     }
 </script>
@@ -415,15 +437,18 @@
         &:last-child {
             /deep/ .el-input {
                 width: 162px;
-                margin-right: 15px;
+            }
+        }
+        .branch-condition {
+            /deep/ .el-input {
+                margin-left: 20px;
             }
         }
     }
 }
 .aduit-list {
     padding: 20px 10px;
-    > p {
-    padding-left: 10px;    
+    > p { 
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -486,11 +511,6 @@
                         width: 110px;
                     }
                 }
-                // .person {
-                //     /deep/ .el-input {
-                //         width: 115px;
-                //     }
-                // }
                 .other {
                     /deep/ .el-input {
                         width: 279px;

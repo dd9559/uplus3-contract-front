@@ -257,7 +257,7 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath">
+                  <div class="namePath" @click="getPicture(item.value)">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
@@ -393,6 +393,8 @@
     <achDialog :shows="shows" @close="shows=false,code2=''" :achObj="achObj" :dialogType="dialogType" :contractCode="code2"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
+    <!-- 图片预览 -->
+    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
            
@@ -493,7 +495,8 @@ export default {
       achObj:{},
       isDelete:'',
       //扩展参数
-      parameterList:[]
+      parameterList:[],
+      preview:false
     };
   },
   created() {
@@ -515,6 +518,13 @@ export default {
     handleClick(tab, event) {
       console.log(tab.name);
       this.name=tab.name;
+      if(tab.name==="second"||tab.name==="third"){
+        if(this.contractDetail.contState.value===1){
+          this.$message({
+            message:'合同未签章,不允许上传'
+          })
+        }
+      }
     },
     //打电话
     call(value) {
@@ -526,7 +536,8 @@ export default {
       this.$router.push({
         path: "/contractPreview",
         query: {
-          id: this.id
+          id: this.id,
+          code: this.contractDetail.code
         }
       });
     },
@@ -838,7 +849,8 @@ export default {
           if(res.status===200){
             this.$message({
               message:'上传成功'
-            })
+            });
+            this.getContData();
           }
         })
       }
@@ -877,7 +889,16 @@ export default {
           message:'请填写无效原因'
         })
       }
-    }
+    },
+    //图片预览
+    getPicture(value){
+      let arr=[];
+      console.log(value)
+      // this.imgList.forEach(item=>{
+      //   arr.push(item.path)
+      // })
+      // this.fileSign(arr)
+    },
   },
   filters: {
     moneyFormat: function(val) {

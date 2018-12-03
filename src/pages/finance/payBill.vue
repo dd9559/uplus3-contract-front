@@ -36,7 +36,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===item.key">
+                <input type="number" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===item.key">
                 <span v-else>请输入</span>
               </li>
             </ul>
@@ -452,7 +452,11 @@
         justify-content: center;
         >span{
           width: 100px;
-          word-break: break-all;
+          text-align: center;
+          /*word-break: break-all;*/
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow:ellipsis;
         }
         &:first-of-type{
           .iconfont{

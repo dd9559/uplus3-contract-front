@@ -120,10 +120,6 @@
               <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
                 {{item.value}}
               </el-dropdown-item>
-              <!-- <el-dropdown-item command="1">租赁</el-dropdown-item>
-              <el-dropdown-item command="2">买卖</el-dropdown-item>
-              <el-dropdown-item command="3">代办</el-dropdown-item>
-              <el-dropdown-item command="4">意向</el-dropdown-item> -->
             </el-dropdown-menu>
           </el-dropdown>
         </span>
