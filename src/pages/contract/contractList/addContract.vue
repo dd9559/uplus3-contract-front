@@ -5,16 +5,16 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="签约日期：" class="form-label">
+          <el-form-item label="签约日期：" class="form-label width-250">
             <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" v-model="contractForm.signDate" :disabled="type===2?true:false" style="width:140px"></el-date-picker>
           </el-form-item>
-          <el-form-item label="合同类型：">
+          <el-form-item label="合同类型：" class="width-250">
             <el-input placeholder="请输入内容" value="租赁" :disabled="true" style="width:140px" v-if="contractForm.type===1"></el-input>
             <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
-          <el-form-item label="成交总价：" class="form-label">
-            <el-input v-model="contractForm.dealPrice" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
+          <el-form-item label="成交总价：" class="form-label width-250">
+            <el-input v-model="contractForm.dealPrice" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input>
           </el-form-item>
           <el-form-item v-if="contractForm.type===1">
             <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:90px">
@@ -26,20 +26,20 @@
             <span class="chineseNum">{{contractForm.dealPrice|moneyFormat}}</span>
           </el-form-item>
           <br>
-          <el-form-item label="客户保证金：" v-if="contractForm.type===2">
-            <el-input v-model="contractForm.custEnsure" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input>
+          <el-form-item label="客户保证金：" v-if="contractForm.type===2" class="width-250">
+            <el-input v-model="contractForm.custEnsure" maxlength="13" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input>
           </el-form-item>
-          <el-form-item label="客户佣金：">
-            <el-input v-model="contractForm.custCommission" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
+          <el-form-item label="客户佣金：" class="width-250">
+            <el-input v-model="contractForm.custCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
           </el-form-item>
-          <el-form-item label="业主佣金：">
-            <el-input v-model="contractForm.ownerCommission" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
+          <el-form-item label="业主佣金：" class="width-250">
+            <el-input v-model="contractForm.ownerCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
           </el-form-item>
           <br>
-          <el-form-item label="佣金支付费：">
-            <el-input v-model="contractForm.commissionPayment" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
+          <el-form-item label="佣金支付费：" class="width-250">
+            <el-input v-model="contractForm.commissionPayment" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
           </el-form-item>
-          <el-form-item label="交易流程：" class="form-label">
+          <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程">
               <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
@@ -51,22 +51,22 @@
       <div class="houseMsg">
         <p>房源信息</p>
         <div class="form-content">
-          <el-form-item label="房源编号：" class="form-label">
+          <el-form-item label="房源编号：" class="form-label width-250">
             <span class="select" @click="showDialog('house')" v-if="type===1">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
             <span class="select" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
-          <el-form-item label="物业地址：" class="form-label">
-            <el-input placeholder="请输入内容" v-model="contractForm.houseInfo.Address" :disabled="true" class="address">
+          <el-form-item label="物业地址：" class="form-label" style="width:605px;text-align:right">
+            <el-input placeholder="" v-model="contractForm.houseInfo.Address" :disabled="true" class="address">
             </el-input>
           </el-form-item>
           <br>
-          <el-form-item label="建筑面积：">
+          <el-form-item label="建筑面积：" class="width-250">
             <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input>
           </el-form-item>
-          <el-form-item label="套内面积：">
+          <el-form-item label="套内面积：" class="width-250">
             <el-input v-model="contractForm.houseInfo.SquareUse" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input>
           </el-form-item>
-          <el-form-item label="房源方门店：" class="form-label">
+          <el-form-item label="房源方门店：" class="form-label" style="width:320px;text-align:right">
             <el-select v-model="contractForm.houseInfo.HouseStoreCode" :multiple='false' clearable filterable remote reserve-keyword @change="getShop" placeholder="部门" :remote-method="remoteMethod" :loading="loading">
               <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
@@ -80,13 +80,13 @@
             {{contractForm.houseInfo.ShopOwnerName}} {{contractForm.houseInfo.ShopOwnerMobile}}
           </el-form-item>
           <br v-if="contractForm.type===2">
-          <el-form-item label="产权状态：" v-if="contractForm.type===2">
+          <el-form-item label="产权状态：" v-if="contractForm.type===2" class="width-250">
             <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px">
               <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="按揭银行：" v-if="contractForm.type===2">
+          <el-form-item label="按揭银行：" v-if="contractForm.type===2" class="width-250">
             <el-select v-model="contractForm.houseInfo.stagesBankName" placeholder="请选择银行" :disabled="type===2?true:false" style="width:140px">
               <el-option label="中国工商银行" value="1"></el-option>
               <el-option label="中国建设银行" value="2"></el-option>
@@ -104,18 +104,18 @@
               <el-option label="华夏银行" value="14"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="按揭欠款：" v-if="contractForm.type===2">
+          <el-form-item label="按揭欠款：" v-if="contractForm.type===2" class="width-250">
             <el-input v-model="contractForm.houseInfo.stagesArrears" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input>
           </el-form-item>
           <br v-if="contractForm.type===2">
-          <el-form-item label="产权地址：" v-if="contractForm.type===2">
-            <el-input v-model="contractForm.houseInfo.propertyRightAddr" placeholder="请输入内容" :disabled="type===2?true:false" style="width:430px"></el-input>
+          <el-form-item label="产权地址：" v-if="contractForm.type===2" style="width:535px;text-align:right">
+            <el-input v-model="contractForm.houseInfo.propertyRightAddr" placeholder="请输入内容" style="width:430px"></el-input>
           </el-form-item>
           <el-form-item label="房产证号：" v-if="contractForm.type===2">
             <el-input v-model="contractForm.propertyCard" placeholder="请输入内容" :disabled="type===2?true:false" style="width:200px"></el-input>
           </el-form-item>
           <br>
-          <el-form-item label="业主信息：" class="form-label">
+          <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
                 <span class="merge">
@@ -131,8 +131,8 @@
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
-                <span @click.stop="deleteRowcommissionData(index)" v-if="ownerList.length>1" class="icon delete">
-                  <i class="el-icon-minus"></i>
+                <span @click.stop="deleteRowcommissionData(index)" v-if="ownerList.length>1" class="icon">
+                  <i class="iconfont icon-tubiao_shiyong-4"></i>
                 </span>
               </li>
             </ul>
@@ -143,7 +143,7 @@
       <div class="houseMsg">
         <p>客源信息</p>
         <div class="form-content">
-          <el-form-item label="客源编号：" class="form-label">
+          <el-form-item label="客源编号：" class="form-label width-250">
             <span class="select" @click="showDialog('guest')" v-if="type===1">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
             <span class="select" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
@@ -163,7 +163,7 @@
             {{contractForm.guestInfo.ShopOwnerName}}{{contractForm.guestInfo.ShopOwnerMobile}}
           </el-form-item>
           <br>
-          <el-form-item label="客户信息：" class="form-label">
+          <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
                 <span class="merge">
@@ -179,8 +179,8 @@
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
-                <span @click.stop="deleteRowcommissionData1(index)" v-if="guestList.length>1" class="icon delete">
-                  <i class="iconfont icon-tubiao_shiyong-"></i>
+                <span @click.stop="deleteRowcommissionData1(index)" v-if="guestList.length>1" class="icon">
+                  <i class="iconfont icon-tubiao_shiyong-4"></i>
                 </span>
               </li>
             </ul>
@@ -192,27 +192,27 @@
         <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':cooperation}"></span></p>
         <div class="cooperation">
           <div v-show="cooperation">
-            <el-form-item label="扣合作费：">
-              <el-input v-model="contractForm.otherCooperationCost" placeholder="请输入内容" style="width:120px"></el-input>
+            <el-form-item label="扣合作费：" class="width-250">
+              <el-input v-model="contractForm.otherCooperationCost" placeholder="请输入内容" style="width:140px"></el-input>
             </el-form-item>
-            <el-form-item label="类型：">
+            <el-form-item label="类型：" class="width-250">
               <el-select v-model="contractForm.otherCooperationInfo.type" placeholder="请选择" style="width:140px">
                 <el-option v-for="item in dictionary['517']" :key="item.key" :label="item.value" :value="item.key">
                 </el-option>
               </el-select>
             </el-form-item>
             <br>
-            <el-form-item label="合作方姓名：">
-              <el-input v-model="contractForm.otherCooperationInfo.name" placeholder="请输入内容" style="width:120px"></el-input>
+            <el-form-item label="合作方姓名：" class="width-250">
+              <el-input v-model="contractForm.otherCooperationInfo.name" placeholder="请输入内容" style="width:140px"></el-input>
             </el-form-item>
-            <el-form-item label="联系方式：">
+            <el-form-item label="联系方式：" class="width-250">
               <el-input v-model="contractForm.otherCooperationInfo.mobile" placeholder="请输入内容" style="width:140px"></el-input>
             </el-form-item>
-            <el-form-item label="身份证号：">
+            <el-form-item label="身份证号：" style="width:300px;text-align:right">
               <el-input v-model="contractForm.otherCooperationInfo.identifyCode" placeholder="请输入内容"></el-input>
             </el-form-item>
             <br>
-            <el-form-item label="备注：">
+            <el-form-item label="备注：" style="padding-left:51px">
               <el-input type="textarea" :rows="4" resize='none' v-model="contractForm.otherCooperationInfo.remarks" placeholder="无备注内容"></el-input>
             </el-form-item>
           </div>
@@ -888,19 +888,37 @@ export default {
           if(res.data.isHavaCooperation){
             this.cooperation=true
           }
+          this.ownerList=[];
+          this.guestList=[];
           for (var i = 0; i < this.contractForm.contPersons.length; i++) {
             if (this.contractForm.contPersons[i].personType.value === 1) {
-              this.ownerList[0].name = this.contractForm.contPersons[i].name;
-              this.ownerList[0].mobile = this.contractForm.contPersons[i].mobile;
-              this.ownerList[0].relation = this.contractForm.contPersons[i].relation;
-              this.ownerList[0].propertyRightRatio = this.contractForm.contPersons[i].propertyRightRatio;
-              this.ownerList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+              // this.ownerList[0].name = this.contractForm.contPersons[i].name;
+              // this.ownerList[0].mobile = this.contractForm.contPersons[i].mobile;
+              // this.ownerList[0].relation = this.contractForm.contPersons[i].relation;
+              // this.ownerList[0].propertyRightRatio = this.contractForm.contPersons[i].propertyRightRatio;
+              // this.ownerList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+              this.ownerList.push({
+                name:this.contractForm.contPersons[i].name,
+                mobile:this.contractForm.contPersons[i].mobile,
+                relation:this.contractForm.contPersons[i].relation,
+                propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+                identifyCode:this.contractForm.contPersons[i].identifyCode,
+                type:1,
+              });
             } else if (this.contractForm.contPersons[i].personType.value === 2) {
-              this.guestList[0].name = this.contractForm.contPersons[i].name;
-              this.guestList[0].mobile = this.contractForm.contPersons[i].mobile;
-              this.guestList[0].relation = this.contractForm.contPersons[i].relation;
-              this.guestList[0].propertyRightRatio = this.contractForm.contPersons[i].propertyRightRatio;
-              this.guestList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+              // this.guestList[0].name = this.contractForm.contPersons[i].name;
+              // this.guestList[0].mobile = this.contractForm.contPersons[i].mobile;
+              // this.guestList[0].relation = this.contractForm.contPersons[i].relation;
+              // this.guestList[0].propertyRightRatio = this.contractForm.contPersons[i].propertyRightRatio;
+              // this.guestList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
+              this.guestList.push({
+                name:this.contractForm.contPersons[i].name,
+                mobile:this.contractForm.contPersons[i].mobile,
+                relation:this.contractForm.contPersons[i].relation,
+                propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+                identifyCode:this.contractForm.contPersons[i].identifyCode,
+                type:2,
+              });
             }
           }
         }
@@ -928,6 +946,14 @@ export default {
     background: @bg-white;
   }
 }
+/deep/.form-label {
+    position: relative;
+    &:before {
+      content: '*';
+      display: inline-block;
+      color: red;
+    }
+  }
 .contractMsg {
   border-bottom: 1px solid @border-ED;
   > p {
@@ -989,6 +1015,7 @@ export default {
       display: flex;
       width: 800px;
       flex-wrap:wrap;
+      padding-bottom: 10px;
       li{
         display: flex;
         height: 50px;
@@ -1064,13 +1091,16 @@ export default {
         font-size: 22px;
         color: @color-blue;
       }
-    }
-    .delete {
-      i {
+      .icon-tubiao_shiyong-4{
+        font-size: 22px;
         color: @color-FF5;
       }
     }
   }
+}
+.width-250{
+  width: 245px;
+  text-align: right;
 }
 .btn {
   padding-top: 20px;
