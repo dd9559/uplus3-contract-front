@@ -129,21 +129,21 @@
         </span>
       </p>
       <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
-        <el-table-column align="left" label="合同信息" width="230" fixed>
+        <el-table-column align="left" label="合同信息" width="240" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
                 <!-- 风险单 -->
-                <i class="iconfont icon-tubiao_shiyong-1" v-if="scope.row.isRisk"></i>
+                <i class="iconfont icon-tubiao_shiyong-1 risk" v-if="scope.row.isRisk"></i>
                 <!-- 代办 -->
-                <!-- <i class="iconfont icon-tubiao_shiyong-2" v-if="scope.row.contMarkState.value===1"></i> -->
-                <!-- 抵佣 -->
-                <!-- <i class="iconfont icon-tubiao_shiyong-3" v-if="scope.row.contMarkState.value===2"></i> -->
+                <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i>
+                <!-- 低佣 -->
+                <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===2"></i>
               </div>
               <ul class="contract-msglist">
                 <li>合同编号：<span>{{scope.row.code}}</span></li>
-                <li>房源编号：<span>{{scope.row.houseinfoCode}}</span></li>
-                <li>客源编号：<span>{{scope.row.guestinfoCode}}</span></li>
+                <li>房源编号：<span>{{scope.row.houseinfoCode}} {{scope.row.showOwnerName}}</span></li>
+                <li>客源编号：<span>{{scope.row.guestinfoCode}} {{scope.row.showCustName}}</span></li>
               </ul>
             </div>
           </template>
@@ -370,7 +370,7 @@ export default {
     payment(id) {
       console.log(id);
        this.$router.push({
-        path:'/paytBill',
+        path:'/payBill',
         contId:id
       })
     },
@@ -552,7 +552,7 @@ export default {
     //发起结算弹窗
     closeAccount(item){
       console.log(item);
-      if(item.resultState.value===1){
+      if(item.resultState.value===2){
         this.$message({
           message:'已结算完成，无需发起结算'
         })
@@ -631,11 +631,11 @@ export default {
    align-items: center;
   .riskLabel{
     width: 20px;
+    padding-right: 20px;
     color: @color-orange;
-    > i{
-      &:first-of-type{
-        color: @color-warning;
-      }
+    font-size: 18px;
+    .risk{
+      color: @color-warning;
     }
     
   }

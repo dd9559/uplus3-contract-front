@@ -16,7 +16,7 @@ let FILTER={
     },
     booleanFormatter: function(row, column, cellValue, index) {
       // debugger
-      if (!cellValue) {
+      if (!cellValue && cellValue != 0) {
         return "--";
       } else {
         return cellValue===1?'是':'否';

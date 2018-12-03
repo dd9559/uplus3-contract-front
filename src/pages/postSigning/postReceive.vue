@@ -242,7 +242,7 @@
                                     @click="downloadFn"
                                     round>下载</el-button>
                             </div> -->
-                            <div class="contract-photo">
+                            <!-- <div class="contract-photo">
                                 <el-checkbox-group v-model="checkList">
                                     <div class="tit mt-20">{{photoTit.txt1}}</div>
                                     <div class="contract-main" v-for="(items,i) in photoMain" :key="'photoMain' + items.txt">
@@ -265,11 +265,29 @@
                                         </ul>
                                     </div>
                                 </el-checkbox-group>
+                            </div> -->
+                            <div v-for="items in ContractDatabase" :key="items.kind">
+                                <div class="contract-tit">{{items.kind}}</div>
+                                <div class="contract-main" v-for="item in items.children" :key="item.title">
+                                    <p class="cl-1 mb-10"><span class="red mr-5">*</span>{{item.title}}</p>
+                                    <ul class="steps-img">
+                                        <li 
+                                        v-for="(ies,i) in item.value"
+                                        :key="ies.name"
+                                        @click="previewPhoto(item.value,i)"
+                                        >
+                                            <div class="img"><uploadCell :type="stepsTypeImg(ies.path)"></uploadCell></div>
+                                            <p class="p">{{ies.name}}</p>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
-                <div class="fixed-zoom-box" v-show="zoomCarousel.show">
+                <!-- 预览 -->
+                <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
+                <!-- <div class="fixed-zoom-box" v-show="zoomCarousel.show">
                     <el-carousel 
                     class="fixed-zoom"
                     arrow="always"
@@ -286,7 +304,7 @@
                         </el-carousel-item>
                     </el-carousel>
                     <div @click="zoomCloseFn" class="fixed-zoom-close">关闭</div>
-                </div>
+                </div> -->
             </div>
             <span slot="footer">
                 <el-button 
@@ -317,6 +335,7 @@
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
     import {FILTER} from '@/assets/js/filter';
+    import {MIXINS} from '@/assets/js/mixins';
     import {TOOL} from '@/assets/js/common';
 
     const RECEIVE = {
@@ -325,7 +344,7 @@
     }
 
     export default {
-        mixins: [FILTER],
+        mixins: [FILTER,MIXINS],
         data() {
             return {
                 cityId:1,
@@ -398,32 +417,34 @@
                 // 交易流程 表格数据
                 dealTable: [],
                 dealTableRule:[],
-                // 批量下载状态切换
-                downloadState:true,
-                // 多选数组
-                checkList:[],
-                // 相册
-                photoTit:{
-                    txt1:'卖方',
-                    txt2:'买方',
-                },
-                photoMain:[{
-                    txt:'身份证复印件',
-                    children:['https://img.zcool.cn/community/0147cf5be2aaaba801209252bb0d56.jpg','https://img.zcool.cn/community/016a935be3dbd0a801209252ee8536.jpg@520w_390h_1c_1e_1o_100sh.jpg']
-                }],
-                photoMainB:[{
-                    txt:'身份证复印件',
-                    children:['https://img.zcool.cn/community/010e835be3d71aa801209252ea8f78.jpg@520w_390h_1c_1e_1o_100sh.jpg','https://img.zcool.cn/community/01a2a25be32deca80121ab5d542482.jpg@520w_390h_1c_1e_1o_100sh.jpg','https://img.zcool.cn/community/01945f5be38aefa80121ab5dad4e08.jpg@520w_390h_1c_1e_1o_100sh.jpg']
-                },{
-                    txt:'购房合同',
-                    children:['https://img.zcool.cn/community/01fdf85be39d38a801209252edbf6c.jpg@520w_390h_1c_1e_1o_100sh.jpg']
-                }],
-                zoomCarousel:{
-                    show:false,
-                    autoplay:false,
-                    index:0,
-                    children:[],
-                }
+                // 合同资料库
+                ContractDatabase:[],
+                // // 批量下载状态切换
+                // downloadState:true,
+                // // 多选数组
+                // checkList:[],
+                // // 相册
+                // photoTit:{
+                //     txt1:'卖方',
+                //     txt2:'买方',
+                // },
+                // photoMain:[{
+                //     txt:'身份证复印件',
+                //     children:['https://img.zcool.cn/community/0147cf5be2aaaba801209252bb0d56.jpg','https://img.zcool.cn/community/016a935be3dbd0a801209252ee8536.jpg@520w_390h_1c_1e_1o_100sh.jpg']
+                // }],
+                // photoMainB:[{
+                //     txt:'身份证复印件',
+                //     children:['https://img.zcool.cn/community/010e835be3d71aa801209252ea8f78.jpg@520w_390h_1c_1e_1o_100sh.jpg','https://img.zcool.cn/community/01a2a25be32deca80121ab5d542482.jpg@520w_390h_1c_1e_1o_100sh.jpg','https://img.zcool.cn/community/01945f5be38aefa80121ab5dad4e08.jpg@520w_390h_1c_1e_1o_100sh.jpg']
+                // },{
+                //     txt:'购房合同',
+                //     children:['https://img.zcool.cn/community/01fdf85be39d38a801209252edbf6c.jpg@520w_390h_1c_1e_1o_100sh.jpg']
+                // }],
+                // zoomCarousel:{
+                //     show:false,
+                //     autoplay:false,
+                //     index:0,
+                //     children:[],
+                // }
             }
         },
         computed: {
@@ -432,6 +453,10 @@
             }
         },
         methods: {
+            // 图片格式状态判定
+            stepsTypeImg(type){
+                return this.$tool.get_suffix(type)
+            },
             // 成功提示
             successMeFn(e){
                 this.$message({
@@ -541,11 +566,34 @@
                 }).then(res=>{
                     res = res.data;
                     if(res.status === 200){
-                        console.log(res)
+                        let j = JSON.parse(res.data.address)
+                        let arr = this.recursiveFn([...j]);
+                        this.ContractDatabase = arr;
                     }
                 }).catch(err=>{
                     console.log(err)
                 })
+            },
+            recursiveFn(n,arr=[]){
+                if(n.length === 0){
+                    return arr
+                }
+                let bool = n[0].kind;
+                let children = [];
+                let num = 0;
+                let arr2 = [...n];
+                arr2.map((e,i)=>{
+                    if(e.kind === bool){
+                        children.push(e);
+                        n.splice(i-num,1);
+                        num++;
+                    }
+                })
+                arr.push({
+                    kind:bool,
+                    children,
+                })
+                return this.recursiveFn(n,arr)
             },
             // 分配角色改变时候 数据联动
             roleChangeFn(i,e) {
@@ -805,27 +853,27 @@
                     console.log(err)
                 })
             },
-            // 批量状态切换
-            downloadStateFn(){
-                this.downloadState = !this.downloadState
-            },
-            // 下载
-            downloadFn(){
-                console.log('下载',this.checkList);
-            },
-            // 图片放大
-            photoZoomFn(arr,i,t){
-                let j = {
-                    show:true,
-                    index:t,
-                    children:arr[i].children
-                };
-                Object.assign(this.zoomCarousel,j)
-            },
-            // 图片放大关闭
-            zoomCloseFn(){
-                this.zoomCarousel.show = false;
-            },
+            // // 批量状态切换
+            // downloadStateFn(){
+            //     this.downloadState = !this.downloadState
+            // },
+            // // 下载
+            // downloadFn(){
+            //     console.log('下载',this.checkList);
+            // },
+            // // 图片放大
+            // photoZoomFn(arr,i,t){
+            //     let j = {
+            //         show:true,
+            //         index:t,
+            //         children:arr[i].children
+            //     };
+            //     Object.assign(this.zoomCarousel,j)
+            // },
+            // // 图片放大关闭
+            // zoomCloseFn(){
+            //     this.zoomCarousel.show = false;
+            // },
             // 获取数据
             getListData(){
                 this.loadingList = true;

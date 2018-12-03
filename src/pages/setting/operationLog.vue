@@ -41,7 +41,8 @@
         </ScreeningTop>
         <div class="table-list">
             <p>
-                <span>数据列表</span>
+                <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
+                <!-- <span>数据列表</span> -->
             </p>
             <el-table :data="tableData" style="width: 100%">
                 <el-table-column label="操作日期">
@@ -178,7 +179,7 @@
             > .el-button {
                 width: 100px;
                 height: 36px;
-                border-radius:18px;
+                border-radius:14px;
             }
         }
     }
@@ -202,7 +203,7 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 10px;
-        font-size: 18px;
+        font-size: 14px;
     }
 }
 
@@ -211,5 +212,8 @@
 }
 /deep/ .el-pagination{
     text-align: center
+}
+.mr-8{
+    margin-right: 8px;
 }
 </style>

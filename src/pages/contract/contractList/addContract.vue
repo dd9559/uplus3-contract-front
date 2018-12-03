@@ -223,11 +223,12 @@
         <div class="form-content">
           <ul class="parameter">
             <li v-for="item in parameterList" :key="item.id">
-              <span class="title">{{item.name+':'}}</span>
+              <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span>
+              <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="ceshi1" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <el-input v-model="contractForm.extendParams[item.name]" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
               <!-- 下拉框 -->
-              <el-select v-model="ceshi2" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2" size="small">
+              <el-select v-model="contractForm.extendParams[item.name]" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
                 </el-option>
               </el-select>
@@ -240,15 +241,15 @@
       <div class="btn">
         <div>
           <div v-if="type===2">
-            <p><span>录入时间：</span>{{contractForm.createTime}}</p>
+            <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
             <p><span>录入人：</span>{{contractForm.dealAgentStoreName}}-{{contractForm.dealAgentName}}</p>
-            <p><span>最后修改：</span>{{contractForm.updateTime}}</p>
+            <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
           </div>
         </div>
         <div>
-          <el-button round>预览</el-button>
-          <el-button type="success" round>提交审核</el-button>
-          <el-button type="primary" round @click="isSave">保存</el-button>
+          <!-- <el-button round>预览</el-button> -->
+          <el-button type="success" round @click="isSave(1)">提交审核</el-button>
+          <el-button type="primary" round @click="isSave(0)">保存</el-button>
         </div>
       </div>
     </el-form>
@@ -314,8 +315,6 @@ export default {
   },
   data() {
     return {
-      ceshi1:'',
-      ceshi2:'',
       contractForm: {
         // type: 2,
         houseinfoCode: "",
@@ -334,6 +333,7 @@ export default {
         },
         guestInfo: {},
         otherCooperationInfo: {},
+        extendParams:{},
         isHavaCooperation: 0
       },
       //业主信息
@@ -383,8 +383,10 @@ export default {
       relationList: [],
       //编辑时的合同id
       id:'',
-      //扩展参数
-      parameterList:[]
+      //扩展参数类型
+      parameterList:[],
+      //扩展参数验证
+      parameterRule:{}
     };
   },
   created() {
@@ -461,15 +463,25 @@ export default {
         res=res.data;
         if(res.status===200){
           this.parameterList=res.data;
+          res.data.forEach(element => {
+            if(element.isRequired){
+              let name_ = element.name;
+              //console.log(name_);
+              this.parameterRule[name_]={name:element.name};
+              if(this.type===1){
+                // this.contractForm.extendParams[name_]='';
+                this.$set(this.contractForm.extendParams,name_,'')
+              }
+            }
+          });
         }
       })
     },
     //验证合同信息
-    isSave() {
+    isSave(value) {
+      this.contractForm.haveExamine=value;
       //验证合同信息
-      this.$tool
-        .checkForm(this.contractForm, rule)
-        .then(() => {
+      this.$tool.checkForm(this.contractForm, rule).then(() => {
           // debugger
           if (
             this.contractForm.custCommission > 0 ||
@@ -562,7 +574,14 @@ export default {
                       if (isOk_) {
                         console.log(guestRightRatio);
                         if (guestRightRatio === 100) {
-                          this.dialogSave = true;
+                          this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                            this.dialogSave = true;
+                          }).catch(error => {
+                              this.$message({
+                                message: `${error.title}${error.msg}`
+                              });
+                            });
+                          //this.dialogSave = true;
                         } else {
                           this.$message({
                             message: "客户产权比和必须为100%"
@@ -863,6 +882,7 @@ export default {
           this.contractForm = res.data;
           this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
+          this.contractForm.extendParams=JSON.parse(res.data.extendParams);
           this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
           this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
           if(res.data.isHavaCooperation){
