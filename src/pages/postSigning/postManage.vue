@@ -590,7 +590,7 @@
                         </el-form-item>
                     </el-form>
                     <!-- 预览 -->
-                    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
+                    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
             </div>
             <span slot="footer">
                 <!-- 办理 -->
