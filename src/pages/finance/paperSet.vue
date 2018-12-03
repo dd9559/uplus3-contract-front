@@ -1,7 +1,7 @@
 <template>
   <div class="paper-set">
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
-      <div class="content">
+      <!-- <div class="content">
         <div class="input-group">
           <label>部门:</label>
           <el-select size="small" v-model="propForm.depId" placeholder="请选择">
@@ -59,14 +59,95 @@
             </el-date-picker>
           </div>
         </div>
-      </div>
+      </div> -->
+      <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
+        <div class="in-block">
+            <el-form-item 
+            label="部门"
+            prop="depId" 
+            class="mr">
+                <el-select 
+                v-model="propForm.depId" 
+                :remote-method="regionMethodFn"
+                :loading="loading"
+                @change="regionChangeFn"
+                @clear="regionClearFn"
+                clearable
+                remote 
+                filterable
+                class="w200">
+                    <el-option 
+                    v-for="item in rules.depId" 
+                    :key="'depId'+item.id"
+                    :label="item.name" 
+                    :value="item.id"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item prop="empId">
+                <el-select 
+                v-model="propForm.empId" 
+                :loading="loading2"
+                clearable
+                filterable
+                class="w100">
+                    <el-option 
+                    v-for="item in rules.empId" 
+                    :key="'empId'+item.empId" 
+                    :label="item.name"
+                    :value="item.empId"></el-option>
+                </el-select>
+            </el-form-item>
+        </div>
+        <el-form-item label="关键字" prop="keyword">
+            <el-input class="w200" v-model="propForm.keyword" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" clearable></el-input>
+        </el-form-item>
+        <el-form-item 
+            label="票据状态"
+            prop="state">
+                <el-select 
+                v-model="propForm.state" 
+                class="w180">
+                    <el-option 
+                    v-for="item in dictionaryData" 
+                    :key="'dictionaryData'+item.key" 
+                    :label="item.value" 
+                    :value="item.key"></el-option>
+                </el-select>
+        </el-form-item>
+        <div class="in-block">
+            <el-form-item label="查询时间" prop="dateType" class="mr">
+                <el-select 
+                v-model="propForm.dateType"
+                class="w110">
+                    <el-option 
+                    v-for="item in $tool.dropdown.dateType" 
+                    :key="item.value" 
+                    :label="item.label" 
+                    :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item 
+            prop="timeRange">
+                <el-date-picker 
+                v-model="propForm.timeRange"
+                class="w284" 
+                type="daterange"
+                value-format="yyyy-MM-dd" 
+                range-separator="至" 
+                start-placeholder="开始日期" 
+                end-placeholder="结束日期">
+                </el-date-picker>
+            </el-form-item>
+        </div>
+      </el-form>
+
     </ScreeningTop>
     <!-- 列表 -->
     <div class="paper-table-box">
       <div class="paper-set-tit">
         <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
       </div>
-      <el-table :data="tableData.list" class="paper-table mt-20">
+      <el-table :data="tableData.list" class="paper-table mt-20" v-loading="loadingList">
         <el-table-column fixed align="center" label="序号" min-width="70">
           <template slot-scope="scope">
             <p class="tc">{{scope.$index}}</p>
@@ -198,6 +279,10 @@
     mixins: [FILTER, MIXINS],
     data() {
       return {
+        // 加载
+        loading:false,
+        loading2:false,
+        loadingList:false,
         // 列表数据
         tableData: [],
         // 筛选条件
@@ -206,8 +291,19 @@
           empId: '',
           keyword: '',
           state: '',
-          dateType: '',
+          dateType: 1,
           timeRange: '',
+        },
+        // 筛选下拉
+        rules:{
+          depId:[{
+                  name: "全部",
+                  id: ""
+              }],
+          empId:[{
+                  name: "全部",
+                  empId: ""
+              }],
         },
         //分页
         pageSize: 10,
@@ -237,6 +333,8 @@
     mounted() {
       // 枚举类型数据获取
       this.getDictionary();
+      // 部门搜索
+      this.regionMethodFn('');
       // 获取列表
       this.getData();
     },
@@ -246,6 +344,7 @@
       },
       // 列表数据
       getData: function () {
+        this.loadingList = true;
         let param = Object.assign({}, this.propForm)
         param.pageNum = this.pageNum
         param.pageSize = this.pageSize
@@ -259,6 +358,7 @@
           if (res.status === 200) {
             this.tableData = res.data
           }
+          this.loadingList = false;
         })
       },
       btnOpera: function (row,type) {
@@ -341,7 +441,66 @@
       emitPaperSetFn(){
         // this.$refs.layerInvoice.propCloseFn();
         this.getData();
-      }
+      },
+      // 部门下拉搜索
+      regionMethodFn(e){
+          this.loading = true;
+          this.$ajax.get("/api/access/deps",{
+              keyword:e
+          }).then(res=>{
+              res = res.data
+              if(res.status === 200){
+                  if(e==='' || !e){
+                      this.rules.depId = [{
+                          name: "全部",
+                          id: ""
+                      },...res.data]
+                  }else{
+                      this.rules.depId = res.data
+                  }
+                  this.loading = false;
+              }
+          }).catch(err=>{
+              console.log(err)
+          })
+      },
+      // 清除部门搜索
+      regionClearFn(){
+          this.regionMethodFn('');
+      },
+      // 部门筛选回调
+      regionChangeFn(e) {
+          if( e !=="" || !!e){
+              this.loading2 = true;
+              this.$ajax.get("/api/organize/employees",{
+              cityId:this.cityId,
+              depId:e,
+              }).then(res=>{
+                  res = res.data
+                  if(res.status === 200){
+                      this.propForm.empId = '';
+                      let arr = [];
+                      if(res.data.length > 0){
+                              arr = [{
+                              name: "全部",
+                              empId: ""
+                          },...res.data]
+                      }
+                      this.rules.empId = arr;
+                      this.loading2 = false;
+                  }
+              }).catch(err=>{
+                  console.log(err)
+              })
+          }else{
+              this.propForm.empId = '';
+              this.rules.empId = [{
+                                  name: "全部",
+                                  empId: ""
+                              }]
+          }
+          
+      },
     },
     components: {
       ScreeningTop,

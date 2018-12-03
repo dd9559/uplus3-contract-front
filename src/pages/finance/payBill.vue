@@ -1,10 +1,10 @@
 <template>
   <div class="view">
-    <p>付款信息</p>
+    <p class="f14">付款信息</p>
     <section>
       <div class="input-group">
-        <label class="form-label">收款方</label>
-        <el-select v-model="form.inObjType" placeholder="请选择" @change="getOption">
+        <label class="form-label no-width f14">收款方</label>
+        <el-select size="small" v-model="form.inObjType" placeholder="请选择" @change="getOption">
           <el-option
             v-for="item in dropdown"
             :key="item.value"
@@ -14,12 +14,12 @@
         </el-select>
       </div>
       <div class="input-group">
-        <label class="form-label">申请人:</label>
+        <label class="form-label no-width f14">申请人:</label>
         <p v-if="userMsg">{{userMsg.name}}</p>
       </div>
     </section>
     <div class="input-group">
-      <label class="form-label">款类</label>
+      <label class="form-label f14">款类</label>
       <el-table class="collapse-cell" :span-method="collapse" border :data="moneyType" style="width: 100%"
                 header-row-class-name="theader-bg">
         <el-table-column align="center" label="款类（大类）" prop="name"></el-table-column>
@@ -58,7 +58,7 @@
       </el-table>
     </div>
     <div class="input-group">
-      <p><label class="form-label">收款账户</label></p>
+      <p><label class="form-label f14">收款账户</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="收款银行">
           <template slot-scope="scope">
@@ -83,11 +83,11 @@
       </el-table>
     </div>
     <div class="input-group">
-      <p><label>备注信息</label></p>
+      <p><label class="f14">备注信息</label></p>
       <el-input placeholder="请填写备注信息" type="textarea" maxlength="200" v-model="form.remark"></el-input>
     </div>
     <div class="input-group">
-      <p><label class="form-label">付款凭证</label></p>
+      <p><label class="form-label f14">付款凭证</label></p>
       <ul class="upload-list">
         <li>
           <file-up class="upload-context" @getUrl="getFiles">
@@ -103,8 +103,8 @@
       <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
     </div>
     <p>
-      <el-button round size="small" type="primary" @click="goResult">提交付款申请</el-button>
-      <el-button round size="small">取消</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult">提交付款申请</el-button>
+      <el-button class="btn-info" round size="small">取消</el-button>
     </p>
     <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
   </div>
@@ -404,7 +404,7 @@
     }
   }
   .input-group {
-    margin: 0;
+    margin: @margin-10 0 0;
     display: block;
     max-width: 815px;
     .type-list{
@@ -481,23 +481,29 @@
       }
     }
     /deep/ .el-table,.el-textarea{
-      margin: 20px 0;
+      margin-top: @margin-base;
     }
   }
 
   .view {
     background-color: @bg-white;
-    padding: 20px;
+    padding: @margin-10;
     > section {
-      margin: 20px 0px;
+      margin: @margin-10 0px;
       &:first-of-type {
         display: flex;
         .input-group{
           display: flex;
+          margin: 0;
           &:first-of-type{
-            margin-right: 40px;
+            margin-right: @margin-15;
           }
         }
+      }
+    }
+    >p{
+      &:last-of-type{
+        margin-top: @margin-15;
       }
     }
   }

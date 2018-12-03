@@ -126,6 +126,7 @@
             </div>
           </div>
         </div>
+
         <div class="msg" v-if="contractDetail.isHavaCooperation">
           <div class="title">三方合作</div>
           <div class="content">
@@ -147,6 +148,18 @@
             </div>
           </div>
         </div>
+
+        <div class="msg" v-if="contractDetail.extendParams">
+          <div class="title">扩展参数</div>
+          <div class="content">
+            <div class="one_ extendParams">
+              <p v-for="(item,index) in parameterList" :key="index" v-if="contractDetail.extendParams[item.name]">
+                <span class="tag">{{item.name}}：</span><span class="text">{{contractDetail.extendParams[item.name]}} {{item.unit}}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div class="msg">
           <div class="title">业绩分成</div>
           <div class="content">
@@ -478,7 +491,9 @@ export default {
       otherList: [],
       code2: "", //合同编号,
       achObj:{},
-      isDelete:''
+      isDelete:'',
+      //扩展参数
+      parameterList:[]
     };
   },
   created() {
@@ -494,6 +509,7 @@ export default {
     this.getAchievement();//业绩分成
     this.getContDataType();//获取合同集料库类型
     this.getContractBody();//获取合同主体
+    this.getExtendParams();//获取扩展参数
   },
   methods: {
     handleClick(tab, event) {
@@ -570,6 +586,7 @@ export default {
         res = res.data;
         if (res.status === 200) {
           this.contractDetail = res.data;
+          this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
           for (var i = 0; i < this.contractDetail.contPersons.length; i++) {
             if (this.contractDetail.contPersons[i].personType.value === 1) {
@@ -585,6 +602,18 @@ export default {
           }
         }
       });
+    },
+     //获取合同扩展参数
+    getExtendParams(){
+      let param = {
+        type:Number(this.contType)
+      }
+      this.$ajax.get('/api/contract/getExtendParamsByType', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.parameterList=res.data;
+        }
+      })
     },
     //获取所在城市的交易类型
     getTransFlow() {
@@ -916,6 +945,12 @@ export default {
         }
         .address {
           width: 600px;
+        }
+      }
+      .extendParams{
+        width: 820px;
+        > p{
+          padding: 4px 0;
         }
       }
       .performance {
