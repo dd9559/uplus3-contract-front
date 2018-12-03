@@ -97,7 +97,7 @@
                                     <upload-cell :type="item.fileType"></upload-cell>
                                     <p>{{item.name}}</p>
                                 </div>
-                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
+                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
                             </li>
                         </ul>
                     </div>
@@ -182,7 +182,7 @@
             
             <!-- 上传按钮 -->
             <div class="functionTable">
-               <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">上传</el-button>
+               <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">上传</el-button>  <!-- 资料库上传 -->
                <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'">上传</el-button>  <!-- 合同主体上传 --> 
             </div>
             
@@ -291,45 +291,8 @@ export default {
             })
         },
 
-        //获取合同资料库类型列表
-        getContDataType() {
-            let param = {
-                id: this.$route.query.id
-            };
-            this.$ajax.get("/api/contract/getContDataTypeById", param).then(res => {
-                res = res.data;
-                if (res.status === 200) {
-                    let dataType = JSON.parse(res.data);
-                    console.log(dataType);
-                    dataType.forEach(element => {
-                        if(element.type==="买方"){
-                            let item={};
-                            item.value=[];
-                            item.kind=element.type;
-                            item.title=element.name;
-                            item.isrequire=element.isNecessary;
-                        this.buyerList.push(item);
-                        }else if(element.type==="卖方"){
-                            let item={};
-                            item.value=[];
-                            item.kind=element.type;
-                            item.title=element.name;
-                            item.isrequire=element.isNecessary;
-                        this.sellerList.push(item);
-                        }else if(element.type==="其他"){
-                            let item={};
-                            item.value=[];
-                            item.kind=element.type;
-                            item.title=element.name;
-                            item.isrequire=element.isNecessary;
-                            this.otherList.push(item);
-                        }
-                    });
-                }
-            })
-        },
 
-        //合同资料库添加数据
+        //合同资料库添加数据到每种类型
         addSubject(data){
             console.log(data);
             let arr = data.param;
@@ -368,7 +331,8 @@ export default {
                     item.kind=element.type;
                     item.title=element.name;
                     item.isrequire=element.isNecessary;
-                this.buyerList.push(item);
+                    this.buyerList.push(item);
+                    
                 }else if(element.type==="卖方"){
                     let item={};
                     item.value=[];
@@ -376,6 +340,7 @@ export default {
                     item.title=element.name;
                     item.isrequire=element.isNecessary;
                     this.sellerList.push(item);
+                    
                 }else if(element.type==="其他"){
                     let item={};
                     item.value=[];
@@ -383,23 +348,32 @@ export default {
                     item.title=element.name;
                     item.isrequire=element.isNecessary;
                     this.otherList.push(item);
+                    
                 }
             });
             }
         })
         },
 
-         //显示删除按钮
-        moveIn(value){
-            this.isDelete=value
-        },
-        moveOut(value){
-            if(this.isDelete===value){
-                this.isDelete=''
+         //获取合同主体信息（已上传后，拿到返回的文件路径）
+        getContractBody(){
+            let param = {
+                id:this.$route.query.id
             }
+            this.$ajax.get('/api/contract/getContractBodyById', param).then(res=>{
+                res=res.data;
+                if(res.status===200){
+                let uploadList_ = res.data;
+                uploadList_.forEach(element => {
+                    let fileType = this.$tool.get_suffix(element.name);
+                    element.fileType=fileType;
+                });
+                this.uploadList=uploadList_;
+                }
+            })
         },
 
-        //上传合同资料库
+        //上传资料库
         uploading(){
             let uploadContData = this.sellerList.concat(this.buyerList, this.otherList);
             console.log(uploadContData);
@@ -456,27 +430,12 @@ export default {
             }
         },
 
-         //获取合同主体信息（已上传后，拿到返回的文件路径）
-        getContractBody(){
-            let param = {
-                id:this.$route.query.id
-            }
-            this.$ajax.get('/api/contract/getContractBodyById', param).then(res=>{
-                res=res.data;
-                if(res.status===200){
-                let uploadList_ = res.data;
-                uploadList_.forEach(element => {
-                    let fileType = this.$tool.get_suffix(element.name);
-                    element.fileType=fileType;
-                });
-                this.uploadList=uploadList_;
-                }
-            })
-        },
+        
 
-        //合同主体获取文件路径数组
+        //合同主体获取文件路径后缀名
         uploadSubject(data) {
             let arr = data.param;
+            console.log(data)
             let fileType = this.$tool.get_suffix(arr[0].name);
             arr[0].fileType = fileType;
             this.uploadList.push(arr[0])
@@ -493,7 +452,7 @@ export default {
                 delete element.fileType
                 });
                 let param = {
-                contId:this.id,
+                contId:this.$route.query.id,
                 datas:this.uploadList
                 }
                 this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
@@ -511,6 +470,19 @@ export default {
                 })
             }
         },
+
+        
+         //显示删除按钮
+        moveIn(value){
+            this.isDelete=value
+        },
+        moveOut(value){
+            if(this.isDelete===value){
+                this.isDelete=''
+            }
+        },
+
+
         // 查询
         getDetail() {
           let param = {
@@ -566,6 +538,9 @@ export default {
         this.getDetail();  //合同详细信息
         this.getContDataType();   //获取资料库里的资料类型
         this.getContractBody();//获取合同主体
+        console.log(this.buyerList)
+        console.log(this.sellerList)
+        console.log(this.otherList)
     },
 
     mounted() {
