@@ -35,7 +35,7 @@
               :value="item.id">
             </el-option>
           </el-select>
-          <el-select :clearable="true" size="small" v-model="searchForm.dealAgentId" placeholder="请选择">
+          <el-select :clearable="true" size="small" class="margin-left" v-model="searchForm.dealAgentId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -110,7 +110,7 @@
             佣金
           </template>
         </el-table-column>
-        <el-table-column align="center" label="成交经纪人" prop="broker">
+        <el-table-column align="center" min-width="160" label="成交经纪人" prop="broker">
           <template slot-scope="scope">
             {{scope.row.dealAgentStoreName}}-{{scope.row.dealAgentName}}
           </template>
@@ -122,7 +122,7 @@
             {{scope.row.receivableCommission-scope.row.receivedCommission}}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作时间" prop="operation time">
+        <el-table-column align="center" min-width="160" label="操作时间" prop="operation time">
           <template slot-scope="scope">
             {{scope.row.signDate|formatTime}}
           </template>

@@ -1,10 +1,10 @@
 <template>
   <div class="view">
-    <p>收款信息</p>
+    <p class="f14">收款信息</p>
     <section>
       <div class="input-group">
-        <label class="form-label">付款方</label>
-        <el-select v-model="form.outObjType" placeholder="请选择" @change="getOption(form.outObjType,1)">
+        <label class="form-label no-width f14">付款方</label>
+        <el-select size="small" v-model="form.outObjType" placeholder="请选择" @change="getOption(form.outObjType,1)">
           <el-option
             v-for="item in dropdown"
             :key="item.value"
@@ -14,8 +14,8 @@
         </el-select>
       </div>
       <div class="input-group">
-        <label class="form-label">收款人:</label>
-        <el-select v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjId,2)">
+        <label class="form-label no-width f14">收款人:</label>
+        <el-select size="small" v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjId,2)">
           <el-option
             v-for="item in receiptMan"
             :key="item.empId"
@@ -26,7 +26,7 @@
       </div>
     </section>
     <div class="input-group">
-      <p><label class="form-label">款类</label></p>
+      <p><label class="form-label f14">款类</label></p>
       <ul class="money-type-list">
         <li v-for="item in types" :key="item.id" :class="[activeType===item.id?'active':'']"
             @click="choseType(item)">{{item.name}}
@@ -134,7 +134,7 @@
       </ul>-->
     </div>
     <div class="input-group" v-if="activeType===2">
-      <p><label class="form-label">刷卡资料补充</label></p>
+      <p><label class="form-label f14">刷卡资料补充</label></p>
       <el-table border :data="cardList" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="刷卡银行">
           <template slot-scope="scope">
@@ -176,11 +176,11 @@
       </el-table>
     </div>
     <div class="input-group">
-      <p><label>备注信息</label></p>
+      <p><label class="f14">备注信息</label></p>
       <el-input v-model="form.remark" placeholder="请填写备注信息" type="textarea"></el-input>
     </div>
     <div class="input-group" v-if="activeType===2">
-      <p><label class="form-label">付款凭证</label></p>
+      <p><label class="form-label f14">付款凭证</label></p>
       <ul class="upload-list">
         <li>
           <file-up class="upload-context" @getUrl="getFiles">
@@ -188,16 +188,18 @@
             <span>点击上传</span>
           </file-up>
         </li>
-        <li v-for="item in imgList">
+        <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"  @click="getPicture">
           <upload-cell :type="item.type"></upload-cell>
           <span>{{item.name}}</span>
+          <p v-show="activeLi===index" @click="delFile"><i class="iconfont icon-tubiao-6"></i></p>
         </li>
       </ul>
     </div>
     <p>
-      <el-button round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
-      <el-button round size="small">取消</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+      <el-button class="btn-info" round size="small">取消</el-button>
     </p>
+    <preview :imgList="previewFiles" :start="activeLi===''?0:activeLi" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
@@ -304,6 +306,7 @@
         receiptMan: [],
         files:[],
         imgList:[],
+        activeLi:''
       }
     },
     created() {
@@ -319,6 +322,13 @@
       }
     },
     methods: {
+      getPicture:function () {
+        let arr=[]
+        this.imgList.forEach(item=>{
+          arr.push(item.path)
+        })
+        this.fileSign(arr)
+      },
       /**
        * 修改款单，获取初始数据
        */
@@ -377,6 +387,10 @@
       getFiles:function (payload) {
         this.files=this.files.concat(this.$tool.getFilePath(payload.param))
         this.imgList=this.$tool.cutFilePath(this.files)
+      },
+      delFile:function () {
+        this.imgList.splice(this.activeLi,1)
+        this.files.splice(this.activeLi,1)
       },
       goResult: function () {
         let RULE = this.activeType===1?rule:otherRule
@@ -618,7 +632,7 @@
   @import "~@/assets/common.less";
 
   /deep/ .collapse-cell {
-    margin-top: 13px !important;
+    /*margin-top: 13px !important;*/
     .el-table__row {
       > td {
         padding: 0;
@@ -671,14 +685,14 @@
   }
 
   .box {
-    padding: 10px;
+    padding: 0 @margin-base;
     &-left {
       text-align: left;
     }
   }
 
   .input-group {
-    margin: 0;
+    margin: @margin-10 0 0;
     display: block;
     max-width: 815px;
     > p {
@@ -691,7 +705,7 @@
       display: flex;
       background-color: @bg-grey;
       padding: 0 15px;
-      margin-top: 20px;
+      margin-top: @margin-base;
       > li {
         height: 40px;
         min-width: 100px;
@@ -759,7 +773,7 @@
     .upload-list {
       display: flex;
       flex-wrap: wrap;
-      margin: 20px 0;
+      margin: @margin-base 0;
       >li{
         border: 1px dashed @color-D6;
         width: 120px;
@@ -770,7 +784,11 @@
         justify-content: center;
         >span{
           width: 100px;
-          word-break: break-all;
+          text-align: center;
+          /*word-break: break-all;*/
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow:ellipsis;
         }
         &:first-of-type{
           .iconfont{
@@ -786,6 +804,16 @@
         }
         &:nth-of-type(n+1){
           margin-right: @margin-base;
+          position: relative;
+          >p{
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: @color-red;
+            .iconfont{
+              font-size: 20px;
+            }
+          }
         }
       }
     }
@@ -799,23 +827,29 @@
       }
     }
     /deep/ .el-table, .el-textarea {
-      margin: 20px 0;
+      margin: @margin-base 0;
     }
   }
 
   .view {
     background-color: @bg-white;
-    padding: 20px;
+    padding: @margin-10;
     > section {
-      margin: 20px 0px;
+      margin: @margin-10 0px;
       &:first-of-type {
         display: flex;
         .input-group {
           display: flex;
+          margin: 0;
           &:first-of-type {
-            margin-right: 40px;
+            margin-right: @margin-15;
           }
         }
+      }
+    }
+    >p{
+      &:last-of-type{
+        margin-top: @margin-15;
       }
     }
   }
