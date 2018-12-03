@@ -155,17 +155,17 @@
         </el-table-column>
         <el-table-column fixed label="合同编号" min-width="124">
           <template slot-scope="scope">
-            <el-button class="blue" type="text" @click="cellOpera('contract')">{{scope.row.contNo}}</el-button>
+            <span class="blue" @click="cellOpera('contract')">{{scope.row.contNo}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed label="票据编号" min-width="137">
           <template slot-scope="scope">
-            <el-button class="blue" type="text" @click="cellOpera('paper',scope.row)">{{scope.row.billCode}}</el-button>
+            <span class="blue" @click="cellOpera('paper',scope.row)">{{scope.row.billCode}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed label="收款ID" min-width="135">
           <template slot-scope="scope">
-            <el-button class="blue" type="text" @click="cellOpera('bill',scope.row)">{{scope.row.proceedsId}}</el-button>
+            <span class="blue" @click="cellOpera('bill',scope.row)">{{scope.row.proceedsId}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed prop="address" label="物业地址" min-width="124">
@@ -391,7 +391,14 @@
       // 编号操作
       cellOpera(type,row) {
         if (type === 'contract') {
-
+          this.$router.push({
+              path: "/contractDetails",
+              query: {
+                  id: row.contId,//合同id
+                  code: row.contNo,//合同编号
+                  contType: row.contType.value//合同类型
+              }
+          });
         } else if (type === 'paper') {
           this.$refs.layerInvoice.show(row.id);
         } else {

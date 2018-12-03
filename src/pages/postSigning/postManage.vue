@@ -210,7 +210,7 @@
             class="paper-table mt-20">
                 <el-table-column prop="code" label="合同编号" min-width="130">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="contractFn" >{{scope.row.code}}</el-button>
+                        <span class="blue" @click="contractFn(scope.row)" >{{scope.row.code}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="statusLaterStage.label" label="后期状态" min-width="90">
@@ -916,8 +916,15 @@
             //     console.log('部门回调')
             // },
             // 合同编号
-            contractFn(e){
-                console.log('合同编号')
+            contractFn(value){
+                this.$router.push({
+                    path: "/contractDetails",
+                    query: {
+                        id: value.id,//合同id
+                        code: value.code,//合同编号
+                        contType: value.tradeType.value//合同类型
+                    }
+                });
             },
             // 办理
             transactionFn(id){
