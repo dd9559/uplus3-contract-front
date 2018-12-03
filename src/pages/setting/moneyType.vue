@@ -48,7 +48,7 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="收款账户" prop="accountType"></el-table-column>
+                <el-table-column align="center" label="收款账户" prop="accountType.label"></el-table-column>
                 <el-table-column align="center" label="操作" :formatter="nullFormatter">
                     <template slot-scope="scope">
                         <div v-if="scope.row.parentId ==26">--</div>

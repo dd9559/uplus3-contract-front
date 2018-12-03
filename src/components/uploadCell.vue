@@ -1,5 +1,5 @@
 <template>
-    <i class="iconfont" :style="getFontSize" :class="[type==='.png'||type==='.jpg'||type==='.jpeg'?'icon-tupian':'',type==='.mp3'?'icon-yinpin1':'',type==='.mp4'||type==='.avi'?'icon-shipin1':'',type==='.txt'||type==='.pdf'||type==='.xlsx'||type==='.doc'?'icon-wendang':'',type==='.zip'?'icon-yasuobao1':'',!otherFile?'icon-qita1':'']"></i>
+    <i class="iconfont" :style="getFontSize" :class="[type==='.png'||type==='.jpg'||type==='.jpeg'?'icon-tupian':'',type==='.mp3'?'icon-yinpin1':'',type==='.mp4'||type==='.avi'?'icon-shipin1':'',type==='.txt'||type==='.pdf'||type==='.xlsx'||type==='.docx'?'icon-wendang':'',type==='.zip'?'icon-yasuobao1':'',!otherFile?'icon-qita1':'']"></i>
 </template>
 
 <script>

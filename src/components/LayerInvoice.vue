@@ -58,9 +58,9 @@
                 :payerType="paperInfoData.payerType"></LayerPaperInfo>
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
-            <!-- <iframe id="test" :src="pdfUrl" frameborder="0"></iframe> -->
+            <!-- <iframe name="test" id="test" :src="pdfUrl" frameborder="0"></iframe> -->
         </div>
-        <p slot="footer">
+        <p slot="footer" v-show="FooterShow">
             <el-button round  size="medium" class="paper-btn">取消</el-button>
             <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaper">打印</el-button>
         </p>
@@ -79,16 +79,15 @@
                 dictionary: {
                     '542': '',
                 },
-                FooterShow:true,
+                FooterShow:false,
                 ID: '',
                 paperShow: false,
                 paperType: false, //false预览 true开票
                 paperInfoData: {}, //票据对象
                 moneyTypes: [], //临时存放勾选的款类
                 activeType: 0, //当前预览项
-                previewTable:false,
                 loading:false,
-                pdfUrl:'../../SJ1811290099.pdf',
+                pdfUrl:'http://192.168.1.51:5500/test.pdf',
             }
         },
         methods: {
@@ -107,13 +106,33 @@
                     if (res.status === 200) {
                         this.paperInfoData = Object.assign({}, res.data)
                         // this.paperShow = true
-                        if(!this.paperType){
-                            this.loading = false;
-                        }
+                        this.loading = false;
+                        this.FooterShow = true;
                     }
+                }).catch(err=>{
+                    console.log(err)
                 })
             },
             billing: function() {
+                
+                if(!this.moneyTypes[this.activeType].project){
+                    this.$message.error('请选择开票项目');
+                    return false
+                }
+                if(this.paperInfoData.signImg){
+                    this.$message.error('请先设置财务专用电子签章');
+                    return false
+                }
+                if(this.moneyTypes[this.activeType].check){
+                    this.FooterShow =  true
+                }else{
+                    this.FooterShow = false
+                    this.$message.error('请勾选款类');
+                }
+                // if(!this.FooterShow){
+                //     this.$message.error('请勾选款类');
+                //     return false
+                // }
                 let param = this.moneyTypes[this.activeType]
                 let obj = {
                     createTime: '',
@@ -124,23 +143,39 @@
                     createByName: this.paperInfoData.createBy,
                     remark: param.remark
                 }
-                this.previewTable = true;
                 this.dictionary['542'].find(item => {
                     if (item.key === param.project) {
                         obj.type = item.value
                     }
                 })
                 this.paperInfoData = Object.assign({}, this.paperInfoData, obj)
-                if(this.moneyTypes[this.activeType].check){
-                    this.FooterShow =  true
-                }else{
-                    this.FooterShow = false
-                }
+                
             },
             // 票据详情 打印
             printPaper() {
                 if(this.pdfUrl){
-                    document.getElementById("test").contentWindow.print();
+                    //  var new_page = window.open(this.pdfUrl,"_blank");
+                    //     new_page.print();
+                    //     new_page.close();
+                    // console.log(document)
+                    debugger
+                    let newIframe = document.createElement('iframe');
+                    newIframe.name = 'test'
+                    
+                    // var new_iframe = document.createElement('IFRAME');
+                    // var doc = null;
+                    //  doc = new_iframe.document;
+                    // var new_iframe = document.createElement('IFRAME');
+                    // var doc = null;
+                    // doc = new_iframe.contentWindow.document;
+                    // doc.innerHTML = '111111111111111111111'
+                    // doc.close();
+                    // new_iframe.src = this.pdfUrl;
+                    // new_iframe.contentWindow.focus();
+                    // new_iframe.contentWindow.print();
+                    // document.getElementById("test").contentWindow.focus();
+                    // document.getElementById("test").contentWindow.print();
+                    // window.print();
                     return false
                 }
                 let obj = {}
@@ -149,22 +184,6 @@
                         code: this.paperInfoData.billCode
                     }
                 } else {
-                    if(!this.FooterShow){
-                        this.$message.error('请勾选款类');
-                        return false
-                    }
-                    if(!this.moneyTypes[this.activeType].project){
-                        this.$message.error('请选择开票项目');
-                        return false
-                    }
-                    if(!this.previewTable){
-                        this.$message.error('请选择确定开票，预览项目');
-                        return false
-                    }
-                    // if(this.paperInfoData.signImg){
-                    //     this.$message.error('请先设置财务专用电子签章');
-                    //     return false
-                    // }
                     let type = this.moneyTypes[this.activeType]
                     obj = {
                         code: type.billCode,
@@ -360,7 +379,6 @@
     .paper-edit-box {
         margin: 0 40px;
         padding: 20px 0 80px;
-        border-bottom: 1px solid @border-D8;
         position: relative;
 
         .paper-btn-float{
@@ -422,6 +440,9 @@
     }
 
     .paper-watch-tab {
+        font-size: 24px;
+        border-top: 1px solid @border-D8;
+
         >p {
             color: @color-blue;
             text-align: center;
