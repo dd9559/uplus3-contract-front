@@ -1,7 +1,7 @@
 <!-- 意向详情金 -->
 <template>
     <div class="newintention" id="intention" >
-        <div class="detailbox" >
+        <div class="detailbox">
            <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="意向金详情" name="first" class="first-tab">
                     <div class="tab" :style="{ height: clientHeight() }">
@@ -84,125 +84,110 @@
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="合同主体" name="second">
-                    <div class="hetong">
-                        <el-upload
-                            action="https://jsonplaceholder.typicode.com/posts/"
-                            list-type="picture-card"
-                            multiple
-                            :on-preview="handlePictureCardPreview"
-                            :on-remove="handleRemove">
+                    <div class="contractSubject">
+                        <ul class="ulData">
+                            <li>
+                            <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                                <i class="iconfont icon-shangchuan"></i>
+                                <p>点击上传</p>
+                            </file-up>
+                            </li>
+                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
+                            <div class="namePath">
+                                <upload-cell :type="item.fileType"></upload-cell>
+                                <p>{{item.name}}</p>
+                            </div>
+                            <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
+                            </li>
+                        </ul>
+                        <!-- <file-up class="uploadSubject" @getUrl="uploadSubject">
                             <i class="iconfont icon-shangchuan"></i>
-                            <span>点击上传</span>
-                        </el-upload>
-                        <el-dialog :visible.sync="dialogVisible">
-                            <img width="100%" :src="dialogImageUrl" alt="">
-                        </el-dialog>
+                            <p>点击上传</p>
+                        </file-up> -->
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="资料库" name="third" class="third-tab">
-                    <div class="hetong2">
-                        <div class="ht-col">
+                    <div class="dataBank">
+
+                        <!-- 卖方 -->
+                        <div class="classify" v-if="this.sellerList.length>0">
                             <div class="ht-title">卖方</div>
-                            <div class="small-col">
-                                <div class="small-title"><span>*</span>身份证复印件</div>
-                                <div class="upbox">
-                                    <el-upload
-                                        action="https://jsonplaceholder.typicode.com/posts/"
-                                        list-type="picture-card"
-                                        multiple
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="iconfont icon-shangchuan"></i>
-                                        <span>点击上传</span>
-                                    </el-upload>
-                                    <el-dialog :visible.sync="dialogVisible">
-                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                    </el-dialog>
-                                </div>
-                            </div>
-                            <div class="small-col">
-                                <div class="small-title"><span>*</span>资料</div>
-                                <div class="upbox">
-                                    <el-upload
-                                        action="https://jsonplaceholder.typicode.com/posts/"
-                                        list-type="picture-card"
-                                        multiple
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="iconfont icon-shangchuan"></i>
-                                        <span>点击上传</span>
-                                    </el-upload>
-                                    <el-dialog :visible.sync="dialogVisible">
-                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                    </el-dialog>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hetong2">
-                        <div class="ht-col">
-                            <div class="ht-title">买方</div>
-                            <div class="small-col">
-                                <div class="small-title"><span>*</span>身份证复印件</div>
-                                <div class="upbox">
-                                    <el-upload
-                                        action="https://jsonplaceholder.typicode.com/posts/"
-                                        list-type="picture-card"
-                                        multiple
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="iconfont icon-shangchuan"></i>
-                                        <span>点击上传</span>
-                                    </el-upload>
-                                    <el-dialog :visible.sync="dialogVisible">
-                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                    </el-dialog>
-                                </div>
-                            </div>
-                            <div class="small-col">
-                                <div class="small-title"><span>*</span>购房合同</div>
-                                <div class="upbox">
-                                    <el-upload
-                                        action="https://jsonplaceholder.typicode.com/posts/"
-                                        list-type="picture-card"
-                                        multiple
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="iconfont icon-shangchuan"></i>
-                                        <span>点击上传</span>
-                                    </el-upload>
-                                    <el-dialog :visible.sync="dialogVisible">
-                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                    </el-dialog>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hetong2">
-                        <div class="ht-col">
-                            <div class="ht-title">其他</div>
-                            <div class="small-col">
-                                <div class="upbox">
-                                    <el-upload
-                                        action="https://jsonplaceholder.typicode.com/posts/"
-                                        list-type="picture-card"
-                                        multiple
-                                        :on-preview="handlePictureCardPreview"
-                                        :on-remove="handleRemove">
-                                        <i class="iconfont icon-shangchuan"></i>
-                                        <span>点击上传</span>
-                                    </el-upload>
-                                    <el-dialog :visible.sync="dialogVisible">
-                                        <img width="100%" :src="dialogImageUrl" alt="">
-                                    </el-dialog>
-                                </div>
+                            <div class="small-col" v-for="(item,index) in sellerList" :key="index">
+                                <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+                                <ul class="ulData">
+                                    <li>
+                                        <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
+                                            <i class="iconfont icon-shangchuan"></i>
+                                            <p>点击上传</p>
+                                        </file-up>
+                                    </li>
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                        <div class="namePath">
+                                            <upload-cell :type="item_.fileType"></upload-cell>
+                                            <p>{{item_.name}}</p>
+                                        </div>
+                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="isDelete===item.title+item_.path"></i>
+                                    </li>
+                                </ul>
                             </div>                           
                         </div>
+
+                        <!-- 买方 -->
+                        <div class="classify" v-if="this.buyerList.length>0">
+                            <div class="ht-title">买方</div>
+                            <div class="small-col" v-for="(item,index) in buyerList" :key="index">
+                                <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+                                <ul class="ulData">
+                                    <li>
+                                        <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
+                                            <i class="iconfont icon-shangchuan"></i>
+                                            <p>点击上传</p>
+                                        </file-up>
+                                    </li>
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                        <div class="namePath">
+                                            <upload-cell :type="item_.fileType"></upload-cell>
+                                            <p>{{item_.name}}</p>
+                                        </div>
+                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>
+                                    </li>
+                                </ul>
+                            </div>                                                     
+                        </div>
+
+                        <!-- 其他 -->
+                        <div class="classify" v-if="otherList.length>0">
+                            <div class="ht-title">其他</div>
+                            <div class="small-col" v-for="(item,index) in buyerList" :key="index">
+                                <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+                                <ul class="ulData">
+                                    <li>
+                                        <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
+                                            <i class="iconfont icon-shangchuan"></i>
+                                            <p>点击上传</p>
+                                        </file-up>
+                                    </li>
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                        <div class="namePath">
+                                            <upload-cell :type="item_.fileType"></upload-cell>
+                                            <p>{{item_.name}}</p>
+                                        </div>
+                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="isDelete===item.title+item_.path"></i>
+                                    </li>
+                                </ul>
+                            </div>                           
+                            
+                        </div>
+
                     </div>
+                 
                 </el-tab-pane>
             </el-tabs>
-
-
+            
+            <!-- 上传按钮 -->
+            <div class="functionTable">
+               <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='second'||name==='third'">上传</el-button> 
+            </div>
             
         </div>
        
@@ -213,13 +198,15 @@
 
 <script>
 import {TOOL} from "@/assets/js/common";
+import { MIXINS } from "@/assets/js/mixins";
 // import {FILTER} from "@/assets/js/filter";
 export default {
-
+    mixins: [MIXINS],
     data() {
         return {
             clientHei: document.documentElement.clientHeight, //窗体高度
             activeName: 'first',
+            name:'first',
             dialogImageUrl: '',
             dialogVisible: false,
             detailData: {
@@ -256,19 +243,24 @@ export default {
                     identifyCode: '', 
                 }
             ],
+
+            //买方类型
+            buyerList: [],
+            //卖方类型
+            sellerList: [],
+            //其他类型
+            otherList: [],
+            //主体合同
+            uploadList: [],
+
+            isDelete:''
         }
     },
     
     methods: {
         handleClick(tab, event) {
             console.log(tab, event);
-        },
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePictureCardPreview(file) {
-            this.dialogImageUrl = file.url;
-            this.dialogVisible = true;
+            this.name=tab.name;
         },
 
         // 控制弹框body内容高度，超过显示滚动条
@@ -286,7 +278,7 @@ export default {
             })
         },
 
-        //预览事件
+        //编辑事件
         onEdit(e) {
             this.$router.push({
                 path:'/newIntention',
@@ -298,8 +290,228 @@ export default {
             })
         },
 
+        //获取合同资料库类型列表
+        getContDataType() {
+            let param = {
+                id: this.$route.query.id
+            };
+            this.$ajax.get("/api/contract/getContDataTypeById", param).then(res => {
+                res = res.data;
+                if (res.status === 200) {
+                    let dataType = JSON.parse(res.data);
+                    console.log(dataType);
+                    dataType.forEach(element => {
+                        if(element.type==="买方"){
+                            let item={};
+                            item.value=[];
+                            item.kind=element.type;
+                            item.title=element.name;
+                            item.isrequire=element.isNecessary;
+                        this.buyerList.push(item);
+                        }else if(element.type==="卖方"){
+                            let item={};
+                            item.value=[];
+                            item.kind=element.type;
+                            item.title=element.name;
+                            item.isrequire=element.isNecessary;
+                        this.sellerList.push(item);
+                        }else if(element.type==="其他"){
+                            let item={};
+                            item.value=[];
+                            item.kind=element.type;
+                            item.title=element.name;
+                            item.isrequire=element.isNecessary;
+                            this.otherList.push(item);
+                        }
+                    });
+                }
+            })
+        },
+
+        //合同资料库添加数据
+        addSubject(data){
+            console.log(data);
+            let arr = data.param;
+            let fileType = this.$tool.get_suffix(arr[0].name);
+            arr[0].fileType = fileType;
+            let num = Number(data.btnId.substring(data.btnId.length-1));
+            let typeId = data.btnId.substring(0,data.btnId.length-1)
+            // console.log(typeId);
+            // console.log(num);
+            // console.log(this.sellerList[num].value);
+            if(typeId==='seller'){
+                this.sellerList[num].value.push(arr[0]);
+            }else if(typeId==='buyer'){
+                this.buyerList[num].value.push(arr[0]);
+            }else if(typeId==='other'){
+                this.otherList[num].value.push(arr[0]);
+            }
+        },
+
+        //获取合同资料库信息
+
+        //获取合同资料库类型列表
+        getContDataType() {
+        let param = {
+            id: this.$route.query.id
+        };
+        this.$ajax.get("/api/contract/getContDataTypeById", param).then(res => {
+            res = res.data;
+            if (res.status === 200) {
+            let dataType = JSON.parse(res.data);
+            console.log(dataType);
+            dataType.forEach(element => {
+                if(element.type==="买方"){
+                    let item={};
+                    item.value=[];
+                    item.kind=element.type;
+                    item.title=element.name;
+                    item.isrequire=element.isNecessary;
+                this.buyerList.push(item);
+                }else if(element.type==="卖方"){
+                    let item={};
+                    item.value=[];
+                    item.kind=element.type;
+                    item.title=element.name;
+                    item.isrequire=element.isNecessary;
+                    this.sellerList.push(item);
+                }else if(element.type==="其他"){
+                    let item={};
+                    item.value=[];
+                    item.kind=element.type;
+                    item.title=element.name;
+                    item.isrequire=element.isNecessary;
+                    this.otherList.push(item);
+                }
+            });
+            }
+        })
+        },
+
+         //显示删除按钮
+        moveIn(value){
+            this.isDelete=value
+        },
+        moveOut(value){
+            if(this.isDelete===value){
+                this.isDelete=''
+            }
+        },
+
+        //上传合同资料库
+        uploading(){
+            let uploadContData = this.sellerList.concat(this.buyerList, this.otherList);
+            console.log(uploadContData);
+            let isOk;
+            let arr_=[];
+            for(let i=0;i<uploadContData.length;i++){
+                isOk = false;
+                if(uploadContData[i].isrequire&&uploadContData[i].value.length===0){
+                this.$message({
+                    message:`${uploadContData[i].title}不能为空`
+                });
+                break
+                }else if(uploadContData[i].isrequire&&uploadContData[i].value.length>0){
+                uploadContData[i].value.forEach(element => {
+                    delete element.fileType;
+                });
+                arr_.push(uploadContData[i]);
+                isOk = true;
+                }else if(!uploadContData[i].isrequire&&uploadContData[i].value.length>0){
+                uploadContData[i].value.forEach(element => {
+                    delete element.fileType;
+                });
+                arr_.push(uploadContData[i]);
+                isOk = true;
+                }else{
+                isOk = true;
+                }
+            }
+            if(isOk){
+                let param = {
+                datas: arr_,
+                contId: this.$route.query.id
+                }
+                console.log(param)
+                this.$ajax.postJSON('/api/contract/uploadContData', param).then(res=>{
+                res=res.data;
+                if(res.status===200){
+                    this.$message({
+                    message:'上传成功'
+                    })
+                }
+                })
+            }
+        },
+
+        delectData(index,index_,type){
+            console.log(index,index_,type);
+            if(type==="seller"){
+                this.sellerList[index].value.splice(index_,1);
+            }else if(type==="buyer"){
+                this.buyerList[index].value.splice(index_,1);
+            }else if(type==="other"){
+                this.otherList[index].value.splice(index_,1);
+            }
+        },
+
+         //获取合同主体信息
+        getContractBody(){
+            let param = {
+                id:this.$route.query.id
+            }
+            this.$ajax.get('/api/contract/getContractBodyById', param).then(res=>{
+                res=res.data;
+                if(res.status===200){
+                let uploadList_ = res.data;
+                uploadList_.forEach(element => {
+                    let fileType = this.$tool.get_suffix(element.name);
+                    element.fileType=fileType;
+                });
+                this.uploadList=uploadList_;
+                }
+            })
+        },
+
+        //合同主体获取文件路径数组
+        uploadSubject(data) {
+            let arr = data.param;
+            let fileType = this.$tool.get_suffix(arr[0].name);
+            arr[0].fileType = fileType;
+            this.uploadList.push(arr[0])
+        },
+
+        //合同主体的删除
+        ZTdelectData(index){
+            this.uploadList.splice(index,1)
+        },
+        //保存上传文件
+        saveFile() {
+            if(this.uploadList.length>0){
+                this.uploadList.forEach(element => {
+                delete element.fileType
+                });
+                let param = {
+                contId:this.id,
+                datas:this.uploadList
+                }
+                this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
+                res=res.data;
+                if(res.status===200){
+                    this.getContractBody();
+                    this.$message({
+                    message:'上传成功'
+                    })
+                }
+                })
+            }else{
+                this.$message({
+                message:'请选合同主体'
+                })
+            }
+        },
         // 查询
-       getDetail() {
+        getDetail() {
           let param = {
             id: this.$route.query.id                        
           }
@@ -321,9 +533,9 @@ export default {
                         }
                     }
                 }
-                // console.log(this.detailData)
-                // console.log(this.ownerInfo)
-                // console.log(this.custInfo)
+                if(res.data.isHaveData){
+                    this.getContData()
+                }
             }
             
           }).catch(error => {
@@ -350,7 +562,9 @@ export default {
     },
 
     created() {
-        this.getDetail()
+        this.getDetail();  //合同详细信息
+        this.getContDataType();   //获取资料库里的资料类型
+        this.getContractBody();//获取合同主体
     },
 
     mounted() {
@@ -378,34 +592,46 @@ export default {
     .el-tabs__nav-scroll{
         padding: 0 30px;
     }
-    .el-upload--picture-card{
-        background-color: #fff;
-        border: 2px dashed #DEDDE2;
-        border-radius: 6px;
-        line-height: 40px;
-        padding-top: 32px;
-        width: 140px;
-        height: 140px;
-        i{
-            color: #EEF2FB;
-            font-size: 56px;
-        }
-        span{
-            display: block;
-            text-align: center;
-            color: #32485F;
-        }
-    }
-    .el-upload-list--picture-card .el-upload-list__item{
-        margin: 0 20px 20px 0;
-        width: 140px;
-        height: 140px;
-    }
+    // 原来的上传样式
+    // .el-upload--picture-card{
+    //     background-color: #fff;
+    //     border: 2px dashed #DEDDE2;
+    //     border-radius: 6px;
+    //     line-height: 40px;
+    //     padding-top: 32px;
+    //     width: 140px;
+    //     height: 140px;
+    //     i{
+    //         color: #EEF2FB;
+    //         font-size: 56px;
+    //     }
+    //     span{
+    //         display: block;
+    //         text-align: center;
+    //         color: #32485F;
+    //     }
+    // }
+    // .el-upload-list--picture-card .el-upload-list__item{
+    //     margin: 0 20px 20px 0;
+    //     width: 140px;
+    //     height: 140px;
+    // }
+      
     
     .detailbox{
         padding: 20px 0 0px;
         border-radius: 4px;
         height: 100%;
+        position: relative;
+        .functionTable {
+            position: absolute;
+            right: 0;
+            top: 20px;
+            padding-right: 20px;
+            .el-button.is-round {
+            padding: 10px 20px;
+            }
+        }
         .el-tabs--top{
             height: 100%;
             .el-tabs__content{
@@ -558,19 +784,37 @@ export default {
                 }
             }
         }
-        // 合同主体
-        .hetong{
-            padding: 30px 30px 130px 40px;
-            background-color: #fff;
-            height: 100%;
+         //合同主体
+        .contractSubject {
+            padding: 40px;
+        }
+        .uploadSubject {
+            display: inline-block;
+            text-align: center;
+            width: 120px;
+            height: 120px;
+            box-sizing: border-box;
+            padding-top: 28px;
+            border: 1px dashed #DEDDE2;
+            border-radius:1px;
+            > i {
+                color: #EEF2FB;
+                font-size: 50px;
+            }
+            > p {
+                padding-top: 10px;
+                color: #32485F;
+                font-size: 12px;
+            }
         }
         .third-tab{
-           padding: 20px 30px 130px 40px; 
+           padding: 20px 30px 30px 30px; 
         }
-        .hetong2{
+        .classify{
             margin-bottom: 30px;
             border-bottom: 1px solid #EDECF0;
             padding-bottom: 15px;
+
             .ht-title{
                 color: #32485F;
                 font-size: 16px;
@@ -578,17 +822,66 @@ export default {
             }
             .small-col{
                 margin-bottom: 20px;
+                padding-left: 10px;
                 .small-title{
                     font-size: 14px;
                     color: #6C7986;
                     margin-bottom: 15px;
-                    span{
+                    i{
                         color: #FF3E3E;
                         
                     }
                 }
+                
             }
             
+        }
+        .ulData{
+            display: flex;
+            li{
+                margin-right: 10px;
+                position: relative;
+                > i{
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    color: #F56C6C;
+                    font-size: 20px;
+                    cursor: pointer;
+                }
+            }
+        }
+        .uploadSubject {
+            display: inline-block;
+            text-align: center;
+            width: 120px;
+            height: 120px;
+            box-sizing: border-box;
+            padding-top: 28px;
+            border: 1px dashed #EDECF0;
+            border-radius:1px;
+            > i {
+            color: #EEF2FB;
+            font-size: 50px;
+            }
+            > p {
+            padding-top: 10px;
+            color: #32485F;
+            font-size: 12px;
+            }
+        }
+        .namePath{
+            display: inline-block;
+            text-align: center;
+            width: 120px;
+            height: 120px;
+            padding-top: 20px;
+            box-sizing: border-box;
+            border-radius:4px;
+            background: #F2F3F8;
+            > p{
+            padding-top: 5px;
+            }
         }
         
     }
