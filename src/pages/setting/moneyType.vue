@@ -55,7 +55,6 @@
 
                         <div v-else>
                             <el-button type="text" size="medium" @click='operation(scope.row,2)'>编辑</el-button>
-                            <el-button type="text" size="medium" @click="delYj(scope.row)">删除</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -219,17 +218,6 @@
                 })
             },
             
-            delYj(row){
-                // console.log(row,'删除记录');
-                this.popMsg('确定删除此记录吗？',(row)=>{
-                    console.log(row,'删除记录');
-                    let param={
-                        id:row.id,
-                        status:2
-                    }
-                    this.statusOp(param,'删除成功!')
-                },row)
-            },
             statusOp(param,message){
                  this.$ajax.get('/api/setting/moneyType/update',param)
                    .then((res)=>{
