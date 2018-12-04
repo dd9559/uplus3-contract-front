@@ -52,7 +52,6 @@
                 <el-table-column align="center" label="操作" :formatter="nullFormatter">
                     <template slot-scope="scope">
                         <div v-if="scope.row.parentId ==26">--</div>
-
                         <div v-else>
                             <el-button type="text" size="medium" @click='operation(scope.row,2)'>编辑</el-button>
                         </div>
@@ -107,6 +106,7 @@
                 smallId:'',
                 addDialog:false,
                 bigId:'',
+                bigName:'',
                 addForm:{
                     parentId:'',
                     name:'',
@@ -127,6 +127,7 @@
                         if(this.bigId==''){
                             this.tableData=res.data.data
                             this.moneyTypes=res.data.data[0].moneyTypes
+                            this.bigName=res.data.data[0].name
                         }else{
                             this.moneyTypes=res.data.data
                             console.log(this.moneyTypes);
@@ -144,14 +145,16 @@
             },
             operation(row,type){
                 this.addDialog=true
+                console.log(row,'row');
                 if(type==1){
-                    this.title='新增小类',
+                    this.title=`新增【${this.bigName}】小类`,
+                    console.log(this.title,'title');
                     this.addForm.name=''
                     this.addForm.status=0
                     this.addForm.remark=''
                     this.addForm.parentId=this.bigId
                 }else if(type==2){
-                    this.title='编辑小类',
+                    this.title=`编辑【${this.bigName}】小类`,
                     this.smallId=row.id
                     this.addForm.name=row.name
                     this.addForm.status=row.status
@@ -162,12 +165,11 @@
             leftChange(row){
                 let param={
                     id:row.id,
-                    status:row.status
+                    status:row.statusmessage
                 }
                  this.statusOp(param,'转换成功')
             },
             smallChange(row){
-                console.log(row);
                 let status2 = row.status===false?1:0
                 let param={
                     id:row.id,
@@ -177,7 +179,14 @@
             },
             submitForm(){
                 // this.addForm.status=this.addForm.status?1:0
-                if(this.title=='新增小类'){
+                if(this.addForm.name==''){
+                    this.$message({
+                        type: 'error',
+                        message: '小类名称不能为空!'
+                    })
+                    return
+                }
+                if(this.title==`新增【${this.bigName}】小类`){
                     this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
                     if(res.status==200){
                         this.$message({
@@ -188,7 +197,7 @@
                         this.initList()
                     }
                   })
-                }else if(this.title=='编辑小类'){
+                }else if(this.title==`编辑【${this.bigName}】小类`){
                     console.log(this.addForm,'addform1');
                     let param={
                         id:this.smallId,
@@ -214,10 +223,8 @@
                 }).then(()=>{
                 callback(row)
                 }).catch(()=>{
-
                 })
             },
-            
             statusOp(param,message){
                  this.$ajax.get('/api/setting/moneyType/update',param)
                    .then((res)=>{
@@ -241,9 +248,8 @@
             },
             //单击行事件
             rowClick(row, event, column) {
+                this.bigName=row.name
                 var index=row.index
-                // alert(index)
-                // debugger
                 var top=137+index*47.4
                 var sjx=document.getElementsByClassName('sjx')
                 var paperBtn=document.getElementsByClassName('paper-btn')
@@ -264,8 +270,6 @@
                     this.isSF=true
                 }
                 this.moneyTypes=row.moneyTypes
-
-                // console.log(row.moneyTypes,'parentid');
                 this.addForm.parentId=row.id
                 this.bigId=row.id
                 this.initList()
@@ -319,7 +323,7 @@
     }
     .commission {
         // flex: 2;
-        min-width: 63%;
+        min-width: 72%;
         // padding: 15px 10px 0;
         background:rgba(254,252,247,1);
         box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
