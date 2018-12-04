@@ -93,7 +93,7 @@
                                     </el-form-item>
                                     <el-form-item prop="guestInfo.EmpName" class="small-input">
                                         <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" ref="select2" @clear="clearEmpName" @change="changeAgent">
-                                            <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.id"></el-option>
+                                            <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-form-item>
