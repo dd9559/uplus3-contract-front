@@ -187,7 +187,7 @@
             </div>
             
             <!-- 图片放大 -->
-             <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
+             <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
         </div>
        
             
@@ -274,7 +274,7 @@ export default {
             this.$router.push({
                 path:'/contractPreview',
                 query:{
-                    // contractCode: value.contractCode
+                    id: this.$route.query.id
                 }
             })
         },
@@ -456,13 +456,16 @@ export default {
                 datas:this.uploadList
                 }
                 this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
-                res=res.data;
-                if(res.status===200){
-                    this.getContractBody();
-                    this.$message({
-                    message:'上传成功'
-                    })
-                }
+                    res=res.data;
+                    if(res.status===200){
+                        this.getContractBody();
+                        this.$message({
+                            message:'上传成功'
+                        })
+                    }else if(res.status===500){
+                        let tips = res.message
+                        this.$message.error(tips)
+                    }
                 })
             }else{
                 this.$message({

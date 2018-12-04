@@ -165,11 +165,12 @@
         <!-- 表格 -->
         <div class="audit-col">
           <el-table :data="layerAudit.settlementFroms" border style="width: 100%" class="table">
-          <el-table-column prop="level4" label="合作门店"></el-table-column>
-          <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
-          <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
-          <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
-        </el-table>            
+            <el-table-column prop="level4" label="合作门店"></el-table-column>
+            <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
+            <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
+            <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
+          </el-table> 
+          <div class="zhushi">注：结算中的当期实收分成金额包含扣除的特许服务费，具体请结算通过后在分账记录列表中查看</div>           
         </div>
 
         <!-- 上传附件 -->
@@ -825,6 +826,11 @@
       }
       
     }
+  }
+  .zhushi{
+      margin-top: 20px;
+      font-size: 12px;
+      color: #6C7986;
   }
 
 }

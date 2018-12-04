@@ -105,7 +105,7 @@
       </div>
       <!-- 头部 end -->
       <!-- 表格 -->
-      <div class="data-list"  v-loading="loading">
+      <div class="data-list" v-loading="loading">
         <el-table :data="receivableList" style="width: 100%" @row-dblclick="dialogVisible = true">
           <!-- code -->
           <el-table-column label="合同信息" width="140">
@@ -288,7 +288,7 @@ export default {
       currentPage: 1,
       ajaxParam: {},
       total: 0,
-      loading:true
+      loading: true
     };
   },
   created() {
@@ -306,7 +306,6 @@ export default {
         this.departs = res.data.data;
       }
     });
-    this.loading=false;
   },
   components: {},
   methods: {
@@ -373,8 +372,11 @@ export default {
           _that.receivableList = data.data.list;
           if (data.data.list[0]) {
             _that.countData = data.data.list[0].contractCount;
+          } else {
+            _that.countData = [0, 0, 0, 0];
           }
           _that.total = data.data.total;
+          this.loading = false;
         }
       });
     },
@@ -565,7 +567,7 @@ export default {
   padding-bottom: 50px;
   padding-top: 50px;
 }
-.w430{
-    width: 430px;
+.w430 {
+  width: 430px;
 }
 </style>

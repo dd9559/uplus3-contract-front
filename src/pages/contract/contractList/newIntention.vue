@@ -88,12 +88,12 @@
                                 <el-form-item label="成交经纪人：" required>
                                     <el-form-item prop="guestInfo.GuestStoreName">
                                         <el-select v-model="contractForm.guestInfo.GuestStoreName" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
-                                            <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                            <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.name"></el-option>
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item prop="guestInfo.EmpName" class="small-input">
-                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" @change="changeAgent" @clear="clearEmpName">
-                                            <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
+                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" ref="select2" @clear="clearEmpName" @change="changeAgent">
+                                            <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.id"></el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-form-item>
@@ -122,7 +122,7 @@
                     </div>
                 </div>
                 <div class="form-btn">                   
-                        <el-button type="primary" plain round @click="onPreview()" v-if="type===1">预 览</el-button>
+                        
                         <el-button type="primary" round @click="onSubmit('contractForm')">保 存</el-button>                  
                 </div>
             </el-form>
@@ -161,7 +161,10 @@ export default {
                 remarks: "",
 
                 houseInfo: {
-               
+                    EstateName:'',
+                    BuildingName: '',
+                    Unit: '',
+                    RoomNo: ''
                 },
                 guestInfo: {
                     
@@ -403,8 +406,7 @@ export default {
                 keyword: e
             };
             this.$ajax.get("/api/contract/getDepsByCityId", param).then(res => {
-                
-               
+                               
                 this.loading = true;
                 if (res.data.status === 200) {
                     this.loading = false;
@@ -418,12 +420,12 @@ export default {
             });
         },
 
-        changeAgent(id){
-              this.contractForm.guestInfo.EmpName = id
+        changeAgent(item){
+              this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,item.name)
         },
 
         clearEmpName(){
-            this.contractForm.guestInfo.EmpName = '' 
+            this.contractForm.guestInfo.EmpName = ''
         },
 
         //获取门店更改时的
@@ -442,6 +444,9 @@ export default {
                     if(res.data.status===200){ 
                                        
                         this.loading = false; 
+                        // this.contractForm.guestInfo.EmpName = ''
+                        
+                        
 
                         if(res.data.data.length > 0){ 
                             this.option3 = res.data.data;
@@ -449,18 +454,13 @@ export default {
                                                         
                     }
                 })
+                // debugger
                 this.clearEmpName()
                 
                
             // }
             
          },
-
-         
-
-         
-
-       
 
          //关闭选择房源客源弹窗
         closeCommission(value){
@@ -475,16 +475,6 @@ export default {
             } else {
                 this.isShowDialog = false;
             }
-        },
-
-        //预览事件
-        onPreview() {
-            this.$router.push({
-                path:'/contractPreview',
-                query:{
-                    // contractCode: value.contractCode
-                }
-            })
         },
         
        

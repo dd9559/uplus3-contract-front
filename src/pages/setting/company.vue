@@ -211,9 +211,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgcontract" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span>
-                  </li>
-                  <li v-show="companyForm.contractSign!==''"><div @click="getPicture"><upload-cell type=".png"></upload-cell></div><span class="text">{{contractName}}</span><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
+                  <li><fileUp id="imgcontract" class="up" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li v-show="companyForm.contractSign!==''"><div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{contractName}}</p><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -222,8 +221,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgfinance" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span></li>
-                  <li v-show="companyForm.financialSign!==''"><div @click="getPicture"><upload-cell type=".png"></upload-cell></div><span class="text">{{financialName}}</span><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
+                  <li><fileUp id="imgfinance" class="up" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li v-show="companyForm.financialSign!==''"><div @click="getPicture(2)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{financialName}}</p><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -249,7 +248,7 @@
     :before-close="handleClose"
     class="dialog-info">
     <div class="view-content">
-      <p>汉街二店</p>
+      <p>{{companyForm.storeName}}</p>
       <div>
         <span>法人信息</span>
         <p><span>法人姓名: {{ companyForm.lepName }}</span><span>法人手机号码: {{ companyForm.lepPhone }}</span></p>
@@ -265,11 +264,11 @@
         <span>电子签章信息</span>
         <div class="stamp">
           <span>合同章: </span>
-          <div @click="getPicture"><upload-cell type=".png" class="picture" v-show="companyForm.contractSign!==''"></upload-cell></div>
+          <div @click="getPicture(1)"><upload-cell type=".png" class="picture" v-show="companyForm.contractSign!==''"></upload-cell></div>
         </div>
         <div class="stamp">
           <span>财务章: </span>
-          <div @click="getPicture"><upload-cell type=".png" class="picture" v-show="companyForm.financialSign!==''"></upload-cell></div>
+          <div @click="getPicture(2)"><upload-cell type=".png" class="picture" v-show="companyForm.financialSign!==''"></upload-cell></div>
         </div>
       </div>
     </div>
@@ -309,6 +308,12 @@
     },
     documentType: {
       name: "企业证件"
+    },
+    contractSign: {
+      name: "合同章上传"
+    },
+    financialSign: {
+      name: "财务章上传"
     }
   }
   let obj1 = {
@@ -379,8 +384,7 @@
         },
         contractName: "",
         financialName: "",
-        previewFiles: [],
-        preview: false
+        imgList: []
       }
     },
     created() {
@@ -558,40 +562,59 @@
       },
       submitConfirm() {
         this.$tool.checkForm(this.companyForm,rule).then(() => {
+          let isOk
+          this.companyBankList.forEach(item => {
+            isOk = false
+            if(item.bankAccountName) {
+              if(item.bankCard.length === 16) {
+                if(item.bankBranchName) {
+                  isOk = true
+                } else {
+                  this.$message({message: "开户行不能为空"})
+                }
+              } else {
+                this.$message({message: "银行账户位数不正确"})
+              }
+            } else {
+              this.$message({message: "开户名不能为空"})
+            }
+          })
           let obj = {
-            companyBankListStr: JSON.stringify({data: this.companyBankList})
+            companyBankList: this.companyBankList
           }
           let param = {
-            documentCardStr: JSON.stringify(this.documentCard)
+            documentCard: this.documentCard
           }
           param = Object.assign({},this.companyForm,obj,param)
-          if(this.companyFormTitle === "添加企业信息") {
-            this.$ajax.post('/api/setting/company/insert',param).then(res => {
-              res = res.data
-              if(res.status === 200) {
-                this.AddEditVisible = false
-                this.directSaleSelect = false
-                this.$message(res.message)
-                this.getCompanyList()
+          if(isOk) {
+            if(this.companyFormTitle === "添加企业信息") {
+              this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
+                res = res.data
+                if(res.status === 200) {
+                  this.AddEditVisible = false
+                  this.directSaleSelect = false
+                  this.$message(res.message)
+                  this.getCompanyList()
+                }
+              }).catch(error => {
+                console.log(error);
+              })
+            } else {
+              let obj = {
+                delIds: this.delIds
               }
-            }).catch(error => {
-              console.log(error);
-            })
-          } else {
-            let obj = {
-              delIds: this.delIds
+              param = Object.assign({},param,obj)
+              this.$ajax.put('/api/setting/company/update',param).then(res => {
+                res = res.data
+                if(res.status === 200) {
+                  this.AddEditVisible = false
+                  this.$message(res.message)
+                  this.getCompanyList()
+                }
+              }).catch(error => {
+                console.log(error);
+              })
             }
-            param = Object.assign({},param,obj)
-            this.$ajax.put('/api/setting/company/update',param).then(res => {
-              res = res.data
-              if(res.status === 200) {
-                this.AddEditVisible = false
-                this.$message(res.message)
-                this.getCompanyList()
-              }
-            }).catch(error => {
-              console.log(error);
-            })
           }
         }).catch(error => {
           this.$message({
@@ -639,25 +662,30 @@
           lepDocumentCard: currentRow.lepDocumentCard,
           lepPhone: currentRow.lepPhone,
           documentType: currentRow.documentType.value,
-          contractSign: (currentRow.contractSign.split('?')[0]),
-          financialSign: (currentRow.financialSign.split('?')[0])
+          contractSign: currentRow.contractSign,
+          financialSign: currentRow.financialSign
         }
         this.companyForm = newForm
       },
-      getPicture() {
-        this.previewFiles = []
+      getPicture(type) {
+        this.imgList = []
         let pic1 = this.companyForm.contractSign
         let pic2 = this.companyForm.financialSign
-        if(pic1 || pic2) {
-          this.preview = true
-          if(pic1.indexOf('?') > -1) {
-            this.previewFiles.push(pic1.split('?')[0],pic2.split('?')[0])
+        if(type === 1) {
+          if(pic2 === "") {
+            this.imgList.push(pic1.split('?')[0])
           } else {
-            this.previewFiles.push(pic1.split('.png')[0]+`.png`, pic2.split('.png')[0]+`.png`)
+            this.imgList.push(pic1.split('?')[0],pic2.split('?')[0])
           }
-        } else {
-          this.preview = false
+        } else if(type === 2) {
+          if(pic1 === "") {
+            this.imgList.push(pic2.split('?')[0])
+          } else {
+            this.imgList.push(pic2.split('?')[0],pic1.split('?')[0])
+          }
         }
+        console.log(this.imgList);
+        this.fileSign(this.imgList)
       },
       handleSizeChange(val) {
         this.pageSize = val
@@ -877,12 +905,17 @@
                 .text {
                   position: absolute;
                   font-size: @size-base;
-                  bottom: -8px;
+                  bottom: 10px;
                   color: #233241;
-                  display: inline-block;
+                }
+                .pic-name {
+                  position: absolute;
+                  font-size: @size-base;
+                  bottom: 0;
+                  color: #233241;
                   width: 120px;
-                  height: 32px;
                   text-align: center;
+                  z-index: 10,
                 }
                 .del {
                   position: absolute;

@@ -330,13 +330,32 @@
         if(this.stepBusiness.name === "") {
           this.$message("步骤名称不能为空")
         } else {
-          if (this.modalTitle === "添加交易步骤") {
-            const url = "/api/flowmanage/insertSteps"
-            this.tradeStepsPost(url)
-          } else {
-            const url = "/api/flowmanage/updateSteps"
-            this.tradeStepsPost(url)
-          }
+          let isOk
+          this.tableForm.forEach(item => {
+            isOk = false
+            if(item.title) {
+              if(item.type !== "") {
+                if(item.isRequired) {
+                  isOk = true
+                } else {
+                  this.$message({message:"是否必填项不能为空"})
+                }
+              } else {
+                this.$message({message:"信息类型不能为空"})
+              }
+            } else {
+              this.$message({message:"附属名称不能为空"})
+            }
+          })
+          if(isOk) {
+            if (this.modalTitle === "添加交易步骤") {
+              const url = "/api/flowmanage/insertSteps"
+              this.tradeStepsPost(url)
+            } else {
+              const url = "/api/flowmanage/updateSteps"
+              this.tradeStepsPost(url)
+            }
+          } 
         }
       },
       //添加和编辑步骤类型请求

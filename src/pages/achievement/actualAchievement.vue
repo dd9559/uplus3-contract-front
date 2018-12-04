@@ -211,6 +211,7 @@
               <p>合同编号：<span
                   class="blue"
                   @click="skipContDel(scope.row)"
+                  style="cursor:pointer;"
                 >{{scope.row.code}}</span></p>
               <p>房源编号：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
               <p>客源编号：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
@@ -372,21 +373,21 @@
                          v-if="scope.row.achievementState==6"
                          class="check-btn"
                        >
-                         <span @click.stop="checkAch(scope.row,scope.$index)">审核</span>
-                         <span @click.stop="editAch(scope.row,scope.$index)">编辑</span>
+                         <span @click.stop="checkAch(scope.row,scope.$index)" style="cursor:pointer;">审核</span>
+                         <span @click.stop="editAch(scope.row,scope.$index)" style="cursor:pointer;">编辑</span>
                        </div>
                        <div
                          v-if="scope.row.achievementState==7"
                          class="check-btn"
                        >
-                         <span @click.stop="againCheck(scope.row,scope.$index)">反审核</span>
+                         <span @click.stop="againCheck(scope.row,scope.$index)" style="cursor:pointer;">反审核</span>
                        </div>
                        <div
                          v-if="scope.row.achievementState==8"
                          class="check-btn"
                        >
-                         <span @click.stop="checkAch(scope.row,scope.$index)">审核</span>
-                         <span @click.stop="editAch(scope.row,scope.$index)">编辑</span>
+                         <span @click.stop="checkAch(scope.row,scope.$index)" style="cursor:pointer;">审核</span>
+                         <span @click.stop="editAch(scope.row,scope.$index)" style="cursor:pointer;">编辑</span>
                        </div>
               </div>
              <div v-else>
@@ -611,8 +612,8 @@
               width="200"
             >
               <template slot-scope="scope">
-                <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatDate}}</p>
-                <p v-else>-</p>
+                   <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatDate}}</p>
+                   <p v-else>-</p>
               </template>
             </el-table-column>
             <!-- auditorDepartment -->
@@ -648,7 +649,7 @@
                     <p class="orange">驳回</p>
                   </div>
                   <div v-else>
-                    <p class="orange">-</p>
+                    <p>-</p>
                   </div>
                 </div>
               </template>
@@ -748,7 +749,7 @@ export default {
     });
     // 字典初始化
     this.getDictionary();
-    this.loading=false;
+
   
   },
   components: {
@@ -780,6 +781,7 @@ export default {
              _that.total = data.data.total;
             if(data.data.list[0]){
                  _that.countData = data.data.list[0].contractCount;
+                  this.loading=false;
             }         
            
           }
@@ -790,7 +792,7 @@ export default {
       console.log(val2);
       this.shows=false;
       this.code2='';
-      if(val1){
+      if(val1&&val2){
         this.selectAchList[val1].achievementState=val2;
       }
     },
@@ -809,7 +811,12 @@ export default {
           if (res.status === 200) {
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
-            this.checkArr = data.data.achievements;
+            if(data.data.achievements){
+                this.checkArr = data.data.achievements;
+            }else{
+              this.checkArr = [];
+            }
+            
             this.comm = data.data.comm;
           }
         });

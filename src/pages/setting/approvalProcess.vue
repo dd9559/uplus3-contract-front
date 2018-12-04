@@ -155,18 +155,32 @@
 <script>
     import {FILTER} from "@/assets/js/filter";
     import {MIXINS} from "@/assets/js/mixins";
+    const rule = {
+        cityId: {
+            name: "城市选择"
+        },
+        deptAttr: {
+            name: "运营模式"
+        },
+        name: {
+            name: "流程名称"
+        },
+        flowDesc: {
+            name: "流程描述"
+        }
+    }
     let flowType = ["付款审核","付款审核","应收业绩审核","合同审核","调佣审核","结算审核"]
     let sortNo = 1
     let arr = [
         {
             name: "",
             type: "",
-            sort: 1,
+            sort: 2,
             userId: "",
             userName: ""
         }
     ]
-
+    
     export default {
         name: "approvalProcess",
         mixins: [FILTER,MIXINS],
@@ -274,6 +288,7 @@
                     this.editDisabled = false
                 } else {
                     this.nodeList = [...row.branch]
+                    this.nodeList.shift(this.nodeList[0])
                     let {...currentRow} = row
                     this.currentFlowId = currentRow.id
                     this.aduitForm.cityId = currentRow.cityId
@@ -365,24 +380,52 @@
                 this.nodeList.splice(index,1)
             },
             isSave() {
-                if(this.isAudit === "1") {
-                    this.nodeList.forEach(item => {
-                        item.isAudit = this.isAudit
+                this.$tool.checkForm(this.aduitForm,rule).then(() => {
+                    // let isOk
+                    if(this.isAudit === "1") {
+                        this.nodeList.forEach(item => {
+                            item.isAudit = this.isAudit
+                        })
+                        // this.nodeList.forEach(item => {
+                        //     isOk = false
+                        //     if(item.title) {
+                        //         if(item.type !== "") {
+                        //             isOk = true
+                        //         } else {
+                        //             this.$message({message:"请选择审批人类型"})
+                        //         }
+                        //     } else {
+                        //         this.$message({message:"节点名称不能为空"})
+                        //     }
+                        // })
+                        let obj = {
+                            name: "提审人",
+                            type: 0,
+                            sort: 1,
+                            userId: "",
+                            userName: "",
+                            isAudit: "1"
+                        }
+                        this.nodeList.unshift(obj)
+                    } else {
+                        this.nodeList[0].isAudit = this.isAudit
+                    }
+                    let param = {
+                        branch: JSON.stringify(this.nodeList)
+                    }
+                    param = Object.assign({},this.aduitForm,param)
+                    const url = "/api/auditflow/operateFlow"
+                    if(this.aduitTitle === "添加") {
+                        this.aduitPost(url,param)
+                    } else {
+                        param.id = this.currentFlowId
+                        this.aduitPost(url,param)
+                    }
+                }).catch(error => {
+                    this.$message({
+                        message: `${error.title}${error.msg}`
                     })
-                } else {
-                    this.nodeList[0].isAudit = this.isAudit
-                }
-                let param = {
-                    branch: JSON.stringify(this.nodeList)
-                }
-                param = Object.assign({},this.aduitForm,param)
-                const url = "/api/auditflow/operateFlow"
-                if(this.aduitTitle === "添加") {
-                    this.aduitPost(url,param)
-                } else {
-                    param.id = this.currentFlowId
-                    this.aduitPost(url,param)
-                }
+                })
             },
             aduitPost(url,param) {
                 this.$ajax.post(url,param).then(res => {

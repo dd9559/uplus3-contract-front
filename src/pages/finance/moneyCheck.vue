@@ -123,7 +123,7 @@
           <el-button class="btn-info" round size="small" type="primary">导出</el-button>
         </p>
       </div>
-      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
+      <el-table ref="dataList" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" min-width="150" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -241,6 +241,16 @@
       next()
     },
     methods: {
+      /**
+       * 列表横行滚动
+       */
+      scroll:function () {
+        // debugger
+        let box=this.$refs.dataList.$refs.bodyWrapper
+        console.log(box.clientWidth,box.scrollWidth)
+        box.scrollTo(box.scrollLeft+30,0)
+        console.log(box.scrollLeft)
+      },
       reset:function () {
         this.$tool.clearForm(this.searchForm)
       },

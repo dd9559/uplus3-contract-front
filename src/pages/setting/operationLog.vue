@@ -112,13 +112,11 @@
             })
             },
             handleSizeChange (val) {
-            console.log(`每页 ${val} 条`)
             this.pageSize = val
             console.log(this.pageSize,'pageSize');
             this.getLogList()
             },
             handleCurrentChange (val) {
-            console.log(`当前页: ${val}`)
             this.pageNum = val
             this.getLogList()
             },
@@ -200,6 +198,7 @@
     > p {
         padding: 0 10px;
         display: flex;
+        height: 36px;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 10px;

@@ -317,6 +317,10 @@
               padding: @margin-base 0;
               >.cell{
                 // white-space: nowrap;
+                .span-cursor{
+                  color: @color-blue;
+                  cursor: pointer;
+                }
               }
             }
           }
@@ -330,7 +334,7 @@
   }
   /deep/ .pagination-info{
     text-align: center;
-    margin-top: 50px;
+    margin-top: @margin-15;
   }
 </style>
 
