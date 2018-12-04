@@ -281,7 +281,7 @@ export default {
         estateCode:this.estateCode,
         buildingCode:this.BuildingCode
       }
-      this.$ajax.get('/api/resource/houses', param).then(res=>{
+      this.$ajax.get('/api/contract/houses', param).then(res=>{
         res=res.data
         this.loading_=false;
         if(res.status===200){
