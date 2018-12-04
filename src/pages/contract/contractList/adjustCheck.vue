@@ -133,7 +133,7 @@
             <p><el-checkbox v-model="relieveFn" :disabled="true">有解除协议</el-checkbox></p>
           </div>
           <div class="textareabox">
-            <span>调整原因</span>
+            <span><em>*</em>调整原因</span>
             <el-input type="textarea" :rows="3"  v-model="layerAudit.reason" class="textarea" maxlength=100 :disabled="true"></el-input>
           </div>
         </div>
@@ -187,14 +187,21 @@
           <!-- 上传附件 -->
           <div class="uploadfile">
             <div class="uploadtitle">附件:</div>
-            <div class="uploadbtn">
-              
-            </div>
+            <ul class="ulData">
+
+                <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                    <div class="namePath">
+                        <upload-cell :type="item.fileType"></upload-cell>
+                        <p>{{item.name}}</p>
+                    </div>
+                    <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                </li>
+            </ul>
           </div>                  
         </div>
         <!-- 审核备注 -->
         <div class="textareabox2">
-          <span>调整原因</span>
+          <span>审核备注</span>
           <el-input type="textarea" :rows="6"  v-model="auditForm.textarea" class="textarea" maxlength=200 ></el-input>
         </div>  
       </div>
@@ -202,6 +209,8 @@
         <el-button class="refuse" @click="refuseFn()">驳 回</el-button>
         <el-button type="primary"  @click="receptFn()" class="recept">通 过</el-button>  
       </div> 
+      <!-- 图片放大 -->
+    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
 
   </div>
@@ -259,7 +268,12 @@
         layerAudit:{
 
         },
+
+        isDelete:'',
+        
         myCheckId: '',
+        //上传的协议
+        uploadList: [],
 
         auditForm: {
           textarea: '', //备注
@@ -294,7 +308,20 @@
     },
   
     methods:{
-      
+      //合同主体的删除
+      ZTdelectData(index){
+          this.uploadList.splice(index,1)
+      },
+
+      //显示删除按钮
+      moveIn(value){
+          this.isDelete=value
+      },
+      moveOut(value){
+          if(this.isDelete===value){
+              this.isDelete=''
+          }
+      },
 
 
       // 控制弹框body内容高度，超过显示滚动条
@@ -424,6 +451,7 @@
             console.log(data.data)
             this.layerAudit = data.data;
             this.myCheckId = data.data.checkId;
+            this.uploadList = data.data.voucher;
           }
         }).catch(error => {
           console.log(error)
@@ -684,7 +712,11 @@
         display: flex;
         align-items: flex-start;
         span{
-          width: 76px;
+          width: 80px;
+          em{
+            color:#FF3E3E;
+            margin-right: 3px;
+          }
         }
       }
       .table{
@@ -745,8 +777,10 @@
       }
       .uploadfile{
         margin: 40px 0 30px;
+        display: flex;
         .uploadtitle{
           color: #6C7986;
+          width: 78px;
           span{
             margin-left: 16px;
             color: #8E8E8E;
@@ -755,30 +789,43 @@
             }
           }
         }       
-        .uploadbtn{
-          margin: 0 0 0 15px;
-          .el-upload--picture-card{
-            background-color: #fff;
-            border: 2px dashed #DEDDE2;
-            border-radius: 6px;
-            width: 130px;
-            height: 130px;
-            line-height: 130px;
-            margin-top: 20px;
-            i{
-                color: #EEF2FB;
-                font-size: 56px;
+        .ulData{
+ 
+            width: 100%;
+            overflow: hidden;
+            li{
+                margin-right: 20px;
+                margin-bottom: 20px;
+                position: relative;
+                float: left;
+                &:nth-child(5n){
+                  margin-right: 0;
+                }
+                > i{
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    color: #F56C6C;
+                    font-size: 20px;
+                    cursor: pointer;
+                }
             }
-          }
-          .el-upload-list--picture-card .el-upload-list__item{
-            margin: 20px 20px 0 0;
-            width: 130px;
-            height: 130px;
-            &:nth-child(5n){
-              margin-right: 0;
-            }
-          }
         }
+
+        .namePath{
+            display: inline-block;
+            text-align: center;
+            width: 120px;
+            height: 120px;
+            padding-top: 20px;
+            box-sizing: border-box;
+            border-radius:4px;
+            background: #F2F3F8;
+            > p{
+            padding-top: 5px;
+            }
+        }
+
       }
       
     }   
