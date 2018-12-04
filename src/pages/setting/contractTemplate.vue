@@ -340,6 +340,7 @@
       > p {
         padding: 0 10px;
         display: flex;
+        height: 36px;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 10px;
