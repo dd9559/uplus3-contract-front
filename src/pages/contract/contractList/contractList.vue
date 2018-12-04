@@ -359,7 +359,9 @@ export default {
       console.log(id);
       this.$router.push({
         path:'/receiptBill',
-        contId:id
+        query:{
+          contId:id
+        }
       })
     },
     //付款
@@ -367,7 +369,9 @@ export default {
       console.log(id);
        this.$router.push({
         path:'/payBill',
-        contId:id
+        query:{
+          contId:id
+        }
       })
     },
     //合同详情页
