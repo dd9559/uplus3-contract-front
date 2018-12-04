@@ -6,7 +6,8 @@ const MIXINS = {
       EmployeList:[],
       Loading:true,
       preview:false,
-      previewFiles:[]
+      previewFiles:[],
+      previewIndex:0,
     }
   },
   methods: {
@@ -92,20 +93,29 @@ const MIXINS = {
     previewPhoto(arr,i){
         let type = this.$tool.get_suffix(arr[i].path)
         if(this.imgBoolFn(type)){
-            // 图片
+            // 图片 和 视频 预览
             let arr2 = [];
-            arr.map((e,n)=>{
+            arr.map(e=>{
                 if(this.imgBoolFn(type)){
-                    arr2.push(e.path);
-                    if(e.path === type){
-                      i = n;
+                    if(e.path === arr[i].path){
+                      this.previewIndex = arr2.length;
                     }
+                    arr2.push(e.path);
                 }
-                
             })
             this.fileSign(arr2)
         }else{
-            // 其他文件
+            // 其他文件 下载
+            this.$ajax.get("/access/generateAccessURL",{
+              url:arr[i].path
+            }).then(res=>{
+              res = res.data;
+              if(res.status === 200){
+                window.location = res.data.url;
+              }
+            }).catch(err=>{
+              console.log(err)
+            })
         }
     },
     // 判断图片类别
@@ -121,6 +131,12 @@ const MIXINS = {
                 return true
                 break;
             case '.jpeg':
+                return true
+                break;
+            case '.avi':
+                return true
+                break;
+            case '.mp4':
                 return true
                 break;
             default:

@@ -44,7 +44,7 @@
         <div class="">
           <div class="modal-context">
             <label>合同名称：</label>
-            <el-input placeholder="限制15个字符" maxlength='15' v-model="contraName"></el-input>
+            <el-input placeholder="限制15个字符"  maxlength='15' v-model="contraName"></el-input>
           </div>
           <div class="file-upload">
             <label>上传：</label>
@@ -193,9 +193,16 @@
       /**
        * 上传
        */
-      sureUp(){      
-         this.modal=false
-         this.$router.push({
+      sureUp(){
+        if(this.contraName==''){
+          this.modal=true
+          this.$message({
+                type: 'error',
+                message: '合同名称不能为空'
+                })
+        }else{
+           this.modal=false
+          this.$router.push({
             path: "/contraPreview",
             query: {
               mmaiAddress: this.mmaiAddress,
@@ -208,7 +215,7 @@
               id:this.id
             }
           });
-
+        }      
       },
       /**
        * 启用

@@ -10,7 +10,7 @@
             <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
           <div class="col-li">
-            <p>申请日期：<span>{{layerAudit.createTime}}</span></p>
+            <p>申请日期：<span>{{layerAudit.createTime | getDate}}</span></p>
             <p>申请人：<span>{{layerAudit.createByDepName + '-' + layerAudit.createByName}}</span></p>
           </div>
           <div class="col-li">
@@ -23,7 +23,7 @@
             <p><el-checkbox v-model="checked">有解除协议</el-checkbox></p>
           </div>
           <div class="textareabox">
-            <span>调整原因</span>
+            <span><em>*</em>调整原因</span>
             <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="auditForm.textarea" class="textarea" maxlength=100></el-input>
           </div>
         </div>
@@ -82,8 +82,8 @@
           </table>
           <!-- 上传附件 -->
           <div class="uploadfile">
-            <div class="uploadtitle">上传附件<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
-            <div class="uploadbtn">
+            <div class="uploadtitle">上传附件</div>
+            <!-- <div class="uploadbtn">
               <el-upload
                 action="https://jsonplaceholder.typicode.com/posts/"
                 list-type="picture-card"
@@ -91,26 +91,46 @@
                 >
                 <i class="iconfont icon-shangchuan"></i>
               </el-upload>
-              <!-- <el-dialog :visible.sync="dialogVisible2">
-                <img width="100%" :src="dialogImageUrl" alt="">
-              </el-dialog> -->
-            </div>
+            </div> -->
+            <ul class="ulData">
+                <li>
+                    <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                        <i class="iconfont icon-shangchuan"></i>
+                        <p>点击上传</p>
+                    </file-up>
+                </li>
+                <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                    <div class="namePath">
+                        <upload-cell :type="item.fileType"></upload-cell>
+                        <p>{{item.name}}</p>
+                    </div>
+                    <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                </li>
+            </ul>
+
           </div>                  
         </div>
-        <!-- 取消保存按钮 -->
-           
+
+        <!-- 取消保存按钮 -->         
       </div>
       <div class="btnbox">
         <el-button @click="close">取 消</el-button>
         <el-button type="primary" @click="auditApply()">保 存</el-button>  
       </div> 
+      <!-- 图片放大 -->
+    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
+    
     </div>
 </template>
 
 <script>
+import {TOOL} from "@/assets/js/common";
+import { MIXINS } from "@/assets/js/mixins";
+import {FILTER} from "@/assets/js/filter";
 import { Message } from 'element-ui';
 export default {
+    mixins: [FILTER, MIXINS],
     props: {
         dialogVisible: {
             type: Boolean,
@@ -145,6 +165,9 @@ export default {
             otherCooperationCost: ''
             
           },
+          //上传的协议
+          uploadList: [],
+          isDelete:'',
           // 弹框里用到的
           dialogImageUrl: '',
           //dialogVisible: false,
@@ -160,16 +183,38 @@ export default {
         }
     },
 
+    filters: {
+       getDate(val) {
+         return TOOL.dateFormat(val);
+       }
+    },
+
     methods: {
-        
-      // 弹层里上传附件
-    //   handleRemove(file, fileList) {
-    //     console.log(file, fileList);
-    //   },
-    //   handlePictureCardPreview(file) {
-    //     this.dialogImageUrl = file.url;
-    //     this.dialogVisible2 = true;
-    //   }
+
+      //获取文件路径后缀名
+      uploadSubject(data) {
+          let arr = data.param;
+          console.log(data)
+          let fileType = this.$tool.get_suffix(arr[0].name);
+          arr[0].fileType = fileType;
+          this.uploadList.push(arr[0])
+      }, 
+
+      //合同主体的删除
+      ZTdelectData(index){
+          this.uploadList.splice(index,1)
+      },
+
+      //显示删除按钮
+      moveIn(value){
+          this.isDelete=value
+      },
+      moveOut(value){
+          if(this.isDelete===value){
+              this.isDelete=''
+          }
+      },
+
 
     // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
@@ -209,42 +254,38 @@ export default {
         let param = {
           contractCode: this.contractCode,
           reason: this.auditForm.textarea,
-          vouchers: '',
+          enclosure: this.uploadList,
           relieve: this.checked, 
           newOwnerCommission: this.auditForm.money1,
           newCustCommission: this.auditForm.money2,
           newOtherCooperationCost: this.auditForm.money4
         }
         if(this.auditForm.textarea !== ""){
-          // if (this.auditForm.money1 !== null && this.auditForm.money2 !== null && this.auditForm.money3 !== null){ 
-            this.$ajax         
-            .postJSON("/api/commission/waitUpdate", param)
-            .then(res => {
-
-
+          // if (this.auditForm.money1 !== null && this.auditForm.money2 !== null && this.auditForm.money3 !== null){            
+            if(this.checked === true && this.uploadList.length <= 0){
+              this.$message("请您上传协议或者去掉勾选'有解除协议'");           
+            }else{
+              this.$ajax         
+                .postJSON("/api/commission/waitUpdate", param)
+                .then(res => {
+                          
+                    if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {                             
+                      this.$message('没有金额记录调整并且申请成功');
+                        setTimeout(() => {
+                        this.$emit('closeCentCommission')
+                      }, 1500); 
+                    }else if (res.data.status === 200) {
+                      this.$message('已申请');
+                      setTimeout(() => {
+                        this.$emit('closeCentCommission')
+                      }, 1500); 
                       
-                if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {           
-                  
-                   this.$message('没有金额记录调整并且申请成功');
-                    setTimeout(() => {
-                    this.$emit('closeCentCommission')
-                  }, 1500); 
-                }else{
-                  if (res.data.status === 200) {
-                    this.$message('已申请');
-                    setTimeout(() => {
-                      this.$emit('closeCentCommission')
-                    }, 1500); 
-                    
-                  }
-               
-                }
-            
-              
+                    }
 
-            }).catch(error => {
-              console.log(error)
-            })
+                }).catch(error => {
+                  console.log(error)
+                })
+            }
           // }else{
           //     this.$message('调整后的金额不能为空');
           // }
@@ -257,6 +298,7 @@ export default {
 
     created() {
       this.getData()
+      console.log(this.uploadList)
     },
 
     mounted() {
@@ -328,7 +370,11 @@ export default {
         display: flex;
         align-items: flex-start;
         span{
-          width: 76px;
+          width: 80px;
+          em{
+            color:#FF3E3E;
+            margin-right: 3px;
+          }
         }
       }
       .table{
@@ -389,8 +435,10 @@ export default {
       }
       .uploadfile{
         margin: 40px 0 30px;
+        display: flex;
         .uploadtitle{
           color: #6C7986;
+          width: 78px;
           span{
             margin-left: 16px;
             color: #8E8E8E;
@@ -399,30 +447,64 @@ export default {
             }
           }
         }       
-        .uploadbtn{
-          margin: 0 0 0 15px;
-          .el-upload--picture-card{
-            background-color: #fff;
-            border: 2px dashed #DEDDE2;
-            border-radius: 6px;
-            width: 130px;
-            height: 130px;
-            line-height: 124px;
-            margin-top: 20px;
-            i{
-                color: #EEF2FB;
-                font-size: 56px;
+
+        .ulData{
+ 
+            width: 100%;
+            overflow: hidden;
+            li{
+                margin-right: 20px;
+                margin-bottom: 20px;
+                position: relative;
+                float: left;
+                &:nth-child(5n){
+                  margin-right: 0;
+                }
+                > i{
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    color: #F56C6C;
+                    font-size: 20px;
+                    cursor: pointer;
+                }
             }
-          }
-          .el-upload-list--picture-card .el-upload-list__item{
-            margin: 20px 20px 0 0;
-            width: 130px;
-            height: 130px;
-            &:nth-child(5n){
-              margin-right: 0;
-            }
-          }
         }
+
+        .uploadSubject {
+            display: inline-block;
+            text-align: center;
+            width: 120px;
+            height: 120px;
+            box-sizing: border-box;
+            padding-top: 28px;
+            border: 1px dashed #EDECF0;
+            border-radius:1px;
+            > i {
+            color: #EEF2FB;
+            font-size: 50px;
+            }
+            > p {
+            padding-top: 10px;
+            color: #32485F;
+            font-size: 12px;
+            }
+        }
+
+        .namePath{
+            display: inline-block;
+            text-align: center;
+            width: 120px;
+            height: 120px;
+            padding-top: 20px;
+            box-sizing: border-box;
+            border-radius:4px;
+            background: #F2F3F8;
+            > p{
+            padding-top: 5px;
+            }
+        }
+
       }
       
     }   

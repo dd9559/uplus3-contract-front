@@ -602,6 +602,7 @@
         &:first-of-type{
           color: @color-blue;
           margin-right: 10px;
+          cursor: pointer;
         }
       }
     }
