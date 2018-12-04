@@ -1,15 +1,16 @@
 <template>
     <div class="preview">
-      <div class="view-container" :class="[type==='img'?'img-drag':'']" ref="drag" @mousedown="mousedown" @mousemove="mousemove" @mouseup="dragging=false">
-        <img ref="img" :src="imgSrc" :style="{width:getWidth,transform:getRotate}" alt="" v-if="type==='img'">
-        <video controls v-else>
+      <div class="view-container" :class="[getType==='img'?'img-drag':'']" ref="drag" @mousedown="mousedown" @mouseup="dragging=false">
+        <img ref="img" :src="imgSrc" :style="{width:getWidth,transform:getRotate}" alt="" v-if="getType==='img'">
+        <video controls v-else-if="getType==='video'">
           <source  :src="imgSrc" type="video/mp4">
         </video>
+        <a :href="imgSrc" v-else>文件不支持预览，请手动下载</a>
       </div>
       <p class="pagination page-prev" @click="chose('prev')"><img :src="getImg('btn-prev.png')" alt=""></p>
       <p class="pagination page-next" @click="chose('next')"><img :src="getImg('btn-next.png')" alt=""></p>
       <p class="tools btn-close" @click="chose('close')"><img :src="getImg('btn-close.png')" alt=""></p>
-      <ul class="tools" v-if="type==='img'">
+      <ul class="tools" v-if="getType==='img'">
         <li @click="opera(1)"><i class="iconfont icon-yuanjiaojuxing"></i></li>
         <li @click="opera(2)"><i class="iconfont icon-tubiao-12"></i></li>
         <li @click="opera(3)"><i class="iconfont icon-icon-test3"></i></li>
@@ -38,7 +39,7 @@
         imgSrc:'',
         activePage:this.start,
         imgWidth:100,
-        initWidth:0,
+        initWidth:0,//预览图片的显示原始尺寸
         transform:0,
         //拖拽
         dragging:false,
@@ -47,23 +48,16 @@
           x:0,
           y:0
         },
-        type:'img'
+        typeList:[],
+        activeType:''
       }
     },
-    mounted(){
+    created(){
       if(this.getImages.length>0){
-        this.imgSrc=this.getImages[this.activePage]
-        if(this.imgSrc.indexOf('.mp4')>-1){
-          this.type='video'
-        }else {
-          this.type='img'
-        }
-        let img = new Image()
-        img.src=this.imgSrc
-        img.onload=function () {
-          this.initWidth=img.width
-          this.imgWidth=img.width*0.5
-        }
+        this.imgSrc=this.getImages[this.activePage].path
+        // debugger
+        console.log(this.typeList)
+        this.init(this.imgSrc)
       }
       this.$nextTick(()=>{
         // this.initWidth=this.$refs.img.offsetWidth
@@ -114,10 +108,14 @@
             this.transform+=90
             break
           case 3:
-            this.imgWidth+=50
+            if(this.imgWidth<this.initWidth+300){
+              this.imgWidth+=50
+            }
             break
           case 4:
-            this.imgWidth-=50
+            if(this.imgWidth>this.initWidth){
+              this.imgWidth-=50
+            }
             break
         }
       },
@@ -139,40 +137,67 @@
           dragObj.style.top=this.dragPos.y+'px'
         }
       },
-      mousemove:function (event) {
-
-      }
+      /**
+       * 获取图片原始信息
+       */
+      init:function (src) {
+        let img = new Image()
+        img.src=src
+        img.onload=function () {
+          //防止图片未加载，获取width为0的情况
+          if(img.width<=200){
+            this.imgWidth=img.width
+          }else if(img.width>=1000){
+            this.imgWidth=img.width*0.4
+          }else {
+            this.imgWidth=img.width*0.5
+          }
+          this.initWidth=this.imgWidth
+        }.bind(this)
+      },
     },
     computed:{
       getImages:function () {
-        return [].concat(this.imgList)
+        let arr=this.imgList.map((item,index)=>{
+          if(item.indexOf('?')){
+            return {
+              id:index,
+              type:this.$tool.get_suffix(item.split('?')[0]),
+              path:item
+            }
+          }
+        })
+        return [].concat(arr)
       },
       getWidth:function () {
-        if(this.imgWidth>=this.initWidth*0.8){
-          this.imgWidth=this.initWidth*0.8
-        }else if(this.imgWidth<=this.initWidth*0.2){
-          this.imgWidth=this.initWidth*0.2
-        }
         return `${this.imgWidth}px`
       },
       getRotate:function () {
         return `rotate(${this.transform}deg)`
+      },
+      getType:function () {
+        switch (this.getImages[this.activePage].type){
+          case '.png':
+          case '.jpg':
+          case '.jpeg':
+          case '.gif':
+          case '.bmp':
+            return 'img'
+            break
+          case '.mp4':
+          /*case '.avi':
+          case '.rmvb':*/
+            return 'video'
+            break
+          default:
+            return 'other'
+        }
       }
     },
     watch:{
       activePage:function (val) {
-        this.imgSrc=this.getImages[this.activePage]
-        if(this.imgSrc.indexOf('.mp4')>-1){
-          this.type='video'
-        }else {
-          this.type='img'
-        }
-        let img = new Image()
-        img.src=this.imgSrc
-        img.onload=function () {
-          this.initWidth=img.width
-          this.imgWidth=img.width*0.5
-        }
+        this.imgSrc=this.getImages[this.activePage].path
+        this.init(this.imgSrc)
       }
     }
   }
