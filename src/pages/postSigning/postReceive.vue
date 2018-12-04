@@ -220,91 +220,30 @@
                     </el-tab-pane>
                     <el-tab-pane label="合同资料库">
                         <div class="contract-box">
-                            <!-- <div class="contract-top" v-show="downloadState">
-                                <el-button 
-                                    class="paper-btn paper-btn-blue" 
-                                    type="primary" 
-                                    size="medium" 
-                                    @click="downloadStateFn"
-                                    round>批量下载</el-button>
-                            </div>
-                            <div class="contract-top" v-show="!downloadState">
-                                <el-button 
-                                    class="contract-btn contract-gray" 
-                                    type="primary" 
-                                    size="small" 
-                                    @click="downloadStateFn"
-                                    round>完成</el-button>
-                                <el-button 
-                                    class="contract-btn contract-gray" 
-                                    type="primary" 
-                                    size="small" 
-                                    @click="downloadFn"
-                                    round>下载</el-button>
-                            </div> -->
-                            <!-- <div class="contract-photo">
-                                <el-checkbox-group v-model="checkList">
-                                    <div class="tit mt-20">{{photoTit.txt1}}</div>
-                                    <div class="contract-main" v-for="(items,i) in photoMain" :key="'photoMain' + items.txt">
-                                        <div class="contract-tit"><span class="mr-5 red">*</span>{{items.txt}}</div>
-                                        <ul class="contract-ul">
-                                            <li v-for="(item,t) in items.children" :key="'img'+item">
-                                                <el-checkbox :label="item" class="el-checkbox" v-show="!downloadState"></el-checkbox>
-                                                <img :src="item" @click="photoZoomFn(photoMain,i,t)">
+                            <template v-if="ContractDatabase.length > 0">
+                                <div v-for="items in ContractDatabase" :key="items.kind">
+                                    <div class="contract-tit">{{items.kind}}</div>
+                                    <div class="contract-main" v-for="item in items.children" :key="item.title">
+                                        <p class="cl-1 mb-10"><span class="spna"><template v-if="item.isrequire">*</template></span>{{item.title}}</p>
+                                        <ul class="steps-img">
+                                            <li 
+                                            v-for="(ies,i) in item.value"
+                                            :key="ies.name"
+                                            @click="previewPhoto(item.value,i)"
+                                            >
+                                                <div class="img"><uploadCell :type="stepsTypeImg(ies.path)"></uploadCell></div>
+                                                <p class="p">{{ies.name}}</p>
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="tit mt-50">{{photoTit.txt2}}</div>
-                                     <div class="contract-main" v-for="(items,i) in photoMainB" :key="'photoMainB' + items.txt">
-                                        <div class="contract-tit"><span class="mr-5 red">*</span>{{items.txt}}</div>
-                                        <ul class="contract-ul">
-                                            <li v-for="(item,t) in items.children" :key="'imgB'+item">
-                                                <el-checkbox :label="item" class="el-checkbox" v-show="!downloadState"></el-checkbox>
-                                                <img :src="item" @click="photoZoomFn(photoMainB,i,t)">
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </el-checkbox-group>
-                            </div> -->
-                            <div v-for="items in ContractDatabase" :key="items.kind">
-                                <div class="contract-tit">{{items.kind}}</div>
-                                <div class="contract-main" v-for="item in items.children" :key="item.title">
-                                    <p class="cl-1 mb-10"><span class="red mr-5">*</span>{{item.title}}</p>
-                                    <ul class="steps-img">
-                                        <li 
-                                        v-for="(ies,i) in item.value"
-                                        :key="ies.name"
-                                        @click="previewPhoto(item.value,i)"
-                                        >
-                                            <div class="img"><uploadCell :type="stepsTypeImg(ies.path)"></uploadCell></div>
-                                            <p class="p">{{ies.name}}</p>
-                                        </li>
-                                    </ul>
                                 </div>
-                            </div>
+                            </template>
+                            <div class="no-data-table" v-else>暂无数据</div>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
                 <!-- 预览 -->
                 <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-                <!-- <div class="fixed-zoom-box" v-show="zoomCarousel.show">
-                    <el-carousel 
-                    class="fixed-zoom"
-                    arrow="always"
-                    height="100%"
-                    indicator-position="none"
-                    :initial-index="zoomCarousel.index"
-                    :autoplay="zoomCarousel.autoplay"
-                    >
-                        <el-carousel-item 
-                        class="zoom-div"
-                        v-for="item in zoomCarousel.children" 
-                        :key="'zoomCarousel'+item">
-                            <img :src="item">
-                        </el-carousel-item>
-                    </el-carousel>
-                    <div @click="zoomCloseFn" class="fixed-zoom-close">关闭</div>
-                </div> -->
             </div>
             <span slot="footer">
                 <el-button 
@@ -419,32 +358,6 @@
                 dealTableRule:[],
                 // 合同资料库
                 ContractDatabase:[],
-                // // 批量下载状态切换
-                // downloadState:true,
-                // // 多选数组
-                // checkList:[],
-                // // 相册
-                // photoTit:{
-                //     txt1:'卖方',
-                //     txt2:'买方',
-                // },
-                // photoMain:[{
-                //     txt:'身份证复印件',
-                //     children:['https://img.zcool.cn/community/0147cf5be2aaaba801209252bb0d56.jpg','https://img.zcool.cn/community/016a935be3dbd0a801209252ee8536.jpg@520w_390h_1c_1e_1o_100sh.jpg']
-                // }],
-                // photoMainB:[{
-                //     txt:'身份证复印件',
-                //     children:['https://img.zcool.cn/community/010e835be3d71aa801209252ea8f78.jpg@520w_390h_1c_1e_1o_100sh.jpg','https://img.zcool.cn/community/01a2a25be32deca80121ab5d542482.jpg@520w_390h_1c_1e_1o_100sh.jpg','https://img.zcool.cn/community/01945f5be38aefa80121ab5dad4e08.jpg@520w_390h_1c_1e_1o_100sh.jpg']
-                // },{
-                //     txt:'购房合同',
-                //     children:['https://img.zcool.cn/community/01fdf85be39d38a801209252edbf6c.jpg@520w_390h_1c_1e_1o_100sh.jpg']
-                // }],
-                // zoomCarousel:{
-                //     show:false,
-                //     autoplay:false,
-                //     index:0,
-                //     children:[],
-                // }
             }
         },
         computed: {
@@ -566,8 +479,11 @@
                 }).then(res=>{
                     res = res.data;
                     if(res.status === 200){
-                        let j = JSON.parse(res.data.address)
-                        let arr = this.recursiveFn([...j]);
+                        let arr = [];
+                        if(!!res.data){
+                            let j = JSON.parse(res.data.address)
+                            arr = this.recursiveFn([...j]);
+                        }
                         this.ContractDatabase = arr;
                     }
                 }).catch(err=>{
@@ -773,7 +689,7 @@
             queryFn() {
                 this.pageNum = 1;
                 this.getListData();
-                console.log('查询');
+                // console.log('查询');
             },
             // 部门筛选回调
             regionChangeFn(e) {
@@ -860,27 +776,6 @@
                     console.log(err)
                 })
             },
-            // // 批量状态切换
-            // downloadStateFn(){
-            //     this.downloadState = !this.downloadState
-            // },
-            // // 下载
-            // downloadFn(){
-            //     console.log('下载',this.checkList);
-            // },
-            // // 图片放大
-            // photoZoomFn(arr,i,t){
-            //     let j = {
-            //         show:true,
-            //         index:t,
-            //         children:arr[i].children
-            //     };
-            //     Object.assign(this.zoomCarousel,j)
-            // },
-            // // 图片放大关闭
-            // zoomCloseFn(){
-            //     this.zoomCarousel.show = false;
-            // },
             // 获取数据
             getListData(){
                 this.loadingList = true;
@@ -905,8 +800,8 @@
                         res = res.data
                         if (res.status === 200) {
                             this.tableData = res.data;
-                            this.loadingList = false;
                         }
+                        this.loadingList = false;
                     }).catch(err=>{
                         console.log(err)
                     })
