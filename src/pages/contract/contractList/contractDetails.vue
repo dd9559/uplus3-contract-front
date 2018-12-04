@@ -330,7 +330,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="record" label="录音">
-              <audio src="www.baidu.com"></audio>
+              <!-- <audio src="www.baidu.com"></audio> -->
             </el-table-column>
             <el-table-column prop="remakes" label="备注" width="320"></el-table-column>
           </el-table>
