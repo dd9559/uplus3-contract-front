@@ -81,7 +81,7 @@
         </el-form-item>
         <el-form-item label="业绩状态">
           <el-select v-model="contractForm.achievementState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['52']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['54']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -201,7 +201,7 @@
         <el-table-column align="left" label="后期进度" width="150">
           <template slot-scope="scope">
             <span v-if="scope.row.stepInstanceName==='-'">-</span>
-            <el-button v-else type="text" size="medium">{{scope.row.stepInstanceName}}</el-button>
+            <el-button v-else type="text" size="medium" @click="showStepInstance(scope.row)">{{scope.row.stepInstanceName}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="收佣状态" width="100">
@@ -242,6 +242,8 @@
     <layerSettle :settleDialog="jiesuan" :contId="settleId" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <!-- 后期进度查看 -->
+    <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
   </div>
 </template>
            
@@ -251,6 +253,7 @@ import flowAccount from "@/components/flowAccount";
 import layerAudit from "../contractDialog/layerAudit";
 import layerSettle from "../contractDialog/layerSettle";
 import changeCancel from "../contractDialog/changeCancel";
+import LayerLateProgress from '@/components/LayerLateProgress';
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 
@@ -261,7 +264,8 @@ export default {
     flowAccount,
     layerAudit,
     layerSettle,
-    changeCancel
+    changeCancel,
+    LayerLateProgress
   },
   data() {
     return {
@@ -286,7 +290,7 @@ export default {
         "6": "", //变更/解约
         "14": "", //结算状态
         "13": "", //收佣状态
-        "52": "", //业绩状态
+        "54": "", //业绩状态
         "538": "" //用途
       },
       loading:false,
@@ -356,18 +360,22 @@ export default {
     },
     //收款
     gathering(id) {
-      console.log(id);
+      //console.log(id);
       this.$router.push({
         path:'/receiptBill',
-        contId:id
+        query:{
+          contId:id
+        }
       })
     },
     //付款
     payment(id) {
-      console.log(id);
+      //console.log(id);
        this.$router.push({
         path:'/payBill',
-        contId:id
+        query:{
+          contId:id
+        }
       })
     },
     //合同详情页
@@ -563,6 +571,15 @@ export default {
       this.jiesuan = false;
       this.settleId = "";
       this.getContractList();
+    },
+    //后期流程查看
+    showStepInstance(item){
+      let value = {
+        id:item.id,
+        transFlowName:item.stepInstanceName,
+        statusReceiveAmount:item.receiveAmountState
+      }
+      this.$refs.lateProgress.show(value);
     }
   }
 };

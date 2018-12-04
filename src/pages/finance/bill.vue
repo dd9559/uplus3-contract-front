@@ -364,7 +364,8 @@
             path:row.type===1?'receiptBill':'payBill',
             query:{
               edit:row.type,
-              id:row.id
+              id:row.id,
+              type:row.type===1?row.inAccountType:'-1'
             }
           })
         }else if(type===2) {
