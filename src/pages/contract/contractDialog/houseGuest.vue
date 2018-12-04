@@ -36,16 +36,16 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="keyword" placeholder="房号/房源编号/房东手机"></el-input>
+            <el-input v-model="houseKeyword" placeholder="房号/房源编号/房东手机"></el-input>
           </el-form-item>
           <el-form-item>
             <span @click="isAttention">我的关注 <span class="attention" :class="{'attention_':attention}"></span></span>
           </el-form-item>
-          <el-button round class="search_btn">清空</el-button>
+          <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
         </el-form>
         <div class="search_content"  v-loading="loading_">
-          <el-table :data="dataList" border header-row-class-name="theader-bg" @row-click="selectItem"  v-if="showDataList">
+          <el-table :data="dataList" border header-row-class-name="theader-bg" @row-click="selectItem"  v-if="showDataList" :row-class-name="tableRowClassName">
             <el-table-column width="40">
               <template slot-scope="scope">
                 <span class="outSide">
@@ -95,12 +95,12 @@
               </el-select>
             </el-form-item>
             <el-form-item label="关键字：">
-              <el-input v-model="keyword" placeholder="客源编号/手机号/客户姓名"></el-input>
+              <el-input v-model="guestKeyword" placeholder="客源编号/手机号/客户姓名"></el-input>
             </el-form-item>
           </div>
           <div>
-            <el-button round class="search_btn">清空</el-button>
-            <el-button type="primary" round class="search_btn">查询</el-button>
+            <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
+            <el-button type="primary" round class="search_btn" @click="inquireGuest">查询</el-button>
           </div>
         </el-form>
         <div class="search_content" v-loading="loading_">
@@ -214,7 +214,8 @@ export default {
         {label:'求购', value:2}
       ],
       priceType:'',
-      keyword:'',
+      houseKeyword:'',
+      guestKeyword:'',
       //楼盘
       options:[],
       loading:false,
@@ -275,7 +276,7 @@ export default {
       let param = {
         pageSize:this.pageSize,
         pageIndex:this.currentPage,
-        keyword:this.keyword,
+        keyword:this.houseKeyword,
         contType:this.housetType,
         isFocus:this.attention,
         estateCode:this.estateCode,
@@ -303,7 +304,8 @@ export default {
       let param = {
         pageSize:this.pageSize,
         pageIndex:this.currentPage,
-        type:this.guestType
+        type:this.guestType,
+        keyword:this.guestKeyword
       }
       this.$ajax.get('/api/resource/customers', param).then(res=>{
         this.loading_=false
@@ -321,6 +323,8 @@ export default {
     },
     //楼盘名称
     remoteMethod(query){
+      this.options=[];
+      this.buildList=[];
       if (query !== '') {
         this.loading = true;
         let param = {
@@ -338,6 +342,8 @@ export default {
     //楼栋
     getBuildList(id){
       console.log(id);
+      this.buildList=[];
+      this.BuildingCode=''; 
       for(let i=0;i<this.options.length;i++){
         if(this.options[i].EstateCode===id){
           this.buildList=this.options[i].BuildingList
@@ -348,22 +354,33 @@ export default {
     inquireHouse(){
       this.getHouseList()
     },
+    //客源查询
+    inquireGuest(){
+      this.getGuestList();
+    },
     //选中房源客源
     selectItem(value){
       console.log(value);
-      if(this.dialogType==='house'){
-        if(this.selectCode===value.PropertyCode){
-          this.selectCode=''
-        }else{
-          this.selectCode=value.PropertyCode
+      if(value.invalid){
+        if(this.dialogType==='house'){
+          if(this.selectCode===value.PropertyCode){
+            this.selectCode=''
+          }else{
+            this.selectCode=value.PropertyCode
+          }
+        }else if(this.dialogType==='guest'){
+          if(this.selectCode===value.InquiryCode){
+            this.selectCode=''
+          }else{
+            this.selectCode=value.InquiryCode
+          }
         }
-      }else if(this.dialogType==='guest'){
-        if(this.selectCode===value.InquiryCode){
-          this.selectCode=''
-        }else{
-          this.selectCode=value.InquiryCode
-        }
+      }else{
+        this.$message({
+          message:'不能选择已锁定房源'
+        })
       }
+      
     },
     //确定选择
     confirm(){
@@ -380,6 +397,25 @@ export default {
           });
         }
         
+      }
+    },
+    //重置
+    resetFormFn() {
+        // contType:this.housetType,
+        // isFocus:this.attention,
+        // estateCode:this.estateCode,
+        // buildingCode:this.BuildingCode
+      this.houseKeyword = "";
+      this.guestKeyword = "";
+      this.attention= false;
+      this.estateCode='';
+      this.BuildingCode='';
+      this.options=[];
+      this.buildList=[];
+    },
+    tableRowClassName({row, rowIndex}) {
+      if (!row.invalid) {
+        return 'warning-row';
       }
     }
   },
@@ -457,6 +493,9 @@ export default {
 .search-form_{
   display: flex;
   justify-content: space-between;
+}
+/deep/.warning-row{
+  background: oldlace;
 }
 /deep/.el-dialog {
   .el-dialog__header {

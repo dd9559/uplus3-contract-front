@@ -52,7 +52,7 @@
                 <span class="tag">物业地址：</span>
                 <span class="text">{{contractDetail.houseInfo.EstateName}}</span>
                 <span class="text">{{contractDetail.houseInfo.BuildingName}}</span>
-                <span class="text">{{contractDetail.houseInfo.Unit}}</span>
+                <span class="text">{{contractDetail.houseInfo.Unit}}单元</span>
                 <span class="text">{{contractDetail.houseInfo.RoomNo}}</span>
               </p>
             </div>
@@ -62,18 +62,19 @@
               <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose}}</span></p>
             </div>
             <div class="one_">
-              <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType}}</span></p>
-              <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation}}</span></p>
-              <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType}}</span></p>
+              <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
+              <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p>
+              <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p>
             </div>
             <div class="one_" v-if="contType!='1'">
               <p>
                 <span class="tag">产权状态：</span>
                 <span class="text" v-for="item in dictionary['514']" :key="item.key" v-if="item.key===contractDetail.houseInfo.propertyRightStatus">{{item.value}}</span>
+                <span class="text" v-if="contractDetail.houseInfo.propertyRightStatus===0">无</span>
               </p>
-              <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName}}</span></p>
+              <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
               <p><span class="tag">按揭欠款：</span><span class="text">{{contractDetail.houseInfo.stagesArrears}} 元</span></p>
-              <p><span class="tag">房产证号：</span><span class="text">{{contractDetail.propertyCard}}</span></p>
+              <p><span class="tag">房产证号：</span><span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span></p>
             </div>
             <div class="one_">
               <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
@@ -221,7 +222,7 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="合同主体" name="second">
-        <div class="contractSubject">
+        <div class="contractSubject" v-if="this.contractDetail.contState.value!=1">
           <ul class="ulData">
             <li>
               <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
@@ -343,7 +344,7 @@
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'">分成</el-button>
       <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">上传</el-button>  <!-- 合同资料库上传 -->
-      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'">上传</el-button>  <!-- 合同主体上传 -->
+      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'&&this.contractDetail.contState.value!=1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
     
     <!-- 拨号弹出框 -->
@@ -518,7 +519,7 @@ export default {
     handleClick(tab, event) {
       console.log(tab.name);
       this.name=tab.name;
-      if(tab.name==="second"||tab.name==="third"){
+      if(tab.name==="second"){
         if(this.contractDetail.contState.value===1){
           this.$message({
             message:'合同未签章,不允许上传'
@@ -1048,6 +1049,11 @@ export default {
     background: @color-F2;
     > p{
       padding-top: 5px;
+      display: inline-block;
+      width: 100px;
+      overflow: hidden;
+      text-overflow:ellipsis;
+      white-space: nowrap;
     }
   }
   //资料库

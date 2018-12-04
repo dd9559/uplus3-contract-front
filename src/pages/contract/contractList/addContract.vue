@@ -14,7 +14,7 @@
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
           <el-form-item label="成交总价：" class="form-label width-250">
-            <el-input v-model="contractForm.dealPrice" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input>
+            <el-input v-model="contractForm.dealPrice" type="number" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input>
           </el-form-item>
           <el-form-item v-if="contractForm.type===1">
             <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:90px">
@@ -263,7 +263,7 @@
     </houseGuest>
     <!-- 保存合同确认框 -->
     <el-dialog title="提示" :visible.sync="dialogSave" width="460px">
-      <span>确定保存已创建合同？</span>
+      <span>{{hintText}}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogSave = false">取 消</el-button>
         <el-button type="primary" @click="saveCont" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
@@ -391,7 +391,8 @@ export default {
       parameterList:[],
       //扩展参数验证
       parameterRule:{},
-      fullscreenLoading:false
+      fullscreenLoading:false,
+      hintText:''
     };
   },
   created() {
@@ -485,6 +486,11 @@ export default {
     //验证合同信息
     isSave(value) {
       this.contractForm.haveExamine=value;
+      if(value){
+        this.hintText='确定提审？'
+      }else{
+        this.hintText='确定保存已创建合同？'
+      }
       //验证合同信息
       this.$tool.checkForm(this.contractForm, rule).then(() => {
           // debugger
@@ -673,7 +679,12 @@ export default {
             });
             this.$router.push('/contractList');
           }
-        });
+        }).catch(error => {
+          this.fullscreenLoading=false;
+          this.$message({
+            message:'系统错误'
+          })
+        })
       }
       /* 新增/编辑买卖合同 */
       if (this.contractForm.type === 2 || this.contractForm.type === 3) {
@@ -704,7 +715,12 @@ export default {
             });
             this.$router.push('/contractList');
           }
-        });
+        }).catch(error => {
+          this.fullscreenLoading=false;
+          this.$message({
+            message:'系统错误'
+          })
+        })
       }
     },
     //获取所在城市的交易类型
