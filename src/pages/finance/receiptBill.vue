@@ -70,7 +70,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-table v-else class="collapse-cell" border :data="moneyTypeOther[0].moneyTypes" :span-method="collapseRow"
+      <el-table v-else-if="moneyTypeOther.length>0" class="collapse-cell" border :data="moneyTypeOther[0].moneyTypes" :span-method="collapseRow"
                 style="width: 100%"
                 header-row-class-name="theader-bg" key="other">
         <el-table-column align="center" label="款类（大类）">
@@ -191,7 +191,7 @@
         <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"  @click="getPicture">
           <upload-cell :type="item.type"></upload-cell>
           <span>{{item.name}}</span>
-          <p v-show="activeLi===index" @click="delFile"><i class="iconfont icon-tubiao-6"></i></p>
+          <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
         </li>
       </ul>
     </div>
@@ -317,8 +317,12 @@
       this.getDropdown()
       this.getReceiptman()
       let type = this.$route.query.edit
+      let inAccount = this.$route.query.type
       if (type) {
         this.getDetails({type: type, payId: this.$route.query.id})
+      }
+      if(inAccount){
+        this.activeType=parseInt(inAccount)===4?2:1
       }
     },
     methods: {

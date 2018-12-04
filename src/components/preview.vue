@@ -58,6 +58,12 @@
         }else {
           this.type='img'
         }
+        let img = new Image()
+        img.src=this.imgSrc
+        img.onload=function () {
+          this.initWidth=img.width
+          this.imgWidth=img.width*0.5
+        }
       }
       this.$nextTick(()=>{
         // this.initWidth=this.$refs.img.offsetWidth
@@ -77,7 +83,7 @@
         return require('@/assets/img/'+src)
       },
       chose:function (type) {
-        this.imgWidth=100
+        // this.imgWidth=100
         this.transform=0
         let dragObj = this.$refs.drag
         dragObj.style.left = '50%'
@@ -108,10 +114,10 @@
             this.transform+=90
             break
           case 3:
-            this.imgWidth+=10
+            this.imgWidth+=50
             break
           case 4:
-            this.imgWidth-=10
+            this.imgWidth-=50
             break
         }
       },
@@ -142,12 +148,12 @@
         return [].concat(this.imgList)
       },
       getWidth:function () {
-        if(this.imgWidth>=150){
-          this.imgWidth=150
-        }else if(this.imgWidth<=100){
-          this.imgWidth=100
+        if(this.imgWidth>=this.initWidth*0.8){
+          this.imgWidth=this.initWidth*0.8
+        }else if(this.imgWidth<=this.initWidth*0.2){
+          this.imgWidth=this.initWidth*0.2
         }
-        return `${this.imgWidth}%`
+        return `${this.imgWidth}px`
       },
       getRotate:function () {
         return `rotate(${this.transform}deg)`
@@ -160,6 +166,12 @@
           this.type='video'
         }else {
           this.type='img'
+        }
+        let img = new Image()
+        img.src=this.imgSrc
+        img.onload=function () {
+          this.initWidth=img.width
+          this.imgWidth=img.width*0.5
         }
       }
     }

@@ -95,9 +95,10 @@
             <span>点击上传</span>
           </file-up>
         </li>
-        <li v-for="item in imgList" @click="getPicture">
+        <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="getPicture">
           <upload-cell :type="item.type"></upload-cell>
           <span>{{item.name}}</span>
+          <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
         </li>
       </ul>
       <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
@@ -164,6 +165,7 @@
         amount:null,
         files:[],
         imgList:[],
+        activeLi:'',
       }
     },
     created(){
@@ -218,6 +220,10 @@
       getFiles:function (payload) {
         this.files=this.files.concat(this.$tool.getFilePath(payload.param))
         this.imgList=this.$tool.cutFilePath(this.files)
+      },
+      delFile:function () {
+        this.imgList.splice(this.activeLi,1)
+        this.files.splice(this.activeLi,1)
       },
       /**
        * 获取下拉框数据
@@ -472,6 +478,16 @@
         }
         &:nth-of-type(n+1){
           margin-right: @margin-base;
+          position: relative;
+          >p{
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: @color-red;
+            .iconfont{
+              font-size: 20px;
+            }
+          }
         }
       }
     }

@@ -79,7 +79,7 @@
           </el-table-column>
           <el-table-column align="center" label="票据">
             <template slot-scope="scope">
-              <span @click="getPaper('details')">{{billMsg.billCode}}</span>
+              <span class="span-cursor" @click="getPaper('details')">{{billMsg.billCode}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="支付方式">
@@ -109,7 +109,8 @@
           </el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" @click="getPaper('create')">开票</el-button>
+              <el-button type="text" @click="getPaper('create')" v-if="billMsg.checkStatus.value===1||billMsg.checkStatus.value===4">开票</el-button>
+              <span v-else>--</span>
             </template>
           </el-table-column>
         </el-table>
@@ -156,14 +157,22 @@
         <el-table border :data="checkList" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
             <template slot-scope="scope">
-              <span>{{scope.row.time|formatTime}}</span>
+              <span>{{scope.row.auditTime|formatTime}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-          <el-table-column align="center" prop="position" label="职务"></el-table-column>
+          <el-table-column align="center" prop="userName" label="姓名"></el-table-column>
+          <el-table-column align="center" prop="roleName" label="职务"></el-table-column>
           <el-table-column align="center" label="操作"></el-table-column>
-          <el-table-column align="center" prop="remark" label="备注"></el-table-column>
+          <el-table-column align="center" prop="auditInfo" label="备注"></el-table-column>
         </el-table>
+        <el-pagination
+          class="pagination-info"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          layout="total, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
       </li>
     </ul>
     <el-dialog
@@ -243,7 +252,11 @@
         files: [],
         radioMask: false,
         amount:{},
-        payRadio:0
+        payRadio:0,
+        //分页
+        currentPage:1,
+        pageSize:10,
+        total:0
       }
     },
     created() {
@@ -295,6 +308,11 @@
           })
         }
       },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.currentPage = val
+        this.getData()
+      },
       getData: function () {
         let param = {
           payId: this.billId,
@@ -304,12 +322,26 @@
           res = res.data
           if (res.status === 200) {
             this.billMsg = Object.assign({}, res.data)
-            if (res.data.auditInfo) {
-              this.checkList = res.data.auditInfo
-            }
+            this.getCheckData()
             if (res.data.filePath) {
               this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
             }
+          }
+        })
+      },
+      getCheckData:function () {
+        let param={
+          pageSize:this.pageSize,
+          pageNum:this.currentPage,
+          flowType:this.billMsg.audit.flowType,
+          bizCode:this.billMsg.audit.bizCode
+        }
+        this.$ajax.get('/api//machine/getAuditList',param).then(res=>{
+          // debugger
+          res=res.data
+          if(res.status===200){
+            this.checkList = res.data.data
+            this.total=res.data.total
           }
         })
       },

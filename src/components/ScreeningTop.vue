@@ -20,7 +20,7 @@
       </p>
     </div>
     <!-- 筛选条件 -->
-    <div class="paper-box-content" v-show="show">
+    <div class="paper-box-content">
       <slot></slot>
     </div>
     <div class="btn" @click="show=!show"></div>
@@ -85,14 +85,18 @@
       .paper-box-title{
         margin-bottom: 0;
       }
+      .paper-box-content{
+        max-height: 32px;
+        overflow-y: hidden;
+      }
     }
     &-title{
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: @margin-base;
     }
     /deep/ .paper-box-content{
+      margin-top: @margin-base;
       font-size: @size-14;
       .el-select{
         width: 140px;
@@ -100,6 +104,7 @@
       .el-range-editor{
         width: 240px;
       }
+
     }
     .btn {
       width: 56px;

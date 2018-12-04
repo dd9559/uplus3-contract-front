@@ -1,32 +1,70 @@
 <template>
-    <i class="iconfont" :style="getFontSize" :class="[type==='.png'||type==='.jpg'||type==='.jpeg'?'icon-tupian':'',type==='.mp3'?'icon-yinpin1':'',type==='.mp4'||type==='.avi'?'icon-shipin1':'',type==='.txt'||type==='.pdf'||type==='.xlsx'||type==='.docx'?'icon-wendang':'',type==='.zip'?'icon-yasuobao1':'',!otherFile?'icon-qita1':'']"></i>
+  <i class="iconfont" :style="getFontSize"
+     :class="[getType,!otherFile?'icon-qita1':'']"></i>
 </template>
 
 <script>
   export default {
     name: "upload-cell",
-    props:{
-      type:{
-        type:String,
-        default:'.png'
+    props: {
+      type: {
+        type: String,
+        default: '.png'
       },
-      size:{
-        type:Number,
-        default:60
+      size: {
+        type: Number,
+        default: 60
       }
     },
-    data(){
-      return{
-        typeList:['.png','.jpg','.jpeg','.mp3','.mp4','.avi','.txt','.pdf','.xlsx','.docx','.zip']
+    data() {
+      return {
+        typeList: ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.mp3', '.mpeg', '.cd', '.wave', '.aiff', '.mp4', '.avi', '.rmvb', '.txt', '.pdf', '.xlsx', '.docx', '.doc', '.ppt', '.zip', '.rar']
       }
     },
-    computed:{
-      otherFile:function () {
-        return this.typeList.indexOf(this.type)>-1
+    computed: {
+      otherFile: function () {
+        return this.typeList.indexOf(this.type) > -1
       },
-      getFontSize:function () {
+      getFontSize: function () {
         return {
-          fontSize:`${this.size}px`
+          fontSize: `${this.size}px`
+        }
+      },
+      getType: function () {
+        switch (this.type) {
+          case '.png':
+          case '.jpg':
+          case '.jpeg':
+          case '.gif':
+          case '.bmp':
+            return 'icon-tupian'
+            break
+          case '.mp3':
+          case '.mpeg':
+          case '.cd':
+          case '.wave':
+          case '.aiff':
+            return 'icon-yinpin1'
+            break
+          case '.mp4':
+          case '.avi':
+          case '.rmvb':
+            return 'icon-shipin1'
+            break
+          case '.txt':
+          case '.pdf':
+          case '.xlsx':
+          case '.docx':
+          case '.doc':
+          case '.ppt':
+            return 'icon-wendang'
+            break
+          case '.zip':
+          case '.rar':
+            return 'icon-yasuobao1'
+            break
+          default:
+            return 'icon-tupian'
         }
       }
     }
@@ -34,23 +72,29 @@
 </script>
 
 <style scoped lang="less">
-@import "~@/assets/common.less";
-  .icon-tupian{
+  @import "~@/assets/common.less";
+
+  .icon-tupian {
     color: @color-png;
   }
-  .icon-yinpin1{
-    color:@color-mp3;
+
+  .icon-yinpin1 {
+    color: @color-mp3;
   }
-  .icon-shipin1{
+
+  .icon-shipin1 {
     color: @color-mp4;
   }
-  .icon-wendang{
+
+  .icon-wendang {
     color: @color-doc;
   }
-  .icon-yasuobao1{
+
+  .icon-yasuobao1 {
     color: @color-zip;
   }
-  .icon-qita1{
+
+  .icon-qita1 {
     color: @color-other;
   }
 </style>
