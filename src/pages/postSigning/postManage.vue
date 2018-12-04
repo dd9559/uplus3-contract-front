@@ -474,7 +474,7 @@
                                         <div class="text-absloute">{{item.val.length}}/{{invalidMax}}</div>
                                     </div>
                                 </template>
-                                <template v-else>
+                                <template v-else-if="item.type === STEPSINPUT.img || item.type === STEPSINPUT.mp4 || item.type === STEPSINPUT.pdf || item.type === STEPSINPUT.excel || item.type === STEPSINPUT.word">
                                     <div>
                                         <fileUp 
                                         :id="'fileUp'+index"
@@ -1209,7 +1209,7 @@
             },
             // 办理弹层取消
             handleCloseFn(){
-                console.log('办理弹层取消')
+                // console.log('办理弹层取消')
                 this.stepsData.show = false;
             },
             // 图片格式状态判定
@@ -1294,11 +1294,6 @@
                                     e.value = '';
                                 }else{
                                     let arr = this.$tool.getFilePath(e.val);
-                                    // let arr = [];
-                                    // e.val.map(r=>{
-                                    //     let t = `${r.path}?${r.name}`
-                                    //     arr.push(t)
-                                    // })
                                     e.value = arr.join();
                                 }
                             }
@@ -1341,29 +1336,7 @@
                 let index = e.btnId.slice(6);
                 let arr = e.param[e.param.length - 1];
                 this.stepsFrom.list[index].val.push(arr)
-                // let arr = this.stepsFrom.list[this.stepsFrom.index];
-                // arr.val.push({
-                //     name:'newdata'+ e.param.length,
-                //     src:e.param[e.param.length-1],
-                // });
-                // console.log('图片上传',this.stepsFrom,e.param[e.param.length-1])
             },
-            // // 视频上传
-            // mp4BtnFn(){
-            //     console.log('视频上传')
-            // },
-            // // 表格上传
-            // excelBtnFn(){
-            //     console.log('表格上传')
-            // },
-            // // 文档上传
-            // wordBtnFn(){
-            //     console.log('文档上传')
-            // },
-            // // pdf上传
-            // pdfBtnFn(){
-            //     console.log('pdf上传')
-            // },
             // 删除
             clearFn(i,n){
                 let arr = [...this.stepsFrom.list];
@@ -1460,7 +1433,7 @@
                     pageSize:this.pageSize,
                     statusLaterStage:this.propForm.lateState,
                     statusChange:this.propForm.termination,
-                    // dataRange:this.propForm.range,
+                    dataRange:this.propForm.range,
                     stagesBankCode:this.propForm.bank,
                     isOvertime:this.propForm.timeout,
                     handleTimeEnd,
