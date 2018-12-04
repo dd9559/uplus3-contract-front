@@ -9,11 +9,11 @@
         <span :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</span>
       </div>
       <div class="btn" v-if="!operationType">
-        <el-button type="primary" round style="width:100px" @click="toEdit">编 辑</el-button>
-        <el-button type="primary" round style="width:100px" @click="dialogInvalid = true">无 效</el-button>
-        <el-button round style="width:100px" v-if="examineState<0">提交审核</el-button>
-        <el-button round style="width:100px" v-if="contState===3">变更</el-button>
-        <el-button round style="width:100px" v-if="contState===3">解约</el-button>
+        <el-button type="primary" round style="width:100px" @click="toEdit" v-if="contState===1">编 辑</el-button>
+        <el-button type="primary" round style="width:100px" @click="dialogInvalid = true" v-if="contState!=3">无 效</el-button>
+        <el-button round type="primary" style="width:100px" v-if="examineState<0" :disabled="subCheck==='审核中'?true:false" @click="submitAudit">{{subCheck}}</el-button>
+        <el-button round type="primary" style="width:100px" v-if="contState===3">变更</el-button>
+        <el-button round type="danger" style="width:100px" v-if="contState===3">解约</el-button>
         <el-button round style="width:100px" @click="signature" v-if="examineState===7">签章打印</el-button>
       </div>
       <div class="btn" v-else>
@@ -64,6 +64,8 @@
         <el-button round type="success" @click="checked(1)">通过</el-button>
       </span>
     </el-dialog>
+    <!-- 变更/解约编辑弹窗 -->
+    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
   </div>
 </template>
            
@@ -81,6 +83,7 @@ export default {
       //合同id
       id:'',
       code:'',
+      cityId:'',
       isShowType:false,
       //审批流节点信息
       auditNodeResult:{},
@@ -105,7 +108,11 @@ export default {
       //审核状态
       examineState:'',
       //合同类型
-      contType:''
+      contType:'',
+      subCheck:'提交审核',
+      canceldialogType:'',
+      changeCancel_:'',
+      changeCancelId:'',
     };
   },
   created() {
@@ -161,13 +168,17 @@ export default {
         if(res.status===200){
           this.dialogCheck=false;
           this.isSignature=true;
+          this.$message({
+            message:'审核成功'
+          })
         }
       })
     },
     //签章
     signature(){
       let param = {
-        id:this.id
+        id:this.id,
+        type:3
       }
       this.$ajax.post('/api/contract/signture', param).then(res=>{
         res=res.data;
@@ -239,6 +250,7 @@ export default {
           this.examineState=res.data.examineState.value;
           this.contState=res.data.contState.value;
           this.contType=res.data.contType.value;
+          this.cityId=res.data.cityId;
           if(res.data.cityId===1&&res.data.contType.value===2){
             this.isShowType=true;
             //买卖
@@ -275,7 +287,45 @@ export default {
           type: this.contType
         }
       });
-    }
+    },
+     //提审
+    submitAudit(){
+      let param = {
+        cityId:this.cityId,
+        flowType:3,
+        bizCode:this.code
+      }
+      this.$ajax.get('/api/machine/submitAduit', param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.$message({
+            message:'提交审核成功'
+          });
+          this.subCheck="审核中"
+        }else{
+          this.$message({
+            message:res.message
+          })
+        }
+      })
+    },
+    // 变更解约弹窗
+    goChangeCancel(value) {
+      this.changeCancelId = Number(this.id);
+      if (value === 1) {
+        this.canceldialogType = "changeEdit";
+        this.changeCancel_ = true;
+      } else if (value === 2) {
+        this.canceldialogType = "cancelEdit";
+        this.changeCancel_ = true;
+      }
+    },
+    // 关闭变更解约弹窗
+    changeCancelDialog() {
+      this.changeCancel_ = false;
+      this.canceldialogType = "";
+      this.changeCancelId = "";
+    },
   }
   // watch:{
   //   textarea:function(val){

@@ -203,9 +203,9 @@
                         }).then(res=>{
                             res = res.data
                             if(res.status ===200){
-                                this.pdfUrl = res.data.url;
-                                document.getElementById("test").contentWindow.print();
-                                console.log(res.data.url)
+                                // this.pdfUrl = res.data.url;
+                                // document.getElementById("test").contentWindow.print();
+                                // console.log(res.data.url)
                             }
                             // console.log(res)
                         }).catch(err=>{

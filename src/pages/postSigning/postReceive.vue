@@ -286,7 +286,7 @@
                     </el-tab-pane>
                 </el-tabs>
                 <!-- 预览 -->
-                <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
+                <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
                 <!-- <div class="fixed-zoom-box" v-show="zoomCarousel.show">
                     <el-carousel 
                     class="fixed-zoom"

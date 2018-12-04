@@ -198,7 +198,7 @@ let TOOL = {
     //整型完以后的单位
     var cnIntLast = '元';
     //最大处理的数字
-    var maxNum = 999999999.99;
+    var maxNum = 9999999999999.99;
     //金额整数部分
     var integerNum;
     //金额小数部分

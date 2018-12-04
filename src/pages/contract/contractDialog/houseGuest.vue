@@ -390,7 +390,7 @@ export default {
 
 .view-container {
   .dataList{
-    height: 450px;
+    height: 360px;
     overflow-y: auto;
   }
   .outSide{

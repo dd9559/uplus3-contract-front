@@ -120,10 +120,6 @@
               <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
                 {{item.value}}
               </el-dropdown-item>
-              <!-- <el-dropdown-item command="1">租赁</el-dropdown-item>
-              <el-dropdown-item command="2">买卖</el-dropdown-item>
-              <el-dropdown-item command="3">代办</el-dropdown-item>
-              <el-dropdown-item command="4">意向</el-dropdown-item> -->
             </el-dropdown-menu>
           </el-dropdown>
         </span>
@@ -226,7 +222,7 @@
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
             <div style="text-align:center">
-              <el-button type="text" size="medium" v-if="scope.row.contState.value!=3" @click="upload(scope.row.id)">上传</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.contState.value!=1" @click="upload(scope.row.id)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview(scope.row)">预览</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===6" @click="goCheck(scope.row)">审核</el-button> 
               <el-button type="text" size="medium" @click="toLayerAudit(scope.row)">调佣</el-button>
