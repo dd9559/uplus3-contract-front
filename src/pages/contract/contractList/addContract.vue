@@ -81,9 +81,9 @@
           </el-form-item>
           <br v-if="contractForm.type===2">
           <el-form-item label="产权状态：" v-if="contractForm.type===2" class="width-250">
-            <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px">
-              <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key">
-              </el-option>
+            <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择" :disabled="type===2?true:false" style="width:140px">
+              <el-option  label="无" value=""></el-option>
+              <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="按揭银行：" v-if="contractForm.type===2" class="width-250">
@@ -266,7 +266,7 @@
       <span>确定保存已创建合同？</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogSave = false">取 消</el-button>
-        <el-button type="primary" @click="saveCont">确 定</el-button>
+        <el-button type="primary" @click="saveCont" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -390,7 +390,8 @@ export default {
       //扩展参数类型
       parameterList:[],
       //扩展参数验证
-      parameterRule:{}
+      parameterRule:{},
+      fullscreenLoading:false
     };
   },
   created() {
@@ -626,6 +627,7 @@ export default {
         });
     },
     saveCont() {
+      this.fullscreenLoading=true;
       this.addContract()
     },
     /* 新增/编辑合同 */
@@ -662,13 +664,14 @@ export default {
         console.log(param);
         this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {
           res = res.data;
+          this.fullscreenLoading=false;
           if (res.status === 200) {
             this.dialogSave=false
             this.$message({
               message: "操作成功",
               type: "success"
             });
-            this.$router.push('/contractList')
+            this.$router.push('/contractList');
           }
         });
       }
@@ -692,12 +695,14 @@ export default {
 
         this.$ajax.postJSON("/api/contract/editSaleCont", param).then(res => {
           res = res.data;
+          this.fullscreenLoading=false;
           if (res.status === 200) {
             this.dialogSave=false
             this.$message({
               message: "操作成功",
               type: "success"
             });
+            this.$router.push('/contractList');
           }
         });
       }
@@ -747,12 +752,21 @@ export default {
           console.log(houseMsg);
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           this.contractForm.houseInfo = houseMsg;
-          this.ownerList[0] = {
+          this.ownerList=[];
+          this.ownerList.push({
             name: houseMsg.OwnerInfo.OwnerName,
             mobile: houseMsg.OwnerInfo.OwnerMobile,
             type: 1,
-            relation: houseMsg.OwnerInfo.Relation
-          };
+            relation: houseMsg.OwnerInfo.Relation,
+            identifyCode:'',
+            propertyRightRatio:''
+          })
+          // this.ownerList[0] = {
+          //   name: houseMsg.OwnerInfo.OwnerName,
+          //   mobile: houseMsg.OwnerInfo.OwnerMobile,
+          //   type: 1,
+          //   relation: houseMsg.OwnerInfo.Relation
+          // };
           this.options.push({
             name: houseMsg.HouseStoreName,
             id: houseMsg.HouseStoreCode
@@ -773,12 +787,21 @@ export default {
           console.log(guestMsg);
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
-          this.guestList[0] = {
+          this.guestList=[];
+          this.guestList.push({
             name: guestMsg.OwnerInfo.CustName,
             mobile: guestMsg.OwnerInfo.CustMobile,
             type: 2,
-            relation: guestMsg.OwnerInfo.CustRelation
-          };
+            relation: guestMsg.OwnerInfo.CustRelation,
+            identifyCode:'',
+            propertyRightRatio:''
+          })
+          // this.guestList[0] = {
+          //   name: guestMsg.OwnerInfo.CustName,
+          //   mobile: guestMsg.OwnerInfo.CustMobile,
+          //   type: 2,
+          //   relation: guestMsg.OwnerInfo.CustRelation
+          // };
           this.options_.push({
             name: guestMsg.GuestStoreName,
             id: guestMsg.GuestStoreCode

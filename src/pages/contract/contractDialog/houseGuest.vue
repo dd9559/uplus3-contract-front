@@ -44,8 +44,8 @@
           <el-button round class="search_btn">清空</el-button>
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
         </el-form>
-        <div class="search_content" v-if="dataList.length>0">
-          <el-table :data="dataList" border header-row-class-name="theader-bg" @row-click="selectItem">
+        <div class="search_content"  v-loading="loading_">
+          <el-table :data="dataList" border header-row-class-name="theader-bg" @row-click="selectItem"  v-if="showDataList">
             <el-table-column width="40">
               <template slot-scope="scope">
                 <span class="outSide">
@@ -73,8 +73,9 @@
           </el-table>
           <el-pagination class="pagination-info" @current-change="handleCurrentChange1" :current-page="1" :page-size="4" layout="total, prev, pager, next, jumper" :total="total">
           </el-pagination>
+          
         </div>
-        <div class="noList" v-else>
+        <div class="noList" v-if="!showDataList">
           未查到相关房源
         </div>
       </div>
@@ -102,8 +103,8 @@
             <el-button type="primary" round class="search_btn">查询</el-button>
           </div>
         </el-form>
-        <div class="search_content" v-if="dataList.length>0">
-          <el-table :data="dataList" border header-row-class-name="theader-bg" @row-click="selectItem">
+        <div class="search_content" v-loading="loading_">
+          <el-table :data="dataList" border header-row-class-name="theader-bg" @row-click="selectItem" v-if="showDataList">
             <el-table-column width="40">
               <template slot-scope="scope">
                 <span class="outSide">
@@ -125,7 +126,7 @@
           <el-pagination class="pagination-info" @current-change="handleCurrentChange2" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
-        <div class="noList" v-else>
+        <div class="noList" v-if="!showDataList">
           <p v-if="clientStatus===1">未查到相关客源</p>
           <p v-if="clientStatus===2">当前查询的客源为公客，请先在【客源资料】中进行激活<br> （当前查询的客源为已成交的私客，请先在【客源资料】中进行激活）</p>
           <p v-if="clientStatus===3">系统未查询到该客源，您可以<el-button type="text" @click="innerVisible=true">快速添加该客源</el-button>
@@ -223,7 +224,9 @@ export default {
       buildList:[],
       //楼栋id
       BuildingCode:'',
-      selectCode:''
+      selectCode:'',
+      loading_:false,
+      showDataList:true
     };
   },
   created() {
@@ -268,6 +271,7 @@ export default {
     },
     //房源列表
     getHouseList(){
+      this.loading_=true
       let param = {
         pageSize:this.pageSize,
         pageIndex:this.currentPage,
@@ -277,14 +281,17 @@ export default {
         estateCode:this.estateCode,
         buildingCode:this.BuildingCode
       }
-      this.$ajax.get('/api/resource/houses', param).then(res=>{
+      this.$ajax.get('/api/contract/houses', param).then(res=>{
         res=res.data
+        this.loading_=false;
         if(res.status===200){
           //alert('222')
+          this.dataList=[];
           if(res.data.TotalCount>0){
             this.dataList=res.data.list
           }else{
-            this.dataList=[]
+            this.dataList=[];
+            this.showDataList=false
           }
           this.total=res.data.TotalCount
         }
@@ -292,17 +299,21 @@ export default {
     },
     //客源列表
     getGuestList(){
+      this.loading_=true;
       let param = {
         pageSize:this.pageSize,
         pageIndex:this.currentPage,
         type:this.guestType
       }
       this.$ajax.get('/api/resource/customers', param).then(res=>{
+        this.loading_=false
         res=res.data
         if(res.status===200){
           //alert('222')
-          if(res.data.list){
+          if(res.data.list.length>0){
             this.dataList=res.data.list
+          }else{
+            this.showDataList=false
           }
           this.total=res.data.TotalCount
         }
@@ -389,6 +400,9 @@ export default {
 @import "~@/assets/common.less";
 
 .view-container {
+  .search_content{
+    min-height: 300px;
+  }
   .dataList{
     height: 360px;
     overflow-y: auto;

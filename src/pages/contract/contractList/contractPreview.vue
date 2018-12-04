@@ -299,12 +299,14 @@ export default {
         res=res.data
         if(res.status===200){
           this.$message({
-            message:'提交审核成功'
+            message:'提交审核成功',
+            type:'success'
           });
           this.subCheck="审核中"
         }else{
           this.$message({
-            message:res.message
+            message:res.message,
+            
           })
         }
       })
