@@ -49,7 +49,7 @@
                   <el-input
                     v-model.number="scope.row.ratio"
                     placeholder="请输入数字"
-                    @blur="((e)=>{ filterHouseNumber(e,scope.row.ratio,scope.$index)})"
+                    @change="filterHouseNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -197,9 +197,9 @@
               <el-table-column label="分成比例" width="100">
                 <template slot-scope="scope">
                   <el-input
-                    v-model.number="scope.row.ratio"
+                    v-model="scope.row.ratio"
                     placeholder="请输入数字"
-                    @blur="((e)=>{ filterClientNumber(e,scope.row.ratio,scope.$index)})"
+                    @change="filterClientNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -450,24 +450,20 @@ export default {
       this.agendIds = [];
     },
     //判断分成比例只能输入1-100的正整数
-    filterHouseNumber(e, val, index) {
-      e.target.value = e.target.value.match(/^\d*(\.?\d{0,1})/g)[0] || null;
+    filterHouseNumber(val, index) {
       if (val > 100) {
         this.houseArr[index].ratio = 100;
-      } else if (val == 0) {
-        this.houseArr[index].ratio = 1;
       } else {
-        val = e.target.value;
+        val = val.toString().match(/^\d*\.?\d?/)[0];
+        this.houseArr[index].ratio = val;
       }
     },
-    filterClientNumber(e, val, index) {
-      e.target.value = e.target.value.match(/^\d*(\.?\d{0,1})/g)[0] || null;
+    filterClientNumber(val, index) {
       if (val > 100) {
         this.clientArr[index].ratio = 100;
-      } else if (val == 0) {
-        this.clientArr[index].ratio = 1;
       } else {
-        val = e.target.value;
+        val = val.toString().match(/^\d*\.?\d?/)[0];
+        this.clientArr[index].ratio = val;
       }
     },
     //获取房源客源相关人员
@@ -559,15 +555,25 @@ export default {
       this.agendIds.push(id);
       rows.splice(index, 1);
     },
+    noData() {
+      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
+        this.$message("分成人不满足最低人数要求");
+        return false;
+      }
+    },
     // 弹框通过操作
     passAch() {
+      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
+        this.$message("分成人不满足最低人数要求");
+        return false;
+      }
       let resultArr = this.houseArr.concat(this.clientArr);
       console.log(resultArr);
       let flag = true,
         sum = 0,
         sumFlag = false;
       for (var i = 0; i < resultArr.length; i++) {
-        sum += resultArr[i].ratio;
+        sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
         if (
           resultArr[i].roleName === "" ||
           resultArr[i].ratio === "" ||
@@ -589,6 +595,7 @@ export default {
       //flag=true代表信息都填完整，flag=false代表还有信息没有填
       // debugger;
       // console.log(sumFlag);
+
       if (flag && sumFlag) {
         // this.$emit("close", this.achIndex, 1);
         // this.$message("操作完成");
@@ -605,6 +612,8 @@ export default {
             if (res.data.status == 200) {
               this.$message("操作完成");
               this.$emit("close", this.achIndex, 7);
+            } else if (res.data.status == 200) {
+              this.$message(res.data.message);
             }
           });
       } else if (!sumFlag) {
@@ -615,12 +624,16 @@ export default {
     },
     //弹框驳回操作
     rejectAch() {
+      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
+        this.$message("分成人不满足最低人数要求");
+        return false;
+      }
       let resultArr = this.houseArr.concat(this.clientArr);
       let flag = true,
         sum = 0,
         sumFlag = false;
       for (var i = 0; i < resultArr.length; i++) {
-        sum += resultArr[i].ratio;
+        sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
         if (
           resultArr[i].roleName === "" ||
           resultArr[i].ratio === "" ||
@@ -655,6 +668,8 @@ export default {
             if (res.data.status == 200) {
               this.$message("操作完成");
               this.$emit("close", this.achIndex, 8);
+            } else if (res.data.status == 200) {
+              this.$message(res.data.message);
             }
           });
       } else if (!sumFlag) {
@@ -667,12 +682,16 @@ export default {
     },
     // 反审核，编辑的保存
     keepAch(type) {
+      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
+        this.$message("分成人不满足最低人数要求");
+        return false;
+      }
       let resultArr = this.houseArr.concat(this.clientArr);
       let flag = true,
         sum = 0,
         sumFlag = false;
       for (var i = 0; i < resultArr.length; i++) {
-        sum += resultArr[i].ratio;
+        sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
         if (
           resultArr[i].roleName === "" ||
           resultArr[i].ratio === "" ||
@@ -691,6 +710,8 @@ export default {
           sumFlag = false;
         }
       }
+      //  debugger;
+      // console.log(sumFlag);
       if (flag && sumFlag) {
         // this.$emit("close", this.achIndex);
         // this.$message("操作完成");
@@ -1203,6 +1224,25 @@ export default {
         display: none;
       }
     }
+  }
+  input::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #c0c4cc;
+  }
+  input:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #c0c4cc;
+  }
+  input::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #c0c4cc;
+  }
+  input:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #c0c4cc;
+  }
+  .input-ratio {
+    color: #606266;
   }
 }
 </style>
