@@ -88,12 +88,12 @@
                                 <el-form-item label="成交经纪人：" required>
                                     <el-form-item prop="guestInfo.GuestStoreName">
                                         <el-select v-model="contractForm.guestInfo.GuestStoreName" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
-                                            <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.name"></el-option>
+                                            <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item prop="guestInfo.EmpName" class="small-input">
                                         <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" ref="select2" @clear="clearEmpName" @change="changeAgent">
-                                            <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.id"></el-option>
+                                            <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-form-item>
@@ -167,7 +167,10 @@ export default {
                     RoomNo: ''
                 },
                 guestInfo: {
-                    
+                    GuestStoreCode: '',
+                    GuestStoreName: '',
+                    EmpCode: '',
+                    EmpName: ''
                 },
                 //合同人员相关信息
                 contPersons: [
@@ -370,8 +373,13 @@ export default {
                     this.contractForm.signDate = res.data.signDate.substr(0, 10);
                     this.contractForm.subscriptionTerm = res.data.subscriptionTerm.substr(0, 10);
                     this.contractForm.type=res.data.contType.value;
-                    this.option2=[{id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName}];
-                    this.option3=[{empId:res.data.guestInfo.EmpCode,name:res.data.guestInfo.EmpName}];
+                    this.contractForm.guestInfo.GuestStoreName = res.data.guestInfo.GuestStoreName;
+                    this.contractForm.guestInfo.GuestStoreCode = res.data.guestInfo.GuestStoreCode;
+                    this.contractForm.guestInfo.EmpName = res.data.guestInfo.EmpName;
+                    this.contractForm.guestInfo.empId = res.data.guestInfo.EmpCode;
+
+                    // this.option2=[{id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName}];
+                    // this.option3=[{empId:res.data.guestInfo.EmpCode,name:res.data.guestInfo.EmpName}];
 
                     
                     for (let i = 0; i < this.contractForm.contPersons.length; i++) {
@@ -420,8 +428,9 @@ export default {
             });
         },
 
-        changeAgent(item){
-              this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,item.name)
+        changeAgent(id){
+              this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,id)
+            //   this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpCode,id)
         },
 
         clearEmpName(){
@@ -444,9 +453,9 @@ export default {
                     if(res.data.status===200){ 
                                        
                         this.loading = false; 
-                        // this.contractForm.guestInfo.EmpName = ''
+                        // this.contractForm.guestInfo.GuestStoreName = id
                         
-                        
+                        console.log(id)
 
                         if(res.data.data.length > 0){ 
                             this.option3 = res.data.data;
@@ -521,6 +530,12 @@ export default {
                                     type: 'success',
                                     message: '已保存!'
                                 });
+                                this.$router.push({
+                                    path:'/contractList',
+                                    // query:{
+                                    //     id: this.id
+                                    // }
+                                })
                             }else{
                                 this.$message.error(tips)
                             }

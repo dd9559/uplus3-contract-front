@@ -176,10 +176,16 @@
         <!-- 上传附件 -->
         <div class="audit-col">
           <div class="uploadfile">
-              <div class="uploadtitle"><em>*</em>结算凭证<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
-              <div class="uploadbtn">
-              
-              </div>
+              <div class="uploadtitle">结算凭证</div>
+              <ul class="ulData">
+                <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                    <div class="namePath">
+                        <upload-cell :type="item.fileType"></upload-cell>
+                        <p>{{item.name}}</p>
+                    </div>
+                    <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                </li>
+            </ul>
           </div>     
         </div>
 
@@ -270,6 +276,9 @@
           }
 
         },
+        isDelete:'',
+        //上传的协议
+        uploadList: [],
         myCheckId: '',
         
         auditForm: {
@@ -305,7 +314,20 @@
     },
   
     methods:{
-      
+      //合同主体的删除
+      ZTdelectData(index){
+          this.uploadList.splice(index,1)
+      },
+
+      //显示删除按钮
+      moveIn(value){
+          this.isDelete=value
+      },
+      moveOut(value){
+          if(this.isDelete===value){
+              this.isDelete=''
+          }
+      },
 
 
       // 控制弹框body内容高度，超过显示滚动条
@@ -440,6 +462,7 @@
             console.log(data.data)
             this.layerAudit = data.data;
             this.myCheckId = data.data.id; //结算id
+            this.uploadList = data.data.vouchers;
           }
         }).catch(error => {
           console.log(error)

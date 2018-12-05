@@ -328,6 +328,12 @@
         param.inAccount = [].concat(this.list)
 
         this.$tool.checkForm(param,rule).then((res)=>{
+          if(param.smallAmount>this.amount.balance){
+            this.$message({
+              message:'输入金额不能大于可支配金额'
+            })
+            return
+          }
           this.$tool.checkForm(this.list[0],rule).then(()=>{
             if(this.files.length===0){
               this.$message({

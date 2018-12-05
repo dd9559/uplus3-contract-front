@@ -3,75 +3,82 @@
 
         <!-- 结算审核弹框 -->
         <el-dialog title="发起结算" :visible="getSettleDialog" width="820px" class="layer-audit" @close='close'>
-        <div class="audit-box"  :style="{ height: clientHeight() }">
-            <div class="audit-col">
-            <div class="col-li col-li2">
-                <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
-                <p>发起日期：<span>{{layerAudit.applicationDate | getDate}}</span></p>
-                <p>发起人：<span>{{layerAudit.initiatorDepName + '-' + layerAudit.initiatorName}}</span></p>
-                
-            </div>
-            <div class="col-li">
-                <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
-            
-            </div>
-            <div class="col-li col-li2">
-                <p>合同类型：<span>{{layerAudit.contarctType.label}}</span></p>
-                <p>后期状态：<span>{{layerAudit.laterStageStatus.label}}</span></p>
-                <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
-                
-                
-            </div>
-            <div class="col-li col-li2">
-                <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
-                <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-                <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
-            </div>
-
-            </div>
-
-            <!-- 表格 -->
-            <div class="audit-col">
-                <el-table :data="layerAudit.storeSettle" border style="width: 100%" class="table">
-                    <el-table-column prop="level4" label="合作门店"></el-table-column>
-                    <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
-                    <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
-                    <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
-                </el-table> 
-                <div class="zhushi">注：结算中的当期实收分成金额包含扣除的特许服务费，具体请结算通过后在分账记录列表中查看</div>             
-            </div>
-
-            <!-- 上传附件 -->
-            <div class="audit-col">
-                <div class="uploadfile">
-                    <div class="uploadtitle"><em>*</em>结算凭证<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
-                    <div class="uploadbtn">
-                    <el-upload
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        list-type="picture-card"
-                        multiple
-                        >
-                        <i class="iconfont icon-shangchuan"></i>
-                    </el-upload>
+            <div class="audit-box"  :style="{ height: clientHeight() }">
+                <div class="audit-col">
+                    <div class="col-li col-li2">
+                        <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
+                        <p>发起日期：<span>{{layerAudit.applicationDate | getDate}}</span></p>
+                        <p>发起人：<span>{{layerAudit.initiatorDepName + '-' + layerAudit.initiatorName}}</span></p>
+                        
+                    </div>
+                    <div class="col-li">
+                        <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
                     
                     </div>
-                </div>     
-            </div>
+                    <div class="col-li col-li2">
+                        <p>合同类型：<span>{{layerAudit.contarctType.label}}</span></p>
+                        <p>后期状态：<span>{{layerAudit.laterStageStatus.label}}</span></p>
+                        <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
+                        
+                        
+                    </div>
+                    <div class="col-li col-li2">
+                        <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
+                        <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
+                        <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
+                    </div>
 
-            <!-- 审核备注 -->
-            <div class="audit-col bordernone">
-            <div class="textareabox2">
-                <span><em>*</em>审核备注</span>
-                <el-input type="textarea" :rows="6" class="textarea" maxlength=200  v-model="auditForm.textarea" placeholder="请填写审核备注"></el-input>
-            </div>
-            </div>
-            
+                </div>
 
-        </div>
-        <div class="btnbox">
-            <el-button @click="close">取 消</el-button>
-            <el-button type="primary"  @click="auditApply()">提交审核</el-button>  
-        </div> 
+                <!-- 表格 -->
+                <div class="audit-col">
+                    <el-table :data="layerAudit.storeSettle" border style="width: 100%" class="table">
+                        <el-table-column prop="level4" label="合作门店"></el-table-column>
+                        <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
+                        <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
+                        <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
+                    </el-table> 
+                    <div class="zhushi">注：结算中的当期实收分成金额包含扣除的特许服务费，具体请结算通过后在分账记录列表中查看</div>             
+                </div>
+
+                <!-- 上传附件 -->
+                <div class="audit-col">
+                    <div class="uploadfile">
+                        <div class="uploadtitle">结算凭证</div>
+                        <ul class="ulData">
+                            <li>
+                                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                                    <i class="iconfont icon-shangchuan"></i>
+                                    <p>点击上传</p>
+                                </file-up>
+                            </li>
+                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                                <div class="namePath">
+                                    <upload-cell :type="item.fileType"></upload-cell>
+                                    <p>{{item.name}}</p>
+                                </div>
+                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                            </li>
+                        </ul>
+                    </div>     
+                </div>
+
+                <!-- 审核备注 -->
+                <div class="audit-col bordernone">
+                    <div class="textareabox2">
+                        <span><em>*</em>结算备注</span>
+                        <el-input type="textarea" :rows="6" class="textarea" maxlength=200  v-model="auditForm.textarea" placeholder="请填写审核备注"></el-input>
+                    </div>
+                </div>
+                    
+
+            </div>
+            <div class="btnbox">
+                <el-button @click="close">取 消</el-button>
+                <el-button type="primary"  @click="auditApply()">提交审核</el-button>  
+            </div> 
+            <!-- 图片放大 -->
+            <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
         </el-dialog>
     </div>
 </template>
@@ -110,6 +117,10 @@ export default {
             auditForm: {
                 textarea: '', //备注
             },
+
+            //上传的协议
+          uploadList: [],
+          isDelete:'',
         }
     },
 
@@ -129,6 +140,31 @@ export default {
     },
 
     methods: {
+
+        //获取文件路径后缀名
+        uploadSubject(data) {
+            let arr = data.param;
+            console.log(data)
+            let fileType = this.$tool.get_suffix(arr[0].name);
+            arr[0].fileType = fileType;
+            this.uploadList.push(arr[0])
+        }, 
+
+        //合同主体的删除
+        ZTdelectData(index){
+            this.uploadList.splice(index,1)
+        },
+
+        //显示删除按钮
+        moveIn(value){
+            this.isDelete=value
+        },
+        moveOut(value){
+            if(this.isDelete===value){
+                this.isDelete=''
+            }
+        },
+
         // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
           return this.clientHei - 265 + 'px'
@@ -183,7 +219,7 @@ export default {
             })
          
         }else if(this.auditForm.textarea === ""){
-           this.$message('请填写审核备注'); 
+           this.$message('请填写结算备注'); 
         }
        
       }
@@ -299,49 +335,85 @@ export default {
             
             .uploadfile{
                 margin: 20px 0 30px;
+                display: flex;
                 .uploadtitle{
-                color: #6C7986;
-                em{
-                    color: #FF3E3E;
-                    margin-right: 4px;
-                }
-                span{
-                    margin-left: 16px;
-                    color: #8E8E8E;           
-                    b{
                     color: #6C7986;
+                    width: 78px;
+                    em{
+                        color: #FF3E3E;
+                        margin-right: 4px;
                     }
-                }
+                    span{
+                        margin-left: 16px;
+                        color: #8E8E8E;           
+                        b{
+                        color: #6C7986;
+                        }
+                    }
                 }       
-                .uploadbtn{
-                margin: 0 0 0 15px;
-                .el-upload--picture-card{
-                    background-color: #fff;
-                    border: 2px dashed #DEDDE2;
-                    border-radius: 6px;
-                    width: 130px;
-                    height: 130px;
-                    line-height: 124px;
-                    margin-top: 20px;
-                    i{
-                        color: #EEF2FB;
-                        font-size: 56px;
+                
+                .ulData{
+ 
+                    width: 100%;
+                    overflow: hidden;
+                    li{
+                        margin-right: 20px;
+                        margin-bottom: 20px;
+                        position: relative;
+                        float: left;
+                        &:nth-child(5n){
+                        margin-right: 0;
+                        }
+                        > i{
+                            position: absolute;
+                            top: 5px;
+                            right: 5px;
+                            color: #F56C6C;
+                            font-size: 20px;
+                            cursor: pointer;
+                        }
                     }
                 }
-                .el-upload-list--picture-card .el-upload-list__item{
-                    margin: 20px 20px 0 0;
-                    width: 130px;
-                    height: 130px;
-                    &:nth-child(5n){
-                    margin-right: 0;
+
+                .uploadSubject {
+                    display: inline-block;
+                    text-align: center;
+                    width: 120px;
+                    height: 120px;
+                    box-sizing: border-box;
+                    padding-top: 28px;
+                    border: 1px dashed #EDECF0;
+                    border-radius:1px;
+                    > i {
+                    color: #EEF2FB;
+                    font-size: 50px;
+                    }
+                    > p {
+                    padding-top: 10px;
+                    color: #32485F;
+                    font-size: 12px;
                     }
                 }
+
+                .namePath{
+                    display: inline-block;
+                    text-align: center;
+                    width: 120px;
+                    height: 120px;
+                    padding-top: 20px;
+                    box-sizing: border-box;
+                    border-radius:4px;
+                    background: #F2F3F8;
+                    > p{
+                    padding-top: 5px;
+                    }
                 }
+                
             }
             
             }   
             .bordernone{
-            border-bottom: none;
+                border-bottom: none;
             }
         }
 
