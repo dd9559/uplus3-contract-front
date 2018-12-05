@@ -358,7 +358,7 @@
                     }
                     this.loadingList = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 分页
@@ -374,7 +374,7 @@
                         this.rules.late = res.data;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 部门筛选回调
@@ -399,7 +399,7 @@
                             this.loading2 = false;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }else{
                     this.propForm.departmentMo = '';
@@ -429,7 +429,7 @@
                         this.loading = false;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 清除部门搜索
@@ -449,7 +449,7 @@
                         },...res.data];
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
         },

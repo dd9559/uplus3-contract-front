@@ -87,12 +87,12 @@
                                 </el-form-item>
                                 <el-form-item label="成交经纪人：" required>
                                     <el-form-item prop="guestInfo.GuestStoreName">
-                                        <el-select v-model="contractForm.guestInfo.GuestStoreCode" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
+                                        <el-select v-model="contractForm.guestInfo.GuestStoreName" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
                                             <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item prop="guestInfo.EmpName" class="small-input">
-                                        <el-select v-model="contractForm.guestInfo.EmpCode" clearable filterable placeholder="请选择经纪人" ref="select2" @clear="clearEmpName" @change="changeAgent">
+                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" ref="select2" @clear="clearEmpName" @change="changeAgent">
                                             <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
                                         </el-select>
                                     </el-form-item>
@@ -103,10 +103,10 @@
                                     <el-input v-model="contractForm.custname" clearable placeholder="姓名" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custmobile">
-                                    <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" class="ownwidth" :disabled="type===2?true:false"></el-input>
+                                    <el-input v-model.number="contractForm.custmobile" clearable placeholder="手机号" type="number" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custIdentifyCode" v-if="this.type===1">
-                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth"></el-input>
+                                    <el-input v-model.number="contractForm.custIdentifyCode" clearable placeholder="身份证号" type="number" class="custwidth"></el-input>
                                     
                                 </el-form-item>
                                 <el-form-item v-if="this.type===2">
@@ -244,10 +244,10 @@ export default {
                     { required: true, message: '请选择客源编号', trigger: 'click'},
                 ],
                 guestInfo: {
-                    GuestStoreCode: [
+                    GuestStoreName: [
                         { required: true, message: '请选择门店' }
                     ],
-                    EmpCode: [
+                    EmpName: [
                         { required: true, message: '请选择经纪人'}
                     ],
                     
@@ -446,12 +446,11 @@ export default {
         },
 
         changeAgent(id){
-            //   this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,item.name)
+              this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,item.name)
               this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpCode,id)
         },
 
         clearEmpName(){
-            this.contractForm.guestInfo.EmpCode = ''
             this.contractForm.guestInfo.EmpName = ''
         },
 
@@ -479,7 +478,7 @@ export default {
                         if(res.data.data.length > 0){ 
                             this.option3 = res.data.data;
                         }         
-                                                        
+                        console.log(this.option3)                               
                     }
                 }).catch((error) => {
                     this.$message({

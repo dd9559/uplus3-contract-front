@@ -2,7 +2,7 @@
     <div id="layeraudit">
         <!-- 调佣审核申请 -->
     <!-- <el-button type="text" class="curPointer" @click="dialogVisible = true">审核申请</el-button> -->
-    <el-dialog title="调佣申请" :visible="getDialogVisible" width="820px" class="layer-audit" @close='close'>
+    <el-dialog title="调佣申请" :visible="getDialogVisible" width="820px" class="layer-audit" @close='close' :closeOnClickModal="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
@@ -245,6 +245,9 @@ export default {
 
       //发起调佣申请
       auditApply() {
+        this.auditForm.money1=this.$tool.cutFloat({val:this.auditForm.money1,max:999999999.99})
+        this.auditForm.money2=this.$tool.cutFloat({val:this.auditForm.money2,max:999999999.99})
+        this.auditForm.money4=this.$tool.cutFloat({val:this.auditForm.money4,max:999999999.99})
         let param = {
           contractCode: this.contractCode,
           reason: this.auditForm.textarea,
