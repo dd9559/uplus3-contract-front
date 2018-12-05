@@ -1,106 +1,99 @@
 <template>
   <div class="layout" style="background-color: #f5f5f5">
-    <!-- 筛选条件  -->
-    <div class="filter-layout">
-      <div style="overflow:hidden;">
-        <div class="filter-left f_l">
-          <h1 class="f14">
-            <b class="iconfont icon-tubiao-5" style="color:#55657A;font-weight:normal;"></b>
-            筛选查询
-          </h1>
-        </div>
-        <div class="filter-right f_r">
-          <el-button type="primary" round @click="resetData">重置</el-button>
-          <el-button type="primary" round @click="filterData">查询</el-button>
-        </div>
-      </div>
-
-      <div class="filter-item" v-show="filterShow">
-        <!-- 筛选条件 -->
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
+      <!-- 筛选条件 -->
+      <!-- 部门 -->
+      <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
+        <el-form-item label="签约日期" prop="dateMo" class="mr">
+          <el-date-picker
+            v-model="propForm.dateMo"
+            class="w330"
+            type="daterange"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          ></el-date-picker>
+        </el-form-item>
         <!-- 部门 -->
-        <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
-          <el-form-item label="签约日期" prop="dateMo" class="mr">
-            <el-date-picker
-              v-model="propForm.dateMo"
-              class="w330"
-              type="daterange"
-              range-separator="至"
-              value-format="yyyy-MM-dd"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
-          </el-form-item>
-          <!-- 部门 -->
-          <el-form-item label="部门" class="mr">
-            <el-select v-model="propForm.department" class="w200" filterable @change="selUser">
-              <el-option v-for="item in departs" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
+        <el-form-item label="部门" class="mr">
+          <el-select v-model="propForm.department" class="w200" filterable @change="selUser">
+            <el-option v-for="item in departs" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
 
-          <el-form-item>
-            <el-select v-model="propForm.departmentDetail" class="w100" filterable>
-              <el-option
-                v-for="(item,index) in users"
-                :key="index"
-                ref="user"
-                :label="item.name"
-                :value="item.empId"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+        <el-form-item>
+          <el-select v-model="propForm.departmentDetail" class="w100" filterable>
+            <el-option
+              v-for="(item,index) in users"
+              :key="index"
+              ref="user"
+              :label="item.name"
+              :value="item.empId"
+            ></el-option>
+          </el-select>
+        </el-form-item>
 
-          <el-form-item label="合同类型" prop="contractType">
-            <el-select v-model="propForm.contractType" class="w120" :clearable="true">
-              <el-option
-                v-for="item in dictionary['10']"
-                :key="item.value"
-                :label="item.value"
-                :value="item.key"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+        <el-form-item label="合同类型" prop="contractType">
+          <el-select v-model="propForm.contractType" class="w120" :clearable="true">
+            <el-option
+              v-for="item in dictionary['10']"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
 
-          <el-form-item label="关键字" prop="search">
-            <el-input
-              class="w430"
-              v-model="propForm.search"
-              placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
-              :trigger-on-focus="false"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-
-      <div class="btn" @click="filterShow=!filterShow"></div>
-    </div>
+        <el-form-item label="关键字" prop="search">
+          <el-input
+            class="w430"
+            v-model="propForm.search"
+            placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
+            :trigger-on-focus="false"
+            clearable
+          ></el-input>
+        </el-form-item>
+      </el-form>
+    </ScreeningTop>
     <!-- 筛选条件 end -->
     <!-- 数据列表 -->
     <div class="data-layout">
       <!-- 头部 -->
-      <div class="data-head">
-        <div class="data-head-left f_l">
-          <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b>
-          <span class="f14">数据列表</span>
-        </div>
-        <div class="data-head-right f_l">
-          <span>
-            总分成：
-            <b>{{countData[0]}}元</b>，
-          </span>
-          <span>分类分成：</span>
-          <span>
-            出售：
-            <b>{{countData[1]}}元</b>，
-          </span>
-          <span>
-            代办：
-            <b>{{countData[2]}}元</b>，
-          </span>
-          <span>
-            出租：
-            <b>{{countData[3]}}元</b>
-          </span>
+      <div class="table-tool">
+        <div class="tool-left">
+          <h4 class="f14">
+            <i class="iconfont icon-tubiao-11"></i>数据列表
+          </h4>
+          <ul>
+            <li>
+              <span>
+                总分成：
+                <b class="orange">{{countData[3]}}元</b>，
+              </span>
+            </li>
+            <li>
+              <span>分类分成：</span>
+            </li>
+            <li>
+              <span>
+                出售：
+                <b class="orange">{{countData[1]}}元</b>，
+              </span>
+            </li>
+            <li>
+              <span>
+                代办：
+                <b class="orange">{{countData[2]}}元</b>，
+              </span>
+            </li>
+            <li>
+              <span>
+                出租：
+                <b class="orange">{{countData[0]}}元</b>
+              </span>
+            </li>
+          </ul>
         </div>
       </div>
       <!-- 头部 end -->
@@ -254,6 +247,7 @@
         :page-size="pageSize"
         layout="total,prev, pager, next , jumper"
         :total="total"
+        v-if="total!=0"
       ></el-pagination>
     </div>
   </div>
@@ -268,7 +262,6 @@ export default {
     return {
       receivableList: [], //实收数据列表数组
       countData: [], //数据统计数组
-      filterShow: true,
       departs: [],
       depUser: "",
       users: [],
@@ -309,10 +302,10 @@ export default {
   },
   components: {},
   methods: {
-    filterData() {
-      console.log("ssssssssssss");
-      console.log(this.ajaxParam);
-      console.log(this.propForm);
+    queryFn() {
+      // console.log("ssssssssssss");
+      // console.log(this.ajaxParam);
+      // console.log(this.propForm);
       if (this.propForm.dateMo) {
         this.ajaxParam = {
           dealAgentStoreId: this.propForm.department, //部门
@@ -334,21 +327,28 @@ export default {
           pageSize: this.pageSize
         };
       }
-
+      this.ajaxParam.pageNum = 1;
+      this.currentPage = 1;
       this.getData(this.ajaxParam);
     },
-    resetData() {
+    resetFormFn() {
       this.ajaxParam = {
         dealAgentStoreId: "", //部门
         dealAgentId: "", //员工
         contractType: "", //合同类型
         startTime: "", //开始时间
         endTime: "", //结束时间
-        keyword: "", //关键字
-        pageNum: "",
-        pageSize: this.pageSize
+        keyword: "" //关键字
       };
-      this.total = 0;
+      this.ajaxParam.pageNum = 1;
+      this.currentPage = 1;
+      this.propForm = {
+        department: "", //部门
+        departmentDetail: "", //部门详情（员工）
+        contractType: "", //合同类型
+        dateMo: "",
+        search: ""
+      };
     },
     // 查询部门员工
     selUser() {
@@ -386,6 +386,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.ajaxParam.pageNum = val;
+      this.currentPage = val;
       this.getData(this.ajaxParam);
     },
     // 跳转合同详情
@@ -502,40 +503,34 @@ export default {
     padding: 20px;
     padding-top: 0;
     margin-top: 20px;
-    .data-head {
-      height: 68px;
-      background-color: #fff;
-      // padding-left: 48px;
-      .data-head-left {
-        position: relative;
-        b {
-          position: absolute;
-          width: 16px;
-          height: 16px;
-          left: 0px;
-          top: 63%;
-          // margin-top: -8px;
+    .table-tool {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: @margin-base 0;
+      .tool-left {
+        display: inherit;
+        align-items: center;
+        > h4 {
+          > i {
+            margin-right: 8px;
+          }
         }
-        span:first-of-type {
-          color: #233241;
-          display: inline-block;
-          margin-top: 30px;
-          // font-size: 18px;
-          margin-left: 28px;
-        }
-      }
-      .data-head-right {
-        // font-size: 14px;
-        margin-top: 30px;
-        margin-left: 15px;
-        span {
-          color: #6c7986;
-          b {
-            color: #f56c6c;
-            font-weight: normal;
+        > ul {
+          display: flex;
+          margin-left: 20px;
+          > li {
+            color: @color-6c;
           }
         }
       }
+      /*>p{
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform:translateY(-50%);
+      }*/
     }
   }
   // 展示数据

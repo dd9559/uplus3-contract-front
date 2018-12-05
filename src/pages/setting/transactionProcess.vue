@@ -31,7 +31,7 @@
         <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px">
           <div class="manage-title">
             <label>结算百分比 : </label>
-            <el-input v-model="settlePercent"></el-input>%
+            <el-input v-model="settlePercent" type="number"></el-input>%
           </div>
           <div class="manage-list">
             <el-table :data="manageData">
@@ -489,7 +489,7 @@
         width: 90px;
         height: 32px;
         margin-left: 5px;
-        /deep/ .el-input__inner { width: 100%; height: 32px; }
+        /deep/ .el-input__inner {height: 32px; }
       }
     }
     .manage-list {

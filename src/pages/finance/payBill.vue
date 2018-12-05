@@ -36,7 +36,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="number" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===item.key">
+                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
                 <span v-else>请输入</span>
               </li>
             </ul>
@@ -179,6 +179,9 @@
       }
     },
     methods:{
+      cutNum:function () {
+        this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+      },
       getPicture:function () {
         let arr=[]
         this.imgList.forEach(item=>{
@@ -328,6 +331,12 @@
         param.inAccount = [].concat(this.list)
 
         this.$tool.checkForm(param,rule).then((res)=>{
+          if(param.smallAmount>this.amount.balance){
+            this.$message({
+              message:'输入金额不能大于可支配金额'
+            })
+            return
+          }
           this.$tool.checkForm(this.list[0],rule).then(()=>{
             if(this.files.length===0){
               this.$message({

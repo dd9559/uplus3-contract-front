@@ -3,87 +3,40 @@
     class="layout"
     style="background-color: #f5f5f5"
   >
-    <!-- 筛选条件  -->
-    <div class="filter-layout">
-
-      <div style="overflow:hidden;">
-        <div class="filter-left f_l">
-          <h1 class="f14">
-            <b
-              class="iconfont icon-tubiao-5"
-              style="color:#55657A;font-weight:normal;"
-            ></b>
-            筛选查询
-          </h1>
-        </div>
-        <div class="filter-right f_r">
-          <el-button
-            type="primary"
-            round
-            @click="resetData"
-          >重置</el-button>
-          <el-button
-            type="primary"
-            round
-            @click="filterData"
-          >查询</el-button>
-        </div>
-      </div>
-
-      <div
-        class="filter-item"
-        v-show="filterShow"
-      >
-        <!-- 筛选条件 -->
-        <el-form
+   <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
+    <el-form
           :inline="true"
           :model="propForm"
           class="prop-form"
           size="small"
-        >
-
-          <!-- 部门 -->
-          <el-form-item
-            label="部门"
-            class="mr"
-          >
-            <el-select
-              v-model="propForm.department"
-              class="w200"
-              filterable
-              @change="selUser"
-            >
-              <el-option
-                v-for="(item,index) in departs"
-                :key="index"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+    >
+         <!-- 部门 -->
+          <el-form-item  label="部门"   class="mr" >
+                <el-select v-model="propForm.department"  class="w200" filterable @change="selUser">
+                     <el-option
+                       v-for="(item,index) in departs"
+                       :key="index"
+                       :label="item.name"
+                       :value="item.id"
+                     ></el-option>
+                </el-select>
           </el-form-item>
 
           <el-form-item>
-            <el-select
-              v-model="propForm.departmentDetail"
-              class="w100"
-              filterable
-            >
-              <el-option
-                v-for="(item,index) in users"
-                :key="index"
-                ref="user"
-                :label="item.name"
-                :value="item.empId"
-              ></el-option>
+            <el-select v-model="propForm.departmentDetail" class="w100"filterable>
+               <el-option
+                 v-for="(item,index) in users"
+                 :key="index"
+                 ref="user"
+                 :label="item.name"
+                 :value="item.empId"
+               ></el-option>
             </el-select>
           </el-form-item>
 
           
 
-          <el-form-item
-            label="合同类型"
-            prop="contractType"
-          >
+          <el-form-item label="合同类型" prop="contractType">
             <el-select
               v-model="propForm.contractType"
               class="w120"
@@ -98,10 +51,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item
-            label="分成类型"
-            prop="divideType"
-          >
+          <el-form-item label="分成类型" prop="divideType">
             <el-select
               v-model="propForm.divideType"
               class="w120"
@@ -116,10 +66,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item
-            label="业绩状态"
-            prop="achType"
-          >
+          <el-form-item label="业绩状态" prop="achType">
             <el-select
               v-model="propForm.achType"
               class="w120"
@@ -134,11 +81,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item
-            label="签约日期"
-            prop="dateMo"
-            class="mr"
-          >
+          <el-form-item label="签约日期"   prop="dateMo" class="mr">
             <el-date-picker
               v-model="propForm.dateMo"
               class="w330"
@@ -151,10 +94,7 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item
-            label="关键字"
-            prop="search"
-          >
+          <el-form-item label="关键字"  prop="search">
             <el-input
               class="w460"
               v-model="propForm.search"
@@ -165,34 +105,35 @@
           </el-form-item>
 
         </el-form>
-      </div>
+  </ScreeningTop>
 
-      <div
-        class="btn"
-        @click="filterShow=!filterShow"
-      ></div>
-    </div>
+
+
     <!-- 筛选条件 end -->
     <!-- 数据列表 -->
     <div class="data-layout">
       <!-- 头部 -->
-      <div class="data-head">
-        <div class="data-head-left f_l">
-          <b
-            class="iconfont icon-tubiao-11"
-            style="color:#55657A;font-weight:normal;"
-          ></b>
-          <span>
-            数据列表
-          </span>
-        </div>
-        <div class="data-head-right f_l">
-          <span>总分成：<b>{{countData[3]}}元</b>，</span>
-          <span>分类分成：</span>
-          <span>出售：<b>{{countData[1]}}元</b>，</span>
-          <span>代办：<b>{{countData[2]}}元</b>，</span>
-          <span>出租：<b>{{countData[0]}}元</b></span>
-        </div>
+      <div class="table-tool">           
+          <div class="tool-left">
+              <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
+              <ul>
+                <li>
+                  <span>总分成：<b class="orange">{{countData[3]}}元</b>，</span>
+                </li>
+                <li>
+                  <span>分类分成：</span>
+                </li>
+                <li>
+                  <span>出售：<b class="orange">{{countData[1]}}元</b>，</span>
+                </li>
+                <li>
+                  <span>代办：<b class="orange">{{countData[2]}}元</b>，</span>
+                </li>
+                <li>
+                   <span>出租：<b class="orange">{{countData[0]}}元</b></span>
+                </li>
+              </ul>
+           </div>
       </div>
       <!-- 头部 end -->
 
@@ -205,7 +146,7 @@
         >
           <el-table-column
             label="合同信息"
-            width="250"
+            width="300"
           >
             <template slot-scope="scope">
               <p>合同编号：<span
@@ -220,7 +161,7 @@
 
           <el-table-column
             label="业绩状态"
-            width="100"
+            width="120"
           >
             <template slot-scope="scope">
               <p
@@ -240,7 +181,7 @@
 
           <el-table-column
             label="合同类型"
-            width="80"
+            width="120"
           >
               <template slot-scope="scope">
                    <p>{{scope.row.contType.label}}</p>
@@ -250,13 +191,13 @@
           <el-table-column
             prop="propertyAddr"
             label="物业地址"
-            width="210"
+            width="240"
           >
           </el-table-column>
 
           <el-table-column
             label="成交经纪人"
-            width="170"
+            width="200"
           >
             <template slot-scope="scope">
               <p v-if="scope.row.dealName">{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
@@ -276,7 +217,7 @@
 
           <el-table-column
             label="分成类型"
-            width="80"
+            width="100"
           >
             <template slot-scope="scope">
               <!-- 目前一期分成类型只有业绩，暂时写死 -->
@@ -286,7 +227,7 @@
 
           <el-table-column
             label="分成人"
-            width="190"
+            width="230"
           >
             <template slot-scope="scope">
               <div v-for="item in scope.row.distributionFroms">
@@ -298,7 +239,7 @@
 
           <el-table-column
             label="角色类型"
-            width="120"
+            width="160"
           >
             <template slot-scope="scope">
               <div v-for="item in scope.row.distributionFroms">
@@ -406,16 +347,14 @@
         :page-size="pageSize"
         layout="total,prev, pager, next , jumper"
         :total="total"
+        v-if="total!=0"
       >
       </el-pagination>
 
     </div>
 
     <!-- 表单列表弹出框（业绩详情） -->
-    <el-dialog
-      :visible.sync="dialogVisible"
-      width="30%"
-    >
+    <el-dialog :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false">
       <b
         class="el-icon-close"
         @click="closeDialog"
@@ -677,8 +616,8 @@
       :dialogType="dialogType"
       :contractCode="code2"
       :aId="aId"
-      :contractId="contractId"
       :achIndex="achIndex"
+      :achObj="achObj"
     ></achDialog>
   </div>
 </template>
@@ -687,6 +626,7 @@
 // 引入审核，编辑，反审核，分成弹框
 import achDialog from "./achDialog";
 import { MIXINS } from "@/assets/js/mixins";
+import ScreeningTop from '@/components/ScreeningTop';
 export default {
   mixins: [MIXINS],
   name: "actualAchievement",
@@ -701,7 +641,6 @@ export default {
       depUser: "",
       users: [],
       dialogVisible: false, //详情弹框
-      filterShow: true,
       // 筛选条件
       propForm: {
         department: "", //部门
@@ -731,7 +670,8 @@ export default {
       achIndex:null,
       ajaxParam:{},
       total:0,
-      loading:true
+      loading:true,
+      achObj:{}
     };
   },
   created() {
@@ -754,7 +694,8 @@ export default {
   },
   components: {
     achDialog,
-    MIXINS
+    MIXINS,
+    ScreeningTop
   },
   methods: {
     selUser() {
@@ -803,7 +744,7 @@ export default {
     enterDetail(row) {
       //合同边和获取业绩详情
       this.code = row.code;
-      let param = { contCode: row.code, entrance: 3 };
+      let param = { contCode: row.code, entrance: 3,aId:row.aId };
       this.$ajax
         .get("/api/achievement/selectAchievementByCode", param)
         .then(res => {
@@ -822,7 +763,7 @@ export default {
         });
       this.dialogVisible = true;
     },
-    filterData() {
+    queryFn() {
     console.log(this.propForm.dateMo)
     if(this.propForm.dateMo){
       this.ajaxParam = {
@@ -849,10 +790,11 @@ export default {
         pageSize: this.pageSize
       };
     }
-
-      this.getData(this.ajaxParam)
+    this.ajaxParam.pageNum=1;
+    this.currentPage=1;
+    this.getData(this.ajaxParam)
     },
-    resetData() {
+    resetFormFn() {
       this.ajaxParam = {
         dealAgentStoreId: "", //部门
         dealAgentId: "", //员工
@@ -865,6 +807,8 @@ export default {
         pageNum: this.currentPage,
         pageSize: this.pageSize
       };
+      this.ajaxParam.pageNum=1;
+      this.currentPage=1;
       this.propForm={
         department: "", //部门
         departmentDetail: "", //部门详情（员工）
@@ -879,9 +823,11 @@ export default {
       this.beginData = true;
       this.code2 = value.code;//合同编号
       this.aId = value.aId;//业绩id
-      this.contractId = value.id;//合同id
       this.dialogType = 0;//弹框类型
       this.achIndex=index //当前索引
+      this.achObj={
+        contractId:value.id,//合同id
+      }
       this.shows = true;
     },
     editAch(value,index) {
@@ -891,6 +837,9 @@ export default {
       this.contractId =  value.id; 
       this.dialogType = 1; 
       this.achIndex=index  
+      this.achObj={
+        contractId:value.id,//合同id
+      }
       this.shows = true;
     },
     againCheck(value,index) {
@@ -900,15 +849,20 @@ export default {
       this.contractId =  value.id;
       this.dialogType = 2;
       // console.log(this.dialogType);
+      this.achObj={
+        contractId:value.id,//合同id
+      }
       this.shows = true;
     },
     //分页
     handleSizeChange(val) {
       console.log(val);
+      console.log(222222222);
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
       this.ajaxParam.pageNum = val;
+      this.currentPage=val;
       this.getData(this.ajaxParam);
     },
     skipContDel(value) {
@@ -927,6 +881,7 @@ export default {
 
 <style scoped lang="less">
 @import "~@/assets/less/lsx.less";
+@import "~@/assets/common.less";
 .layout {
   .check-btn span {
     color: #478de3;
@@ -1025,40 +980,34 @@ export default {
     padding-top: 0;
     background-color: #fff;
     margin-top: 20px;
-    .data-head {
-      height: 68px;
-      background-color: #fff;
-      // padding-left: 48px;
-      .data-head-left {
-        position: relative;
-        b {
-          position: absolute;
-          width: 16px;
-          height: 16px;
-          left: 0px;
-          top: 63%;
-          // margin-top: -8px;
+       .table-tool{
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: @margin-base 0;
+      .tool-left{
+        display: inherit;
+        align-items: center;
+        >h4{
+          >i{
+            margin-right: 8px;
+          }
         }
-        span:first-of-type {
-          color: #233241;
-          display: inline-block;
-          margin-top: 30px;
-          // font-size: 18px;
-          margin-left: 28px;
-        }
-      }
-      .data-head-right {
-        // font-size: 14px;
-        margin-top: 30px;
-        margin-left: 15px;
-        span {
-          color: #6c7986;
-          b {
-            color: #f56c6c;
-            font-weight: normal;
+        >ul{
+          display: flex;
+          margin-left: 20px;
+          >li{
+            color: @color-6c;
           }
         }
       }
+      /*>p{
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform:translateY(-50%);
+      }*/
     }
   }
   // 展示数据

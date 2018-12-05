@@ -150,8 +150,13 @@
             <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="当前审核人">
+          <template slot-scope="scope">
+            <span>{{scope.row.auditStore}}-{{scope.row.auditName}}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>
+        <!--<el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>-->
         <el-table-column align="center" label="收付时间" prop="createTime" :formatter="nullFormatter">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatDate}}</span>
@@ -162,15 +167,17 @@
             <span>{{scope.row.toAccountTime|formatDate}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收付状态" prop="checkStatus.label"></el-table-column>
+        <el-table-column align="center" label="状态" prop="checkStatus.label"></el-table-column>
         <el-table-column align="center" label="结算信息">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="票据状态" prop="billStatus.label"></el-table-column>
         <el-table-column align="center" label="操作" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" @click="cellOpera(scope.row)">审核</el-button>
+            <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="!scope.row.auditBy">作废</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -184,6 +191,32 @@
         :total="total">
       </el-pagination>
     </div>
+    <!--作废dialog-->
+    <el-dialog
+      title="作废"
+      :visible.sync="layer.show"
+      width="740px">
+      <div class="delete-dialog" v-if="layer.content.length>0">
+        <p>是否作废该{{activeView===1?'收款单':'付款单'}}</p>
+        <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="other">
+          <el-table-column align="center" min-width="200px" label="收付编号" prop="payCode" :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" :label="activeView===1?'收款金额':'付款金额'" prop="cityName" :formatter="nullFormatter">
+            <template slot-scope="scope">
+              <span>{{scope.row.amount}}元</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" :label="activeView===1?'收款方':'付款方'" prop="cityName" :formatter="nullFormatter">
+            <template slot-scope="scope">
+              <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+    <el-button round @click="layer.show = false">返 回</el-button>
+    <el-button round type="primary" @click="deleteBill">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -224,6 +257,11 @@
         total:0,
         currentPage:1,
         pageSize:10,
+        //作废
+        layer:{
+          show:false,
+          content:[]
+        },
       }
     },
     created() {
@@ -283,23 +321,28 @@
         })
       },
       //操作
-      cellOpera: function (item) {
-        let param = {
-          path: 'billDetails'
-        }
-        if (this.activeView === 1) {
-          param.query = {
-            tab: '收款信息',
-            id:item.id,
-            type:item.inAccountType
+      cellOpera: function (item,type='check') {
+        if(type==='check'){
+          let param = {
+            path: 'billDetails'
           }
-        } else {
-          param.query = {
-            tab: '付款信息',
-            id:item.id
+          if (this.activeView === 1) {
+            param.query = {
+              tab: '收款信息',
+              id:item.id,
+              type:item.inAccountType
+            }
+          } else {
+            param.query = {
+              tab: '付款信息',
+              id:item.id
+            }
           }
+          this.$router.push(param)
+        }else {
+          this.layer.show=true
+          this.layer.content=[].concat(item)
         }
-        this.$router.push(param)
       },
       /**
        * 合同信息操作
@@ -316,6 +359,16 @@
             }
           })
         }
+      },
+      //作废
+      deleteBill:function () {
+        this.$ajax.put('/api/payInfo/updateCheckStatus',{payId:this.layer.content[0].id},2).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.getData()
+            this.layer.show=false
+          }
+        })
       },
     },
     computed: {
