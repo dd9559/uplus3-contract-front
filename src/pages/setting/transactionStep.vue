@@ -93,7 +93,7 @@
           </div>
           <div class="input-group">
             <label>计划天数：</label>
-            <el-input type="text" v-model="stepBusiness.planDays"></el-input>
+            <el-input type="number" v-model="stepBusiness.planDays"></el-input>
           </div>
           <div class="menu-table">
             <el-table border :data="tableForm" style="width: 100%">
