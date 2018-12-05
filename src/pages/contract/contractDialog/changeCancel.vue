@@ -173,6 +173,10 @@ export default {
       type: Number,
       default: null
     },
+    contState: {
+      type: Number,
+      default: 99
+    },
     cancelDialog: {
       type: Boolean,
       default: false
@@ -224,6 +228,23 @@ export default {
 		delectData(index){
       console.log(index);
 			this.uploadList.splice(index,1)
+		},
+		//获取合同主体信息
+    getContractBody(){
+      let param = {
+        id:this.contId
+      }
+      this.$ajax.get('/api/contract/getContractBodyById', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          let uploadList_ = res.data;
+          uploadList_.forEach(element => {
+            let fileType = this.$tool.get_suffix(element.name);
+            element.fileType=fileType;
+          });
+          this.uploadList=uploadList_;
+        }
+      })
     },
 		//提交变更解约
 		subChangeCancel(url,param){
@@ -342,7 +363,10 @@ export default {
 				this.getChangeDetail(1)
 			}
     } else if (this.dialogType === "upload") {
-      this.title = "合同主体";
+			this.title = "合同主体";
+			if(this.contState===3){
+				this.getContractBody();
+			}
     }
   }
 };

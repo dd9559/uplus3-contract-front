@@ -231,7 +231,7 @@
               </file-up>
             </li>
             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
-              <div class="namePath">
+              <div class="namePath" @click="getPicture(uploadList,index)">
                 <upload-cell :type="item.fileType"></upload-cell>
                 <p>{{item.name}}</p>
               </div>
@@ -258,7 +258,7 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath" @click="getPicture(item.value)">
+                  <div class="namePath" @click="getPicture(item.value,index_)">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
@@ -279,7 +279,7 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath">
+                  <div class="namePath" @click="getPicture(item.value,index_)">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
@@ -300,7 +300,7 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath">
+                  <div class="namePath" @click="getPicture(item.value,index_)">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
@@ -395,7 +395,7 @@
     <!-- 变更/解约编辑弹窗 -->
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
-    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
+    <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
            
@@ -497,7 +497,8 @@ export default {
       isDelete:'',
       //扩展参数
       parameterList:[],
-      preview:false
+      preview:false,
+      start:''
     };
   },
   created() {
@@ -894,13 +895,14 @@ export default {
       }
     },
     //图片预览
-    getPicture(value){
+    getPicture(value,index){
+      this.start=index;
       let arr=[];
-      console.log(value)
-      // this.imgList.forEach(item=>{
-      //   arr.push(item.path)
-      // })
-      // this.fileSign(arr)
+      // console.log(value);
+      value.forEach(item =>{
+        arr.push(item.path)
+      })
+      this.fileSign(arr)
     },
   },
   filters: {
