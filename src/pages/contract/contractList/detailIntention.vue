@@ -9,8 +9,8 @@
                             <li class="tabs-title">合同信息</li>
                             <ul class="ul3">
                                 <li>
-                                    <div class="div1"><span>签约日期：</span>{{detailData.signDate | getDate}}</div>
-                                    <div class="div2"><span>认购期限：</span>{{detailData.subscriptionTerm | getDate}}</div>
+                                    <div class="div1"><span>签约日期：</span>{{detailData.signDate | subStr10}}</div>
+                                    <div class="div2"><span>认购期限：</span>{{detailData.subscriptionTerm | subStr10}}</div>
                                 </li>
                                 <li>
                                     <div class="div1"><span>合同类型：</span>{{detailData.contType.label | nullData}}</div>
@@ -542,6 +542,9 @@ export default {
     filters: {
         getDate(val) {
             return TOOL.dateFormat(val);
+        },
+        subStr10(val) {
+            return val.substr(0, 10);
         },
         nullData(val) {
             return TOOL.nullFormat(val);

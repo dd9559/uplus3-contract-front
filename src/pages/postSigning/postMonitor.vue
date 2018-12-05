@@ -190,13 +190,11 @@
             return{
                 // 初始列表页面
                 pageNum:1,
-                pageSize:5,
+                pageSize:20,
                 // 加载
                 loading:false,
                 loading2:false,
                 loadingList:false,
-                // 城市
-                cityId:1,
                 // 枚举数据
                 dictionary:{
                     '13':'收佣状态',
@@ -252,6 +250,16 @@
                 dialogTableVisible:false,
                 // code
                 contCode:'',
+            }
+        },
+        computed:{
+             // 城市
+            cityId(){
+                if(!!this.userMsg){
+                    return this.userMsg.cityId
+                }else{
+                    return ''
+                }
             }
         },
         methods:{
@@ -347,7 +355,6 @@
                     res = res.data;
                     if(res.status === 200){
                         this.tableData = res.data;
-                        console.log(res)
                     }
                     this.loadingList = false;
                 }).catch(err=>{
@@ -449,8 +456,6 @@
         mounted() {
             // 交易步骤
             this.getTradingSteps();
-            // 交易流程
-            this.getTransactionProcess();
             // 部门搜索
             this.regionMethodFn('');
             // 枚举数据查询
@@ -465,7 +470,11 @@
                             value: "全部",
                             key: ""
                         },...newData[13]];
-            }
+            },
+            cityId(){
+               // 交易流程
+                this.getTransactionProcess();
+           }
         }
     }
 </script>
