@@ -177,8 +177,18 @@
         </el-table-column>
         <el-table-column align="left" label="合同状态" width="100">
           <template slot-scope="scope">
-            <span v-if="!scope.row.isDel">{{scope.row.contState.label}}</span>
-            <span v-if="scope.row.isDel">已无效</span>
+            <span v-if="scope.row.contType.value<4">
+              <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
+              <el-popover trigger="hover" placement="top" v-else>
+                <div style="width:160px">
+                  {{scope.row.delReason}}
+                </div>
+                <div slot="reference" class="name-wrapper  itemCenter">
+                  {{scope.row.contState.label}}
+                </div>
+              </el-popover>
+            </span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="审核状态" prop="toExamineState.label" width="120">
@@ -190,14 +200,25 @@
         </el-table-column>
         <el-table-column align="left" label="备注" width="200">
           <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
+            <span v-if="scope.row.remarksExamine">
+              <el-popover trigger="hover" placement="top">
+                <div style="width:160px">
+                  {{scope.row.remarksExamine}}
+                </div>
+                <div slot="reference" class="name-wrapper">
+                  {{scope.row.remarksExamine}}
+                </div>
+              </el-popover>
+            </span>
+            <span v-else>-</span>
+            <!-- <el-popover trigger="hover" placement="top">
               <div style="width:160px">
                 {{scope.row.remarksExamine?scope.row.remarksExamine:'-'}}
               </div>
               <div slot="reference" class="name-wrapper">
                 {{scope.row.remarksExamine?scope.row.remarksExamine:'-'}}
               </div>
-            </el-popover>
+            </el-popover> -->
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
@@ -208,8 +229,11 @@
         </el-table-column>
         <el-table-column align="left" label="后期状态" width="100">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
-            <span v-else>{{scope.row.laterStageState.label}}</span>
+            <span v-if="scope.row.contType.value<4">
+              <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
+              <span v-else>{{scope.row.laterStageState.label}}</span>
+            </span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="后期进度" width="150">
@@ -246,9 +270,11 @@
             <div style="text-align:center">
               <el-button type="text" size="medium" v-if="scope.row.contState.value!=1" @click="upload(scope.row.id)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===6" @click="goCheck(scope.row)">审核</el-button> 
-              <el-button type="text" size="medium" @click="toLayerAudit(scope.row)" v-if="scope.row.contState.value===3">调佣</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===8" @click="goSave(scope.row)">提审</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===6&&scope.row.contType.value<4" @click="goCheck(scope.row)">审核</el-button> 
+              <el-button type="text" size="medium" @click="toLayerAudit(scope.row)&&scope.row.contType.value<4" v-if="scope.row.contState.value===3">调佣</el-button>
+              <span v-if="scope.row.contType.value<4">
+                <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===8" @click="goSave(scope.row)">提审</el-button>
+              </span>
             </div>
           </template>
         </el-table-column>
@@ -497,7 +523,8 @@ export default {
       this.$router.push({
         path: "/contractPreview",
         query: {
-          id: item.id
+          id: item.id,
+          code:item.code
         }
       });
     },
@@ -507,8 +534,8 @@ export default {
         path:'/contractPreview',
         query:{
           code:item.code,
-          operationType:'check',
-          id:item.id
+          id:item.id,
+          operationType:2
         }
       })
     },
@@ -708,6 +735,8 @@ export default {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
+    display: flex;
+    align-items: center;
   }
 }
 .contract_msg{

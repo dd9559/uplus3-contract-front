@@ -135,7 +135,7 @@
             <p><el-checkbox v-model="relieveFn" :disabled="true">有解除协议</el-checkbox></p>
           </div>
           <div class="textareabox">
-            <span><em>*</em>调整原因</span>
+            <span>调整原因</span>
             <el-input type="textarea" :rows="3"  v-model="layerAudit.reason" class="textarea" maxlength=100 :disabled="true"></el-input>
           </div>
         </div>
