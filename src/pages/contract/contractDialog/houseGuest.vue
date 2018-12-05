@@ -154,8 +154,8 @@
           <el-pagination
             class="pagination-info"
             @current-change="handleCurrentChange1"
-            :current-page="1"
-            :page-size="4"
+            :current-page="currentPage"
+            :page-size="pageSize"
             layout="total, prev, pager, next, jumper"
             :total="total"
           >
@@ -269,6 +269,7 @@
             class="pagination-info"
             @current-change="handleCurrentChange2"
             :current-page="currentPage"
+            :page-size="pageSize"
             layout="total, prev, pager, next, jumper"
             :total="total"
           >
@@ -596,11 +597,11 @@ export default {
         });
       } else {
         if (this.dialogType === "house") {
-          this.$alert("请先选择房源", "提示", {
+          this.$alert("请选择房源", "提示", {
             confirmButtonText: "确定"
           });
         } else if (this.dialogType === "guest") {
-          this.$alert("请先选择带看客源", "提示", {
+          this.$alert("请选择客源", "提示", {
             confirmButtonText: "确定"
           });
         }

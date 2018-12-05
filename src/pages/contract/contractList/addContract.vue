@@ -14,7 +14,7 @@
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
           <el-form-item label="成交总价：" class="form-label width-250">
-            <el-input v-model="contractForm.dealPrice" type="number" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input>
+            <el-input v-model="contractForm.dealPrice" type="number" maxlength="13" placeholder="请输入内容" style="width:140px" @input="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input>
           </el-form-item>
           <el-form-item v-if="contractForm.type===1">
             <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:90px">
@@ -667,7 +667,7 @@ export default {
           delete param.leaseCont.pmobiles;
           delete param.leaseCont.pnames;
         }
-        console.log(param);
+        //console.log(param);
         this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {
           res = res.data;
           this.fullscreenLoading=false;
@@ -972,6 +972,15 @@ export default {
           }
         }
       });
+    },
+    cutNumber(value){
+      // debugger
+      // let val=parseFloat(value)
+      // console.log(val)
+      // if(val>999.99){
+      //   this.$set(this.contractForm,'dealPrice',999.99)
+      //   // this.contractForm.dealPrice=
+      // }
     }
   },
   filters: {
