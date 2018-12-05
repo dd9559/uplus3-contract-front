@@ -333,15 +333,14 @@ let TOOL = {
   },
   //保留小数位
   cutFloat:function ({val,max,num=2}) {
+    val=val.toString().replace(/[^\d.]/g,'').replace(/\.{2,}/g,'')
     let point=''
     if(parseFloat(val)>=max){
       return max
     }
     let pos=val.indexOf('.')
     if(pos>-1){
-      debugger
-      console.log(val)
-      point=val.substring(pos+1).replace(/\./g,'')
+      point=val.split('.')[1]
       if(point.length>num){
         point=point.substring(0,num)
       }

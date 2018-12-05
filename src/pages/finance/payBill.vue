@@ -36,7 +36,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="number" class="no-style" placeholder="请输入" v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
+                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
                 <span v-else>请输入</span>
               </li>
             </ul>
