@@ -258,7 +258,12 @@ export default {
           // if (this.auditForm.money1 !== null && this.auditForm.money2 !== null && this.auditForm.money3 !== null){            
             if(this.checked === true && this.uploadList.length <= 0){
               this.$message("请您上传协议或者去掉勾选'有解除协议'");           
-            }else{
+            }
+            else if(parseFloat(this.auditForm.money1) < 0 || parseFloat(this.auditForm.money2) < 0 || parseFloat(this.auditForm.money4) < 0){
+              this.$message('请输入非负数的金额');
+            }
+            
+            else{
               this.$ajax         
                 .postJSON("/api/commission/waitUpdate", param)
                 .then(res => {
@@ -268,7 +273,8 @@ export default {
                         setTimeout(() => {
                         this.$emit('closeCentCommission')
                       }, 1500); 
-                    }else if (res.data.status === 200) {
+                    }
+                    else if (res.data.status === 200) {
                       this.$message('已申请');
                       setTimeout(() => {
                         this.$emit('closeCentCommission')
