@@ -114,7 +114,7 @@
                 })
             },
             billing: function() {
-                
+
                 if(!this.moneyTypes[this.activeType].project){
                     this.$message.error('请选择开票项目');
                     return false
@@ -149,7 +149,7 @@
                     }
                 })
                 this.paperInfoData = Object.assign({}, this.paperInfoData, obj)
-                
+
             },
             // 票据详情 打印
             printPaper() {
@@ -161,7 +161,7 @@
                     debugger
                     let newIframe = document.createElement('iframe');
                     newIframe.name = 'test'
-                    
+
                     // var new_iframe = document.createElement('IFRAME');
                     // var doc = null;
                     //  doc = new_iframe.document;

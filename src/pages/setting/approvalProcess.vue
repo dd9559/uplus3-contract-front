@@ -23,11 +23,9 @@
             <div class="input-group">
                 <label>流程类型</label>
                 <el-select size="small" v-model="searchForm.type" @change="changeFlowType" :clearable="true">
-                    <el-option label="全部" value=""></el-option>
                     <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
                 <el-select size="small" v-model="searchForm.branchCondition" :clearable="true" class="branch-condition">
-                    <el-option label="全部" value=""></el-option>
                     <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
@@ -54,7 +52,7 @@
                     </el-table-column>
                     <el-table-column align="center" label="分支条件" prop="branchCondition">
                         <template slot-scope="scope">
-                            <span>{{scope.row.branchCondition}}</span>
+                            <span>{{scope.row.branchCondition|getBranchName}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="分支节点" prop="name">
@@ -218,7 +216,7 @@
                     '601':'',
                     '603':''
                 },
-                pageSize: 3,
+                pageSize: 5,
                 pageNum: 1,
                 total: 0,
                 conditionList: [],
@@ -345,6 +343,7 @@
                 }
             },
             changeFlowType(val) {
+                this.searchForm.branchCondition = ""
                 this.aduitForm.branchCondition = ""
                 this.setConditionList(val)
             },
@@ -453,6 +452,9 @@
             }
         },
         filters: {
+            getBranchName(val) {
+                return val.slice(-1)
+            },
             getTypeName(val) {
                 for(var i = 0; i < flowType.length; i++) {
                     if(val === i) {

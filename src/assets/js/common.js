@@ -329,6 +329,22 @@ let TOOL = {
       suffix = filename.substring(pos)
     }
     return suffix;
+  },
+  //保留小数位
+  cutFloat:function ({val,max,num=2}) {
+    let point=''
+    if(parseFloat(val)>=max){
+      return max
+    }
+    if(val.indexOf('.')>-1){
+      point=val.split('.')[1]
+      if(point.length>num){
+        point=point.substring(0,num)
+      }
+      return `${val.split('.')[0]}.${point}`
+    }else {
+      return val
+    }
   }
 }
 

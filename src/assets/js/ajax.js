@@ -7,6 +7,19 @@ let errorMsg = {
   '410':'重复请求',
   '500':'网络异常，请稍后再试',
 }
+axios.interceptors.response.use((response)=>{
+  // debugger
+  let res=response.data
+  if(res.status===200){
+    return response
+  }else if(res.status===110){
+    return Promise.reject('无该功能权限')
+  }else {
+    return Promise.reject(res.message)
+  }
+},error => {
+  return Promise.reject(error)
+})
 
 let api = {
   post: function(url, param) {
