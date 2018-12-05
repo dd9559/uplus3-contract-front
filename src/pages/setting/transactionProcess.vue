@@ -16,7 +16,7 @@
           </el-table-column> 
         </el-table>
         <!-- 添加编辑交易流程 弹出框 -->
-        <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px" class="processDialog">
+        <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
           <el-form v-model="addForm" size="small">
             <el-form-item label="名称" class="add-form-item">
               <el-input v-model="addForm.name" :maxlength="inputMax"></el-input>
@@ -28,7 +28,7 @@
           </div>
         </el-dialog>
         <!-- 交易流程管理 弹出框 -->
-        <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px">
+        <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
           <div class="manage-title">
             <label>结算百分比 : </label>
             <el-input v-model="settlePercent" type="number"></el-input>%
@@ -61,7 +61,7 @@
           </div>
         </el-dialog>
         <!-- 添加流程步骤 弹出框 -->
-        <el-dialog title="添加流程步骤" :visible.sync="ProcessStepVisible" width="740px">
+        <el-dialog title="添加流程步骤" :visible.sync="ProcessStepVisible" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
           <el-table :data="StepsOption" border class="process-list">
             <el-table-column label="步骤类型">
               <template slot-scope="scope">
@@ -136,11 +136,15 @@
           cityId: this.cityId
         };
         this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
-            res = res.data;
-            if (res.status === 200) {
-              this.listData = res.data;
-            }
-          });
+          res = res.data;
+          if (res.status === 200) {
+            this.listData = res.data;
+          }
+        }).catch(error => {
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
+        })
       },
       addProcess(title) {
         this.dialogProcessVisible = true
@@ -176,6 +180,10 @@
                 }
               })
             })
+          }).catch(error => {
+              this.$message({
+                message:`${error.title}${error.msg}`
+              })
           })
         } else if(type === 'delete') {
           const param = {
@@ -216,6 +224,10 @@
             }
             this.getData()
           }
+        }).catch(error => {
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         })
       },
       getTypeSteps() {
@@ -238,7 +250,11 @@
               })
             })
           }
-        }) 
+        }).catch(error => {
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
+        })
       },
       Operation(index,type) {
         if(type === "up") {
@@ -388,6 +404,10 @@
                   this.dialogManageVisible = false
                   this.getData()
                 }
+              }).catch(error => {
+                  this.$message({
+                    message:`${error.title}${error.msg}`
+                  })
               })
             }
           } else {
@@ -430,6 +450,10 @@
             this.dialogManageVisible = false
             this.getData()
           }
+        }).catch(error => {
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         })
       }
     },
@@ -449,14 +473,15 @@
 <style lang="less" scoped>
   .data-list {
     .table_head {
-      padding: 13px 10px;
+      padding: 6px 10px;
       display: flex;
       justify-content: flex-end;
       background: #fff;
       border-top: 1px solid rgba(237,236,240,1);
       .el-button {
-        width:100px;
-        height:36px;
+        width:80px;
+        height:32px;
+        padding: 4px 0;
         border-radius:18px;
       }
     }
