@@ -73,7 +73,7 @@
         </el-table-column>
         <el-table-column align="center" label="添加人" prop="createByName" width="150">
         </el-table-column>
-        <el-table-column align="center" label="操作" width="200">
+        <el-table-column align="center" label="操作" width="260">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium">查看</el-button>
             <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium">编辑</el-button>
@@ -81,6 +81,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        v-show="tableData.length"
         class="pagination-info"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -92,6 +93,7 @@
     </div>
     <!-- 添加和编辑公司信息 弹出框 -->
     <el-dialog
+    :closeOnClickModal="$tool.closeOnClickModal"
     :title="companyFormTitle"
     :visible.sync="AddEditVisible"
     width="1000px"
@@ -242,6 +244,7 @@
     </el-dialog>
     <!-- 查看 弹出框 -->
     <el-dialog
+    :closeOnClickModal="$tool.closeOnClickModal"
     title="详情信息"
     :visible.sync="dialogViewVisible"
     width="740px"
@@ -421,7 +424,9 @@
             this.count = res.data.total
           }
         }).catch(error => {
-          console.log(error);
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         })
       },
       getCityList() {
@@ -487,6 +492,10 @@
           if(res.status === 200) {
             this.directInfo = res.data
           }
+        }).catch(error => {
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         })
       },
       //合作方式选择
@@ -597,7 +606,9 @@
                   this.getCompanyList()
                 }
               }).catch(error => {
-                console.log(error);
+                  this.$message({
+                    message:`${error.title}${error.msg}`
+                  })
               })
             } else {
               let obj = {
@@ -612,7 +623,9 @@
                   this.getCompanyList()
                 }
               }).catch(error => {
-                console.log(error);
+                  this.$message({
+                    message:`${error.title}${error.msg}`
+                  })
               })
             }
           }
@@ -713,6 +726,9 @@
   background-color: #fff;
   border-radius:2px;
   box-sizing: border-box;
+  .el-form-item {
+    margin-bottom: @margin-10;
+  }
   .el-form-item:nth-child(-n+3) {
     margin-right: 50px;
     /deep/ .el-input {
@@ -727,22 +743,23 @@
 }
 .company-list {
   background-color: #fff;
-  padding: 10px;
+  padding: 0 10px;
   margin-top: 20px;
   > p {
-    padding-right: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     font-size: @size-14;
     .mr-8 {
       margin-right: 8px;
     }
     > .el-button {
-      width:119px;
-      height:36px;
+      width:100px;
+      padding: 9px 15px;
       border-radius:18px;
+      display: flex;
+      justify-content: center;
       background-color: #478DE3;
       color: #fff;
     }
@@ -869,6 +886,9 @@
             }
           }
         }
+      }
+      /deep/ .el-table::before {
+        display: none;
       }
       /deep/ .el-table--enable-row-hover .el-table__body tr:hover>td {
         background-color: #fff!important;
@@ -1022,9 +1042,6 @@
 }
 /deep/ .el-table th {
   background:rgba(238,242,251,1);
-}
-/deep/ .el-table::before {
-  display: none;
 }
 /deep/ .el-dialog__body {
   padding: 0;

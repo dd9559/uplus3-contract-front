@@ -365,6 +365,9 @@ export default{
                         if(this.qmnewsrcArr[i][newsrc]){
                             obj.src=this.qmnewsrcArr[i][newsrc]
                             flag=1
+                            if(Number(this.timeout)<new Date().getTime()){
+                                flag=0
+                            }
                         }
                     }
                      if(flag==0){

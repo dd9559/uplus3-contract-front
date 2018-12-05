@@ -605,7 +605,8 @@ export default {
           id: this.aId,
           remark: this.remark,
           distributions: resultArr,
-          agendIds: this.agendIds
+          agendIds: this.agendIds,
+          contractId: this.achObj.contractId,
         };
         this.$ajax
           .postJSON("/api/achievement/examineAdopt", param)
@@ -661,7 +662,8 @@ export default {
           id: this.aId,
           remark: this.remark,
           distributions: resultArr,
-          agendIds: this.agendIds
+          agendIds: this.agendIds,
+          contractId: this.achObj.contractId,
         };
         this.$ajax
           .postJSON("/api/achievement/examineReject", param)
@@ -725,7 +727,8 @@ export default {
             id: this.aId,
             examineDate: this.examineDate,
             distributions: resultArr,
-            agendIds: this.agendIds
+            agendIds: this.agendIds,
+            contractId: this.achObj.contractId,
           };
         }
         if (type == 2) {

@@ -69,6 +69,7 @@
                 </el-table>
             </div>
             <el-pagination
+            v-show="tableData.length"
             class="pagination-info"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -79,7 +80,7 @@
             </el-pagination>
         </div>
         <!-- 添加 编辑 弹窗 -->
-        <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px">
+        <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
             <div class="aduit-content">
                 <div class="aduit-input">
                     <label>选择城市:</label>
@@ -247,7 +248,9 @@
                         this.total = res.data.total
                     }
                 }).catch(error => {
-                    console.log(error);
+                    this.$message({
+                        message:`${error.title}${error.msg}`
+                    })
                 })
             },
             getCityList() {
@@ -434,6 +437,10 @@
                         this.$message(res.message)
                         this.getData()
                     }
+                }).catch(error => {
+                    this.$message({
+                        message:`${error.title}${error.msg}`
+                    })
                 })
             },
             queryFn() {
@@ -492,19 +499,20 @@
     }
 }
 .aduit-list {
-    padding: 20px 10px;
+    padding: 5px 10px;
     > p { 
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
     font-size: @size-14;
+    margin-bottom: 5px;
     .mr-8 {
       margin-right: 8px;
     }
     > .el-button {
-      width:100px;
-      height:36px;
+      width:80px;
+      height:32px;
+      padding: 4px 0;
       border-radius:18px;
       background-color: #478DE3;
       color: #fff;
