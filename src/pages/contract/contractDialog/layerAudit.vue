@@ -83,15 +83,7 @@
           <!-- 上传附件 -->
           <div class="uploadfile">
             <div class="uploadtitle">上传附件</div>
-            <!-- <div class="uploadbtn">
-              <el-upload
-                action="https://jsonplaceholder.typicode.com/posts/"
-                list-type="picture-card"
-                multiple
-                >
-                <i class="iconfont icon-shangchuan"></i>
-              </el-upload>
-            </div> -->
+
             <ul class="ulData">
                 <li>
                     <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
