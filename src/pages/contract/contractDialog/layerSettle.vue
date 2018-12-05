@@ -191,7 +191,9 @@ export default {
             
 
           }).catch(error => {
-            console.log(error)
+              this.$message({
+                message:`${error.title}${error.msg}`
+                })
           })
       },
 
@@ -215,7 +217,9 @@ export default {
                 
                 }
             }).catch(error => {
-              console.log(error)
+                this.$message({
+                    message:`${error.title}${error.msg}`
+                })
             })
          
         }else if(this.auditForm.textarea === ""){

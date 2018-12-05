@@ -352,7 +352,11 @@ export default {
                 }
             });
             }
-        })
+        }).catch((error)=>{
+            this.$message({
+                message:`${error.title}${error.msg}`
+            })
+        });
         },
 
          //获取合同主体信息（已上传后，拿到返回的文件路径）
@@ -370,6 +374,10 @@ export default {
                 });
                 this.uploadList=uploadList_;
                 }
+            }).catch((error)=>{
+                this.$message({
+                    message:`${error.title}${error.msg}`
+                })
             })
         },
 
@@ -409,12 +417,16 @@ export default {
                 }
                 console.log(param)
                 this.$ajax.postJSON('/api/contract/uploadContData', param).then(res=>{
-                res=res.data;
-                if(res.status===200){
+                    res=res.data;
+                    if(res.status===200){
+                        this.$message({
+                        message:'上传成功'
+                        })
+                    }
+                }).catch((error)=>{
                     this.$message({
-                    message:'上传成功'
+                        message:`${error.title}${error.msg}`
                     })
-                }
                 })
             }
         },
@@ -466,6 +478,10 @@ export default {
                         let tips = res.message
                         this.$message.error(tips)
                     }
+                }).catch((error)=>{
+                    this.$message({
+                        message:`${error.title}${error.msg}`
+                    })
                 })
             }else{
                 this.$message({
@@ -514,9 +530,11 @@ export default {
                 }
             }
             
-          }).catch(error => {
-            console.log(error)
-          })
+          }).catch((error)=>{
+                this.$message({
+                    message:`${error.title}${error.msg}`
+                })
+            })
       },
        
     },
