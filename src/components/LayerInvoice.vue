@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-    :title="!paperType?'票据详情':'开票信息填写'"
+    :title="!paperType?'票据详情':'开票信息填写'" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal"
     :visible.sync="paperShow"
     width="1000px"
     class="layer-paper"

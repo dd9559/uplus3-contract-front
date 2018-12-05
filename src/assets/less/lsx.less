@@ -1,8 +1,8 @@
 @import '../common.less';
 //公共部分 
 .paper-table-box {
-    margin-top: 20px;
-    padding: 20px;
+    margin-top: 10px;
+    padding: 10px;
     background-color: @bg-white;
 }
 
@@ -39,7 +39,7 @@
 
 // margin
 .mt-20 {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .mt-50 {
@@ -191,8 +191,8 @@
     display: flex;
     justify-content: space-between;
     .paper-tit-fl {
-        font-size: 18px;
-        line-height: 36px;
+        font-size: 14px;
+        line-height: 32px;
         color: #233241;
     }
 }
@@ -229,13 +229,16 @@
 
 // 筛选条件
 .prop-form {
-    padding-top: 10px;
+    // padding-top: 10px;
     /deep/.el-form-item__label {
         color: #6C7986;
         padding-right: 8px;
     }
     /deep/.el-form-item {
         margin-right: 20px;
+    }
+    /deep/.el-select,.el-input{
+        display: block;
     }
     .mr {
         margin-right: 0;
@@ -327,6 +330,7 @@
         .receive-txt {
             width: 770px;
             color: #233241;
+            word-break: break-all;
         }
     }
 }
