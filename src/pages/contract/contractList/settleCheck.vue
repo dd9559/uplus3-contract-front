@@ -132,7 +132,7 @@
     </div>
 
     <!-- 结算审核弹框 -->
-    <el-dialog title="结算审核" :visible.sync="dialogVisible" width="820px" class="layer-audit">
+    <el-dialog title="结算审核" :visible.sync="dialogVisible" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li col-li2">

@@ -2,7 +2,7 @@
     <div id="layersettle">
 
         <!-- 结算审核弹框 -->
-        <el-dialog title="发起结算" :visible="getSettleDialog" width="820px" class="layer-audit" @close='close'>
+        <el-dialog title="发起结算" :visible="getSettleDialog" width="820px" class="layer-audit" @close='close' :closeOnClickModal="$tool.closeOnClickModal">
             <div class="audit-box"  :style="{ height: clientHeight() }">
                 <div class="audit-col">
                     <div class="col-li col-li2">

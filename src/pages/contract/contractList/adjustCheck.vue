@@ -48,11 +48,20 @@
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" prop="tradeType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column label="合同类型" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p v-if="scope.row.tradeType === 1">租赁</p>
+            <p v-if="scope.row.tradeType === 2">买卖</p>
+            <p v-if="scope.row.tradeType === 3">代办</p>
+            <p v-if="scope.row.tradeType === 4">意向</p>
+            <p v-if="scope.row.tradeType === 5">定金</p>
+           
+          </template>
+        </el-table-column>
         <el-table-column label="成交总价" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p v-if="scope.row.tradeType !== '租赁'">{{scope.row.dealPrice}}元</p>
-            <p v-if="scope.row.tradeType === '租赁'">{{scope.row.dealPrice}}元/季度</p>
+            <p v-if="scope.row.tradeType !== 1">{{scope.row.dealPrice}}元</p>
+            <p v-if="scope.row.tradeType === 1">{{scope.row.dealPrice}}元/季度</p>
           </template>
         </el-table-column>
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
@@ -114,7 +123,7 @@
     </div>
 
     <!-- 调佣审核弹框 -->
-    <el-dialog title="调佣审核" :visible.sync="dialogVisible" width="820px" class="layer-audit">
+    <el-dialog title="调佣审核" :visible.sync="dialogVisible" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
