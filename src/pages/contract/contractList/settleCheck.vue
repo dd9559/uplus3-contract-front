@@ -26,7 +26,7 @@
         </el-form-item>
 
         <el-form-item label="审核状态">
-          <el-select v-model="examineState" placeholder="全部" class="width150">
+          <el-select v-model="adjustForm.examineState" placeholder="全部" class="width150">
              <el-option
               v-for="item in toExamineState"
               :key="item.value"
@@ -44,7 +44,7 @@
     <!-- 数据列表 -->
     <div class="contract-list">  
       <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
-      <el-table :data="tableData.list" style="width: 100%">
+      <el-table :data="tableData.list" style="width: 100%" v-loading="loadingTable">
         <el-table-column label="合同编号" width="150" fixed>
           <template slot-scope="scope">
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</div>
@@ -126,7 +126,8 @@
       :page-size="tableData.pageSize"
       :current-page="tableData.pageNum"
       layout="total, prev, pager, next, jumper"
-      :total="tableData.count">
+      :total="tableData.count"
+      v-if="tableData.count > 0">
      </el-pagination>
     </div>
 
@@ -230,7 +231,7 @@
         clientHei: document.documentElement.clientHeight, //窗体高度
         loading:false,
         loading2:false,
-        cityId: 1,
+        loadingTable:false,
          adjustForm:{
           signDate: '', //发起日期
           contType: '', //合同类型
@@ -353,8 +354,10 @@
             } 
              
           }
-        }).catch(err => {
-          console.log(err)
+        }).catch(error => {
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         })
       },
 
@@ -363,7 +366,7 @@
         if(e !== "" || !!e){
           this.loading2 = true;
           this.$ajax.get("/api/organize/employees",{
-            cityId:this.cityId,
+            cityId:this.userMsg.cityId,
             depId: e
           })
           .then(res => {       
@@ -384,8 +387,10 @@
               
             }
 
-          }).catch(err => {
-            console.log(err)
+          }).catch(error => {
+              this.$message({
+                message:`${error.title}${error.msg}`
+              })
           })  
         }else{    
             this.Form.getAgentName = '';       
@@ -393,6 +398,8 @@
                 name: "全部",
                 empId: ""
             }]
+            this.Form.getDepName = '全部'; 
+            this.getDepNameFn('');
         }
       },
 
@@ -405,13 +412,18 @@
 
       // 重置
       resetFormFn() {
-          this.$refs.adjustForm.resetFields()
+          TOOL.clearForm(this.adjustForm);
+          this.changeDepNameFn('');
+          // this.pageNum=1;
+          // this.queryFn();
       },
       
       // 查询
       queryFn() {
+        this.loadingTable = true;
         let beginDate;
         let endDate;
+        
         if(this.adjustForm.signDate.length === 2){
             beginDate = TOOL.dateFormat(this.adjustForm.signDate[0]);
             endDate = TOOL.dateFormat(this.adjustForm.signDate[1]);
@@ -440,12 +452,14 @@
           .then(res => {
             let data = res.data;
             if (res.data.status === 200) {
-              this.tableData = data.data
-              
+              this.tableData = data.data              
             }
+            this.loadingTable = false;
       
           }).catch(error => {
-            console.log(error)
+              this.$message({
+                message:`${error.title}${error.msg}`
+              })
           })
       },
 
@@ -465,7 +479,9 @@
             this.uploadList = data.data.vouchers;
           }
         }).catch(error => {
-          console.log(error)
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         });
       },
 
@@ -489,7 +505,9 @@
               }, 2000);
             }
           }).catch(error => {
-            console.log(error)
+              this.$message({
+                message:`${error.title}${error.msg}`
+              })
           });
         }else{
           this.$message('审核备注不能为空');
@@ -516,7 +534,9 @@
             }, 2000);
           }
         }).catch(error => {
-          console.log(error)
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         });
       },
 
@@ -555,6 +575,7 @@
       this.queryFn();
       this.getDepNameFn();
       this.getDictionary();
+      this.getAdmin();
     },
 
     mounted() {
