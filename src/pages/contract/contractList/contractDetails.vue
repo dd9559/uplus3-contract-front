@@ -309,9 +309,9 @@
               </ul>
             </div>
           </div>
-          <!-- <div class="classifyFoot">
-            <p>拒绝理由</p>
-          </div> -->
+          <div class="classifyFoot" v-if="contractDetail.laterStageState.value===4">
+            <p class="objection">拒绝理由: {{contractDetail.refuseReasons}}</p>
+          </div>
         </div>
       </el-tab-pane>
       <el-tab-pane label="回访录音" name="fourth">
@@ -343,7 +343,7 @@
       <el-button round class="search_btn" v-if="name==='first'">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'">分成</el-button>
-      <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">上传</el-button>  <!-- 合同资料库上传 -->
+      <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
       <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'&&this.contractDetail.contState.value!=1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
     
@@ -428,7 +428,8 @@ export default {
         },
         otherCooperationInfo: {},
         contState: {},
-        toExamineState: {}
+        toExamineState: {},
+        laterStageState:{}
       },
       //业主信息
       ownerData: [],
@@ -507,6 +508,7 @@ export default {
     this.contCode = this.$route.query.code;
     if (this.$route.query.type === "dataBank") {
       this.activeName = "third";
+      this.name="third";
     }
     this.getContractDetail();//合同详情
     this.getDictionary();//字典
@@ -1100,7 +1102,11 @@ export default {
       }
     }
     .classifyFoot{
-
+      padding: 10px 10px;
+      .objection{
+        font-size: 16px;
+        color: @color-FF;
+      }
     }
   }
   .footer {

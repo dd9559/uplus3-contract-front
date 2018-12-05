@@ -479,6 +479,7 @@ export default {
         query: {
           type: "dataBank",
           id: value.id,
+          code:value.code,
           contType: value.contType.value
         }
       });
