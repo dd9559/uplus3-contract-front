@@ -42,7 +42,7 @@
     <!-- 数据列表 -->
     <div class="contract-list">  
       <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
-      <el-table :data="tableData.list" style="width: 100%" >
+      <el-table :data="tableData.list" style="width: 100%" v-loading="loadingTable">
         <el-table-column label="合同编号" width="150" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
@@ -107,7 +107,9 @@
       :page-size="tableData.pageSize"
       :current-page="tableData.pageNum"
       layout="total, prev, pager, next, jumper"
-      :total="tableData.total">
+      :total="tableData.total"
+      v-if="tableData.total > 0"
+      >
      </el-pagination>
     </div>
 
@@ -235,7 +237,8 @@
         clientHei: document.documentElement.clientHeight, //窗体高度
         loading:false,
         loading2:false,
-        cityId: 1,
+        loadingTable:false,
+
         // 分页
         pageNum: 1,
         pageSize: 50,
@@ -299,6 +302,8 @@
           return false
         }
       }
+
+    
     },
 
     filters: {
@@ -347,8 +352,10 @@
             } 
              
           }
-        }).catch(err => {
-          console.log(err)
+        }).catch(error => {
+          this.$message({
+            message:`${error.title}${error.msg}`
+          })
         })
       },
 
@@ -356,9 +363,10 @@
         if(e !== "" || !!e){
           this.loading2 = true;
           this.$ajax.get("/api/organize/employees",{
-            cityId:this.cityId,
+            cityId:this.userMsg.cityId,
             depId: e
           })
+          
           .then(res => {       
                     
             if (res.data.status === 200) {  
@@ -377,8 +385,10 @@
               
             }
 
-          }).catch(err => {
-            console.log(err)
+          }).catch(error => {
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
           })  
         }else{    
             this.Form.getAgentName = '';       
@@ -386,6 +396,8 @@
                 name: "全部",
                 empId: ""
             }]
+            this.Form.getDepName = '全部'; 
+            this.getDepNameFn('');
         }
       },
 
@@ -399,13 +411,18 @@
       // 重置
       resetFormFn() {
           TOOL.clearForm(this.adjustForm);
-          this.changeDepNameFn('');          
+          this.changeDepNameFn('');
+          // this.pageNum=1;
+          // this.queryFn();
+          
       },
 
       // 查询
       queryFn() {
+        this.loadingTable = true;
         let startTime = '';
         let endTime = '';
+        
         if(this.adjustForm.signDate.length === 2){
             startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
             endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
@@ -427,12 +444,14 @@
           .then(res => {
             let data = res.data;
             if (res.data.status === 200) {
-              this.tableData = data.data
-              
+              this.tableData = data.data            
             }
+            this.loadingTable = false;
       
           }).catch(error => {
-            console.log(error)
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
           })
       },
 
@@ -454,7 +473,9 @@
             this.uploadList = data.data.voucher;
           }
         }).catch(error => {
-          console.log(error)
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         });
       },
 
@@ -476,7 +497,9 @@
               }, 2000);
             }
           }).catch(error => {
-            console.log(error)
+              this.$message({
+                message:`${error.title}${error.msg}`
+              })
           });
         }else{
           this.$message('调整原因不能为空');
@@ -502,7 +525,9 @@
             }, 2000);
           }
         }).catch(error => {
-          console.log(error)
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         });
       },
 
@@ -524,15 +549,16 @@
         this.queryFn();
       },
 
-      
-      
+    
     },
 
     created() {
       this.queryFn();
       this.getDepNameFn();
       this.getDictionary();
-      
+      this.getAdmin();
+
+     
     },
 
     mounted() {

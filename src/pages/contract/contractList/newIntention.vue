@@ -87,12 +87,12 @@
                                 </el-form-item>
                                 <el-form-item label="成交经纪人：" required>
                                     <el-form-item prop="guestInfo.GuestStoreName">
-                                        <el-select v-model="contractForm.guestInfo.GuestStoreName" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
+                                        <el-select v-model="contractForm.guestInfo.GuestStoreCode" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
                                             <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item prop="guestInfo.EmpName" class="small-input">
-                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" ref="select2" @clear="clearEmpName" @change="changeAgent">
+                                        <el-select v-model="contractForm.guestInfo.EmpCode" clearable filterable placeholder="请选择经纪人" ref="select2" @clear="clearEmpName" @change="changeAgent">
                                             <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
                                         </el-select>
                                     </el-form-item>
@@ -244,10 +244,10 @@ export default {
                     { required: true, message: '请选择客源编号', trigger: 'click'},
                 ],
                 guestInfo: {
-                    GuestStoreName: [
+                    GuestStoreCode: [
                         { required: true, message: '请选择门店' }
                     ],
-                    EmpName: [
+                    EmpCode: [
                         { required: true, message: '请选择经纪人'}
                     ],
                     
@@ -329,6 +329,10 @@ export default {
                     // this.contractForm.ownrelation = houseMsg.OwnerInfo.Relation;            
                 
                 }
+            }).catch((error) => {
+                  this.$message({
+                    message:`${error.title}${error.msg}`
+                })
             });
         },
 
@@ -357,6 +361,10 @@ export default {
                 // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation; 
                 
                 }
+            }).catch((error) => {
+                  this.$message({
+                    message:`${error.title}${error.msg}`
+                })
             });
         },
 
@@ -405,6 +413,10 @@ export default {
                         }
                     }
                 }
+            }).catch((error) => {
+                  this.$message({
+                    message:`${error.title}${error.msg}`
+                })
             });
         },
 
@@ -423,17 +435,23 @@ export default {
                         this.option2 = res.data.data;       
                     }
                     
+                    console.log(this.option2)
                    
                 }
+            }).catch((error) => {
+                  this.$message({
+                    message:`${error.title}${error.msg}`
+                })
             });
         },
 
         changeAgent(id){
-              this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,id)
-            //   this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpCode,id)
+            //   this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,item.name)
+              this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpCode,id)
         },
 
         clearEmpName(){
+            this.contractForm.guestInfo.EmpCode = ''
             this.contractForm.guestInfo.EmpName = ''
         },
 
@@ -447,13 +465,14 @@ export default {
                     depId: id
                 };
                 
-                
+                // this.contractForm.guestInfo.GuestStoreName = item.name
+                // this.contractForm.guestInfo.GuestStoreCode = item.id
                 this.$ajax.get('/api/organize/employees', param).then(res=>{
                     
                     if(res.data.status===200){ 
                                        
                         this.loading = false; 
-                        // this.contractForm.guestInfo.GuestStoreName = id
+                        
                         
                         console.log(id)
 
@@ -462,7 +481,11 @@ export default {
                         }         
                                                         
                     }
-                })
+                }).catch((error) => {
+                    this.$message({
+                        message:`${error.title}${error.msg}`
+                    })
+                });
                 // debugger
                 this.clearEmpName()
                 
@@ -540,11 +563,15 @@ export default {
                                 this.$message.error(tips)
                             }
                         }).catch(error => {
-                            console.log(error)
+                            this.$message({
+                                message:`${error.title}${error.msg}`
+                            })
                         })
                     
-                    }).catch((err) => {
-                        console.log(err)
+                    }).catch((error) => {
+                       this.$message({
+                            message:`${error.title}${error.msg}`
+                        })
                     })
                 }else{
                     return false
