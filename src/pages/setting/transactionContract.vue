@@ -15,7 +15,7 @@
             </el-table-column>
         </el-table>
         <!-- 添加合同资料 -->
-        <el-dialog :title="contractTitle" :visible.sync="contractVisible" width="740px" class="con-dialog">
+        <el-dialog :title="contractTitle" :visible.sync="contractVisible" width="740px" class="con-dialog" :closeOnClickModal="$tool.closeOnClickModal">
             <el-form v-model="contractForm" class="contract-form" size="small">
                 <el-form-item label="信息类型">
                     <el-select v-model="contractForm.type" placeholder="请选择信息类型">
@@ -108,7 +108,11 @@ export default {
           if (res.status === 200) {
             this.listData = res.data;
           }
-        });
+        }).catch(error => {
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
+        })
     },
     // 点击添加
     addCon(title) {
@@ -141,10 +145,11 @@ export default {
               this.$message(res.message);
               this.getData();
             }
+          }).catch(error => {
+              this.$message({
+                message:`${error.title}${error.msg}`
+              })
           })
-          .catch(error => {
-            console.log(error);
-          });
       }
     },
     // 提交表单
@@ -174,10 +179,11 @@ export default {
             this.contractVisible = false;
             this.getData();
           }
+        }).catch(error => {
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         })
-        .catch(error => {
-          console.log(error);
-        });
     }
   },
   watch: {
@@ -191,14 +197,15 @@ export default {
 <style scoped lang="less">
 .data-list {
   .table_head {
-    padding: 13px 10px;
+    padding: 6px 10px;
     display: flex;
     justify-content: flex-end;
     background-color: #fff;
     border-top: 1px solid rgba(237, 236, 240, 1);
     .el-button {
-      width: 100px;
-      height: 36px;
+      width: 80px;
+      height: 32px;
+      padding: 4px 0;
       border-radius: 18px;
     }
   }

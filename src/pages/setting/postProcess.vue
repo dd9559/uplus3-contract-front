@@ -80,6 +80,7 @@
 
 .view-container {
   background-color: #F2F3F8!important;
+  height: 100%;
   .form-head {
     height: 82px;
     background: #fff;
