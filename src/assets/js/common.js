@@ -2,6 +2,7 @@ let stepIndex = 0 //记录执行合并次数
 let otherStep = 0 //除合并外，剩余行数
 
 let TOOL = {
+  closeOnClickModal:false,
   dropdown:{
     dateType:[
       {
@@ -336,12 +337,15 @@ let TOOL = {
     if(parseFloat(val)>=max){
       return max
     }
-    if(val.indexOf('.')>-1){
-      point=val.split('.')[1]
+    let pos=val.indexOf('.')
+    if(pos>-1){
+      debugger
+      console.log(val)
+      point=val.substring(pos+1).replace(/\./g,'')
       if(point.length>num){
         point=point.substring(0,num)
       }
-      return `${val.split('.')[0]}.${point}`
+      return `${val.slice(0,pos)}.${point}`
     }else {
       return val
     }

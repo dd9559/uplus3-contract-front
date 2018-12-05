@@ -213,6 +213,7 @@
     <el-dialog
       title="作废"
       :visible.sync="layer.show"
+      :closeOnClickModal="$tool.closeOnClickModal"
       width="740px">
       <div class="delete-dialog" v-if="layer.content.length>0">
         <p>是否作废该{{layer.content[0].type===1?'收款单':'付款单'}}</p>
