@@ -768,6 +768,8 @@ export default {
           console.log(houseMsg);
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           this.contractForm.houseInfo = houseMsg;
+          // let houseType = `${houseMsg.CountT}*${houseMsg.CountF}*${houseMsg.CountW}*${houseMsg.CountY}`;
+          // console.log(houseType)
           this.ownerList=[];
           this.ownerList.push({
             name: houseMsg.OwnerInfo.OwnerName,
@@ -906,14 +908,17 @@ export default {
         }
       });
       let param = {
-        depId: id
+        depId: id,
+        briefInfo:false,
+        roleId:2
       };
-      // this.$ajax.get('/api/organize/employees', param).then(res=>{
-      //   res=res.data
-      //   if(res.status===200){
-
-      //   }
-      // })
+      this.$ajax.get('/api/organize/employees', param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.contractForm.guestInfo.ShopOwnerName=res.data[0].name;
+          this.contractForm.guestInfo.ShopOwnerMobile=res.data[0].mobile;
+        }
+      })
     },
     //获取合同信息
     getContractDetail() {
