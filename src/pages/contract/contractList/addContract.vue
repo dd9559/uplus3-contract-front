@@ -14,7 +14,9 @@
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
           <el-form-item label="成交总价：" class="form-label width-250">
-            <el-input v-model="contractForm.dealPrice" type="number" maxlength="13" placeholder="请输入内容" style="width:140px" @input="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input>
+            <input type="number" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice">
+            <i class="yuan">元</i>
+            <!-- <el-input :value="contractForm.dealPrice" type="number" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
           </el-form-item>
           <el-form-item v-if="contractForm.type===1">
             <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:90px">
@@ -27,17 +29,25 @@
           </el-form-item>
           <br>
           <el-form-item label="客户保证金：" v-if="contractForm.type===2" class="width-250">
-            <el-input v-model="contractForm.custEnsure" maxlength="13" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input>
+            <input type="number" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice">
+            <i class="yuan">元</i>
+            <!-- <el-input v-model="contractForm.custEnsure" maxlength="13" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <el-form-item label="客户佣金：" class="width-250">
-            <el-input v-model="contractForm.custCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
+            <input type="number" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice">
+            <i class="yuan">元</i>
+            <!-- <el-input v-model="contractForm.custCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <el-form-item label="业主佣金：" class="width-250">
-            <el-input v-model="contractForm.ownerCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
+            <input type="number" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice">
+            <i class="yuan">元</i>
+            <!-- <el-input v-model="contractForm.ownerCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <br>
           <el-form-item label="佣金支付费：" class="width-250">
-            <el-input v-model="contractForm.commissionPayment" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input>
+            <input type="number" v-model="contractForm.commissionPayment" @input="cutNumber('commissionPayment')" placeholder="请输入内容" class="dealPrice">
+            <i class="yuan">元</i>
+            <!-- <el-input v-model="contractForm.commissionPayment" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程">
@@ -973,14 +983,29 @@ export default {
         }
       });
     },
-    cutNumber(value){
-      // debugger
-      // let val=parseFloat(value)
+    cutNumber(val){
       // console.log(val)
-      // if(val>999.99){
-      //   this.$set(this.contractForm,'dealPrice',999.99)
-      //   // this.contractForm.dealPrice=
-      // }
+      if(val==="dealPrice"){
+        this.$nextTick(()=>{
+          this.contractForm.dealPrice=this.$tool.cutFloat({val:this.contractForm.dealPrice,max:999999999.99})
+        })
+      }else if(val==="custEnsure"){
+        this.$nextTick(()=>{
+          this.contractForm.custEnsure=this.$tool.cutFloat({val:this.contractForm.custEnsure,max:999999999.99})
+        })
+      }else if(val==="custCommission"){
+        this.$nextTick(()=>{
+          this.contractForm.custCommission=this.$tool.cutFloat({val:this.contractForm.custCommission,max:999999999.99})
+        })
+      }else if(val==="ownerCommission"){
+        this.$nextTick(()=>{
+          this.contractForm.ownerCommission=this.$tool.cutFloat({val:this.contractForm.ownerCommission,max:999999999.99})
+        })
+      }else if(val==="commissionPayment"){
+        this.$nextTick(()=>{
+          this.contractForm.commissionPayment=this.$tool.cutFloat({val:this.contractForm.commissionPayment,max:999999999.99})
+        })
+      }
     }
   },
   filters: {
@@ -1011,6 +1036,24 @@ export default {
       display: inline-block;
       color: red;
     }
+  }
+  .dealPrice{
+    display: inline-block;
+    box-sizing: border-box;
+    width: 140px;
+    padding: 7px 15px;
+    border: 1px solid #dcdfe6;
+    border-radius: 3px;
+    &::-webkit-input-placeholder {
+      color: #ccc;
+    }
+  }
+  .yuan{
+    position: absolute;
+    top: 0;
+    right: 6px;
+    font-size: 14px;
+    color: #ccc;
   }
 .contractMsg {
   border-bottom: 1px solid @border-ED;
