@@ -177,7 +177,7 @@
     </ul>
     <el-dialog
       title="审核"
-      :closeOnClickModal="false"
+      :closeOnClickModal="$tool.closeOnClickModal"
       :visible.sync="layer.show"
       width="740px"
       @close="clearLayer">
