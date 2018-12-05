@@ -1001,7 +1001,7 @@
                         this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 后期进度
@@ -1062,7 +1062,7 @@
                     }
                     this.loadingReplace = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 步骤管理
@@ -1103,7 +1103,7 @@
                     }
                     this.loadingAdjust = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 确认
@@ -1116,22 +1116,28 @@
             },
             // 上
             upFn(e){
-                let index = e.$index;
-                // if(bool){
-                let upId = e.row.id;
-                let downId = this.tableProgress[index-1].id;
-                this.oderStepFn(upId,downId);
-                // }
+                if(!this.loadingProgress){
+                    this.loadingProgress = true;
+                    let index = e.$index;
+                    // if(bool){
+                    let upId = e.row.id;
+                    let downId = this.tableProgress[index-1].id;
+                    this.oderStepFn(upId,downId);
+                    // }
+                }
             },
             // 下
             downFn(e){
-                let index = e.$index;
-                let n = e.row.length;
-                // if(index !== n){
-                let upId = this.tableProgress[index+1].id;
-                let downId = e.row.id;
-                this.oderStepFn(upId,downId);
-                // }
+                if(!this.loadingProgress){
+                    this.loadingProgress = true;
+                    let index = e.$index;
+                    let n = e.row.length;
+                    // if(index !== n){
+                    let upId = this.tableProgress[index+1].id;
+                    let downId = e.row.id;
+                    this.oderStepFn(upId,downId);
+                    // }
+                }
             },
             oderStepFn(upId,downId){
                 this.$ajax.post('/api/postSigning/oderStep',{
@@ -1146,7 +1152,7 @@
                         this.errMeFn(res.message);
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 修改
@@ -1193,7 +1199,7 @@
                             this.replaceShow = false;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -1211,7 +1217,7 @@
                             this.replaceData.children = res.data;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -1325,7 +1331,7 @@
                                 this.errMeFn(res.message);
                             }
                         }).catch(err=>{
-                            console.log(err)
+                            this.errMeFn(err);
                         })
                     }
                 });
@@ -1384,7 +1390,7 @@
                             this.adjustShow = false;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -1469,7 +1475,7 @@
                     }
                     this.loadingList = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 贷款银行搜索
@@ -1495,7 +1501,7 @@
                         }
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 交易流程获取数据
@@ -1512,7 +1518,7 @@
                         this.replaceData.tit = [...res.data];
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 部门筛选回调
@@ -1537,7 +1543,7 @@
                             this.loading2 = false;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }else{
                     this.propForm.departmentMo = '';
@@ -1567,7 +1573,7 @@
                         this.loading = false;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 清除部门搜索
@@ -1586,7 +1592,7 @@
                     }
                     this.loadingProgress = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 交易步骤获取数据
@@ -1597,7 +1603,7 @@
                         this.rules.steps = res.data;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
         },
