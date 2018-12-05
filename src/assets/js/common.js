@@ -2,6 +2,7 @@ let stepIndex = 0 //记录执行合并次数
 let otherStep = 0 //除合并外，剩余行数
 
 let TOOL = {
+  closeOnClickModal:false,
   dropdown:{
     dateType:[
       {
@@ -329,6 +330,24 @@ let TOOL = {
       suffix = filename.substring(pos)
     }
     return suffix;
+  },
+  //保留小数位
+  cutFloat:function ({val,max,num=2}) {
+    val=val.toString().replace(/[^\d.]/g,'').replace(/\.{2,}/g,'')
+    let point=''
+    if(parseFloat(val)>=max){
+      return max
+    }
+    let pos=val.indexOf('.')
+    if(pos>-1){
+      point=val.split('.')[1]
+      if(point.length>num){
+        point=point.substring(0,num)
+      }
+      return `${val.slice(0,pos)}.${point}`
+    }else {
+      return val
+    }
   }
 }
 

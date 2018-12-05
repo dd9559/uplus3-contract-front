@@ -213,6 +213,7 @@
     <el-dialog
       title="作废"
       :visible.sync="layer.show"
+      :closeOnClickModal="$tool.closeOnClickModal"
       width="740px">
       <div class="delete-dialog" v-if="layer.content.length>0">
         <p>是否作废该{{layer.content[0].type===1?'收款单':'付款单'}}</p>
@@ -232,7 +233,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
     <el-button round @click="layer.show = false">返 回</el-button>
-    <el-button round type="primary" @click="obsoleteBill">确 定</el-button>
+    <el-button round type="primary" @click="deleteBill">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -378,7 +379,7 @@
         }
       },
       //作废
-      obsoleteBill:function () {
+      deleteBill:function () {
         this.$ajax.put('/api/payInfo/updateCheckStatus',{payId:this.layer.content[0].id},2).then(res=>{
           res=res.data
           if(res.status===200){

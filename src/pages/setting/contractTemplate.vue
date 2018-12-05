@@ -19,7 +19,7 @@
       </p>
       <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="合同类型" prop="typeName" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="合同类型" prop="type.label" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同版本号" prop="version" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="上传人" prop="currentUpdateByName" :formatter="nullFormatter"></el-table-column>
@@ -266,11 +266,12 @@
         //上传
         this.modal = true
         if(type===1){
+          console.log(row);
             this.template = 1
             this.id=row.id
             this.contraType=row.type.value
             this.titleStr='上传合同模板'
-            this.uploadType = (row.cityName==='武汉'&&row.typeName==='买卖')
+            this.uploadType = (row.cityName==='武汉'&&row.type.label==='买卖')
         }
         //预览
         else if(type===2){

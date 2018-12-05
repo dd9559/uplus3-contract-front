@@ -168,20 +168,34 @@
             {{scope.row.signDate.substr(0, 10)}}
           </template>
         </el-table-column>
-        <el-table-column align="left" label="可分配业绩" prop="distributableAchievement" width="100">
+        <el-table-column align="left" label="可分配业绩" width="100">
+          <template slot-scope="scope">
+            <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
+              <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
+              <span v-else>-</span>
+          </template>
         </el-table-column>
-        <el-table-column align="left" label="合同状态" prop="contState.label" width="100">
+        <el-table-column align="left" label="合同状态" width="100">
+          <template slot-scope="scope">
+            <span v-if="!scope.row.isDel">{{scope.row.contState.label}}</span>
+            <span v-if="scope.row.isDel">已无效</span>
+          </template>
         </el-table-column>
         <el-table-column align="left" label="审核状态" prop="toExamineState.label" width="120">
+          <template slot-scope="scope">
+            <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
+              <span v-if="scope.row.contType.value<4">{{scope.row.toExamineState.label}}</span>
+              <span v-else>-</span>
+          </template>
         </el-table-column>
         <el-table-column align="left" label="备注" width="200">
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="top">
               <div style="width:160px">
-                {{scope.row.remarks?scope.row.remarks:'-'}}
+                {{scope.row.remarksExamine?scope.row.remarksExamine:'-'}}
               </div>
               <div slot="reference" class="name-wrapper">
-                {{scope.row.remarks?scope.row.remarks:'-'}}
+                {{scope.row.remarksExamine?scope.row.remarksExamine:'-'}}
               </div>
             </el-popover>
           </template>
@@ -200,23 +214,31 @@
         </el-table-column>
         <el-table-column align="left" label="后期进度" width="150">
           <template slot-scope="scope">
-            <span v-if="scope.row.stepInstanceName==='-'">-</span>
-            <el-button v-else type="text" size="medium" @click="showStepInstance(scope.row)">{{scope.row.stepInstanceName}}</el-button>
+            <span v-if="scope.row.contType.value<4">
+              <span v-if="scope.row.stepInstanceName==='-'">-</span>
+              <el-button v-else type="text" size="medium" @click="showStepInstance(scope.row)">{{scope.row.stepInstanceName}}</el-button>
+            </span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="收佣状态" width="100">
           <template slot-scope="scope">
-            {{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}
+            <!-- {{scope.row.receivedCommission}}/{{scope.row.receivableCommission}} -->
+            <span v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="结算状态" width="100">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button>
+            <el-button v-if="scope.row.contType.value<4" type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="业绩状态" width="110">
           <template slot-scope="scope">
-            {{scope.row.achievementState.label}}
+            <!-- {{scope.row.achievementState.label}} -->
+            <span v-if="scope.row.contType.value<4">{{scope.row.achievementState.label}}</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="操作" width="150">

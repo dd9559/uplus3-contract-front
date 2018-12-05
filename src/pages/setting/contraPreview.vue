@@ -103,6 +103,8 @@ export default{
             showSed:false,
             divWidth:'',
             divHeight:'',
+            timeout:0,
+            qmnewsrcArr:[],
             signPosition:{x:'',y:'',pageIndex:''},
           }
         },
@@ -131,7 +133,6 @@ export default{
                 this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:this.enableTemplateId}).then((res)=>{
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
-                            
                             this.showSed=true 
                             this.imgSrc=res.data.data.businessImg.url
                             this.imgSrc2=res.data.data.residenceImg.url
@@ -206,7 +207,6 @@ export default{
                 }else{
                     var oDiv=document.getElementsByClassName('signature')[0]
                 }
-                    // var oDiv = this.$refs.dropBtn
                     var This =this 
                         oDiv.onmousedown = function(ev){
                             var disX = ev.clientX -oDiv.offsetLeft;
@@ -259,7 +259,6 @@ export default{
             },
             numSave(){
                 // debugger
-               
                 for(let i=0;i<this.tableDate.length;i++){
                     if(this.tableDate[i].inputType==2){
                         if(this.tableDate[i].options==''){
@@ -359,13 +358,28 @@ export default{
                 }
             },
             autograph(obj,newsrc){
-                  this.$ajax.get('/api/load/generateAccessURL',{url:newsrc}).then(res=>{
-                      if(res.status==200){
+                //    debugger
+                    var flag=0
+                    for(let i=0;i< this.qmnewsrcArr.length;i++){
+                        // alert(this.qmnewsrcArr[i][newsrc])
+                        if(this.qmnewsrcArr[i][newsrc]){
+                            obj.src=this.qmnewsrcArr[i][newsrc]
+                            flag=1
+                        }
+                    }
+                     if(flag==0){
+                          this.$ajax.get('/api/load/generateAccessURL',{url:newsrc}).then(res=>{
+                          if(res.status==200){
                           console.log(res.data.data.url,'maimaires');
-                          let newsrc=res.data.data.url
-                          obj.src=newsrc
-                      }
-                  })
+                          this.timeout=res.data.data.url.split('?')[1].split('&')[0].split('=')[1]
+                          let newsrc2=res.data.data.url
+                          let a={}
+                          a[newsrc]=newsrc2
+                          this.qmnewsrcArr.push(a)
+                          obj.src=newsrc2
+                          }
+                     })
+                   }
             },
             getImgAdd(count){
             let param={

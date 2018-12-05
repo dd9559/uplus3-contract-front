@@ -50,7 +50,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount"
+                <input type="text" class="no-style" placeholder="请输入" @input="cutNum" v-model="form.smallAmount"
                        v-if="form.moneyType===item.key">
                 <span v-else>请输入</span>
               </li>
@@ -88,7 +88,7 @@
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
             <div class="box">
-              <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount"
+              <input type="text" class="no-style" placeholder="请输入" @input="cutNum" v-model="form.smallAmount"
                      v-if="form.moneyType===scope.row.key">
               <span v-else>请输入</span>
             </div>
@@ -326,6 +326,9 @@
       }
     },
     methods: {
+      cutNum:function () {
+        this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+      },
       getPicture:function () {
         let arr=[]
         this.imgList.forEach(item=>{
