@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- 后期进度弹层 -->
-        <el-dialog :title="getTitle" :visible.sync="layerShow" width="1000px" class="layer-paper">
+        <el-dialog :title="getTitle" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layerShow" width="1000px" class="layer-paper">
             <div class="layer-progress">
                 <ul class="ul">
                     <li>
@@ -62,7 +62,7 @@
             </div>
         </el-dialog>
         <!-- 查看 -->
-        <el-dialog 
+        <el-dialog  :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal"
         title="查看" 
         :visible.sync="stepsDataShow" 
         width="740px"  

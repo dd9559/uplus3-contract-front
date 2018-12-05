@@ -198,6 +198,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        v-if="list.length>0"
         class="pagination-info"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -268,22 +269,7 @@
           timeRange:'',
         },
         tableTotal:{},
-        list: [
-          {
-            id:1,
-            contractId: '201809301289',
-            houseId: "HRYY000039",
-            customerId: "HRYY000039",
-            contractType: "买卖&居间",
-            collectionType: "佣金",
-            broker: "东野圭吾-当代一店",
-            accounts_receivable: 1000,
-            payment_received: 1000,
-            for_collection: 1000,
-            operation_time: "2018/09/30 12:00",
-            state: "未收"
-          }
-        ],
+        list: [],
         dictionary: {
           '10': '',
           '33': '',
