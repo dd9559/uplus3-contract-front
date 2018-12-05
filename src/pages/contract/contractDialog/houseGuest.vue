@@ -1,22 +1,9 @@
 <template>
   <div class="view-container">
-    <el-dialog
-      :title="title"
-      :visible="getDialogVisible"
-      @close='close'
-      width="1000px"
-    >
+    <el-dialog :title="title" :visible="getDialogVisible" @close='close' width="1000px" >
       <!-- 选择房源弹窗 -->
-      <div
-        v-if="getDialogType==='house'"
-        class="dataList"
-      >
-        <el-form
-          :inline="true"
-          :model="searchForm"
-          class="search-form"
-          size="mini"
-        >
+      <div v-if="getDialogType==='house'" class="dataList" >
+        <el-form :inline="true" :model="searchForm" class="search-form" size="mini" >
           <el-form-item label="关键字：">
             <el-select
               v-model="estateCode"
@@ -28,158 +15,76 @@
               @change="getBuildList"
               placeholder="楼盘名称"
               :remote-method="remoteMethod"
-              :loading="loading"
-            >
+              :loading="loading" >
               <el-option
                 v-for="item in options"
                 :key="item.EstateCode"
                 :label="item.EstateName"
-                :value="item.EstateCode"
-              >
+                :value="item.EstateCode" >
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select
-              v-model="BuildingCode"
-              placeholder="楼栋单元"
-              :clearable="true"
-            >
-              <el-option
-                v-for="item in buildList"
-                :key="item.BuildingCode"
-                :label="item.BuildingName"
-                :value="item.BuildingCode"
-              >
+            <el-select v-model="BuildingCode" placeholder="楼栋单元" :clearable="true" >
+              <el-option v-for="item in buildList" :key="item.BuildingCode" :label="item.BuildingName" :value="item.BuildingCode" >
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input
-              v-model="houseKeyword"
-              placeholder="房号/房源编号/房东手机"
-            ></el-input>
+            <el-input v-model="houseKeyword" placeholder="房号/房源编号/房东手机" ></el-input>
           </el-form-item>
           <el-form-item>
-            <span @click="isAttention">我的关注 <span
-                class="attention"
-                :class="{'attention_':attention}"
-              ></span></span>
+            <span @click="isAttention">我的关注 <span class="attention" :class="{'attention_':attention}" ></span></span>
           </el-form-item>
-          <el-button
-            round
-            class="search_btn"
-            @click="resetFormFn"
-          >清空</el-button>
-          <el-button
-            type="primary"
-            round
-            class="search_btn"
-            @click="inquireHouse"
-          >查询</el-button>
+          <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
+          <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
         </el-form>
-        <div
-          class="search_content"
-          v-loading="loading_"
-        >
-          <el-table
-            :data="dataList"
-            border
-            header-row-class-name="theader-bg"
-            @row-click="selectItem"
-            v-if="showDataList"
-            :row-class-name="tableRowClassName"
-          >
+        <div class="search_content" v-loading="loading_" v-if="showDataList">
+          <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" >
             <el-table-column width="40">
               <template slot-scope="scope">
                 <span class="outSide">
-                  <span
-                    class="inLine"
-                    :class="{'inLineBg':selectCode===scope.row.PropertyCode}"
-                  ></span>
+                  <span class="inLine" :class="{'inLineBg':selectCode===scope.row.PropertyCode}"></span>
                 </span>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="PropertyNo"
-              label="房源编号"
-              width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="EstateName"
-              label="楼盘名称"
-              width="150"
-            ></el-table-column>
-            <el-table-column
-              label="状态"
-              prop="RunningStatus"
-              width="60"
-            ></el-table-column>
-            <el-table-column
-              prop="FloorNum"
-              label="楼层"
-              width="80"
-            ></el-table-column>
-            <el-table-column
-              prop="HouseType"
-              label="房型"
-              width="80"
-            ></el-table-column>
-            <el-table-column
-              label="面积"
-              width="70"
-            >
+            <el-table-column prop="PropertyNo" label="房源编号" width="150" ></el-table-column>
+            <el-table-column prop="EstateName" label="楼盘名称" width="150" ></el-table-column>
+            <el-table-column label="状态" prop="RunningStatus" width="60" ></el-table-column>
+            <el-table-column prop="FloorNum" label="楼层" width="80" ></el-table-column>
+            <el-table-column prop="HouseType" label="房型" width="80" ></el-table-column>
+            <el-table-column label="面积" width="70" >
               <template slot-scope="scope">
                 {{scope.row.Square}} ㎡
               </template>
             </el-table-column>
-            <el-table-column
-              :label="priceType"
-              width="80"
-            >
+            <el-table-column :label="priceType" width="80" >
               <template slot-scope="scope">
                 {{scope.row.Price}} {{scope.row.TradeInt===3?'元':'万元'}}
               </template>
             </el-table-column>
-            <el-table-column
-              prop="DecorateType"
-              label="装修"
-              width="60"
+            <el-table-column prop="DecorateType" label="装修" width="60"
             ></el-table-column>
-            <el-table-column
-              prop="Emp1"
-              label="维护人"
-            ></el-table-column>
+            <el-table-column prop="Emp1" label="维护人" ></el-table-column>
           </el-table>
           <el-pagination
             class="pagination-info"
             @current-change="handleCurrentChange1"
-            :current-page="1"
-            :page-size="4"
+            :current-page="currentPage"
+            :page-size="pageSize"
             layout="total, prev, pager, next, jumper"
             :total="total"
           >
           </el-pagination>
 
         </div>
-        <div
-          class="noList"
-          v-if="!showDataList"
-        >
+        <div class="noList" v-if="!showDataList">
           未查到相关房源
         </div>
       </div>
       <!-- 选择客源弹窗 -->
-      <div
-        v-if="getDialogType==='guest'"
-        class="dataList"
-      >
-        <el-form
-          :inline="true"
-          :model="searchForm"
-          class="search-form_"
-          size="mini"
-        >
+      <div v-if="getDialogType==='guest'" class="dataList" >
+        <el-form :inline="true" :model="searchForm" class="search-form_" size="mini" >
           <div>
             <el-form-item label="交易：">
               <el-select
@@ -217,24 +122,12 @@
             >查询</el-button>
           </div>
         </el-form>
-        <div
-          class="search_content"
-          v-loading="loading_"
-        >
-          <el-table
-            :data="dataList"
-            border
-            header-row-class-name="theader-bg"
-            @row-click="selectItem"
-            v-if="showDataList"
-          >
+        <div class="search_content" v-loading="loading_" v-if="showDataList">
+          <el-table :data="dataList" border header-row-class-name="theader-bg" @row-click="selectItem" >
             <el-table-column width="40">
               <template slot-scope="scope">
                 <span class="outSide">
-                  <span
-                    class="inLine"
-                    :class="{'inLineBg':selectCode===scope.row.InquiryCode}"
-                  ></span>
+                  <span class="inLine" :class="{'inLineBg':selectCode===scope.row.InquiryCode}" ></span>
                 </span>
               </template>
             </el-table-column>
@@ -269,21 +162,16 @@
             class="pagination-info"
             @current-change="handleCurrentChange2"
             :current-page="currentPage"
+            :page-size="pageSize"
             layout="total, prev, pager, next, jumper"
             :total="total"
           >
           </el-pagination>
         </div>
-        <div
-          class="noList"
-          v-if="!showDataList"
-        >
+        <div class="noList" v-if="!showDataList" >
           <p v-if="clientStatus===1">未查到相关客源</p>
           <p v-if="clientStatus===2">当前查询的客源为公客，请先在【客源资料】中进行激活<br> （当前查询的客源为已成交的私客，请先在【客源资料】中进行激活）</p>
-          <p v-if="clientStatus===3">系统未查询到该客源，您可以<el-button
-              type="text"
-              @click="innerVisible=true"
-            >快速添加该客源</el-button>
+          <p v-if="clientStatus===3">系统未查询到该客源，您可以<el-button type="text" @click="innerVisible=true" >快速添加该客源</el-button>
           </p>
         </div>
         <!-- <div class="floor_btn">
@@ -596,11 +484,11 @@ export default {
         });
       } else {
         if (this.dialogType === "house") {
-          this.$alert("请先选择房源", "提示", {
+          this.$alert("请选择房源", "提示", {
             confirmButtonText: "确定"
           });
         } else if (this.dialogType === "guest") {
-          this.$alert("请先选择带看客源", "提示", {
+          this.$alert("请选择客源", "提示", {
             confirmButtonText: "确定"
           });
         }

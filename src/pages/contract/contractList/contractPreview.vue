@@ -11,14 +11,15 @@
       <div class="btn" v-if="!operationType">
         <el-button type="primary" round style="width:100px" @click="toEdit" v-if="contState===1">编 辑</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogInvalid = true" v-if="contState!=3">无 效</el-button>
-        <el-button round type="primary" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="submitAudit">{{subCheck}}</el-button>
-        <el-button round type="primary" style="width:100px" v-if="contState===3">变更</el-button>
-        <el-button round type="danger" style="width:100px" v-if="contState===3">解约</el-button>
+        <el-button round :type="examineState<0?'primary':''" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="submitAudit">{{subCheck}}</el-button>
+        <el-button round type="primary" style="width:100px" v-if="contState===3" @click="goChangeCancel(1)">变更</el-button>
+        <el-button round type="danger" style="width:100px" v-if="contState===3"  @click="goChangeCancel(2)">解约</el-button>
         <el-button round style="width:100px" @click="signature(3)" v-if="examineState===7&&contState===1">签章打印</el-button>
         <el-button round style="width:100px" @click="signature(2)" v-if="examineState===7&&contState===2">签章打印</el-button>
+        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===6">审核</el-button>
       </div>
       <div class="btn" v-else>
-        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===6">审核</el-button>
+        <!-- <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===6">审核</el-button> -->
         <el-button type="primary" round style="width:100px" @click="signature(1)" v-if="examineState===7&&contState!=2">签章</el-button>
         <el-button round style="width:100px" v-if="contState===2">已签章</el-button>
       </div>
@@ -72,7 +73,11 @@
 </template>
            
 <script>
+import changeCancel from "../contractDialog/changeCancel";
 export default {
+  components: {
+    changeCancel
+  },
   data() {
     return {
       isActive: 1,
@@ -290,7 +295,8 @@ export default {
           path: "/editIntention",
           query: {
             id: this.id,
-            operateType:2
+            contType: this.contType,
+            operateType: 2
           }
         });
       }else{

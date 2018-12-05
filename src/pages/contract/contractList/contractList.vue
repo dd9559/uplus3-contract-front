@@ -170,7 +170,11 @@
         </el-table-column>
         <el-table-column align="left" label="可分配业绩" prop="distributableAchievement" width="100">
         </el-table-column>
-        <el-table-column align="left" label="合同状态" prop="contState.label" width="100">
+        <el-table-column align="left" label="合同状态" width="100">
+          <template slot-scope="scope">
+            <span v-if="!scope.row.isDel">{{scope.row.contState.label}}</span>
+            <span v-if="scope.row.isDel">已无效</span>
+          </template>
         </el-table-column>
         <el-table-column align="left" label="审核状态" prop="toExamineState.label" width="120">
         </el-table-column>
@@ -178,10 +182,10 @@
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="top">
               <div style="width:160px">
-                {{scope.row.remarks?scope.row.remarks:'-'}}
+                {{scope.row.remarksExamine?scope.row.remarksExamine:'-'}}
               </div>
               <div slot="reference" class="name-wrapper">
-                {{scope.row.remarks?scope.row.remarks:'-'}}
+                {{scope.row.remarksExamine?scope.row.remarksExamine:'-'}}
               </div>
             </el-popover>
           </template>

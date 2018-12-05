@@ -59,7 +59,7 @@
             <div class="one_">
               <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
               <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
-              <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose}}</span></p>
+              <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p>
             </div>
             <div class="one_">
               <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
@@ -642,7 +642,7 @@ export default {
       let param = {
         contCode: this.contCode
       };
-      this.$ajax.get("/api/achievement/employees", param).then(res => {
+      this.$ajax.get("/api/achievement/getContDetailsAgents", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           this.employeeData = res.data;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="dialog1">
-      <el-dialog :visible.sync="shows" :before-close="handleClose">
+      <el-dialog :visible.sync="shows" :before-close="handleClose" :close-on-click-modal="false">
         <!-- 头部右边关闭按钮 -->
         <b class="el-icon-close" @click="closeDialog"></b>
         <!-- 头部左边业绩分成title -->
@@ -365,7 +365,7 @@
           </div>
         </div>
 
-        <div class="dialog2">
+        <div class="dialog2" :close-on-click-modal="false">
           <el-dialog :visible.sync="showTips" append-to-body custom-class="dialog2In">
             <h1>选择相关人员</h1>
             <div class="mansList">
@@ -440,7 +440,6 @@ export default {
     dialogType: Number, //弹框类型
     contractCode: String, //合同编号
     aId: Number, //业绩Id
-    contractId: Number, //合同id
     achIndex: Number, //当前索引
     achObj: Object //合同详情传过来的对象（首次业绩录入需要用）
   },
@@ -515,7 +514,7 @@ export default {
         managerId: "",
         shopkeeperId: "",
         platformFeeRatio: "",
-        contractId: this.contractId,
+        contractId: this.achObj.contractId,
         contractCode: this.contractCode
       };
       this.houseArr.push(obj);
@@ -541,9 +540,12 @@ export default {
         managerId: "",
         shopkeeperId: "",
         platformFeeRatio: "",
-        contractId: this.contractId,
+        contractId: this.achObj.contractId,
         contractCode: this.contractCode
       };
+      console.log("zzzzz");
+      console.log(obj);
+      console.log(this.achObj);
       this.clientArr.push(obj);
     },
     // 删除按钮
@@ -754,7 +756,7 @@ export default {
         sum = 0,
         sumFlag = false;
       for (var i = 0; i < resultArr.length; i++) {
-        sum += resultArr[i].ratio;
+        sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
         if (
           resultArr[i].roleName === "" ||
           resultArr[i].ratio === "" ||
@@ -773,6 +775,8 @@ export default {
           sumFlag = false;
         }
       }
+      // debugger;
+      // console.log(sum);
       if (flag && sumFlag) {
         // this.$emit("close", this.achIndex);
         // this.$message("操作完成");
@@ -812,8 +816,8 @@ export default {
       this.addManList = val;
     },
     // 审核，反审核，编辑点进去的房源，客源
-    codeBaseInfo(contCode, entrance) {
-      let param = { contCode: contCode, entrance: entrance };
+    codeBaseInfo(contCode, entrance, aId) {
+      let param = { contCode: contCode, entrance: entrance, aId: this.aId };
       this.$ajax
         .get("/api/achievement/selectAchievementByCode", param)
         .then(res => {
