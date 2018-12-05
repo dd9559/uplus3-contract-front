@@ -36,7 +36,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="number" class="no-style" placeholder="请输入" v-model="form.smallAmount" v-if="form.moneyType===item.key">
+                <input type="number" class="no-style" placeholder="请输入" v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
                 <span v-else>请输入</span>
               </li>
             </ul>
@@ -179,6 +179,9 @@
       }
     },
     methods:{
+      cutNum:function () {
+        this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+      },
       getPicture:function () {
         let arr=[]
         this.imgList.forEach(item=>{
