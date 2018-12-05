@@ -108,11 +108,16 @@
       getUrl:function (file) {
         return new Promise((resolve,reject)=>{
           this.$ajax.get('/api/load/generateSignature',{dir:file}).then(res=>{
+            res=res.data
             if(res.status===200){
               resolve(res.data)
             }
           }).catch(error=>{
             reject()
+            this.uploader.splice(0,1)
+            this.$message({
+              message:'网络异常，稍后再试'
+            })
           })
         })
       },
