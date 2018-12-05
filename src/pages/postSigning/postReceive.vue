@@ -456,7 +456,7 @@
                     }
                     this.loading4 = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
                 // 获取列表数据
                 this.loadingdealTable = true;
@@ -478,7 +478,7 @@
                         this.loadingdealTable = false;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
                 // 合同资料库数据
                 this.$ajax.get("/api/postSigning/getDatabase",{
@@ -494,7 +494,7 @@
                         this.ContractDatabase = arr;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             recursiveFn(n,arr=[]){
@@ -534,7 +534,7 @@
                     }
                     this.loading4 = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             roleRemoteChangeFn(e,i){
@@ -556,7 +556,7 @@
                         }
                         this.loading4 = false;
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -583,7 +583,7 @@
                         this.errMeFn(res.message);
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 接收
@@ -616,7 +616,7 @@
                             this.errMeFn(res.message);
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -651,7 +651,7 @@
                                 this.errMeFn(res.message);
                             }
                         }).catch(err=>{
-                            console.log(err)
+                            this.errMeFn(err);
                         })
                     }
                 }else{
@@ -720,7 +720,7 @@
                             this.loading2 = false;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }else{
                     this.propForm.regionName = '';
@@ -750,7 +750,7 @@
                         this.loading = false;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 清除部门搜索
@@ -780,7 +780,7 @@
                         }
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 获取数据
@@ -810,7 +810,7 @@
                         }
                         this.loadingList = false;
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
             },
             // 交易流程获取数据
@@ -826,7 +826,7 @@
                         },...res.data];
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 后期状态
@@ -851,7 +851,7 @@
                         },...arr]
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             }
         },

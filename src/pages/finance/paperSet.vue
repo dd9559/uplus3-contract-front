@@ -468,7 +468,7 @@
                   this.loading = false;
               }
           }).catch(err=>{
-              console.log(err)
+              this.errMeFn(err);
           })
       },
       // 清除部门搜索
@@ -497,7 +497,7 @@
                       this.loading2 = false;
                   }
               }).catch(err=>{
-                  console.log(err)
+                  this.errMeFn(err);
               })
           }else{
               this.propForm.empId = '';
