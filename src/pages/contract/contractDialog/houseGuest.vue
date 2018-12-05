@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <el-dialog :title="title" :visible="getDialogVisible" @close='close' width="1000px" >
+    <el-dialog :title="title" :visible="getDialogVisible" @close='close' width="1000px" :closeOnClickModal="$tool.closeOnClickModal">
       <!-- 选择房源弹窗 -->
       <div v-if="getDialogType==='house'" class="dataList" >
         <el-form :inline="true" :model="searchForm" class="search-form" size="mini" >
@@ -390,7 +390,10 @@ export default {
           }
           this.total = res.data.TotalCount;
         }
-      });
+      }).catch(error => {
+          this.loading_ = false;
+          console.log(error)
+        });
     },
     //客源列表
     getGuestList() {
@@ -406,14 +409,18 @@ export default {
         res = res.data;
         if (res.status === 200) {
           //alert('222')
-          if (res.data.list.length > 0) {
+          if (res.data.TotalCount > 0) {
             this.dataList = res.data.list;
           } else {
+            this.dataList = [];
             this.showDataList = false;
           }
           this.total = res.data.TotalCount;
         }
-      });
+      }).catch(error => {
+          this.loading_ = false;
+          console.log(error)
+        });
     },
     //楼盘名称
     remoteMethod(query) {

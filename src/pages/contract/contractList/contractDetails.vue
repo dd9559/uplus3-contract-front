@@ -375,7 +375,7 @@
     </el-dialog> -->
 
     <!-- 合同无效弹窗 -->
-    <el-dialog title="合同无效" :visible.sync="dialogInvalid" width="740px">
+    <el-dialog title="合同无效" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
         <p>合同无效原因</p>
         <div class="reason">
@@ -512,7 +512,6 @@ export default {
     this.getTransFlow();//交易类型
     this.getAchievement();//业绩分成
     this.getContDataType();//获取合同集料库类型
-    this.getContractBody();//获取合同主体
     this.getExtendParams();//获取扩展参数
   },
   methods: {
@@ -611,6 +610,9 @@ export default {
           }
           if(res.data.isHaveData){
             this.getContData()
+          }
+          if(res.data.contState.value===3){
+            this.getContractBody();//获取合同主体
           }
         }
       });

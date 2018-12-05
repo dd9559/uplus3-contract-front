@@ -63,7 +63,7 @@
       </el-table>
     </div>
     <!-- 添加和编辑步骤类型 -->
-    <el-dialog :title="modalTitle" :visible.sync="stepsTypeDialog" width="740px" class="steps-type">
+    <el-dialog :title="modalTitle" :visible.sync="stepsTypeDialog" width="740px" class="steps-type" :closeOnClickModal="$tool.closeOnClickModal">
       <el-form :model="addForm" class="addform" size="small">
         <el-form-item label="步骤类型">
           <el-input v-model="addForm.name" autocomplete="off" maxlength="30"></el-input>
@@ -79,7 +79,7 @@
       </div>
     </el-dialog>
     <!-- 添加和编辑交易步骤 -->
-    <el-dialog :title="modalTitle" :visible.sync="tradeStepsDialog" width="740px">
+    <el-dialog :title="modalTitle" :visible.sync="tradeStepsDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="modal-context">
         <template>
           <div class="input-group">
@@ -242,6 +242,10 @@
             this.listData_other = this.listData.length !== 0 ? this.listData[0].stepsList : []
             this.currentRow = this.listData[0]
             }
+          }).catch(error => {
+              this.$message({
+                message:`${error.title}${error.msg}`
+              })
           })
       },
       //单击步骤类型列表行单元格获取交易步骤
@@ -369,7 +373,9 @@
             this.firstCellLight()
           }
         }).catch(error => {
-          console.log(error);
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
         })
       },
       //添加和编辑交易步骤请求
@@ -390,8 +396,10 @@
             this.firstCellLight()
           }
         }).catch(error => {
-            console.log(error);
-        });
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
+        })
       },
       //交易步骤弹出框 列表 增加行
       addCell: function() {
@@ -470,7 +478,9 @@
               this.firstCellLight()
             }
           }).catch(error => {
-            console.log(error);
+              this.$message({
+                message:`${error.title}${error.msg}`
+              })
           })
         })
       }
@@ -503,6 +513,7 @@
 .data-list {
   margin-top: 12px;
   display: flex;
+  height: calc(100% - 142px);
   //步骤类型
   .stepsType {
     min-width: 29%;
@@ -518,19 +529,19 @@
       border-color:transparent transparent transparent white;
     }
     .title {
-      height: 63px;
-      line-height: 63px;
+      padding: 6px 0;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-family: "MicrosoftYaHei";
       span {
         font-size: @size-14;
         color: rgba(35, 50, 65, 1);
       }
       .el-button {
-        margin-top: 14px;
         width: 121px;
-        height: 36px;
+        height: 32px;
+        padding: 5px 10px;
         background: rgba(71, 141, 227, 1);
         border-radius: 18px;
       }
@@ -553,18 +564,19 @@
     background: rgba(254, 252, 247, 1);
     box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
     .title {
-      height: 63px;
-      line-height: 63px;
+      padding: 6px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-family: "MicrosoftYaHei";
       span {
         font-size: @size-14;
         color: rgba(35, 50, 65, 1);
       }
       .el-button {
-        float: right;
-        margin-top: 14px;
         width: 121px;
-        height: 36px;
+        height: 32px;
+        padding: 5px 10px;
         background: rgba(71, 141, 227, 1);
         border-radius: 18px;
       }
