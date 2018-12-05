@@ -198,7 +198,6 @@
                     }
                   })
                 }else if(this.title==`编辑【${this.bigName}】小类`){
-                    console.log(this.addForm,'addform1');
                     let param={
                         id:this.smallId,
                         status:this.addForm.status,

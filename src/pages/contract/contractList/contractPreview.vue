@@ -11,14 +11,16 @@
       <div class="btn" v-if="!operationType">
         <el-button type="primary" round style="width:100px" @click="toEdit" v-if="contState===1">编 辑</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogInvalid = true" v-if="contState!=3">无 效</el-button>
-        <el-button round type="primary" style="width:100px" v-if="examineState<0" :disabled="subCheck==='审核中'?true:false" @click="submitAudit">{{subCheck}}</el-button>
+        <el-button round type="primary" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="submitAudit">{{subCheck}}</el-button>
         <el-button round type="primary" style="width:100px" v-if="contState===3">变更</el-button>
         <el-button round type="danger" style="width:100px" v-if="contState===3">解约</el-button>
-        <el-button round style="width:100px" @click="signature" v-if="examineState===7">签章打印</el-button>
+        <el-button round style="width:100px" @click="signature(3)" v-if="examineState===7&&contState===1">签章打印</el-button>
+        <el-button round style="width:100px" @click="signature(2)" v-if="examineState===7&&contState===2">签章打印</el-button>
       </div>
       <div class="btn" v-else>
-        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="!isSignature">审核</el-button>
-        <el-button type="primary" round style="width:100px" v-if="isSignature">签章</el-button>
+        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===6">审核</el-button>
+        <el-button type="primary" round style="width:100px" @click="signature(1)" v-if="examineState===7&&contState!=2">签章</el-button>
+        <el-button round style="width:100px" v-if="contState===2">已签章</el-button>
       </div>
     </div>
     <div class="content">
@@ -34,15 +36,15 @@
       <div class="top">
         <p>合同无效原因</p>
         <div class="reason">
-          <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="textarea" resize='none' style="width:597px" maxlength="100">
+          <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100">
           </el-input>
-          <span>{{textarea.length}}/100</span>
+          <span>{{invalidReason.length}}/100</span>
           <p><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogInvalid = false">取消</el-button>
-        <el-button round type="primary" @click="dialogInvalid = false">保存</el-button>
+        <el-button round type="primary" @click="setInvalid">保存</el-button>
       </span>
     </el-dialog>
     <!-- 合同审核弹窗 -->
@@ -76,7 +78,8 @@ export default {
       isActive: 1,
       dialogInvalid: false,
       dialogCheck: false,
-      textarea: "",
+      invalidReason: "",
+      textarea:"",
       isSign: 0,
       //审核
       operationType: "",
@@ -113,6 +116,7 @@ export default {
       canceldialogType:'',
       changeCancel_:'',
       changeCancelId:'',
+      signatureShow:false
     };
   },
   created() {
@@ -168,6 +172,7 @@ export default {
         if(res.status===200){
           this.dialogCheck=false;
           this.isSignature=true;
+          this.getContImg();
           this.$message({
             message:'审核成功'
           })
@@ -175,17 +180,18 @@ export default {
       })
     },
     //签章
-    signature(){
+    signature(value){
       let param = {
         id:this.id,
-        type:3
+        type:value
       }
       this.$ajax.post('/api/contract/signture', param).then(res=>{
         res=res.data;
         if(res.status===200){
           this.$message({
             message:'操作成功'
-          })
+          });
+          this.getContImg();
         }
       })
     },
@@ -279,14 +285,25 @@ export default {
     },
     //编辑
     toEdit(){
-      this.$router.push({
-        path: "/addContract",
-        query: {
-          id: this.id,
-          operateType: 2,
-          type: this.contType
-        }
-      });
+      if(this.contType>3){
+        this.$router.push({
+          path: "/editIntention",
+          query: {
+            id: this.id,
+            operateType:2
+          }
+        });
+      }else{
+        this.$router.push({
+          path: "/addContract",
+          query: {
+            id: this.id,
+            operateType: 2,
+            type: this.contType
+          }
+        });
+      }
+      
     },
      //提审
     submitAudit(){
@@ -327,6 +344,28 @@ export default {
       this.changeCancel_ = false;
       this.canceldialogType = "";
       this.changeCancelId = "";
+    },
+    //无效
+    setInvalid(){
+      if(this.invalidReason.length>0){
+        let param = {
+          id: this.id,
+          reason: this.invalidReason
+        };
+        this.$ajax.post('/api/contract/invalid', param).then(res=>{
+          res=res.data;
+          if(res.status===200){
+            this.dialogInvalid=false;
+            this.$message({
+              message:'操作成功'
+            })
+          }
+        })
+      }else{
+        this.$message({
+          message:'请填写无效原因'
+        })
+      }
     },
   }
   // watch:{

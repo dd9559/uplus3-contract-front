@@ -7,7 +7,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
-          <el-select v-model="searchForm.contType" placeholder="请选择合同类型" :clearable="true" style="width:150px">
+          <el-select v-model="searchForm.contractType" placeholder="请选择合同类型" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
@@ -40,7 +40,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="keyword" placeholder="合同编号/房源编号/客源编号" style="width:250px"></el-input>
+          <el-input v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号" style="width:250px"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -55,13 +55,9 @@
         </el-table-column>
         <el-table-column align="left" label="合同类型" prop="contType.label" width="100">
         </el-table-column>
-        <el-table-column align="left" label="成交总价" prop="price" width="150">
+        <el-table-column align="left" label="成交总价" prop="totalPrice" width="150">
         </el-table-column>
-        <el-table-column align="left" label="成交经纪人" width="200">
-          <template slot-scope="scope">
-            <p>{{scope.row.people}}</p>
-            <!-- <p>{{scope.row.dealAgentStoreName}}</p> -->
-          </template>
+        <el-table-column align="left" label="成交经纪人" prop="dealAgentName" width="200">
         </el-table-column>
         <el-table-column align="left" label="合作门店" prop="store">
         </el-table-column>
@@ -95,20 +91,16 @@ export default {
   },
   data() {
     return {
-      searchForm: {},
+      searchForm: {
+        contractType:'',
+        dealAgentStoreId:'',
+        dealAgentId:'',
+        keyword:''
+      },
       signDate: [],
-      keyword: "",
-      tableData:[
-        {contractCode:'M1100221515', contType:{label:'买卖',value:2}, price:'12025102', people:'武汉江岸区当代店最长字符 夏天雨', store:'当代一店',time:'2018/11/20 20:30', shishou:'1231651', shouxufei:'1511', daozhang:'1215613'},
-        {contractCode:'M1100221515', contType:{label:'买卖',value:2}, price:'12025102', people:'武汉江岸区当代店最长字符 夏天雨', store:'当代一店',time:'2018/11/20 20:30', shishou:'1231651', shouxufei:'1511', daozhang:'1215613'},
-        {contractCode:'M1100221515', contType:{label:'买卖',value:2}, price:'12025102', people:'武汉江岸区当代店最长字符 夏天雨', store:'当代一店',time:'2018/11/20 20:30', shishou:'1231651', shouxufei:'1511', daozhang:'1215613'},
-        {contractCode:'M1100221515', contType:{label:'买卖',value:2}, price:'12025102', people:'武汉江岸区当代店最长字符 夏天雨', store:'当代一店',time:'2018/11/20 20:30', shishou:'1231651', shouxufei:'1511', daozhang:'1215613'},
-        {contractCode:'M1100221515', contType:{label:'买卖',value:2}, price:'12025102', people:'武汉江岸区当代店最长字符 夏天雨', store:'当代一店',time:'2018/11/20 20:30', shishou:'1231651', shouxufei:'1511', daozhang:'1215613'},
-        {contractCode:'M1100221515', contType:{label:'买卖',value:2}, price:'12025102', people:'武汉江岸区当代店最长字符 夏天雨', store:'当代一店',time:'2018/11/20 20:30', shishou:'1231651', shouxufei:'1511', daozhang:'1215613'},
-        {contractCode:'M1100221515', contType:{label:'买卖',value:2}, price:'12025102', people:'武汉江岸区当代店最长字符 夏天雨', store:'当代一店',time:'2018/11/20 20:30', shishou:'1231651', shouxufei:'1511', daozhang:'1215613'},
-        {contractCode:'M1100221515', contType:{label:'买卖',value:2}, price:'12025102', people:'武汉江岸区当代店最长字符 夏天雨', store:'当代一店',time:'2018/11/20 20:30', shishou:'1231651', shouxufei:'1511', daozhang:'1215613'},
-      ],
+      tableData:[],
       currentPage:1,
+      pageSize:10,
       total:0,
       dictionary: {
         //数据字典
@@ -123,8 +115,27 @@ export default {
   },
   created() {
     this.getDictionary();
+    this.getProateNotes();
   },
   methods: {
+    //获取分账记录列表
+    getProateNotes(){
+      let param = {
+        pageNum:this.currentPage,
+        pageSize:this.pageSize
+      }
+      // param = Object.assign({}, param, this.searchForm);
+      // if (this.signDate.length > 0) {
+      //   param.startTime = this.signDate[0];
+      //   param.endTime = this.signDate[1];
+      // };
+      this.$ajax.get('/api/settlement/getProateNotes',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.tableData=res.data;
+        }
+      })
+    },
     // 查询
     queryFn() {},
     // 重置
