@@ -132,7 +132,7 @@
     </div>
 
     <!-- 结算审核弹框 -->
-    <el-dialog title="结算审核" :visible.sync="dialogVisible" width="820px" class="layer-audit">
+    <el-dialog title="结算审核" :visible.sync="dialogVisible" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li col-li2">
@@ -634,12 +634,11 @@
 
   .contract-list {
     background-color: #fff;
-    padding: 10px 12px;
-    margin-top: 20px;
+    padding: 0px 12px;
     .form-title-fl{
-      font-size: 18px;
+      font-size: 14px;
       color: #233241;
-      margin: 10px 0 20px 10px;
+      padding: 6px 0;
       .mr8{
         margin-right: 8px;
       }

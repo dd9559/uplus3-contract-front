@@ -182,6 +182,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        v-if="list.length>0"
         class="pagination-info"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
