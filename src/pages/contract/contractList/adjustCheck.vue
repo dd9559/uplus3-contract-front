@@ -625,13 +625,13 @@
   }
 
   .contract-list {
-    background-color: #fff;
-    padding: 10px 12px;
-    margin-top: 20px;
+      background-color: #fff;
+      padding: 0px 12px;
     .form-title-fl{
-      font-size: 18px;
+      font-size: 14px;
       color: #233241;
-      margin: 10px 0 20px 10px;
+      padding: 6px 0;
+      
       .mr8{
         margin-right: 8px;
       }

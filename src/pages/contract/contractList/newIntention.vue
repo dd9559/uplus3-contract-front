@@ -478,7 +478,7 @@ export default {
                         if(res.data.data.length > 0){ 
                             this.option3 = res.data.data;
                         }         
-                                                        
+                        console.log(this.option3)                               
                     }
                 }).catch((error) => {
                     this.$message({
