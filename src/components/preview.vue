@@ -67,7 +67,7 @@
             let dragObj = this.$refs.drag
             dragObj.style.left = parseInt(event.clientX - this.mousePos.x + this.dragPos.x) + "px";
             dragObj.style.top = parseInt(event.clientY - this.mousePos.y + this.dragPos.y) + "px";
-            console.log(dragObj.style.left,dragObj.style.top)
+            // console.log(dragObj.style.left,dragObj.style.top)
           }
         }.bind(this)
       })
