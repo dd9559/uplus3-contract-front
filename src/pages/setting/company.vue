@@ -211,9 +211,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgcontract" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span>
-                  </li>
-                  <li v-show="companyForm.contractSign!==''"><div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div><span class="text">{{contractName}}</span><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
+                  <li><fileUp id="imgcontract" class="up" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li v-show="companyForm.contractSign!==''"><div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{contractName}}</p><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -222,8 +221,8 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgfinance" class="up" @getUrl="upload"><i>+</i></fileUp><span class="text">点击上传</span></li>
-                  <li v-show="companyForm.financialSign!==''"><div @click="getPicture(2)"><upload-cell type=".png"></upload-cell></div><span class="text">{{financialName}}</span><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
+                  <li><fileUp id="imgfinance" class="up" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li v-show="companyForm.financialSign!==''"><div @click="getPicture(2)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{financialName}}</p><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
             </div>
@@ -249,7 +248,7 @@
     :before-close="handleClose"
     class="dialog-info">
     <div class="view-content">
-      <p>汉街二店</p>
+      <p>{{companyForm.storeName}}</p>
       <div>
         <span>法人信息</span>
         <p><span>法人姓名: {{ companyForm.lepName }}</span><span>法人手机号码: {{ companyForm.lepPhone }}</span></p>
@@ -906,12 +905,17 @@
                 .text {
                   position: absolute;
                   font-size: @size-base;
-                  bottom: -8px;
+                  bottom: 10px;
                   color: #233241;
-                  display: inline-block;
+                }
+                .pic-name {
+                  position: absolute;
+                  font-size: @size-base;
+                  bottom: 0;
+                  color: #233241;
                   width: 120px;
-                  height: 32px;
                   text-align: center;
+                  z-index: 10,
                 }
                 .del {
                   position: absolute;

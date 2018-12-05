@@ -21,7 +21,7 @@
         </el-form-item>
         <el-form-item label="用途">
           <el-select v-model="contractForm.houseinfoPurpose" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['538']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in housePurpose" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -225,8 +225,8 @@
               <el-button type="text" size="medium" v-if="scope.row.contState.value!=1" @click="upload(scope.row.id)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview(scope.row)">预览</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===6" @click="goCheck(scope.row)">审核</el-button> 
-              <el-button type="text" size="medium" @click="toLayerAudit(scope.row)">调佣</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===8" @click="submitAudit(scope.row)">提审</el-button>
+              <el-button type="text" size="medium" @click="toLayerAudit(scope.row)" v-if="scope.row.contState.value===3">调佣</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===8" @click="goSave(scope.row)">提审</el-button>
             </div>
           </template>
         </el-table-column>
@@ -244,6 +244,14 @@
     <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
     <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
+    <!-- 提审确认框 -->
+    <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
+      <span>确定提审？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isSubmitAudit = false">取 消</el-button>
+        <el-button type="primary" @click="submitAudit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
            
@@ -302,15 +310,31 @@ export default {
       contId:'',
       settleId:'',
       //流水用合同编号
-      contCode:''
+      contCode:'',
+      housePurpose:[],
+      isSubmitAudit:false,
+      submitAuditData:{}
     };
   },
   created() {
     this.getContractList();
     this.getDictionary();
+    this.getHousePurpose();
     //his.getDeps('');
   },
   methods: {
+    //用途
+    getHousePurpose(){
+      let param = {
+        type:'HousePurpose'
+      }
+      this.$ajax.get('/api/dictionary/uplus',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.housePurpose=res.data;
+        }
+      })
+    },
     //获取合同列表
     getContractList() {
       let param = {
@@ -418,21 +442,33 @@ export default {
     },
     //新增合同
     toAddcontract(command) {
-      if (command === 1 || command === 2 || command === 3) {
-        this.$router.push({
-          path: "/addContract",
-          query: {
-            type: command
+      let param = {
+        type:command
+      };
+      this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          if (command === 1 || command === 2 || command === 3) {
+            this.$router.push({
+              path: "/addContract",
+              query: {
+                type: command
+              }
+            });
+          } else if (command === 4 || command === 5) {
+            this.$router.push({
+              path: "/newIntention",
+              query: {
+                contType: command
+              }
+            });
           }
-        });
-      } else if (command === 4 || command === 5) {
-        this.$router.push({
-          path: "/newIntention",
-          query: {
-            contType: command
-          }
-        });
-      }
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再创建'
+          })
+        }
+      })
     },
     //合同预览
     goPreview(item) {
@@ -536,22 +572,35 @@ export default {
       })
     },
     //提审
-    submitAudit(item){
+    goSave(item){
+      this.isSubmitAudit=true;
+      this.submitAuditData=item;
+    },
+    submitAudit(){
       let param = {
-        cityId:item.cityCode,
+        cityId:this.submitAuditData.cityCode,
         flowType:3,
-        bizCode:item.code
+        bizCode:this.submitAuditData.code
       }
       this.$ajax.get('/api/machine/submitAduit', param).then(res=>{
-        res=res.data
+        this.isSubmitAudit=false;
+        res=res.data;
         if(res.status===200){
+          this.$message({
+            message:"提审成功",
+            type:'success'
+          })
           this.getContractList()
         }else{
           this.$message({
             message:res.message
           })
         }
-      })
+      }).catch(error => {
+          this.$message({
+            message:'系统错误'
+          })
+        })
     },
     //发起结算弹窗
     closeAccount(item){

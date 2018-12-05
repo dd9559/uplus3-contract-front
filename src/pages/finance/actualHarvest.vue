@@ -94,13 +94,13 @@
           <el-button class="btn-info" round size="small" type="primary">导出</el-button>
         </p>
       </div>
-      <el-table :data="list" style="width: 100%" header-row-class-name="theader-bg">
+      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span>{{scope.row.code}}</span></li>
-              <li>房源编号:<span>{{scope.row.houseinfoCode}}</span></li>
-              <li>客源编号:<span>{{scope.row.guestinfoCode}}</span></li>
+              <li>合同编号:<span class="span-cursor">{{scope.row.code}}</span></li>
+              <li>房源编号:<span class="span-cursor">{{scope.row.houseinfoCode}}</span></li>
+              <li>客源编号:<span class="span-cursor">{{scope.row.guestinfoCode}}</span></li>
             </ul>
           </template>
         </el-table-column>
