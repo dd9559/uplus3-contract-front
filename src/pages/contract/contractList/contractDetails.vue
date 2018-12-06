@@ -217,7 +217,7 @@
             <el-button round type="danger" @click="invalid" class="search_btn" v-if="contractDetail.contState.value!=3">无效</el-button>
             <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
             <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
-            <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value===1">提交审核</el-button>
+            <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value<0">提交审核</el-button>
           </div>
         </div>
       </el-tab-pane>

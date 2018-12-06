@@ -21,7 +21,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="银行账户">
-          <el-input v-model="searchForm.bankCard" :clearable="true" type="number" oninput="if(value.length>16)value=value.slice(0,16)"></el-input>
+          <el-input v-model="searchForm.bankCard" :clearable="true" type="number" oninput="if(value.length>16)value=value.slice(0,16)" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
         </el-form-item>
         <el-form-item label="添加时间">
           <el-date-picker
@@ -135,10 +135,10 @@
             </div>
             <div class="item">
               <el-form-item label="证件号: ">
-                <el-input size="mini" type="number" oninput="if(value.length>18)value=value.slice(0,18)" v-model="companyForm.lepDocumentCard" :disabled="directSaleSelect"></el-input>
+                <el-input size="mini" type="number" oninput="if(value.length>18)value=value.slice(0,18)" v-model="companyForm.lepDocumentCard" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: ">
-                <el-input size="mini" type="number" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect"></el-input>
+                <el-input size="mini" type="number" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
               </el-form-item>
               <el-form-item label="企业证件: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="directSaleSelect">
@@ -185,7 +185,7 @@
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" type="number" oninput="if(value.length>16)value=value.slice(0,16)" v-model="companyBankList[scope.$index].bankCard" :disabled="directSaleSelect"></el-input>
+                    <el-input size="mini" type="number" oninput="if(value.length>16)value=value.slice(0,16)" v-model="companyBankList[scope.$index].bankCard" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -458,18 +458,22 @@
       storeSelect(val) {
         this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
           res = res.data
-          if(res.status === 400 && res.message) {
-            this.noticeShow = true
-            setTimeout(() => {
-              this.noticeShow = false
-            }, 2000)
-          } else {
+          if(res.status === 200) {
             this.storeList.find(item => {
               if(item.id === val) {
                 this.companyForm.storeName = item.name
               }
             })
+          } else {
+            this.noticeShow = true
+            setTimeout(() => {
+              this.noticeShow = false
+            }, 2000)
           }
+        }).catch(error => {
+          this.$message({
+            message:`${error.title}${error.msg}`
+          })
         })
       },
       //关闭模态窗

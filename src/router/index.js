@@ -172,7 +172,8 @@ export default new Router({
           path: "payBill",
           component: payBill,
           meta:{
-            getParent:true
+            getParent:true,
+            parent:''
           }
         },
         {

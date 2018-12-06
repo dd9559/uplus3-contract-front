@@ -3,6 +3,10 @@ let otherStep = 0 //除合并外，剩余行数
 
 let TOOL = {
   closeOnClickModal:false,
+  contType:{
+    '4':4,//意向金
+    '5':5,//定金
+  },
   dropdown:{
     dateType:[
       {
@@ -21,7 +25,7 @@ let TOOL = {
         label:'回收日期',
         value:4
       }
-    ]
+    ],
   },
   /**
    * 获取鼠标坐标

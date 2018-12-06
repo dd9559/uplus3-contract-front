@@ -67,7 +67,7 @@
 			<!-- 合同解约（编辑） -->
 			<div class="audit-box" v-if="getDialogType==='cancelEdit'">
 				<div class="textareabox">
-					<p>合同变更原因</p>
+					<p>合同解除原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
 						<el-input type="textarea" :rows="5" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
@@ -101,7 +101,7 @@
 			<!-- 合同解约（查看） -->
 			<div class="audit-box" v-if="getDialogType==='cancelLook'">
 				<div class="textareabox">
-					<p>合同变更原因</p>
+					<p>合同解除原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
 						<el-input type="textarea" :rows="5" :disabled="true" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
@@ -501,6 +501,11 @@ export default {
 						background: @color-F2;
 						> p{
 							padding-top: 5px;
+							display: inline-block;
+							width: 100px;
+							overflow: hidden;
+							text-overflow:ellipsis;
+							white-space: nowrap;
 						}
 					}
         }

@@ -188,9 +188,11 @@
         } else if(type === 'delete') {
           const param = {
             id: row.id,
-            isDel: 1
+            isDel: 1,
+            cityId: this.cityId
           }
-          this.processPost(param,type)
+          const msg = "删除成功"
+          this.processPost(param,msg,type)
         }
       },
       // 提交表单
@@ -202,23 +204,26 @@
             let param = {
               cityId: this.cityId
             }
+            const msg = "添加成功"
             param = Object.assign({},this.addForm,param)
-            this.processPost(param)
+            this.processPost(param,msg)
           } else {
             let param = {
-              id: this.processId
+              id: this.processId,
+              cityId: this.cityId
             }
+            const msg = "修改成功"
             param = Object.assign({},this.addForm,param)
-            this.processPost(param)
+            this.processPost(param,msg)
           }
         }    
       },
       // 添加 编辑 删除 操作
-      processPost(param,type) {
+      processPost(param,msg,type) {
         this.$ajax.postJSON('/api/flowmanage/insertFLow',param).then(res => {
           res = res.data
           if(res.status === 200) {
-            this.$message(res.message)
+            this.$message(msg)
             if(!type) {
               this.dialogProcessVisible = false
             }
