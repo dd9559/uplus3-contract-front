@@ -404,7 +404,8 @@ export default {
       //扩展参数验证
       parameterRule:{},
       fullscreenLoading:false,
-      hintText:''
+      hintText:'',
+      haveExamine:0
     };
   },
   created() {
@@ -508,7 +509,7 @@ export default {
     },
     //验证合同信息
     isSave(value) {
-      this.contractForm.haveExamine=value;
+      this.haveExamine=value;
       if(value){
         this.hintText='确定提审？'
       }else{
@@ -675,7 +676,8 @@ export default {
       if (this.contractForm.type === 1) {
         let param = {
           leaseCont: this.contractForm,
-          type: this.type
+          type: this.type,
+          haveExamine:this.haveExamine
         };
         if(this.type===2){
           delete param.leaseCont.contChangeState;
@@ -713,7 +715,8 @@ export default {
       if (this.contractForm.type === 2 || this.contractForm.type === 3) {
         let param = {
           saleCont: this.contractForm,
-          type: this.type
+          type: this.type,
+          haveExamine:this.haveExamine
         };
         if(this.type===2){
           delete param.saleCont.contChangeState;
