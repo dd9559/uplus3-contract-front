@@ -39,7 +39,7 @@
       </el-table>
     </div>
     <!-- 上传,预览,详情弹出框 -->
-    <el-dialog class="modal" :title='titleStr' :visible.sync="modal" >
+    <el-dialog class="modal" :closeOnClickModal="$tool.closeOnClickModal" :title='titleStr' :visible.sync="modal" >
       <template v-if="template===1">
         <div class="">
           <div class="modal-context">

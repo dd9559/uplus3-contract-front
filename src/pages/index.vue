@@ -35,7 +35,7 @@
             <li v-for="(item,index) in Index" :key="index">{{item}}</li>
           </ul>
           <p class="operation">
-            <el-button  type="text" @click="goBack">返回</el-button>
+            <el-button  type="text" @click="goBack" v-if="back">返回</el-button>
           </p>
         </div>
         <div class="page-view-content">
@@ -175,15 +175,20 @@
             ]
           }
         ],
-        Index:[]
+        Index:[],
+        back:false
       }
     },
     beforeRouteEnter(to,from,next){
-      let path=to.fullPath
-      if(to.meta.getParent){
-        path=localStorage.getItem('route')
-      }
+      // debugger
       next(vm=>{
+        let path=to.fullPath
+        if(to.meta.getParent){
+          path=localStorage.getItem('route')
+          vm.back=true
+        }else {
+          vm.back=false
+        }
         vm.views.forEach(item=>{
           item.child.forEach(tip=>{
             if(tip.path===path.split('/')[1]){
@@ -198,6 +203,11 @@
       })
     },
     beforeRouteUpdate(to,from,next){
+      if(to.meta.getParent){
+        this.back=true
+      }else {
+        this.back=false
+      }
       this.activeIndex = to.fullPath.split('/')[1]
       next()
     },
