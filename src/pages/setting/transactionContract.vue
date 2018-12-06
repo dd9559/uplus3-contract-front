@@ -5,8 +5,13 @@
         </div>
         <el-table :data="listData" style="width: 100%" class="contract-list">
             <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
-            <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="item.prop==='isNecessary'?booleanFormatter:nullFormatter" v-for="item in tHeader" :key="item.id">
+            <el-table-column align="center" label="名称" prop="name"></el-table-column>
+            <el-table-column align="center" label="信息类型" prop="type">
+              <template slot-scope="scope">
+                <span>{{scope.row.type|getInfoType}}</span>
+              </template>
             </el-table-column>
+            <el-table-column align="center" label="是否为必选项" prop="isNecessary" :formatter="booleanFormatter"></el-table-column>
             <el-table-column align="center" label="操作">
                 <template slot-scope="scope">
                     <el-button @click="rowOperation(scope.row,1,'编辑合同资料')" type="text" size="small">编辑</el-button>
@@ -40,6 +45,10 @@
 <script>
 import { FILTER } from "@/assets/js/filter";
 import {MIXINS} from "@/assets/js/mixins";
+const infoType = [
+  {key:"1",value:"买方"},
+  {key:"2",value:"卖方"},
+  {key:"3",value:"其它"}]
 const rule = {
   type: {
     name: "信息类型"
@@ -58,24 +67,6 @@ export default {
     return {
       listData: [],
       contractTitle: "", //弹出框 标题
-      //列表 表头
-      tHeader: [
-        {
-          id: 1,
-          prop: "name",
-          name: "名称"
-        },
-        {
-          id: 2,
-          prop: "type",
-          name: "信息类型"
-        },
-        {
-          id: 3,
-          prop: "isNecessary",
-          name: "是否为必选项"
-        }
-      ],
       contractVisible: false,
       // 表单数据
       contractForm: {
@@ -134,6 +125,7 @@ export default {
         this.contractVisible = true;
         this.contractTitle = title;
         this.contractForm = JSON.parse(JSON.stringify(row));
+        this.contractForm.type = +this.contractForm.type
         this.contractForm.isNecessary = this.contractForm.isNecessary.toString();
         delete this.contractForm.isDel;
       } else if (opera === 2) {
@@ -190,6 +182,15 @@ export default {
     "cityId": function(newVal,oldVal) {
       this.getData()
       this.contractForm.cityId = newVal
+    }
+  },
+  filters: {
+    getInfoType(val) {
+      for(var i = 0; i < infoType.length; i++) {
+        if(val == infoType[i].key) {
+          return infoType[i].value
+        }
+      }
     }
   }
 };
