@@ -60,7 +60,7 @@
             </el-table>
         </div>
           <!-- 添加 -->
-        <el-dialog :title="title" :visible.sync="addDialog" width="740px">
+        <el-dialog :title="title" :visible.sync="addDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
             <el-form :model="addForm"  class="addform" size="small">
                 <div class="input-group">
                     <label>小类名称：</label>
