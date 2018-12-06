@@ -9,7 +9,7 @@
         </li>
       </ul>
       <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
-        <el-button class="btn-info" round size="small" type="primary" @click="showDialog">审核</el-button>
+        <el-button class="btn-info" round size="small" type="primary" @click="showDialog" v-if="billMsg.audit&&billMsg.audit.auditResult!==100">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -166,6 +166,7 @@
           <el-table-column align="center" prop="auditInfo" label="备注"></el-table-column>
         </el-table>
         <el-pagination
+          v-if="checkList.length>1"
           class="pagination-info"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -330,6 +331,9 @@
           }
         })
       },
+      /**
+       * 获取审核信息
+       */
       getCheckData:function () {
         let param={
           pageSize:this.pageSize,
