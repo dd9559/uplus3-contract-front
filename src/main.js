@@ -32,6 +32,7 @@ Vue.component("uploadCell",uploadCell)
 Vue.component("preview",preview)
 
 router.beforeEach((to,from,next)=>{
+  // debugger
   if(to.matched.some(record=>record.meta.getParent)){
     if(from.path!=='/'){
       localStorage.setItem('route',from.fullPath)

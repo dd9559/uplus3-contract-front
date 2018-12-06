@@ -5,7 +5,7 @@
         <video controls v-else-if="getType==='video'">
           <source  :src="imgSrc" type="video/mp4">
         </video>
-        <a :href="imgSrc" v-else>文件不支持预览，请手动下载</a>
+        <a :href="imgSrc" download v-else>文件不支持预览，请手动下载</a>
       </div>
       <p class="pagination page-prev" @click="chose('prev')"><img :src="getImg('btn-prev.png')" alt=""></p>
       <p class="pagination page-next" @click="chose('next')"><img :src="getImg('btn-next.png')" alt=""></p>
