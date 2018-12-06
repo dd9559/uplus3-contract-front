@@ -446,7 +446,7 @@ export default {
         },
 
         changeAgent(id){
-              this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,item.name)
+              this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,name)
               this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpCode,id)
         },
 
