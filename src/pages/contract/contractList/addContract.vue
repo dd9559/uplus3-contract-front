@@ -139,7 +139,7 @@
                   </el-option>
                 </el-select>
                 <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" :disabled="type===2&&!item.edit?true:false"><i slot="suffix">%</i></el-input>
-                <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode,index)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -494,6 +494,17 @@ export default {
           });
         }
       })
+    },
+    //身份证验证
+    verifyIdcard(value,index){
+      if(value.length===18){
+        let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+        if (!reg.test(value)) {
+          this.$message({
+            message:'身份证格式不正确'
+          })
+        }
+      }
     },
     //验证合同信息
     isSave(value) {

@@ -125,7 +125,7 @@
         </span>
       </p>
       <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
-        <el-table-column align="left" label="合同信息" width="240" fixed>
+        <el-table-column align="left" label="合同信息" width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -211,14 +211,11 @@
               </el-popover>
             </span>
             <span v-else>-</span>
-            <!-- <el-popover trigger="hover" placement="top">
-              <div style="width:160px">
-                {{scope.row.remarksExamine?scope.row.remarksExamine:'-'}}
-              </div>
-              <div slot="reference" class="name-wrapper">
-                {{scope.row.remarksExamine?scope.row.remarksExamine:'-'}}
-              </div>
-            </el-popover> -->
+            <!-- <span v-if="scope.row.remarksExamine">-</span>
+            <span v-else class="shell" @mouseover="moveIn()" @mouseout="moveOut()">
+              <span class="shellTitle">{{scope.row.remarksExamine}}</span>
+              <span v-if="showRemarks" class="shellContent">{{scope.row.remarksExamine}}</span>
+            </span> -->
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
@@ -268,7 +265,7 @@
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
             <div style="text-align:center">
-              <el-button type="text" size="medium" v-if="scope.row.contState.value!=1" @click="upload(scope.row.id)">上传</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.contState.value>1" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview(scope.row)">预览</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===6&&scope.row.contType.value<4" @click="goCheck(scope.row)">审核</el-button> 
               <el-button type="text" size="medium" @click="toLayerAudit(scope.row)&&scope.row.contType.value<4" v-if="scope.row.contState.value===3">调佣</el-button>
@@ -289,7 +286,7 @@
     <!-- 结算弹窗 -->
     <layerSettle :settleDialog="jiesuan" :contId="settleId" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
     <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
     <!-- 提审确认框 -->
@@ -356,12 +353,15 @@ export default {
       brokersList:[],
       //合同id
       contId:'',
+      //合同状态
+      contState:'',
       settleId:'',
       //流水用合同编号
       contCode:'',
       housePurpose:[],
       isSubmitAudit:false,
-      submitAuditData:{}
+      submitAuditData:{},
+      showRemarks:false,
     };
   },
   created() {
@@ -479,6 +479,7 @@ export default {
         query: {
           type: "dataBank",
           id: value.id,
+          code:value.code,
           contType: value.contType.value
         }
       });
@@ -581,11 +582,12 @@ export default {
       }
     },
     //上传合同主体
-    upload(id) {
+    upload(item) {
       //console.log(code);
       this.changeCancel = true;
       this.dialogType = "upload";
-      this.contId = id
+      this.contId = item.id,
+      this.contState=item.contState.value
     },
     //获取当前部门
     getDeps(key){
@@ -729,14 +731,20 @@ export default {
     }
   }
   .name-wrapper {
-    width: 160px;
+    min-width: 80px;
     height: 65px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
+    text-overflow:ellipsis;
     display: flex;
     align-items: center;
+  }
+  .shell{
+    width: 100%;
+    height: 100%;
+    display: inline-block; 
   }
 }
 .contract_msg{
