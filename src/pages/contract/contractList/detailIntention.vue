@@ -9,8 +9,8 @@
                             <li class="tabs-title">合同信息</li>
                             <ul class="ul3">
                                 <li>
-                                    <div class="div1"><span>签约日期：</span>{{detailData.signDate | subStr10}}</div>
-                                    <div class="div2"><span>认购期限：</span>{{detailData.subscriptionTerm | subStr10}}</div>
+                                    <div class="div1"><span>签约日期：</span>{{detailData.signDate | subStrFn}}</div>
+                                    <div class="div2"><span>认购期限：</span>{{detailData.subscriptionTerm | subStrFn}}</div>
                                 </li>
                                 <li>
                                     <div class="div1"><span>合同类型：</span>{{detailData.contType.label | nullData}}</div>
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="合同主体" name="second">
+                <el-tab-pane label="合同主体" name="second" v-if="this.contState === 2 || this.contState === 3">
                     <div class="contractSubject">
                         <ul class="ulData">
                             <li>
@@ -182,8 +182,10 @@
             
             <!-- 上传按钮 -->
             <div class="functionTable">
-               <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">上传</el-button>  <!-- 资料库上传 -->
-               <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'">上传</el-button>  <!-- 合同主体上传 --> 
+                
+                <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && (this.contState === 2 || this.contState === 3)">上传</el-button>  <!-- 合同主体上传 --> 
+                <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">上传</el-button>  <!-- 资料库上传 -->
+                
             </div>
             
             <!-- 图片放大 -->
@@ -208,7 +210,10 @@ export default {
             name:'first',
             dialogImageUrl: '',
             dialogVisible: false,
+            contState:'',
             detailData: {
+                signDate:'',
+                subscriptionTerm:'',
                 contType: {
                     label: '',
                     value: ''
@@ -260,7 +265,6 @@ export default {
         // 图片放大
        
         handleClick(tab, event) {
-            console.log(tab, event);
             this.name=tab.name;
         },
 
@@ -354,7 +358,7 @@ export default {
             }
         }).catch((error)=>{
             this.$message({
-                message:`${error.title}${error.msg}`
+                message: error
             })
         });
         },
@@ -376,7 +380,7 @@ export default {
                 }
             }).catch((error)=>{
                 this.$message({
-                    message:`${error.title}${error.msg}`
+                    message: error
                 })
             })
         },
@@ -425,7 +429,7 @@ export default {
                     }
                 }).catch((error)=>{
                     this.$message({
-                        message:`${error.title}${error.msg}`
+                        message: error
                     })
                 })
             }
@@ -468,19 +472,19 @@ export default {
                 datas:this.uploadList
                 }
                 this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
-                    res=res.data;
-                    if(res.status===200){
+                  
+                    if(res.data.status===200){
                         this.getContractBody();
                         this.$message({
                             message:'上传成功'
                         })
-                    }else if(res.status===500){
-                        let tips = res.message
-                        this.$message.error(tips)
+                    }else if(res.data.status===500){
+                        
+                        this.$message.error(res.data.message)
                     }
                 }).catch((error)=>{
                     this.$message({
-                        message:`${error.title}${error.msg}`
+                        message: error
                     })
                 })
             }else{
@@ -515,6 +519,7 @@ export default {
             let data = res.data;
             if (res.status === 200) {
                 this.detailData = data.data
+                this.contState = data.data.contState
                 var contperson = this.detailData.contPersons
                 if (contperson.length > 0) {
                     for (let i=0; i < contperson.length; i++){
@@ -532,7 +537,7 @@ export default {
             
           }).catch((error)=>{
                 this.$message({
-                    message:`${error.title}${error.msg}`
+                    message: error
                 })
             })
       },
@@ -543,12 +548,15 @@ export default {
         getDate(val) {
             return TOOL.dateFormat(val);
         },
-        subStr10(val) {
-            return val.substr(0, 10);
+
+        subStrFn(val) {
+           return val.substr(0, 10)       
         },
+
         nullData(val) {
             return TOOL.nullFormat(val);
         },
+
         moneyFormat: function(val) {
             if (!val) {
                 return "零";
@@ -561,7 +569,7 @@ export default {
     created() {
         this.getDetail();  //合同详细信息
         this.getContDataType();   //获取资料库里的资料类型
-        this.getContractBody();//获取合同主体
+        
         console.log(this.buyerList)
         console.log(this.sellerList)
         console.log(this.otherList)
