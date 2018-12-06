@@ -180,7 +180,6 @@
       }
     },
     beforeRouteEnter(to,from,next){
-      // debugger
       next(vm=>{
         let path=to.fullPath
         if(to.meta.getParent){

@@ -315,6 +315,11 @@
         if(this.addForm.name === "") {
             this.$message("步骤类型不能为空")
           } else {
+            this.roleList.find(item => {
+              if(this.addForm.dutyType === item.value) {
+                this.addForm.dutyId = item.key
+              }
+            })
             if(this.modalTitle === "添加步骤类型") {
               const url = "/api/flowmanage/insertStepsType"
               const msg = "添加步骤类型成功"
