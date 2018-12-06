@@ -27,7 +27,7 @@
         </div>
         <div class="commission gap">
             <p class="title">
-                <span>佣金</span>
+                <span>{{this.bigName}}</span>
                  <el-button type="primary"  class='paper-btn' round size="medium"  @click='operation(null,1)'>新增</el-button> 
             </p>
             <el-table :data="moneyTypes">
@@ -51,7 +51,7 @@
                 <el-table-column align="center" label="收款账户" prop="accountType.label"></el-table-column>
                 <el-table-column align="center" label="操作" :formatter="nullFormatter">
                     <template slot-scope="scope">
-                        <div v-if="scope.row.parentId ==26">--</div>
+                        <div v-if="bigName =='代收代付'">--</div>
                         <div v-else>
                             <el-button type="text" size="medium" @click='operation(scope.row,2)'>编辑</el-button>
                         </div>
@@ -63,12 +63,13 @@
         <el-dialog :title="title" :visible.sync="addDialog" width="740px">
             <el-form :model="addForm"  class="addform" size="small">
                 <div class="input-group">
-                    <label>名称：</label>
+                    <label>小类名称：</label>
                     <el-input type="text" v-model="addForm.name"></el-input>
                 </div>
                  <div class="input-group">
-                    <label>描述：</label>
-                    <el-input type="text" v-model="addForm.remark"></el-input>
+                    <label>小类描述：</label>
+                    <el-input type="textarea" :rows="4" resize='none' v-model="addForm.remark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
+                     <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
                 </div>
                 <div class="input-group">
                     <label>是否启用：</label>
@@ -106,6 +107,7 @@
                 smallId:'',
                 addDialog:false,
                 bigId:'',
+                inputMax:200,
                 bigName:'',
                 addForm:{
                     parentId:'',
@@ -117,6 +119,11 @@
         },
         created(){
            this.initList()
+        },
+        computed: {
+            validInput() {
+                return this.addForm.remark.length
+            }
         },
         methods: {
             // 初始化数据
@@ -163,9 +170,10 @@
                 }
             },
             leftChange(row){
+                console.log(row,'row');
                 let param={
                     id:row.id,
-                    status:row.statusmessage
+                    status:row.status
                 }
                  this.statusOp(param,'转换成功')
             },
@@ -177,16 +185,20 @@
                 }
                 this.statusOp(param,'转换成功')
             },
+            trim(str){  
+                 return str.replace(/(^\s*)|(\s*$)/g, "")
+                },
             submitForm(){
                 // this.addForm.status=this.addForm.status?1:0
-                if(this.addForm.name==''){
+                if(this.trim(this.addForm.name)=='' || this.trim(this.addForm.name).length>10){
                     this.$message({
                         type: 'error',
-                        message: '小类名称不能为空!'
+                        message: '小类名称不能为空,且长度必须在10位以内!'
                     })
                     return
                 }
                 if(this.title==`新增【${this.bigName}】小类`){
+                    this.addForm.name=this.trim(this.addForm.name)
                     this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
                     if(res.status==200){
                         this.$message({
@@ -201,7 +213,7 @@
                     let param={
                         id:this.smallId,
                         status:this.addForm.status,
-                        name:this.addForm.name,
+                        name:this.trim(this.addForm.name),
                         remark:this.addForm.remark
                     }
                     console.log(param,'this.param2');
@@ -389,9 +401,20 @@
 /deep/ .onetable tr.linestyle{
     background-color: #ECF5FF;
 }
-/dppe/ .addform .el-input__inner{
-    width: auto
+/deep/ .addform .input-group{
+      &:nth-child(1) label::before{
+           content: "*";
+          color: red;
+      }
+      .el-input__inner{
+       width: auto
+    }
+     &:nth-child(2){
+         align-items: flex-start;
+         position: relative;
+     }
 }
+
 .paper-btn{
     width: 100px;
 }
@@ -400,5 +423,11 @@
     color:#ACA899;
     border: 1px solid #DDD;
 }
+.text-absolute {
+      position: absolute;
+      right: 4px;
+      color: #D6D6D6;
+      bottom: 0;
+    }
 </style>
 
