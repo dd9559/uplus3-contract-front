@@ -384,6 +384,7 @@ export default {
           this.dataList = [];
           if (res.data.TotalCount > 0) {
             this.dataList = res.data.list;
+            this.showDataList = true;
           } else {
             this.dataList = [];
             this.showDataList = false;
@@ -411,6 +412,7 @@ export default {
           //alert('222')
           if (res.data.TotalCount > 0) {
             this.dataList = res.data.list;
+            this.showDataList = true;
           } else {
             this.dataList = [];
             this.showDataList = false;

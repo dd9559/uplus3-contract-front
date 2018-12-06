@@ -177,6 +177,7 @@
       if (type) {
         this.getDetails({type: type, payId: this.$route.query.id})
       }
+      console.log(this.$tool.repeatCell([1,2,3,4,2]))
     },
     methods:{
       cutNum:function () {

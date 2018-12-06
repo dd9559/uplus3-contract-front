@@ -337,7 +337,7 @@
           flowType:this.billMsg.audit.flowType,
           bizCode:this.billMsg.audit.bizCode
         }
-        this.$ajax.get('/api//machine/getAuditList',param).then(res=>{
+        this.$ajax.get('/api/machine/getAuditList',param).then(res=>{
           // debugger
           res=res.data
           if(res.status===200){
