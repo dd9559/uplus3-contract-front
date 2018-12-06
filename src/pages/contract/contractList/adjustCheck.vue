@@ -48,11 +48,20 @@
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" prop="tradeType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column label="合同类型" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <p v-if="scope.row.tradeType === 1">租赁</p>
+            <p v-if="scope.row.tradeType === 2">买卖</p>
+            <p v-if="scope.row.tradeType === 3">代办</p>
+            <p v-if="scope.row.tradeType === 4">意向</p>
+            <p v-if="scope.row.tradeType === 5">定金</p>
+           
+          </template>
+        </el-table-column>
         <el-table-column label="成交总价" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p v-if="scope.row.tradeType !== '租赁'">{{scope.row.dealPrice}}元</p>
-            <p v-if="scope.row.tradeType === '租赁'">{{scope.row.dealPrice}}元/季度</p>
+            <p v-if="scope.row.tradeType !== 1">{{scope.row.dealPrice}}元</p>
+            <p v-if="scope.row.tradeType === 1">{{scope.row.dealPrice}}元/季度</p>
           </template>
         </el-table-column>
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
@@ -114,7 +123,7 @@
     </div>
 
     <!-- 调佣审核弹框 -->
-    <el-dialog title="调佣审核" :visible.sync="dialogVisible" width="820px" class="layer-audit">
+    <el-dialog title="调佣审核" :visible.sync="dialogVisible" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
@@ -135,7 +144,7 @@
             <p><el-checkbox v-model="relieveFn" :disabled="true">有解除协议</el-checkbox></p>
           </div>
           <div class="textareabox">
-            <span><em>*</em>调整原因</span>
+            <span>调整原因</span>
             <el-input type="textarea" :rows="3"  v-model="layerAudit.reason" class="textarea" maxlength=100 :disabled="true"></el-input>
           </div>
         </div>
@@ -616,13 +625,13 @@
   }
 
   .contract-list {
-    background-color: #fff;
-    padding: 10px 12px;
-    margin-top: 20px;
+      background-color: #fff;
+      padding: 0px 12px;
     .form-title-fl{
-      font-size: 18px;
+      font-size: 14px;
       color: #233241;
-      margin: 10px 0 20px 10px;
+      padding: 6px 0;
+      
       .mr8{
         margin-right: 8px;
       }

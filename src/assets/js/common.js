@@ -348,6 +348,23 @@ let TOOL = {
     }else {
       return val
     }
+  },
+  //数组是否有重复元素
+  repeatCell:function (arr=[]) {
+    if(arr.length>1){
+      let cell=arr[0]
+      arr.splice(0,1)
+      let state=arr.every((item,index)=>{
+        return item!==cell
+      })
+      if(state){
+        this.repeatCell(arr)
+      }else {
+        return false
+      }
+    }else {
+      return true
+    }
   }
 }
 

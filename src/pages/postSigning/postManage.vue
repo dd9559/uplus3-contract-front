@@ -273,7 +273,7 @@
             </el-pagination>
         </div>
         <!-- 后期进度弹层 -->
-        <el-dialog title="后期进度" :visible.sync="layerShow" width="1000px"  class="layer-paper">
+        <el-dialog title="后期进度" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layerShow" width="1000px"  class="layer-paper">
             <div class="layer-progress">
                 <ul class="ul" :class="layerBtn?'ul-line':''">
                     <li class="mr-30" v-if="layerBtn">
@@ -387,7 +387,7 @@
             </div>
         </el-dialog>
         <!-- 更换交易流程弹层 -->
-        <el-dialog title="选择交易流程" :visible.sync="replaceShow" width="740px"  class="layer-paper">
+        <el-dialog title="选择交易流程" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="replaceShow" width="740px"  class="layer-paper">
             <div class="replace-box" v-loading="loadingReplace">
                 <div>
                     <div class="tit">交易流程</div>
@@ -424,7 +424,7 @@
             </span>
         </el-dialog>
         <!-- 办理 -->
-        <el-dialog :title="stepsData.tit" :visible.sync="stepsData.show" width="740px"  class="layer-paper">
+        <el-dialog :title="stepsData.tit" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="stepsData.show" width="740px"  class="layer-paper">
             <div class="steps-from">
                     <el-form 
                     ref="stepsFrom"
@@ -605,7 +605,7 @@
             </span>
         </el-dialog>
         <!-- 调整步骤 -->
-        <el-dialog title="调整步骤" 
+        <el-dialog title="调整步骤"  :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal"
         :visible.sync="adjustShow" 
         width="740px"  
         class="layer-paper">
@@ -710,9 +710,7 @@
             return{
                 // 页面初始数据
                 pageNum:1,
-                pageSize:5,
-                // 城市
-                cityId:1,
+                pageSize:20,
                 // 加载
                 loading:false,
                 loading2:false,
@@ -856,6 +854,16 @@
                 adjustData:[]
             }
         },
+        computed:{
+            // 城市
+            cityId(){
+                if(!!this.userMsg){
+                    return this.userMsg.cityId
+                }else{
+                    return ''
+                }
+            }
+        },
         methods:{
             // 是否必选
             isRequiredFn(bool){
@@ -993,7 +1001,7 @@
                         this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 后期进度
@@ -1054,7 +1062,7 @@
                     }
                     this.loadingReplace = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 步骤管理
@@ -1095,7 +1103,7 @@
                     }
                     this.loadingAdjust = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 确认
@@ -1108,22 +1116,28 @@
             },
             // 上
             upFn(e){
-                let index = e.$index;
-                // if(bool){
-                let upId = e.row.id;
-                let downId = this.tableProgress[index-1].id;
-                this.oderStepFn(upId,downId);
-                // }
+                if(!this.loadingProgress){
+                    this.loadingProgress = true;
+                    let index = e.$index;
+                    // if(bool){
+                    let upId = e.row.id;
+                    let downId = this.tableProgress[index-1].id;
+                    this.oderStepFn(upId,downId);
+                    // }
+                }
             },
             // 下
             downFn(e){
-                let index = e.$index;
-                let n = e.row.length;
-                // if(index !== n){
-                let upId = this.tableProgress[index+1].id;
-                let downId = e.row.id;
-                this.oderStepFn(upId,downId);
-                // }
+                if(!this.loadingProgress){
+                    this.loadingProgress = true;
+                    let index = e.$index;
+                    let n = e.row.length;
+                    // if(index !== n){
+                    let upId = this.tableProgress[index+1].id;
+                    let downId = e.row.id;
+                    this.oderStepFn(upId,downId);
+                    // }
+                }
             },
             oderStepFn(upId,downId){
                 this.$ajax.post('/api/postSigning/oderStep',{
@@ -1138,7 +1152,7 @@
                         this.errMeFn(res.message);
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 修改
@@ -1185,7 +1199,7 @@
                             this.replaceShow = false;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -1203,7 +1217,7 @@
                             this.replaceData.children = res.data;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -1317,7 +1331,7 @@
                                 this.errMeFn(res.message);
                             }
                         }).catch(err=>{
-                            console.log(err)
+                            this.errMeFn(err);
                         })
                     }
                 });
@@ -1376,7 +1390,7 @@
                             this.adjustShow = false;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -1461,7 +1475,7 @@
                     }
                     this.loadingList = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 贷款银行搜索
@@ -1487,7 +1501,7 @@
                         }
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 交易流程获取数据
@@ -1504,7 +1518,7 @@
                         this.replaceData.tit = [...res.data];
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 部门筛选回调
@@ -1529,7 +1543,7 @@
                             this.loading2 = false;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }else{
                     this.propForm.departmentMo = '';
@@ -1559,7 +1573,7 @@
                         this.loading = false;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 清除部门搜索
@@ -1578,7 +1592,7 @@
                     }
                     this.loadingProgress = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 交易步骤获取数据
@@ -1589,7 +1603,7 @@
                         this.rules.steps = res.data;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
         },
@@ -1620,13 +1634,17 @@
                         },...newData[6]];
                 // 数据范围
                 this.rules.range = [...newData[48]];
+           },
+           cityId(){
+               // 交易流程
+                this.getTransactionProcess();
            }
         },
         mounted() {
+            // 获取城市id
+            this.getAdmin();
             // 贷款银行
             this.remoteMethodFn();
-            // 交易流程
-            this.getTransactionProcess();
             // 部门搜索
             this.regionMethodFn('');
             // 交易步骤

@@ -23,6 +23,7 @@
       return{
         filePath:[],//表单提交传给后台的文件路径
         uploader:null,
+        fileType:['.png', '.jpg', '.jpeg', '.gif', '.bmp']
       }
     },
     mounted() {
@@ -98,16 +99,27 @@
       up:function () {
         // console.log(uploader)
         let path = 'picture/'
+        let maxSize = 10
         if(this.uploader.files.length!==0){
-          this.getUrl(path).then(res=>{
+          let type=get_suffix(this.uploader.files[0].name)
+          if(this.fileType.includes(type)){
+            maxSize=10
+            if(this.uploader.files[0].size>10*1024*1024){
+              this.$message({
+                message:'上传图片不能超过10M'
+              })
+              return
+            }
+          }
+          this.getUrl(path,maxSize).then(res=>{
             result=JSON.parse(JSON.stringify(res))
             set_upload_param(this.uploader,res,this.uploader.files[0].name);
           })
         }
       },
-      getUrl:function (file) {
+      getUrl:function (file,maxSize) {
         return new Promise((resolve,reject)=>{
-          this.$ajax.get('/api/load/generateSignature',{dir:file}).then(res=>{
+          this.$ajax.get('/api/load/generateSignature',{dir:file,maxSize:maxSize}).then(res=>{
             res=res.data
             if(res.status===200){
               resolve(res.data)

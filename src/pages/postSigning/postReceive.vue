@@ -131,7 +131,7 @@
             </el-pagination>
         </div>
         <!-- 拒绝弹层 -->
-        <el-dialog :title="layer.tit" :visible.sync="layer.show" width="740px" :center="layer.center" class="layer-paper">
+        <el-dialog :title="layer.tit" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layer.show" width="740px" :center="layer.center" class="layer-paper">
             <div class="layer-invalid layer-refused">
                 <div class="input-box">
                     <span class="cl-1 mr-10"><span class="mr-5 red">*</span>拒绝原因：</span>
@@ -148,7 +148,7 @@
             </span>
         </el-dialog>
         <!-- 接收弹层 -->
-        <el-dialog :title="receive.tit" :visible.sync="receive.show" width="1000px" :center="receive.center" class="layer-paper">
+        <el-dialog :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :title="receive.tit" :visible.sync="receive.show" width="1000px" :center="receive.center" class="layer-paper">
             <div class="layer-receive-tab">
                 <el-tabs 
                 v-model="activeName" 
@@ -163,7 +163,7 @@
                             </el-table-column>
                             <el-table-column :formatter="nullFormatterData" prop="transactionSteps" align="center" label="步骤名称">
                             </el-table-column>
-                            <el-table-column :formatter="nullFormatterData" prop="transactionStepsType" align="center" label="计划天数">
+                            <el-table-column :formatter="nullFormatterData" prop="specifiedDay" align="center" label="计划天数">
                             </el-table-column>
                             <el-table-column :formatter="nullFormatterData" prop="a4" align="center" min-width="185" label="分配角色">
                                 <template slot-scope="scope">
@@ -286,12 +286,11 @@
         mixins: [FILTER,MIXINS],
         data() {
             return {
-                cityId:1,
                 // 列表数据
                 tableData:{},
                 // 列表请求的页数
                 pageNum:1,
-                pageSize:5,
+                pageSize:20,
                 // 加载
                 loading:false,
                 loading2:false,
@@ -363,6 +362,14 @@
         computed: {
             invalidNumber() {
                 return this.invalidInput.length
+            },
+            // 城市
+            cityId(){
+                if(!!this.userMsg){
+                    return this.userMsg.cityId
+                }else{
+                    return ''
+                }
             }
         },
         methods: {
@@ -449,7 +456,7 @@
                     }
                     this.loading4 = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
                 // 获取列表数据
                 this.loadingdealTable = true;
@@ -471,7 +478,7 @@
                         this.loadingdealTable = false;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
                 // 合同资料库数据
                 this.$ajax.get("/api/postSigning/getDatabase",{
@@ -487,7 +494,7 @@
                         this.ContractDatabase = arr;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             recursiveFn(n,arr=[]){
@@ -527,7 +534,7 @@
                     }
                     this.loading4 = false;
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             roleRemoteChangeFn(e,i){
@@ -549,7 +556,7 @@
                         }
                         this.loading4 = false;
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -576,7 +583,7 @@
                         this.errMeFn(res.message);
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 接收
@@ -609,7 +616,7 @@
                             this.errMeFn(res.message);
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }
             },
@@ -644,7 +651,7 @@
                                 this.errMeFn(res.message);
                             }
                         }).catch(err=>{
-                            console.log(err)
+                            this.errMeFn(err);
                         })
                     }
                 }else{
@@ -713,7 +720,7 @@
                             this.loading2 = false;
                         }
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
                 }else{
                     this.propForm.regionName = '';
@@ -743,7 +750,7 @@
                         this.loading = false;
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 清除部门搜索
@@ -773,7 +780,7 @@
                         }
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 获取数据
@@ -803,7 +810,7 @@
                         }
                         this.loadingList = false;
                     }).catch(err=>{
-                        console.log(err)
+                        this.errMeFn(err);
                     })
             },
             // 交易流程获取数据
@@ -819,7 +826,7 @@
                         },...res.data];
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             },
             // 后期状态
@@ -844,7 +851,7 @@
                         },...arr]
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.errMeFn(err);
                 })
             }
         },
@@ -854,8 +861,6 @@
         mounted() {
             // 贷款银行
             this.remoteMethodFn();
-            // 交易流程
-            this.getTransactionProcess();
             // 部门搜索
             this.regionMethodFn('');
             // 后期状态
@@ -863,6 +868,12 @@
             // 列表数据
             this.getListData();
         },
+        watch:{
+            cityId(){
+               // 交易流程
+                this.getTransactionProcess();
+           }
+        }
     }
 </script>
 

@@ -2,7 +2,7 @@
     <div id="layeraudit">
         <!-- 调佣审核申请 -->
     <!-- <el-button type="text" class="curPointer" @click="dialogVisible = true">审核申请</el-button> -->
-    <el-dialog title="调佣申请" :visible="getDialogVisible" width="820px" class="layer-audit" @close='close'>
+    <el-dialog title="调佣申请" :visible="getDialogVisible" width="820px" class="layer-audit" @close='close' :closeOnClickModal="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
@@ -245,6 +245,9 @@ export default {
 
       //发起调佣申请
       auditApply() {
+        this.auditForm.money1=this.$tool.cutFloat({val:this.auditForm.money1,max:999999999.99})
+        this.auditForm.money2=this.$tool.cutFloat({val:this.auditForm.money2,max:999999999.99})
+        this.auditForm.money4=this.$tool.cutFloat({val:this.auditForm.money4,max:999999999.99})
         let param = {
           contractCode: this.contractCode,
           reason: this.auditForm.textarea,
@@ -258,7 +261,12 @@ export default {
           // if (this.auditForm.money1 !== null && this.auditForm.money2 !== null && this.auditForm.money3 !== null){            
             if(this.checked === true && this.uploadList.length <= 0){
               this.$message("请您上传协议或者去掉勾选'有解除协议'");           
-            }else{
+            }
+            else if(parseFloat(this.auditForm.money1) < 0 || parseFloat(this.auditForm.money2) < 0 || parseFloat(this.auditForm.money4) < 0){
+              this.$message('请输入非负数的金额');
+            }
+            
+            else{
               this.$ajax         
                 .postJSON("/api/commission/waitUpdate", param)
                 .then(res => {
@@ -268,7 +276,8 @@ export default {
                         setTimeout(() => {
                         this.$emit('closeCentCommission')
                       }, 1500); 
-                    }else if (res.data.status === 200) {
+                    }
+                    else if (res.data.status === 200) {
                       this.$message('已申请');
                       setTimeout(() => {
                         this.$emit('closeCentCommission')

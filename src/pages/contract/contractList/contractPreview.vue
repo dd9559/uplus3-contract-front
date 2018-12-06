@@ -8,21 +8,20 @@
         <span :class="{'active':isActive===1}" @click="changeType(1)">居间合同</span>
         <span :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</span>
       </div>
-      <div class="btn">
+      <div class="btn" v-if="contType<4">
         <el-button type="primary" round style="width:100px" @click="toEdit" v-if="contState===1">编 辑</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogInvalid = true" v-if="contState!=3">无 效</el-button>
         <el-button round :type="examineState<0?'primary':''" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="submitAudit">{{subCheck}}</el-button>
         <el-button round type="primary" style="width:100px" v-if="contState===3" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger" style="width:100px" v-if="contState===3"  @click="goChangeCancel(2)">解约</el-button>
-        <el-button round style="width:100px" @click="signature(3)" v-if="examineState===7&&contState===1">签章打印</el-button>
+        <el-button round style="width:100px" @click="signature(3)" :disabled="iSsignature" v-if="examineState===7&&contState===1">签章打印</el-button>
         <el-button round style="width:100px" @click="signature(2)" v-if="examineState===7&&contState===2">签章打印</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===6">审核</el-button>
       </div>
-      <!-- <div class="btn" v-else>
-        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===6">审核</el-button>
-        <el-button type="primary" round style="width:100px" @click="signature(1)" v-if="examineState===7&&contState!=2">签章</el-button>
-        <el-button round style="width:100px" v-if="contState===2">已签章</el-button>
-      </div> -->
+      <div class="btn" v-else>
+        <el-button type="primary" round style="width:100px" @click="toEdit">编 辑</el-button>
+        <el-button type="primary" round style="width:100px" @click="dialogInvalid = true">无 效</el-button>
+      </div>
     </div>
     <div class="content">
       <img :src="src" alt="" width="620" height="800">
@@ -33,7 +32,7 @@
       </div>
     </div>
     <!-- 合同无效弹窗 -->
-    <el-dialog title="合同无效" :visible.sync="dialogInvalid" width="740px">
+    <el-dialog title="合同无效" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
         <p>合同无效原因</p>
         <div class="reason">
@@ -49,7 +48,7 @@
       </span>
     </el-dialog>
     <!-- 合同审核弹窗 -->
-    <el-dialog title="合同审核" :visible.sync="dialogCheck" width="740px">
+    <el-dialog title="合同审核" :visible.sync="dialogCheck" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="checkTop">
         <p>审核结果</p>
         <div @click="sign"><span :class="{'sign':isSign}"><i class="el-icon-success"></i></span>标记风险单</div>
@@ -121,7 +120,7 @@ export default {
       canceldialogType:'',
       changeCancel_:'',
       changeCancelId:'',
-      signatureShow:false
+      iSsignature:false
     };
   },
   created() {
@@ -190,12 +189,14 @@ export default {
         id:this.id,
         type:value
       }
+      this.iSsignature=true
       this.$ajax.post('/api/contract/signture', param).then(res=>{
         res=res.data;
         if(res.status===200){
           this.$message({
             message:'操作成功'
           });
+          this.iSsignature=false
           this.getContImg();
         }
       })

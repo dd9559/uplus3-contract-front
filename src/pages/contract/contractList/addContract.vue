@@ -14,9 +14,9 @@
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
           <el-form-item label="成交总价：" class="form-label width-250">
-            <input type="number" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
-            <!-- <el-input :value="contractForm.dealPrice" type="number" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
+            <!-- <el-input :value="contractForm.dealPrice" type="text" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
           </el-form-item>
           <el-form-item v-if="contractForm.type===1">
             <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:90px">
@@ -29,23 +29,23 @@
           </el-form-item>
           <br>
           <el-form-item label="客户保证金：" v-if="contractForm.type===2" class="width-250">
-            <input type="number" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false">
             <i class="yuan">元</i>
             <!-- <el-input v-model="contractForm.custEnsure" maxlength="13" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <el-form-item label="客户佣金：" class="width-250">
-            <input type="number" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
             <!-- <el-input v-model="contractForm.custCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <el-form-item label="业主佣金：" class="width-250">
-            <input type="number" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
             <!-- <el-input v-model="contractForm.ownerCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <br>
           <el-form-item label="佣金支付费：" class="width-250">
-            <input type="number" v-model="contractForm.commissionPayment" @input="cutNumber('commissionPayment')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.commissionPayment" @input="cutNumber('commissionPayment')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
             <!-- <el-input v-model="contractForm.commissionPayment" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
@@ -115,7 +115,9 @@
             </el-select>
           </el-form-item>
           <el-form-item label="按揭欠款：" v-if="contractForm.type===2" class="width-250">
-            <el-input v-model="contractForm.houseInfo.stagesArrears" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input>
+            <!-- <el-input v-model="contractForm.houseInfo.stagesArrears" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input> -->
+            <input type="text" v-model="contractForm.houseInfo.stagesArrears" @input="cutNumber('stagesArrears')" placeholder="请输入内容" class="dealPrice">
+            <i class="yuan">元</i>
           </el-form-item>
           <br v-if="contractForm.type===2">
           <el-form-item label="产权地址：" v-if="contractForm.type===2" style="width:535px;text-align:right">
@@ -137,7 +139,7 @@
                   </el-option>
                 </el-select>
                 <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" :disabled="type===2&&!item.edit?true:false"><i slot="suffix">%</i></el-input>
-                <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode,index)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -493,6 +495,17 @@ export default {
         }
       })
     },
+    //身份证验证
+    verifyIdcard(value,index){
+      if(value.length===18){
+        let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+        if (!reg.test(value)) {
+          this.$message({
+            message:'身份证格式不正确'
+          })
+        }
+      }
+    },
     //验证合同信息
     isSave(value) {
       this.contractForm.haveExamine=value;
@@ -692,7 +705,7 @@ export default {
         }).catch(error => {
           this.fullscreenLoading=false;
           this.$message({
-            message:'系统错误'
+            message:'数据异常'
           })
         })
       }
@@ -728,7 +741,7 @@ export default {
         }).catch(error => {
           this.fullscreenLoading=false;
           this.$message({
-            message:'系统错误'
+            message:'数据异常'
           })
         })
       }
@@ -777,6 +790,7 @@ export default {
           let houseMsg = res.data;
           console.log(houseMsg);
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
+          this.contractForm.dealPrice = houseMsg.ListingPrice; //成交总价
           this.contractForm.houseInfo = houseMsg;
           // let houseType = `${houseMsg.CountT}*${houseMsg.CountF}*${houseMsg.CountW}*${houseMsg.CountY}`;
           // console.log(houseType)
@@ -1004,6 +1018,10 @@ export default {
       }else if(val==="commissionPayment"){
         this.$nextTick(()=>{
           this.contractForm.commissionPayment=this.$tool.cutFloat({val:this.contractForm.commissionPayment,max:999999999.99})
+        })
+      }else if(val==="stagesArrears"){
+        this.$nextTick(()=>{
+          this.contractForm.houseInfo.stagesArrears=this.$tool.cutFloat({val:this.contractForm.houseInfo.stagesArrears,max:999999999.99})
         })
       }
     }
