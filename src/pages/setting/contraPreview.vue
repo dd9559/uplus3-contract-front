@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <el-dialog class='expand' title="请设置以下扩展参数" :before-close="handleClose" width="760px" :visible.sync="modalDialog" >
+      <el-dialog class='expand' title="请设置以下扩展参数" :closeOnClickModal="$tool.closeOnClickModal" :before-close="handleClose" width="760px" :visible.sync="modalDialog" >
           <p class='tip'>系统暂不支持以下合同参数，需要进行设置</p>
           <div class="ex-body">
               <p>温馨提示：选项值之间请用英文下的逗号隔开！</p>
