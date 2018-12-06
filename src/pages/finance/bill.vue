@@ -384,9 +384,9 @@
       msgOpera:function (row,type) {
         if(type==='cont'){
           this.$router.push({
-            path:'contractDetails',
+            path:row.contTypeId===this.$tool.contType['4']||row.contTypeId===this.$tool.contType['5']?'detailIntention':'contractDetails',
             query:{
-              contType:row.contType,
+              contType:row.contTypeId,
               id:row.contId,
               code:row.contCode
             }

@@ -354,7 +354,7 @@
           this.$router.push({
             path:'contractDetails',
             query:{
-              contType:row.contType,
+              contType:row.contTypeId,
               id:row.contId,
               code:row.contCode
             }

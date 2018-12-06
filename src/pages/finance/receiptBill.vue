@@ -177,7 +177,7 @@
     </div>
     <div class="input-group">
       <p><label class="f14">备注信息</label></p>
-      <el-input v-model="form.remark" placeholder="请填写备注信息" type="textarea"></el-input>
+      <el-input v-model="form.remark" placeholder="请填写备注信息" maxlength="200" type="textarea"></el-input>
     </div>
     <div class="input-group" v-if="activeType===2">
       <p><label class="form-label f14">付款凭证</label></p>
@@ -217,7 +217,7 @@
       name:'款类',
     },
     smallAmount:{
-      name:'付款金额',
+      name:'收款金额',
       type:'money'
     }
   }
@@ -232,7 +232,7 @@
       name:'款类',
     },
     smallAmount:{
-      name:'付款金额',
+      name:'收款金额',
       type:'money'
     },
     proceedsType:{
