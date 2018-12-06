@@ -55,6 +55,7 @@
                 :moneyZh="paperInfoData.amountZh"
                 :create="paperInfoData.createByName"
                 :rules="paperInfoData.remark"
+                :imgSrc="paperInfoData.signImg"
                 :payerType="paperInfoData.payerType"></LayerPaperInfo>
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
@@ -87,7 +88,7 @@
                 moneyTypes: [], //临时存放勾选的款类
                 activeType: 0, //当前预览项
                 loading:false,
-                pdfUrl:'http://192.168.1.51:5500/test.pdf',
+                pdfUrl:'',
             }
         },
         methods: {
@@ -119,7 +120,7 @@
                     this.$message.error('请选择开票项目');
                     return false
                 }
-                if(this.paperInfoData.signImg){
+                if(!this.paperInfoData.signImg){
                     this.$message.error('请先设置财务专用电子签章');
                     return false
                 }
@@ -128,6 +129,7 @@
                 }else{
                     this.FooterShow = false
                     this.$message.error('请勾选款类');
+                    return false
                 }
                 // if(!this.FooterShow){
                 //     this.$message.error('请勾选款类');
