@@ -516,7 +516,7 @@
        */
       getDropdown: function () {
         let param = {
-          contId: 1
+          contId: this.form.contId
         }
         this.$ajax.get('/api/payInfo/selectValue', param).then(res => {
           res = res.data

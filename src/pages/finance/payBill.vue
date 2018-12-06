@@ -143,7 +143,7 @@
     data() {
       return {
         form: {
-          contId:1,
+          contId:'',
           remark:'',
           inObj:'',
           inObjId:'',
@@ -169,6 +169,7 @@
       }
     },
     created(){
+      this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
       this.getDropdown()
       this.getMoneyType()
       this.getAdmin()
@@ -234,7 +235,7 @@
        */
       getDropdown:function () {
         let param = {
-          contId:1
+          contId:this.form.contId
         }
         this.$ajax.get('/api/payInfo/selectValue',param).then(res=>{
           res=res.data
