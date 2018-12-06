@@ -1104,7 +1104,7 @@ export default {
     .classifyFoot{
       padding: 10px 10px;
       .objection{
-        font-size: 16px;
+        font-size: 14px;
         color: @color-FF;
       }
     }
