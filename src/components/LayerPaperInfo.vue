@@ -38,7 +38,7 @@
           <div class="fr fb"><span class="mr-10">开票人：</span>{{comCreate}}</div>
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
         </div>
-        <img class="pr-img" :src="comImgSrc">
+        <img class="pr-img" v-if="comImgSrc!==''" :src="comImgSrc">
       </div>
       <div class="paper-tips">
         <p>温馨提示：</p>
@@ -87,7 +87,7 @@
           <div class="fr fb"><span class="mr-10">开票人：</span>{{comCreate}}</div>
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
         </div>
-        <img class="pr-img2" :src="comImgSrc">
+        <img class="pr-img2" v-if="comImgSrc!==''" :src="comImgSrc">
       </div>
     </div>
   </div>
@@ -184,7 +184,7 @@
       },
       comImgSrc() {
         if (this.imgSrc === '') {
-          return src
+          return ''
         } else {
           return this.imgSrc
         }
