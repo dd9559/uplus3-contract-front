@@ -173,7 +173,7 @@
             <span>{{scope.row.toAccountTime|formatDate}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收付状态" prop="payStatus.label"></el-table-column>
+        <el-table-column align="center" label="收付状态" prop="payStatus"></el-table-column>
         <el-table-column align="center" label="结算信息">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
@@ -339,6 +339,7 @@
        * @param row
        */
       toDetails:function (row) {
+        this.setPath(['财务','收付款单',row.type===1?'收款详情':'付款详情'])
         this.$router.push({
           path:'billDetails',
           query:{
@@ -386,6 +387,7 @@
        */
       msgOpera:function (row,type) {
         if(type==='cont'){
+          this.setPath(['合同','合同列表','合同详情'])
           this.$router.push({
             path:row.contTypeId===this.$tool.contType['4']||row.contTypeId===this.$tool.contType['5']?'detailIntention':'contractDetails',
             query:{

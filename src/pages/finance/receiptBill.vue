@@ -143,7 +143,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.userName" class="no-style" placeholder="请输入">
+            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="账户 ">

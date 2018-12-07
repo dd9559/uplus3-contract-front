@@ -21,7 +21,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="银行账户">
-          <el-input v-model="searchForm.bankCard" :clearable="true" type="number" oninput="if(value.length>16)value=value.slice(0,16)" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+          <el-input v-model="searchForm.bankCard" :clearable="true" type="number" oninput="if(value.length>19)value=value.slice(0,19)" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
         </el-form-item>
         <el-form-item label="添加时间">
           <el-date-picker
@@ -135,10 +135,10 @@
             </div>
             <div class="item">
               <el-form-item label="证件号: ">
-                <el-input size="mini" type="number" oninput="if(value.length>18)value=value.slice(0,18)" v-model="companyForm.lepDocumentCard" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+                <el-input size="mini" maxlength="18" v-model="companyForm.lepDocumentCard" :disabled="directSaleSelect" @blur="idCardChange"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: ">
-                <el-input size="mini" type="number" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+                <el-input size="mini" type="number" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" @blur="validPhone"></el-input>
               </el-form-item>
               <el-form-item label="企业证件: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="directSaleSelect">
@@ -185,7 +185,7 @@
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" type="number" oninput="if(value.length>16)value=value.slice(0,16)" v-model="companyBankList[scope.$index].bankCard" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+                    <el-input size="mini" maxlength="19" v-model.number="companyBankList[scope.$index].bankCard" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -211,7 +211,7 @@
             <div class="stamp">
               <span>合同章上传</span>
               <div class="upload">
-                <span>上传电子签章图片：</span>
+                <span class="point">上传电子签章图片：</span>
                 <ul>
                   <li><fileUp id="imgcontract" class="up" :rules="['.png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
                   <li v-show="companyForm.contractSign!==''"><div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{contractName}}</p><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
@@ -221,7 +221,7 @@
             <div class="stamp">
               <span>财务章上传</span>
               <div class="upload">
-                <span>上传电子签章图片：</span>
+                <span class="point">上传电子签章图片：</span>
                 <ul>
                   <li><fileUp id="imgfinance" class="up" :rules="['.png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
                   <li v-show="companyForm.financialSign!==''"><div @click="getPicture(2)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{financialName}}</p><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
@@ -282,6 +282,12 @@
 
 <script>
   import {MIXINS} from "@/assets/js/mixins";
+  let checkPhoneVlidate = function (str) {
+    return /^1[34578]\d{9}$/.test(str)
+  }
+  let checkIdVlidate = function (str) {
+    return /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(str)
+  }
   const rule = {
     cityId: {
       name: "城市选择"
@@ -412,8 +418,8 @@
         let param = {
           pageSize: this.pageSize,
           pageNum: this.pageNum,
-          startTime: this.searchTime[0],
-          endTime: this.searchTime[1]
+          startTime: this.searchTime == null ? "" : this.searchTime[0],
+          endTime: this.searchTime == null ? "" : this.searchTime[1]
         }
         param = Object.assign({},this.searchForm,param)
         param.cityId = param.cityId === "武汉" ? 1 : param.cityId
@@ -626,7 +632,7 @@
             }
           }
         }).catch(error => {
-          this.$message({message:error})
+          this.$message({message:`${error.title}${error.msg}`})
         })
       },
       //点击查看和编辑
@@ -708,6 +714,23 @@
       resetFormFn() {
         this.$tool.clearForm(this.searchForm)
         this.searchTime = []
+      },
+      idCardChange() {
+        let val = this.companyForm.lepDocumentCard
+        if(val) {
+          if(!checkIdVlidate(val)) {
+            this.$message('身份证号格式不正确')
+            return false
+          }
+        }
+      },
+      validPhone() {
+        let val = this.companyForm.lepPhone
+        if(val) {
+          if(!checkPhoneVlidate(val)) {
+            this.$message('手机号码不正确')
+          }
+        }
       }
     },
     filters: {
@@ -767,6 +790,13 @@
 .dialog-info {
   .company-info {
     padding: 30px 20px;
+    /deep/ .el-form-item__label::before {
+      content: "*";
+      color: red;
+      position: relative;
+      top: 3px;
+      margin-right: 1px;
+    }
     > p {
       font-size: 14px;
       font-weight: bold;
@@ -909,6 +939,12 @@
           > .upload {
             display: flex;
             margin-top: 20px;
+            .point::before {
+              content: "*";
+              color: red;
+              position: relative;
+              top: 3px;
+            }
             > ul {
               display: flex;
               li {

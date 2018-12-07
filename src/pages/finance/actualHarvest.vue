@@ -99,8 +99,8 @@
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同编号:<span class="span-cursor">{{scope.row.code}}</span></li>
-              <li>房源编号:<span class="span-cursor">{{scope.row.houseinfoCode}}</span></li>
-              <li>客源编号:<span class="span-cursor">{{scope.row.guestinfoCode}}</span></li>
+              <li>房源编号:<span class="span-cursor">{{scope.row.houseinfoCode}}</span><span>{{scope.row.showOwnerName}}</span></li>
+              <li>客源编号:<span class="span-cursor">{{scope.row.guestinfoCode}}</span><span>{{scope.row.showCustName}}</span></li>
             </ul>
           </template>
         </el-table-column>
