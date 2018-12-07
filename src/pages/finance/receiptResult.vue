@@ -67,9 +67,11 @@
 </template>
 
 <script>
+  import {MIXINS} from "@/assets/js/mixins";
   import LayerInvoice from '@/components/LayerInvoice'
   export default {
     name: "receipt-result",
+    mixins: [MIXINS],
     components:{
       LayerInvoice
     },
@@ -87,6 +89,11 @@
     },
     methods: {
       goBack: function (page) {
+        if(page==='bill'){
+          this.setPath(['财务','收付款单'])
+        }else {
+          this.setPath(['合同','合同列表'])
+        }
         this.$router.push({
           path: page
         })

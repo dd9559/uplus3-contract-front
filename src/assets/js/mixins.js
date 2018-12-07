@@ -1,3 +1,5 @@
+import {mapMutations} from 'vuex'
+
 const MIXINS = {
   data(){
     return{
@@ -111,7 +113,11 @@ const MIXINS = {
             }).then(res=>{
               res = res.data;
               if(res.status === 200){
-                window.location = res.data.url;
+                let a = document.createElement('a');
+                a.download = undefined;
+                a.href = res.data.url;
+                a.click();
+                // window.location = res.data.url;
               }
             }).catch(err=>{
               console.log(err)
@@ -144,6 +150,10 @@ const MIXINS = {
                 break;
         }
     },
+    ...mapMutations([
+      'setPath',
+      'sliderRouter'
+    ])
   }
 }
 
