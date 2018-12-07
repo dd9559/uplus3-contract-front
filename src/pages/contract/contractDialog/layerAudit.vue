@@ -51,10 +51,10 @@
               <tr>
                 <td>调整为</td>
                 <td>
-                  <div><el-input v-model="auditForm.money1" placeholder="输入金额" class="width70" type="number"></el-input>元</div>
+                  <div><el-input v-model="auditForm.money1" placeholder="输入金额" class="width70" type="number" @input="cutNumber('money1')"></el-input>元</div>
                 </td>
                 <td>
-                  <div><el-input v-model="auditForm.money2" placeholder="输入金额" class="width70"  type="number"></el-input>元</div>
+                  <div><el-input v-model="auditForm.money2" placeholder="输入金额" class="width70"  type="number" @input="cutNumber('money2')"></el-input>元</div>
                 </td>
                 <!-- <td class="flex">       
                     <div>
@@ -75,7 +75,7 @@
                   
                 </td> -->
                 <td>
-                  <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70"  type="number"></el-input>元</div>
+                  <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70"  type="number" @input="cutNumber('money4')"></el-input>元</div>
                 </td>
               </tr>
             </tbody>
@@ -182,6 +182,23 @@ export default {
     },
 
     methods: {
+
+      cutNumber(val){
+          // console.log(val)
+          if(val==="money1"){
+              this.$nextTick(()=>{
+                  this.auditForm.money1=this.$tool.cutFloat({val:this.auditForm.money1,max:999999999.99})
+              })
+          }else if(val==="money2"){
+              this.$nextTick(()=>{
+                  this.auditForm.money2=this.$tool.cutFloat({val:this.auditForm.money2,max:999999999.99})
+              })
+          }else if(val==="money4"){
+              this.$nextTick(()=>{
+                  this.auditForm.money4=this.$tool.cutFloat({val:this.auditForm.money4,max:999999999.99})
+              })
+          }
+      },
 
       //获取文件路径后缀名
       uploadSubject(data) {
@@ -341,8 +358,9 @@ export default {
       } 
     }
     .el-dialog__body{
-          padding: 0;
-      }
+        padding: 0;
+    }
+    
   }
   .audit-box{
     padding: 0 20px 0px 20px;

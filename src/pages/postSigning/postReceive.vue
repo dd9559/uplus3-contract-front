@@ -173,6 +173,7 @@
                                     placeholder="分配角色" 
                                     filterable 
                                     :loading="loading3"
+                                    :disabled="roleDisabledFn(scope.row)"
                                     @change="roleChangeFn(scope.$index,$event)"
                                     size="small" 
                                     class="w185">
@@ -189,6 +190,7 @@
                                     <el-select 
                                     v-model="scope.row.personLiableCode" 
                                     :value="scope.row.value"
+                                    :disabled="roleDisabledFn(scope.row)"
                                     @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)"
                                     placeholder="选择责任人" 
                                     filterable
@@ -404,6 +406,18 @@
                     }
                 }
                 
+            },
+            // 是否禁用下拉
+            roleDisabledFn(data){
+                let OPERATION = this.$tool.OPERATION;
+                if(!data.stepState){
+                    return false
+                }
+                if(data.stepState.value === OPERATION.backlog || data.stepState.value === OPERATION.not){
+                    return false
+                }else{
+                    return true
+                }
             },
             // 开始状态接收
             statusLaterStageFn(state){
