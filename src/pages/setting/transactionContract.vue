@@ -151,7 +151,7 @@ export default {
           this.conPost(url);
         }
       }).catch(error => {
-          this.$message({message:error})
+          this.$message({message:`${error.title}${error.msg}`})
         }) 
     },
     // 添加 编辑 请求

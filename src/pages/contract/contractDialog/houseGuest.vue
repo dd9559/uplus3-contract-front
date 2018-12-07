@@ -517,7 +517,7 @@ export default {
       // buildingCode:this.BuildingCode
       this.houseKeyword = "";
       this.guestKeyword = "";
-      this.attention = false;
+      this.attention = 0;
       this.estateCode = "";
       this.BuildingCode = "";
       this.options = [];

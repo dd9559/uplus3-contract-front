@@ -139,7 +139,7 @@
                   </el-option>
                 </el-select>
                 <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" :disabled="type===2&&!item.edit?true:false"><i slot="suffix">%</i></el-input>
-                <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode,index)">
+                <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -191,7 +191,7 @@
                   </el-option>
                 </el-select> -->
                 <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"><i slot="suffix">%</i></el-input>
-                <input v-model="item.identifyCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                <input v-model="item.identifyCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -227,7 +227,7 @@
               <el-input v-model="contractForm.otherCooperationInfo.mobile" placeholder="请输入内容" style="width:140px"></el-input>
             </el-form-item>
             <el-form-item label="身份证号：" style="width:300px;text-align:right">
-              <el-input v-model="contractForm.otherCooperationInfo.identifyCode" placeholder="请输入内容"></el-input>
+              <el-input v-model="contractForm.otherCooperationInfo.identifyCode" maxlength="18" placeholder="请输入内容" @input="verifyIdcard(contractForm.otherCooperationInfo.identifyCode)"></el-input>
             </el-form-item>
             <br>
             <el-form-item label="备注：" style="padding-left:51px">
@@ -527,7 +527,7 @@ export default {
       })
     },
     //身份证验证
-    verifyIdcard(value,index){
+    verifyIdcard(value){
       if(value.length===18){
         let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
         if (!reg.test(value)) {
@@ -995,7 +995,7 @@ export default {
           this.contractForm.extendParams=JSON.parse(res.data.extendParams);
           this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
           this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
-          if(res.data.isHavaCooperation){
+          if(res.data.isHaveCooperation){
             this.cooperation=true
           }
           this.ownerList=[];

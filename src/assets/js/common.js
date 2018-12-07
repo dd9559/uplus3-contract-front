@@ -148,6 +148,16 @@ let TOOL = {
       }
     ],
   },
+  // 操作状态
+  OPERATION:{
+    start:1,    //已办理
+    backlog:2,    //待办理
+    sure:3,    //需确认（代办）
+    not:4,    //不可办理
+    amend:5,    //修改
+    // timeoutNot:5,    //超时未办
+    // timeoutStart:6,    //超时已办
+  },
   /**
    * 获取鼠标坐标
    * @param event

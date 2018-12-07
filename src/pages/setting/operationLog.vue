@@ -94,7 +94,6 @@
             this.$ajax.get('/api/access/deps').then((res)=>{
                 if(res.status==200){
                     this.departs=res.data.data
-                    console.log(this.departs);
                 }
             }),
             this.getLogList()

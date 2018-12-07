@@ -123,10 +123,6 @@
                     this.$message.error('请选择开票项目');
                     return false
                 }
-                if(!this.paperInfoData.signImg){
-                    this.$message.error('请先设置财务专用电子签章');
-                    return false
-                }
                 if(this.moneyTypes[this.activeType].check){
                     this.FooterShow =  true
                 }else{
@@ -194,6 +190,10 @@
                 })
             },
             printPaperFn(){
+                if(!this.paperInfoData.signImg){
+                    this.$message.error('请先设置财务专用电子签章');
+                    return false
+                }
                 this.$refs.pdfPrint.print();
             },
             // 获取开票列表
