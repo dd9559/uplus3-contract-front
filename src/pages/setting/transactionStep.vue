@@ -34,11 +34,6 @@
         <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
                         v-for="item in tHeader_other" :key="item.id">
         </el-table-column>
-        <!-- <el-table-column align="center" label="是否短信通知">
-          <template slot-scope="scope">
-            <div>{{scope.row.isSms==1?'是':'否'}}</div>
-          </template>
-        </el-table-column> -->
         <el-table-column align="center" label="步骤附属信息">
           <template slot-scope="scope">
             <p v-if="scope.row.transStepsAttach.length==0">--</p>
@@ -103,7 +98,7 @@
             <el-table border :data="tableForm" style="width: 100%">
               <el-table-column align="center" label="名称" min-width="150">
                 <template slot-scope="scope">
-                  <el-input v-model="tableForm[scope.$index].title" maxlength="15"></el-input>
+                  <el-input v-model="tableForm[scope.$index].title" maxlength="15" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="信息类型" min-width="150">
@@ -291,13 +286,16 @@
       addTradeSteps() {
         this.tradeStepsDialog = true
         this.modalTitle = "添加交易步骤"
-        let obj = {
-          stepsTypeId: this.currentRow.typeId,
-          stepsTypeName: this.currentRow.typeName,
-          name: "",
-          planDays: "",
-          overTimeDays: 0,
-          isSms: 0
+        if(this.currentRow) {
+          let obj = {
+            stepsTypeId: this.currentRow.typeId,
+            stepsTypeName: this.currentRow.typeName,
+            name: "",
+            planDays: "",
+            overTimeDays: 0,
+            isSms: 0
+          }
+          this.stepBusiness = obj
         }
         let arr = [
           {
@@ -307,7 +305,6 @@
             type: ""
           }
         ]
-        this.stepBusiness = obj
         this.tableForm = arr
       },
       /**
@@ -325,17 +322,33 @@
               })
             }
             if(this.modalTitle === "添加步骤类型") {
-              const url = "/api/flowmanage/insertStepsType"
-              const msg = "添加步骤类型成功"
-              this.stepsTypePost(url,this.addForm,msg)
+              this.$ajax.postJSON(`/api/flowmanage/insertStepsType`,this.addForm).then(res => {
+                res = res.data
+                if(res.status === 200) {
+                  this.$message(res.message)
+                  this.stepsTypeDialog = false
+                  this.getData()
+                  this.firstCellLight()
+                }
+              }).catch(error => {
+                  this.$message({message:error})
+                })
             } else {
-              const url = "/api/flowmanage/updateStepsType"
               let param = {
                 id: this.currentRow.typeId
               }
               param = Object.assign({},this.addForm,param)
-              const msg = "编辑步骤类型成功"
-              this.stepsTypePost(url,param,msg)
+              this.$ajax.postJSON(`/api/flowmanage/updateStepsType`,param).then(res => {
+                res = res.data
+                if(res.status === 200) {
+                  this.$message("编辑步骤类型成功")
+                  this.stepsTypeDialog = false
+                  this.getData()
+                  this.firstCellLight()
+                }
+              }).catch(error => {
+                  this.$message({message:error})
+                })
             }  
           }
       },
@@ -347,7 +360,7 @@
           if(this.tableForm.length) {
             this.tableForm.forEach(item => {
               isOk = false
-              if(item.title) {
+              if(item.title.replace(/\s+/g,"")) {
                 if(item.type !== "") {
                   if(item.isRequired) {
                     isOk = true
@@ -365,27 +378,17 @@
           if(isOk || !this.tableForm.length) {
             if (this.modalTitle === "添加交易步骤") {
               const url = "/api/flowmanage/insertSteps"
-              this.tradeStepsPost(url)
+              if(this.listData.length) {
+                this.tradeStepsPost(url)
+              } else {
+                this.$message('无步骤类型不能新增交易步骤')
+              }
             } else {
               const url = "/api/flowmanage/updateSteps"
               this.tradeStepsPost(url)
             }
           } 
         }
-      },
-      //添加和编辑步骤类型请求
-      stepsTypePost(url,param,msg) {
-        this.$ajax.postJSON(url, param).then(res => {
-          res = res.data
-          if(res.status === 200) {
-            this.$message(msg)
-            this.stepsTypeDialog = false
-            this.getData()
-            this.firstCellLight()
-          }
-        }).catch(error => {
-            this.$message({message:error})
-        })
       },
       //添加和编辑交易步骤请求
       tradeStepsPost(url) {
@@ -499,7 +502,11 @@
       "cityId": function(newVal,oldVal) {
         this.getData()
         this.addForm.cityId = newVal
+        this.stepBusiness.stepsTypeId = ""
         this.stepBusiness.stepsTypeName = ""
+        this.stepBusiness.name = ""
+        this.stepBusiness.planDays = ""
+        delete this.stepBusiness.id
       }
     },
     filters: {
