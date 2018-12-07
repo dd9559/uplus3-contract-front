@@ -1,7 +1,12 @@
 <template>
   <div>
     <div class="dialog1">
-      <el-dialog :visible.sync="shows" :before-close="handleClose" :close-on-click-modal="false" custom-class="base-dialog">
+      <el-dialog
+        :visible.sync="shows"
+        :before-close="handleClose"
+        :close-on-click-modal="false"
+        custom-class="base-dialog"
+      >
         <!-- 头部右边关闭按钮 -->
         <b class="el-icon-close" @click="closeDialog"></b>
         <!-- 头部左边业绩分成title -->
@@ -333,8 +338,8 @@
         <!-- 业绩编辑底部 -->
         <div class="ach-footer" v-if="dialogType==1">
           <div class="footer-btn-layout f_r">
-              <el-button type="primary" round @click="closeDialog" class="color-white">保存</el-button>
-              <el-button type="primary" round @click="keepAchDivide" class="color-blue">保存并提交</el-button>
+            <el-button type="primary" round @click="keepAch(2,2)" class="color-white">保存</el-button>
+            <el-button type="primary" round @click="keepAch(2,1)" class="color-blue">保存并提交</el-button>
           </div>
         </div>
         <!-- 业绩反审核底部 -->
@@ -361,8 +366,8 @@
         <!-- 业绩分成底部      -->
         <div class="ach-footer" v-if="dialogType==3">
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="closeDialog" class="color-white">保存</el-button>
-            <el-button type="primary" round @click="keepAchDivide" class="color-blue">保存并提交</el-button>
+            <el-button type="primary" round @click=" keepAchDivide(2)" class="color-white">保存</el-button>
+            <el-button type="primary" round @click=" keepAchDivide(1)" class="color-blue">保存并提交</el-button>
           </div>
         </div>
 
@@ -615,7 +620,7 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$message("操作完成");
-              this.$emit("close", this.achIndex, 7);
+              this.$emit("adoptData", this.achIndex, resultArr);
             } else if (res.data.status != 200) {
               this.$message(res.data.message);
             }
@@ -656,7 +661,6 @@ export default {
           sumFlag = false;
         }
       }
-      // debugger;
       console.log(sum);
       if (flag && sumFlag && this.remark != "") {
         let param = {
@@ -672,7 +676,7 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$message("操作完成");
-              this.$emit("close", this.achIndex, 8);
+              this.$emit("rejectData", this.achIndex, resultArr);
             } else if (res.data.status != 200) {
               this.$message(res.data.message);
             }
@@ -686,7 +690,7 @@ export default {
       }
     },
     // 反审核，编辑的保存
-    keepAch(type) {
+    keepAch(type, status) {
       if (this.houseArr.length == 0 || this.clientArr.length == 0) {
         this.$message("分成人不满足最低人数要求");
         return false;
@@ -734,7 +738,10 @@ export default {
         if (type == 2) {
           param = {
             id: this.aId,
-            distributions: resultArr
+            distributions: resultArr,
+            agendIds: this.agendIds,
+            status: status,
+            contractId: this.achObj.contractId
           };
         }
         this.$ajax.postJSON("/api/achievement/examineSave", param).then(res => {
@@ -743,7 +750,15 @@ export default {
             let sendObj = {
               agendIds: this.agendIds
             };
-            this.$emit("saveData",this.achIndex,resultArr);
+           if(type==1){
+               this.$emit("saveData", this.achIndex, resultArr);
+            }
+           if(type==2&&status==2){
+               this.$emit("saveData", this.achIndex, resultArr,-1);
+           }
+           if(type==2&&status==1){
+               this.$emit("saveData", this.achIndex, resultArr,0);
+           }
             this.$message("操作完成");
           }
         });
@@ -754,7 +769,7 @@ export default {
       }
     },
     // 业绩分成的保存
-    keepAchDivide() {
+    keepAchDivide(type) {
       let resultArr = this.houseArr.concat(this.clientArr);
       console.log(resultArr);
       let flag = true,
@@ -783,27 +798,41 @@ export default {
       // debugger;
       // console.log(sum);
       if (flag && sumFlag) {
-        // this.$emit("close", this.achIndex);
-        // this.$message("操作完成");
-        console.log("aaaaaaaaaaaaaaaaaa");
-        console.log(this.achObj);
-        let param = {
-          distributions: resultArr,
-          contractCode: this.contractCode,
-          contractId: this.achObj.contractId, //合同id需要详情页面带过来
-          houseCode: this.achObj.houseCode, //房源编号需要详情页面带过来
-          receivableComm: this.achObj.receivableComm, //合同应收佣金需要详情页面带过来
-          signDate: this.achObj.signDate, //合同签约时间需要详情页面带过来
-          contractType: this.achObj.contractType, //合同类型需要详情页面带过来
-          customerCode: this.achObj.customerCode //源编号需要详情页面带过来
-        };
+        let param = {};
+        if (type == 0) {
+          param = {
+            distributions: resultArr,
+            contractCode: this.contractCode,
+            contractId: this.achObj.contractId, //合同id需要详情页面带过来
+            houseCode: this.achObj.houseCode, //房源编号需要详情页面带过来
+            receivableComm: this.achObj.receivableComm, //合同应收佣金需要详情页面带过来
+            signDate: this.achObj.signDate, //合同签约时间需要详情页面带过来
+            contractType: this.achObj.contractType, //合同类型需要详情页面带过来
+            customerCode: this.achObj.customerCode, //源编号需要详情页面带过来
+            status: 2
+          };
+        }
+        if (type == 1) {
+          param = {
+            distributions: resultArr,
+            contractCode: this.contractCode,
+            contractId: this.achObj.contractId, //合同id需要详情页面带过来
+            houseCode: this.achObj.houseCode, //房源编号需要详情页面带过来
+            receivableComm: this.achObj.receivableComm, //合同应收佣金需要详情页面带过来
+            signDate: this.achObj.signDate, //合同签约时间需要详情页面带过来
+            contractType: this.achObj.contractType, //合同类型需要详情页面带过来
+            customerCode: this.achObj.customerCode, //源编号需要详情页面带过来
+            status: 1
+          };
+        }
+
         this.$ajax
           .postJSON("/api/achievement/distributionSave", param)
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$message("操作完成");
-              this.$emit("close", this.achIndex, 1);
+              this.$emit("close");
             }
           });
       } else if (!sumFlag) {
@@ -1200,8 +1229,7 @@ export default {
         text-align: right;
         padding-right: 30px;
         margin-top: 15px;
-        button:first-of-type{
-          width: 100px;
+        button {
           height: 38px;
           border-radius: 19px;
           border: 0;
