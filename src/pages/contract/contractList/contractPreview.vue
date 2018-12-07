@@ -9,8 +9,8 @@
         <span :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</span>
       </div>
       <div class="btn" v-if="contType<4">
-        <el-button type="primary" round style="width:100px" @click="toEdit" v-if="contState===1">编 辑</el-button>
-        <el-button type="primary" round style="width:100px" @click="dialogInvalid = true" v-if="contState!=3">无 效</el-button>
+        <el-button type="primary" round style="width:100px" @click="toEdit" v-if="contState<2">编 辑</el-button>
+        <el-button type="primary" round style="width:100px" @click="dialogInvalid = true" v-if="contState!=3&&contState!=0">无 效</el-button>
         <el-button round :type="examineState<0?'primary':''" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="submitAudit">{{subCheck}}</el-button>
         <el-button round type="primary" style="width:100px" v-if="contState===3" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger" style="width:100px" v-if="contState===3"  @click="goChangeCancel(2)">解约</el-button>

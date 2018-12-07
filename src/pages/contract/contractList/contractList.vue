@@ -20,7 +20,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="用途">
-          <el-select v-model="contractForm.houseinfoPurpose" placeholder="全部" :clearable="true" style="width:150px">
+          <el-select v-model="contractForm.housePurpose" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in housePurpose" :key="item.key" :label="item.value" :value="item.value">
             </el-option>
           </el-select>
@@ -29,7 +29,11 @@
           <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:420px"></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select
+          <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
+            <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+              </el-option>
+            </el-select>
+          <!-- <el-select
             v-model="contractForm.dealAgentStoreId"
             :multiple='false'
             clearable
@@ -47,10 +51,10 @@
                 :value="item.id"
                 >
               </el-option>
-            </el-select>
+            </el-select> -->
         </el-form-item>
         <el-form-item>
-          <el-select v-model="contractForm.dealAgentId" placeholder="请选择" style="width:100px">
+          <el-select v-model="contractForm.dealAgentId" placeholder="请选择" style="width:100px" :clearable="true">
             <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
             </el-option>
           </el-select>
@@ -265,10 +269,10 @@
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
             <div style="text-align:center">
-              <el-button type="text" size="medium" v-if="scope.row.contState.value>1" @click="upload(scope.row)">上传</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview(scope.row)">预览</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4" @click="goCheck(scope.row)">审核</el-button> 
-              <el-button type="text" size="medium" @click="toLayerAudit(scope.row)&&scope.row.contType.value<4" v-if="scope.row.contState.value===3">调佣</el-button>
+              <el-button type="text" size="medium" @click="toLayerAudit(scope.row)" v-if="scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2">调佣</el-button>
               <span v-if="scope.row.contType.value<4">
                 <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===2" @click="goSave(scope.row)">提审</el-button>
               </span>
@@ -354,7 +358,7 @@ export default {
       //合同id
       contId:'',
       //合同状态
-      contState:'',
+      contState:99,
       settleId:'',
       //流水用合同编号
       contCode:'',
@@ -368,7 +372,7 @@ export default {
     this.getContractList();
     this.getDictionary();
     this.getHousePurpose();
-    //his.getDeps('');
+    this.getDeps();
   },
   methods: {
     //用途
@@ -575,6 +579,7 @@ export default {
         this.changeCancel = true;
         this.dialogType = "changeLook";
         this.contId=item.id;
+        console.log(this.contId)
       } else if (item.contChangeState.value === 2) {
         this.changeCancel = true;
         this.dialogType = "cancelLook";
@@ -602,12 +607,11 @@ export default {
         }
       })
     },
-    remoteMethod(query){
-      if (query !== '') {
-        this.loading = true;
-        this.getDeps(query)
-      } else{
-
+    selectDep(value){
+      delete this.contractForm.dealAgentId;
+      this.brokersList=[];
+      if(value){
+        this.getBroker(value)
       }
     },
     getBroker(id){
