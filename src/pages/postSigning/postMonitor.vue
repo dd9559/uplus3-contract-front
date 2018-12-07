@@ -124,7 +124,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="成交经纪人" min-width="140">
                     <template slot-scope="scope">
-                        {{agentFn(scope.row.dealagentStoreName,scope.row.agent)}}
+                        {{agentFn(scope.row.dealagentStoreName,scope.row.dealAgentName)}}
                     </template>
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="guestinfo.ShopOwnerName" label="店长" min-width="70">
@@ -359,6 +359,7 @@
                     this.loadingList = false;
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loadingList = false;
                 })
             },
             // 分页
@@ -400,6 +401,7 @@
                         }
                     }).catch(err=>{
                         this.errMeFn(err);
+                        this.loading2 = false;
                     })
                 }else{
                     this.propForm.departmentMo = '';
@@ -430,6 +432,7 @@
                     }
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loading = false;
                 })
             },
             // 清除部门搜索
@@ -454,6 +457,8 @@
             },
         },
         mounted() {
+            // 获取城市id
+            this.getAdmin();
             // 交易步骤
             this.getTradingSteps();
             // 部门搜索
