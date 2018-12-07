@@ -5,7 +5,7 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="签约日期：" class="form-label width-250">
+          <el-form-item label="签约日期：" class="width-250" :class="{'form-label':type===1}">
             <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" v-model="contractForm.signDate" :disabled="type===2?true:false" style="width:140px"></el-date-picker>
           </el-form-item>
           <el-form-item label="合同类型：" class="width-250">
@@ -29,7 +29,7 @@
           </el-form-item>
           <br>
           <el-form-item label="客户保证金：" v-if="contractForm.type===2" class="width-250">
-            <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false">
+            <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
             <i class="yuan">元</i>
             <!-- <el-input v-model="contractForm.custEnsure" maxlength="13" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
@@ -61,13 +61,13 @@
       <div class="houseMsg">
         <p>房源信息</p>
         <div class="form-content">
-          <el-form-item label="房源编号：" class="form-label width-250">
+          <el-form-item label="房源编号：" class="width-250" :class="{'form-label':type===1}">
             <span class="select" @click="showDialog('house')" v-if="type===1">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
-            <span class="select" v-else>{{contractForm.houseinfoCode}}</span>
+            <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
-          <el-form-item label="物业地址：" class="form-label" style="width:605px;text-align:right">
-            <el-input placeholder="" v-model="contractForm.houseInfo.Address" :disabled="true" class="address">
-            </el-input>
+          <el-form-item label="物业地址：" :class="{'form-label':type===1}" style="width:605px;text-align:right">
+            <span class="propertyAddress" v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+'单元'+contractForm.houseInfo.RoomNo}}</span>
+            <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
           <br>
           <el-form-item label="建筑面积：" class="width-250">
@@ -116,12 +116,12 @@
           </el-form-item>
           <el-form-item label="按揭欠款：" v-if="contractForm.type===2" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.stagesArrears" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input> -->
-            <input type="text" v-model="contractForm.houseInfo.stagesArrears" @input="cutNumber('stagesArrears')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.houseInfo.stagesArrears" :disabled="type===2?true:false" @input="cutNumber('stagesArrears')" placeholder="请输入内容" class="dealPrice" :class="{'forbid':type===2}">
             <i class="yuan">元</i>
           </el-form-item>
           <br v-if="contractForm.type===2">
           <el-form-item label="产权地址：" v-if="contractForm.type===2" style="width:535px;text-align:right">
-            <el-input v-model="contractForm.houseInfo.propertyRightAddr" placeholder="请输入内容" style="width:430px"></el-input>
+            <el-input v-model="contractForm.houseInfo.propertyRightAddr" placeholder="请输入内容" :disabled="type===2?true:false" style="width:430px"></el-input>
           </el-form-item>
           <el-form-item label="房产证号：" v-if="contractForm.type===2">
             <el-input v-model="contractForm.propertyCard" placeholder="请输入内容" :disabled="type===2?true:false" style="width:200px"></el-input>
@@ -143,7 +143,7 @@
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
-                <span @click.stop="deleteRowcommissionData(index)" v-if="ownerList.length>1" class="icon">
+                <span @click.stop="delPeople(index,'owner')" v-if="ownerList.length>1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-4"></i>
                 </span>
               </li>
@@ -155,11 +155,11 @@
       <div class="houseMsg">
         <p>客源信息</p>
         <div class="form-content">
-          <el-form-item label="客源编号：" class="form-label width-250">
+          <el-form-item label="客源编号：" class="width-250" :class="{'form-label':type===1}">
             <span class="select" @click="showDialog('guest')" v-if="type===1">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
-            <span class="select" v-else>{{contractForm.guestinfoCode}}</span>
+            <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
-          <el-form-item label="付款方式：" class="form-label">
+          <el-form-item label="付款方式：" :class="{'form-label':type===1}">
             <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px">
               <el-option v-for="item in dictionary['556']" :key="item.key" :label="item.value" :value="item.key">
               </el-option>
@@ -195,7 +195,7 @@
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
-                <span @click.stop="deleteRowcommissionData1(index)" v-if="guestList.length>1" class="icon">
+                <span @click.stop="delPeople(index,'guest')" v-if="guestList.length>1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-4"></i>
                 </span>
               </li>
@@ -209,7 +209,9 @@
         <div class="cooperation">
           <div v-show="cooperation">
             <el-form-item label="扣合作费：" class="width-250">
-              <el-input v-model="contractForm.otherCooperationCost" placeholder="请输入内容" style="width:140px"></el-input>
+              <!-- <el-input v-model="contractForm.otherCooperationCost" placeholder="请输入内容" style="width:140px"></el-input> -->
+              <input type="text" v-model="contractForm.otherCooperationCost" @input="cutNumber('otherCooperationCost')" placeholder="请输入内容" class="dealPrice">
+              <i class="yuan">元</i>
             </el-form-item>
             <el-form-item label="类型：" class="width-250">
               <el-select v-model="contractForm.otherCooperationInfo.type" placeholder="请选择" style="width:140px">
@@ -281,6 +283,14 @@
         <el-button type="primary" @click="saveCont" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 删除人员确认框 -->
+    <el-dialog title="提示" :visible.sync="dialogDel" width="460px">
+      <span>确定删除当前联系人吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogDel = false">取 消</el-button>
+        <el-button type="primary" @click="delPeopleMsg">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
            
@@ -350,7 +360,7 @@ export default {
         guestInfo: {},
         otherCooperationInfo: {},
         extendParams:{},
-        isHavaCooperation: 0
+        isHaveCooperation: 0
       },
       //业主信息
       ownerList: [
@@ -405,7 +415,11 @@ export default {
       parameterRule:{},
       fullscreenLoading:false,
       hintText:'',
-      haveExamine:0
+      haveExamine:0,
+      //人员信息下标
+      peopleIndex:'',
+      dialogDel:false,
+      delType:''
     };
   },
   created() {
@@ -441,9 +455,9 @@ export default {
         });
       }
     },
-    deleteRowcommissionData(index) {
-      this.ownerList.splice(index, 1);
-    },
+    // deleteRowcommissionData(index) {
+    //   this.ownerList.splice(index, 1);
+    // },
     addcommissionData1() {
       if (this.guestList.length < 5) {
         this.guestList.push({
@@ -462,15 +476,31 @@ export default {
         });
       }
     },
-    deleteRowcommissionData1(index) {
-      this.guestList.splice(index, 1);
+    // deleteRowcommissionData1(index) {
+    //   this.guestList.splice(index, 1);
+    // },
+    //删除联系人确认框
+    delPeople(index,type){
+      this.peopleIndex=index;
+      this.delType=type;
+      this.dialogDel=true;
+    },
+    //确认删除
+    delPeopleMsg(){
+      if(this.delType==="owner"){
+        this.ownerList.splice(this.peopleIndex, 1);
+        this.dialogDel=false;
+      }else if(this.delType==="guest"){
+        this.guestList.splice(index, 1);
+        this.dialogDel=false;
+      }
     },
     toCooperation() {
       this.cooperation = !this.cooperation;
-      if (this.contractForm.isHavaCooperation) {
-        this.contractForm.isHavaCooperation = 0;
+      if (this.contractForm.isHaveCooperation) {
+        this.contractForm.isHaveCooperation = 0;
       } else {
-        this.contractForm.isHavaCooperation = 1;
+        this.contractForm.isHaveCooperation = 1;
       }
     },
     //获取合同扩展参数
@@ -532,7 +562,7 @@ export default {
                 if (element.name) {
                   if (element.mobile.length === 11) {
                     if (element.relation) {
-                      if (element.propertyRightRatio) {
+                      if (element.propertyRightRatio||element.propertyRightRatio===0) {
                         if (element.identifyCode) {
                           isOk = true;
                           ownerRightRatio += element.propertyRightRatio - 0;
@@ -575,11 +605,10 @@ export default {
                         if (element.name) {
                           if (element.mobile.length === 11) {
                             if (element.relation) {
-                              if (element.propertyRightRatio) {
+                              if (element.propertyRightRatio||element.propertyRightRatio===0) {
                                 if (element.identifyCode) {
                                   isOk_ = true;
-                                  guestRightRatio +=
-                                    element.propertyRightRatio - 0;
+                                  guestRightRatio += element.propertyRightRatio - 0;
                                 } else {
                                   this.$message({
                                     message: "身份证号不正确"
@@ -793,7 +822,12 @@ export default {
           let houseMsg = res.data;
           console.log(houseMsg);
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
-          this.contractForm.dealPrice = houseMsg.ListingPrice; //成交总价
+          if(houseMsg.TradeInt===2){
+            this.contractForm.dealPrice = houseMsg.ListingPrice*10000;
+          }else{
+            this.contractForm.dealPrice = houseMsg.ListingPrice;
+          }
+          // this.contractForm.dealPrice = houseMsg.ListingPrice; //成交总价
           this.contractForm.houseInfo = houseMsg;
           // let houseType = `${houseMsg.CountT}*${houseMsg.CountF}*${houseMsg.CountW}*${houseMsg.CountY}`;
           // console.log(houseType)
@@ -968,33 +1002,47 @@ export default {
           this.guestList=[];
           for (var i = 0; i < this.contractForm.contPersons.length; i++) {
             if (this.contractForm.contPersons[i].personType.value === 1) {
-              // this.ownerList[0].name = this.contractForm.contPersons[i].name;
-              // this.ownerList[0].mobile = this.contractForm.contPersons[i].mobile;
-              // this.ownerList[0].relation = this.contractForm.contPersons[i].relation;
-              // this.ownerList[0].propertyRightRatio = this.contractForm.contPersons[i].propertyRightRatio;
-              // this.ownerList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
-              this.ownerList.push({
-                name:this.contractForm.contPersons[i].name,
-                mobile:this.contractForm.contPersons[i].mobile,
-                relation:this.contractForm.contPersons[i].relation,
-                propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-                identifyCode:this.contractForm.contPersons[i].identifyCode,
-                type:1,
-              });
+              if(this.ownerList.length>0){
+                this.ownerList.push({
+                  name:this.contractForm.contPersons[i].name,
+                  mobile:this.contractForm.contPersons[i].mobile,
+                  relation:this.contractForm.contPersons[i].relation,
+                  propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+                  identifyCode:this.contractForm.contPersons[i].identifyCode,
+                  type:1,
+                  edit:true
+                });
+              }else{
+                this.ownerList.push({
+                  name:this.contractForm.contPersons[i].name,
+                  mobile:this.contractForm.contPersons[i].mobile,
+                  relation:this.contractForm.contPersons[i].relation,
+                  propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+                  identifyCode:this.contractForm.contPersons[i].identifyCode,
+                  type:1,
+                });
+              }
             } else if (this.contractForm.contPersons[i].personType.value === 2) {
-              // this.guestList[0].name = this.contractForm.contPersons[i].name;
-              // this.guestList[0].mobile = this.contractForm.contPersons[i].mobile;
-              // this.guestList[0].relation = this.contractForm.contPersons[i].relation;
-              // this.guestList[0].propertyRightRatio = this.contractForm.contPersons[i].propertyRightRatio;
-              // this.guestList[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
-              this.guestList.push({
-                name:this.contractForm.contPersons[i].name,
-                mobile:this.contractForm.contPersons[i].mobile,
-                relation:this.contractForm.contPersons[i].relation,
-                propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-                identifyCode:this.contractForm.contPersons[i].identifyCode,
-                type:2,
-              });
+              if(this.guestList.length>0){
+                this.guestList.push({
+                  name:this.contractForm.contPersons[i].name,
+                  mobile:this.contractForm.contPersons[i].mobile,
+                  relation:this.contractForm.contPersons[i].relation,
+                  propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+                  identifyCode:this.contractForm.contPersons[i].identifyCode,
+                  type:2,
+                  edit:true
+                });
+              }else{
+                this.guestList.push({
+                  name:this.contractForm.contPersons[i].name,
+                  mobile:this.contractForm.contPersons[i].mobile,
+                  relation:this.contractForm.contPersons[i].relation,
+                  propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+                  identifyCode:this.contractForm.contPersons[i].identifyCode,
+                  type:2
+                });
+              }
             }
           }
         }
@@ -1025,6 +1073,10 @@ export default {
       }else if(val==="stagesArrears"){
         this.$nextTick(()=>{
           this.contractForm.houseInfo.stagesArrears=this.$tool.cutFloat({val:this.contractForm.houseInfo.stagesArrears,max:999999999.99})
+        })
+      }else if(val==="otherCooperationCost"){
+        this.$nextTick(()=>{
+          this.contractForm.otherCooperationCost=this.$tool.cutFloat({val:this.contractForm.otherCooperationCost,max:999999999.99})
         })
       }
     }
@@ -1068,6 +1120,9 @@ export default {
     &::-webkit-input-placeholder {
       color: #ccc;
     }
+  }
+  .forbid{
+    background: #f5f7fa;
   }
   .yuan{
     position: absolute;
@@ -1130,8 +1185,28 @@ export default {
       background: @color-blue;
       border-radius: 2px;
     }
-    .address {
-      width: 500px;
+    .select_{
+      display: inline-block;
+      width: 140px;
+      text-align: left;
+      color:@color-blue;
+      font-weight: bold;
+    }
+    .propertyAddress{
+      cursor:not-allowed;
+      min-width: 500px;
+      display: inline-block;
+      box-sizing: border-box;
+      text-align: left;
+      font-size: 14px;
+      padding-left: 15px;
+      color: #606266;
+      border-radius: 4px;
+      background: #F5F7FA;
+      border: 1px solid #dcdfe6;
+    }
+    .color_{
+      color: #c0c4cc;
     }
     .parameter{
       display: flex;

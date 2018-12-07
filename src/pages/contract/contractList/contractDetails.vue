@@ -211,20 +211,24 @@
             <p><span>录入人：</span>{{contractDetail.dealAgentStoreName}}-{{contractDetail.dealAgentName}}</p>
             <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
           </div>
-          <div>
+          <div v-if="contractDetail.contChangeState.value!=2">
             <el-button round class="search_btn" @click="goPreview">预览</el-button>
             <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)" v-if="contractDetail.contState.value===3">解约</el-button>
-            <el-button round type="danger" @click="invalid" class="search_btn" v-if="contractDetail.contState.value!=3">无效</el-button>
-            <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3">变更</el-button>
-            <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value===1">编辑</el-button>
+            <el-button round type="danger" @click="invalid" class="search_btn" v-if="contractDetail.contState.value!=3&&contractDetail.contState.value!=0">无效</el-button>
+            <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1">变更</el-button>
+            <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value<2">编辑</el-button>
             <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value<0">提交审核</el-button>
+          </div>
+          <div v-else>
+            <el-button round class="search_btn" @click="goPreview">预览</el-button>
+            <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value<2">编辑</el-button>
           </div>
         </div>
       </el-tab-pane>
       <el-tab-pane label="合同主体" name="second">
-        <div class="contractSubject" v-if="this.contractDetail.contState.value!=1">
+        <div class="contractSubject">
           <ul class="ulData">
-            <li>
+            <li v-if="contractDetail.contState.value!=1&&contractDetail.contChangeState.value!=2">
               <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
                 <i class="iconfont icon-shangchuan"></i>
                 <p>点击上传</p>
@@ -245,13 +249,13 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="资料库" name="third">
-        <div class="dataBank">
+        <div class="dataBank" v-if="contractDetail.contChangeState.value!=2&&!contractDetail.isHaveData">
           <div class="classify" v-if="sellerList.length>0">
             <p class="title">卖方</p>
             <div class="one_" v-for="(item,index) in sellerList" :key="index">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
-                <li>
+                <li v-if="contractDetail.contChangeState.value!=2">
                   <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
                     <i class="iconfont icon-shangchuan"></i>
                     <p>点击上传</p>
@@ -272,7 +276,7 @@
             <div class="one_" v-for="(item,index) in buyerList" :key="index">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
-                <li>
+                <li v-if="contractDetail.contChangeState.value!=2">
                   <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
                     <i class="iconfont icon-shangchuan"></i>
                     <p>点击上传</p>
@@ -293,7 +297,7 @@
             <div class="one_" v-for="(item,index) in otherList" :key="index">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
-                <li>
+                <li v-if="contractDetail.contChangeState.value!=2">
                   <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
                     <i class="iconfont icon-shangchuan"></i>
                     <p>点击上传</p>
@@ -314,7 +318,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="回访录音" name="fourth">
+      <el-tab-pane label="回访录音" name="fourth" v-if="contractDetail.contChangeState.value!=2">
         <div class="type">
           <span :class="{'active':isActive===1}" @click="changeType(1)">客源</span>
           <span :class="{'active':isActive===2}" @click="changeType(2)">房源</span>
@@ -338,13 +342,13 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <div class="functionTable">
+    <div class="functionTable" v-if="contractDetail.contChangeState.value!=2">
       
       <el-button round class="search_btn" v-if="name==='first'">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'">分成</el-button>
       <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
-      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'&&this.contractDetail.contState.value!=1">上传</el-button>  <!-- 合同主体上传 -->
+      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'&&contractDetail.contState.value!=1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
     
     <!-- 拨号弹出框 -->
@@ -429,7 +433,8 @@ export default {
         otherCooperationInfo: {},
         contState: {},
         toExamineState: {},
-        laterStageState:{}
+        laterStageState:{},
+        contChangeState:{}
       },
       //业主信息
       ownerData: [],
