@@ -47,13 +47,14 @@
         </el-table>
       </div>
       <p class="tool-bar">
-        <el-button round class="make-bill" type="primary" v-if="type===1">开票</el-button>
+        <el-button round class="make-bill" type="primary" v-if="type===1" @click="toBill">开票</el-button>
         <el-button round @click="goBack('contractList')">返回合同列表</el-button>
         <el-button round @click="goBack('bill')">返回收付款列表</el-button>
         <span class="btn-question" @click="answer">支付遇到问题？</span>
       </p>
     </div>
     <el-dialog
+      :closeOnClickModal="$tool.closeOnClickModal"
       title="提示"
       :visible.sync="confirm"
       width="460px"
@@ -61,12 +62,17 @@
       <p>支付遇到问题？您可以拨打以下客服电话处理咨询：</p>
       <h4>400 112 5883</h4>
     </el-dialog>
+    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
   </div>
 </template>
 
 <script>
+  import LayerInvoice from '@/components/LayerInvoice'
   export default {
     name: "receipt-result",
+    components:{
+      LayerInvoice
+    },
     data() {
       return {
         list: [{}],
@@ -87,6 +93,12 @@
       },
       answer: function () {
         this.confirm = true
+      },
+      toBill:function () {
+        this.$refs.layerInvoice.show(this.result.id,true)
+      },
+      emitPaperSetFn:function () {
+
       }
     }
   }

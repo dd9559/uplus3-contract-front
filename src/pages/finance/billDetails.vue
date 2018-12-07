@@ -9,7 +9,7 @@
         </li>
       </ul>
       <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
-        <el-button class="btn-info" round size="small" type="primary" @click="showDialog" v-if="billMsg.audit&&billMsg.audit.auditResult!==100">审核</el-button>
+        <el-button class="btn-info" round size="small" type="primary" @click="showDialog" v-if="activeItem==='付款信息'||billMsg.audit&&billMsg.audit.auditResult!==100">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -139,7 +139,7 @@
         <h4 class="f14">其他信息</h4>
         <div class="input-group">
           <label>备注信息:</label>
-          <p>{{billMsg.remark}}</p>
+          <p>{{billMsg.remark|nullFormatter}}</p>
         </div>
         <div class="input-group">
           <label>付款凭证:</label>
@@ -244,7 +244,7 @@
         list: [
           {}
         ],
-        receiptBill:0,
+        receiptBill:4,
         checkList: [],//审核信息
         layer: {
           show: false,
@@ -324,10 +324,10 @@
           res = res.data
           if (res.status === 200) {
             this.billMsg = Object.assign({}, res.data)
-            this.getCheckData()
             if (res.data.filePath) {
               this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
             }
+            this.getCheckData()
           }
         })
       },
@@ -433,6 +433,15 @@
       invalidNumber() {
         return this.layer.reasion.length
       }
+    },
+    filters:{
+      nullFormatter:function (val) {
+        if(!val){
+          return '无'
+        }else {
+          return val
+        }
+      }
     }
   }
 </script>
@@ -448,6 +457,8 @@
     }
     > label {
       color: @color-6c;
+      max-width: 60px;
+      min-width: 60px;
     }
     > p {
       line-height: 1.6;
