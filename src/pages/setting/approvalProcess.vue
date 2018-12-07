@@ -427,7 +427,7 @@
                         this.aduitPost(url,param)
                     }
                 }).catch(error => {
-                    this.$message({message:error})
+                    this.$message({message:`${error.title}${error.msg}`})
                 })
             },
             aduitPost(url,param) {
