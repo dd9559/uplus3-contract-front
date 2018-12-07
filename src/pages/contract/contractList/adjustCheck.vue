@@ -123,7 +123,7 @@
     </div>
 
     <!-- 调佣审核弹框 -->
-    <el-dialog title="调佣审核" :visible.sync="dialogVisible" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="调佣审核" :visible.sync="dialogVisible" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
@@ -136,8 +136,8 @@
           </div>
           <div class="col-li">
             <p>合同类型：<span>{{layerAudit.tradeType}}</span></p>
-            <p class="mr100">成交总价：<span>{{layerAudit.dealPrice}}</span></p>
-            <p>可分配业绩：<span>{{layerAudit.money}}</span></p>
+            <p class="mr100">成交总价：<span>{{layerAudit.dealPrice}}元</span></p>
+            <p>可分配业绩：<span>{{layerAudit.money}}元</span></p>
           </div>
           <div class="col-li">
             <p>调整类型：<span>佣金调整</span></p>
@@ -164,15 +164,15 @@
             <tbody>
               <tr>
                 <td>原金额</td>
-                <td>{{layerAudit.ownerCommission}}</td>
-                <td>{{layerAudit.custCommission}}</td>
+                <td>{{layerAudit.ownerCommission}}元</td>
+                <td>{{layerAudit.custCommission}}元</td>
                 <!-- <td>另外出<span>;</span>客户<span>;</span>0元</td> -->
-                <td>{{layerAudit.otherCooperationCost}}</td>
+                <td>{{layerAudit.otherCooperationCost}}元</td>
               </tr>
               <tr>
                 <td>调整为</td>
-                <td>{{layerAudit.newOwnerCommission}}</td>
-                <td>{{layerAudit.newCustCommission}}</td>
+                <td>{{layerAudit.newOwnerCommission}}元</td>
+                <td>{{layerAudit.newCustCommission}}元</td>
                 <!-- <td class="flex">       
                     <div>
                       <el-select v-model="auditForm.getDepName" class="width70 mr10" :disabled="true">
@@ -191,7 +191,7 @@
                     <div><el-input v-model="auditForm.money3" placeholder="输入金额" class="width70" :disabled="true"></el-input>元</div>
                   
                 </td> -->
-                <td>{{layerAudit.newOtherCooperationCost}}</td>
+                <td>{{layerAudit.newOtherCooperationCost}}元</td>
               </tr>
             </tbody>
           </table>
@@ -363,7 +363,7 @@
           }
         }).catch(error => {
           this.$message({
-            message:`${error.title}${error.msg}`
+            message: error
           })
         })
       },
@@ -396,7 +396,7 @@
 
           }).catch(error => {
             this.$message({
-              message:`${error.title}${error.msg}`
+              message: error
             })
           })  
         }else{    
@@ -459,7 +459,7 @@
       
           }).catch(error => {
             this.$message({
-              message:`${error.title}${error.msg}`
+              message: error
             })
           })
       },
@@ -483,7 +483,7 @@
           }
         }).catch(error => {
             this.$message({
-              message:`${error.title}${error.msg}`
+              message: error
             })
         });
       },
@@ -503,11 +503,13 @@
               let _this = this
               setTimeout(() => {
                 _this.dialogVisible = false
+                // 数据刷新
+                this.queryFn();
               }, 2000);
             }
           }).catch(error => {
               this.$message({
-                message:`${error.title}${error.msg}`
+                message: error
               })
           });
         }else{
@@ -531,11 +533,13 @@
             let _this = this
             setTimeout(() => {
               _this.dialogVisible = false
+              // 数据刷新
+              this.queryFn();
             }, 2000);
           }
         }).catch(error => {
             this.$message({
-              message:`${error.title}${error.msg}`
+              message: error
             })
         });
       },

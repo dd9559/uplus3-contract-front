@@ -2,7 +2,7 @@
     <div id="layeraudit">
         <!-- 调佣审核申请 -->
     <!-- <el-button type="text" class="curPointer" @click="dialogVisible = true">审核申请</el-button> -->
-    <el-dialog title="调佣申请" :visible="getDialogVisible" width="820px" class="layer-audit" @close='close' :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="调佣申请" :visible="getDialogVisible" width="820px" class="layer-audit" @close='close' :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
@@ -237,7 +237,7 @@ export default {
 
           }).catch(error => {
               this.$message({
-                message:`${error.title}${error.msg}`
+                message: error
               })
           })
       },
@@ -287,7 +287,7 @@ export default {
 
                 }).catch(error => {
                     this.$message({
-                      message:`${error.title}${error.msg}`
+                      message: error
                     })
                 })
             }

@@ -331,7 +331,7 @@ export default {
                 }
             }).catch((error) => {
                   this.$message({
-                    message:`${error.title}${error.msg}`
+                    message: error
                 })
             });
         },
@@ -363,7 +363,7 @@ export default {
                 }
             }).catch((error) => {
                   this.$message({
-                    message:`${error.title}${error.msg}`
+                   message: error
                 })
             });
         },
@@ -415,7 +415,7 @@ export default {
                 }
             }).catch((error) => {
                   this.$message({
-                    message:`${error.title}${error.msg}`
+                    message: error
                 })
             });
         },
@@ -440,7 +440,7 @@ export default {
                 }
             }).catch((error) => {
                   this.$message({
-                    message:`${error.title}${error.msg}`
+                    message: error
                 })
             });
         },
@@ -482,7 +482,7 @@ export default {
                     }
                 }).catch((error) => {
                     this.$message({
-                        message:`${error.title}${error.msg}`
+                        message: error
                     })
                 });
                 // debugger
@@ -563,13 +563,13 @@ export default {
                             }
                         }).catch(error => {
                             this.$message({
-                                message:`${error.title}${error.msg}`
+                                message: error
                             })
                         })
                     
                     }).catch((error) => {
                        this.$message({
-                            message:`${error.title}${error.msg}`
+                            message: error
                         })
                     })
                 }else{

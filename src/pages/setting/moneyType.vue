@@ -187,7 +187,7 @@
             },
             trim(str){  
                  return str.replace(/(^\s*)|(\s*$)/g, "")
-                },
+            },
             submitForm(){
                 // this.addForm.status=this.addForm.status?1:0
                 if(this.trim(this.addForm.name)=='' || this.trim(this.addForm.name).length>10){

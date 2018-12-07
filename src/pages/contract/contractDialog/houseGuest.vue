@@ -34,7 +34,7 @@
             <el-input v-model="houseKeyword" placeholder="房号/房源编号/房东手机" ></el-input>
           </el-form-item>
           <el-form-item>
-            <span @click="isAttention">我的关注 <span class="attention" :class="{'attention_':attention}" ></span></span>
+            <span @click="isAttention">我的关注 <span class="attention" :class="{'attention_':attention>0}" ></span></span>
           </el-form-item>
           <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
@@ -301,7 +301,7 @@ export default {
       currentPage: 1,
       pageSize: 5,
       total: 0,
-      attention: false,
+      attention: 0,
       //房源类型  2 出售  3 租价
       housetType: "",
       //客源类型  1 求租  2 求购
@@ -351,7 +351,12 @@ export default {
     },
     //我的关注
     isAttention() {
-      this.attention = !this.attention;
+      if(this.attention){
+        this.attention=0
+      }else{
+        this.attention=1
+      }
+      // this.attention = !this.attention;
       this.getHouseList();
     },
     handleCurrentChange1(val) {
@@ -380,6 +385,7 @@ export default {
         res = res.data;
         this.loading_ = false;
         if (res.status === 200) {
+          // debugger
           //alert('222')
           this.dataList = [];
           if (res.data.TotalCount > 0) {

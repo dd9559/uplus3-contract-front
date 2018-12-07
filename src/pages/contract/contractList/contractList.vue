@@ -21,7 +21,7 @@
         </el-form-item>
         <el-form-item label="用途">
           <el-select v-model="contractForm.houseinfoPurpose" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in housePurpose" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in housePurpose" :key="item.key" :label="item.value" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
@@ -267,10 +267,10 @@
             <div style="text-align:center">
               <el-button type="text" size="medium" v-if="scope.row.contState.value>1" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===6&&scope.row.contType.value<4" @click="goCheck(scope.row)">审核</el-button> 
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4" @click="goCheck(scope.row)">审核</el-button> 
               <el-button type="text" size="medium" @click="toLayerAudit(scope.row)&&scope.row.contType.value<4" v-if="scope.row.contState.value===3">调佣</el-button>
               <span v-if="scope.row.contType.value<4">
-                <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===8" @click="goSave(scope.row)">提审</el-button>
+                <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===2" @click="goSave(scope.row)">提审</el-button>
               </span>
             </div>
           </template>
