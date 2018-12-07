@@ -418,7 +418,7 @@
                     </ul>
                 </div>
             </div>
-            <span slot="footer">
+            <span slot="footer" v-loading="loadingBtn1">
                 <el-button class="paper-btn" type size="small" @click="replaceCloseFn" round>返回</el-button>
                 <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="replaceBtnFn" round>确定</el-button>
             </span>
@@ -667,15 +667,7 @@
         err:2,      //解约合同
     }
     // 操作状态
-    const OPERATION = {
-        start:1,    //已办理
-        backlog:2,    //待办理
-        sure:3,    //需确认（代办）
-        not:4,    //不可办理
-        amend:5,    //修改
-        // timeoutNot:5,    //超时未办
-        // timeoutStart:6,    //超时已办
-    }
+    const OPERATION = TOOL.OPERATION;
     // 办理状态
     const STEPS = {
         start:'办理',    //办理
@@ -719,6 +711,7 @@
                 loadingProgress:false,
                 loadingAdjust:false,
                 loadingReplace:false,
+                loadingBtn1:false,
                 // 枚举数据
                 dictionary:{
                     '6':'合同变更状态',
@@ -962,7 +955,7 @@
                                         message: `请输入办理日期`
                                     }
                                 },{
-                                    val:'',
+                                    val:resData.remarks,
                                     title:'备注',
                                     isRequired:false,
                                     type:8,
@@ -1049,6 +1042,7 @@
             replaceFn(){
                 this.replaceShow = true;
                 this.loadingReplace = true;
+                this.loadingBtn1 = true;
                 this.$ajax.get('/api/postSigning/getStepList',{
                     id:this.layerShowData.id
                 }).then(res=>{
@@ -1062,9 +1056,11 @@
                         this.replaceData.index = i;
                     }
                     this.loadingReplace = false;
+                    this.loadingBtn1 = false;
                 }).catch(err=>{
                     this.errMeFn(err);
                     this.loadingReplace = false;
+                    this.loadingBtn1 = false;
                 })
             },
             // 步骤管理
@@ -1175,6 +1171,8 @@
                 if(this.replaceData.transFlowCode===this.replaceData.index){
                     this.replaceShow = false;
                 }else{
+                    this.loadingReplace = true;
+                    this.loadingBtn1 = true;
                     let name = '';
                     let arr = [...this.replaceData.tit];
                     arr.map(res=>{
@@ -1201,8 +1199,12 @@
                             this.errMeFn(res.message);
                             this.replaceShow = false;
                         }
+                        this.loadingReplace = false;
+                        this.loadingBtn1 = false;
                     }).catch(err=>{
                         this.errMeFn(err);
+                        this.loadingReplace = false;
+                        this.loadingBtn1 = false;
                     })
                 }
             },
