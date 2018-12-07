@@ -760,21 +760,21 @@ export default {
           let dataType = JSON.parse(res.data);
           console.log(dataType);
           dataType.forEach(element => {
-            if(element.type==="买方"){
+            if(element.type==='1'){
               let item={};
               item.value=[];
               item.kind=element.type;
               item.title=element.name;
               item.isrequire=element.isNecessary;
               this.buyerList.push(item);
-            }else if(element.type==="卖方"){
+            }else if(element.type==='2'){
               let item={};
               item.value=[];
               item.kind=element.type;
               item.title=element.name;
               item.isrequire=element.isNecessary;
               this.sellerList.push(item);
-            }else if(element.type==="其他"){
+            }else if(element.type==='3'){
               let item={};
               item.value=[];
               item.kind=element.type;
@@ -1107,9 +1107,11 @@ export default {
   //资料库
   .ulData{
     display: flex;
+    flex-wrap:wrap;
     li{
       margin-right: 10px;
       position: relative;
+      margin-bottom: 10px;
       > i{
         position: absolute;
         top: 5px;

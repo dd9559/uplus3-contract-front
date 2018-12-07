@@ -19,7 +19,7 @@
         <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
           <el-form v-model="addForm" size="small">
             <el-form-item label="名称" class="add-form-item">
-              <el-input v-model="addForm.name" :maxlength="inputMax"></el-input>
+              <el-input v-model="addForm.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
             </el-form-item>
           </el-form>
