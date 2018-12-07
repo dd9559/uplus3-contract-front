@@ -143,8 +143,8 @@
                 </div>
             </div>
             <span slot="footer">
-                <el-button class="paper-btn" type size="medium" @click="propCloseFn(0)" round>取消</el-button>
-                <el-button class="paper-btn paper-btn-blue" type="primary" size="medium" @click="propCloseFn(1)" round>确定</el-button>
+                <el-button class="paper-btn" type size="small" @click="propCloseFn(0)" round>取消</el-button>
+                <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="propCloseFn(1)" round>确定</el-button>
             </span>
         </el-dialog>
         <!-- 接收弹层 -->
@@ -251,20 +251,20 @@
                 <el-button 
                 class="paper-btn paper-btn-blue" 
                 type="primary" 
-                size="medium" 
+                size="small" 
                 @click="saveBtnFn" 
                 round>保存</el-button>
                 <el-button 
                 class="paper-btn paper-btn-green" 
                 type="primary" 
-                size="medium" 
+                size="small" 
                 v-show="receiveComFn(receive.receive,0)"
                 @click="receiveBtnFn" 
                 round>接收</el-button>
                 <el-button 
                 class="paper-btn paper-btn-red" 
                 type="primary" 
-                size="medium" 
+                size="small" 
                 @click="refusedFn" 
                 v-show="receiveComFn(receive.receive,0)"
                 round>拒绝</el-button>
