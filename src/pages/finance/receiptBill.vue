@@ -50,9 +50,9 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" @input="cutNum" v-model="form.smallAmount"
+                <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
                        v-if="form.moneyType===item.key">
-                <span v-else>请输入</span>
+                <span v-else @click="form.moneyType=item.key">请输入</span>
               </li>
             </ul>
           </template>
@@ -88,9 +88,9 @@
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
             <div class="box">
-              <input type="text" class="no-style" placeholder="请输入" @input="cutNum" v-model="form.smallAmount"
+              <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
                      v-if="form.moneyType===scope.row.key">
-              <span v-else>请输入</span>
+              <span v-else @click="form.moneyType=scope.row.key">请输入</span>
             </div>
           </template>
         </el-table-column>
@@ -197,7 +197,7 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
-      <el-button class="btn-info" round size="small">取消</el-button>
+      <el-button class="btn-info" round size="small" @click="clearData">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="activeLi===''?0:activeLi" v-if="preview" @close="preview=false"></preview>
   </div>
@@ -326,6 +326,12 @@
       }
     },
     methods: {
+      clearData:function () {
+        this.$tool.clearForm(this.form)
+        this.cardList=[]
+        this.files=[]
+        this.imgList=[]
+      },
       cutNum:function () {
         this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
       },

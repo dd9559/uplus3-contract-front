@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="dialog1">
-      <el-dialog :visible.sync="shows" :before-close="handleClose" :close-on-click-modal="false">
+      <el-dialog :visible.sync="shows" :before-close="handleClose" :close-on-click-modal="false" custom-class="base-dialog">
         <!-- 头部右边关闭按钮 -->
         <b class="el-icon-close" @click="closeDialog"></b>
         <!-- 头部左边业绩分成title -->
@@ -9,7 +9,7 @@
           <h1 v-if="dialogType==0" class="f14">业绩审核</h1>
           <h1 v-if="dialogType==1">业绩编辑</h1>
           <h1 v-if="dialogType==2">业绩反审核</h1>
-          <h1 v-if="dialogType==3">业绩分成</h1>
+          <h1 v-if="dialogType==3" style="fontSize:20px;">业绩分成</h1>
           <p>
             可分配业绩：
             <span class="orange">{{comm}}元</span>
@@ -333,7 +333,8 @@
         <!-- 业绩编辑底部 -->
         <div class="ach-footer" v-if="dialogType==1">
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="keepAch(2)" class="color-blue">保存</el-button>
+              <el-button type="primary" round @click="closeDialog" class="color-white">保存</el-button>
+              <el-button type="primary" round @click="keepAchDivide" class="color-blue">保存并提交</el-button>
           </div>
         </div>
         <!-- 业绩反审核底部 -->
@@ -360,8 +361,8 @@
         <!-- 业绩分成底部      -->
         <div class="ach-footer" v-if="dialogType==3">
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="closeDialog" class="color-white">取消</el-button>
-            <el-button type="primary" round @click="keepAchDivide" class="color-blue">保存</el-button>
+            <el-button type="primary" round @click="closeDialog" class="color-white">保存</el-button>
+            <el-button type="primary" round @click="keepAchDivide" class="color-blue">保存并提交</el-button>
           </div>
         </div>
 
@@ -431,7 +432,8 @@ export default {
       },
       type: "", //房源1 客源2
       remark: "",
-      agendIds: []
+      agendIds: [],
+      addArr: []
     };
   },
   created() {},
@@ -518,6 +520,7 @@ export default {
         contractCode: this.contractCode
       };
       this.houseArr.push(obj);
+      this.addArr.push(obj);
     },
     // 添加客源经纪人
     addMansClient() {
@@ -543,10 +546,8 @@ export default {
         contractId: this.achObj.contractId,
         contractCode: this.contractCode
       };
-      console.log("zzzzz");
-      console.log(obj);
-      console.log(this.achObj);
       this.clientArr.push(obj);
+      this.addArr.push(obj);
     },
     // 删除按钮
     deleteHouse(index, rows, id) {
@@ -606,7 +607,7 @@ export default {
           remark: this.remark,
           distributions: resultArr,
           agendIds: this.agendIds,
-          contractId: this.achObj.contractId,
+          contractId: this.achObj.contractId
         };
         this.$ajax
           .postJSON("/api/achievement/examineAdopt", param)
@@ -615,7 +616,7 @@ export default {
             if (res.data.status == 200) {
               this.$message("操作完成");
               this.$emit("close", this.achIndex, 7);
-            } else if (res.data.status == 200) {
+            } else if (res.data.status != 200) {
               this.$message(res.data.message);
             }
           });
@@ -663,7 +664,7 @@ export default {
           remark: this.remark,
           distributions: resultArr,
           agendIds: this.agendIds,
-          contractId: this.achObj.contractId,
+          contractId: this.achObj.contractId
         };
         this.$ajax
           .postJSON("/api/achievement/examineReject", param)
@@ -672,7 +673,7 @@ export default {
             if (res.data.status == 200) {
               this.$message("操作完成");
               this.$emit("close", this.achIndex, 8);
-            } else if (res.data.status == 200) {
+            } else if (res.data.status != 200) {
               this.$message(res.data.message);
             }
           });
@@ -719,7 +720,6 @@ export default {
       if (flag && sumFlag) {
         // this.$emit("close", this.achIndex);
         // this.$message("操作完成");
-        console.log("zzzzzzzzzzzzzzzzz");
         console.log(this.examineDate);
         let param = {};
         if (type == 1) {
@@ -728,7 +728,7 @@ export default {
             examineDate: this.examineDate,
             distributions: resultArr,
             agendIds: this.agendIds,
-            contractId: this.achObj.contractId,
+            contractId: this.achObj.contractId
           };
         }
         if (type == 2) {
@@ -737,12 +737,14 @@ export default {
             distributions: resultArr
           };
         }
-
         this.$ajax.postJSON("/api/achievement/examineSave", param).then(res => {
-          console.log(res.data.status);
+          // console.log(res.data.status);
           if (res.data.status == 200) {
+            let sendObj = {
+              agendIds: this.agendIds
+            };
+            this.$emit("saveData",this.achIndex,resultArr);
             this.$message("操作完成");
-            this.$emit("close", this.achIndex);
           }
         });
       } else if (!sumFlag) {
@@ -817,6 +819,7 @@ export default {
       //返回的是选择当行的对象
       console.log(val);
       this.addManList = val;
+      this.addArr.push(val);
     },
     // 审核，反审核，编辑点进去的房源，客源
     codeBaseInfo(contCode, entrance, aId) {
@@ -972,6 +975,7 @@ export default {
           this.codeBaseInfo(this.code, 1);
           // 反审核
         } else if (this.dialogType == 2) {
+          this.addArr = [];
           this.codeBaseInfo(this.code, 2);
           // 业绩录入分成
         } else if (this.dialogType == 3) {
@@ -1196,7 +1200,7 @@ export default {
         text-align: right;
         padding-right: 30px;
         margin-top: 15px;
-        button {
+        button:first-of-type{
           width: 100px;
           height: 38px;
           border-radius: 19px;

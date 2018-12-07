@@ -141,9 +141,7 @@
             this.listData = res.data;
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
       },
       addProcess(title) {
@@ -181,9 +179,7 @@
               })
             })
           }).catch(error => {
-              this.$message({
-                message:`${error.title}${error.msg}`
-              })
+              this.$message({message:error})
           })
         } else if(type === 'delete') {
           const param = {
@@ -230,9 +226,7 @@
             this.getData()
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
       },
       getTypeSteps() {
@@ -256,9 +250,7 @@
             })
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
       },
       Operation(index,type) {
@@ -410,9 +402,7 @@
                   this.getData()
                 }
               }).catch(error => {
-                  this.$message({
-                    message:`${error.title}${error.msg}`
-                  })
+                  this.$message({message:error})
               })
             }
           } else {
@@ -456,9 +446,7 @@
             this.getData()
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
       }
     },

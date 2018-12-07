@@ -230,7 +230,7 @@
                 </el-table-column>
                 <el-table-column label="成交经纪人" min-width="146">
                     <template slot-scope="scope">
-                        {{agentFn(scope.row.dealagentStoreName,scope.row.agent)}}
+                        {{agentFn(scope.row.dealagentStoreName,scope.row.dealAgentName)}}
                     </template>
                 </el-table-column>
                 <el-table-column label="接收日期" min-width="114">
@@ -952,7 +952,7 @@
                         let resData = res.data;
                         let arr = [...resData.transAtepsAttach];
                         let arr2 = [{
-                                    val:resData.handleDatetime,
+                                    val:this.dateFormat(resData.handleDatetime),
                                     title:'办理日期',
                                     isRequired:true,
                                     type:2,
@@ -1002,6 +1002,7 @@
                     }
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.LookStepLoad = false;
                 })
             },
             // 后期进度
@@ -1063,6 +1064,7 @@
                     this.loadingReplace = false;
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loadingReplace = false;
                 })
             },
             // 步骤管理
@@ -1104,6 +1106,7 @@
                     this.loadingAdjust = false;
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loadingAdjust = false;
                 })
             },
             // 确认
@@ -1338,7 +1341,7 @@
             },
             // 编辑确定
             editorBtnFn(){
-                this.confirmStepFn('/postSigning/updateStep');
+                this.confirmStepFn('api/postSigning/updateStep');
             },
             // 选择第几个上传
             // stepsIndexBtnFn(i){
@@ -1346,7 +1349,7 @@
             // },
             // 图片上传
             imgBtnFn(e){
-                console.log(e)
+                // console.log(e)
                 let index = e.btnId.slice(6);
                 let arr = e.param[e.param.length - 1];
                 this.stepsFrom.list[index].val.push(arr)
@@ -1476,6 +1479,7 @@
                     this.loadingList = false;
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loadingList = false;
                 })
             },
             // 贷款银行搜索
@@ -1544,6 +1548,7 @@
                         }
                     }).catch(err=>{
                         this.errMeFn(err);
+                        this.loading2 = false;
                     })
                 }else{
                     this.propForm.departmentMo = '';
@@ -1574,6 +1579,7 @@
                     }
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loading = false;
                 })
             },
             // 清除部门搜索
@@ -1593,6 +1599,7 @@
                     this.loadingProgress = false;
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loadingProgress = false;
                 })
             },
             // 交易步骤获取数据

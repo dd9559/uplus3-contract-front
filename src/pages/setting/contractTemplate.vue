@@ -51,10 +51,10 @@
             <div class="file-upload-opera">
               <div v-if="uploadType">
                 <p>
-                  <fileUp @getUrl='getAdd("mmai",arguments)' id='mmai' class='fileup'>买卖</fileUp>
+                  <fileUp @getUrl='getAdd("mmai",arguments)' :rules="mbrules"  id='mmai' class='fileup'>买卖</fileUp>
                 </p>
                 <p>
-                   <fileUp id='jjian' @getUrl='getAdd("jjian",arguments)' class='fileup' >居间</fileUp>
+                   <fileUp id='jjian' :rules="mbrules"   @getUrl='getAdd("jjian",arguments)' class='fileup' >居间</fileUp>
                    <!-- <span class="upMsg">上传成功</span>  -->
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span>
@@ -62,7 +62,7 @@
               </div>
               <div v-else>
                 <p>
-                  <fileUp id='mban' @getUrl='getAdd("mban",arguments)' class='fileup'>模板</fileUp>
+                  <fileUp id='mban' :rules="mbrules" @getUrl='getAdd("mban",arguments)' class='fileup'>模板</fileUp>
                   <!-- <span class="upMsg">上传成功</span> -->
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
@@ -118,6 +118,7 @@
         titleStr:'',
         contraName:'',
         citys:[],
+        mbrules:['.doc','.docx'],
         uploadAddress:'',
         contraType:'',
         // templateAddress:'',
@@ -190,32 +191,54 @@
           console.log(error)
         })
       },
+      trim(str){  
+                 return str.replace(/(^\s*)|(\s*$)/g, "")
+      },
       /**
        * 上传
        */
       sureUp(){
-        if(this.contraName==''){
+        // debugger
+        if(this.trim(this.contraName).length==0){
           this.modal=true
           this.$message({
                 type: 'error',
                 message: '合同名称不能为空'
                 })
+              return 
+          }
+        if(this.uploadType){
+              if(this.mmaiAddress=='' || this.jjianAddress==''){
+                this.$message({
+                    type: 'error',
+                    message: '请上传买卖和居间模板！'
+                    })
+                  return 
+              }
         }else{
-           this.modal=false
-          this.$router.push({
-            path: "/contraPreview",
-            query: {
-              mmaiAddress: this.mmaiAddress,
-              jjianAddress:this.jjianAddress,
-              mbanAddress:this.mbanAddress,
-              selectCity:this.selectCity=='武汉'?1:this.selectCity,
-              type:this.contraType,
-              contraName:this.contraName,
-              show:1,
-              id:this.id
+              if(this.mbanAddress==''){
+                this.$message({
+                    type: 'error',
+                    message: '请上传模板！'
+                    })
+                  return 
+              }
             }
-          });
-        }      
+        this.modal=false
+        this.$router.push({
+        path: "/contraPreview",
+        query: {
+          mmaiAddress: this.mmaiAddress,
+          jjianAddress:this.jjianAddress,
+          mbanAddress:this.mbanAddress,
+          selectCity:this.selectCity=='武汉'?1:this.selectCity,
+          type:this.contraType,
+          contraName:this.contraName,
+          show:1,
+          id:this.id
+        }
+      });
+            
       },
       /**
        * 启用
@@ -257,7 +280,6 @@
             this.titleStr='合同模板详情'
             this.template = 3
           }
-          console.log(this.template,'template');
         }).catch(error => {
           console.log(error)
         })
@@ -266,7 +288,7 @@
         //上传
         this.modal = true
         if(type===1){
-          console.log(row);
+            this.contraName=''
             this.template = 1
             this.id=row.id
             this.contraType=row.type.value
@@ -277,7 +299,6 @@
         else if(type===2){
           //合同预览
           this.template = 3
-           console.log(row,'query');
           this.$router.push({
             path: "/contraPreview",
             query: {
@@ -289,14 +310,6 @@
         }
       }
     },
-    witch:{
-        templateAddress:{
-        handler(newVal,oldVal){
-
-        },
-        deep:true
-    }
-    }
   }
 </script>
 
@@ -313,7 +326,7 @@
       margin-top: 24px;
       line-height: 32px;
       height: 32px;
-      .el-form-item__content, 
+      .el-form-item__content,
       .el-form-item__label {
         line-height: 32px;
       }

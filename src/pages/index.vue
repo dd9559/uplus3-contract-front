@@ -54,127 +54,7 @@
     data() {
       return {
         activeIndex: '',
-        views:[
-          {
-            id:1,
-            name:'合同',
-            path:'1',
-            child:[
-              {
-                name:'合同列表',
-                path:'contractList'
-              },
-              {
-                name:'调佣审核',
-                path:'adjustCheck'
-              },
-              {
-                name:'结算审核',
-                path:'settleCheck'
-              },
-              {
-                name:'分账记录',
-                path:'routingRecord'
-              },
-            ]
-          },
-          {
-            id:2,
-            name:'财务',
-            path:'2',
-            child:[
-              {
-                name:'收付款单',
-                path:'Bill'
-              },
-              {
-                name:'收款审核',
-                path:'moneyCheck?type=1'
-              },
-              {
-                name:'付款审核',
-                path:'moneyCheck?type=2'
-              },
-              {
-                name:'应收实收',
-                path:'actualHarvest'
-              },
-              {
-                name:'票据管理',
-                path:'paperSet'
-              }
-            ]
-          },
-          {
-            id:3,
-            name:'业绩',
-            path:'3',
-            child:[
-              {
-                name:'应收业绩',
-                path:'actualAchievement'
-              },
-              {
-                name:'实收业绩',
-                path:'receivableAchievement'
-              },
-              // {
-              //   name:'门店实收',
-              //   path:'storeReceive'
-              // }
-            ]
-          },
-          {
-            id:4,
-            name:'签后',
-            path:'4',
-            child:[
-              {
-                name:'后期接收',
-                path:'postReceive'
-              },
-              {
-                name:'后期管理',
-                path:'postManage'
-              },
-              {
-                name:'后期监控',
-                path:'postMonitor'
-              }
-            ]
-          },
-          {
-            id:5,
-            name:'设置',
-            path:'setting',
-            child:[
-              {
-                name:'公司设置',
-                path:'company'
-              },
-              {
-                name:'合同模板设置',
-                path:'contractTemplate'
-              },
-              {
-                name:'后期流程设置',
-                path:'postProcess'
-              },
-              {
-                name:'款类设置',
-                path:'moneyType'
-              },
-              {
-                name:'操作日志',
-                path:'operationLog'
-              },
-              {
-                name:'审核流程',
-                path:'approvalProcess'
-              }
-            ]
-          }
-        ],
+        views:this.$tool.routers,
         Index:[],
         back:false
       }
@@ -202,6 +82,7 @@
       })
     },
     beforeRouteUpdate(to,from,next){
+      console.log(this.Index)
       if(to.meta.getParent){
         this.back=true
       }else {

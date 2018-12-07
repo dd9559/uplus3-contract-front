@@ -86,7 +86,7 @@
                 </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="submitForm" class="confirmBtn">确 定</el-button>
+                <el-button @click="submitForm" type="primary" class="confirmBtn">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -187,7 +187,7 @@
             },
             trim(str){  
                  return str.replace(/(^\s*)|(\s*$)/g, "")
-                },
+            },
             submitForm(){
                 // this.addForm.status=this.addForm.status?1:0
                 if(this.trim(this.addForm.name)=='' || this.trim(this.addForm.name).length>10){
@@ -404,7 +404,10 @@
 /deep/ .addform .input-group{
       &:nth-child(1) label::before{
            content: "*";
-          color: red;
+           color: red;
+           position: relative;
+           margin-right: 2px;
+           top: 3px;
       }
       .el-input__inner{
        width: auto

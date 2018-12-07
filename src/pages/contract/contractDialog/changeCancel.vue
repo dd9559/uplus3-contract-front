@@ -51,7 +51,7 @@
 					<div class="uploadbtn">
 						<ul>
 							<li v-for="(item,index) in address.value" :key="index">
-								<div class="namePath">
+								<div class="namePath" @click="getPicture(address.value,index)">
 									<upload-cell :type="item.fileType"></upload-cell>
 									<p>{{item.name}}</p>
 								</div>
@@ -115,7 +115,7 @@
 					<div class="uploadbtn">
 						<ul>
 							<li v-for="(item,index) in address.value" :key="index">
-								<div class="namePath">
+								<div class="namePath" @click="getPicture(address.value,index)">
 									<upload-cell :type="item.fileType"></upload-cell>
 									<p>{{item.name}}</p>
 								</div>
@@ -139,7 +139,7 @@
 								</file-up>
 							</li>
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
-								<div class="namePath">
+								<div class="namePath" @click="getPicture(uploadList,index)">
 									<upload-cell :type="item.fileType"></upload-cell>
 									<p>{{item.name}}</p>
 								</div>
@@ -153,12 +153,16 @@
 				<el-button @click="close">取 消</el-button>
 				<el-button type="primary" @click="saveFile">保 存</el-button>
 			</div>
+			<!-- 图片预览 -->
+    	<preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
 		</el-dialog>
 	</div>
 </template>
 
 <script>
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+	mixins: [MIXINS],
   // dialogType类型有四种：1.changeEdit 变更编辑
   //                      2.changeLook 变更查看
   //                      3.cancelEdit  解约编辑
@@ -171,7 +175,7 @@ export default {
     },
     contId: {
       type: Number,
-      default: null
+      default: 0
     },
     contState: {
       type: Number,
@@ -190,7 +194,8 @@ export default {
 			isImg:false,
 			textarea:'',
 			address:{},
-			isDelete:''
+			isDelete:'',
+			preview:false
     };
   },
 
@@ -346,7 +351,17 @@ export default {
 					this.address=address_;
 				}
 			})
-		}
+		},
+		//图片预览
+    getPicture(value,index){
+      this.start=index;
+      let arr=[];
+      // console.log(value);
+      value.forEach(item =>{
+        arr.push(item.path)
+      })
+      this.fileSign(arr)
+    }
   },
 
   created() {

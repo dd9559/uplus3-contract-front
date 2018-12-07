@@ -52,7 +52,7 @@
                     </el-table-column>
                     <el-table-column align="center" label="分支条件" prop="branchCondition">
                         <template slot-scope="scope">
-                            <span>{{scope.row.branchCondition|getBranchName}}</span>
+                            <span>{{scope.row.conditionName}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="分支节点" prop="name">
@@ -168,8 +168,8 @@
             name: "流程描述"
         }
     }
-    let flowType = ["付款审核","付款审核","应收业绩审核","合同审核","调佣审核","结算审核"]
-    let sortNo = 1
+    let flowType = ["付款审核","收款审核","应收业绩审核","合同审核","调佣审核","结算审核"]
+    let sortNo = 2
     let arr = [
         {
             name: "",
@@ -248,9 +248,7 @@
                         this.total = res.data.total
                     }
                 }).catch(error => {
-                    this.$message({
-                        message:`${error.title}${error.msg}`
-                    })
+                    this.$message({message:error})
                 })
             },
             getCityList() {
@@ -289,7 +287,9 @@
                     this.editDisabled = false
                 } else {
                     this.nodeList = [...row.branch]
-                    this.nodeList.shift(this.nodeList[0])
+                    if(this.nodeList[0].isAudit === 1) {
+                      this.nodeList.shift(this.nodeList[0])  
+                    }
                     let {...currentRow} = row
                     this.currentFlowId = currentRow.id
                     this.aduitForm.cityId = currentRow.cityId
@@ -312,14 +312,16 @@
                     confirmButtonText: '确定',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    this.$ajax.post('/api/auditflow/operateFlow',param).then(res => {
+                    this.$ajax.postJSON('/api/auditflow/operateFlow',param).then(res => {
                         res = res.data
                         if(res.status === 2013) {
                             this.$message(res.message)
                         } else if(res.status === 200) {
-                            this.$message(res.message)
+                            this.$message("删除成功")
                             this.getData()
                         }
+                    }).catch(error => {
+                        this.$message({message:error})
                     })
                 })   
             },
@@ -411,9 +413,10 @@
                         this.nodeList.unshift(obj)
                     } else {
                         this.nodeList[0].isAudit = this.isAudit
+                        this.nodeList[0].sort = 1
                     }
                     let param = {
-                        branch: JSON.stringify(this.nodeList)
+                        branch: this.nodeList
                     }
                     param = Object.assign({},this.aduitForm,param)
                     const url = "/api/auditflow/operateFlow"
@@ -424,13 +427,11 @@
                         this.aduitPost(url,param)
                     }
                 }).catch(error => {
-                    this.$message({
-                        message: `${error.title}${error.msg}`
-                    })
+                    this.$message({message:error})
                 })
             },
             aduitPost(url,param) {
-                this.$ajax.post(url,param).then(res => {
+                this.$ajax.postJSON(url,param).then(res => {
                     res = res.data
                     if(res.status === 200) {
                         this.aduitDialog = false
@@ -438,9 +439,7 @@
                         this.getData()
                     }
                 }).catch(error => {
-                    this.$message({
-                        message:`${error.title}${error.msg}`
-                    })
+                    this.$message({message:error})
                 })
             },
             queryFn() {

@@ -52,6 +52,7 @@
                   that.$message({
                     message:'上传文件格式不正确'
                   })
+                  that.uploader.splice(0,1)
                 }
               }else {
                 that.up()
@@ -100,9 +101,9 @@
       up:function () {
         // console.log(uploader)
         let path = 'picture/'
-        let maxSize = 10
+        let maxSize = 1024
         if(this.uploader.files.length!==0){
-          let type=get_suffix(this.uploader.files[0].name)
+          /*let type=get_suffix(this.uploader.files[0].name)
           if(this.fileType.includes(type)){
             maxSize=10
             if(this.uploader.files[0].size>10*1024*1024){
@@ -111,7 +112,7 @@
               })
               return
             }
-          }
+          }*/
           this.getUrl(path,maxSize).then(res=>{
             result=JSON.parse(JSON.stringify(res))
             set_upload_param(this.uploader,res,this.uploader.files[0].name);

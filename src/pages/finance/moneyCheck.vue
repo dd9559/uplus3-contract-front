@@ -92,9 +92,9 @@
           <label>收付款类:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
-              v-for="item in dictionary['25']"
+              v-for="item in drop_MoneyType"
               :key="item.key"
-              :label="item.value"
+              :label="item.name"
               :value="item.key">
             </el-option>
           </el-select>
@@ -254,6 +254,7 @@
           '25': '',
           '507': ''
         },
+        drop_MoneyType:[],
         //分页
         total:0,
         currentPage:1,
@@ -270,6 +271,7 @@
 
       this.getData()
       this.getDictionary()
+      this.getMoneyTypes()
     },
     beforeRouteUpdate(to, from, next) {
       this.activeView = parseInt(to.query.type)
@@ -331,12 +333,14 @@
             param.query = {
               tab: '收款信息',
               id:item.id,
-              type:item.inAccountType
+              type:item.inAccountType,
+              pageName:'收款详情'
             }
           } else {
             param.query = {
               tab: '付款信息',
-              id:item.id
+              id:item.id,
+              pageName:'付款详情'
             }
           }
           this.$router.push(param)
@@ -368,6 +372,15 @@
           if(res.status===200){
             this.getData()
             this.layer.show=false
+          }
+        })
+      },
+      // 获取收付款类
+      getMoneyTypes:function () {
+        this.$ajax.get('/api/payInfo/selectSmallMoneyType').then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.drop_MoneyType=res.data
           }
         })
       },

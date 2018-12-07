@@ -100,9 +100,7 @@ export default {
             this.listData = res.data;
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
     },
     // 点击添加
@@ -138,9 +136,7 @@ export default {
               this.getData();
             }
           }).catch(error => {
-              this.$message({
-                message:`${error.title}${error.msg}`
-              })
+              this.$message({message:error})
           })
       }
     },
@@ -155,9 +151,7 @@ export default {
           this.conPost(url);
         }
       }).catch(error => {
-          this.$message({
-            message: `${error.title}${error.msg}`
-          })
+          this.$message({message:error})
         }) 
     },
     // 添加 编辑 请求
@@ -172,9 +166,7 @@ export default {
             this.getData();
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
     }
   },

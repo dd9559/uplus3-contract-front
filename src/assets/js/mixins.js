@@ -32,10 +32,10 @@ const MIXINS = {
         parentIds: this.getDictionaryIds(this.dictionary)
       }
       this.$ajax.get('/api/dictionary/batchQuery', param).then(res => {
-        console.log(res);
+        // console.log(res);
         res = res.data
         if (res.status === 200) {
-          console.log(res.data)
+          // console.log(res.data)
           this.dictionary = Object.assign({}, res.data)
         }
       })
@@ -86,9 +86,9 @@ const MIXINS = {
     // 图片放大
     // 这个方法的前提是你的图片json 格式是 是name ， path 分开的
     /**
-     * 
-     * @param {图片数组} arr 
-     * @param {点击第几张图片} i 
+     *
+     * @param {图片数组} arr
+     * @param {点击第几张图片} i
      */
     previewPhoto(arr,i){
         let type = this.$tool.get_suffix(arr[i].path)

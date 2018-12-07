@@ -31,8 +31,14 @@ Vue.component("fileUp",fileUp)
 Vue.component("uploadCell",uploadCell)
 Vue.component("preview",preview)
 
+Vue.directive('focus', {
+  inserted: function (el) {
+    // 聚焦元素
+    el.focus()
+  }
+})
+
 router.beforeEach((to,from,next)=>{
-  // debugger
   if(to.matched.some(record=>record.meta.getParent)){
     if(from.path!=='/'){
       localStorage.setItem('route',from.fullPath)

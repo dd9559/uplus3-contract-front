@@ -4,6 +4,7 @@
     :visible.sync="paperShow"
     width="1000px"
     class="layer-paper"
+    v-loading="pdfLoading"
     @close="propCloseFn">
         <div v-loading="loading">
             <div class="paper-edit-box" v-if="paperType">
@@ -59,17 +60,18 @@
                 :payerType="paperInfoData.payerType"></LayerPaperInfo>
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
-            <!-- <iframe name="test" id="test" :src="pdfUrl" frameborder="0"></iframe> -->
+            <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
         </div>
         <p slot="footer" v-show="FooterShow">
-            <el-button round  size="medium" class="paper-btn">取消</el-button>
-            <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaper">打印</el-button>
+            <el-button round  size="medium" class="paper-btn" @click="propCloseFn">取消</el-button>
+            <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaperFn">打印</el-button>
         </p>
     </el-dialog>
 </template>
 
 <script>
     import LayerPaperInfo from '@/components/LayerPaperInfo';
+    import PdfPrint from '@/components/PdfPrint';
     import { MIXINS } from "@/assets/js/mixins";
 
     export default {
@@ -88,6 +90,7 @@
                 moneyTypes: [], //临时存放勾选的款类
                 activeType: 0, //当前预览项
                 loading:false,
+                pdfLoading:false,
                 pdfUrl:'',
             }
         },
@@ -109,13 +112,13 @@
                         // this.paperShow = true
                         this.loading = false;
                         this.FooterShow = true;
+                        this.printPaper();
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.$message.error(err)
                 })
             },
             billing: function() {
-
                 if(!this.moneyTypes[this.activeType].project){
                     this.$message.error('请选择开票项目');
                     return false
@@ -131,10 +134,6 @@
                     this.$message.error('请勾选款类');
                     return false
                 }
-                // if(!this.FooterShow){
-                //     this.$message.error('请勾选款类');
-                //     return false
-                // }
                 let param = this.moneyTypes[this.activeType]
                 let obj = {
                     createTime: '',
@@ -151,35 +150,10 @@
                     }
                 })
                 this.paperInfoData = Object.assign({}, this.paperInfoData, obj)
-
+                this.printPaper();
             },
             // 票据详情 打印
             printPaper() {
-                if(this.pdfUrl){
-                    //  var new_page = window.open(this.pdfUrl,"_blank");
-                    //     new_page.print();
-                    //     new_page.close();
-                    // console.log(document)
-                    debugger
-                    let newIframe = document.createElement('iframe');
-                    newIframe.name = 'test'
-
-                    // var new_iframe = document.createElement('IFRAME');
-                    // var doc = null;
-                    //  doc = new_iframe.document;
-                    // var new_iframe = document.createElement('IFRAME');
-                    // var doc = null;
-                    // doc = new_iframe.contentWindow.document;
-                    // doc.innerHTML = '111111111111111111111'
-                    // doc.close();
-                    // new_iframe.src = this.pdfUrl;
-                    // new_iframe.contentWindow.focus();
-                    // new_iframe.contentWindow.print();
-                    // document.getElementById("test").contentWindow.focus();
-                    // document.getElementById("test").contentWindow.print();
-                    // window.print();
-                    return false
-                }
                 let obj = {}
                 if (!this.paperType) {
                     obj = {
@@ -195,7 +169,7 @@
                         billType: type.project
                     }
                 }
-
+        
                 this.$ajax.post('/api/bills/print', obj).then(res => {
                     res = res.data
                     if(res.status === 200){
@@ -205,23 +179,22 @@
                         }).then(res=>{
                             res = res.data
                             if(res.status ===200){
-                                // this.pdfUrl = res.data.url;
-                                // document.getElementById("test").contentWindow.print();
-                                // console.log(res.data.url)
+                                this.pdfUrl = res.data.url;
+                                // this.$refs.pdfPrint.print();
                             }
-                            // console.log(res)
+                            this.pdfLoading = false;
                         }).catch(err=>{
-                            console.log(err)
+                            this.$message.error(err)
+                            this.pdfLoading = false;
                         })
-                        // this.pdfUrl = res.data;
-                        // this.$refs.pdfUrl.contentWindow.print();
-                        // this.propCloseFn();
-                        // this.$emit('emitPaperSet');
-                        // console.log(res)
                     }
                 }).catch(err=>{
-
+                    this.$message.error(err)
+                    this.pdfLoading = false;
                 })
+            },
+            printPaperFn(){
+                this.$refs.pdfPrint.print();
             },
             // 获取开票列表
             paperList: function() {
@@ -248,7 +221,7 @@
                 this.paperType = bool;
                 this.loading = true;
                 this.paperShow = true;
-                this.pdfUrl= ""
+                // this.pdfUrl= ""
                 this.ID = id
                 if (bool) {
                     this.paperList();
@@ -258,7 +231,8 @@
             }
         },
         components: {
-            LayerPaperInfo
+            LayerPaperInfo,
+            PdfPrint
         },
         mounted() {
             // 枚举类型数据获取
