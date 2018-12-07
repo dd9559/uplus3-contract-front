@@ -365,7 +365,7 @@ export default{
                         if(this.qmnewsrcArr[i][newsrc]){
                             obj.src=this.qmnewsrcArr[i][newsrc]
                             flag=1
-                            if(Number(this.timeout)<new Date().getTime()){
+                            if(Number(this.qmnewsrcArr[i].timeout)<Math.floor(new Date().getTime()/1000)){
                                 flag=0
                             }
                         }
@@ -373,12 +373,14 @@ export default{
                      if(flag==0){
                           this.$ajax.get('/api/load/generateAccessURL',{url:newsrc}).then(res=>{
                           if(res.status==200){
-                          console.log(res.data.data.url,'maimaires');
+                        //   console.log(this.timeout,'this.timeout');
                           this.timeout=res.data.data.url.split('?')[1].split('&')[0].split('=')[1]
                           let newsrc2=res.data.data.url
                           let a={}
                           a[newsrc]=newsrc2
+                          a['timeout']=this.timeout
                           this.qmnewsrcArr.push(a)
+                          console.log(this.qmnewsrcArr,'arr');
                           obj.src=newsrc2
                           }
                      })
