@@ -165,17 +165,21 @@
           >
             <template slot-scope="scope">
               <p
-                v-if="scope.row.achievementState==6"
+                v-if="scope.row.achievementState==-1"
                 class="blue"
-              >待审核</p>
+              >待提审</p>
               <p
-                v-if="scope.row.achievementState==7"
+                v-if="scope.row.achievementState==0"
+                class="blue"
+              >审核中</p>
+              <p
+                v-if="scope.row.achievementState==1"
                 class="green"
-              >通过</p>
+              >已通过</p>
               <p
-                v-if="scope.row.achievementState==8"
+                v-if="scope.row.achievementState==2"
                 class="orange"
-              >驳回</p>
+              >已驳回</p>
             </template>
           </el-table-column>
 
@@ -230,10 +234,14 @@
             width="230"
           >
             <template slot-scope="scope">
-              <div v-for="item in scope.row.distributionFroms">
-                <p>{{item.level4}}-{{item.assignor}}</p>
-                <!-- <p></p> -->
-              </div>
+                 <div v-if="scope.row.distributions.length==0">
+                      <div>--</div>
+                  </div> 
+                 <div v-else>
+                    <div v-for="item in scope.row.distributions"> 
+                            <p>{{item.level4}}-{{item.assignor}}</p>
+                     </div> 
+                 </div>    
             </template>
           </el-table-column>
 
@@ -242,50 +250,79 @@
             width="160"
           >
             <template slot-scope="scope">
-              <div v-for="item in scope.row.distributionFroms">
-                <div v-if="item.roleType==1">
-                  <p>录入</p>
-                </div>
-                <div v-else-if="item.roleType==2">
-                  <p>维护</p>
-                </div>
-                <div v-else-if="item.roleType==3">
-                  <p>独家</p>
-                </div>
-                <div v-else-if="item.roleType==4">
-                  <p>房勘</p>
-                </div>
-                <div v-else-if="item.roleType==5">
-                  <p>钥匙</p>
-                </div>
-                <div v-else-if="item.roleType==15">
-                  <p>委托</p>
-                </div>
-                <div v-else-if="item.roleType==16">
-                  <p>建盘</p>
-                </div>
-                <div v-else-if="item.roleType==6">
-                  <p>主客方</p>
-                </div>
-                <div v-else-if="item.roleType==10">
-                  <p>推荐人</p>
-                </div>
-                <div v-else-if="item.roleType==14">
-                  <p>签约人</p>
-                </div>
-                <div v-else-if="item.roleType==11">
-                  <p>A/M</p>
-                </div>
-                <div v-else-if="item.roleType==7">
-                  <p>协议方</p>
-                </div>
-                <div v-else-if="item.roleType==17">
-                  <p>协议方2</p>
-                </div>
+                <div v-if="scope.row.distributions.length==0">
+                      <div>--</div>
+                 </div> 
                 <div v-else>
-                  <p>-</p>
-                </div>
-              </div>
+                   <div v-for="item in scope.row.distributions">
+                      <div>
+                          <div v-if="item.roleType==1"> 
+                             <p>录入</p>
+                          </div>
+                          <div v-if="item.roleType==2">
+                             <p>维护</p>
+                          </div>
+                          <div v-if="item.roleType==3">
+                             <p>独家</p>
+                          </div>
+                           <div v-if="item.roleType==4">
+                             <p>房勘</p>
+                          </div>
+                           <div v-if="item.roleType==5">
+                             <p>钥匙</p>
+                          </div>
+                           <div v-if="item.roleType==15">
+                             <p>委托</p>
+                          </div>
+                           <div v-if="item.roleType==16">
+                             <p>建盘</p>
+                          </div>
+
+                           <div v-if="item.roleType==6">
+                             <p>主客方</p>
+                          </div>
+
+                          <div v-if="item.roleType==14">
+                             <p>签约人</p>
+                          </div>
+
+                           <div v-if="item.roleType==11">
+                             <p>A/M</p>
+                          </div>
+                          <div v-if="item.roleType==7">
+                             <p>协议方</p>
+                          </div>
+                          <div v-if="item.roleType==17">
+                             <p>协议方2</p>
+                          </div>
+
+
+                          <div v-if="item.roleType==8">
+                             <p>金融业绩分成人</p>
+                          </div>
+
+
+                          <div v-if="item.roleType==9">
+                             <p>其他业绩分成人</p>
+                          </div>
+
+                          <div v-if="item.roleType==12">
+                             <p>意向违约金</p>
+                          </div>
+
+                         <div v-if="item.roleType==13">
+                             <p>公共业绩</p>
+                          </div>
+
+                          <div v-if="item.roleType==10">
+                             <p>推荐人</p>
+                          </div>
+                      </div>
+                    </div>
+                </div> 
+           
+
+             
             </template>
           </el-table-column>
 
@@ -294,13 +331,28 @@
             width="80"
           >
             <template slot-scope="scope">
-              <p v-for="item in scope.row.distributionFroms">{{item.ratio}}%</p>
+                 <div v-if="scope.row.distributions.length==0">
+                      <div>--</div>
+                  </div> 
+                 <div v-else>
+                    <div v-for="item in scope.row.distributions"> 
+                           <p>{{item.ratio}}%</p>
+                     </div> 
+                 </div>  
             </template>
           </el-table-column>
 
           <el-table-column label="应收分成金额（元）" width="150">
             <template slot-scope="scope">
-              <p v-for="item in scope.row.distributionFroms">{{item.aMoney}}</p>
+                 <div v-if="scope.row.distributions.length==0">
+                      <div>--</div>
+                  </div> 
+                 <div v-else>
+                    <p v-for="item in scope.row.distributions">
+                       {{item.ratio/100*scope.row.receiptsCommission | rounding}}
+                    </p>
+                 </div> 
+              
             </template>
           </el-table-column>
           </el-table-columfn>
@@ -311,24 +363,31 @@
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
                        <div
-                         v-if="scope.row.achievementState==6"
+                         v-if="scope.row.achievementState==-1"
                          class="check-btn"
                        >
-                         <span @click.stop="checkAch(scope.row,scope.$index)" style="cursor:pointer;">审核</span>
+                         <span @click.stop="tishen()" style="cursor:pointer;">提审</span>
                          <span @click.stop="editAch(scope.row,scope.$index)" style="cursor:pointer;">编辑</span>
                        </div>
                        <div
-                         v-if="scope.row.achievementState==7"
+                         v-if="scope.row.achievementState==1"
                          class="check-btn"
                        >
                          <span @click.stop="againCheck(scope.row,scope.$index)" style="cursor:pointer;">反审核</span>
                        </div>
                        <div
-                         v-if="scope.row.achievementState==8"
+                         v-if="scope.row.achievementState==2"
                          class="check-btn"
                        >
-                         <span @click.stop="checkAch(scope.row,scope.$index)" style="cursor:pointer;">审核</span>
                          <span @click.stop="editAch(scope.row,scope.$index)" style="cursor:pointer;">编辑</span>
+                       </div>
+
+                       <div
+                         v-if="scope.row.achievementState==0"
+                         class="check-btn"
+                       >
+                            <span @click.stop="chehui()" style="cursor:pointer;">撤回</span>
+                            <span @click.stop="checkAch(scope.row,scope.$index)" style="cursor:pointer;">审核</span>
                        </div>
               </div>
              <div v-else>
@@ -354,7 +413,7 @@
     </div>
 
     <!-- 表单列表弹出框（业绩详情） -->
-    <el-dialog :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false">
+     <el-dialog :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false" custom-class="base-dialog">
       <b
         class="el-icon-close"
         @click="closeDialog"
@@ -364,7 +423,6 @@
         <p class="f14">可分配业绩：<span class="orange">{{comm}}元</span></p>
       </div>
       <div class="ach-body">
-
         <h1 class="f14">房源方分成</h1>
         <div class="ach-divide-list">
           <el-table
@@ -459,8 +517,8 @@
             style="width: 100%"
           >
             <!-- roleType 分成人角色类型 :
-                                                    房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
-                                                    客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
+                房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
+                客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
             <el-table-column
               label="角色类型"
               width="100"
@@ -578,14 +636,17 @@
             >
               <template slot-scope="scope">
                 <div>
-                  <div v-if="scope.row.result.value==6">
-                    <p class="blue">未审核</p>
+                  <div v-if="scope.row.result.value==0">
+                    <p class="blue">审核中</p>
                   </div>
-                  <div v-else-if="scope.row.result.value==7">
-                    <p class="green">通过</p>
+                  <div v-if="scope.row.result.value==-1">
+                    <p class="blue">待提审</p>
                   </div>
-                  <div v-else-if="scope.row.result.value==8">
-                    <p class="orange">驳回</p>
+                  <div v-else-if="scope.row.result.value==1">
+                    <p class="green">已通过</p>
+                  </div>
+                  <div v-else-if="scope.row.result.value==2">
+                    <p class="orange">已驳回</p>
                   </div>
                   <div v-else>
                     <p>-</p>
@@ -613,13 +674,29 @@
     <achDialog
       :shows="shows"
       @close="close"
+      @saveData="saveData"    
       :dialogType="dialogType"
       :contractCode="code2"
       :aId="aId"
       :achIndex="achIndex"
       :achObj="achObj"
     ></achDialog>
+     
+     <!-- 撤回提审弹框 -->
+       <div>
+               <el-dialog
+                   :title="'操作-'+smallTips"
+                   :visible.sync="recallShow"
+                    width="20%">
+                   <span>是否确认{{smallTips}}?</span>
+                   <span slot="footer" class="dialog-footer">
+                     <el-button @click="recallShow = false">取 消</el-button>
+                     <el-button type="primary">确 定</el-button>
+                   </span>
+              </el-dialog>
+       </div>
   </div>
+  
 </template>
 
 <script>
@@ -671,7 +748,9 @@ export default {
       ajaxParam:{},
       total:0,
       loading:true,
-      achObj:{}
+      achObj:{},
+      recallShow:false,
+      smallTips:""
     };
   },
   created() {
@@ -696,6 +775,11 @@ export default {
     achDialog,
     MIXINS,
     ScreeningTop
+  },
+  filters: {
+        rounding (value) {
+        return value.toFixed(2)
+        }
   },
   methods: {
     selUser() {
@@ -733,12 +817,23 @@ export default {
       console.log(val2);
       this.shows=false;
       this.code2='';
-      if(val1&&val2){
-        this.selectAchList[val1].achievementState=val2;
+      if(typeof(val2)==String){
+        alert(0)
+        // if(val1&&val2){
+        //    this.selectAchList[val1].achievementState=val2;
+        // }
       }
+      if(typeof(val2)==Object){
+        alert(1)
+      }
+    
     },
     closeDialog() {
       this.dialogVisible = false;
+    },
+    saveData(index,resultArr){
+        this.shows=false;
+        this.selectAchList[index].distributions=resultArr;
     },
     //获取应收列表详情
     enterDetail(row) {
@@ -848,7 +943,7 @@ export default {
       this.aId =  value.aId;
       this.contractId =  value.id;
       this.dialogType = 2;
-      // console.log(this.dialogType);
+      this.achIndex=index 
       this.achObj={
         contractId:value.id,//合同id
       }
@@ -874,6 +969,14 @@ export default {
           contType: value.contType.value
         }
       });
+    },
+    tishen(){
+      this.smallTips="提审";
+      this.recallShow=true;
+    },
+    chehui(){
+       this.smallTips="撤回";
+       this.recallShow=true;
     }
   }
 };
@@ -1035,7 +1138,7 @@ export default {
   }
 
   //业绩详情弹框改变样式
-  /deep/ .el-dialog {
+  /deep/ .el-dialog.base-dialog {
     min-width: 856px;
     height: 666px;
     overflow: auto;
@@ -1097,19 +1200,20 @@ export default {
         margin: 20px 0 0 0px;
       }
     }
+      /deep/ .el-dialog__header,
+      /deep/ .el-dialog__footer,
+      /deep/ .el-dialog__body {
+        padding: 0 !important;
+      }
+     /deep/ .el-dialog__header {
+       .el-dialog__headerbtn {
+         right: 0;
+         top: 0;
+         display: none;
+      }
   }
-  /deep/ .el-dialog__header,
-  /deep/ .el-dialog__footer,
-  /deep/ .el-dialog__body {
-    padding: 0 !important;
   }
-  /deep/ .el-dialog__header {
-    .el-dialog__headerbtn {
-      right: 0;
-      top: 0;
-      display: none;
-    }
-  }
+
 }
 /deep/ .el-pagination {
   text-align: center;

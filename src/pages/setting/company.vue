@@ -61,14 +61,14 @@
         </el-table-column>
         <el-table-column align="center" label="银行账户" width="200">
           <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard }}</p>
+            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard|formatBankCard }}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="合作方式" prop="cooperationMode.label" width="150">
         </el-table-column>
         <el-table-column align="center" label="添加时间" prop="createTime" width="208">
           <template slot-scope="scope">
-            <span>{{scope.row.createTime|formatDate}}</span>
+            <span>{{scope.row.createTime|formatDate(2)}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="添加人" prop="createByName" width="150">
@@ -213,7 +213,7 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgcontract" class="up" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li><fileUp id="imgcontract" class="up" :rules="['.png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
                   <li v-show="companyForm.contractSign!==''"><div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{contractName}}</p><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
@@ -223,7 +223,7 @@
               <div class="upload">
                 <span>上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgfinance" class="up" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li><fileUp id="imgfinance" class="up" :rules="['.png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
                   <li v-show="companyForm.financialSign!==''"><div @click="getPicture(2)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{financialName}}</p><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
@@ -424,9 +424,7 @@
             this.count = res.data.total
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
       },
       getCityList() {
@@ -435,6 +433,8 @@
           if(res.status === 200) {
             this.cityList = res.data
           }
+        }).catch(error => {
+          this.$message({message:error})
         })
       },
       getStoreList(val) {
@@ -447,6 +447,8 @@
           if(res.status === 200) {
             this.storeList = res.data
           }
+        }).catch(error => {
+          this.$message({message:error})
         })
         this.cityList.find(item => {
           if(val === item.id) {
@@ -464,16 +466,12 @@
                 this.companyForm.storeName = item.name
               }
             })
-          } else {
-            this.noticeShow = true
-            setTimeout(() => {
-              this.noticeShow = false
-            }, 2000)
           }
         }).catch(error => {
-          this.$message({
-            message:`${error.title}${error.msg}`
-          })
+          this.noticeShow = true
+          setTimeout(() => {
+            this.noticeShow = false
+          }, 2000)
         })
       },
       //关闭模态窗
@@ -497,9 +495,7 @@
             this.directInfo = res.data
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
       },
       //合作方式选择
@@ -610,9 +606,7 @@
                   this.getCompanyList()
                 }
               }).catch(error => {
-                  this.$message({
-                    message:`${error.title}${error.msg}`
-                  })
+                  this.$message({message:error})
               })
             } else {
               let obj = {
@@ -627,16 +621,12 @@
                   this.getCompanyList()
                 }
               }).catch(error => {
-                  this.$message({
-                    message:`${error.title}${error.msg}`
-                  })
+                  this.$message({message:error})
               })
             }
           }
         }).catch(error => {
-          this.$message({
-            message: `${error.title}${error.msg}`
-          })
+          this.$message({message:error})
         })
       },
       //点击查看和编辑
@@ -718,6 +708,11 @@
       resetFormFn() {
         this.$tool.clearForm(this.searchForm)
         this.searchTime = []
+      }
+    },
+    filters: {
+      formatBankCard(val) {
+        return val.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
       }
     }
 }
