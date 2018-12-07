@@ -64,7 +64,7 @@
     <el-dialog :title="modalTitle" :visible.sync="stepsTypeDialog" width="740px" class="steps-type" :closeOnClickModal="$tool.closeOnClickModal">
       <el-form :model="addForm" class="addform" size="small">
         <el-form-item label="步骤类型">
-          <el-input v-model="addForm.name" autocomplete="off" maxlength="30"></el-input>
+          <el-input v-model="addForm.name" autocomplete="off" maxlength="30" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
         </el-form-item>
         <el-form-item label="分配负责角色">
           <el-select v-model="addForm.dutyType" filterable>
@@ -86,7 +86,7 @@
           </div>
           <div class="input-group">
             <label>步骤名称：</label>
-            <el-input type="text" v-model="stepBusiness.name" :maxlength="inputMax"></el-input>
+            <el-input type="text" v-model="stepBusiness.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
             <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
           </div>
           <div class="input-group">
