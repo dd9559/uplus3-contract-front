@@ -4,6 +4,7 @@ import Vue from 'vue'
 import 'babel-polyfill'
 import App from './App'
 import router from './router'
+import {store} from './store'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
@@ -39,10 +40,10 @@ Vue.directive('focus', {
 })
 
 router.beforeEach((to,from,next)=>{
+  let pathList = localStorage.getItem('router')
+  store.commit('setPath',pathList?pathList.split(','):[])
   if(to.matched.some(record=>record.meta.getParent)){
-    if(from.path!=='/'){
-      localStorage.setItem('route',from.fullPath)
-    }
+    // debugger
     next()
   }else {
     next()
@@ -53,6 +54,7 @@ router.beforeEach((to,from,next)=>{
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

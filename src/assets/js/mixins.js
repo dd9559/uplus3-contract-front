@@ -1,3 +1,5 @@
+import {mapMutations} from 'vuex'
+
 const MIXINS = {
   data(){
     return{
@@ -144,6 +146,10 @@ const MIXINS = {
                 break;
         }
     },
+    ...mapMutations([
+      'setPath',
+      'sliderRouter'
+    ])
   }
 }
 

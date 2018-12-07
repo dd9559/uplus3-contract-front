@@ -67,7 +67,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-model="scope.row.userName">
+            <input type="text" class="no-style" placeholder="请输入" maxlength="6" v-model.trim="scope.row.userName" @input="inputOnly">
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
@@ -181,6 +181,9 @@
       console.log(this.$tool.repeatCell([1,2,3,4,2]))
     },
     methods:{
+      inputOnly:function () {
+        this.list[0].userName=this.$tool.textInput(this.list[0].userName)
+      },
       clearData:function () {
         this.$tool.clearForm(this.form)
         this.$tool.clearForm(this.list[0])

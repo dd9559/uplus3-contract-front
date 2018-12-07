@@ -35,7 +35,7 @@
             <li v-for="(item,index) in Index" :key="index">{{item}}</li>
           </ul>
           <p class="operation">
-            <el-button  type="text" @click="goBack" v-if="back">返回</el-button>
+            <el-button  type="text" @click="goBack" v-if="Index.length>2">返回</el-button>
           </p>
         </div>
         <div class="page-view-content">
@@ -48,6 +48,7 @@
 
 <script>
   import index from "../router";
+  import { mapMutations } from 'vuex'
 
   export default {
     name: "index",
@@ -59,7 +60,7 @@
         back:false
       }
     },
-    beforeRouteEnter(to,from,next){
+    /*beforeRouteEnter(to,from,next){
       next(vm=>{
         let path=to.fullPath
         if(to.meta.getParent){
@@ -93,6 +94,13 @@
     },
     created(){
 
+    },*/
+    created(){
+      this.Index=this.$store.state.path
+    },
+    beforeRouteUpdate(to,from,next){
+      this.Index=this.$store.state.path
+      next()
     },
     methods: {
       handleSelect(key, keyPath) {
@@ -103,12 +111,20 @@
           var myArray = myRe.exec(JSON.stringify(this.views));
           // console.log(myArray)
           this.Index.push(myArray[1])
+          this.setPath(this.Index)
+          this.sliderRouter(keyPath)
         })
       },
       goBack:function () {
+        // this.setPath(localStorage.getItem('router').split(',').substring(0,2))
         this.$router.go(-1)
-      }
-    }
+        this.handleSelect(1,this.$store.state.slider)
+      },
+      ...mapMutations([
+        'setPath',
+        'sliderRouter'
+      ])
+    },
   }
 </script>
 
