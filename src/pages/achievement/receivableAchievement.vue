@@ -153,71 +153,112 @@
           <!-- level4 assignor -->
           <el-table-column label="分成人" width="190">
             <template slot-scope="scope">
-              <div v-for="item in scope.row.distributionFroms">
-                <p>{{item.level4}}-{{item.assignor}}</p>
+              <div v-if="scope.row.distributionFroms.length==0">
+                  <div>--</div>
+              </div> 
+              <div v-else>
+                 <div v-for="item in scope.row.distributionFroms">
+                   <p>{{item.level4}}-{{item.assignor}}</p>
+                 </div>
               </div>
+            
             </template>
           </el-table-column>
           <!-- roleType -->
           <el-table-column label="角色类型" width="130">
             <template slot-scope="scope">
-              <div v-for="item in scope.row.distributionFroms">
-                <div v-if="item.roleType==1">
-                  <p>录入</p>
-                </div>
-                <div v-else-if="item.roleType==2">
-                  <p>维护</p>
-                </div>
-                <div v-else-if="item.roleType==3">
-                  <p>独家</p>
-                </div>
-                <div v-else-if="item.roleType==4">
-                  <p>房勘</p>
-                </div>
-                <div v-else-if="item.roleType==5">
-                  <p>钥匙</p>
-                </div>
-                <div v-else-if="item.roleType==15">
-                  <p>委托</p>
-                </div>
-                <div v-else-if="item.roleType==16">
-                  <p>建盘</p>
-                </div>
-                <div v-else-if="item.roleType==6">
-                  <p>主客方</p>
-                </div>
-                <div v-else-if="item.roleType==10">
-                  <p>推荐人</p>
-                </div>
-                <div v-else-if="item.roleType==14">
-                  <p>签约人</p>
-                </div>
-                <div v-else-if="item.roleType==11">
-                  <p>A/M</p>
-                </div>
-                <div v-else-if="item.roleType==7">
-                  <p>协议方</p>
-                </div>
-                <div v-else-if="item.roleType==17">
-                  <p>协议方2</p>
-                </div>
-                <div v-else>
-                  <p>-</p>
-                </div>
+                  <div v-if="scope.row.distributionFroms.length==0">
+                  <div>--</div>
+              </div> 
+              <div v-else>
+                   <div v-for="item in scope.row.distributionFroms">
+                       <div v-if="item.roleType==1"> 
+                          <p>录入</p>
+                       </div>
+                       <div v-if="item.roleType==2">
+                          <p>维护</p>
+                       </div>
+                       <div v-if="item.roleType==3">
+                          <p>独家</p>
+                       </div>
+                        <div v-if="item.roleType==4">
+                          <p>房勘</p>
+                       </div>
+                        <div v-if="item.roleType==5">
+                          <p>钥匙</p>
+                       </div>
+                        <div v-if="item.roleType==15">
+                          <p>委托</p>
+                       </div>
+                        <div v-if="item.roleType==16">
+                          <p>建盘</p>
+                       </div>
+
+                        <div v-if="item.roleType==6">
+                          <p>主客方</p>
+                       </div>
+
+                       <div v-if="item.roleType==14">
+                          <p>签约人</p>
+                       </div>
+
+                        <div v-if="item.roleType==11">
+                          <p>A/M</p>
+                       </div>
+                       <div v-if="item.roleType==7">
+                          <p>协议方</p>
+                       </div>
+                       <div v-if="item.roleType==17">
+                          <p>协议方2</p>
+                       </div>
+
+
+                       <div v-if="item.roleType==8">
+                          <p>金融业绩分成人</p>
+                       </div>
+
+
+                       <div v-if="item.roleType==9">
+                          <p>其他业绩分成人</p>
+                       </div>
+
+                       <div v-if="item.roleType==12">
+                          <p>意向违约金</p>
+                       </div>
+
+                      <div v-if="item.roleType==13">
+                          <p>公共业绩</p>
+                       </div>
+
+                       <div v-if="item.roleType==10">
+                          <p>推荐人</p>
+                       </div>
+                   </div> 
               </div>
+            
             </template>
           </el-table-column>
           <!-- ratio -->
           <el-table-column label="分成比例" width="80">
             <template slot-scope="scope">
-              <p v-for="item in scope.row.distributionFroms">{{item.ratio}}%</p>
+               <div v-if="scope.row.distributionFroms.length==0">
+                  <div>--</div>
+              </div> 
+              <div v-else>
+                  <p v-for="item in scope.row.distributionFroms">{{item.ratio}}%</p>
+              </div>     
             </template>
           </el-table-column>
 
           <!-- agentReceipts -->
           <el-table-column label="实收分成金额(元)" width="130">
             <template slot-scope="scope">
-              <p v-for="item in scope.row.distributionFroms">{{item.agentReceipts}}</p>
+              <div v-if="scope.row.distributionFroms.length==0">
+                  <div>--</div>
+              </div> 
+              <div v-else>
+                   <p v-for="item in scope.row.distributionFroms">{{item.agentReceipts}}</p>
+              </div>   
             </template>
           </el-table-column>
 
@@ -233,7 +274,12 @@
           <!-- agentPayFee -->
           <el-table-column label="刷卡手续费(元)" width="120">
             <template slot-scope="scope">
-              <p v-for="item in scope.row.distributionFroms">{{item.agentPayFee}}</p>
+                   <div v-if="scope.row.distributionFroms.length==0">
+                  <div>--</div>
+              </div> 
+              <div v-else>
+                   <p v-for="item in scope.row.distributionFroms">{{item.agentPayFee}}</p>
+              </div>           
             </template>
           </el-table-column>
         </el-table>
