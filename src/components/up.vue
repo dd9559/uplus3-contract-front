@@ -69,7 +69,7 @@
               // 响应
               if(info.status===200||info.status===203){
                 that.$message({
-                  message:'上传成功'
+                  message:'选择文件成功'
                 })
                 // console.log(file)
                 that.filePath=[].concat({
