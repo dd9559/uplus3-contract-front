@@ -341,8 +341,9 @@ export default {
       } 
     }
     .el-dialog__body{
-          padding: 0;
-      }
+        padding: 0;
+    }
+    
   }
   .audit-box{
     padding: 0 20px 0px 20px;

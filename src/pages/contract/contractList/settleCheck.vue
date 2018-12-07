@@ -2,7 +2,7 @@
 <template>
   <div class="view-container" id="settlecheck">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="63" class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini">
         <el-form-item label="发起日期">
           <el-date-picker v-model="adjustForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
@@ -27,12 +27,15 @@
 
         <el-form-item label="审核状态">
           <el-select v-model="adjustForm.examineState" placeholder="全部" class="width150">
-             <el-option
+            <!-- <el-option
               v-for="item in toExamineState"
               :key="item.value"
               :label="item.label"
               :value="item.value">
-            </el-option>
+            </el-option> -->
+            <el-option label="审核中" value="0"></el-option>
+            <el-option label="通过" value="1"></el-option>
+            <el-option label="驳回" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
@@ -89,9 +92,9 @@
 
         <el-table-column label="审核状态">
           <template slot-scope="scope">
-            <span class="blue" v-if="scope.row.examineState.value===6">未提审</span>
-            <span class="green" v-if="scope.row.examineState.value===7">通过</span>
-            <span class="red" v-if="scope.row.examineState.value===8">驳回</span>
+            <span class="blue" v-if="scope.row.examineState.value===0">审核中</span>
+            <span class="green" v-if="scope.row.examineState.value===1">通过</span>
+            <span class="red" v-if="scope.row.examineState.value===2">驳回</span>
           </template>
         </el-table-column>
 
@@ -115,7 +118,7 @@
         </el-table-column>
               
         <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope" v-if="scope.row.examineState.value=== 6">
+          <template slot-scope="scope" v-if="scope.row.examineState.value=== 0">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
         </el-table-column>
@@ -235,6 +238,7 @@
          adjustForm:{
           signDate: '', //发起日期
           contType: '', //合同类型
+          examineState:'',
           getDepName: [{
             name: "全部",
             id: ""
@@ -247,18 +251,20 @@
           keyWord: ''   //关键字
 
         },
-        toExamineState: [{
-          value: 6,
-          label: '未提审'
-        }, {
-          value: 7,
-          label: '通过'
-        }, {
-          value: 8,
-          label: '驳回'
-        }], 
+       
 
-        examineState: '',
+        // toExamineState: [{
+        //   label: '审核中',
+        //   value: 0
+        // },
+        // {
+        //   label: '通过',
+        //   value: 1
+        // },
+        // {
+        //   label: '驳回',
+        //   value: 2
+        // }],
         Form :{
           getDepName: '',
           getAgentName: ''
@@ -435,7 +441,7 @@
           contResultVo: {
             beginDate,
             endDate,
-            examineState: this.examineState,    //this.examineState
+            examineState: this.adjustForm.examineState,    //this.examineState
             contractType: this.adjustForm.contType,    //this.adjustForm.contType.key,
             dealAgentStoreId:this.Form.getDepName,    //this.Form.getDepName.id,
             dealAgentId: this.Form.getAgentName,    //this.Form.getAgentName.empId,
@@ -600,6 +606,9 @@
 @import "~@/assets/common.less";
 
 #settlecheck{
+  .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{
+    margin-bottom: 10px;
+  }
   .el-form-item--mini .el-form-item__content, .el-form-item--mini .el-form-item__label{
     line-height: 32px;
   }
@@ -630,7 +639,6 @@
   }
 
   .adjust-form {
-    padding: 12px 0px 0px 0px;
     margin-bottom: 10px;
     background-color: #fff;
     border-radius:2px;
