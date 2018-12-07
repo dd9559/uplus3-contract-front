@@ -344,6 +344,7 @@ export default {
                         name: houseMsg.OwnerInfo.OwnerName,
                         mobile: houseMsg.OwnerInfo.OwnerMobile,
                         relation: houseMsg.OwnerInfo.Relation,
+                        
                         type: 1,
                     };
                     
@@ -527,7 +528,7 @@ export default {
                     this.isShowDialog = false;
                     this.getGuestDetail(value.selectCode);
                 }
-            } else {getContractDetaily
+            } else {
                 this.isShowDialog = false;
             }
         },
