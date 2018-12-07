@@ -36,8 +36,8 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
-                <span v-else>请输入</span>
+                <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
+                <span v-else @click="form.moneyType=item.key">请输入</span>
               </li>
             </ul>
           </template>
@@ -105,7 +105,7 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult">提交付款申请</el-button>
-      <el-button class="btn-info" round size="small">取消</el-button>
+      <el-button class="btn-info" round size="small" @click="clearData">取消</el-button>
     </p>
     <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
   </div>
@@ -181,6 +181,12 @@
       console.log(this.$tool.repeatCell([1,2,3,4,2]))
     },
     methods:{
+      clearData:function () {
+        this.$tool.clearForm(this.form)
+        this.$tool.clearForm(this.list[0])
+        this.files=[]
+        this.imgList=[]
+      },
       cutNum:function () {
         this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
       },

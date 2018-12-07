@@ -132,7 +132,7 @@
     </div>
 
     <!-- 结算审核弹框 -->
-    <el-dialog title="结算审核" :visible.sync="dialogVisible" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="结算审核" :visible.sync="dialogVisible" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li col-li2">
@@ -356,7 +356,7 @@
           }
         }).catch(error => {
             this.$message({
-              message:`${error.title}${error.msg}`
+              message: error
             })
         })
       },
@@ -389,7 +389,7 @@
 
           }).catch(error => {
               this.$message({
-                message:`${error.title}${error.msg}`
+                message: error
               })
           })  
         }else{    
@@ -458,7 +458,7 @@
       
           }).catch(error => {
               this.$message({
-                message:`${error.title}${error.msg}`
+                message: error
               })
           })
       },
@@ -480,7 +480,7 @@
           }
         }).catch(error => {
             this.$message({
-              message:`${error.title}${error.msg}`
+             message: error
             })
         });
       },
@@ -502,11 +502,14 @@
               let _this = this
               setTimeout(() => {
                 _this.dialogVisible = false
+                // 数据刷新
+                this.queryFn();
+
               }, 2000);
             }
           }).catch(error => {
               this.$message({
-                message:`${error.title}${error.msg}`
+                message: error
               })
           });
         }else{
@@ -531,11 +534,13 @@
             let _this = this
             setTimeout(() => {
               _this.dialogVisible = false
+              // 数据刷新
+              this.queryFn();
             }, 2000);
           }
         }).catch(error => {
             this.$message({
-              message:`${error.title}${error.msg}`
+              message: error
             })
         });
       },

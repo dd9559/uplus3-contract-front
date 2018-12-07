@@ -243,9 +243,7 @@
             this.currentRow = this.listData[0]
             }
           }).catch(error => {
-              this.$message({
-                message:`${error.title}${error.msg}`
-              })
+              this.$message({message:error})
           })
       },
       //单击步骤类型列表行单元格获取交易步骤
@@ -378,9 +376,7 @@
             this.firstCellLight()
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
       },
       //添加和编辑交易步骤请求
@@ -401,9 +397,7 @@
             this.firstCellLight()
           }
         }).catch(error => {
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
+            this.$message({message:error})
         })
       },
       //交易步骤弹出框 列表 增加行
@@ -483,9 +477,7 @@
               this.firstCellLight()
             }
           }).catch(error => {
-              this.$message({
-                message:`${error.title}${error.msg}`
-              })
+              this.$message({message:error})
           })
         })
       }

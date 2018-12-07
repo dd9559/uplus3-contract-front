@@ -69,10 +69,7 @@ export default new Router({
         },
         {
           path: "contraPreview",
-          component: contraPreview,
-          meta:{
-            getParent:true
-          }
+          component: contraPreview
         },
         {
           path: "postProcess",
@@ -114,10 +111,7 @@ export default new Router({
         },
         {
           path: "storeReceive",
-          component: storeReceive,
-          meta:{
-            getParent:true
-          }
+          component: storeReceive
         },
         // 业绩板块 end
         {
@@ -134,24 +128,15 @@ export default new Router({
         // 合同——合同列表——新增意向金
         {
           path: "newIntention",
-          component: newIntention,
-          meta:{
-            getParent:true
-          }
+          component: newIntention
         },
         {
           path: "editIntention",
-          component: editIntention,
-          meta:{
-            getParent:true
-          }
+          component: editIntention
         },
         {
           path: "detailIntention",
-          component: detailIntention,
-          meta:{
-            getParent:true
-          }
+          component: detailIntention
         },
         {
           path: "adjustCheck",
@@ -163,25 +148,18 @@ export default new Router({
         },
         {
           path: "layerAudit",
-          component: layerAudit,
-          meta:{
-            getParent:true
-          }
+          component: layerAudit
         },
         {
           path: "payBill",
           component: payBill,
           meta:{
-            getParent:true,
-            parent:''
+            getParent:true
           }
         },
         {
           path: "payResult",
-          component: payResult,
-          meta:{
-            getParent:true
-          }
+          component: payResult
         },
         {
           path: "receiptBill",
@@ -192,10 +170,7 @@ export default new Router({
         },
         {
           path: "receiptResult",
-          component: receiptResult,
-          meta:{
-            getParent:true
-          }
+          component: receiptResult
         },
         {
           path: "contractList",
@@ -222,26 +197,17 @@ export default new Router({
         //新增合同
         {
           path: "addContract",
-          component: addContract,
-          meta:{
-            getParent:true
-          }
+          component: addContract
         },
         //合同详情
         {
           path: "contractDetails",
-          component: contractDetails,
-          meta:{
-            getParent:true
-          }
+          component: contractDetails
         },
         //合同预览
         {
           path: "contractPreview",
-          component: contractPreview,
-          meta:{
-            getParent:true
-          }
+          component: contractPreview
         },
         //调佣申请弹层（最后需要删掉）
         {

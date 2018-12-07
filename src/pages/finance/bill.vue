@@ -173,7 +173,7 @@
             <span>{{scope.row.toAccountTime|formatDate}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收付状态" prop="checkStatus.label"></el-table-column>
+        <el-table-column align="center" label="收付状态" prop="payStatus.label"></el-table-column>
         <el-table-column align="center" label="结算信息">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
@@ -341,7 +341,8 @@
           path:'billDetails',
           query:{
             id:row.id,
-            tab:row.type===1?'收款信息':'付款信息'
+            tab:row.type===1?'收款信息':'付款信息',
+            pageName:row.type===1?'收款详情':'付款详情'
           }
         })
       },
@@ -388,7 +389,8 @@
             query:{
               contType:row.contTypeId,
               id:row.contId,
-              code:row.contCode
+              code:row.contCode,
+              pageName:'合同详情'
             }
           })
         }

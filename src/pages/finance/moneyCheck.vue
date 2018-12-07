@@ -331,12 +331,14 @@
             param.query = {
               tab: '收款信息',
               id:item.id,
-              type:item.inAccountType
+              type:item.inAccountType,
+              pageName:'收款详情'
             }
           } else {
             param.query = {
               tab: '付款信息',
-              id:item.id
+              id:item.id,
+              pageName:'付款详情'
             }
           }
           this.$router.push(param)

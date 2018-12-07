@@ -110,7 +110,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="成交经纪人" min-width="230">
                     <template slot-scope="scope">
-                        {{agentFn(scope.row.dealagentStoreName,scope.row.agent)}}
+                        {{agentFn(scope.row.dealagentStoreName,scope.row.dealAgentName)}}
                     </template>
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作" min-width="70">
@@ -213,7 +213,7 @@
                                 </template>
                             </el-table-column>
                         </el-table>
-                        <div class="receive-label">
+                        <div class="receive-label" v-if="receive.refuseReasons">
                             <span class="cl-1 mr-10">拒绝原因：</span>
                             <div class="receive-txt">{{receive.refuseReasons}}</div>
                         </div>
@@ -457,6 +457,7 @@
                     this.loading4 = false;
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loading4 = false;
                 })
                 // 获取列表数据
                 this.loadingdealTable = true;
@@ -479,6 +480,7 @@
                     }
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loadingdealTable = false;
                 })
                 // 合同资料库数据
                 this.$ajax.get("/api/postSigning/getDatabase",{
@@ -535,6 +537,7 @@
                     this.loading4 = false;
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loading4 = false;
                 })
             },
             roleRemoteChangeFn(e,i){
@@ -557,6 +560,7 @@
                         this.loading4 = false;
                     }).catch(err=>{
                         this.errMeFn(err);
+                        this.loading4 = false;
                     })
                 }
             },
@@ -628,7 +632,7 @@
                     rabbet: true,
                     center: false
                 }
-                this.invalidInput = '';
+                this.invalidInput = `${this.receive.refuseReasons}`;
             },
             // 拒绝后期 弹层事件
             propCloseFn(bool) {
@@ -721,6 +725,7 @@
                         }
                     }).catch(err=>{
                         this.errMeFn(err);
+                        this.loading2 = false;
                     })
                 }else{
                     this.propForm.regionName = '';
@@ -751,6 +756,7 @@
                     }
                 }).catch(err=>{
                     this.errMeFn(err);
+                    this.loading = false;
                 })
             },
             // 清除部门搜索
@@ -811,6 +817,7 @@
                         this.loadingList = false;
                     }).catch(err=>{
                         this.errMeFn(err);
+                        this.loadingList = false;
                     })
             },
             // 交易流程获取数据
@@ -859,6 +866,8 @@
             ScreeningTop
         },
         mounted() {
+            // 获取城市id
+            this.getAdmin();
             // 贷款银行
             this.remoteMethodFn();
             // 部门搜索
