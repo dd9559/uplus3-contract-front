@@ -55,7 +55,7 @@
                     </el-table-column>
                     <el-table-column label="操作" min-width="120px" align="center">
                         <template slot-scope="scope">
-                            <el-button @click="operationFn(scope.row.id)" class="blue" type="text">查看</el-button>
+                            <el-button v-if="scope.row.stepState.value === OPERATION.start" @click="operationFn(scope.row.id)" class="blue" type="text">查看</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -125,11 +125,14 @@
         word:7,         //文档
         textarea:8,      //文本框输入
     }
+    // 操作状态
+    const OPERATION = TOOL.OPERATION;
 
     export default {
         mixins: [FILTER,MIXINS],
         data() {
             return {
+                OPERATION,
                 // 显示隐藏
                 layerShow: false,
                 // 后期进度列表
@@ -207,7 +210,7 @@
                         let resData = res.data;
                         let arr = [...resData.transAtepsAttach];
                         let arr2 = [{
-                                    val:resData.handleDatetime,
+                                    val:this.dateFormat(resData.handleDatetime),
                                     title:'办理日期',
                                     isRequired:true,
                                     type:2,
@@ -302,6 +305,9 @@
     /deep/.el-dialog__header {
         padding: 20px;
         border-bottom: 1px solid #EDECF0;
+    }
+    /deep/.el-dialog__headerbtn{
+        font-size: 26px;
     }
 }
 // 列表

@@ -10,7 +10,7 @@
           </li>
         </ul>
         <p>
-          <el-button round @click="goBack('contract')">返回合同列表</el-button>
+          <el-button round @click="goBack('contractList')">返回合同列表</el-button>
           <el-button round @click="goBack('bill')">返回收付款列表</el-button>
         </p>
       </div>
@@ -18,8 +18,10 @@
 </template>
 
 <script>
+  import {MIXINS} from "@/assets/js/mixins";
   export default {
     name: "pay-result",
+    mixins:[MIXINS],
     data(){
       return{
         steps:[
@@ -56,6 +58,11 @@
     },
     methods:{
       goBack:function (page) {
+        if(page==='bill'){
+          this.setPath(['财务','收付款单'])
+        }else {
+          this.setPath(['合同','合同列表'])
+        }
         this.$router.push({
           path:page
         })

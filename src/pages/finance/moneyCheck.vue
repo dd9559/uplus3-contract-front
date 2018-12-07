@@ -336,12 +336,14 @@
               type:item.inAccountType,
               pageName:'收款详情'
             }
+            this.setPath(['财务','收款审核','收款详情'])
           } else {
             param.query = {
               tab: '付款信息',
               id:item.id,
               pageName:'付款详情'
             }
+            this.setPath(['财务','付款审核','付款详情'])
           }
           this.$router.push(param)
         }else {
@@ -383,7 +385,7 @@
             this.drop_MoneyType=res.data
           }
         })
-      },
+      }
     },
     computed: {
       getView: function () {

@@ -73,8 +73,8 @@
                 })
                 // console.log(file)
                 that.filePath=[].concat({
-                  path:`${result.host}/${result.key}${get_suffix(file.name)}`,
-                  name:file.name
+                  path:`${result.host}/${result.key}${get_suffix(file.name).toLocaleLowerCase()}`,
+                  name:`${file.name.split(get_suffix(file.name))[0]}${get_suffix(file.name).toLocaleLowerCase()}`
                 })
                 console.log(that.filePath)
                 that.$emit('getUrl',{param:that.filePath,btnId:that.getId})

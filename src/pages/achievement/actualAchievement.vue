@@ -366,7 +366,7 @@
                          v-if="scope.row.achievementState==-1"
                          class="check-btn"
                        >
-                         <span @click.stop="tishen()" style="cursor:pointer;">提审</span>
+                         <span @click.stop="tishen(scope.row,scope.$index)" style="cursor:pointer;">提审</span>
                          <span @click.stop="editAch(scope.row,scope.$index)" style="cursor:pointer;">编辑</span>
                        </div>
                        <div
@@ -386,7 +386,7 @@
                          v-if="scope.row.achievementState==0"
                          class="check-btn"
                        >
-                            <span @click.stop="chehui()" style="cursor:pointer;">撤回</span>
+                            <span @click.stop="chehui(scope.row,scope.$index)" style="cursor:pointer;">撤回</span>
                             <span @click.stop="checkAch(scope.row,scope.$index)" style="cursor:pointer;">审核</span>
                        </div>
               </div>
@@ -673,8 +673,10 @@
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog
       :shows="shows"
-      @close="close"
       @saveData="saveData"    
+      @adoptData="adoptData" 
+      @rejectData="rejectData" 
+      @close="shows=false"
       :dialogType="dialogType"
       :contractCode="code2"
       :aId="aId"
@@ -691,7 +693,7 @@
                    <span>是否确认{{smallTips}}?</span>
                    <span slot="footer" class="dialog-footer">
                      <el-button @click="recallShow = false">取 消</el-button>
-                     <el-button type="primary">确 定</el-button>
+                     <el-button type="primary" @click="changeStatus">确 定</el-button>
                    </span>
               </el-dialog>
        </div>
@@ -750,7 +752,10 @@ export default {
       loading:true,
       achObj:{},
       recallShow:false,
-      smallTips:""
+      smallTips:"",
+      statuIndex:null,
+      statuContId:null,
+      statuType:null
     };
   },
   created() {
@@ -768,7 +773,6 @@ export default {
     });
     // 字典初始化
     this.getDictionary();
-
   
   },
   components: {
@@ -806,34 +810,84 @@ export default {
              _that.total = data.data.total;
             if(data.data.list[0]){
                  _that.countData = data.data.list[0].contractCount;
-                  this.loading=false;
-            }         
+            }else {
+            _that.countData = [0, 0, 0, 0];
+          }       
            
           }
+         this.loading=false;
       });
-    },
-    close(val1,val2){
-      console.log(val1);
-      console.log(val2);
-      this.shows=false;
-      this.code2='';
-      if(typeof(val2)==String){
-        alert(0)
-        // if(val1&&val2){
-        //    this.selectAchList[val1].achievementState=val2;
-        // }
-      }
-      if(typeof(val2)==Object){
-        alert(1)
-      }
-    
     },
     closeDialog() {
       this.dialogVisible = false;
     },
-    saveData(index,resultArr){
+    // 保存操作
+    saveData(index,resultArr,status){
         this.shows=false;
         this.selectAchList[index].distributions=resultArr;
+        if(status||status==0){
+          this.selectAchList[index].achievementState=status;
+        }   
+    },
+    // 通过操作
+    adoptData(index,resultArr){
+        this.shows=false;
+        this.selectAchList[index].distributions=resultArr;
+        this.selectAchList[index].achievementState=1;
+    },
+    // 驳回操作
+    rejectData(index,resultArr){
+        this.shows=false;
+        this.selectAchList[index].distributions=resultArr;
+        this.selectAchList[index].achievementState=2;
+    },
+    tishen(value,index){
+      this.smallTips="提审";
+         this.statuIndex=index;
+         this.statuContId=value.id;
+         this.statuType=0;
+         this.recallShow=true;
+    },
+    chehui(value,index){
+       this.smallTips="撤回";
+       this.statuIndex=index;
+       this.statuContId=value.id;
+       this.statuType=1;
+       this.recallShow=true;
+    },
+    changeStatus(){
+      // 提审
+       if(this.statuType==0){
+         let param={
+           contId:this.statuContId,
+           status:0
+         }
+         this.$ajax
+          .post("/api/achievement/applyStatusArraign", param)
+          .then(res => {
+            if (res.data.status == 200) {
+               this.$message("操作完成");
+               this.recallShow=false;
+               this.selectAchList[this.statuIndex].achievementState=0;
+            }
+          });
+       }
+      // 撤回
+       if(this.statuType==1){
+          let param={
+           contId:this.statuContId,
+           status:-1
+         }
+         this.$ajax
+          .post("/api/achievement/applyStatusArraign", param)
+          .then(res => {
+            if (res.data.status == 200) {
+               this.$message("操作完成");
+               this.recallShow=false;
+               this.selectAchList[this.statuIndex].achievementState=-1;
+            }
+          });
+       }
     },
     //获取应收列表详情
     enterDetail(row) {
@@ -969,14 +1023,6 @@ export default {
           contType: value.contType.value
         }
       });
-    },
-    tishen(){
-      this.smallTips="提审";
-      this.recallShow=true;
-    },
-    chehui(){
-       this.smallTips="撤回";
-       this.recallShow=true;
     }
   }
 };

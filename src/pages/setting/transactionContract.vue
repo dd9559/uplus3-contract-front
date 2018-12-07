@@ -28,7 +28,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="资料名称">
-                    <el-input v-model="contractForm.name" maxlength="15"></el-input>
+                    <el-input v-model="contractForm.name" maxlength="15" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </el-form-item>
                 <el-form-item label="是否必填">
                     <el-radio label="1" v-model="contractForm.isNecessary">是</el-radio>
@@ -151,7 +151,7 @@ export default {
           this.conPost(url);
         }
       }).catch(error => {
-          this.$message({message:error})
+          this.$message({message:`${error.title}${error.msg}`})
         }) 
     },
     // 添加 编辑 请求
