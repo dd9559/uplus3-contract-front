@@ -280,7 +280,6 @@
             this.titleStr='合同模板详情'
             this.template = 3
           }
-          console.log(this.template,'template');
         }).catch(error => {
           console.log(error)
         })
@@ -289,7 +288,7 @@
         //上传
         this.modal = true
         if(type===1){
-          console.log(row);
+            this.contraName=''
             this.template = 1
             this.id=row.id
             this.contraType=row.type.value
@@ -300,7 +299,6 @@
         else if(type===2){
           //合同预览
           this.template = 3
-           console.log(row,'query');
           this.$router.push({
             path: "/contraPreview",
             query: {
@@ -312,14 +310,6 @@
         }
       }
     },
-    witch:{
-        templateAddress:{
-        handler(newVal,oldVal){
-
-        },
-        deep:true
-    }
-    }
   }
 </script>
 
@@ -336,7 +326,7 @@
       margin-top: 24px;
       line-height: 32px;
       height: 32px;
-      .el-form-item__content, 
+      .el-form-item__content,
       .el-form-item__label {
         line-height: 32px;
       }
