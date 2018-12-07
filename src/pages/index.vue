@@ -32,7 +32,7 @@
       <div class="page-view">
         <div class="page-view-index">
           <ul>
-            <li v-for="(item,index) in Index" :key="index">{{item}}</li>
+            <li v-for="(item,index) in Index" :key="index" @click="toLink(item,index)">{{item.name}}</li>
           </ul>
           <p class="operation">
             <el-button  type="text" @click="goBack" v-if="Index.length>2">返回</el-button>
@@ -97,14 +97,16 @@
     },*/
     created(){
       this.Index=this.$store.state.path
+      this.activeIndex = this.Index[1].path.split('/')[1]
     },
     beforeRouteUpdate(to,from,next){
       this.Index=this.$store.state.path
+      this.activeIndex = this.Index[1].path.split('/')[1]
       next()
     },
     methods: {
       handleSelect(key, keyPath) {
-        this.Index = []
+        /*this.Index = []
         keyPath.forEach(item=>{
           var myRe = new RegExp(`"name":"([^"]*?)","path":"${item.replace('?','\\?')}"`)
           // console.log(myRe)
@@ -112,13 +114,18 @@
           // console.log(myArray)
           this.Index.push(myArray[1])
           this.setPath(this.Index)
-          this.sliderRouter(keyPath)
-        })
+        })*/
+      },
+      toLink:function (item,index) {
+        if(index<2){
+          this.$router.push({
+            path:item.path
+          })
+        }
       },
       goBack:function () {
         // this.setPath(localStorage.getItem('router').split(',').substring(0,2))
         this.$router.go(-1)
-        this.handleSelect(1,this.$store.state.slider)
       },
       ...mapMutations([
         'setPath',
@@ -179,6 +186,7 @@
               position: relative;
               margin-right: 10px;
               color: @color-99A;
+              cursor: pointer;
               &:after{
                 content:'>';
                 margin-left: 10px;

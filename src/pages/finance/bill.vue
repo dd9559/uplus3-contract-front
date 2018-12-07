@@ -179,15 +179,20 @@
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="票据状态" prop="billStatus.label"></el-table-column>
+        <el-table-column align="center" label="票据状态" prop="billStatus.label">
+          <template slot-scope="scope">
+            {{scope.row|billState}}
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
             <template v-if="scope.row.type===1">
               <el-button type="text" @click="btnOpera(scope.row,3)" v-if="scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">开票</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="scope.row.auditBy==='-1'&&scope.row.inAccountType===4">修改</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="scope.row.auditBy==='-1'&&scope.row.inAccountType===4">作废</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0&&scope.row.inAccountType===4">修改</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0&&scope.row.inAccountType===4">作废</el-button>
             </template>
-            <template v-else-if="scope.row.auditBy==='-1'">
+            <template v-else-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0
+">
               <el-button type="text" @click="btnOpera(scope.row,1)">修改</el-button>
               <el-button type="text" @click="btnOpera(scope.row,2)">作废</el-button>
             </template>
@@ -301,6 +306,8 @@
       this.getData()
       this.getDictionary()
       this.getMoneyTypes()
+      this.remoteMethod()
+      console.log(this.$tool.repeatCell())
     },
     methods: {
       reset: function () {
@@ -339,7 +346,7 @@
        * @param row
        */
       toDetails:function (row) {
-        this.setPath(['财务','收付款单',row.type===1?'收款详情':'付款详情'])
+        this.setPath(this.getPath.concat({name:row.type===1?'收款详情':'付款详情'}))
         this.$router.push({
           path:'billDetails',
           query:{
@@ -387,7 +394,8 @@
        */
       msgOpera:function (row,type) {
         if(type==='cont'){
-          this.setPath(['合同','合同列表','合同详情'])
+          // this.setPath(this.getPath.concat({name:'合同详情'}))
+          this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'))
           this.$router.push({
             path:row.contTypeId===this.$tool.contType['4']||row.contTypeId===this.$tool.contType['5']?'detailIntention':'contractDetails',
             query:{
@@ -475,6 +483,19 @@
           return 0
         }else {
           return val
+        }
+      },
+      billState:function (val) {
+        if(!val){
+          return '--'
+        }else{
+          if(val.type===2){
+            return '--'
+          }else if(val.billStatus.value===1||val.billStatus.value===4){
+            return val.billStatus.label
+          }else {
+            return '--'
+          }
         }
       }
     }

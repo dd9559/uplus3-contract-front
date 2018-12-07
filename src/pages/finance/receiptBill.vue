@@ -143,7 +143,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入">
+            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="账户 ">
@@ -334,6 +334,9 @@
       },
       cutNum:function () {
         this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+      },
+      inputOnly:function (index) {
+        this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
       },
       getPicture:function () {
         let arr=[]

@@ -7,9 +7,9 @@
           <label>收付款类:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
-              v-for="item in dictionary['25']"
+              v-for="item in drop_MoneyType"
               :key="item.key"
-              :label="item.value"
+              :label="item.name"
               :value="item.key">
             </el-option>
           </el-select>
@@ -18,7 +18,7 @@
           <label>收款状态:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.receiveAmountState" placeholder="请选择">
             <el-option
-              v-for="item in dictionary['23']"
+              v-for="item in dictionary['55']"
               :key="item.key"
               :label="item.value"
               :value="item.key">
@@ -129,7 +129,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款状态" prop="receiveAmountState" :formatter="nullFormatter">
           <template slot-scope="scope">
-            {{scope.row.receivableCommission-scope.row.receivedCommission>0?'未收':'已收'}}
+            {{scope.row.receivableCommission-scope.row.receivedCommission>0?scope.row.receivableCommission-scope.row.receivedCommission===scope.row.receivableCommission?'未收':'部分':'收齐'}}
           </template>
         </el-table-column>
       </el-table>
@@ -158,9 +158,9 @@
       return {
         dictionary:{
           '10': '',
-          '23': '',
-          '25': '',
+          '55': ''
         },
+        drop_MoneyType:[],
         searchForm: {
           moneyType: '',
           contType: '',
@@ -180,7 +180,9 @@
     },
     created() {
       this.getData()
+      this.remoteMethod()
       this.getDictionary()
+      this.getMoneyTypes()
     },
     methods: {
       reset:function () {
@@ -217,6 +219,15 @@
           }
         }).catch(error => {
           console.log(error)
+        })
+      },
+      // 获取收付款类
+      getMoneyTypes:function () {
+        this.$ajax.get('/api/payInfo/selectSmallMoneyType').then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.drop_MoneyType=res.data
+          }
         })
       },
     }

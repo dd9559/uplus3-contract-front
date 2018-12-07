@@ -35,9 +35,9 @@
         <el-table-column align="center" label="付款金额（元） ">
           <template slot-scope="scope">
             <ul>
-              <li v-for="item in scope.row.moneyTypes">
+              <li v-for="(item,index) in scope.row.moneyTypes">
                 <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
-                <span v-else @click="form.moneyType=item.key">请输入</span>
+                <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
               </li>
             </ul>
           </template>
@@ -269,7 +269,10 @@
           }
         })
       },
-      getType:function (label) {
+      getType:function (label,type,index) {
+        if(type==='focus'){
+          this.form.moneyType=label.moneyTypes[index].key
+        }
         this.form.moneyTypePid = label.id
         this.getAmount()
       },
