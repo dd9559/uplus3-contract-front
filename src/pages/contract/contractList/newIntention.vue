@@ -20,23 +20,25 @@
                                 <el-date-picker v-model="contractForm.subscriptionTerm" value-format="yyyy/MM/dd" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="认购总价：" prop="subscriptionPrice">
-                                <el-input v-model.number="contractForm.subscriptionPrice" type="number" clearable>
+                                <el-input v-model.number="contractForm.subscriptionPrice" type="number" clearable @input="cutNumber('subscriptionPrice')" >
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
                             
                             <el-form-item label="意向金金额：" prop="dealPrice" v-if="this.$route.query.contType == 4">
-                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable>
+                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
+                                
                             </el-form-item>
 
                             <el-form-item label="定金金额：" prop="dealPrice" v-if="this.$route.query.contType == 5">
-                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable>
+                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
+                                
                             </el-form-item>
                         </div>
                     </div>
@@ -301,10 +303,19 @@ export default {
     },
 
     methods: {
-        // changeIdcard (newval, oldval){
-        //     let idcard = this.contractForm.contPersons[2].identifyCode
-        //     return idcard;
-        // },
+        cutNumber(val){
+            // console.log(val)
+            if(val==="subscriptionPrice"){
+                this.$nextTick(()=>{
+                    this.contractForm.subscriptionPrice=this.$tool.cutFloat({val:this.contractForm.subscriptionPrice,max:999999999.99})
+                })
+            }else if(val==="dealPrice"){
+                this.$nextTick(()=>{
+                    this.contractForm.dealPrice=this.$tool.cutFloat({val:this.contractForm.dealPrice,max:999999999.99})
+                })
+            }
+        },
+        
         //选择房源弹框
         toLayerHouse(){
             this.isShowDialog = true
@@ -537,8 +548,6 @@ export default {
 
 
                 if (valid) {                  
-                    this.contractForm.subscriptionPrice=this.$tool.cutFloat({val:this.contractForm.subscriptionPrice,max:999999999.99})
-                    this.contractForm.dealPrice=this.$tool.cutFloat({val:this.contractForm.dealPrice,max:999999999.99})
                     let param = { 
                         igdCont: this.contractForm,
                         type: this.type                            
@@ -599,9 +608,7 @@ export default {
                         delete param.igdCont.contPersons[1].propertyRightRatio
                         delete param.igdCont.contPersons[1].uId
                         delete param.igdCont.contPersons[1].updateTime
-
-    
-                        
+                       
                     }
                     delete param.igdCont.ownname;
                     delete param.igdCont.ownmobile;
@@ -650,7 +657,7 @@ export default {
                     
                     }).catch((error) => {
                        this.$message({
-                            message: error
+                            message:'取消'
                         })
                     })
                 }else{
@@ -663,9 +670,11 @@ export default {
     created() {
         this.getShopList();
         
+        
         if (this.$route.query.operateType) {
         this.type = this.$route.query.operateType;
             if (this.type === 2) {
+                this.getShopList();
                 this.id=this.$route.query.id
                 this.getContractDetail();
             }
