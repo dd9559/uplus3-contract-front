@@ -176,7 +176,7 @@
         return `rotate(${this.transform}deg)`
       },
       getType:function () {
-        switch (this.getImages[this.activePage].type){
+        switch (this.getImages[this.activePage].type.toLocaleLowerCase()){
           case '.png':
           case '.jpg':
           case '.jpeg':

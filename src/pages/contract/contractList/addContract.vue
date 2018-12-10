@@ -946,7 +946,11 @@ export default {
               // console.log(element);
               element.type=1;
               element.identifyCode='';
-              element.propertyRightRatio=''
+              element.propertyRightRatio='';
+              element.name=element.OwnerName;
+              element.mobile=element.OwnerMobile;
+              element.relation=element.Relation;
+              this.ownerList.push(element)
             });
           }
           // this.ownerList.push({
@@ -1327,10 +1331,10 @@ export default {
       li{
         display: flex;
         height: 50px;
-        width: 250px;
+        width: 350px;
         line-height: 50px;
         > .title{
-          width: 130px;
+          width: 200px;
           text-align: right;
           padding-right: 10px;
           color: #606266;
