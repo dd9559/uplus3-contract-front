@@ -20,23 +20,25 @@
                                 <el-date-picker v-model="contractForm.subscriptionTerm" value-format="yyyy/MM/dd" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="认购总价：" prop="subscriptionPrice">
-                                <el-input v-model.number="contractForm.subscriptionPrice" type="number" clearable>
+                                <el-input v-model.number="contractForm.subscriptionPrice" type="number" clearable @input="cutNumber('subscriptionPrice')" >
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
                             
                             <el-form-item label="意向金金额：" prop="dealPrice" v-if="this.$route.query.contType == 4">
-                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable>
+                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
+                                
                             </el-form-item>
 
                             <el-form-item label="定金金额：" prop="dealPrice" v-if="this.$route.query.contType == 5">
-                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable>
+                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
+                                
                             </el-form-item>
                         </div>
                     </div>
@@ -142,6 +144,19 @@ import houseGuest from '../contractDialog/houseGuest';
 import { TOOL } from "@/assets/js/common";
 export default {
     data() {
+        // 表单正则
+        var checkPrice = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('请输入价格'));
+            }else {
+                if (value < 0 || value > 999999999.99) {
+                callback(new Error('输入总价在0-999999999.99之间'));
+                } else {
+                callback();
+                }
+            }
+            
+        };
         return {
             isShowDialog:false,
             dialogType: '',
@@ -219,12 +234,11 @@ export default {
                     { type: 'string', required: true, message: '请选择日期', trigger: 'change' }
                 ],
                 subscriptionPrice: [
-                    { required: true, message: '请输入认购总价'},
-                    // { min: 0, max: 12, message: '输入总价在0-999999999.99之间', trigger: 'blur' }
+                    { validator: checkPrice}
+                   
                 ],
                 dealPrice: [
-                    { required: true, message: '请输入意向金金额'},
-                    // { min: 0, max: 12, message: '输入金额在0-999999999.99之间', trigger: 'blur' }
+                    { validator: checkPrice}
                 ],
                 ownname: [
                     { required: true, message: '请输入业主姓名'},
@@ -289,10 +303,19 @@ export default {
     },
 
     methods: {
-        // changeIdcard (newval, oldval){
-        //     let idcard = this.contractForm.contPersons[2].identifyCode
-        //     return idcard;
-        // },
+        cutNumber(val){
+            // console.log(val)
+            if(val==="subscriptionPrice"){
+                this.$nextTick(()=>{
+                    this.contractForm.subscriptionPrice=this.$tool.cutFloat({val:this.contractForm.subscriptionPrice,max:999999999.99})
+                })
+            }else if(val==="dealPrice"){
+                this.$nextTick(()=>{
+                    this.contractForm.dealPrice=this.$tool.cutFloat({val:this.contractForm.dealPrice,max:999999999.99})
+                })
+            }
+        },
+        
         //选择房源弹框
         toLayerHouse(){
             this.isShowDialog = true
@@ -321,6 +344,7 @@ export default {
                         name: houseMsg.OwnerInfo.OwnerName,
                         mobile: houseMsg.OwnerInfo.OwnerMobile,
                         relation: houseMsg.OwnerInfo.Relation,
+                        
                         type: 1,
                     };
                     
@@ -378,37 +402,39 @@ export default {
                 res = res.data;
                 if (res.status === 200) {
                     this.contractForm = res.data;
+                    console.log(res.data)
                     this.contractForm.signDate = res.data.signDate.substr(0, 10);
                     this.contractForm.subscriptionTerm = res.data.subscriptionTerm.substr(0, 10);
                     this.contractForm.type=res.data.contType.value;
-                    this.contractForm.guestInfo.GuestStoreName = res.data.guestInfo.GuestStoreName;
-                    this.contractForm.guestInfo.GuestStoreCode = res.data.guestInfo.GuestStoreCode;
-                    this.contractForm.guestInfo.EmpName = res.data.guestInfo.EmpName;
-                    this.contractForm.guestInfo.empId = res.data.guestInfo.EmpCode;
-
-                    // this.option2=[{id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName}];
-                    // this.option3=[{empId:res.data.guestInfo.EmpCode,name:res.data.guestInfo.EmpName}];
+                    
+                    
+                    // this.contractForm.guestInfo.GuestStoreName = res.data.guestInfo.GuestStoreName;
+                    // this.contractForm.guestInfo.GuestStoreCode = res.data.guestInfo.GuestStoreCode;
+                    // this.contractForm.guestInfo.EmpName = res.data.guestInfo.EmpName;
+                    // this.contractForm.guestInfo.empId = res.data.guestInfo.EmpCode;
 
                     
-                    for (let i = 0; i < this.contractForm.contPersons.length; i++) {
-                        if (this.contractForm.contPersons[i].personType.value === 1) {
-                            this.contractForm.contPersons[0].name = this.contractForm.contPersons[i].name;
-                            this.contractForm.contPersons[0].mobile = this.contractForm.contPersons[i].mobile;
-                            this.contractForm.contPersons[0].relation = this.contractForm.contPersons[i].relation;
-                            this.contractForm.contPersons[0].identifyCode = this.contractForm.contPersons[i].identifyCode;
 
-                            this.contractForm.ownname = this.contractForm.contPersons[i].name;
-                            this.contractForm.ownmobile = this.contractForm.contPersons[i].mobile; 
+                    
+                    for (let i = 0; i < res.data.contPersons.length; i++) {
+                        if (res.data.contPersons[i].personType.value === 1) {
+                            this.contractForm.contPersons[0].name = res.data.contPersons[i].name;
+                            this.contractForm.contPersons[0].mobile = res.data.contPersons[i].mobile;
+                            this.contractForm.contPersons[0].relation = res.data.contPersons[i].relation;
+                            this.contractForm.contPersons[0].identifyCode = res.data.contPersons[i].identifyCode;
+                            this.contractForm.contPersons[0].type = res.data.contPersons[i].personType.value;
+                            this.contractForm.ownname = res.data.contPersons[i].name;
+                            this.contractForm.ownmobile = res.data.contPersons[i].mobile; 
                             // this.contractForm.ownrelation = this.contractForm.contPersons[i].relation;
 
                         } else if (this.contractForm.contPersons[i].personType.value === 2) {
-                            this.contractForm.contPersons[1].name = this.contractForm.contPersons[i].name;
-                            this.contractForm.contPersons[1].mobile = this.contractForm.contPersons[i].mobile;
-                            this.contractForm.contPersons[1].relation = this.contractForm.contPersons[i].relation;
-                            this.contractForm.contPersons[1].identifyCode =  this.contractForm.contPersons[i].identifyCode,
-
-                            this.contractForm.custname = this.contractForm.contPersons[i].name;
-                            this.contractForm.custmobile = this.contractForm.contPersons[i].mobile; 
+                            this.contractForm.contPersons[1].name = res.data.contPersons[i].name;
+                            this.contractForm.contPersons[1].mobile = res.data.contPersons[i].mobile;
+                            this.contractForm.contPersons[1].relation = res.data.contPersons[i].relation;
+                            this.contractForm.contPersons[1].identifyCode =  res.data.contPersons[i].identifyCode,
+                            this.contractForm.contPersons[1].type = res.data.contPersons[i].personType.value;
+                            this.contractForm.custname = res.data.contPersons[i].name;
+                            this.contractForm.custmobile = res.data.contPersons[i].mobile; 
                             // this.contractForm.custrelation = this.contractForm.contPersons[i].relation;
                         }
                     }
@@ -446,7 +472,7 @@ export default {
         },
 
         changeAgent(id){
-              this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,name)
+            //   this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpName,name)
               this.$set(this.contractForm.guestInfo,this.contractForm.guestInfo.EmpCode,id)
         },
 
@@ -464,8 +490,7 @@ export default {
                     depId: id
                 };
                 
-                // this.contractForm.guestInfo.GuestStoreName = item.name
-                // this.contractForm.guestInfo.GuestStoreCode = item.id
+                
                 this.$ajax.get('/api/organize/employees', param).then(res=>{
                     
                     if(res.data.status===200){ 
@@ -512,22 +537,79 @@ export default {
         // 新增意向金接口（post）
         onSubmit(contractForm) {
             this.$refs[contractForm].validate((valid) => {
+             
                 if(this.type ===1){
                     this.contractForm.contPersons[0].name = this.contractForm.ownname
                     this.contractForm.contPersons[0].mobile = this.contractForm.ownmobile
                     this.contractForm.contPersons[1].name = this.contractForm.custname
                     this.contractForm.contPersons[1].mobile = this.contractForm.custmobile
                     this.contractForm.contPersons[1].identifyCode = this.contractForm.custIdentifyCode
-                }else if(this.type===2){
-                //    this.contractForm.custIdentifyCode = this.contractForm.contPersons[1].identifyCode 
                 }
                 
 
+
                 if (valid) {                  
-                    
                     let param = { 
                         igdCont: this.contractForm,
                         type: this.type                            
+                    }
+                    if(this.type===2){
+                        
+                    
+                        delete param.igdCont.code;
+                        delete param.igdCont.contType;
+                        delete param.igdCont.recordName;
+                        delete param.igdCont.recordDept;
+                        delete param.igdCont.custEnsure;
+                        delete param.igdCont.custCommission;
+                        delete param.igdCont.ownerCommission;
+                        delete param.igdCont.commissionPayment;
+                        delete param.igdCont.otherCooperationCost;
+                        delete param.igdCont.transFlowCode;
+                        delete param.igdCont.contChangeState;
+                        delete param.igdCont.laterStageState;
+                        delete param.igdCont.contState;
+                        delete param.igdCont.propertyAddr
+                        delete param.igdCont.propertyCard
+                        delete param.igdCont.timeUnit
+                        delete param.igdCont.moneyUnit
+                        delete param.igdCont.createTime
+                        delete param.igdCont.updateTime
+                        delete param.igdCont.isHavaCooperation
+                        delete param.igdCont.extendParams
+                        delete param.igdCont.otherCooperationInfo
+                        delete param.igdCont.receivableCommission
+                        delete param.igdCont.isHaveData
+                        delete param.igdCont.toExamineState
+                        delete param.igdCont.previewImg
+                        delete param.igdCont.isHaveCooperation
+                        delete param.igdCont.remarksExamine
+                        delete param.igdCont.showCustName
+                        delete param.igdCont.showOwnerName
+                        delete param.igdCont.distributableAchievement
+                        delete param.igdCont.dataType
+                        delete param.igdCont.dealAgentId
+                        delete param.igdCont.dealAgentName
+                        delete param.igdCont.dealAgentStoreId
+                        delete param.igdCont.dealAgentStoreName
+                        delete param.igdCont.contPersons[0].personType
+                        delete param.igdCont.contPersons[0].contractId
+                        delete param.igdCont.contPersons[0].createTime
+                        delete param.igdCont.contPersons[0].isDel
+                        delete param.igdCont.contPersons[0].pid
+                        delete param.igdCont.contPersons[0].propertyRightRatio
+                        delete param.igdCont.contPersons[0].uId
+                        delete param.igdCont.contPersons[0].updateTime
+
+                        delete param.igdCont.contPersons[1].personType
+                        delete param.igdCont.contPersons[1].contractId
+                        delete param.igdCont.contPersons[1].createTime
+                        delete param.igdCont.contPersons[1].isDel
+                        delete param.igdCont.contPersons[1].pid
+                        delete param.igdCont.contPersons[1].propertyRightRatio
+                        delete param.igdCont.contPersons[1].uId
+                        delete param.igdCont.contPersons[1].updateTime
+                       
                     }
                     delete param.igdCont.ownname;
                     delete param.igdCont.ownmobile;
@@ -547,6 +629,13 @@ export default {
                         .postJSON("/api/contract/editIgdCont", param)
                         .then(res => {
                             let tips = res.data.message
+
+                            // this.contractForm.ownname = this.contractForm.contPersons[0].name 
+                            // this.contractForm.ownmobile = this.contractForm.contPersons[0].mobile
+                            // this.contractForm.custname = this.contractForm.contPersons[1].name 
+                            // this.contractForm.custmobile = this.contractForm.contPersons[1].mobile
+                            // this.contractForm.custIdentifyCode = this.contractForm.contPersons[1].identifyCode
+
                             if (res.data.status === 200) {
                                 this.$message({
                                     type: 'success',
@@ -569,7 +658,7 @@ export default {
                     
                     }).catch((error) => {
                        this.$message({
-                            message: error
+                            message:'取消'
                         })
                     })
                 }else{
@@ -582,9 +671,11 @@ export default {
     created() {
         this.getShopList();
         
+        
         if (this.$route.query.operateType) {
         this.type = this.$route.query.operateType;
             if (this.type === 2) {
+                this.getShopList();
                 this.id=this.$route.query.id
                 this.getContractDetail();
             }

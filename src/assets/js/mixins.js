@@ -1,3 +1,5 @@
+import {mapMutations,mapGetters} from 'vuex'
+
 const MIXINS = {
   data(){
     return{
@@ -55,7 +57,7 @@ const MIXINS = {
      * 获取部门
      */
     remoteMethod:function (val) {
-      this.$ajax.get('/api/access/deps',{keyword:val}).then(res=>{
+      this.$ajax.get('/api/access/deps/tree',{keyword:val}).then(res=>{
         res=res.data
         if(res.status===200){
           this.DepList=[].concat(res.data)
@@ -111,7 +113,11 @@ const MIXINS = {
             }).then(res=>{
               res = res.data;
               if(res.status === 200){
-                window.location = res.data.url;
+                let a = document.createElement('a');
+                a.download = undefined;
+                a.href = res.data.url;
+                a.click();
+                // window.location = res.data.url;
               }
             }).catch(err=>{
               console.log(err)
@@ -144,6 +150,15 @@ const MIXINS = {
                 break;
         }
     },
+    ...mapMutations([
+      'setPath',
+      'sliderRouter'
+    ])
+  },
+  computed:{
+    ...mapGetters([
+      'getPath'
+    ])
   }
 }
 

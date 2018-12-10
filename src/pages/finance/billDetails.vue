@@ -43,12 +43,12 @@
           </el-table-column>
           <el-table-column align="center" label="付款时间" v-if="activeItem==='付款信息'">
             <template slot-scope="scope">
-              <span>{{billMsg.toAccountTime|formatDate}}</span>
+              <span>{{billMsg.createTime|formatTime}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="收款时间" v-else>
             <template slot-scope="scope">
-              <span>{{billMsg.createTime|formatDate}}</span>
+              <span>{{billMsg.createTime|formatTime}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="发起人" v-if="activeItem==='付款信息'">

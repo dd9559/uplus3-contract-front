@@ -148,6 +148,16 @@ let TOOL = {
       }
     ],
   },
+  // 操作状态
+  OPERATION:{
+    start:1,    //已办理
+    backlog:2,    //待办理
+    sure:3,    //需确认（代办）
+    not:4,    //不可办理
+    amend:5,    //修改
+    // timeoutNot:5,    //超时未办
+    // timeoutStart:6,    //超时已办
+  },
   /**
    * 获取鼠标坐标
    * @param event
@@ -474,22 +484,25 @@ let TOOL = {
       return val
     }
   },
+  textInput:function (val) {
+    return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,'').replace(/\s/g,'')
+  },
   //数组是否有重复元素
-  repeatCell:function (arr=[]) {
-    if(arr.length>1){
-      let cell=arr[0]
-      arr.splice(0,1)
-      let state=arr.every((item,index)=>{
-        return item!==cell
-      })
-      if(state){
-        this.repeatCell(arr)
-      }else {
-        return false
-      }
-    }else {
+  repeatCell:function (arr) {
+    // debugger
+    let old=arr.length
+    let newArr=new Set(arr)
+    if(old===newArr.size){
       return true
+    }else {
+      return false
     }
+  },
+  //生成面包屑导航数组
+  getRouter:function (arr,root) {
+    return arr.map(item=>{
+      return {name:item,path:root}
+    })
   }
 }
 

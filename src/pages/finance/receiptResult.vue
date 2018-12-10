@@ -67,9 +67,11 @@
 </template>
 
 <script>
+  import {MIXINS} from "@/assets/js/mixins";
   import LayerInvoice from '@/components/LayerInvoice'
   export default {
     name: "receipt-result",
+    mixins: [MIXINS],
     components:{
       LayerInvoice
     },

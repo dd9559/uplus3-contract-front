@@ -376,7 +376,7 @@
                                 <el-button class="blue" type="text" @click="sureFn(scope.row.id)">确认</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.not">
-                                <el-button class="blue" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1" class="blue" type="text" @click="downFn(scope)">下</el-button>
+                                <el-button class="blue" v-if="isUpBtnFn(scope.$index)" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1" class="blue" type="text" @click="downFn(scope)">下</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.amend">
                                 <el-button class="blue" type="text" @click="amendFn(scope.row.id)">修改</el-button>
@@ -418,7 +418,7 @@
                     </ul>
                 </div>
             </div>
-            <span slot="footer">
+            <span slot="footer" v-loading="loadingBtn1">
                 <el-button class="paper-btn" type size="small" @click="replaceCloseFn" round>返回</el-button>
                 <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="replaceBtnFn" round>确定</el-button>
             </span>
@@ -602,6 +602,10 @@
                 <template v-else-if="stepsData.tit === STEPS.sure">
                     <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="editorBtnFn" round>确定</el-button>
                 </template>
+                <!--  确认 -->
+                <template v-else-if="stepsData.tit === STEPS.affirm">
+                    <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="handleBtnFn" round>确定</el-button>
+                </template>
             </span>
         </el-dialog>
         <!-- 调整步骤 -->
@@ -667,20 +671,13 @@
         err:2,      //解约合同
     }
     // 操作状态
-    const OPERATION = {
-        start:1,    //已办理
-        backlog:2,    //待办理
-        sure:3,    //需确认（代办）
-        not:4,    //不可办理
-        amend:5,    //修改
-        // timeoutNot:5,    //超时未办
-        // timeoutStart:6,    //超时已办
-    }
+    const OPERATION = TOOL.OPERATION;
     // 办理状态
     const STEPS = {
         start:'办理',    //办理
         sure:'修改',    //修改
         end:'查看',      //查看
+        affirm:'确认',      //确认
     }
     // 办理输入框
     const STEPSINPUT = {
@@ -719,6 +716,7 @@
                 loadingProgress:false,
                 loadingAdjust:false,
                 loadingReplace:false,
+                loadingBtn1:false,
                 // 枚举数据
                 dictionary:{
                     '6':'合同变更状态',
@@ -865,6 +863,14 @@
             }
         },
         methods:{
+            // 是否显示上的按钮
+            isUpBtnFn(index){
+                if(this.tableProgress[index-1].stepState.value === OPERATION.sure){
+                    return false
+                }else{
+                    return true
+                }
+            },
             // 是否必选
             isRequiredFn(bool){
                 if(bool){
@@ -962,7 +968,7 @@
                                         message: `请输入办理日期`
                                     }
                                 },{
-                                    val:'',
+                                    val:resData.remarks,
                                     title:'备注',
                                     isRequired:false,
                                     type:8,
@@ -1049,6 +1055,7 @@
             replaceFn(){
                 this.replaceShow = true;
                 this.loadingReplace = true;
+                this.loadingBtn1 = true;
                 this.$ajax.get('/api/postSigning/getStepList',{
                     id:this.layerShowData.id
                 }).then(res=>{
@@ -1062,9 +1069,11 @@
                         this.replaceData.index = i;
                     }
                     this.loadingReplace = false;
+                    this.loadingBtn1 = false;
                 }).catch(err=>{
                     this.errMeFn(err);
                     this.loadingReplace = false;
+                    this.loadingBtn1 = false;
                 })
             },
             // 步骤管理
@@ -1113,7 +1122,7 @@
             sureFn(id){
                 this.stepsData = {
                     show:true,
-                    tit:'修改'
+                    tit:'确认'
                 }
                 this.getLookStepFn(id);
             },
@@ -1175,6 +1184,8 @@
                 if(this.replaceData.transFlowCode===this.replaceData.index){
                     this.replaceShow = false;
                 }else{
+                    this.loadingReplace = true;
+                    this.loadingBtn1 = true;
                     let name = '';
                     let arr = [...this.replaceData.tit];
                     arr.map(res=>{
@@ -1201,8 +1212,12 @@
                             this.errMeFn(res.message);
                             this.replaceShow = false;
                         }
+                        this.loadingReplace = false;
+                        this.loadingBtn1 = false;
                     }).catch(err=>{
                         this.errMeFn(err);
+                        this.loadingReplace = false;
+                        this.loadingBtn1 = false;
                     })
                 }
             },

@@ -34,7 +34,7 @@
                         </div>
                     </li>
                 </ul>
-                <el-button round size="medium" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
+                <el-button round size="small" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
             </div>
             <div v-show="FooterShow">
                 <div class="paper-watch-tab" v-if="paperType">
@@ -63,8 +63,8 @@
             <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
         </div>
         <p slot="footer" v-show="FooterShow">
-            <el-button round  size="medium" class="paper-btn" @click="propCloseFn">取消</el-button>
-            <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="printPaperFn">打印</el-button>
+            <el-button round  size="small" class="paper-btn" @click="propCloseFn">取消</el-button>
+            <el-button round  size="small" class="paper-btn paper-btn-blue" @click="printPaperFn">打印</el-button>
         </p>
     </el-dialog>
 </template>
@@ -121,10 +121,6 @@
             billing: function() {
                 if(!this.moneyTypes[this.activeType].project){
                     this.$message.error('请选择开票项目');
-                    return false
-                }
-                if(!this.paperInfoData.signImg){
-                    this.$message.error('请先设置财务专用电子签章');
                     return false
                 }
                 if(this.moneyTypes[this.activeType].check){
@@ -194,6 +190,10 @@
                 })
             },
             printPaperFn(){
+                if(!this.paperInfoData.signImg){
+                    this.$message.error('请先设置财务专用电子签章');
+                    return false
+                }
                 this.$refs.pdfPrint.print();
             },
             // 获取开票列表

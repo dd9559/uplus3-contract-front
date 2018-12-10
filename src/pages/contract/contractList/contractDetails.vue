@@ -128,7 +128,7 @@
           </div>
         </div>
 
-        <div class="msg" v-if="contractDetail.isHavaCooperation">
+        <div class="msg" v-if="contractDetail.isHaveCooperation">
           <div class="title">三方合作</div>
           <div class="content">
             <div class="one_">
@@ -217,11 +217,11 @@
             <el-button round type="danger" @click="invalid" class="search_btn" v-if="contractDetail.contState.value!=3&&contractDetail.contState.value!=0">无效</el-button>
             <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1">变更</el-button>
             <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value<2">编辑</el-button>
-            <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value<0">提交审核</el-button>
+            <el-button round type="primary" class="search_btn" @click="isSubmitAudit=true" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value<0">提交审核</el-button>
           </div>
           <div v-else>
             <el-button round class="search_btn" @click="goPreview">预览</el-button>
-            <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value<2">编辑</el-button>
+            <!-- <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value<2">编辑</el-button> -->
           </div>
         </div>
       </el-tab-pane>
@@ -249,10 +249,10 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="资料库" name="third">
-        <div class="dataBank" v-if="contractDetail.contChangeState.value!=2&&!contractDetail.isHaveData">
+        <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData">
           <div class="classify" v-if="sellerList.length>0">
             <p class="title">卖方</p>
-            <div class="one_" v-for="(item,index) in sellerList" :key="index">
+            <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="contractDetail.contChangeState.value!=2||item.value.length>0">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
                 <li v-if="contractDetail.contChangeState.value!=2">
@@ -273,7 +273,7 @@
           </div>
           <div class="classify" v-if="buyerList.length>0">
             <p class="title">买方</p>
-            <div class="one_" v-for="(item,index) in buyerList" :key="index">
+            <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="contractDetail.contChangeState.value!=2||item.value.length>0">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
                 <li v-if="contractDetail.contChangeState.value!=2">
@@ -318,7 +318,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="回访录音" name="fourth" v-if="contractDetail.contChangeState.value!=2">
+      <el-tab-pane label="回访录音" name="fourth">
         <div class="type">
           <span :class="{'active':isActive===1}" @click="changeType(1)">客源</span>
           <span :class="{'active':isActive===2}" @click="changeType(2)">房源</span>
@@ -391,6 +391,14 @@
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogInvalid = false">取消</el-button>
         <el-button round type="primary" @click="setInvalid">保存</el-button>
+      </span>
+    </el-dialog>
+    <!-- 提审弹窗 -->
+    <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
+      <span>确定提审？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isSubmitAudit = false">取 消</el-button>
+        <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -504,7 +512,9 @@ export default {
       //扩展参数
       parameterList:[],
       preview:false,
-      start:''
+      start:'',
+      //提审确认
+      isSubmitAudit:false
     };
   },
   created() {
@@ -574,6 +584,33 @@ export default {
           type: this.contType
         }
       });
+    },
+     //提审
+    submitAudit(){
+      let param = {
+        cityId:this.contractDetail.cityCode,
+        flowType:3,
+        bizCode:this.contractDetail.code
+      }
+      this.$ajax.get('/api/machine/submitAduit', param).then(res=>{
+        this.isSubmitAudit=false;
+        res=res.data;
+        if(res.status===200){
+          this.$message({
+            message:"提审成功",
+            type:'success'
+          })
+          this.getContractList()
+        }else{
+          this.$message({
+            message:res.message
+          })
+        }
+      }).catch(error => {
+          this.$message({
+            message:'系统错误'
+          })
+        })
     },
     // 变更解约弹窗
     goChangeCancel(value) {
@@ -723,21 +760,21 @@ export default {
           let dataType = JSON.parse(res.data);
           console.log(dataType);
           dataType.forEach(element => {
-            if(element.type==="买方"){
+            if(element.type==='1'){
               let item={};
               item.value=[];
               item.kind=element.type;
               item.title=element.name;
               item.isrequire=element.isNecessary;
               this.buyerList.push(item);
-            }else if(element.type==="卖方"){
+            }else if(element.type==='2'){
               let item={};
               item.value=[];
               item.kind=element.type;
               item.title=element.name;
               item.isrequire=element.isNecessary;
               this.sellerList.push(item);
-            }else if(element.type==="其他"){
+            }else if(element.type==='3'){
               let item={};
               item.value=[];
               item.kind=element.type;
@@ -1070,9 +1107,11 @@ export default {
   //资料库
   .ulData{
     display: flex;
+    flex-wrap:wrap;
     li{
       margin-right: 10px;
       position: relative;
+      margin-bottom: 10px;
       > i{
         position: absolute;
         top: 5px;

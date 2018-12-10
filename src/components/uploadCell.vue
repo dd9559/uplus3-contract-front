@@ -1,6 +1,6 @@
 <template>
   <i class="iconfont" :style="getFontSize"
-     :class="[getType,!otherFile?'icon-qita1':'']"></i>
+     :class="[!otherFile?'icon-qita1':getType]"></i>
 </template>
 
 <script>
@@ -64,7 +64,7 @@
             return 'icon-yasuobao1'
             break
           default:
-            return 'icon-tupian'
+            return 'icon-qita1'
         }
       }
     }

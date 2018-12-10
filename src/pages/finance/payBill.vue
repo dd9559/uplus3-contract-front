@@ -35,9 +35,9 @@
         <el-table-column align="center" label="付款金额（元） ">
           <template slot-scope="scope">
             <ul>
-              <li v-for="item in scope.row.moneyTypes">
+              <li v-for="(item,index) in scope.row.moneyTypes">
                 <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
-                <span v-else @click="form.moneyType=item.key">请输入</span>
+                <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
               </li>
             </ul>
           </template>
@@ -67,7 +67,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-model="scope.row.userName">
+            <input type="text" class="no-style" placeholder="请输入" maxlength="6" v-model.trim="scope.row.userName" @input="inputOnly">
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
@@ -181,6 +181,9 @@
       console.log(this.$tool.repeatCell([1,2,3,4,2]))
     },
     methods:{
+      inputOnly:function () {
+        this.list[0].userName=this.$tool.textInput(this.list[0].userName)
+      },
       clearData:function () {
         this.$tool.clearForm(this.form)
         this.$tool.clearForm(this.list[0])
@@ -266,7 +269,10 @@
           }
         })
       },
-      getType:function (label) {
+      getType:function (label,type,index) {
+        if(type==='focus'){
+          this.form.moneyType=label.moneyTypes[index].key
+        }
         this.form.moneyTypePid = label.id
         this.getAmount()
       },

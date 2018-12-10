@@ -18,7 +18,7 @@
             </div>
             <div class="input-group">
                 <label>流程名称</label>
-                <el-input size="small" v-model="searchForm.name" :clearable="true"></el-input>
+                <el-input size="small" v-model="searchForm.name" :clearable="true" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
             </div>
             <div class="input-group">
                 <label>流程类型</label>
@@ -108,7 +108,7 @@
                 </div>
                 <div class="aduit-input">
                     <label>流程名称:</label>
-                    <el-input size="small" v-model="aduitForm.name"></el-input>
+                    <el-input size="small" v-model="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </div>
                 <div class="aduit-node">
                     <div>
@@ -120,7 +120,7 @@
                     </div>
                     <ul v-if="isAudit==='1'">
                         <li v-for="(item,index) in nodeList" :key="index">
-                            <el-input size="small" v-model="item.name" placeholder="设置节点名称"></el-input>
+                            <el-input size="small" v-model="item.name" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                             <el-select size="small" class="people-type" v-model="item.type" @change="getTypeOption(item.type,index)">
                                 <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
@@ -141,7 +141,7 @@
                 </div>
                 <div class="aduit-input">
                     <label class="mr-7">流程描述:</label>
-                    <el-input type="textarea" v-model="aduitForm.flowDesc"></el-input>
+                    <el-input type="textarea" v-model="aduitForm.flowDesc" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">
@@ -171,6 +171,14 @@
     let flowType = ["付款审核","收款审核","应收业绩审核","合同审核","调佣审核","结算审核"]
     let sortNo = 2
     let arr = [
+        {
+            name: "提审人",
+            type: 0,
+            sort: 1,
+            userId: "",
+            userName: "",
+            isAudit: "1"
+        },
         {
             name: "",
             type: "",
@@ -280,16 +288,13 @@
                 this.aduitTitle = title
                 if(type === 1) {
                     this.nodeList = [...arr]
-                    this.nodeList[0].type = ""
-                    this.nodeList[0].name = ""
+                    this.nodeList[1].type = ""
+                    this.nodeList[1].name = ""
                     this.$tool.clearForm(this.aduitForm)
                     this.isAudit = ""
                     this.editDisabled = false
                 } else {
                     this.nodeList = [...row.branch]
-                    if(this.nodeList[0].isAudit === 1) {
-                      this.nodeList.shift(this.nodeList[0])  
-                    }
                     let {...currentRow} = row
                     this.currentFlowId = currentRow.id
                     this.aduitForm.cityId = currentRow.cityId
@@ -385,49 +390,50 @@
             },
             isSave() {
                 this.$tool.checkForm(this.aduitForm,rule).then(() => {
-                    // let isOk
-                    if(this.isAudit === "1") {
-                        this.nodeList.forEach(item => {
-                            item.isAudit = this.isAudit
-                        })
-                        // this.nodeList.forEach(item => {
-                        //     isOk = false
-                        //     if(item.title) {
-                        //         if(item.type !== "") {
-                        //             isOk = true
-                        //         } else {
-                        //             this.$message({message:"请选择审批人类型"})
-                        //         }
-                        //     } else {
-                        //         this.$message({message:"节点名称不能为空"})
-                        //     }
-                        // })
-                        let obj = {
-                            name: "提审人",
-                            type: 0,
+                    let isOk
+                    if(this.isAudit === '0') {
+                        let arr1 = [{
+                            name: "",
+                            type: "",
                             sort: 1,
                             userId: "",
                             userName: "",
-                            isAudit: "1"
-                        }
-                        this.nodeList.unshift(obj)
+                            isAudit: "0"
+                        }]
+                        this.nodeList = arr1
                     } else {
-                        this.nodeList[0].isAudit = this.isAudit
-                        this.nodeList[0].sort = 1
+                        this.nodeList.forEach(item => {
+                            isOk = false
+                            if(item.name) {
+                                if(item.type) {
+                                    if(item.userId&&item.type===1 || item.userId&&item.type===2) {
+                                        isOk = true
+                                    } else {
+                                        this.$message({message:item.type===1?"请选择门店":"请选择职务"})
+                                    }
+                                } else {
+                                    this.$message({message:"审批人类型不能为空"})
+                                }
+                            } else {
+                                this.$message({message:"节点名称不能为空"})
+                            }
+                        })
                     }
                     let param = {
                         branch: this.nodeList
                     }
                     param = Object.assign({},this.aduitForm,param)
                     const url = "/api/auditflow/operateFlow"
-                    if(this.aduitTitle === "添加") {
-                        this.aduitPost(url,param)
-                    } else {
-                        param.id = this.currentFlowId
-                        this.aduitPost(url,param)
+                    if(isOk) {
+                        if(this.aduitTitle === "添加") {
+                            this.aduitPost(url,param)
+                        } else {
+                            param.id = this.currentFlowId
+                            this.aduitPost(url,param)
+                        }
                     }
                 }).catch(error => {
-                    this.$message({message:error})
+                    this.$message({message:`${error.title}${error.msg}`})
                 })
             },
             aduitPost(url,param) {
@@ -591,6 +597,7 @@
                     }
                 }
                 &:first-child {
+                    display: none;
                     .row-icon {
                         span:last-child {
                             display: none;
