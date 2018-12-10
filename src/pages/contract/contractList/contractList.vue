@@ -129,7 +129,7 @@
         </span>
       </p>
       <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
-        <el-table-column align="left" label="合同信息" width="250" fixed>
+        <el-table-column align="left" label="合同信息" width="260" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -187,7 +187,7 @@
                 <div style="width:160px">
                   {{scope.row.delReason}}
                 </div>
-                <div slot="reference" class="name-wrapper  itemCenter">
+                <div slot="reference" class="name-wrapper isFlex">
                   {{scope.row.contState.label}}
                 </div>
               </el-popover>

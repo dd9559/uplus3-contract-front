@@ -1,7 +1,7 @@
 <template>
 	<div id="changecancel">
 		<!-- 合同变更（编辑） -->
-		<el-dialog :title="title" :visible="getCancelDialog" width="740px" class="layer-changecancel mt80" @close='close'>
+		<el-dialog :title="title" :visible="getCancelDialog" width="740px" class="layer-changecancel mt80" @close='close' :closeOnClickModal="$tool.closeOnClickModal">
 			<div class="audit-box" v-if="getDialogType==='changeEdit'">
 				<div class="textareabox">
 					<p>合同变更原因</p>
