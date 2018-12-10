@@ -64,7 +64,7 @@
     <el-dialog :title="modalTitle" :visible.sync="stepsTypeDialog" width="740px" class="steps-type" :closeOnClickModal="$tool.closeOnClickModal">
       <el-form :model="addForm" class="addform" size="small">
         <el-form-item label="步骤类型">
-          <el-input v-model="addForm.name" autocomplete="off" maxlength="30" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+          <el-input v-model.trim="addForm.name" autocomplete="off" maxlength="30" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
         </el-form-item>
         <el-form-item label="分配负责角色">
           <el-select v-model="addForm.dutyType" filterable>
@@ -86,12 +86,12 @@
           </div>
           <div class="input-group">
             <label class="step-name">步骤名称：</label>
-            <el-input type="text" v-model="stepBusiness.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+            <el-input type="text" v-model.trim="stepBusiness.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
             <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
           </div>
           <div class="input-group">
             <label>计划天数：</label>
-            <el-input type="number" v-model="stepBusiness.planDays" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+            <el-input type="number" v-model="stepBusiness.planDays" onkeyup="this.value=this.value.replace(/\D/g,'')"></el-input>
           </div>
           <div class="menu-table">
             <h4>附属信息：</h4>
@@ -440,6 +440,7 @@
             })
             let obj = {
               id: row.id,
+              stepsTypeId: row.stepsTypeId,
               stepsTypeName: row.stepsTypeName,
               name: row.name,
               planDays: row.planDays,

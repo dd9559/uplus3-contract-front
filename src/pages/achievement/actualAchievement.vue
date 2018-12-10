@@ -1015,6 +1015,7 @@ export default {
       this.getData(this.ajaxParam);
     },
     skipContDel(value) {
+     this.setPath(this.$tool.getRouter(['应收','应收列表','合同详情'],'contractList'))
       this.$router.push({
         path: "/contractDetails",
         query: {
