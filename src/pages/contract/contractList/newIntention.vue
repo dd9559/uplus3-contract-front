@@ -118,7 +118,7 @@
                         </div>
                         <div class="form-cont mt30" v-if="this.$route.query.contType == 4">
                             <el-form-item label="意向备注：" class="disb">
-                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth"></el-input>
+                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" maxlength=200 placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth"></el-input>
                             </el-form-item>
                         </div>
                     </div>
