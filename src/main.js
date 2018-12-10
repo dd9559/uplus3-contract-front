@@ -41,9 +41,13 @@ Vue.directive('focus', {
 
 router.beforeEach((to,from,next)=>{
   let pathList = localStorage.getItem('router')
-  store.commit('setPath',pathList?pathList.split(','):[])
-  if(to.matched.some(record=>record.meta.getParent)){
-    // debugger
+  store.commit('setPath',pathList?JSON.parse(pathList):[])
+  if(to.matched.some(record=>record.meta.root)){
+    if(to.path==='/moneyCheck'){
+      to.meta.list=parseInt(to.query.type)===1?['财务','收款审核']:['财务','付款审核']
+    }
+    let arr = TOOL.getRouter(to.meta.list,to.fullPath)
+    store.commit('setPath',arr)
     next()
   }else {
     next()

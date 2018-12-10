@@ -65,7 +65,11 @@ export default new Router({
         // 设置模块
         {
           path: "contractTemplate",
-          component: contractTemplate
+          component: contractTemplate,
+          meta:{
+            root:true,
+            list:['设置','合同模板设置']
+          }
         },
         {
           path: "contraPreview",
@@ -94,11 +98,18 @@ export default new Router({
         //设置模块 end
         {
           path: "actualHarvest",
-          component: actualHarvest
+          component: actualHarvest,
+          meta:{
+            root:true,
+            list:['财务','应收实收']
+          }
         },
         {
           path: "moneyCheck",
-          component: moneyCheck
+          component: moneyCheck,
+          meta:{
+            root:true,
+          }
         },
         // 业绩板块
         {
@@ -116,7 +127,11 @@ export default new Router({
         // 业绩板块 end
         {
           path: "Bill",
-          component: Bill
+          component: Bill,
+          meta:{
+            root:true,
+            list:['财务','收付款单']
+          }
         },
         {
           path: "billDetails",
@@ -140,7 +155,11 @@ export default new Router({
         },
         {
           path: "adjustCheck",
-          component: adjustCheck
+          component: adjustCheck,
+          meta:{
+            root:true,
+            list:['合同','调佣审核']
+          }
         },
         {
           path: "settleCheck",
@@ -174,12 +193,20 @@ export default new Router({
         },
         {
           path: "contractList",
-          component: contractList
+          component: contractList,
+          meta:{
+            root:true,
+            list:['合同','合同列表']
+          }
         },
         // 票据管理
         {
           path: "paperSet",
-          component: paperSet
+          component: paperSet,
+          meta:{
+            root:true,
+            list:['财务','票据管理']
+          }
         },
         // 签后
         {

@@ -131,7 +131,9 @@ export default {
       changeCancel_:'',
       changeCancelId:'',
       iSsignature:false,
-      isSubmitAudit:false
+      isSubmitAudit:false,
+      //客源方门店id
+      guestStoreId:''
     };
   },
   created() {
@@ -196,9 +198,9 @@ export default {
     },
     //签章
     signature(value){
-      if(this.value===3){
+      if(value===3){
         let param = {
-          id:''
+          id:this.guestStoreId
         }
         //检测门店是否设置了签章
         this.$ajax.get('/api/contract/checkCompanySign',param).then(res=>{
@@ -223,6 +225,27 @@ export default {
             this.$message({
               message:'门店没有设置签章'
             });
+          }
+        }).catch(error => {
+          this.iSsignature=false
+          this.$message({
+            message:'门店没有设置签章'
+          })
+        })
+      }else{
+        let param = {
+          id:this.id,
+          type:value
+        }
+        this.iSsignature=true;
+        this.$ajax.post('/api/contract/signture', param).then(res=>{
+          res=res.data;
+          if(res.status===200){
+            this.$message({
+              message:'操作成功'
+            });
+            this.iSsignature=false
+            this.getContImg();
           }
         })
       }
@@ -303,6 +326,7 @@ export default {
           this.examineState=res.data.examineState.value;
           this.contState=res.data.contState.value;
           this.contType=res.data.contType.value;
+          this.guestStoreId=res.data.guestStoreId;
           this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
           if(res.data.cityId===1&&res.data.contType.value===2){

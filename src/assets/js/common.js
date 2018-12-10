@@ -488,21 +488,21 @@ let TOOL = {
     return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,'').replace(/\s/g,'')
   },
   //数组是否有重复元素
-  repeatCell:function (arr=[]) {
-    if(arr.length>1){
-      let cell=arr[0]
-      arr.splice(0,1)
-      let state=arr.every((item,index)=>{
-        return item!==cell
-      })
-      if(state){
-        this.repeatCell(arr)
-      }else {
-        return false
-      }
-    }else {
+  repeatCell:function (arr) {
+    // debugger
+    let old=arr.length
+    let newArr=new Set(arr)
+    if(old===newArr.size){
       return true
+    }else {
+      return false
     }
+  },
+  //生成面包屑导航数组
+  getRouter:function (arr,root) {
+    return arr.map(item=>{
+      return {name:item,path:root}
+    })
   }
 }
 

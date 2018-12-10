@@ -13,7 +13,7 @@
 				</div>
 				<!-- 上传附件 -->
 				<div class="uploadfile">
-					<div class="uploadtitle">上传变更协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+					<div class="uploadtitle">上传变更协议<span><b>注：</b>协议支持所有格式</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li>
@@ -47,7 +47,7 @@
 				</div>
 				<!-- 上传附件 -->
 				<div class="uploadfile">
-					<div class="uploadtitle">变更协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+					<div class="uploadtitle">变更协议<span><b>注：</b>协议支持所有格式</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li v-for="(item,index) in address.value" :key="index">
@@ -77,7 +77,7 @@
 				</div>
 				<!-- 上传附件 -->
 				<div class="uploadfile">
-					<div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+					<div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持所有格式</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li>
@@ -111,7 +111,7 @@
 				</div>
 				<!-- 上传附件 -->
 				<div class="uploadfile">
-					<div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持jpg、png、docx、以及pdf格式</span></div>
+					<div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持所有格式</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li v-for="(item,index) in address.value" :key="index">
@@ -129,7 +129,7 @@
 			<div class="audit-box" style=" height: 390px " v-if="getDialogType==='upload'">
 				<!-- 上传附件 -->
 				<div class="uploadfile uploadfile2">
-					<div class="uploadtitle">上传合同主体<span><b>注：</b>合同主体上传支持jpg、png、docx、以及pdf格式</span></div>
+					<div class="uploadtitle">上传合同主体<span><b>注：</b>合同主体上传支持所有格式</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li>
@@ -492,8 +492,10 @@ export default {
 					}
 					ul{
 						display: flex;
+						flex-wrap:wrap;
 						li{
 							margin-right: 10px;
+							margin-bottom: 10px;
 							position: relative;
 							> i{
 								position: absolute;

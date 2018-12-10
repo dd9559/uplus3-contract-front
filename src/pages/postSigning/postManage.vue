@@ -376,7 +376,7 @@
                                 <el-button class="blue" type="text" @click="sureFn(scope.row.id)">确认</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.not">
-                                <el-button class="blue" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1" class="blue" type="text" @click="downFn(scope)">下</el-button>
+                                <el-button class="blue" v-if="isUpBtnFn(scope.$index)" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1" class="blue" type="text" @click="downFn(scope)">下</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.amend">
                                 <el-button class="blue" type="text" @click="amendFn(scope.row.id)">修改</el-button>
@@ -602,6 +602,10 @@
                 <template v-else-if="stepsData.tit === STEPS.sure">
                     <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="editorBtnFn" round>确定</el-button>
                 </template>
+                <!--  确认 -->
+                <template v-else-if="stepsData.tit === STEPS.affirm">
+                    <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="handleBtnFn" round>确定</el-button>
+                </template>
             </span>
         </el-dialog>
         <!-- 调整步骤 -->
@@ -673,6 +677,7 @@
         start:'办理',    //办理
         sure:'修改',    //修改
         end:'查看',      //查看
+        affirm:'确认',      //确认
     }
     // 办理输入框
     const STEPSINPUT = {
@@ -858,6 +863,14 @@
             }
         },
         methods:{
+            // 是否显示上的按钮
+            isUpBtnFn(index){
+                if(this.tableProgress[index-1].stepState.value === OPERATION.sure){
+                    return false
+                }else{
+                    return true
+                }
+            },
             // 是否必选
             isRequiredFn(bool){
                 if(bool){
@@ -1109,7 +1122,7 @@
             sureFn(id){
                 this.stepsData = {
                     show:true,
-                    tit:'修改'
+                    tit:'确认'
                 }
                 this.getLookStepFn(id);
             },

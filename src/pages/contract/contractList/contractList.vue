@@ -209,7 +209,7 @@
                 <div style="width:160px">
                   {{scope.row.remarksExamine}}
                 </div>
-                <div slot="reference" class="name-wrapper">
+                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remarksExamine.length<16}">
                   {{scope.row.remarksExamine}}
                 </div>
               </el-popover>
@@ -422,6 +422,7 @@ export default {
       //   this.contractForm.endDate=this.signDate[1].replace(/-/g,"/");
       // }
       //console.log(this.contractForm)
+      this.currentPage=1;
       this.getContractList();
     },
     //流水
@@ -746,6 +747,8 @@ export default {
     -webkit-line-clamp: 3;
     overflow: hidden;
     text-overflow:ellipsis;
+  }
+  .isFlex{
     display: flex;
     align-items: center;
   }

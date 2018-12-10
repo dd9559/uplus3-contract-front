@@ -270,6 +270,7 @@
       this.activeView = parseInt(this.$route.query.type)
 
       this.getData()
+      this.remoteMethod()
       this.getDictionary()
       this.getMoneyTypes()
     },
@@ -336,14 +337,14 @@
               type:item.inAccountType,
               pageName:'收款详情'
             }
-            this.setPath(['财务','收款审核','收款详情'])
+            this.setPath(this.getPath.concat({name:'收款详情'}))
           } else {
             param.query = {
               tab: '付款信息',
               id:item.id,
               pageName:'付款详情'
             }
-            this.setPath(['财务','付款审核','付款详情'])
+            this.setPath(this.getPath.concat({name:'付款详情'}))
           }
           this.$router.push(param)
         }else {
@@ -356,9 +357,10 @@
        * @param type
        */
       msgOpera:function (row,type) {
+        this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'))
         if(type==='cont'){
           this.$router.push({
-            path:'contractDetails',
+            path:row.contTypeId===this.$tool.contType['4']||row.contTypeId===this.$tool.contType['5']?'detailIntention':'contractDetails',
             query:{
               contType:row.contTypeId,
               id:row.contId,
