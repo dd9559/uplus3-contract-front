@@ -307,7 +307,6 @@
       this.getDictionary()
       this.getMoneyTypes()
       this.remoteMethod()
-      console.log(this.$tool.repeatCell())
     },
     methods: {
       reset: function () {
