@@ -339,7 +339,7 @@
         <div class="ach-footer" v-if="dialogType==1">
           <div class="footer-btn-layout f_r">
             <el-button type="primary" round @click="keepAch(2,2)" class="color-white">保存</el-button>
-            <el-button type="primary" round @click="keepAch(2,1)" class="color-blue">保存并提交</el-button>
+            <el-button type="primary" round @click="keepAch(2,1)" class="color-blue">保存并提审</el-button>
           </div>
         </div>
         <!-- 业绩反审核底部 -->
@@ -364,15 +364,15 @@
         </div>
 
         <!-- 业绩分成底部      -->
-        <div class="ach-footer" v-if="dialogType==3">
+        <div class="ach-footer" v-if="dialogType==3&&!backAId">
           <div class="footer-btn-layout f_r">
             <el-button type="primary" round @click=" keepAchDivide(2)" class="color-white">保存</el-button>
-            <el-button type="primary" round @click=" keepAchDivide(1)" class="color-blue">保存并提交</el-button>
+            <el-button type="primary" round @click=" keepAchDivide(1)" class="color-blue">保存并提审</el-button>
           </div>
         </div>
 
-        <div class="dialog2" :close-on-click-modal="false">
-          <el-dialog :visible.sync="showTips" append-to-body custom-class="dialog2In">
+        <div class="dialog2">
+          <el-dialog :visible.sync="showTips" append-to-body custom-class="dialog2In" :close-on-click-modal="false">
             <h1>选择相关人员</h1>
             <div class="mansList">
               <el-table
@@ -438,7 +438,8 @@ export default {
       type: "", //房源1 客源2
       remark: "",
       agendIds: [],
-      addArr: []
+      addArr: [],
+      backAId: null
     };
   },
   created() {},
@@ -625,7 +626,7 @@ export default {
               this.$message(res.data.message);
             }
           });
-      } else if (!sumFlag) {
+      } else if (!sumFlag && flag) {
         this.$message("请输入正确的分成比例");
       } else {
         this.$message("请完善信息");
@@ -681,7 +682,7 @@ export default {
               this.$message(res.data.message);
             }
           });
-      } else if (!sumFlag) {
+      } else if (!sumFlag && flag) {
         this.$message("请输入正确的分成比例");
       } else if (this.remark == "") {
         this.$message("请填写备注");
@@ -750,19 +751,19 @@ export default {
             let sendObj = {
               agendIds: this.agendIds
             };
-           if(type==1){
-               this.$emit("saveData", this.achIndex, resultArr);
+            if (type == 1) {
+              this.$emit("saveData", this.achIndex, resultArr);
             }
-           if(type==2&&status==2){
-               this.$emit("saveData", this.achIndex, resultArr,-1);
-           }
-           if(type==2&&status==1){
-               this.$emit("saveData", this.achIndex, resultArr,0);
-           }
+            if (type == 2 && status == 2) {
+              this.$emit("saveData", this.achIndex, resultArr, -1);
+            }
+            if (type == 2 && status == 1) {
+              this.$emit("saveData", this.achIndex, resultArr, 0);
+            }
             this.$message("操作完成");
           }
         });
-      } else if (!sumFlag) {
+      } else if (!sumFlag&& flag) {
         this.$message("请输入正确的分成比例");
       } else {
         this.$message("请完善信息");
@@ -795,8 +796,8 @@ export default {
           sumFlag = false;
         }
       }
-      // debugger;
-      // console.log(sum);
+
+      console.log(sum);
       if (flag && sumFlag) {
         let param = {};
         if (type == 0) {
@@ -832,10 +833,10 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$message("操作完成");
-              this.$emit("close");
             }
+            this.$emit("close");
           });
-      } else if (!sumFlag) {
+      } else if (!sumFlag && flag) {
         this.$message("请输入正确的分成比例");
       } else {
         this.$message("请完善信息");
@@ -1029,6 +1030,9 @@ export default {
               }
               if (data.data.houseAgents) {
                 this.houseArr = data.data.houseAgents;
+              }
+              if (data.data.aId) {
+                this.backAId = data.data.aId;
               }
               // 需要从页面带一个分配业绩,业绩id
             }
