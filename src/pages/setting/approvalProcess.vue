@@ -108,7 +108,7 @@
                 </div>
                 <div class="aduit-input">
                     <label>流程名称:</label>
-                    <el-input size="small" v-model="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                    <el-input size="small" v-model.trim="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </div>
                 <div class="aduit-node">
                     <div>
