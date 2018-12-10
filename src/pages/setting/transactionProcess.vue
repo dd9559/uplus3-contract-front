@@ -19,7 +19,7 @@
         <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
           <el-form v-model="addForm" size="small">
             <el-form-item label="名称" class="add-form-item">
-              <el-input v-model="addForm.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+              <el-input v-model.trim="addForm.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
             </el-form-item>
           </el-form>
@@ -42,7 +42,7 @@
               <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
               <el-table-column align="center" label="是否可以结算">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.isSettle">
+                  <el-select v-model="scope.row.isSettle" @change="isSettleChange(scope.$index,$event)">
                     <el-option v-for="item in isSettleOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-select>
                 </template>
@@ -273,6 +273,12 @@
           this.manageData.splice(index, 1)
         }
       },
+      isSettleChange(index,bool) {
+        for(var i = 0; i < this.manageData.length; i++) {
+          this.manageData[i].isSettle = 0
+        }
+        this.manageData[index].isSettle = bool
+      },
       addBtn() {
         this.ProcessStepVisible = true
         this.StepsOption.forEach(item => {
@@ -462,7 +468,15 @@
       "cityId": function(newVal,oldVal) {
         this.getData()
         this.getTypeSteps()
-      }
+      },
+      // "manageData": {
+      //   handler(newVal,oldVal) {
+      //     for(var i = 0; i < newVal.length; i++) {
+      //       newVal[i].isSettle = 0
+      //     }
+      //   },
+      //   deep: true
+      // }
     }
   };
 </script>

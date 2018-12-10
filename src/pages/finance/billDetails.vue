@@ -165,7 +165,7 @@
           <el-table-column align="center" label="操作"></el-table-column>
           <el-table-column align="center" prop="auditInfo" label="备注"></el-table-column>
         </el-table>
-        <el-pagination
+        <!--<el-pagination
           v-if="checkList.length>1"
           class="pagination-info"
           @current-change="handleCurrentChange"
@@ -173,7 +173,7 @@
           :page-size="pageSize"
           layout="total, prev, pager, next, jumper"
           :total="total">
-        </el-pagination>
+        </el-pagination>-->
       </li>
     </ul>
     <el-dialog
