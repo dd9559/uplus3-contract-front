@@ -42,7 +42,7 @@
               <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
               <el-table-column align="center" label="是否可以结算">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.isSettle">
+                  <el-select v-model="scope.row.isSettle" @change="isSettleChange(scope.$index,$event)">
                     <el-option v-for="item in isSettleOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-select>
                 </template>
@@ -273,6 +273,12 @@
           this.manageData.splice(index, 1)
         }
       },
+      isSettleChange(index,bool) {
+        for(var i = 0; i < this.manageData.length; i++) {
+          this.manageData[i].isSettle = 0
+        }
+        this.manageData[index].isSettle = bool
+      },
       addBtn() {
         this.ProcessStepVisible = true
         this.StepsOption.forEach(item => {
@@ -462,7 +468,15 @@
       "cityId": function(newVal,oldVal) {
         this.getData()
         this.getTypeSteps()
-      }
+      },
+      // "manageData": {
+      //   handler(newVal,oldVal) {
+      //     for(var i = 0; i < newVal.length; i++) {
+      //       newVal[i].isSettle = 0
+      //     }
+      //   },
+      //   deep: true
+      // }
     }
   };
 </script>

@@ -440,6 +440,7 @@
             })
             let obj = {
               id: row.id,
+              stepsTypeId: row.stepsTypeId,
               stepsTypeName: row.stepsTypeName,
               name: row.name,
               planDays: row.planDays,
