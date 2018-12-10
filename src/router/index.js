@@ -67,7 +67,8 @@ export default new Router({
           path: "contractTemplate",
           component: contractTemplate,
           meta:{
-            root:['设置','合同模板设置']
+            root:true,
+            list:['设置','合同模板设置']
           }
         },
         {
