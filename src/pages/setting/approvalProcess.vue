@@ -141,7 +141,7 @@
                 </div>
                 <div class="aduit-input">
                     <label class="mr-7">流程描述:</label>
-                    <el-input type="textarea" v-model="aduitForm.flowDesc" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                    <el-input type="textarea" v-model.trim="aduitForm.flowDesc"></el-input>
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">

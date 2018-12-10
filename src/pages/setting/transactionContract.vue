@@ -211,6 +211,10 @@ export default {
   .contract-form {
     .el-form-item {
       display: flex;
+      /deep/ .el-form-item__label::before {
+        content: "*";
+        color: red;
+      }
       &:nth-child(-n + 2) {
         /deep/ .el-input {
           width: 278px;
