@@ -161,14 +161,12 @@
         }
       },
       selCity(){
-            // console.log(this.selectCity,'selectCity');
             this.getList()
       },
       popMsg(msg,callback){
         this.$confirm(msg,'提示',{
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
         }).then(()=>{
            callback()
         }).catch(()=>{
