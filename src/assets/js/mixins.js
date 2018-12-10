@@ -10,6 +10,10 @@ const MIXINS = {
       preview:false,
       previewFiles:[],
       previewIndex:0,
+      defaultProps: {
+        children: 'subs',
+        label: 'name'
+      }
     }
   },
   methods: {

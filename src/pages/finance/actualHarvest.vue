@@ -27,12 +27,9 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @change="getEmploye" v-model="searchForm.dealAgentStoreId" placeholder="请选择">
-            <el-option
-              v-for="item in DepList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
+          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.dealAgentStoreName" placeholder="请选择">
+            <el-option class="drop-tree" value="">
+              <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
             </el-option>
           </el-select>
           <el-select :clearable="true" size="small" class="margin-left" v-model="searchForm.dealAgentId" placeholder="请选择">
@@ -164,6 +161,7 @@
         searchForm: {
           moneyType: '',
           contType: '',
+          dealAgentStoreName:'',
           dealAgentStoreId: '',
           dealAgentId: '',
           receiveAmountState:'',
@@ -194,6 +192,17 @@
       handleCurrentChange:function (val) {
         this.currentPage = val
         this.getData()
+      },
+      clearDep:function () {
+        this.searchForm.dealAgentStoreName=''
+        this.searchForm.dealAgentStoreId=''
+        this.EmployeList=[]
+        this.searchForm.dealAgentId=''
+      },
+      handleNodeClick(data) {
+        this.getEmploye(data.depId)
+        this.searchForm.dealAgentStoreId=data.depId
+        this.searchForm.dealAgentStoreName=data.name
       },
       getData: function () {
         // let param={}

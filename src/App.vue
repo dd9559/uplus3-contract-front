@@ -95,6 +95,13 @@
       color: red;
     }
   }
+  .el-select-dropdown{
+    .drop-tree{
+      &.el-select-dropdown__item{
+        height: auto;
+      }
+    }
+  }
 
   // 清除浮动
   .clearfix:after {

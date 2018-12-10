@@ -92,10 +92,12 @@
                     </file-up>
                 </li>
                 <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
-                    <div class="namePath">
+                  <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                    <div class="namePath" @click="getPicture(uploadList,index)">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
+                  </el-tooltip>
                     <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
                 </li>
             </ul>
@@ -182,6 +184,17 @@ export default {
     },
 
     methods: {
+
+      //图片预览
+        getPicture(value,index){
+            this.start=index;
+            let arr=[];
+            // console.log(value);
+            value.forEach(item =>{
+                arr.push(item.path)
+            })
+            this.fileSign(arr)
+        },
 
       cutNumber(val){
           // console.log(val)
@@ -525,6 +538,11 @@ export default {
             background: #F2F3F8;
             > p{
             padding-top: 5px;
+            display: inline-block;
+            width: 100px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
             }
         }
 

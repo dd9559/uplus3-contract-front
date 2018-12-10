@@ -63,7 +63,8 @@
 
                             <el-form-item label="房源总价：" class="disb">
                                 <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable disabled>
-                                    <i slot="suffix" class="yuan">元</i>
+                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt == 2">元</i>
+                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt == 3">元/月</i>
                                 </el-input>
                             </el-form-item>
 
@@ -340,20 +341,24 @@ export default {
                     console.log(houseMsg);
                     this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
                     this.contractForm.houseInfo = houseMsg;
-                    this.contractForm.contPersons[0] = {
-                        name: houseMsg.OwnerInfo.OwnerName,
-                        mobile: houseMsg.OwnerInfo.OwnerMobile,
-                        relation: houseMsg.OwnerInfo.Relation,
-                        
-                        type: 1,
-                    };
+                    if(res.data.OwnerInfoList.length > 0){
+
+                        this.contractForm.contPersons[0] = {
+                            name: houseMsg.OwnerInfo.OwnerName,
+                            mobile: houseMsg.OwnerInfo.OwnerMobile,
+                            relation: houseMsg.OwnerInfo.Relation,                           
+                            type: 1,
+                        };
                     
-                    this.contractForm.ownname = houseMsg.OwnerInfo.OwnerName;
-                    this.contractForm.ownmobile = houseMsg.OwnerInfo.OwnerMobile; 
+                        this.contractForm.ownname = houseMsg.OwnerInfo.OwnerName;
+                        this.contractForm.ownmobile = houseMsg.OwnerInfo.OwnerMobile;
+                    }
+                     
                     // this.contractForm.ownrelation = houseMsg.OwnerInfo.Relation;            
                 
                 }
-            }).catch((error) => {
+            })
+            .catch((error) => {
                   this.$message({
                     message: error
                 })

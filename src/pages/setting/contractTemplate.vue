@@ -100,11 +100,12 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
+  import {MIXINS} from "@/assets/js/mixins";
   import {UPLOAD} from "@/assets/js/uploadMixins";
 
   export default {
     name: "contract-template",
-    mixins: [FILTER,UPLOAD],
+    mixins: [FILTER,MIXINS,UPLOAD],
     data() {
       return {
         rowenableId:'',
@@ -119,7 +120,6 @@
         contraName:'',
         citys:[],
         mbrules:['.doc','.docx'],
-        uploadAddress:'',
         contraType:'',
         // templateAddress:'',
         mmaiAddress:'',
@@ -151,13 +151,10 @@
         // console.log(obj[0].param,'ob1');
         if(type=='mmai'){
            this.mmaiAddress=obj[0].param[obj[0].param.length-1];
-           console.log(this.mmaiAddress,'mmai');
         }else if(type=='jjian'){
           this.jjianAddress=obj[0].param[obj[0].param.length-1]
-           console.log(this.mmaiAddress,'jjian');
         }else if(type=='mban'){
           this.mbanAddress=obj[0].param[obj[0].param.length-1]
-           console.log(this.mbanAddress,'mban');
         }
       },
       selCity(){
@@ -223,6 +220,7 @@
               }
             }
         this.modal=false
+        this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
         this.$router.push({
         path: "/contraPreview",
         query: {
@@ -296,6 +294,7 @@
         //预览
         else if(type===2){
           //合同预览
+          this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
           this.template = 3
           this.$router.push({
             path: "/contraPreview",

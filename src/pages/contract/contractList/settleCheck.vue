@@ -113,7 +113,17 @@
 
         <el-table-column label="审核备注" width="200">
           <template slot-scope="scope">
-            {{scope.row.remarks?scope.row.remarks:'-'}}
+            <span v-if="scope.row.remarks">
+              <el-popover trigger="hover" placement="top">
+                <div style="width:160px">
+                  {{scope.row.remarks}}
+                </div>
+                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remarks.length<16}">
+                  {{scope.row.remarks}}
+                </div>
+              </el-popover>
+            </span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
               
@@ -183,11 +193,13 @@
               <div class="uploadtitle">结算凭证</div>
               <ul class="ulData">
                 <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                  <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                     <div class="namePath">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
-                    <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                  </el-tooltip>
+                  <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
                 </li>
             </ul>
           </div>     
@@ -816,31 +828,49 @@
               color: #6C7986;
             }
           }
-        }       
-        .uploadbtn{
-          margin: 0 0 0 15px;
-          .el-upload--picture-card{
-            background-color: #fff;
-            border: 2px dashed #DEDDE2;
-            border-radius: 6px;
-            width: 130px;
-            height: 130px;
-            line-height: 130px;
-            margin-top: 20px;
-            i{
-                color: #EEF2FB;
-                font-size: 56px;
-            }
-          }
-          .el-upload-list--picture-card .el-upload-list__item{
-            margin: 20px 20px 0 0;
-            width: 130px;
-            height: 130px;
-            &:nth-child(5n){
-              margin-right: 0;
-            }
-          }
         }
+        .ulData{
+ 
+            width: 100%;
+            overflow: hidden;
+            li{
+                margin-right: 20px;
+                margin-bottom: 20px;
+                position: relative;
+                float: left;
+                &:nth-child(5n){
+                  margin-right: 0;
+                }
+                > i{
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    color: #F56C6C;
+                    font-size: 20px;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .namePath{
+            display: inline-block;
+            text-align: center;
+            width: 120px;
+            height: 120px;
+            padding-top: 20px;
+            box-sizing: border-box;
+            border-radius:4px;
+            background: #F2F3F8;
+            > p{
+              padding-top: 5px;
+              display: inline-block;
+              width: 100px;
+              overflow: hidden;
+              text-overflow:ellipsis;
+              white-space: nowrap;
+            }
+        }       
+        
       }
       
     }   
@@ -887,6 +917,19 @@
       margin-top: 20px;
       font-size: 12px;
       color: #6C7986;
+  }
+  .name-wrapper {
+    min-width: 80px;
+    height: 65px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow:ellipsis;
+  }
+  .isFlex{
+    display: flex;
+    align-items: center;
   }
 
 }
