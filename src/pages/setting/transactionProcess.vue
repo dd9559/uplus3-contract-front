@@ -29,9 +29,10 @@
         </el-dialog>
         <!-- 交易流程管理 弹出框 -->
         <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+          <span class="flow-name">({{flowName}})</span>
           <div class="manage-title">
             <label>结算百分比 : </label>
-            <el-input v-model="settlePercent" type="number"></el-input>%
+            <el-input v-model="settlePercent" type="number" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>%
           </div>
           <div class="manage-list">
             <el-table :data="manageData">
@@ -122,7 +123,8 @@
         flowCount: 0,
         currentFlowId: 0,
         AllSteps: [],
-        inputMax: 30
+        inputMax: 30,
+        flowName: ""
       };
     },
     created() {
@@ -151,6 +153,7 @@
       },
       // 点击 交易流程管理 编辑 删除
       rowOperation(row, type) {
+        this.flowName = row.name
         if(type === 'edit') {
           this.dialogProcessVisible = true
           this.processTitle = "编辑交易流程"
@@ -382,7 +385,7 @@
           let obj = {
             id: this.currentFlowId,
             cityId: this.cityId,
-            settlePercent: this.settlePercent
+            settlePercent: +this.settlePercent > 100 ? "100" : this.settlePercent
           }
           if(arr.length !== 0) {
             if(this.flowCount === 0) {
@@ -487,8 +490,12 @@
       }
       .add-form-item {
         display: flex;
+        /deep/ .el-form-item__label::before {
+          content: "*";
+          color: red;
+        }
         .el-input {
-          width: 656px;
+          width: 654px;
         }
         .text-absolute {
           position: absolute;
@@ -499,6 +506,12 @@
       }
     }
     //交易流程管理
+    .flow-name {
+      position: absolute;
+      left: 145px;
+      top: 20px;
+      color: #303133;
+    }
     .manage-title {
       display: flex;
       align-items: center;

@@ -85,7 +85,7 @@
             <span>{{stepBusiness.stepsTypeName}}</span>
           </div>
           <div class="input-group">
-            <label>步骤名称：</label>
+            <label class="step-name">步骤名称：</label>
             <el-input type="text" v-model="stepBusiness.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
             <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
           </div>
@@ -223,7 +223,7 @@
         },
         roleList: [],
         inputMax: 30,
-        allRows: {}
+        allRows: []
       }
     },
     created() {
@@ -260,12 +260,14 @@
         cell.parentNode.firstElementChild.style.color = "#fff"
       },
       firstCellLight() {
-        for(var i = 1; i < this.allRows.length; i++) {
-          this.allRows[i].firstElementChild.style.background = "#F7FBFF"
-          this.allRows[i].firstElementChild.style.color = "#478DE3"
-        }
-        this.allRows[0].firstElementChild.style.background = "#478DE3"
-        this.allRows[0].firstElementChild.style.color = "#fff"
+        if(this.allRows.length) {
+          for(var i = 1; i < this.allRows.length; i++) {
+            this.allRows[i].firstElementChild.style.background = "#F7FBFF"
+            this.allRows[i].firstElementChild.style.color = "#478DE3"
+          }
+          this.allRows[0].firstElementChild.style.background = "#478DE3"
+          this.allRows[0].firstElementChild.style.color = "#fff"
+        }  
       },
       getRoleList() {
         this.$ajax.get('/api/roles').then(res => {
@@ -641,6 +643,10 @@
   .modal-context {
     .input-group {
       margin-bottom: 20px;
+      .step-name::before {
+        content: "*";
+        color: red;
+      }
       /deep/ .el-input {
         height: 32px;
         .el-input__inner {
