@@ -23,7 +23,7 @@
     },
     computed: {
       otherFile: function () {
-        return this.typeList.indexOf(this.type) > -1
+        return this.typeList.indexOf(this.type.toLocaleLowerCase()) > -1
       },
       getFontSize: function () {
         return {
@@ -31,7 +31,7 @@
         }
       },
       getType: function () {
-        switch (this.type) {
+        switch (this.type.toLocaleLowerCase()) {
           case '.png':
           case '.jpg':
           case '.jpeg':
