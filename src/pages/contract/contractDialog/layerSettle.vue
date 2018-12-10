@@ -54,7 +54,7 @@
                             </li>
                             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
                                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                                    <div class="namePath" @click="getPicture(uploadList,index)">
+                                    <div class="namePath">
                                         <upload-cell :type="item.fileType"></upload-cell>
                                         <p>{{item.name}}</p>
                                     </div>
@@ -150,15 +150,15 @@ export default {
     methods: {
 
         //图片预览
-        getPicture(value,index){
-            this.start=index;
-            let arr=[];
-            // console.log(value);
-            value.forEach(item =>{
-                arr.push(item.path)
-            })
-            this.fileSign(arr)
-        },
+        // getPicture(value,index){
+        //     this.start=index;
+        //     let arr=[];
+        //     // console.log(value);
+        //     value.forEach(item =>{
+        //         arr.push(item.path)
+        //     })
+        //     this.fileSign(arr)
+        // },
 
         //获取文件路径后缀名
         uploadSubject(data) {

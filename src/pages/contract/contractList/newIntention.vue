@@ -20,13 +20,13 @@
                                 <el-date-picker v-model="contractForm.subscriptionTerm" value-format="yyyy/MM/dd" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="认购总价：" prop="subscriptionPrice">
-                                <el-input v-model.number="contractForm.subscriptionPrice" type="number" clearable @input="cutNumber('subscriptionPrice')" >
+                                <el-input v-model="contractForm.subscriptionPrice" type="text" clearable @input="cutNumber('subscriptionPrice')" >
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
                             
                             <el-form-item label="意向金金额：" prop="dealPrice" v-if="this.$route.query.contType == 4">
-                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable @input="cutNumber('dealPrice')">
+                                <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
@@ -34,7 +34,7 @@
                             </el-form-item>
 
                             <el-form-item label="定金金额：" prop="dealPrice" v-if="this.$route.query.contType == 5">
-                                <el-input v-model.number="contractForm.dealPrice" type="number" clearable @input="cutNumber('dealPrice')">
+                                <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
