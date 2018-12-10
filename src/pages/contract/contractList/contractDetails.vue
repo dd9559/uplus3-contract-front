@@ -803,7 +803,7 @@ export default {
               let fileType = this.$tool.get_suffix(item.name);
               item.fileType=fileType
             });
-            if(element.kind==="买方"){
+            if(element.kind==="1"){
               this.buyerList.forEach(ele => {
                 if(element.title===ele.title){
                   // let fileType = this.$tool.get_suffix(element.name)
@@ -811,14 +811,14 @@ export default {
                 }
               });
               // this.buyerDataList.push(element);
-            }else if(element.kind==="卖方"){
+            }else if(element.kind==="2"){
               this.sellerList.forEach(ele => {
                 if(element.title===ele.title){
                   ele.value=element.value
                 }
               });
               // this.sellerDataList.push(element);
-            }else if(element.kind==="其他"){
+            }else if(element.kind==="3"){
               this.otherList.forEach(ele => {
                 if(element.title===ele.title){
                   ele.value=element.value
