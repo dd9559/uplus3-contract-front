@@ -63,7 +63,7 @@
 
                             <el-form-item label="房源总价：" class="disb">
                                 <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable disabled>
-                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt == 2">元</i>
+                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt == 2">万元</i>
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt == 3">元/月</i>
                                 </el-input>
                             </el-form-item>
@@ -109,8 +109,7 @@
                                     <el-input v-model.number="contractForm.custmobile" clearable placeholder="手机号" type="number" class="ownwidth" :disabled="type===2?true:false"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custIdentifyCode" v-if="this.type===1">
-                                    <el-input v-model.number="contractForm.custIdentifyCode" clearable placeholder="身份证号" type="number" class="custwidth"></el-input>
-                                    
+                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号"  class="custwidth"></el-input>               
                                 </el-form-item>
                                 <el-form-item v-if="this.type===2">
                                     <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="身份证号" class="custwidth" disabled></el-input>
@@ -118,8 +117,9 @@
                             </el-form-item>
                         </div>
                         <div class="form-cont mt30" v-if="this.$route.query.contType == 4">
-                            <el-form-item label="意向备注：" class="disb">
-                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 4}" maxlength=200 placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth"></el-input>
+                            <el-form-item label="意向备注：" class="disb textlengthbox">
+                                <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 5}"  placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth" maxlength=200></el-input>
+                                <span class="textLength">{{contractForm.remarks.length}}/200</span>
                             </el-form-item>
                         </div>
                     </div>
@@ -149,15 +149,50 @@ export default {
         var checkPrice = (rule, value, callback) => {
             if (!value) {
                 return callback(new Error('请输入价格'));
-            }else {
+            }
+            else {
                 if (value < 0 || value > 999999999.99) {
-                callback(new Error('输入总价在0-999999999.99之间'));
+                    callback(new Error('输入总价在0-999999999.99之间'));
                 } else {
-                callback();
+                    callback();
                 }
             }
             
         };
+
+        //身份证号验证规则
+        var idCard = (rule, value, callback) => {
+            let idcard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+            if (!value) {
+                return callback(new Error('请输入客户身份证号'));
+            }
+            else {
+                if (!idcard.test(value)) {
+                    callback(new Error('请输入正确格式的身份证号'));
+                } else {
+                    callback();
+                }
+            }
+            
+        };
+
+
+        //身份证号验证规则
+        var telPhone = (rule, value, callback) => {
+            let myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+            if (!value) {
+                return callback(new Error('请输入手机号'));
+            }
+            else {
+                if (!myreg.test(value)) {
+                    callback(new Error('请输入1开头的11位手机号码'));
+                } else {
+                    callback();
+                }
+            }
+            
+        };
+
         return {
             isShowDialog:false,
             dialogType: '',
@@ -194,9 +229,9 @@ export default {
                     {
                         name: '',
                         mobile: '',
-                        identifyCode: '',
+                        // identifyCode: '',
                         type: 1,
-                        relation: ''
+                        // relation: ''
                     },
                     //客户信息
                     {
@@ -210,7 +245,6 @@ export default {
                 //业主信息
                 ownname: '',
                 ownmobile: '',
-                // ownrelation: '',
 
                 //客户信息
                 custname: '',
@@ -245,14 +279,14 @@ export default {
                     { required: true, message: '请输入业主姓名'},
                 ],
                 ownmobile: [
-                    { required: true, message: '请输入业主手机号'},
+                    { validator: telPhone},
                 ],
 
                 custname: [
                     { required: true, message: '请输入客户姓名'},
                 ],
                 custmobile: [
-                    { required: true, message: '请输入客户手机号' },
+                    { validator: telPhone},
                 ],
                 
                 guestinfoCode: [
@@ -270,7 +304,7 @@ export default {
                     
                 },
                 custIdentifyCode: [
-                        { required: true, message: '请输入客户身份证号' },
+                        { validator: idCard},
                     ], 
                 // contPersons:{
                 //     // name: '',
@@ -341,20 +375,21 @@ export default {
                     console.log(houseMsg);
                     this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
                     this.contractForm.houseInfo = houseMsg;
-                    if(res.data.OwnerInfoList.length > 0){
 
-                        this.contractForm.contPersons[0] = {
-                            name: houseMsg.OwnerInfo.OwnerName,
-                            mobile: houseMsg.OwnerInfo.OwnerMobile,
-                            relation: houseMsg.OwnerInfo.Relation,                           
-                            type: 1,
-                        };
+                    // this.contractForm.ownname = houseMsg.OwnerInfoList[0].OwnerName;
+                    // this.contractForm.ownmobile = houseMsg.OwnerInfoList[0].OwnerMobile;
+
+                        // this.contractForm.contPersons[0] = {
+                        //     name: houseMsg.OwnerInfoList[0].OwnerName,
+                        //     mobile: houseMsg.OwnerInfoList[0].OwnerMobile,
+                        //     relation: houseMsg.OwnerInfoList[0].Relation,                           
+                        //     type: 1,
+                        // };
                     
-                        this.contractForm.ownname = houseMsg.OwnerInfo.OwnerName;
-                        this.contractForm.ownmobile = houseMsg.OwnerInfo.OwnerMobile;
-                    }
+                       
+                    
                      
-                    // this.contractForm.ownrelation = houseMsg.OwnerInfo.Relation;            
+                             
                 
                 }
             })
@@ -382,7 +417,6 @@ export default {
                     name: guestMsg.OwnerInfo.CustName,
                     mobile: guestMsg.OwnerInfo.CustMobile,
                     relation: guestMsg.OwnerInfo.CustRelation,
-                    identifyCode: this.contractForm.custIdentifyCode,
                     type: 2,
                 };
                 this.contractForm.custname = guestMsg.OwnerInfo.CustName;
@@ -440,7 +474,7 @@ export default {
                             this.contractForm.contPersons[1].type = res.data.contPersons[i].personType.value;
                             this.contractForm.custname = res.data.contPersons[i].name;
                             this.contractForm.custmobile = res.data.contPersons[i].mobile; 
-                            // this.contractForm.custrelation = this.contractForm.contPersons[i].relation;
+                            this.contractForm.custIdentifyCode = this.contractForm.contPersons[i].identifyCode;
                         }
                     }
                 }
@@ -551,16 +585,22 @@ export default {
                     this.contractForm.contPersons[1].identifyCode = this.contractForm.custIdentifyCode
                 }
                 
-
-
                 if (valid) {                  
-                    let param = { 
+                    
+                    this.$confirm('确定保存合同?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'info',
+                        roundButton: true
+
+                    })
+                    .then(() => {
+                        let param = { 
                         igdCont: this.contractForm,
                         type: this.type                            
                     }
                     if(this.type===2){
-                        
-                    
+                                          
                         delete param.igdCont.code;
                         delete param.igdCont.contType;
                         delete param.igdCont.recordName;
@@ -623,13 +663,6 @@ export default {
                     delete param.igdCont.custmobile;
                     delete param.igdCont.custIdentifyCode;
 
-                    this.$confirm('确定保存合同?', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'info',
-                        roundButton: true
-
-                    }).then(() => {
                         this.$ajax
                         .postJSON("/api/contract/editIgdCont", param)
                         .then(res => {
@@ -794,6 +827,7 @@ export default {
                 .textareawidth{
                     width: 650px;
                     height: 120px;
+                    
                 } 
             }
             .mt30{
@@ -812,6 +846,15 @@ export default {
         }
         
         
+    }
+    .textlengthbox{
+        position: relative;
+    }
+    .textLength{
+        position: absolute;
+        bottom: 0px;
+        right: 10px;
+        color: #6C7986;
     }
 }
         

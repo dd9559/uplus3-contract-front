@@ -228,9 +228,10 @@
           </div>                  
         </div>
         <!-- 审核备注 -->
-        <div class="textareabox2">
+        <div class="textareabox2 textlengthbox">
           <span>审核备注</span>
-          <el-input type="textarea" :rows="6"  v-model="auditForm.textarea" class="textarea" maxlength=200 ></el-input>
+          <el-input type="textarea" :rows="5"  v-model="auditForm.textarea" class="textarea" maxlength=200 ></el-input>
+          <span class="textLength">{{auditForm.textarea.length}}/200</span>
         </div>  
       </div>
       <div class="btnbox">
@@ -938,6 +939,16 @@
   .isFlex{
     display: flex;
     align-items: center;
+  }
+  .textlengthbox{
+      position: relative;
+  }
+  .textLength{
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      color: #6C7986;
+      text-align: right;
   }
 
 }
