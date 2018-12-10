@@ -461,10 +461,12 @@ export default {
     },
     //房源查询
     inquireHouse() {
+      this.currentPage=1;
       this.getHouseList();
     },
     //客源查询
     inquireGuest() {
+      this.currentPage=1;
       this.getGuestList();
     },
     //选中房源客源

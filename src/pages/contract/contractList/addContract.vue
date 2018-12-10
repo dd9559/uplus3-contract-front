@@ -435,9 +435,9 @@ export default {
         this.getContractDetail();
       }
     }
-    this.getDictionary();
-    this.getTransFlow();
-    this.getRelation();
+    this.getDictionary();//字典
+    this.getTransFlow();//交易类型
+    this.getRelation();//人员关系
     this.getExtendParams();//扩展参数
   },
   methods: {
@@ -533,7 +533,8 @@ export default {
     //身份证验证
     verifyIdcard(value){
       if(value.length===18){
-        let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+        // let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+        let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
         if (!reg.test(value)) {
           this.$message({
             message:'身份证格式不正确'
@@ -581,7 +582,7 @@ export default {
                     let reg = /^1[0-9]{10}$/;
                     if (reg.test(element.mobile)) {
                       if (element.relation) {
-                        if (element.propertyRightRatio&&element.propertyRightRatio>0||element.propertyRightRatio===0) {
+                        if (element.propertyRightRatio&&element.propertyRightRatio>0||element.propertyRightRatio==0) {
                           if (element.identifyCode) {
                             let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
                             if (reg.test(element.identifyCode)) {
@@ -638,7 +639,7 @@ export default {
                             let reg = /^1[0-9]{10}$/;
                             if (reg.test(element.mobile)) {
                               if (element.relation) {
-                              if (element.propertyRightRatio&&element.propertyRightRatio>0||element.propertyRightRatio===0) {
+                              if (element.propertyRightRatio&&element.propertyRightRatio>0||element.propertyRightRatio==0) {
                                 if (element.identifyCode) {
                                   let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
                                   if (reg.test(element.identifyCode)) {
@@ -681,48 +682,56 @@ export default {
                         }
                       });
                       if (isOk_) {
-                        console.log(guestRightRatio);
+                        // console.log(guestRightRatio);
                         if (guestRightRatio === 100) {
                           //验证身份证是否重复
                           let IdCardList = [];
                           this.ownerList.forEach(element => {
-                            IdCardList.push(element.identifyCode)
+                            IdCardList.push(element.identifyCode);
                           });
                           this.guestList.forEach(element => {
                             IdCardList.push(element.identifyCode)
                           });
-                          console.log(IdCardList);
-                          
-                          console.log(this.$tool.repeatCell(IdCardList));
-
-                          //验证扩展参数
-                          if(this.contractForm.isHaveCooperation){
-                            let mobileOk=true;
-                            let IDcardOk=true;
-                            // contractForm.otherCooperationInfo.mobile
-                            if(this.contractForm.otherCooperationInfo.mobile){
-                              mobileOk=false;
-                              let reg = /^1[0-9]{10}$/;
-                              if (reg.test(this.contractForm.otherCooperationInfo.mobile)) {
-                                mobileOk=true;
-                              }else{
-                                this.$message({
-                                  message: "三方合作手机号码不正确"
-                                });
+                          let IdCardList_= Array.from(new Set(IdCardList));
+                          if(IdCardList.length===IdCardList_.length){
+                            //验证扩展参数
+                            if(this.contractForm.isHaveCooperation){
+                              let mobileOk=true;
+                              let IDcardOk=true;
+                              // contractForm.otherCooperationInfo.mobile
+                              if(this.contractForm.otherCooperationInfo.mobile){
+                                mobileOk=false;
+                                let reg = /^1[0-9]{10}$/;
+                                if (reg.test(this.contractForm.otherCooperationInfo.mobile)) {
+                                  mobileOk=true;
+                                }else{
+                                  this.$message({
+                                    message: "三方合作手机号码不正确"
+                                  });
+                                }
+                              };
+                              if(this.contractForm.otherCooperationInfo.identifyCode){
+                                IDcardOk=false;
+                                let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+                                if (reg.test(this.contractForm.otherCooperationInfo.identifyCode)) {
+                                  IDcardOk=true;
+                                }else{
+                                  this.$message({
+                                    message: "三方合作身份证号不正确"
+                                  });
+                                }
+                              };
+                              if(mobileOk&&IDcardOk){
+                                // 合同扩展参数验证
+                                this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                                  this.dialogSave = true;
+                                }).catch(error => {
+                                    this.$message({
+                                      message: `${error.title}${error.msg}`
+                                    });
+                                  });
                               }
-                            };
-                            if(this.contractForm.otherCooperationInfo.identifyCode){
-                              IDcardOk=false;
-                              let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
-                              if (reg.test(this.contractForm.otherCooperationInfo.identifyCode)) {
-                                IDcardOk=true;
-                              }else{
-                                this.$message({
-                                  message: "三方合作身份证号不正确"
-                                });
-                              }
-                            };
-                            if(mobileOk&&IDcardOk){
+                            }else{
                               // 合同扩展参数验证
                               this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
                                 this.dialogSave = true;
@@ -733,15 +742,13 @@ export default {
                                 });
                             }
                           }else{
-                            // 合同扩展参数验证
-                            this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
-                              this.dialogSave = true;
-                            }).catch(error => {
-                                this.$message({
-                                  message: `${error.title}${error.msg}`
-                                });
-                              });
+                            this.$message({
+                              message:'身份证号码重复'
+                            })
                           }
+                          // console.log(this.$tool.repeatCell(IdCardList));
+
+                          
                           // 合同扩展参数验证
                           // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
                           //   this.dialogSave = true;
@@ -839,8 +846,9 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
+          console.log(error)
           this.$message({
-            message:'数据异常'
+            message:error
           })
         })
       }
@@ -927,29 +935,28 @@ export default {
           console.log(houseMsg);
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           if(houseMsg.TradeInt===2){
-            this.contractForm.dealPrice = houseMsg.ListingPrice*10000;
+            this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
           }else{
             this.contractForm.dealPrice = houseMsg.ListingPrice;
           }
-          // this.contractForm.dealPrice = houseMsg.ListingPrice; //成交总价
           this.contractForm.houseInfo = houseMsg;
-          // let houseType = `${houseMsg.CountT}*${houseMsg.CountF}*${houseMsg.CountW}*${houseMsg.CountY}`;
-          // console.log(houseType)
-          this.ownerList=[];
-          this.ownerList.push({
-            name: houseMsg.OwnerInfo.OwnerName,
-            mobile: houseMsg.OwnerInfo.OwnerMobile,
-            type: 1,
-            relation: houseMsg.OwnerInfo.Relation,
-            identifyCode:'',
-            propertyRightRatio:''
-          })
-          // this.ownerList[0] = {
+          if(houseMsg.OwnerInfoList.length>0){
+            this.ownerList=[];
+            houseMsg.OwnerInfoList.forEach(element => {
+              // console.log(element);
+              element.type=1;
+              element.identifyCode='';
+              element.propertyRightRatio=''
+            });
+          }
+          // this.ownerList.push({
           //   name: houseMsg.OwnerInfo.OwnerName,
           //   mobile: houseMsg.OwnerInfo.OwnerMobile,
           //   type: 1,
-          //   relation: houseMsg.OwnerInfo.Relation
-          // };
+          //   relation: houseMsg.OwnerInfo.Relation,
+          //   identifyCode:'',
+          //   propertyRightRatio:''
+          // })
           this.options.push({
             name: houseMsg.HouseStoreName,
             id: houseMsg.HouseStoreCode

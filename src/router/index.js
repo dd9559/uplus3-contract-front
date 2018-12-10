@@ -85,11 +85,19 @@ export default new Router({
         },
         {
           path: "moneyType",
-          component: moneyType
+          component: moneyType,
+          meta:{
+            root:true,
+            list:['设置','款类设置']
+          }
         },
         {
           path: "operationLog",
-          component: operationLog
+          component: operationLog,
+          meta:{
+            root:true,
+            list:['设置','操作日志']
+          }
         },
         {
           path: "approvalProcess",

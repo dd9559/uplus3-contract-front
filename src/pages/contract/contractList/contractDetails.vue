@@ -116,7 +116,7 @@
                   <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                      <i class="iconfont icon-icon_contract_phone" @click="call(scope.row.mobile)"></i>
+                      <i class="iconfont tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -346,7 +346,7 @@
       
       <el-button round class="search_btn" v-if="name==='first'">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
-      <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'">分成</el-button>
+      <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'&&contractDetail.contState.value===3">分成</el-button>
       <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
       <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'&&contractDetail.contState.value!=1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
@@ -600,7 +600,8 @@ export default {
             message:"提审成功",
             type:'success'
           })
-          this.getContractList()
+          // this.getContractList()
+          this.getContractDetail()
         }else{
           this.$message({
             message:res.message
@@ -608,7 +609,7 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:'系统错误'
+            message:error
           })
         })
     },

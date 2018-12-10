@@ -49,10 +49,10 @@
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
             <ul>
-              <li v-for="item in scope.row.moneyTypes">
+              <li v-for="(item,index) in scope.row.moneyTypes">
                 <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
                        v-if="form.moneyType===item.key">
-                <span v-else @click="form.moneyType=item.key">请输入</span>
+                <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
               </li>
             </ul>
           </template>
@@ -90,7 +90,7 @@
             <div class="box">
               <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
                      v-if="form.moneyType===scope.row.key">
-              <span v-else @click="form.moneyType=scope.row.key">请输入</span>
+              <span v-else @click="getType(scope.row,'other')">请输入</span>
             </div>
           </template>
         </el-table-column>
@@ -501,7 +501,7 @@
         }
         // this.activeAdmin = ''
         this.activeType = item.id
-        // this.form = Object.assign({},this.form,obj)
+        this.form = Object.assign({},this.form,obj)
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
@@ -611,7 +611,7 @@
           })
         }
       },
-      getType: function (label, type = 'init') {
+      getType: function (label, type = 'init',index) {
         let obj = {
           /*moneyType: '',
           moneyTypePid: '',*/
@@ -620,10 +620,14 @@
         }
         this.activeAdmin = ''
         this.form = Object.assign({},this.form,obj)
-        if (type === 'init') {
+        if (type === 'init'||type==='focus') {
           this.form.moneyTypePid = label.id
-        } else {
+        } else if(type==='other') {
+          this.form.moneyType=label.key
           this.form.moneyTypePid = this.moneyTypeOther[0].id
+        }
+        if(type==='focus'){
+          this.form.moneyType=label.moneyTypes[index].key
         }
       },
     },

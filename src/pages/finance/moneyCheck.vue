@@ -38,12 +38,9 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @change="getEmploye" v-model="searchForm.deptId" placeholder="请选择">
-            <el-option
-              v-for="item in DepList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
+          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+            <el-option class="drop-tree" value="">
+              <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
             </el-option>
           </el-select>
           <el-select :clearable="true" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择">
@@ -167,7 +164,7 @@
             <span>{{scope.row.toAccountTime|formatDate}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态" prop="checkStatus.label"></el-table-column>
+        <el-table-column align="center" label="状态" prop="payStatus"></el-table-column>
         <el-table-column align="center" label="结算信息">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
@@ -234,7 +231,8 @@
         searchForm: {
           contType: '',
           timeType: '',
-          deptId: '',
+          depName:'',
+          depId: '',
           empId: '',
           billStatus: '',
           proAccount: '',
@@ -303,6 +301,17 @@
         console.log(`当前页: ${val}`);
         this.currentPage = val
         this.getData()
+      },
+      clearDep:function () {
+        this.searchForm.depId=''
+        this.searchForm.depName=''
+        this.EmployeList=[]
+        this.searchForm.empId=''
+      },
+      handleNodeClick(data) {
+        this.getEmploye(data.depId)
+        this.searchForm.depId=data.depId
+        this.searchForm.depName=data.name
       },
       getData: function () {
         let param = JSON.parse(JSON.stringify(this.searchForm))
