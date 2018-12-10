@@ -134,6 +134,7 @@ export default{
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
                             this.showSed=true 
+                            this.sigtureShow=false
                             this.imgSrc=res.data.data.businessImg.url
                             this.imgSrc2=res.data.data.residenceImg.url
                             this.total=res.data.data.businessImg.count
@@ -286,7 +287,11 @@ export default{
                         this.count=1
                     }
                     if(this.count==this.signPosition.pageIndex){
-                             this.sigtureShow=true
+                            if(this.showSed){
+                                this.sigtureShow=false
+                            }else{
+                                this.sigtureShow=true
+                            }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
@@ -326,7 +331,12 @@ export default{
                     }
                     console.log(this.signPosition,'this.signPosition');
                     if(this.count==this.signPosition.pageIndex){
-                             this.sigtureShow=true
+                            if(this.showSed){
+                                this.sigtureShow=false
+                            }else{
+                                this.sigtureShow=true
+                            }
+                            
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
