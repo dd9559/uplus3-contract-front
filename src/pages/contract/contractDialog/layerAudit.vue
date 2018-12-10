@@ -51,10 +51,12 @@
               <tr>
                 <td>调整为</td>
                 <td>
-                  <div><el-input v-model="auditForm.money1" placeholder="输入金额" class="width70" type="number" @input="cutNumber('money1')"></el-input>元</div>
+                  <div>
+                    <el-input v-model="auditForm.money1" placeholder="输入金额" class="width70" type="text" @input="cutNumber('money1')"></el-input>元
+                  </div>
                 </td>
                 <td>
-                  <div><el-input v-model="auditForm.money2" placeholder="输入金额" class="width70"  type="number" @input="cutNumber('money2')"></el-input>元</div>
+                  <div><el-input v-model="auditForm.money2" placeholder="输入金额" class="width70"  type="text" @input="cutNumber('money2')"></el-input>元</div>
                 </td>
                 <!-- <td class="flex">       
                     <div>
@@ -75,7 +77,7 @@
                   
                 </td> -->
                 <td>
-                  <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70"  type="number" @input="cutNumber('money4')"></el-input>元</div>
+                  <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70"  type="text" @input="cutNumber('money4')"></el-input>元</div>
                 </td>
               </tr>
             </tbody>
@@ -93,7 +95,7 @@
                 </li>
                 <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath" @click="getPicture(uploadList,index)">
+                    <div class="namePath">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
@@ -186,15 +188,15 @@ export default {
     methods: {
 
       //图片预览
-        getPicture(value,index){
-            this.start=index;
-            let arr=[];
-            // console.log(value);
-            value.forEach(item =>{
-                arr.push(item.path)
-            })
-            this.fileSign(arr)
-        },
+        // getPicture(value,index){
+        //     this.start=index;
+        //     let arr=[];
+        //     // console.log(value);
+        //     value.forEach(item =>{
+        //         arr.push(item.path)
+        //     })
+        //     this.fileSign(arr)
+        // },
 
       cutNumber(val){
           // console.log(val)

@@ -470,7 +470,8 @@
           .then(res => {
             let data = res.data;
             if (res.data.status === 200) {
-              this.tableData = data.data            
+              this.tableData = data.data  
+                        
             }
             this.loadingTable = false;
       
@@ -484,6 +485,7 @@
       // 点击审核事件
       auditApply(e) {
         this.dialogVisible = true
+        this.auditForm.textarea = ''
         let param = {
           checkId: e.checkId,
           contractCode: e.contractCode

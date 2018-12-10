@@ -581,7 +581,7 @@
           this.companyBankList.forEach(item => {
             isOk = false
             if(item.bankAccountName) {
-              if(item.bankCard.length === 16) {
+              if(item.bankCard.length === 16 || item.bankCard.length === 19) {
                 if(item.bankBranchName) {
                   isOk = true
                 } else {
@@ -717,7 +717,7 @@
       },
       idCardChange() {
         let val = this.companyForm.lepDocumentCard
-        if(val) {
+        if(val&&this.companyForm.lepDocumentType===1) {
           if(!checkIdVlidate(val)) {
             this.$message('身份证号格式不正确')
             return false

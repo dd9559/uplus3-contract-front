@@ -437,6 +437,7 @@ export default {
     },
     // 跳转合同详情
     skipContDel(value) {
+      this.setPath(this.$tool.getRouter(['业绩','实收列表','合同详情'],'contractList'))
       this.$router.push({
         path: "/contractDetails",
         query: {
