@@ -93,10 +93,12 @@
                                 </file-up>
                             </li>
                             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
-                                <div class="namePath">
-                                    <upload-cell :type="item.fileType"></upload-cell>
-                                    <p>{{item.name}}</p>
-                                </div>
+                                <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                                    <div class="namePath">
+                                        <upload-cell :type="item.fileType"></upload-cell>
+                                        <p>{{item.name}}</p>
+                                    </div>
+                                </el-tooltip>
                                 <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
                             </li>
                         </ul>
@@ -118,10 +120,12 @@
                                         </file-up>
                                     </li>
                                     <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)"  @click="previewPhoto(item.value,index_)">
-                                        <div class="namePath">
-                                            <upload-cell :type="item_.fileType"></upload-cell>
-                                            <p>{{item_.name}}</p>
-                                        </div>
+                                        <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                                            <div class="namePath">
+                                                <upload-cell :type="item_.fileType"></upload-cell>
+                                                <p>{{item_.name}}</p>                                              
+                                            </div>
+                                        </el-tooltip>
                                         <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="isDelete===item.title+item_.path"></i>
                                     </li>
                                 </ul>
@@ -140,13 +144,17 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
-                                        <div class="namePath">
-                                            <upload-cell :type="item_.fileType"></upload-cell>
-                                            <p>{{item_.name}}</p>
-                                        </div>
-                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>
-                                    </li>
+                                    
+                                        <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
+                                            <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                                                <div class="namePath">
+                                                    <upload-cell :type="item_.fileType"></upload-cell>                                               
+                                                    <p>{{item_.name}}</p>   
+                                                </div>
+                                            </el-tooltip>
+                                            <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>                                          
+                                        </li>
+                                    
                                 </ul>
                             </div>                                                     
                         </div>
@@ -164,10 +172,12 @@
                                         </file-up>
                                     </li>
                                     <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
-                                        <div class="namePath">
-                                            <upload-cell :type="item_.fileType"></upload-cell>
-                                            <p>{{item_.name}}</p>
-                                        </div>
+                                        <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                                            <div class="namePath">
+                                                <upload-cell :type="item_.fileType"></upload-cell>
+                                                <p>{{item_.name}}</p>    
+                                            </div>                                         
+                                        </el-tooltip>
                                         <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="isDelete===item.title+item_.path"></i>
                                     </li>
                                 </ul>
@@ -887,8 +897,13 @@ export default {
             box-sizing: border-box;
             border-radius:4px;
             background: #F2F3F8;
-            > p{
+            p{
             padding-top: 5px;
+            display: inline-block;
+            width: 100px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
             }
         }
         

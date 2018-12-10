@@ -104,7 +104,22 @@
             <p>{{scope.row.checkByName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="审核备注" width="200" prop="checkRemark" :formatter="nullFormatter"></el-table-column>             
+        <el-table-column label="审核备注" width="200" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <span v-if="scope.row.checkRemark">
+              <el-popover trigger="hover" placement="top">
+                <div style="width:160px">
+                  {{scope.row.checkRemark}}
+                </div>
+                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.checkRemark.length<16}">
+                  {{scope.row.checkRemark}}
+                </div>
+              </el-popover>
+            </span>
+            <span v-else>-</span>
+          </template>
+          
+        </el-table-column>             
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope" v-if="scope.row.checkState === 0">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
@@ -201,11 +216,13 @@
             <ul class="ulData">
 
                 <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                  <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                     <div class="namePath">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
-                    <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                  </el-tooltip>
+                  <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
                 </li>
             </ul>
           </div>                  
@@ -863,7 +880,12 @@
             border-radius:4px;
             background: #F2F3F8;
             > p{
-            padding-top: 5px;
+              padding-top: 5px;
+              display: inline-block;
+              width: 100px;
+              overflow: hidden;
+              text-overflow:ellipsis;
+              white-space: nowrap;
             }
         }
 
@@ -901,6 +923,19 @@
       }
       
     }
+  }
+  .name-wrapper {
+    min-width: 80px;
+    height: 65px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow:ellipsis;
+  }
+  .isFlex{
+    display: flex;
+    align-items: center;
   }
 
 }
