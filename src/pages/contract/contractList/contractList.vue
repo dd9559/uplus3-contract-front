@@ -209,7 +209,7 @@
                 <div style="width:160px">
                   {{scope.row.remarksExamine}}
                 </div>
-                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remarksExamine.length<16}">
+                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remarksExamine.length<45}">
                   {{scope.row.remarksExamine}}
                 </div>
               </el-popover>
