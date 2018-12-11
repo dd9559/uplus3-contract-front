@@ -27,7 +27,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.dealAgentStoreName" placeholder="请选择">
+          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.dealAgentStoreName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
             </el-option>
@@ -80,7 +80,7 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -203,6 +203,9 @@
         this.getEmploye(data.depId)
         this.searchForm.dealAgentStoreId=data.depId
         this.searchForm.dealAgentStoreName=data.name
+        if(data.subs.length===0){
+          this.$refs.tree.blur()
+        }
       },
       getData: function () {
         // let param={}

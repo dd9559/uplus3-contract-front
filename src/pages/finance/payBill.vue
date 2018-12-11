@@ -72,7 +72,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
           <template slot-scope="scope">
-            <input type="number" class="no-style" placeholder="请输入6228480059053520074" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
+            <input type="number" class="no-style" placeholder="请输入" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -132,6 +132,9 @@
     cardNumber:{
       name:'收账账户',
       type:'bankCard'
+    },
+    bankName:{
+      name:'刷卡银行'
     },
     filePath:{
       name:'付款凭证',
@@ -261,11 +264,11 @@
           res=res.data
           if(res.status===200){
             this.moneyType = res.data
-            res.data.forEach((item,index)=>{
+            /*res.data.forEach((item,index)=>{
               if(item.name==='代收代付'){
                 this.moneyType.splice(index,1)
               }
-            })
+            })*/
           }
         })
       },
@@ -385,7 +388,7 @@
             }
           }).catch((error)=>{
             this.$message({
-              message:`${error.title}${error.msg}`
+              message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
             })
           })
         }).catch((error)=>{
