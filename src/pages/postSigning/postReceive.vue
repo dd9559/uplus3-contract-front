@@ -255,15 +255,13 @@
                 @click="saveBtnFn" 
                 round>保存</el-button>
                 <el-button 
-                class="paper-btn paper-btn-green" 
-                type="primary" 
+                class="paper-btn plain-btn-blue" 
                 size="small" 
                 v-show="receiveComFn(receive.receive,0)"
                 @click="receiveBtnFn" 
                 round>接收</el-button>
                 <el-button 
-                class="paper-btn paper-btn-red" 
-                type="primary" 
+                class="paper-btn plain-btn-red"
                 size="small" 
                 @click="refusedFn" 
                 v-show="receiveComFn(receive.receive,0)"

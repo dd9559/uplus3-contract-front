@@ -56,7 +56,7 @@
                 :moneyZh="paperInfoData.amountZh"
                 :create="paperInfoData.createByName"
                 :rules="paperInfoData.remark"
-                :imgSrc="paperInfoData.signImg"
+                :imgSrc="getImgFn(paperInfoData.signImg)"
                 :payerType="paperInfoData.payerType"></LayerPaperInfo>
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
@@ -95,6 +95,19 @@
             }
         },
         methods: {
+            // 图片请求
+            getImgFn(url){
+                return (this.$ajax.get('/api/load/generateAccessURL',{
+                    url
+                }).then(res=>{
+                    res = res.data;
+                    if(res.status === 200){
+                        return res.data.url
+                    }
+                }).catch(err=>{
+                    this.$message.error(err);
+                }))
+            },
             // 弹层关闭
             propCloseFn() {
                 this.$tool.clearForm(this.layer)
@@ -112,10 +125,11 @@
                         // this.paperShow = true
                         this.loading = false;
                         this.FooterShow = true;
-                        this.printPaper();
+                        // this.printPaper();
                     }
                 }).catch(err=>{
-                    this.$message.error(err)
+                    this.$message.error(err);
+                    this.loading = false;
                 })
             },
             billing: function() {
@@ -146,7 +160,7 @@
                     }
                 })
                 this.paperInfoData = Object.assign({}, this.paperInfoData, obj)
-                this.printPaper();
+                // this.printPaper();
             },
             // 票据详情 打印
             printPaper() {
@@ -176,7 +190,7 @@
                             res = res.data
                             if(res.status ===200){
                                 this.pdfUrl = res.data.url;
-                                // this.$refs.pdfPrint.print();
+                                this.$refs.pdfPrint.print();
                             }
                             this.pdfLoading = false;
                         }).catch(err=>{
@@ -214,6 +228,9 @@
                         })
                         this.loading = false;
                     }
+                }).catch(err=>{
+                    this.$message.error(err);
+                    this.loading = false;
                 })
             },
             // 打开

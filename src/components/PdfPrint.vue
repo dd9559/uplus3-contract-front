@@ -1,5 +1,5 @@
 <template>
-    <iframe v-show="showPdf" name="previewPdf" :src="'/static/pdf/web/viewer.html?file=' + getUrl"></iframe>
+    <iframe class="preview-pdf" name="previewPdf" :src="'/static/pdf/web/viewer.html?file=' + getUrl"></iframe>
 </template>
 
 <script>
@@ -7,12 +7,7 @@ export default {
     props:{
         url:{
             type:String,
-            default:'../../static/test.pdf',
-        }
-    },
-    data(){
-        return{
-            showPdf:false,
+            default:'',
         }
     },
     computed:{
@@ -32,3 +27,11 @@ export default {
     }
 }
 </script>
+<style lang="less" scoped>
+.preview-pdf{
+    position: absolute;
+    z-index: -99;
+    width: 0;
+    height: 0;
+}
+</style>
