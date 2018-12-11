@@ -755,7 +755,8 @@ export default {
       smallTips:"",
       statuIndex:null,
       statuContId:null,
-      statuType:null
+      statuType:null,
+      statuAid:null
     };
   },
   created() {
@@ -846,6 +847,7 @@ export default {
          this.statuIndex=index;
          this.statuContId=value.id;
          this.statuType=0;
+         this.statuAid=value.aId;
          this.recallShow=true;
     },
     chehui(value,index){
@@ -853,6 +855,7 @@ export default {
        this.statuIndex=index;
        this.statuContId=value.id;
        this.statuType=1;
+       this.statuAid=value.aId;
        this.recallShow=true;
     },
     changeStatus(){
@@ -860,6 +863,7 @@ export default {
        if(this.statuType==0){
          let param={
            contId:this.statuContId,
+           aId:this.statuAid,
            status:0
          }
          this.$ajax
@@ -876,6 +880,7 @@ export default {
        if(this.statuType==1){
           let param={
            contId:this.statuContId,
+           aId:this.statuAid,
            status:-1
          }
          this.$ajax

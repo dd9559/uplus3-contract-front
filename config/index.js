@@ -16,7 +16,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{ //代理地址
-        target: 'http://192.168.1.224:28081', //需要代理的地址 'http://192.168.1.224:28083
+        target: 'http://192.168.1.14:28081', //需要代理的地址 'http://192.168.1.224:28083
         changeOrigin: true, //是否跨域
         secure: false,
         pathRewrite: {
@@ -34,7 +34,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '192.168.1.30', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
