@@ -105,7 +105,7 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult">提交付款申请</el-button>
-      <el-button class="btn-info" round size="small" @click="clearData">取消</el-button>
+      <el-button class="btn-info" round size="small" @click="$router.go(-1)">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="activeLi===''?0:activeLi" v-if="preview" @close="preview=false"></preview>
   </div>

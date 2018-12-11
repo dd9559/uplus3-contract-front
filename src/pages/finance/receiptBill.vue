@@ -64,7 +64,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="(item,index) in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
+                <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
                        v-if="form.moneyType===item.key">
                 <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
               </li>
@@ -102,7 +102,7 @@
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
             <div class="box">
-              <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
+              <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
                      v-if="form.moneyType===scope.row.key">
               <span v-else @click="getType(scope.row,'other')">请输入</span>
             </div>
@@ -168,7 +168,7 @@
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.amount" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.amount" class="no-style" @input="cutNum(scope.row,'amount')" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="订单编号">
@@ -178,7 +178,7 @@
         </el-table-column>
         <el-table-column align="center" label="手续费（元）">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.fee" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.fee" class="no-style" @input="cutNum(scope.row,'fee')" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
@@ -211,7 +211,7 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
-      <el-button class="btn-info" round size="small" @click="clearData">取消</el-button>
+      <el-button class="btn-info" round size="small" @click="$router.go(-1)">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="activeLi===''?0:activeLi" v-if="preview" @close="preview=false"></preview>
   </div>
@@ -346,12 +346,6 @@
         this.activeType=parseInt(inAccount)===4?2:1
       }
     },
-    mounted(){
-      this.$nextTick(()=>{
-        // debugger
-        this.employeScroll=this.$refs.employe.$refs.scrollbar.$refs.wrap
-      })
-    },
     methods: {
       clearData:function () {
         this.$tool.clearForm(this.form)
@@ -359,8 +353,12 @@
         this.files=[]
         this.imgList=[]
       },
-      cutNum:function () {
-        this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+      cutNum:function (val,item) {
+        if(val===1){
+          this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+        }else {
+          val[item]=this.$tool.cutFloat({val:val[item],max:999999999.99})
+        }
       },
       inputOnly:function (index) {
         this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
