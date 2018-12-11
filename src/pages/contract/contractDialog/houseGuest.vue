@@ -131,28 +131,24 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="CustName"
-              label="姓名"
-            ></el-table-column>
-            <el-table-column
-              prop="InquiryNo"
-              label="客源编号"
-            ></el-table-column>
-            <el-table-column
-              prop="Trade"
-              label="交易"
-            >
+            <el-table-column prop="CustName" label="姓名"></el-table-column>
+            <el-table-column prop="InquiryNo" label="客源编号"></el-table-column>
+            <el-table-column prop="Trade" label="交易">
             </el-table-column>
-            <el-table-column
-              prop="DistrictName"
-              label="意向区域"
-              min-width="100"
-            ></el-table-column>
-            <el-table-column
-              :label="priceType"
-              min-width="60"
-            >
+            <el-table-column label="意向区域" min-width="100">
+              <template slot-scope="scope">
+                <!-- <span class="districtName">{{scope.row.DistrictName}}</span> -->
+                <el-popover trigger="hover" placement="top">
+                  <div style="width:160px">
+                    {{scope.row.DistrictName}}
+                  </div>
+                  <div slot="reference" class="name-wrapper">
+                    {{scope.row.DistrictName}}
+                  </div>
+                </el-popover>
+              </template>
+            </el-table-column>
+            <el-table-column :label="priceType" min-width="60" >
               <template slot-scope="scope">
                 {{scope.row.PriceMin}}-{{scope.row.PriceMax}}{{scope.row.Trade==='求租'?'元':'万元'}}
               </template>
@@ -574,6 +570,16 @@ export default {
     .inLineBg {
       background: @color-blue;
     }
+  }
+  .name-wrapper {
+    display: flex;
+    display: -webkit-box;
+    /*!autoprefixer: off */
+    -webkit-box-orient: vertical;
+    /* autoprefixer: on */
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow:ellipsis;
   }
   .search_btn {
     padding: 8px 20px;
