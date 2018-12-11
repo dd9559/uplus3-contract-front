@@ -43,7 +43,7 @@
       <div class="paper-tips">
         <p>温馨提示：</p>
         <p>1、服务费凭此收换正式发票；</p>
-        <p>2、手动填写修改此收据无效；</p>
+        <p>2、手动填写修改此收据无效。</p>
       </div>
     </div>
     <div class="paper-dashed"></div>
@@ -75,6 +75,7 @@
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">客户身份：</span>{{comPayerType}}</div>
         <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
+        <div class="fr mr-20"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>

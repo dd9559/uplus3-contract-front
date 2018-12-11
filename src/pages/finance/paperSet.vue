@@ -99,7 +99,7 @@
             </el-form-item>
         </div>
         <el-form-item label="关键字" prop="keyword">
-            <el-input class="w200" v-model="propForm.keyword" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" clearable></el-input>
+            <el-input class="w284" v-model="propForm.keyword" placeholder="开票人员/合同编号/票据编号/物业地址" clearable></el-input>
         </el-form-item>
         <el-form-item 
             label="票据状态"
@@ -155,7 +155,7 @@
         </el-table-column>
         <el-table-column fixed label="合同编号" min-width="124">
           <template slot-scope="scope">
-            <span class="blue" @click="cellOpera('contract')">{{scope.row.contNo}}</span>
+            <span class="blue" @click="cellOpera('contract',scope.row)">{{scope.row.contNo}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed label="票据编号" min-width="137">
@@ -359,6 +359,8 @@
             this.tableData = res.data
           }
           this.loadingList = false;
+        }).catch(err=>{
+          this.loadingList = false;
         })
       },
       btnOpera: function (row,type) {
@@ -396,7 +398,7 @@
               query: {
                   id: row.contId,//合同id
                   code: row.contNo,//合同编号
-                  contType: row.contType.value//合同类型
+                  contType: row.contType//合同类型
               }
           });
         } else if (type === 'paper') {

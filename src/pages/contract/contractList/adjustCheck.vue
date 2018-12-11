@@ -533,7 +533,7 @@
               })
           });
         }else{
-          this.$message('调整原因不能为空');
+          this.$message('驳回原因不能为空');
         }
         
       },

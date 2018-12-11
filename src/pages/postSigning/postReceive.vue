@@ -209,7 +209,7 @@
                             <el-table-column :formatter="nullFormatterData" align="center" label="操作">
                                 <template slot-scope="scope">
                                     <el-button 
-                                    class="blue" 
+                                    :class="dittoBoolFn(data)?'blue':'cl-3'" 
                                     @click="dittoFn(scope.$index,scope.row)"
                                     type="text">同上</el-button>
                                 </template>
@@ -678,19 +678,32 @@
             },
             // 同上
             dittoFn(i,data){
-                if(i === 0){
-                    this.errMeFn('本步骤没有上一步，请手动进行分配');
+                if(this.dittoBoolFn(data)){
+                    if(i === 0){
+                        this.errMeFn('本步骤没有上一步，请手动进行分配');
+                    }else{
+                        let arr = this.dealTable[i-1];
+                        let roleId = arr.roleId;
+                        let personLiableCode = arr.personLiableCode;
+                        let rules = arr.rules;
+                        let obj = Object.assign(this.dealTable[i],{
+                            roleId,
+                            personLiableCode,
+                            rules
+                        })
+                        this.$set(this.dealTable,i,obj)
+                    }
+                }
+            },
+            dittoBoolFn(data){
+                let OPERATION = this.$tool.OPERATION;
+                if(!data.stepState){
+                    return true
+                }
+                if(data.stepState.value === OPERATION.backlog || data.stepState.value === OPERATION.not){
+                    return false
                 }else{
-                    let arr = this.dealTable[i-1];
-                    let roleId = arr.roleId;
-                    let personLiableCode = arr.personLiableCode;
-                    let rules = arr.rules;
-                    let obj = Object.assign(this.dealTable[i],{
-                        roleId,
-                        personLiableCode,
-                        rules
-                    })
-                    this.$set(this.dealTable,i,obj)
+                    return true
                 }
             },
             // 合同编号

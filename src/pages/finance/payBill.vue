@@ -15,7 +15,7 @@
       </div>
       <div class="input-group">
         <label class="form-label no-width f14">申请人:</label>
-        <p v-if="userMsg">{{userMsg.name}}</p>
+        <p v-if="userMsg">{{userMsg.depName}} - {{userMsg.name}}</p>
       </div>
     </section>
     <div class="input-group">
@@ -27,7 +27,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <el-radio v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}</el-radio>
+                <el-radio class="money-type-radio" v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}</el-radio>
               </li>
             </ul>
           </template>
