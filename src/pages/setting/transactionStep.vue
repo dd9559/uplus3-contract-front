@@ -357,6 +357,12 @@
         if(this.stepBusiness.name === "") {
           this.$message("步骤名称不能为空")
         } else {
+          if(this.stepBusiness.planDays) {
+            if(!/^[0-9]+$/.test(this.stepBusiness.planDays)) {
+              this.$message("计划天数请输入正整数")
+              return false
+            }
+          }
           let isOk
           if(this.tableForm.length) {
             this.tableForm.forEach(item => {
