@@ -490,6 +490,17 @@
             }else {
               param.outAccount.find((item,index)=>{
                 this.$tool.checkForm(item,RULE).then(()=>{
+                  let count=0
+                  param.outAccount.forEach(item=>{
+                    count = count+parseInt(item.amount)
+                    return count
+                  })
+                  if(count!==parseInt(this.form.smallAmount)){
+                    this.$message({
+                      message:'刷卡金额要等于收款金额'
+                    })
+                    return true
+                  }
                   if(this.files.length===0){
                     this.$message({
                       message:'收款凭证不能为空'
