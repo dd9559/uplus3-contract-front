@@ -76,14 +76,18 @@
         <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
+    <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
   </div>
 </template>
            
 <script>
 import changeCancel from "../contractDialog/changeCancel";
+import PdfPrint from '@/components/PdfPrint';
+
 export default {
   components: {
-    changeCancel
+    changeCancel,
+    PdfPrint
   },
   data() {
     return {
@@ -133,7 +137,9 @@ export default {
       iSsignature:false,
       isSubmitAudit:false,
       //客源方门店id
-      guestStoreId:''
+      guestStoreId:'',
+      //合同打印的pdf地址
+      pdfUrl:''
     };
   },
   created() {
@@ -217,7 +223,9 @@ export default {
                 this.$message({
                   message:'操作成功'
                 });
-                this.iSsignature=false
+                this.iSsignature=false;
+                let pdfUrl=res.data;
+                // this.getUrl(pdfUrl);
                 this.getContImg();
               }
             })
@@ -244,8 +252,10 @@ export default {
             this.$message({
               message:'操作成功'
             });
+            let pdfUrl=res.data;
+            // this.getUrl(pdfUrl);
             this.iSsignature=false
-            this.getContImg();
+            // this.getContImg();
           }
         })
       }
@@ -264,6 +274,19 @@ export default {
       //     this.getContImg();
       //   }
       // })
+    },
+    //获取签名
+    getUrl(url){
+      let param = {
+        url:url
+      }
+      this.$ajax.get("/access/generateAccessURL",param).then(res=>{
+        res = res.data
+        if(res.status ===200){
+            this.pdfUrl = res.data.url;
+            // this.$refs.pdfPrint.print();
+        }
+      })
     },
     checked(num) {
       //驳回/风险单
