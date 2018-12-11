@@ -200,6 +200,7 @@
                 if(this.title==`新增【${this.bigName}】小类`){
                     this.addForm.name=this.trim(this.addForm.name)
                     this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
+                        console.log(res,'res');
                     if(res.status==200){
                         this.$message({
                         type: 'success',
@@ -208,7 +209,12 @@
                         this.addDialog=false
                         this.initList()
                     }
-                  })
+                  }).catch(error=>{
+                     this.$message({
+                        type: 'error',
+                        message: '款类名称不可重复, 请重新添加!!'
+                        })
+                })
                 }else if(this.title==`编辑【${this.bigName}】小类`){
                     let param={
                         id:this.smallId,
@@ -219,7 +225,7 @@
                     console.log(param,'this.param2');
 
                     this.statusOp(param,'修改成功')
-                    this.addDialog=false
+                    // this.addDialog=false
                 }
                 
             },
@@ -247,8 +253,14 @@
                             })
                             this.initList()
                         }
+                         this.addDialog=false
                         
-                   })
+                   }).catch(error=>{
+                     this.$message({
+                        type: 'error',
+                        message: '款类名称已经存在, 请重新输入!'
+                        })
+                })
             },
             //表格第一行加样式
             tableStyle({row, rowIndex}){

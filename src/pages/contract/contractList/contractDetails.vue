@@ -87,7 +87,7 @@
                   <el-table-column prop="name" label="业主姓名"></el-table-column>
                   <el-table-column prop="mobile" label="电话"></el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
-                  <el-table-column label="产权比">
+                  <el-table-column label="产权比" v-if="contType!='1'">
                     <template slot-scope="scope">
                       {{scope.row.propertyRightRatio+'%'}}
                     </template>
@@ -124,7 +124,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
-                  <el-table-column label="产权比">
+                  <el-table-column label="产权比" v-if="contType!='1'">
                     <template slot-scope="scope">
                       {{scope.row.propertyRightRatio+'%'}}
                     </template>
