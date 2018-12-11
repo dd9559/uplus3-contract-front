@@ -28,7 +28,8 @@
                                     <div class="div22"><span>物业地址：</span>{{detailData.propertyAddr | nullData}}</div>
                                 </li>
                                 <li>
-                                    <div class="div1"><span>房源价格：</span>{{detailData.houseInfo.price | nullData}}元</div>
+                                    <div class="div1" v-if="detailData.houseInfo.TradeInt == 2"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}万元</div>
+                                    <div class="div1" v-if="detailData.houseInfo.TradeInt == 3"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元/月</div>
                                     <div class="div2"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
                                     <div class="div3"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
                                     <div><span>用途：</span>{{detailData.houseInfo.HousePurpose | nullData}}</div>
@@ -62,7 +63,7 @@
                         </ul>
                         <div class="textbox" v-if="this.detailData.contType.value == 4">
                             <span>意向备注：</span>
-                            <el-input type="textarea" class="textareawidth" :disabled="true" v-model="detailData.remarks"></el-input>
+                            <el-input type="textarea" class="textareawidth" :disabled="true" v-model="detailData.remarks" :autosize="{ minRows: 5, maxRows: 5}"></el-input>
                         </div>
                     </div>
                     <div class="fixed">

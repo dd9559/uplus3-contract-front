@@ -87,7 +87,11 @@
                   <el-table-column prop="name" label="业主姓名"></el-table-column>
                   <el-table-column prop="mobile" label="电话"></el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
-                  <el-table-column prop="propertyRightRatio" label="产权比"></el-table-column>
+                  <el-table-column label="产权比">
+                    <template slot-scope="scope">
+                      {{scope.row.propertyRightRatio+'%'}}
+                    </template>
+                  </el-table-column>
                   <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
                 </el-table>
               </template>
@@ -120,7 +124,11 @@
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
-                  <el-table-column prop="propertyRightRatio" label="产权比"></el-table-column>
+                  <el-table-column label="产权比">
+                    <template slot-scope="scope">
+                      {{scope.row.propertyRightRatio+'%'}}
+                    </template>
+                  </el-table-column>
                   <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
                 </el-table>
               </template>
@@ -175,7 +183,11 @@
                     房源录入人
                   </template>
                 </el-table-column>
-                <el-table-column prop="ratio" label="分成比例"></el-table-column>
+                <el-table-column label="分成比例">
+                  <template slot-scope="scope">
+                    {{scope.row.ratio+'%'}}
+                  </template>
+                </el-table-column>
                 <el-table-column prop="assignor" label="经纪人" min-width="100"></el-table-column>
                 <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
                 <el-table-column prop="level3" label="门店"></el-table-column>
@@ -193,7 +205,11 @@
                     客源录入人
                   </template>
                 </el-table-column>
-                <el-table-column prop="ratio" label="分成比例"></el-table-column>
+                <el-table-column label="分成比例">
+                  <template slot-scope="scope">
+                    {{scope.row.ratio+'%'}}
+                  </template>
+                </el-table-column>
                 <el-table-column prop="assignor" label="经纪人"></el-table-column>
                 <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
                 <el-table-column prop="level3" label="门店"></el-table-column>
@@ -208,7 +224,7 @@
         <div class="footer">
           <div>
             <p><span>录入时间：</span>{{contractDetail.createTime|formatTime}}</p>
-            <p><span>录入人：</span>{{contractDetail.dealAgentStoreName}}-{{contractDetail.dealAgentName}}</p>
+            <p><span>录入人：</span>{{contractDetail.recordDeptName}}-{{contractDetail.recordName}}</p>
             <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
           </div>
           <div v-if="contractDetail.contChangeState.value!=2">
@@ -629,6 +645,7 @@ export default {
       this.changeCancel_ = false;
       this.canceldialogType = "";
       this.changeCancelId = "";
+      this.getContractDetail();
     },
     //房源客源切换
     changeType(value) {
@@ -1021,7 +1038,11 @@ export default {
       .extendParams{
         width: 820px;
         > p{
+          width: 350px;
           padding: 4px 0;
+          .tag{
+            width: 200px;
+          }
         }
       }
       .performance {

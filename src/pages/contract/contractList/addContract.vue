@@ -15,13 +15,12 @@
           </el-form-item>
           <el-form-item label="成交总价：" class="form-label width-250">
             <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice">
-            <i class="yuan">元</i>
+            <i class="yuan" v-if="contractForm.type!==1">元</i>
             <!-- <el-input :value="contractForm.dealPrice" type="text" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
           </el-form-item>
           <el-form-item v-if="contractForm.type===1">
-            <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:90px">
-              <el-option v-for="item in dictionary['507']" :key="item.key" :label="item.value" :value="item.key">
-              </el-option>
+            <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:100px">
+              <el-option v-for="item in dictionary['507']" :key="item.key" :label="`元 / ${item.value}`" :value="item.key"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -50,7 +49,7 @@
             <!-- <el-input v-model="contractForm.commissionPayment" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right">
-            <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程">
+            <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true">
               <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
@@ -91,13 +90,13 @@
           </el-form-item>
           <br v-if="contractForm.type===2">
           <el-form-item label="产权状态：" v-if="contractForm.type===2" class="width-250">
-            <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择" :disabled="type===2?true:false" style="width:140px">
+            <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
               <el-option  label="无" value=""></el-option>
               <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="按揭银行：" v-if="contractForm.type===2" class="width-250">
-            <el-select v-model="contractForm.houseInfo.stagesBankName" placeholder="请选择银行" :disabled="type===2?true:false" style="width:140px">
+            <el-select v-model="contractForm.houseInfo.stagesBankName" placeholder="请选择银行" :disabled="type===2?true:false" style="width:140px" :clearable="true">
               <el-option label="中国工商银行" value="中国工商银行"></el-option>
               <el-option label="中国建设银行" value="中国建设银行"></el-option>
               <el-option label="中国银行" value="中国银行"></el-option>
@@ -138,7 +137,7 @@
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
-                <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" :disabled="type===2&&!item.edit?true:false"><i slot="suffix">%</i></el-input>
+                <span class="shell"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
                 <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
@@ -160,7 +159,7 @@
             <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
           <el-form-item label="付款方式：" :class="{'form-label':type===1}">
-            <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px">
+            <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px" :clearable="true">
               <el-option v-for="item in dictionary['556']" :key="item.key" :label="item.value" :value="item.key">
               </el-option>
             </el-select>
@@ -186,11 +185,8 @@
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
-                 <!-- <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
-                  <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
-                  </el-option>
-                </el-select> -->
-                <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"><i slot="suffix">%</i></el-input>
+                <!-- <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" @input="cutNumber_(index,'guest')" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"><i slot="suffix">%</i></el-input> -->
+                <span class="shell"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
                 <input v-model="item.identifyCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
@@ -584,7 +580,7 @@ export default {
                       if (element.relation) {
                         if (element.propertyRightRatio&&element.propertyRightRatio>0||element.propertyRightRatio==0) {
                           if (element.identifyCode) {
-                            let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+                            let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
                             if (reg.test(element.identifyCode)) {
                               isOk = true;
                               ownerRightRatio += element.propertyRightRatio - 0;
@@ -641,7 +637,7 @@ export default {
                               if (element.relation) {
                               if (element.propertyRightRatio&&element.propertyRightRatio>0||element.propertyRightRatio==0) {
                                 if (element.identifyCode) {
-                                  let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+                                  let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
                                   if (reg.test(element.identifyCode)) {
                                     isOk_ = true;
                                     guestRightRatio += element.propertyRightRatio - 0;
@@ -938,6 +934,7 @@ export default {
             this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
           }else{
             this.contractForm.dealPrice = houseMsg.ListingPrice;
+            this.contractForm.timeUnit=2
           }
           this.contractForm.houseInfo = houseMsg;
           if(houseMsg.OwnerInfoList.length>0){
@@ -1194,6 +1191,13 @@ export default {
           this.contractForm.otherCooperationCost=this.$tool.cutFloat({val:this.contractForm.otherCooperationCost,max:999999999.99})
         })
       }
+    },
+    cutNumber_(index,type){
+      if(type==='guest'){
+        this.guestList[index].propertyRightRatio=this.$tool.cutFloat({val:this.guestList[index].propertyRightRatio,max:100})
+      }else if(type==='owner'){
+
+      }
     }
   },
   filters: {
@@ -1235,6 +1239,13 @@ export default {
     &::-webkit-input-placeholder {
       color: #ccc;
     }
+  }
+  .propertyRight{
+    width: 80px;
+    box-sizing: border-box;
+    padding: 7px 10px!important;
+    border: 1px solid #dcdfe6;
+    border-radius: 3px;
   }
   .forbid{
     background: #f5f7fa;
@@ -1364,9 +1375,24 @@ export default {
         padding: 7px 0;
         border-radius: 3px;
       }
+      .shell{
+        display: inline-block;
+        position: relative;
+        &::after {
+          content: '%';
+          display: inline-block;
+          color: #ccc;
+          position: absolute;
+          top: 0;
+          right: 6px;
+        }
+      }
       input {
         padding: 6px 0;
         color: #606266;
+        &::-webkit-input-placeholder {
+        color: #ccc;
+        }
       }
     }
     .name_ {

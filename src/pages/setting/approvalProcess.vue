@@ -108,7 +108,7 @@
                 </div>
                 <div class="aduit-input">
                     <label>流程名称:</label>
-                    <el-input size="small" v-model="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                    <el-input size="small" v-model.trim="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </div>
                 <div class="aduit-node">
                     <div>
@@ -301,7 +301,7 @@
                     this.aduitForm.deptAttr = currentRow.deptAttr.value
                     this.aduitForm.name = currentRow.name
                     this.aduitForm.type = currentRow.type
-                    this.aduitForm.branchCondition = +currentRow.branchCondition.slice(-1)
+                    this.aduitForm.branchCondition = +currentRow.branchCondition.split('=')[1]
                     this.isAudit = currentRow.branch[0].isAudit.toString()
                     this.aduitForm.flowDesc = currentRow.flowDesc
                     this.setConditionList(currentRow.type)
@@ -405,8 +405,8 @@
                         this.nodeList.forEach(item => {
                             isOk = false
                             if(item.name) {
-                                if(item.type) {
-                                    if(item.userId&&item.type===1 || item.userId&&item.type===2) {
+                                if(item.type !== "") {
+                                    if(item.userId&&item.type===1 || item.userId&&item.type===2 || item.type===0 || item.type===3) {
                                         isOk = true
                                     } else {
                                         this.$message({message:item.type===1?"请选择门店":"请选择职务"})
