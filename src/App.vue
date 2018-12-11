@@ -102,7 +102,7 @@
       }
     }
   }
-  .money-type-radio{
+  .money-type-radio[role='radio']{
     display: flex;
     >span{
       &:last-of-type{
@@ -166,7 +166,7 @@
     width: 240px;
   }
   .w394{
-    width: 394px;
+    width: 394px !important;
   }
   .btn-info{
     min-width: 80px;
