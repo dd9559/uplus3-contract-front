@@ -147,7 +147,7 @@ export default {
     this.code = this.$route.query.code;
     if (this.$route.query.operationType) {
       this.operationType = this.$route.query.operationType;
-      this.getAuditNode();
+      // this.getAuditNode();
     }
     this.getContImg();
   },
@@ -293,11 +293,12 @@ export default {
       if (num===2 || this.isSign) {
         if (this.textarea.length) {
           let param = {
-            bizId:this.auditNodeResult.bizId,
+            // bizId:this.auditNodeResult.bizId,
             bizCode:this.code,
-            flowId:this.auditNodeResult.flowId,
-            sort:this.auditNodeResult.nodeSort,
-            ApprovalForm:{
+            flowType:3,
+            // flowId:this.auditNodeResult.flowId,
+            // sort:this.auditNodeResult.nodeSort,
+            approvalForm:{
               result: num,
               isRisk: this.isSign, //风险单
               remark: this.textarea
@@ -312,11 +313,9 @@ export default {
         }
       } else {
         let param = {
-          bizId:this.auditNodeResult.bizId,
           bizCode:this.code,
-          flowId:this.auditNodeResult.flowId,
-          sort:this.auditNodeResult.nodeSort,
-          ApprovalForm:{
+          flowType:3,
+          approvalForm:{
             result: num,
             isRisk: this.isSign, //风险单
             remark: this.textarea
@@ -326,18 +325,18 @@ export default {
       }
     },
     //获取当前待审节点
-    getAuditNode(){
-      let param = {
-        bizCode:this.code,
-        flowType:3
-      }
-      this.$ajax.get('/api/machine/getAuditNode', param).then(res=>{
-        res=res.data;
-        if(res.status===200){
-          this.auditNodeResult=res.data;
-        }
-      })
-    },
+    // getAuditNode(){
+    //   let param = {
+    //     bizCode:this.code,
+    //     flowType:3
+    //   }
+    //   this.$ajax.get('/api/machine/getAuditNode', param).then(res=>{
+    //     res=res.data;
+    //     if(res.status===200){
+    //       this.auditNodeResult=res.data;
+    //     }
+    //   })
+    // },
     //获取合同预览图片
     getContImg(){
       let param = {
