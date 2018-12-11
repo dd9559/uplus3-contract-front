@@ -329,7 +329,7 @@ export default {
 
         //获取合同资料库信息
 
-        //获取合同资料库类型列表
+        //获取合同资料库类型
         getContDataType() {
         let param = {
             id: this.$route.query.id
@@ -367,34 +367,59 @@ export default {
                 }
             });
             }
-        }).catch((error)=>{
+        })
+        .catch((error)=>{
             this.$message({
                 message: error
             })
         });
         },
 
-         //获取合同主体信息（已上传后，拿到返回的文件路径）
-        getContractBody(){
+        //获取资料库信息之后
+
+        getContData() {
             let param = {
-                id:this.$route.query.id
-            }
-            this.$ajax.get('/api/contract/getContractBodyById', param).then(res=>{
-                res=res.data;
-                if(res.status===200){
-                let uploadList_ = res.data;
-                uploadList_.forEach(element => {
-                    let fileType = this.$tool.get_suffix(element.name);
-                    element.fileType=fileType;
+                id: this.$route.query.id
+            };
+            this.$ajax.get("/api/contract/getContAttachmentById", param).then(res => {
+                res = res.data;
+                if (res.status === 200) {
+                let address = JSON.parse(res.data.address);
+                console.log(address)
+                address.forEach(element => {
+                    element.value.forEach(item => {
+                    let fileType = this.$tool.get_suffix(item.name);
+                    item.fileType=fileType
+                    });
+                    if(element.kind==="1"){
+                    this.buyerList.forEach(ele => {
+                        if(element.title===ele.title){
+                        // let fileType = this.$tool.get_suffix(element.name)
+                        ele.value=element.value
+                        }
+                    });
+                    // this.buyerDataList.push(element);
+                    }else if(element.kind==="2"){
+                    this.sellerList.forEach(ele => {
+                        if(element.title===ele.title){
+                        ele.value=element.value
+                        }
+                    });
+                    // this.sellerDataList.push(element);
+                    }else if(element.kind==="3"){
+                    this.otherList.forEach(ele => {
+                        if(element.title===ele.title){
+                        ele.value=element.value
+                        }
+                    });
+                    // this.otherDataList.push(element);
+                    }
                 });
-                this.uploadList=uploadList_;
                 }
-            }).catch((error)=>{
-                this.$message({
-                    message: error
-                })
-            })
+            });
         },
+
+        
 
         //上传资料库
         uploading(){
@@ -435,8 +460,9 @@ export default {
                     res=res.data;
                     if(res.status===200){
                         this.$message({
-                        message:'上传成功'
+                            message:'上传成功'
                         })
+                        this.getContData();
                     }
                 }).catch((error)=>{
                     this.$message({
@@ -457,7 +483,27 @@ export default {
             }
         },
 
-        
+         //获取合同主体信息（已上传后，拿到返回的文件路径）
+        getContractBody(){
+            let param = {
+                id:this.$route.query.id
+            }
+            this.$ajax.get('/api/contract/getContractBodyById', param).then(res=>{
+                res=res.data;
+                if(res.status===200){
+                let uploadList_ = res.data;
+                uploadList_.forEach(element => {
+                    let fileType = this.$tool.get_suffix(element.name);
+                    element.fileType=fileType;
+                });
+                this.uploadList=uploadList_;
+                }
+            }).catch((error)=>{
+                this.$message({
+                    message: error
+                })
+            })
+        },
 
         //合同主体获取文件路径后缀名
         uploadSubject(data) {
@@ -522,15 +568,15 @@ export default {
           let param = {
             id: this.$route.query.id                        
           }
-          //调整佣金审核列表
+          //根据合同ID查询详细信息 
           this.$ajax         
           .get("/api/contract/getById", param)
           .then(res => {
            
-            let data = res.data;
-            if (res.status === 200) {
-                this.detailData = data.data
-                this.contState = data.data.contState
+          
+            if (res.data.status === 200) {
+                this.detailData = res.data.data
+                this.contState = res.data.data.contState
                 var contperson = this.detailData.contPersons
                 if (contperson.length > 0) {
                     for (let i=0; i < contperson.length; i++){
@@ -541,12 +587,16 @@ export default {
                         }
                     }
                 }
-                if(res.data.isHaveData){
+                if(res.data.data.isHaveData ==1){ //判断有无上传过资料库，有的话返回上传过的信息
                     this.getContData()
+                }
+                 if(res.data.data.contState.value===3){
+                    this.getContractBody();//获取合同主体
                 }
             }
             
-          }).catch((error)=>{
+          })
+          .catch((error)=>{
                 this.$message({
                     message: error
                 })
