@@ -20,7 +20,7 @@
             <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
           </el-option>
         </el-select>
-        <el-select :clearable="true" ref="employe" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="form.inObj=''" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
+        <el-select :clearable="true" ref="employe" v-loadmore="moreData" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="form.inObj=''" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
           <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
           <el-option
             v-for="item in EmployeList"
@@ -387,6 +387,9 @@
           this.$refs.tree.blur()
         }
       },
+      moreData:function () {
+        console.log('test')
+      },
       /**
        * 修改款单，获取初始数据
        */
@@ -696,10 +699,6 @@
         this.getEmploye(val.depId)
         this.form.inObjId=val.empId
         this.form.inObj=val.name
-      },
-      employeScroll:function (val) {
-        // debugger
-        console.log(val.clientHeight)
       }
     }
   }
