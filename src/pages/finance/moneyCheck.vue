@@ -120,7 +120,7 @@
           <el-button class="btn-info" round size="small" type="primary">导出</el-button>
         </p>
       </div>
-      <el-table ref="dataList" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
+      <el-table ref="dataList" border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="150" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -336,29 +336,32 @@
           console.log(error)
         })
       },
+      toDetails:function (item) {
+        let param = {
+          path: 'billDetails'
+        }
+        if (this.activeView === 1) {
+          param.query = {
+            tab: '收款信息',
+            id:item.id,
+            type:item.inAccountType,
+            pageName:'收款详情'
+          }
+          this.setPath(this.getPath.concat({name:'收款详情'}))
+        } else {
+          param.query = {
+            tab: '付款信息',
+            id:item.id,
+            pageName:'付款详情'
+          }
+          this.setPath(this.getPath.concat({name:'付款详情'}))
+        }
+        this.$router.push(param)
+      },
       //操作
       cellOpera: function (item,type='check') {
         if(type==='check'){
-          let param = {
-            path: 'billDetails'
-          }
-          if (this.activeView === 1) {
-            param.query = {
-              tab: '收款信息',
-              id:item.id,
-              type:item.inAccountType,
-              pageName:'收款详情'
-            }
-            this.setPath(this.getPath.concat({name:'收款详情'}))
-          } else {
-            param.query = {
-              tab: '付款信息',
-              id:item.id,
-              pageName:'付款详情'
-            }
-            this.setPath(this.getPath.concat({name:'付款详情'}))
-          }
-          this.$router.push(param)
+          this.toDetails(item)
         }else {
           this.layer.show=true
           this.layer.content=[].concat(item)

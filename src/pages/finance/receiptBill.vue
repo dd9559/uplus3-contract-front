@@ -211,7 +211,7 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
-      <el-button class="btn-info" round size="small" @click="$router.go(-1)">取消</el-button>
+      <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="activeLi===''?0:activeLi" v-if="preview" @close="preview=false"></preview>
   </div>
@@ -451,6 +451,13 @@
         this.imgList.splice(this.activeLi,1)
         this.files.splice(this.activeLi,1)
       },
+      goCancel:function () {
+        this.$confirm('是否取消当前操作',{closeOnClickModal:false}).then(()=>{
+          this.$router.go(-1)
+        }).catch(()=>{
+
+        })
+      },
       goResult: function () {
         let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
@@ -643,6 +650,7 @@
        * 根据卡号获取银行信息
        */
       getBank: function (row, index) {
+        row.cardNumber=this.$tool.numberInput(row.cardNumber)
         let param = {
           cardNumber: row.cardNumber
         }
