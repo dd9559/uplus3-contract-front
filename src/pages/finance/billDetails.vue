@@ -364,10 +364,11 @@
           return
         }
         let param = {
-          bizId: this.billMsg.audit.bizId,
+          // bizId: this.billMsg.audit.bizId,
           bizCode: this.billMsg.audit.bizCode,
-          flowId: this.billMsg.audit.flowId,
-          sort: this.billMsg.audit.nodeSort,
+          // flowId: this.billMsg.audit.flowId,
+          // sort: this.billMsg.audit.nodeSort,
+          flowType: this.activeItem==='付款信息'?0:1
         }
         param.ApprovalForm = {
           result: type,

@@ -15,7 +15,7 @@
       </div>
       <div class="input-group">
         <label class="form-label no-width f14">申请人:</label>
-        <p v-if="userMsg">{{userMsg.name}}</p>
+        <p v-if="userMsg">{{userMsg.depName}} - {{userMsg.name}}</p>
       </div>
     </section>
     <div class="input-group">
@@ -27,7 +27,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <el-radio v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}</el-radio>
+                <el-radio class="money-type-radio" v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}</el-radio>
               </li>
             </ul>
           </template>
@@ -72,7 +72,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款账户 ">
           <template slot-scope="scope">
-            <input type="number" class="no-style" placeholder="请输入" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
+            <input type="text" class="no-style" placeholder="请输入" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -105,7 +105,7 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult">提交付款申请</el-button>
-      <el-button class="btn-info" round size="small" @click="clearData">取消</el-button>
+      <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="activeLi===''?0:activeLi" v-if="preview" @close="preview=false"></preview>
   </div>
@@ -296,6 +296,7 @@
        * 根据卡号获取银行信息
        */
       getBank:function (row) {
+        row.cardNumber=this.$tool.numberInput(row.cardNumber)
         let param = {
           cardNumber:row.cardNumber
         }
@@ -341,6 +342,13 @@
           }
         })
         this.form = Object.assign({},this.form,obj)
+      },
+      goCancel:function () {
+        this.$confirm('是否取消当前操作',{closeOnClickModal:false}).then(()=>{
+          this.$router.go(-1)
+        }).catch(()=>{
+
+        })
       },
       goResult:function () {
         let param = Object.assign({},this.form)

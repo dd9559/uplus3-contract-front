@@ -20,7 +20,7 @@
             <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
           </el-option>
         </el-select>
-        <el-select :clearable="true" ref="employe" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="form.inObj=''" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
+        <el-select :clearable="true" ref="employe" v-loadmore="moreData" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="form.inObj=''" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
           <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
           <el-option
             v-for="item in EmployeList"
@@ -64,7 +64,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="(item,index) in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
+                <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
                        v-if="form.moneyType===item.key">
                 <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
               </li>
@@ -102,7 +102,7 @@
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
             <div class="box">
-              <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
+              <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
                      v-if="form.moneyType===scope.row.key">
               <span v-else @click="getType(scope.row,'other')">请输入</span>
             </div>
@@ -168,7 +168,7 @@
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.amount" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.amount" class="no-style" @input="cutNum(scope.row,'amount')" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="订单编号">
@@ -178,7 +178,7 @@
         </el-table-column>
         <el-table-column align="center" label="手续费（元）">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.fee" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.fee" class="no-style" @input="cutNum(scope.row,'fee')" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
@@ -211,7 +211,7 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
-      <el-button class="btn-info" round size="small" @click="clearData">取消</el-button>
+      <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="activeLi===''?0:activeLi" v-if="preview" @close="preview=false"></preview>
   </div>
@@ -346,12 +346,6 @@
         this.activeType=parseInt(inAccount)===4?2:1
       }
     },
-    mounted(){
-      this.$nextTick(()=>{
-        // debugger
-        this.employeScroll=this.$refs.employe.$refs.scrollbar.$refs.wrap
-      })
-    },
     methods: {
       clearData:function () {
         this.$tool.clearForm(this.form)
@@ -359,8 +353,12 @@
         this.files=[]
         this.imgList=[]
       },
-      cutNum:function () {
-        this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+      cutNum:function (val,item) {
+        if(val===1){
+          this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+        }else {
+          val[item]=this.$tool.cutFloat({val:val[item],max:999999999.99})
+        }
       },
       inputOnly:function (index) {
         this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
@@ -386,6 +384,9 @@
         if(data.subs.length===0){
           this.$refs.tree.blur()
         }
+      },
+      moreData:function () {
+        console.log('test')
       },
       /**
        * 修改款单，获取初始数据
@@ -450,6 +451,13 @@
         this.imgList.splice(this.activeLi,1)
         this.files.splice(this.activeLi,1)
       },
+      goCancel:function () {
+        this.$confirm('是否取消当前操作',{closeOnClickModal:false}).then(()=>{
+          this.$router.go(-1)
+        }).catch(()=>{
+
+        })
+      },
       goResult: function () {
         let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
@@ -482,6 +490,17 @@
             }else {
               param.outAccount.find((item,index)=>{
                 this.$tool.checkForm(item,RULE).then(()=>{
+                  let count=0
+                  param.outAccount.forEach(item=>{
+                    count = count+parseInt(item.amount)
+                    return count
+                  })
+                  if(count!==parseInt(this.form.smallAmount)){
+                    this.$message({
+                      message:'刷卡金额要等于收款金额'
+                    })
+                    return true
+                  }
                   if(this.files.length===0){
                     this.$message({
                       message:'收款凭证不能为空'
@@ -616,7 +635,6 @@
             return
           }
         })
-        console.log(this.employeScroll.scrollTop)
 
         this.form = Object.assign({}, this.form, obj)
       },
@@ -642,6 +660,7 @@
        * 根据卡号获取银行信息
        */
       getBank: function (row, index) {
+        row.cardNumber=this.$tool.numberInput(row.cardNumber)
         let param = {
           cardNumber: row.cardNumber
         }
@@ -696,10 +715,6 @@
         this.getEmploye(val.depId)
         this.form.inObjId=val.empId
         this.form.inObj=val.name
-      },
-      employeScroll:function (val) {
-        // debugger
-        console.log(val.clientHeight)
       }
     }
   }

@@ -198,16 +198,18 @@ export default{
                 }else{
                     this.sigtureShow=!this.sigtureShow
                 }
+                this.signPosition.x=0
+                this.signPosition.y=0
                  this.sigtureShow2=!this.sigtureShow2
             
                  this.tuozhuai()
             },
             tuozhuai(){
-                if(this.cityId==1 && this.type==2){
+                    if(this.cityId==1 && this.type==2){
                     var oDiv=document.getElementsByClassName('signature')[1]
-                }else{
+                    }else{
                     var oDiv=document.getElementsByClassName('signature')[0]
-                }
+                    }
                     var This =this 
                         oDiv.onmousedown = function(ev){
                             var disX = ev.clientX -oDiv.offsetLeft;
@@ -231,8 +233,17 @@ export default{
                             document.onmouseup=null;
                             };
                         };
+                
                 },
             saveAll(){
+                console.log(this.signPosition);
+                if(this.signPosition.x===''){
+                    this.$message({
+                    type: 'error',
+                    message: '请设置签章位置！'
+                    })
+                    return
+                }
                  this.signPosition.pageIndex=this.showSed?this.count2:this.count
                  let param={
                   address:{
@@ -246,14 +257,17 @@ export default{
                   signPosition:this.signPosition,
                   imgAddress:{"business":this.cityId==1&&this.type==2?this.imgSrc:'', "residence":this.cityId==1&&this.type==2?this.imgSrc2:'',"address":!(this.cityId==1&&this.type==2)?this.imgSrc:''},
                   imgPage:{"business":this.showSed?this.total:0, "residence": this.showSed?this.total2:0,"count": !this.showSed?this.total:0},
-                  cityId:1,
+                  cityId:this.cityId,
                   id:this.id
               }
               console.log(param,'zuizhong');
               this.$ajax.postJSON('/api/setting/contractTemplate/insert',param).then(res=>{
                   if(res.status==200){
-                         this.$router.push({
+                        this.$router.push({
                         path: "/contractTemplate",
+                        query:{
+                            cid:this.cityId
+                        }
                     });
                   }
                 })

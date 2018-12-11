@@ -152,7 +152,6 @@
             },
             operation(row,type){
                 this.addDialog=true
-                console.log(row,'row');
                 if(type==1){
                     this.title=`新增【${this.bigName}】小类`,
                     console.log(this.title,'title');
@@ -200,6 +199,7 @@
                 if(this.title==`新增【${this.bigName}】小类`){
                     this.addForm.name=this.trim(this.addForm.name)
                     this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
+                        console.log(res,'res');
                     if(res.status==200){
                         this.$message({
                         type: 'success',
@@ -208,7 +208,12 @@
                         this.addDialog=false
                         this.initList()
                     }
-                  })
+                  }).catch(error=>{
+                     this.$message({
+                        type: 'error',
+                        message: '款类名称不可重复, 请重新添加!!'
+                        })
+                })
                 }else if(this.title==`编辑【${this.bigName}】小类`){
                     let param={
                         id:this.smallId,
@@ -216,30 +221,26 @@
                         name:this.trim(this.addForm.name),
                         remark:this.addForm.remark
                     }
-                    console.log(param,'this.param2');
-
                     this.statusOp(param,'修改成功')
-                    this.addDialog=false
                 }
                 
             },
              /**
              * 弹框
              */
-            popMsg(msg,callback,row){
-                this.$confirm(msg,'提示',{
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-                }).then(()=>{
-                callback(row)
-                }).catch(()=>{
-                })
-            },
+            // popMsg(msg,callback,row){
+            //     this.$confirm(msg,'提示',{
+            //     confirmButtonText: '确定',
+            //     cancelButtonText: '取消',
+            //     type: 'warning'
+            //     }).then(()=>{
+            //     callback(row)
+            //     }).catch(()=>{
+            //     })
+            // },
             statusOp(param,message){
                  this.$ajax.get('/api/setting/moneyType/update',param)
                    .then((res)=>{
-                       console.log(res,'res');
                         if (res.status === 200) {
                             this.$message({
                             type: 'success',
@@ -247,8 +248,13 @@
                             })
                             this.initList()
                         }
-                        
-                   })
+                         this.addDialog=false
+                   }).catch(error=>{
+                     this.$message({
+                        type: 'error',
+                        message: '款类名称已经存在, 请重新输入!'
+                        })
+                })
             },
             //表格第一行加样式
             tableStyle({row, rowIndex}){
