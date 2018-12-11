@@ -6,6 +6,8 @@ const MIXINS = {
       userMsg:null,
       DepList:[],
       EmployeList:[],
+      employeScroll:null,
+      tree:true,
       Loading:true,
       preview:false,
       previewFiles:[],
@@ -70,10 +72,10 @@ const MIXINS = {
       })
     },
     getEmploye:function (val) {
-      this.$ajax.get('/api/organize/employees',{depId:val}).then(res=>{
+      this.$ajax.get('/api/organize/employees/pages',{depId:val}).then(res=>{
         res=res.data
         if(res.status===200){
-          this.EmployeList=res.data
+          this.EmployeList=res.data.list
         }
       })
     },
@@ -112,7 +114,7 @@ const MIXINS = {
             this.fileSign(arr2)
         }else{
             // 其他文件 下载
-            this.$ajax.get("/access/generateAccessURL",{
+            this.$ajax.get("/api/load/generateAccessURL",{
               url:arr[i].path
             }).then(res=>{
               res = res.data;
@@ -130,7 +132,7 @@ const MIXINS = {
     },
     // 判断图片类别
     imgBoolFn(type){
-        switch (type) {
+        switch (type.toLowerCase()) {
             case '.png':
                 return true
                 break;

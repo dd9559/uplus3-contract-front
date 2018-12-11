@@ -130,14 +130,14 @@
             <ul class="peopleMsg">
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
                 <span class="merge">
-                  <input v-model="item.name" placeholder="姓名" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                  <input v-model="item.name" placeholder="姓名" maxlength="6" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyMobile(item.mobile)">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
-                <span class="shell"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
                 <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
@@ -178,7 +178,7 @@
             <ul class="peopleMsg">
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
                 <span class="merge">
-                  <input v-model="item.name" placeholder="姓名" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                  <input v-model="item.name" placeholder="姓名" maxlength="6" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"  @input="verifyMobile(item.mobile)">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
@@ -186,7 +186,7 @@
                   </el-option>
                 </el-select>
                 <!-- <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" @input="cutNumber_(index,'guest')" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"><i slot="suffix">%</i></el-input> -->
-                <span class="shell"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
                 <input v-model="item.identifyCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
@@ -578,7 +578,7 @@ export default {
                     let reg = /^1[0-9]{10}$/;
                     if (reg.test(element.mobile)) {
                       if (element.relation) {
-                        if (element.propertyRightRatio&&element.propertyRightRatio>0||element.propertyRightRatio==0) {
+                        if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                           if (element.identifyCode) {
                             let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
                             if (reg.test(element.identifyCode)) {
@@ -622,7 +622,7 @@ export default {
               });
               if (isOk) {
                 console.log(ownerRightRatio);
-                if (ownerRightRatio === 100) {
+                if (ownerRightRatio === 100||this.contractForm.type===1) {
                   if (this.contractForm.guestInfo.paymentMethod) {
                     if (this.contractForm.guestInfo.GuestStoreCode) {
                       //客户产权比
@@ -635,7 +635,7 @@ export default {
                             let reg = /^1[0-9]{10}$/;
                             if (reg.test(element.mobile)) {
                               if (element.relation) {
-                              if (element.propertyRightRatio&&element.propertyRightRatio>0||element.propertyRightRatio==0) {
+                              if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                                 if (element.identifyCode) {
                                   let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
                                   if (reg.test(element.identifyCode)) {
@@ -679,7 +679,7 @@ export default {
                       });
                       if (isOk_) {
                         // console.log(guestRightRatio);
-                        if (guestRightRatio === 100) {
+                        if (guestRightRatio === 100||this.contractForm.type===1) {
                           //验证身份证是否重复
                           let IdCardList = [];
                           this.ownerList.forEach(element => {
@@ -1196,7 +1196,7 @@ export default {
       if(type==='guest'){
         this.guestList[index].propertyRightRatio=this.$tool.cutFloat({val:this.guestList[index].propertyRightRatio,max:100})
       }else if(type==='owner'){
-
+        this.ownerList[index].propertyRightRatio=this.$tool.cutFloat({val:this.ownerList[index].propertyRightRatio,max:100})
       }
     }
   },

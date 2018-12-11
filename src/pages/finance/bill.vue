@@ -38,8 +38,8 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
-            <el-option class="drop-tree" value="">
+          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @focus="tree=true" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+            <el-option class="drop-tree" value="" v-show="tree">
               <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
             </el-option>
           </el-select>
@@ -109,7 +109,7 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -184,9 +184,10 @@
         <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
             <template v-if="scope.row.type===1">
-              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">开票</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0&&scope.row.inAccountType===4">修改</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0&&scope.row.inAccountType===4">作废</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(scope.row.payStatus==='已通过'||scope.row.payStatus==='已到账')&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">开票</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-else-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0&&scope.row.inAccountType===4">修改</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)" v-else-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0&&scope.row.inAccountType===4">作废</el-button>
+              <span v-else>--</span>
             </template>
             <template v-else-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0
 ">
@@ -297,7 +298,8 @@
         layer:{
           show:false,
           content:[]
-        }
+        },
+        treeShow:true
       }
     },
     created() {
@@ -328,6 +330,9 @@
         this.getEmploye(data.depId)
         this.searchForm.depId=data.depId
         this.searchForm.depName=data.name
+        if(data.subs.length===0){
+          this.$refs.tree.blur()
+        }
       },
       getData: function () {
         let param = JSON.parse(JSON.stringify(this.searchForm))
@@ -354,24 +359,30 @@
        * @param row
        */
       toDetails:function (row) {
-        this.setPath(this.getPath.concat({name:row.type===1?'收款详情':'付款详情'}))
-        this.$router.push({
-          path:'billDetails',
-          query:{
-            id:row.id,
-            tab:row.type===1?'收款信息':'付款信息',
-            pageName:row.type===1?'收款详情':'付款详情'
-          }
-        })
+        if(row.payStatus==='未付款'){
+          this.btnOpera(row,1)
+        }else {
+          this.setPath(this.getPath.concat({name:row.type===1?'收款详情':'付款详情'}))
+          this.$router.push({
+            path:'billDetails',
+            query:{
+              id:row.id,
+              tab:row.type===1?'收款信息':'付款信息',
+              pageName:row.type===1?'收款详情':'付款详情'
+            }
+          })
+        }
       },
       btnOpera:function (row,type) {
         if(type===1){
+          this.setPath(this.getPath.concat({name:row.type===1?'编辑收款':'编辑付款'}))
           this.$router.push({
             path:row.type===1?'receiptBill':'payBill',
             query:{
               edit:row.type,
               id:row.id,
-              type:row.type===1?row.inAccountType:'-1'
+              type:row.type===1?row.inAccountType:'-1',
+              contId:row.contId
             }
           })
         }else if(type===2) {
@@ -499,10 +510,8 @@
         }else{
           if(val.type===2){
             return '--'
-          }else if(val.billStatus.value===1||val.billStatus.value===4){
-            return val.billStatus.label
           }else {
-            return '--'
+            return val.billStatus.label
           }
         }
       }

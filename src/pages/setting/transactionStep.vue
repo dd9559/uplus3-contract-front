@@ -91,7 +91,7 @@
           </div>
           <div class="input-group">
             <label>计划天数：</label>
-            <el-input type="number" v-model="stepBusiness.planDays" onkeyup="this.value=this.value.replace(/\D/g,'')"></el-input>
+            <el-input v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')"></el-input>
           </div>
           <div class="menu-table">
             <h4>附属信息：</h4>
@@ -144,7 +144,6 @@
   import {MIXINS} from "@/assets/js/mixins";
   let stepTypeId = 1;
   const infoType = ["文本","数字","日期","图片","视频","PDF","EXCEL","Word"]
-
   export default {
     mixins: [FILTER,MIXINS],
     props: ["cityId"],
@@ -358,6 +357,12 @@
         if(this.stepBusiness.name === "") {
           this.$message("步骤名称不能为空")
         } else {
+          if(this.stepBusiness.planDays) {
+            if(!/^[0-9]+$/.test(this.stepBusiness.planDays)) {
+              this.$message("计划天数请输入正整数")
+              return false
+            }
+          }
           let isOk
           if(this.tableForm.length) {
             this.tableForm.forEach(item => {
@@ -494,6 +499,13 @@
               this.$message({message:error})
           })
         })
+      },
+      //获取整数
+      getInt:function (param,int=1) {
+        this.stepBusiness[param]=this.stepBusiness[param].replace(/[^\.\d]/g,'')
+        if(int){
+          this.stepBusiness[param]=this.stepBusiness[param].replace('.','')
+        }
       }
     },
     computed: {

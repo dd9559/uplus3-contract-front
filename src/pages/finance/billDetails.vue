@@ -71,7 +71,7 @@
       <li v-if="activeItem==='收款信息'">
         <h4 class="f14">合计金额</h4>
         <p class="total-text">合计：<span>{{billMsg.amount}}</span>元</p>
-        <el-table border :data="billMsg.inAccount" header-row-class-name="theader-bg">
+        <el-table border :data="billMsg.inAccountType===4?billMsg.inAccount:[{}]" header-row-class-name="theader-bg">
           <el-table-column align="center" label="款类">
             <template slot-scope="scope">
               <span>{{billMsg.moneyTypeName}}</span>
@@ -79,7 +79,8 @@
           </el-table-column>
           <el-table-column align="center" label="票据">
             <template slot-scope="scope">
-              <span class="span-cursor" @click="getPaper('details')">{{billMsg.billCode}}</span>
+              <span class="span-cursor" @click="getPaper('details')" v-if="billMsg.billCode">{{billMsg.billCode}}</span>
+              <span v-else>--</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="支付方式">
@@ -94,12 +95,14 @@
           </el-table-column>
           <el-table-column min-width="200" align="center" label="收款账户">
             <template slot-scope="scope">
-              <p>{{scope.row.userName}} {{scope.row.bankName}} {{scope.row.cardNumber}}</p>
+              <p v-if="billMsg.inAccount===4">{{scope.row.userName}} {{scope.row.bankName}} {{scope.row.cardNumber}}</p>
+              <span v-else>--</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="状态">
             <template slot-scope="scope">
-              {{billMsg.checkStatus|getLabel}}
+              <!--{{billMsg.checkStatus|getLabel}}-->
+              <span>{{billMsg.statusName}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="入账时间">
@@ -109,7 +112,7 @@
           </el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" @click="getPaper('create')" v-if="billMsg.checkStatus.value===1||billMsg.checkStatus.value===4">开票</el-button>
+              <el-button type="text" @click="getPaper('create')" v-if="billMsg.checkStatus&&(billMsg.checkStatus.value===1||billMsg.checkStatus.value===4)">开票</el-button>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -361,10 +364,11 @@
           return
         }
         let param = {
-          bizId: this.billMsg.audit.bizId,
+          // bizId: this.billMsg.audit.bizId,
           bizCode: this.billMsg.audit.bizCode,
-          flowId: this.billMsg.audit.flowId,
-          sort: this.billMsg.audit.nodeSort,
+          // flowId: this.billMsg.audit.flowId,
+          // sort: this.billMsg.audit.nodeSort,
+          flowType: this.activeItem==='付款信息'?0:1
         }
         param.ApprovalForm = {
           result: type,
@@ -435,9 +439,9 @@
       }
     },
     filters:{
-      nullFormatter:function (val) {
+      nullFormatter:function (val,type=1) {
         if(!val){
-          return '无'
+          return type===1?'无':'--'
         }else {
           return val
         }
