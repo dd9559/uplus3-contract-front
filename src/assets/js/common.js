@@ -487,6 +487,9 @@ let TOOL = {
   textInput:function (val) {
     return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,'').replace(/\s/g,'')
   },
+  numberInput:function (val) {
+    return val.replace(/[^\d]/g,'')
+  },
   //数组是否有重复元素
   repeatCell:function (arr) {
     // debugger

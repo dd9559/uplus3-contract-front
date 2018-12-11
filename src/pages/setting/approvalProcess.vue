@@ -406,7 +406,7 @@
                             isOk = false
                             if(item.name) {
                                 if(item.type !== "") {
-                                    if(item.userId&&item.type===1 || item.userId&&item.type===2 || item.type===0 || item.type===3) {
+                                    if(item.userId>=0&&item.type===1 || item.userId>=0&&item.type===2 || item.type===0 || item.type===3) {
                                         isOk = true
                                     } else {
                                         this.$message({message:item.type===1?"请选择门店":"请选择职务"})
