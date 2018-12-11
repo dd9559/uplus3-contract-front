@@ -86,7 +86,7 @@
         margin-bottom: 0;
       }
       .paper-box-content{
-        max-height: 32px;
+        max-height: 34px;
         overflow-y: hidden;
       }
     }
