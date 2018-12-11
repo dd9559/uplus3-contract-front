@@ -57,13 +57,13 @@
                     </el-table-column>
                     <el-table-column align="center" label="分支节点" prop="name">
                         <template slot-scope="scope">
-                            <p v-for="item in scope.row.branch" :key="item.sort">{{item.name}}</p>
+                            <p v-for="item in scope.row.branch" :key="item.sort">{{item.name?item.name:'--'}}</p>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="操作">
                         <template slot-scope="scope">
                             <el-button type="text" size="medium" @click="operation('编辑',2,scope.row)">编辑</el-button>
-                            <el-button type="text" size="medium" @click="delFlow(scope.row)">删除</el-button>
+                            <!-- <el-button type="text" size="medium" @click="delFlow(scope.row)">删除</el-button> -->
                         </template>
                     </el-table-column>
                 </el-table>
@@ -82,33 +82,33 @@
         <!-- 添加 编辑 弹窗 -->
         <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
             <div class="aduit-content">
-                <div class="aduit-input">
+                <div class="aduit-input must">
                     <label>选择城市:</label>
                     <el-select size="small" v-model="aduitForm.cityId" :disabled="editDisabled">
                         <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
                     </el-select>
                 </div>
-                <div class="aduit-input">
+                <div class="aduit-input must">
                     <label>运营模式:</label>
                     <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
                         <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
-                <div class="aduit-input">
+                <div class="aduit-input must">
                     <label>流程类型:</label>
                     <el-select size="small" v-model="aduitForm.type" @change="changeFlowType" :disabled="editDisabled">
                         <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
-                <div class="aduit-input">
+                <div class="aduit-input must">
                     <label>分支条件:</label>
                     <el-select size="small" v-model="aduitForm.branchCondition" :disabled="editDisabled">
                         <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
-                <div class="aduit-input">
+                <div class="aduit-input must">
                     <label>流程名称:</label>
-                    <el-input size="small" v-model.trim="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                    <el-input size="small" maxlength="15" v-model.trim="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </div>
                 <div class="aduit-node">
                     <div>
@@ -120,7 +120,7 @@
                     </div>
                     <ul v-if="isAudit==='1'">
                         <li v-for="(item,index) in nodeList" :key="index">
-                            <el-input size="small" v-model="item.name" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                            <el-input size="small" v-model="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                             <el-select size="small" class="people-type" v-model="item.type" @change="getTypeOption(item.type,index)">
                                 <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
@@ -141,7 +141,7 @@
                 </div>
                 <div class="aduit-input">
                     <label class="mr-7">流程描述:</label>
-                    <el-input type="textarea" v-model.trim="aduitForm.flowDesc"></el-input>
+                    <el-input type="textarea" maxlength="150" v-model.trim="aduitForm.flowDesc"></el-input>
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">
@@ -163,9 +163,6 @@
         },
         name: {
             name: "流程名称"
-        },
-        flowDesc: {
-            name: "流程描述"
         }
     }
     let flowType = ["付款审核","收款审核","应收业绩审核","合同审核","调佣审核","结算审核"]
@@ -184,7 +181,8 @@
             type: "",
             sort: 2,
             userId: "",
-            userName: ""
+            userName: "",
+            isAudit: "1"
         }
     ]
     
@@ -308,28 +306,28 @@
                     this.editDisabled = true
                 }
             },
-            delFlow(row) {
-                let param = {
-                    id: row.id
-                }
-                this.$confirm('是否删除该流程?', {
-                    distinguishCancelAndClose: true,
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消'
-                }).then(() => {
-                    this.$ajax.postJSON('/api/auditflow/operateFlow',param).then(res => {
-                        res = res.data
-                        if(res.status === 2013) {
-                            this.$message(res.message)
-                        } else if(res.status === 200) {
-                            this.$message("删除成功")
-                            this.getData()
-                        }
-                    }).catch(error => {
-                        this.$message({message:error})
-                    })
-                })   
-            },
+            // delFlow(row) {
+            //     let param = {
+            //         id: row.id
+            //     }
+            //     this.$confirm('是否删除该流程?', {
+            //         distinguishCancelAndClose: true,
+            //         confirmButtonText: '确定',
+            //         cancelButtonText: '取消'
+            //     }).then(() => {
+            //         this.$ajax.postJSON('/api/auditflow/operateFlow',param).then(res => {
+            //             res = res.data
+            //             if(res.status === 2013) {
+            //                 this.$message(res.message)
+            //             } else if(res.status === 200) {
+            //                 this.$message("删除成功")
+            //                 this.getData()
+            //             }
+            //         }).catch(error => {
+            //             this.$message({message:error})
+            //         })
+            //     })   
+            // },
             setConditionList(val) {
                 switch(val) {
                     case 0:
@@ -381,7 +379,8 @@
                     type: "",
                     sort: ++sortNo,
                     userId: "",
-                    userName: ""
+                    userName: "",
+                    isAudit: "1"
                 }
                 this.nodeList.push(row)
             },
@@ -406,7 +405,7 @@
                             isOk = false
                             if(item.name) {
                                 if(item.type !== "") {
-                                    if(item.userId&&item.type===1 || item.userId&&item.type===2 || item.type===0 || item.type===3) {
+                                    if(item.userId>=0&&item.type===1 || item.userId>=0&&item.type===2 || item.type===0 || item.type===3) {
                                         isOk = true
                                     } else {
                                         this.$message({message:item.type===1?"请选择门店":"请选择职务"})
@@ -424,7 +423,7 @@
                     }
                     param = Object.assign({},this.aduitForm,param)
                     const url = "/api/auditflow/operateFlow"
-                    if(isOk) {
+                    if(isOk || this.isAudit === '0') {
                         if(this.aduitTitle === "添加") {
                             this.aduitPost(url,param)
                         } else {
@@ -544,6 +543,13 @@
             /deep/ .el-textarea__inner {
                 background-color: #ECEFF2;
             }
+        }
+    }
+    .must {
+        label::before {
+            content: "*";
+            color: red;
+            margin-right: 1px;
         }
     }
     .aduit-node {

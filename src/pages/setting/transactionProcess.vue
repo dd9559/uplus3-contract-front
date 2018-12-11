@@ -16,7 +16,7 @@
           </el-table-column> 
         </el-table>
         <!-- 添加编辑交易流程 弹出框 -->
-        <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
+        <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="700px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
           <el-form v-model="addForm" size="small">
             <el-form-item label="名称" class="add-form-item">
               <el-input v-model.trim="addForm.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
@@ -32,7 +32,7 @@
           <span class="flow-name">({{flowName}})</span>
           <div class="manage-title">
             <label>结算百分比 : </label>
-            <el-input v-model="settlePercent" type="number" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>%
+            <el-input v-model="settlePercent"  @keyup.native="getInt"></el-input>%
           </div>
           <div class="manage-list">
             <el-table :data="manageData">
@@ -171,8 +171,8 @@
             res = res.data
             if(res.status === 200) {
               this.manageData = res.data
-              this.tempManage = JSON.parse(JSON.stringify(res.data))
               this.flowCount = this.manageData.length
+              // this.tempManage = JSON.parse(JSON.stringify(res.data))
             }
             this.manageData.forEach(i => {
               this.AllSteps.forEach((v,index) => {
@@ -181,6 +181,7 @@
                 }
               })
             })
+            this.tempManage = JSON.parse(JSON.stringify(this.manageData))
           }).catch(error => {
               this.$message({message:error})
           })
@@ -290,10 +291,12 @@
             if(i.stepsTypeName === v.typeName) {
               v.tempList.push(i.stepsName)
             }
-            if(v.tempList.length === v.stepsList.length) {
-              v.stepsSelect = true
-            } else {
-              v.stepsSelect = false
+            if(v.tempList.length) {
+              if(v.tempList.length === v.stepsList.length) {
+                v.stepsSelect = true
+              } else {
+                v.stepsSelect = false
+              }
             }
           })
         })
@@ -367,6 +370,20 @@
           }
           this.ProcessStepVisible = false
         } else if(type === 'flow') {
+          function equar(a, b) {
+            if (a.length !== b.length) {
+                return false
+            } else {
+                for (let i = 0; i < a.length; i++) {
+                    if (a[i].id !== b[i].id || a[i].isSettle !== b[i].isSettle) {
+                        return false
+                    }
+                }
+                return true;
+            }
+          }
+          let flag = equar(this.manageData,this.tempManage)
+
           let arr = []
           this.manageData.forEach(item => {
             if(this.flowCount === 0) {
@@ -397,10 +414,10 @@
             if(this.flowCount === 0) {
               const url = "/api/flowmanage/insertFLowSteps"
               this.flowManagePost(url,param)
-            } else if (this.flowCount !== 0 && this.tempManage.toString() !== this.manageData.toString()) {
+            } else if (this.flowCount !== 0 && !flag) {
               const url = "/api/flowmanage/updateFLowSteps"
               this.flowManagePost(url,param)
-            } else if (this.tempManage.toString() == this.manageData.toString() && this.tempSetPercent == this.settlePercent) {
+            } else if (flag && this.tempSetPercent == this.settlePercent) {
               this.$message("没有做任何修改")
             }
             if(this.tempSetPercent != this.settlePercent) {
@@ -457,6 +474,13 @@
         }).catch(error => {
             this.$message({message:error})
         })
+      },
+      //获取整数
+      getInt:function (param,int=1) {
+        this.settlePercent = this.settlePercent.replace(/[^\.\d]/g,'')
+        if(int){
+          this.settlePercent =this.settlePercent.replace('.','')
+        }
       }
     },
     computed: {
@@ -468,15 +492,7 @@
       "cityId": function(newVal,oldVal) {
         this.getData()
         this.getTypeSteps()
-      },
-      // "manageData": {
-      //   handler(newVal,oldVal) {
-      //     for(var i = 0; i < newVal.length; i++) {
-      //       newVal[i].isSettle = 0
-      //     }
-      //   },
-      //   deep: true
-      // }
+      }
     }
   };
 </script>
@@ -500,7 +516,7 @@
     }
     .processDialog {
       /deep/ .el-dialog__body {
-        margin-bottom: 271px;
+        // margin-bottom: 271px;
       }
       .add-form-item {
         display: flex;
@@ -509,7 +525,7 @@
           color: red;
         }
         .el-input {
-          width: 654px;
+          width: 600px;
         }
         .text-absolute {
           position: absolute;

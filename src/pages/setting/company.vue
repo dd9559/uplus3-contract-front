@@ -128,7 +128,7 @@
                 <el-input size="mini" maxlength="15" v-model="companyForm.lepName" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="证件类型: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="directSaleSelect">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="directSaleSelect" @change="idTypeChange">
                   <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
@@ -309,7 +309,7 @@
     },
     lepDocumentCard: {
       name: "证件号",
-      type: "idCard"
+      type: "id-card"
     },
     lepPhone: {
       name: "法人手机号码",
@@ -478,6 +478,7 @@
           setTimeout(() => {
             this.noticeShow = false
           }, 2000)
+          this.companyForm.storeId = ""
         })
       },
       //关闭模态窗
@@ -717,9 +718,20 @@
       },
       idCardChange() {
         let val = this.companyForm.lepDocumentCard
-        if(val&&this.companyForm.lepDocumentType===1) {
+        let type = this.companyForm.lepDocumentType
+        if(val&&type===1) {
           if(!checkIdVlidate(val)) {
             this.$message('身份证号格式不正确')
+            return false
+          }
+        } else if(val&&type===2) {
+          if(!/^[a-zA-Z0-9]{5,17}$/.test(val)) {
+            this.$message('护照格式不正确')
+            return false
+          }
+        } else if(val&&type===3) {
+          if(!/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(val)) {
+            this.$message('港澳通行证格式不正确')
             return false
           }
         }
@@ -731,6 +743,9 @@
             this.$message('手机号码不正确')
           }
         }
+      },
+      idTypeChange() {
+        this.companyForm.lepDocumentCard = ""
       }
     },
     filters: {

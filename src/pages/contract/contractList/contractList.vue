@@ -1,7 +1,7 @@
 <template>
   <div class="view-container">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="45">
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="签约日期">
           <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
@@ -209,7 +209,7 @@
                 <div style="width:160px">
                   {{scope.row.remarksExamine}}
                 </div>
-                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remarksExamine.length<16}">
+                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remarksExamine.length<45}">
                   {{scope.row.remarksExamine}}
                 </div>
               </el-popover>

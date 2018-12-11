@@ -15,14 +15,28 @@
       </div>
       <div class="input-group">
         <label class="form-label no-width f14">收款人:</label>
-        <el-select size="small" v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjId,2)">
+        <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="depName" placeholder="请选择">
+          <el-option class="drop-tree" value="">
+            <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+          </el-option>
+        </el-select>
+        <el-select :clearable="true" ref="employe" v-loadmore="moreData" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="form.inObj=''" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
+          <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
+          <el-option
+            v-for="item in EmployeList"
+            :key="item.empId"
+            :label="item.name"
+            :value="item.empId">
+          </el-option>
+        </el-select>
+        <!--<el-select size="small" v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjId,2)">
           <el-option
             v-for="item in receiptMan"
             :key="item.empId"
             :label="item.name"
             :value="item.empId">
           </el-option>
-        </el-select>
+        </el-select>-->
       </div>
     </section>
     <div class="input-group">
@@ -40,7 +54,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <el-radio v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}
+                <el-radio class="money-type-radio" v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}
                 </el-radio>
               </li>
             </ul>
@@ -50,7 +64,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="(item,index) in scope.row.moneyTypes">
-                <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
+                <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
                        v-if="form.moneyType===item.key">
                 <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
               </li>
@@ -79,7 +93,7 @@
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
             <div class="box box-left">
-              <el-radio v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">
+              <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">
                 {{scope.row.name}}
               </el-radio>
             </div>
@@ -88,7 +102,7 @@
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
             <div class="box">
-              <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum" v-model="form.smallAmount"
+              <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
                      v-if="form.moneyType===scope.row.key">
               <span v-else @click="getType(scope.row,'other')">请输入</span>
             </div>
@@ -154,7 +168,7 @@
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.amount" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.amount" class="no-style" @input="cutNum(scope.row,'amount')" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="订单编号">
@@ -164,7 +178,7 @@
         </el-table-column>
         <el-table-column align="center" label="手续费（元）">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.fee" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.fee" class="no-style" @input="cutNum(scope.row,'fee')" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
@@ -197,7 +211,7 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
-      <el-button class="btn-info" round size="small" @click="clearData">取消</el-button>
+      <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="activeLi===''?0:activeLi" v-if="preview" @close="preview=false"></preview>
   </div>
@@ -244,6 +258,9 @@
     cardNumber:{
       name:'账户'
     },
+    bankName:{
+      name:'刷卡银行'
+    },
     amount:{
       name:'金额'
     },
@@ -260,6 +277,7 @@
     data() {
       return {
         contId:'',
+        depName:'',
         form: {
           contId: '',
           remark: '',
@@ -306,16 +324,19 @@
         receiptMan: [],
         files:[],
         imgList:[],
-        activeLi:''
+        activeLi:'',
+        employeInfo:true
       }
     },
     created() {
       this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
       this.getMoneyType()
       this.getDictionary()
+      this.remoteMethod()
       this.getAcount()
       this.getDropdown()
       this.getReceiptman()
+      this.getAdmin()
       let type = this.$route.query.edit
       let inAccount = this.$route.query.type
       if (type) {
@@ -332,8 +353,12 @@
         this.files=[]
         this.imgList=[]
       },
-      cutNum:function () {
-        this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+      cutNum:function (val,item) {
+        if(val===1){
+          this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+        }else {
+          val[item]=this.$tool.cutFloat({val:val[item],max:999999999.99})
+        }
       },
       inputOnly:function (index) {
         this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
@@ -344,6 +369,24 @@
           arr.push(item.path)
         })
         this.fileSign(arr)
+      },
+      //收款人下拉选项操作
+      clearDep:function () {
+        this.depName=''
+        this.EmployeList=[]
+        this.form.inObjId=''
+        this.form.inObj=''
+      },
+      handleNodeClick(data) {
+        this.getEmploye(data.depId)
+        this.clearDep()
+        this.depName=data.name
+        if(data.subs.length===0){
+          this.$refs.tree.blur()
+        }
+      },
+      moreData:function () {
+        console.log('test')
       },
       /**
        * 修改款单，获取初始数据
@@ -408,6 +451,13 @@
         this.imgList.splice(this.activeLi,1)
         this.files.splice(this.activeLi,1)
       },
+      goCancel:function () {
+        this.$confirm('是否取消当前操作',{closeOnClickModal:false}).then(()=>{
+          this.$router.go(-1)
+        }).catch(()=>{
+
+        })
+      },
       goResult: function () {
         let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
@@ -440,6 +490,17 @@
             }else {
               param.outAccount.find((item,index)=>{
                 this.$tool.checkForm(item,RULE).then(()=>{
+                  let count=0
+                  param.outAccount.forEach(item=>{
+                    count = count+parseInt(item.amount)
+                    return count
+                  })
+                  if(count!==parseInt(this.form.smallAmount)){
+                    this.$message({
+                      message:'刷卡金额要等于收款金额'
+                    })
+                    return true
+                  }
                   if(this.files.length===0){
                     this.$message({
                       message:'收款凭证不能为空'
@@ -450,7 +511,7 @@
                   }
                 }).catch(error=>{
                   this.$message({
-                    message:`${index>0?`刷卡资料补充第${index+1}行数据填写不全`:''}  ${error.title}${error.msg}`
+                    message:error.title==='刷卡银行'?'银行卡号输入有误':`${index>0?`刷卡资料补充第${index+1}行数据填写不全`:''}  ${error.title}${error.msg}`
                   })
                   return true
                 })
@@ -562,7 +623,7 @@
        */
       getOption: function (item, type) {
         let obj = {}
-        let list = type === 1 ? this.dropdown : this.receiptMan
+        let list = type === 1 ? this.dropdown : this.EmployeList
         list.find(tip => {
           if (tip[type === 1 ? 'value' : 'empId'] === item) {
             if (type === 1) {
@@ -599,14 +660,19 @@
        * 根据卡号获取银行信息
        */
       getBank: function (row, index) {
+        row.cardNumber=this.$tool.numberInput(row.cardNumber)
         let param = {
           cardNumber: row.cardNumber
+        }
+        if(param.cardNumber.length>20){
+          row.cardNumber = row.cardNumber.substr(0,20)
+          return
         }
         if (param.cardNumber.length >= 16) {
           this.$ajax.get('/api/system/selectBankNameByCard', param).then(res => {
             res = res.data
             if (res.status === 200) {
-              this.cardList[index].bankName = res.data.bankName
+              this.cardList[index].bankName = res.data.bankName?res.data.bankName:''
             }
           })
         }
@@ -643,6 +709,12 @@
             fee: ''
           })
         }
+      },
+      userMsg:function (val) {
+        this.depName=val.depName
+        this.getEmploye(val.depId)
+        this.form.inObjId=val.empId
+        this.form.inObj=val.name
       }
     }
   }

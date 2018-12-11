@@ -372,7 +372,12 @@
         </div>
 
         <div class="dialog2">
-          <el-dialog :visible.sync="showTips" append-to-body custom-class="dialog2In" :close-on-click-modal="false">
+          <el-dialog
+            :visible.sync="showTips"
+            append-to-body
+            custom-class="dialog2In"
+            :close-on-click-modal="false"
+          >
             <h1>选择相关人员</h1>
             <div class="mansList">
               <el-table
@@ -576,6 +581,33 @@ export default {
         this.$message("分成人不满足最低人数要求");
         return false;
       }
+       // 判断房源客源角色类型不一样
+      // ====================================
+      let arr = [],
+      roleFlag = true;
+      for (var i = 0; i < this.houseArr.length; i++) {
+        let hRoleType= this.houseArr[i].roleType;
+        if (arr.indexOf(hRoleType) == -1) {
+          arr.push(hRoleType);
+        } else {
+          roleFlag = false;
+          this.$message("房源不可有重复角色类型");
+          return false;
+        }
+      }
+
+     for (var i = 0; i < this.clientArr.length; i++) {
+        let cRoleType= this.clientArr[i].roleType;
+        if (arr.indexOf(cRoleType) == -1) {
+          arr.push(cRoleType);
+        } else {
+          roleFlag = false;
+          this.$message("客源不可有重复角色类型");
+          return false;
+        }
+      }
+
+      // ==========================
       let resultArr = this.houseArr.concat(this.clientArr);
       console.log(resultArr);
       let flag = true,
@@ -638,6 +670,34 @@ export default {
         this.$message("分成人不满足最低人数要求");
         return false;
       }
+
+       // 判断房源客源角色类型不一样
+       // ====================================
+      let arr = [],
+      roleFlag = true;
+      for (var i = 0; i < this.houseArr.length; i++) {
+        let hRoleType= this.houseArr[i].roleType;
+        if (arr.indexOf(hRoleType) == -1) {
+          arr.push(hRoleType);
+        } else {
+          roleFlag = false;
+          this.$message("房源不可有重复角色类型");
+          return false;
+        }
+      }
+
+     for (var i = 0; i < this.clientArr.length; i++) {
+        let cRoleType= this.clientArr[i].roleType;
+        if (arr.indexOf(cRoleType) == -1) {
+          arr.push(cRoleType);
+        } else {
+          roleFlag = false;
+          this.$message("客源不可有重复角色类型");
+          return false;
+        }
+      }
+
+      // ==========================
       let resultArr = this.houseArr.concat(this.clientArr);
       let flag = true,
         sum = 0,
@@ -697,6 +757,35 @@ export default {
         return false;
       }
       let resultArr = this.houseArr.concat(this.clientArr);
+
+      // 判断房源客源角色类型不一样
+      // ====================================
+      let arr = [],
+      roleFlag = true;
+      for (var i = 0; i < this.houseArr.length; i++) {
+        let hRoleType= this.houseArr[i].roleType;
+        if (arr.indexOf(hRoleType) == -1) {
+          arr.push(hRoleType);
+        } else {
+          roleFlag = false;
+          this.$message("房源不可有重复角色类型");
+          return false;
+        }
+      }
+
+     for (var i = 0; i < this.clientArr.length; i++) {
+        let cRoleType= this.clientArr[i].roleType;
+        if (arr.indexOf(cRoleType) == -1) {
+          arr.push(cRoleType);
+        } else {
+          roleFlag = false;
+          this.$message("客源不可有重复角色类型");
+          return false;
+        }
+      }
+
+      // ==========================
+
       let flag = true,
         sum = 0,
         sumFlag = false;
@@ -763,7 +852,7 @@ export default {
             this.$message("操作完成");
           }
         });
-      } else if (!sumFlag&& flag) {
+      } else if (!sumFlag && flag) {
         this.$message("请输入正确的分成比例");
       } else {
         this.$message("请完善信息");
@@ -771,6 +860,34 @@ export default {
     },
     // 业绩分成的保存
     keepAchDivide(type) {
+
+       // 判断房源客源角色类型不一样
+      // ====================================
+      let arr = [],
+      roleFlag = true;
+      for (var i = 0; i < this.houseArr.length; i++) {
+        let hRoleType= this.houseArr[i].roleType;
+        if (arr.indexOf(hRoleType) == -1) {
+          arr.push(hRoleType);
+        } else {
+          roleFlag = false;
+          this.$message("房源不可有重复角色类型");
+          return false;
+        }
+      }
+
+     for (var i = 0; i < this.clientArr.length; i++) {
+        let cRoleType= this.clientArr[i].roleType;
+        if (arr.indexOf(cRoleType) == -1) {
+          arr.push(cRoleType);
+        } else {
+          roleFlag = false;
+          this.$message("客源不可有重复角色类型");
+          return false;
+        }
+      }
+
+      // ==========================
       let resultArr = this.houseArr.concat(this.clientArr);
       console.log(resultArr);
       let flag = true,
@@ -800,7 +917,7 @@ export default {
       console.log(sum);
       if (flag && sumFlag) {
         let param = {};
-        if (type == 0) {
+        if (type == 2) {
           param = {
             distributions: resultArr,
             contractCode: this.contractCode,

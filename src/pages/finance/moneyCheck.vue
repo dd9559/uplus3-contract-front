@@ -38,7 +38,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
             </el-option>
@@ -52,7 +52,7 @@
             </el-option>
           </el-select>
         </div>
-        <div class="input-group">
+        <div class="input-group" v-if="activeView===1">
           <label>票据状态:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.billStatus" placeholder="请选择">
             <el-option
@@ -109,7 +109,7 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input class="w394" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -120,7 +120,7 @@
           <el-button class="btn-info" round size="small" type="primary">导出</el-button>
         </p>
       </div>
-      <el-table ref="dataList" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
+      <el-table ref="dataList" border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="150" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -312,6 +312,9 @@
         this.getEmploye(data.depId)
         this.searchForm.depId=data.depId
         this.searchForm.depName=data.name
+        if(data.subs.length===0){
+          this.refs.tree.blur()
+        }
       },
       getData: function () {
         let param = JSON.parse(JSON.stringify(this.searchForm))
@@ -333,29 +336,32 @@
           console.log(error)
         })
       },
+      toDetails:function (item) {
+        let param = {
+          path: 'billDetails'
+        }
+        if (this.activeView === 1) {
+          param.query = {
+            tab: '收款信息',
+            id:item.id,
+            type:item.inAccountType,
+            pageName:'收款详情'
+          }
+          this.setPath(this.getPath.concat({name:'收款详情'}))
+        } else {
+          param.query = {
+            tab: '付款信息',
+            id:item.id,
+            pageName:'付款详情'
+          }
+          this.setPath(this.getPath.concat({name:'付款详情'}))
+        }
+        this.$router.push(param)
+      },
       //操作
       cellOpera: function (item,type='check') {
         if(type==='check'){
-          let param = {
-            path: 'billDetails'
-          }
-          if (this.activeView === 1) {
-            param.query = {
-              tab: '收款信息',
-              id:item.id,
-              type:item.inAccountType,
-              pageName:'收款详情'
-            }
-            this.setPath(this.getPath.concat({name:'收款详情'}))
-          } else {
-            param.query = {
-              tab: '付款信息',
-              id:item.id,
-              pageName:'付款详情'
-            }
-            this.setPath(this.getPath.concat({name:'付款详情'}))
-          }
-          this.$router.push(param)
+          this.toDetails(item)
         }else {
           this.layer.show=true
           this.layer.content=[].concat(item)

@@ -76,14 +76,18 @@
         <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
+    <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
   </div>
 </template>
            
 <script>
 import changeCancel from "../contractDialog/changeCancel";
+import PdfPrint from '@/components/PdfPrint';
+
 export default {
   components: {
-    changeCancel
+    changeCancel,
+    PdfPrint
   },
   data() {
     return {
@@ -133,7 +137,9 @@ export default {
       iSsignature:false,
       isSubmitAudit:false,
       //客源方门店id
-      guestStoreId:''
+      guestStoreId:'',
+      //合同打印的pdf地址
+      pdfUrl:''
     };
   },
   created() {
@@ -141,7 +147,7 @@ export default {
     this.code = this.$route.query.code;
     if (this.$route.query.operationType) {
       this.operationType = this.$route.query.operationType;
-      this.getAuditNode();
+      // this.getAuditNode();
     }
     this.getContImg();
   },
@@ -217,7 +223,9 @@ export default {
                 this.$message({
                   message:'操作成功'
                 });
-                this.iSsignature=false
+                this.iSsignature=false;
+                let pdfUrl=res.data;
+                // this.getUrl(pdfUrl);
                 this.getContImg();
               }
             })
@@ -244,8 +252,10 @@ export default {
             this.$message({
               message:'操作成功'
             });
+            let pdfUrl=res.data;
+            // this.getUrl(pdfUrl);
             this.iSsignature=false
-            this.getContImg();
+            // this.getContImg();
           }
         })
       }
@@ -265,16 +275,30 @@ export default {
       //   }
       // })
     },
+    //获取签名
+    getUrl(url){
+      let param = {
+        url:url
+      }
+      this.$ajax.get("/access/generateAccessURL",param).then(res=>{
+        res = res.data
+        if(res.status ===200){
+            this.pdfUrl = res.data.url;
+            // this.$refs.pdfPrint.print();
+        }
+      })
+    },
     checked(num) {
       //驳回/风险单
       if (num===2 || this.isSign) {
         if (this.textarea.length) {
           let param = {
-            bizId:this.auditNodeResult.bizId,
+            // bizId:this.auditNodeResult.bizId,
             bizCode:this.code,
-            flowId:this.auditNodeResult.flowId,
-            sort:this.auditNodeResult.nodeSort,
-            ApprovalForm:{
+            flowType:3,
+            // flowId:this.auditNodeResult.flowId,
+            // sort:this.auditNodeResult.nodeSort,
+            approvalForm:{
               result: num,
               isRisk: this.isSign, //风险单
               remark: this.textarea
@@ -289,11 +313,9 @@ export default {
         }
       } else {
         let param = {
-          bizId:this.auditNodeResult.bizId,
           bizCode:this.code,
-          flowId:this.auditNodeResult.flowId,
-          sort:this.auditNodeResult.nodeSort,
-          ApprovalForm:{
+          flowType:3,
+          approvalForm:{
             result: num,
             isRisk: this.isSign, //风险单
             remark: this.textarea
@@ -303,18 +325,18 @@ export default {
       }
     },
     //获取当前待审节点
-    getAuditNode(){
-      let param = {
-        bizCode:this.code,
-        flowType:3
-      }
-      this.$ajax.get('/api/machine/getAuditNode', param).then(res=>{
-        res=res.data;
-        if(res.status===200){
-          this.auditNodeResult=res.data;
-        }
-      })
-    },
+    // getAuditNode(){
+    //   let param = {
+    //     bizCode:this.code,
+    //     flowType:3
+    //   }
+    //   this.$ajax.get('/api/machine/getAuditNode', param).then(res=>{
+    //     res=res.data;
+    //     if(res.status===200){
+    //       this.auditNodeResult=res.data;
+    //     }
+    //   })
+    // },
     //获取合同预览图片
     getContImg(){
       let param = {
