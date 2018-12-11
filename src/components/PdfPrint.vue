@@ -10,11 +10,6 @@ export default {
             default:'',
         }
     },
-    data(){
-        return{
-            showPdf:true,
-        }
-    },
     computed:{
         getUrl(){
             let url = encodeURIComponent(`${this.url}`)
@@ -40,3 +35,4 @@ export default {
     height: 0;
 }
 </style>
+
