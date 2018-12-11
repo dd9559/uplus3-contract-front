@@ -478,6 +478,7 @@
           setTimeout(() => {
             this.noticeShow = false
           }, 2000)
+          this.companyForm.storeId = ""
         })
       },
       //关闭模态窗

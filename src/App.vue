@@ -102,6 +102,14 @@
       }
     }
   }
+  .money-type-radio{
+    display: flex;
+    >span{
+      &:last-of-type{
+        white-space: normal;
+      }
+    }
+  }
 
   // 清除浮动
   .clearfix:after {
@@ -155,7 +163,10 @@
   }
 
   .w240 {
-    width: 140px;
+    width: 240px;
+  }
+  .w394{
+    width: 394px;
   }
   .btn-info{
     min-width: 80px;

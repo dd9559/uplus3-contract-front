@@ -15,14 +15,28 @@
       </div>
       <div class="input-group">
         <label class="form-label no-width f14">收款人:</label>
-        <el-select size="small" v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjId,2)">
+        <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="depName" placeholder="请选择">
+          <el-option class="drop-tree" value="">
+            <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+          </el-option>
+        </el-select>
+        <el-select :clearable="true" ref="employe" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="form.inObj=''" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
+          <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
+          <el-option
+            v-for="item in EmployeList"
+            :key="item.empId"
+            :label="item.name"
+            :value="item.empId">
+          </el-option>
+        </el-select>
+        <!--<el-select size="small" v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjId,2)">
           <el-option
             v-for="item in receiptMan"
             :key="item.empId"
             :label="item.name"
             :value="item.empId">
           </el-option>
-        </el-select>
+        </el-select>-->
       </div>
     </section>
     <div class="input-group">
@@ -40,7 +54,7 @@
           <template slot-scope="scope">
             <ul>
               <li v-for="item in scope.row.moneyTypes">
-                <el-radio v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}
+                <el-radio class="money-type-radio" v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}
                 </el-radio>
               </li>
             </ul>
@@ -79,7 +93,7 @@
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
             <div class="box box-left">
-              <el-radio v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">
+              <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">
                 {{scope.row.name}}
               </el-radio>
             </div>
@@ -244,6 +258,9 @@
     cardNumber:{
       name:'账户'
     },
+    bankName:{
+      name:'刷卡银行'
+    },
     amount:{
       name:'金额'
     },
@@ -260,6 +277,7 @@
     data() {
       return {
         contId:'',
+        depName:'',
         form: {
           contId: '',
           remark: '',
@@ -306,16 +324,19 @@
         receiptMan: [],
         files:[],
         imgList:[],
-        activeLi:''
+        activeLi:'',
+        employeInfo:true
       }
     },
     created() {
       this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
       this.getMoneyType()
       this.getDictionary()
+      this.remoteMethod()
       this.getAcount()
       this.getDropdown()
       this.getReceiptman()
+      this.getAdmin()
       let type = this.$route.query.edit
       let inAccount = this.$route.query.type
       if (type) {
@@ -324,6 +345,12 @@
       if(inAccount){
         this.activeType=parseInt(inAccount)===4?2:1
       }
+    },
+    mounted(){
+      this.$nextTick(()=>{
+        // debugger
+        this.employeScroll=this.$refs.employe.$refs.scrollbar.$refs.wrap
+      })
     },
     methods: {
       clearData:function () {
@@ -344,6 +371,21 @@
           arr.push(item.path)
         })
         this.fileSign(arr)
+      },
+      //收款人下拉选项操作
+      clearDep:function () {
+        this.depName=''
+        this.EmployeList=[]
+        this.form.inObjId=''
+        this.form.inObj=''
+      },
+      handleNodeClick(data) {
+        this.getEmploye(data.depId)
+        this.clearDep()
+        this.depName=data.name
+        if(data.subs.length===0){
+          this.$refs.tree.blur()
+        }
       },
       /**
        * 修改款单，获取初始数据
@@ -450,7 +492,7 @@
                   }
                 }).catch(error=>{
                   this.$message({
-                    message:`${index>0?`刷卡资料补充第${index+1}行数据填写不全`:''}  ${error.title}${error.msg}`
+                    message:error.title==='刷卡银行'?'银行卡号输入有误':`${index>0?`刷卡资料补充第${index+1}行数据填写不全`:''}  ${error.title}${error.msg}`
                   })
                   return true
                 })
@@ -562,7 +604,7 @@
        */
       getOption: function (item, type) {
         let obj = {}
-        let list = type === 1 ? this.dropdown : this.receiptMan
+        let list = type === 1 ? this.dropdown : this.EmployeList
         list.find(tip => {
           if (tip[type === 1 ? 'value' : 'empId'] === item) {
             if (type === 1) {
@@ -574,6 +616,7 @@
             return
           }
         })
+        console.log(this.employeScroll.scrollTop)
 
         this.form = Object.assign({}, this.form, obj)
       },
@@ -602,11 +645,15 @@
         let param = {
           cardNumber: row.cardNumber
         }
+        if(param.cardNumber.length>20){
+          row.cardNumber = row.cardNumber.substr(0,20)
+          return
+        }
         if (param.cardNumber.length >= 16) {
           this.$ajax.get('/api/system/selectBankNameByCard', param).then(res => {
             res = res.data
             if (res.status === 200) {
-              this.cardList[index].bankName = res.data.bankName
+              this.cardList[index].bankName = res.data.bankName?res.data.bankName:''
             }
           })
         }
@@ -643,6 +690,16 @@
             fee: ''
           })
         }
+      },
+      userMsg:function (val) {
+        this.depName=val.depName
+        this.getEmploye(val.depId)
+        this.form.inObjId=val.empId
+        this.form.inObj=val.name
+      },
+      employeScroll:function (val) {
+        // debugger
+        console.log(val.clientHeight)
       }
     }
   }

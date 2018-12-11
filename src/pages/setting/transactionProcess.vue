@@ -290,10 +290,12 @@
             if(i.stepsTypeName === v.typeName) {
               v.tempList.push(i.stepsName)
             }
-            if(v.tempList.length === v.stepsList.length) {
-              v.stepsSelect = true
-            } else {
-              v.stepsSelect = false
+            if(v.tempList.length) {
+              if(v.tempList.length === v.stepsList.length) {
+                v.stepsSelect = true
+              } else {
+                v.stepsSelect = false
+              }
             }
           })
         })

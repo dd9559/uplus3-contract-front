@@ -38,8 +38,8 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
-            <el-option class="drop-tree" value="">
+          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @focus="tree=true" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+            <el-option class="drop-tree" value="" v-show="tree">
               <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
             </el-option>
           </el-select>
@@ -109,7 +109,7 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -297,7 +297,8 @@
         layer:{
           show:false,
           content:[]
-        }
+        },
+        treeShow:true
       }
     },
     created() {
@@ -328,6 +329,9 @@
         this.getEmploye(data.depId)
         this.searchForm.depId=data.depId
         this.searchForm.depName=data.name
+        if(data.subs.length===0){
+          this.$refs.tree.blur()
+        }
       },
       getData: function () {
         let param = JSON.parse(JSON.stringify(this.searchForm))
@@ -499,10 +503,8 @@
         }else{
           if(val.type===2){
             return '--'
-          }else if(val.billStatus.value===1||val.billStatus.value===4){
-            return val.billStatus.label
           }else {
-            return '--'
+            return val.billStatus.label
           }
         }
       }
