@@ -624,7 +624,6 @@
             return
           }
         })
-        console.log(this.employeScroll.scrollTop)
 
         this.form = Object.assign({}, this.form, obj)
       },
