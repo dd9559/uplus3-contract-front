@@ -170,7 +170,7 @@
                     res = res.data
                     if(res.status === 200){
                         let url = res.data;
-                        this.$ajax.get("/access/generateAccessURL",{
+                        this.$ajax.get("/api/load/generateAccessURL",{
                             url
                         }).then(res=>{
                             res = res.data
@@ -221,6 +221,7 @@
                 this.paperType = bool;
                 this.loading = true;
                 this.paperShow = true;
+                this.FooterShow = false;
                 // this.pdfUrl= ""
                 this.ID = id
                 if (bool) {

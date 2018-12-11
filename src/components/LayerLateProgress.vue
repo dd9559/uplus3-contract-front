@@ -55,7 +55,7 @@
                     </el-table-column>
                     <el-table-column label="操作" min-width="120px" align="center">
                         <template slot-scope="scope">
-                            <el-button v-if="scope.row.stepState.value === OPERATION.start" @click="operationFn(scope.row.id)" class="blue" type="text">查看</el-button>
+                            <el-button v-if="operationBoolFn(scope.row)" @click="operationFn(scope.row.id)" class="blue" type="text">查看</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -168,6 +168,17 @@
             }
         },
         methods: {
+            operationBoolFn(row){
+                if(!row.stepState){
+                    return false
+                }
+                let val = row.stepState.value;
+                if( val === OPERATION.start || val === OPERATION.sure || val === OPERATION.amend){
+                    return true
+                }else{
+                    return false
+                }
+            },
             // 时间处理
             dateFormat(val) {
                 return TOOL.dateFormat(val);
