@@ -148,7 +148,6 @@
             return 'linestyle'
        },
       getAdd(type,obj){
-        // console.log(obj[0].param,'ob1');
         if(type=='mmai'){
            this.mmaiAddress=obj[0].param[obj[0].param.length-1];
         }else if(type=='jjian'){
@@ -265,7 +264,6 @@
        * @param row
        */
       getRowDetails: function (row, column, cell, event) {
-          // alert(this.bigId)
           this.rowenableId=row.enableTemplateId;
           this.bigId=row.id
           this.$ajax.get('/api/setting/contractTemplate/listByType', {id: row.id,cityName:row.cityName}).then(res => {
@@ -302,7 +300,6 @@
               enableTemplateId:showType==2?row.id:row.enableTemplateId,
               show:2
             }
-           
           });
         }
       }

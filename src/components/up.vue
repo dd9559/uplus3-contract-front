@@ -76,7 +76,6 @@
                   path:`${result.host}/${result.key}${get_suffix(file.name)}`,
                   name:file.name
                 })
-                console.log(that.filePath)
                 that.$emit('getUrl',{param:that.filePath,btnId:that.getId})
                 that.uploader.splice(0,1)
               }
