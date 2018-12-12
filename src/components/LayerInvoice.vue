@@ -56,7 +56,7 @@
                 :moneyZh="paperInfoData.amountZh"
                 :create="paperInfoData.createByName"
                 :rules="paperInfoData.remark"
-                :imgSrc="getImgFn(paperInfoData.signImg)"
+                :imgSrc="imgUrl"
                 :payerType="paperInfoData.payerType"></LayerPaperInfo>
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
@@ -92,22 +92,24 @@
                 loading:false,
                 pdfLoading:false,
                 pdfUrl:'',
+                imgUrl:'',
             }
         },
         methods: {
             // 图片请求
             getImgFn(url){
                 if(!!url){
-                    return (this.$ajax.get('/api/load/generateAccessURL',{
+                    url = url.split('?')[0];
+                    this.$ajax.get('/api/load/generateAccessURL',{
                         url
                     }).then(res=>{
                         res = res.data;
                         if(res.status === 200){
-                            return res.data.url
+                            this.imgUrl = res.data.url
                         }
                     }).catch(err=>{
                         this.$message.error(err);
-                    }))
+                    })
                 }
             },
             // 弹层关闭
@@ -127,7 +129,7 @@
                         // this.paperShow = true
                         this.loading = false;
                         this.FooterShow = true;
-                        // this.printPaper();
+                        this.printPaper();
                     }
                 }).catch(err=>{
                     this.$message.error(err);
@@ -162,7 +164,7 @@
                     }
                 })
                 this.paperInfoData = Object.assign({}, this.paperInfoData, obj)
-                // this.printPaper();
+                this.printPaper();
             },
             // 票据详情 打印
             printPaper() {
@@ -185,7 +187,6 @@
                 this.$ajax.post('/api/bills/print', obj).then(res => {
                     res = res.data
                     if(res.status === 200){
-                        debugger
                         let url = res.data;
                         this.$ajax.get("/api/load/generateAccessURL",{
                             url
@@ -193,7 +194,7 @@
                             res = res.data
                             if(res.status ===200){
                                 this.pdfUrl = res.data.url;
-                                this.$refs.pdfPrint.print();
+                                // this.$refs.pdfPrint.print();
                             }
                             this.pdfLoading = false;
                         }).catch(err=>{
@@ -259,6 +260,11 @@
             // 枚举类型数据获取
             this.getDictionary();
         },
+        watch:{
+            paperInfoData(n,old){
+                this.getImgFn(n.signImg)
+            }
+        }
     }
 </script>
 
