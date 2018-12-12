@@ -47,7 +47,7 @@
     <!-- 数据列表 -->
     <div class="contract-list">  
       <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
-      <el-table :data="tableData.list" style="width: 100%" v-loading="loadingTable">
+      <el-table :data="tableData.list" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail'>
         <el-table-column label="合同编号" width="150" fixed>
           <template slot-scope="scope">
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</div>
@@ -170,10 +170,6 @@
             <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
             <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
           </div>
-          <!-- <div class="textareabox">
-            <span class="tit">金融服务费：</span>
-            <el-input maxlength="9" :disabled="true"><i slot="suffix" class="i-slot">元（成本）</i></el-input>
-          </div> -->
         </div>
 
         <!-- 表格 -->
@@ -227,6 +223,75 @@
         <el-button type="primary" class="recept"  @click="receptFn()">通 过</el-button>  
       </div> 
     </el-dialog>
+
+    <!-- 结算详情 -->
+    <el-dialog title="结算详情" :visible.sync="dialogVisible2" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
+      <div class="audit-box"  :style="{ height: clientHeight() }">
+        <div class="audit-col">
+          <div class="col-li col-li2">
+            <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
+            <p>发起日期：<span>{{layerAudit.createTime | getDate}}</span></p>
+            <p>发起人：<span>{{layerAudit.sponsorStoreName + '-' + layerAudit.sponsorName}}</span></p>
+            
+          </div>
+          <div class="col-li">
+            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
+           
+          </div>
+          <div class="col-li col-li2">
+            <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
+            <p>后期状态：<span>{{layerAudit.statusLaterStage.label}}</span></p>
+            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
+            
+            
+          </div>
+          <div class="col-li col-li2">
+            <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
+            <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
+            <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
+          </div>
+        </div>
+
+        <!-- 表格 -->
+        <div class="audit-col">
+          <el-table :data="layerAudit.settlementFroms" border style="width: 100%" class="table">
+            <el-table-column prop="level4" label="合作门店"></el-table-column>
+            <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
+            <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
+            <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
+          </el-table> 
+          <div class="zhushi">注：结算中的当期实收分成金额包含扣除的特许服务费，具体请结算通过后在分账记录列表中查看</div>           
+        </div>
+
+        <!-- 上传附件 -->
+        <div class="audit-col">
+          <div class="uploadfile">
+              <div class="uploadtitle">结算凭证</div>
+              <ul class="ulData">
+                <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                  <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                    <div class="namePath">
+                        <upload-cell :type="item.fileType"></upload-cell>
+                        <p>{{item.name}}</p>
+                    </div>
+                  </el-tooltip>
+                  <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                </li>
+            </ul>
+          </div>     
+        </div>
+
+        <!-- 结算备注 -->
+        <div class="audit-col">
+          <div class="textareabox2 mt0">
+            <span><em>*</em>结算备注</span>
+            <el-input type="textarea" :rows="6" class="textarea" maxlength=200 v-model="layerAudit.settlementRemarks" :disabled="true"></el-input>
+          </div>
+        </div>
+      </div>
+     
+    </el-dialog>
+
 
   </div>
 </template>
@@ -307,10 +372,8 @@
         // 弹框里用到的
         dialogImageUrl: '',
         dialogVisible: false,
-      
-        
-       
-        
+        dialogVisible2: false,
+             
         tableData:[],
 
         // 分页
@@ -479,6 +542,28 @@
                 message: error
               })
           })
+      },
+
+      // 双击详情事件
+      toDetail(e){
+        this.dialogVisible2 = true
+        let param = {
+          id: e.id,
+        }
+        this.$ajax.get("/api/settlement/applyExamineById", param)
+        .then(res => {
+          let data = res.data;
+          if (res.data.status === 200) {
+            console.log(data.data)
+            this.layerAudit = data.data;
+            this.myCheckId = data.data.id; //结算id
+            this.uploadList = data.data.vouchers;
+          }
+        }).catch(error => {
+            this.$message({
+             message: error
+            })
+        });
       },
 
       // 点击审核事件

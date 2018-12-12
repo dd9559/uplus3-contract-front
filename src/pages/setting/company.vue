@@ -94,6 +94,7 @@
     <!-- 添加和编辑公司信息 弹出框 -->
     <el-dialog
     :closeOnClickModal="$tool.closeOnClickModal"
+    :close-on-press-escape="$tool.closeOnClickModal"
     :title="companyFormTitle"
     :visible.sync="AddEditVisible"
     width="1000px"
@@ -178,28 +179,28 @@
               <el-table-column width="260px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model="companyBankList[scope.$index].bankAccountName" :disabled="directSaleSelect"></el-input>
+                    <el-input size="mini" maxlength="15" v-model="companyBankList[scope.$index].bankAccountName" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" type="number" oninput="if(value.length>19)value=value.slice(0,19)" v-model="companyBankList[scope.$index].bankCard" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+                    <el-input size="mini" type="number" oninput="if(value.length>19)value=value.slice(0,19)" v-model="companyBankList[scope.$index].bankCard" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="" width="365px">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="directSaleSelect"></el-input>
+                    <el-input size="mini" v-model="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column label="" width="65px">
                 <template slot-scope="scope">
-                  <span @click="addRow" class="button" :class="{'direct-sale':directSaleSelect}"><i class="icon el-icon-plus"></i></span>
-                  <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':directSaleSelect}"><i class="icon el-icon-minus"></i></span>
+                  <span @click="addRow" class="button"><i class="icon el-icon-plus"></i></span>
+                  <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':scope.$index<directInfo.companyBankList.length}"><i class="icon el-icon-minus"></i></span>
                 </template>
               </el-table-column>
             </el-table>
@@ -245,6 +246,7 @@
     <!-- 查看 弹出框 -->
     <el-dialog
     :closeOnClickModal="$tool.closeOnClickModal"
+    :close-on-press-escape="$tool.closeOnClickModal"
     title="详情信息"
     :visible.sync="dialogViewVisible"
     width="740px"
@@ -522,7 +524,7 @@
             this.icRegisterShow = false
           }
           this.documentCard = this.directInfo.documentCard
-          this.companyBankList = this.directInfo.companyBankList
+          this.companyBankList = [...this.directInfo.companyBankList]
         } else {
           this.directSaleSelect = false
           for(let key in this.companyForm)
@@ -738,10 +740,8 @@
       },
       validPhone() {
         let val = this.companyForm.lepPhone
-        if(val) {
-          if(!checkPhoneVlidate(val)) {
-            this.$message('手机号码不正确')
-          }
+        if(!checkPhoneVlidate(val)) {
+          this.$message('手机号码不正确')
         }
       },
       idTypeChange() {
@@ -804,7 +804,7 @@
 }
 .dialog-info {
   .company-info {
-    padding: 30px 20px;
+    padding: 20px 20px;
     /deep/ .el-form-item__label::before {
       content: "*";
       color: red;
@@ -841,7 +841,7 @@
           justify-content: space-between;
           > .el-form-item {
             display: flex;
-            margin-bottom: 5px;
+            margin-bottom: 0;
             /deep/ .el-input {
               .el-input__inner {
                 height: 32px!important;
@@ -925,7 +925,7 @@
             .el-form-item {
               box-sizing: border-box;
               .el-input {
-                width: 300px;
+                width: 295px;
               }
             }
           }
@@ -947,7 +947,6 @@
         > .stamp {
           display: inline-block;
           flex: 1;
-          margin-top: 20px;
           > span {
             color:rgba(35,50,65,1);
           }

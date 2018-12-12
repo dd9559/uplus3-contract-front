@@ -9,11 +9,11 @@
                         <div class="column-title">合同信息</div>
                         <div class="form-cont">
                             <el-form-item label="签约日期：" prop="signDate">
-                                <el-date-picker v-model="contractForm.signDate" type="date" value-format="yyyy/MM/dd" :disabled="type===2?true:false" placeholder="选择日期"></el-date-picker>
+                                <el-date-picker v-model="contractForm.signDate" type="date" value-format="yyyy/MM/dd" :disabled="this.$route.query.operateType==2?true:false" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="合同类型：">
-                                <el-input placeholder="意向金" :disabled="true" v-if="this.$route.query.contType == 4"></el-input>
-                                <el-input placeholder="定金"  :disabled="true" v-if="this.$route.query.contType == 5"></el-input>
+                                <el-input placeholder="意向金" :disabled="true" v-if="this.contractForm.type == 4"></el-input>
+                                <el-input placeholder="定金"  :disabled="true" v-if="this.contractForm.type == 5"></el-input>
                             </el-form-item>
                             
                             <el-form-item label="认购期限：" prop="subscriptionTerm">
@@ -25,7 +25,7 @@
                                 </el-input>
                             </el-form-item>
                             
-                            <el-form-item label="意向金金额：" prop="dealPrice" v-if="this.$route.query.contType == 4">
+                            <el-form-item label="意向金金额：" prop="dealPrice" v-if="this.contractForm.type == 4">
                                 <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
@@ -33,7 +33,7 @@
                                 
                             </el-form-item>
 
-                            <el-form-item label="定金金额：" prop="dealPrice" v-if="this.$route.query.contType == 5">
+                            <el-form-item label="定金金额：" prop="dealPrice" v-if="this.contractForm.type == 5">
                                 <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
@@ -50,7 +50,7 @@
                             <el-form-item>
                                 <el-form-item label="房源编号：" prop="houseno">
                                     <el-button type="primary" @click="toLayerHouse()" v-if="type===1">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</el-button>
-                                    <el-button type="text" v-if="type===2">{{contractForm.houseinfoCode}}</el-button>
+                                    <el-button type="text" v-if="this.$route.query.operateType==2">{{contractForm.houseinfoCode}}</el-button>
                                 </el-form-item>
                                 <el-form-item label="物业地址：" class="ml30">
                                     <div>{{contractForm.houseInfo.EstateName + contractForm.houseInfo.BuildingName + contractForm.houseInfo.Unit + contractForm.houseInfo.RoomNo}}</div>
@@ -58,7 +58,7 @@
                             </el-form-item>
                             
                             <el-form-item label="产证地址：" class="disb">
-                                <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input"></el-input>
+                                <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength=30></el-input>
                             </el-form-item>
 
                             <el-form-item label="房源总价：" class="disb">
@@ -70,10 +70,10 @@
 
                             <el-form-item label="业主信息：" class="disb" required>
                                 <el-form-item prop="ownname">
-                                    <el-input v-model="contractForm.ownname" clearable placeholder="姓名" class="ownwidth" :disabled="type===2?true:false"></el-input>
+                                    <el-input v-model="contractForm.ownname" @input="cutText('ownname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="ownmobile">
-                                    <el-input v-model.number="contractForm.ownmobile" type="number" clearable placeholder="手机号" class="ownwidth" :disabled="type===2?true:false" maxlength=11></el-input>
+                                    <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -86,7 +86,7 @@
                             <el-form-item>
                                 <el-form-item label="客源编号：" prop="guestinfoCode" required>
                                         <el-button type="primary"  @click="toLayerGuest()" v-if="type===1" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</el-button>
-                                        <el-button type="text" v-if="type===2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
+                                        <el-button type="text" v-if="this.$route.query.operateType==2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
                                 </el-form-item>
                                 <el-form-item label="成交经纪人：" required>
                                     <el-form-item prop="guestInfo.GuestStoreName">
@@ -95,7 +95,7 @@
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item prop="guestInfo.EmpName" class="small-input">
-                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" ref="select2" @clear="clearEmpName" @change="changeAgent">
+                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable remote placeholder="请选择经纪人" ref="select2" :remote-method="getEmployee" @change="changeAgent" @clear="clearEmpName">
                                             <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId + ',' + item.name"></el-option>
                                         </el-select>
                                     </el-form-item>
@@ -103,20 +103,20 @@
                             </el-form-item>
                             <el-form-item label="客户信息：" class="disb" required>
                                 <el-form-item prop="custname">
-                                    <el-input v-model="contractForm.custname" clearable placeholder="姓名" class="ownwidth" :disabled="type===2?true:false"></el-input>
+                                    <el-input v-model="contractForm.custname" @input="cutText('custname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custmobile">
-                                    <el-input v-model.number="contractForm.custmobile" clearable placeholder="手机号" type="number" class="ownwidth" :disabled="type===2?true:false" maxlength=11></el-input>
+                                    <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custIdentifyCode" v-if="this.type===1">
                                     <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号"  class="custwidth" maxlength=18></el-input>               
                                 </el-form-item>
-                                <el-form-item v-if="this.type===2">
+                                <el-form-item v-if="this.$route.query.operateType==2">
                                     <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="身份证号" class="custwidth" disabled></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
-                        <div class="form-cont mt30" v-if="this.$route.query.contType == 4">
+                        <div class="form-cont mt30" v-if="this.contractForm.type == 4">
                             <el-form-item label="意向备注：" class="disb textlengthbox">
                                 <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 5}"  placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth" maxlength=200></el-input>
                                 <span class="textLength">{{contractForm.remarks.length}}/200</span>
@@ -126,7 +126,7 @@
                 </div>
                 <div class="form-btn">                   
                         
-                        <el-button type="primary" round @click="dialogSure=true">保 存</el-button>                  
+                        <el-button type="primary" round @click="checkRule('contractForm')">保 存</el-button>                  
                 </div>
             </el-form>
 
@@ -140,7 +140,7 @@
             <span>确定保存合同？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogSure = false">取 消</el-button>
-                <el-button type="primary" @click="onSubmit('contractForm')">确 定</el-button>
+                <el-button type="primary" @click="onSubmit()">确 定</el-button>
             </span>
         </el-dialog>
           
@@ -154,6 +154,12 @@ import { TOOL } from "@/assets/js/common";
 export default {
   data() {
     // 表单正则
+    var checkNull = (rule, value, callback) => {
+      if (!value || value !=='') {
+        return callback(new Error());
+      }
+    };
+
     var checkPrice = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("请输入价格"));
@@ -165,10 +171,11 @@ export default {
         }
       }
     };
+    
 
     //身份证号验证规则
     var idCard = (rule, value, callback) => {
-      let idcard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+      let idcard = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
       if (!value) {
         return callback(new Error("请输入客户身份证号"));
       } else {
@@ -180,7 +187,7 @@ export default {
       }
     };
 
-    //身份证号验证规则
+    //手机号验证规则
     var telPhone = (rule, value, callback) => {
       let myreg = /^[1][0-9]{10}$/;
       if (!value) {
@@ -204,7 +211,7 @@ export default {
       id: "",
 
       contractForm: {
-        type: this.$route.query.contType,
+        type: '',
         signDate: "",
         houseinfoCode: "",
         guestinfoCode: "",
@@ -320,6 +327,20 @@ export default {
   },
 
   methods: {
+    cutText(val) {
+      // console.log(val)
+      if (val === "ownname") {  
+         this.$nextTick(() => {
+           this.contractForm.ownname = this.$tool.textInput(this.contractForm.ownname);
+         })
+        
+      } else if (val === "custname") {
+        this.$nextTick(() => {
+         this.contractForm.custname = this.$tool.textInput(this.contractForm.custname);
+         })
+      }
+    },
+
     cutNumber(val) {
       // console.log(val)
       if (val === "subscriptionPrice") {
@@ -400,6 +421,7 @@ export default {
             this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
           }
+          this.getEmployee()
         })
         .catch(error => {
           this.$message({
@@ -419,7 +441,6 @@ export default {
           res = res.data;
           if (res.status === 200) {
             this.contractForm = res.data;
-            console.log(res.data);
             this.contractForm.signDate = res.data.signDate.substr(0, 10);
             this.contractForm.subscriptionTerm = res.data.subscriptionTerm.substr(
               0,
@@ -467,6 +488,7 @@ export default {
                 ].identifyCode;
               }
             }
+            this.getEmployee()
           }
         })
         .catch(error => {
@@ -491,8 +513,6 @@ export default {
             if (res.data.data.length > 0) {
               this.option2 = res.data.data;
             }
-
-            console.log(this.option2);
           }
         })
         .catch(error => {
@@ -500,6 +520,35 @@ export default {
             message: error
           });
         });
+    },
+
+    //获取经纪人
+    getEmployee() {
+      
+      let id = this.contractForm.guestInfo.GuestStoreCode
+      if(id) {
+        let param = {
+          depId: id
+          
+        };
+        this.$ajax
+          .get("/api/organize/employees", param)
+          .then(res => {
+            if (res.data.status === 200) {
+              this.loading = false;
+
+              if (res.data.data.length > 0) {
+                this.option3 = res.data.data;
+              }
+            }
+          })
+          .catch(error => {
+            this.$message({
+              message: error
+            });
+          });
+      }
+      
     },
 
     changeAgent(val) {
@@ -569,9 +618,20 @@ export default {
       }
     },
 
-    // 新增意向金接口（post）
-    onSubmit(contractForm) {
+    checkRule(contractForm) {
       this.$refs[contractForm].validate(valid => {
+        if (valid) {
+            this.dialogSure = true
+            return true           
+          } else {
+            return false;
+          }
+      });
+    },
+
+    // 新增意向金接口（post）
+    onSubmit() {
+      
         if (this.type === 1) {
           this.contractForm.contPersons[0].name = this.contractForm.ownname;
           this.contractForm.contPersons[0].mobile = this.contractForm.ownmobile;
@@ -580,117 +640,126 @@ export default {
           this.contractForm.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
         }
 
-        if (valid) {
+       
 
-            
-              let param = {
-                igdCont: this.contractForm,
-                type: this.type
-              };
-              if (this.type === 2) {
-                delete param.igdCont.code;
-                delete param.igdCont.contType;
-                delete param.igdCont.recordName;
-                delete param.igdCont.recordDept;
-                delete param.igdCont.custEnsure;
-                delete param.igdCont.custCommission;
-                delete param.igdCont.ownerCommission;
-                delete param.igdCont.commissionPayment;
-                delete param.igdCont.otherCooperationCost;
-                delete param.igdCont.transFlowCode;
-                delete param.igdCont.contChangeState;
-                delete param.igdCont.laterStageState;
-                delete param.igdCont.contState;
-                delete param.igdCont.propertyAddr;
-                delete param.igdCont.propertyCard;
-                delete param.igdCont.timeUnit;
-                delete param.igdCont.moneyUnit;
-                delete param.igdCont.createTime;
-                delete param.igdCont.updateTime;
-                delete param.igdCont.isHavaCooperation;
-                delete param.igdCont.extendParams;
-                delete param.igdCont.otherCooperationInfo;
-                delete param.igdCont.receivableCommission;
-                delete param.igdCont.isHaveData;
-                delete param.igdCont.toExamineState;
-                delete param.igdCont.previewImg;
-                delete param.igdCont.isHaveCooperation;
-                delete param.igdCont.remarksExamine;
-                delete param.igdCont.showCustName;
-                delete param.igdCont.showOwnerName;
-                delete param.igdCont.distributableAchievement;
-                delete param.igdCont.dataType;
-                delete param.igdCont.dealAgentId;
-                delete param.igdCont.dealAgentName;
-                delete param.igdCont.dealAgentStoreId;
-                delete param.igdCont.dealAgentStoreName;
-                delete param.igdCont.contPersons[0].personType;
-                delete param.igdCont.contPersons[0].contractId;
-                delete param.igdCont.contPersons[0].createTime;
-                delete param.igdCont.contPersons[0].isDel;
-                delete param.igdCont.contPersons[0].pid;
-                delete param.igdCont.contPersons[0].propertyRightRatio;
-                delete param.igdCont.contPersons[0].uId;
-                delete param.igdCont.contPersons[0].updateTime;
+           
+        let param = {
+          igdCont: this.contractForm,
+          type: this.type
+        };
+        if (this.$route.query.operateType== 2) {
+          delete param.igdCont.code;
+          delete param.igdCont.contType;
+          delete param.igdCont.recordName;
+          delete param.igdCont.recordDept;
+          delete param.igdCont.custEnsure;
+          delete param.igdCont.custCommission;
+          delete param.igdCont.ownerCommission;
+          delete param.igdCont.commissionPayment;
+          delete param.igdCont.otherCooperationCost;
+          delete param.igdCont.transFlowCode;
+          delete param.igdCont.contChangeState;
+          delete param.igdCont.laterStageState;
+          delete param.igdCont.contState;
+          delete param.igdCont.propertyAddr;
+          delete param.igdCont.propertyCard;
+          delete param.igdCont.timeUnit;
+          delete param.igdCont.moneyUnit;
+          delete param.igdCont.createTime;
+          delete param.igdCont.updateTime;
+          delete param.igdCont.isHavaCooperation;
+          delete param.igdCont.extendParams;
+          delete param.igdCont.otherCooperationInfo;
+          delete param.igdCont.receivableCommission;
+          delete param.igdCont.isHaveData;
+          delete param.igdCont.toExamineState;
+          delete param.igdCont.previewImg;
+          delete param.igdCont.isHaveCooperation;
+          delete param.igdCont.remarksExamine;
+          delete param.igdCont.showCustName;
+          delete param.igdCont.showOwnerName;
+          delete param.igdCont.distributableAchievement;
+          delete param.igdCont.dataType;
+          delete param.igdCont.dealAgentId;
+          delete param.igdCont.dealAgentName;
+          delete param.igdCont.dealAgentStoreId;
+          delete param.igdCont.dealAgentStoreName;
+          delete param.igdCont.contPersons[0].personType;
+          delete param.igdCont.contPersons[0].contractId;
+          delete param.igdCont.contPersons[0].createTime;
+          delete param.igdCont.contPersons[0].isDel;
+          delete param.igdCont.contPersons[0].pid;
+          delete param.igdCont.contPersons[0].propertyRightRatio;
+          delete param.igdCont.contPersons[0].uId;
+          delete param.igdCont.contPersons[0].updateTime;
 
-                delete param.igdCont.contPersons[1].personType;
-                delete param.igdCont.contPersons[1].contractId;
-                delete param.igdCont.contPersons[1].createTime;
-                delete param.igdCont.contPersons[1].isDel;
-                delete param.igdCont.contPersons[1].pid;
-                delete param.igdCont.contPersons[1].propertyRightRatio;
-                delete param.igdCont.contPersons[1].uId;
-                delete param.igdCont.contPersons[1].updateTime;
-              }
-              delete param.igdCont.ownname;
-              delete param.igdCont.ownmobile;
-              delete param.igdCont.custname;
-              delete param.igdCont.custmobile;
-              delete param.igdCont.custIdentifyCode;
-
-              this.$ajax
-                .postJSON("/api/contract/editIgdCont", param)
-                .then(res => {
-                  let tips = res.data.message;
-
-                  if (res.data.status === 200) {
-                    this.$message({
-                      type: "success",
-                      message: "已保存!"
-                    });
-                    this.$router.push({
-                      path: "/contractList"
-                      // query:{
-                      //     id: this.id
-                      // }
-                    });
-                  } else {
-                    this.$message.error(tips);
-                  }
-                })
-                .catch(error => {
-                  this.$message({
-                    message: error
-                  });
-                });
-            
-        } else {
-          return false;
+          delete param.igdCont.contPersons[1].personType;
+          delete param.igdCont.contPersons[1].contractId;
+          delete param.igdCont.contPersons[1].createTime;
+          delete param.igdCont.contPersons[1].isDel;
+          delete param.igdCont.contPersons[1].pid;
+          delete param.igdCont.contPersons[1].propertyRightRatio;
+          delete param.igdCont.contPersons[1].uId;
+          delete param.igdCont.contPersons[1].updateTime;
         }
-      });
+        delete param.igdCont.ownname;
+        delete param.igdCont.ownmobile;
+        delete param.igdCont.custname;
+        delete param.igdCont.custmobile;
+        delete param.igdCont.custIdentifyCode;
+
+        this.$ajax
+          .postJSON("/api/contract/editIgdCont", param)
+          .then(res => {
+            let tips = res.data.message;
+
+            if (res.data.status === 200) {
+              this.$message({
+                type: "success",
+                message: "已保存!"
+              });
+              this.$router.push({
+                path: "/contractList"
+                // query:{
+                //     id: this.id
+                // }
+              });
+            } else {
+              this.$message.error(tips);
+            }
+          })
+          .catch(error => {
+            this.$message({
+              message: error
+            });
+          });
+            
+       
+      
     }
   },
   created() {
     this.getShopList();
-
+    this.contractForm.type = this.$route.query.contType //区分合同类型
+   
+    //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType
     if (this.$route.query.operateType) {
-      this.type = this.$route.query.operateType;
-      if (this.type === 2) {
-        this.getShopList();
+       this.type = this.$route.query.operateType
+      if(this.$route.query.operateType ==2 ){
+        this.type = this.$route.query.operateType;
         this.id = this.$route.query.id;
         this.getContractDetail();
       }
     }
+
+
+    if(this.$route.query.contType) {
+       if(this.$route.query.contType == 4 || this.$route.query.contType == 5){
+         
+        //  this.contractForm.type = this.$route.query.contType
+       }
+    }
+
   }
 };
 </script>
