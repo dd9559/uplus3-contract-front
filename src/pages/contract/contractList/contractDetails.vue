@@ -940,6 +940,7 @@ export default {
         this.$ajax.post('/api/contract/invalid', param).then(res=>{
           res=res.data;
           if(res.status===200){
+            this.getContractDetail();
             this.dialogInvalid=false;
             this.$message({
               message:'操作成功'

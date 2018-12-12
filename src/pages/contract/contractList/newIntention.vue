@@ -58,7 +58,7 @@
                             </el-form-item>
                             
                             <el-form-item label="产证地址：" class="disb">
-                                <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input"></el-input>
+                                <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength=30></el-input>
                             </el-form-item>
 
                             <el-form-item label="房源总价：" class="disb">
@@ -95,7 +95,7 @@
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item prop="guestInfo.EmpName" class="small-input">
-                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable placeholder="请选择经纪人" ref="select2" @clear="clearEmpName" @change="changeAgent">
+                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable remote placeholder="请选择经纪人" ref="select2" :remote-method="getEmployee" @change="changeAgent" @clear="clearEmpName">
                                             <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId + ',' + item.name"></el-option>
                                         </el-select>
                                     </el-form-item>
@@ -400,6 +400,7 @@ export default {
             this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
           }
+          this.getEmployee()
         })
         .catch(error => {
           this.$message({
@@ -467,6 +468,7 @@ export default {
                 ].identifyCode;
               }
             }
+            this.getEmployee()
           }
         })
         .catch(error => {
@@ -500,6 +502,36 @@ export default {
             message: error
           });
         });
+    },
+
+    //获取经纪人
+    getEmployee() {
+      
+      let id = this.contractForm.guestInfo.GuestStoreCode
+      if(id) {
+        let param = {
+          depId: id
+          
+        };
+        console.log(id)
+        this.$ajax
+          .get("/api/organize/employees", param)
+          .then(res => {
+            if (res.data.status === 200) {
+              this.loading = false;
+
+              if (res.data.data.length > 0) {
+                this.option3 = res.data.data;
+              }
+            }
+          })
+          .catch(error => {
+            this.$message({
+              message: error
+            });
+          });
+      }
+      
     },
 
     changeAgent(val) {
@@ -682,15 +714,19 @@ export default {
   },
   created() {
     this.getShopList();
-
+    console.log(this.type)
+    console.log(this.$route.query.operateType)
+    //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType
     if (this.$route.query.operateType) {
-      this.type = this.$route.query.operateType;
-      if (this.type === 2) {
-        this.getShopList();
+      if(this.$route.query.operateType ==2 ){
+        this.type = this.$route.query.operateType;
         this.id = this.$route.query.id;
         this.getContractDetail();
+        console.log(this.type)
+      console.log(this.$route.query.operateType)
       }
     }
+
   }
 };
 </script>

@@ -14,9 +14,9 @@
         <el-button round :type="examineState<0?'primary':''" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="isSubmitAudit=true">{{subCheck}}</el-button>
         <el-button round type="primary" style="width:100px" v-if="contState===3&&contChangeState!=2&&contChangeState!=1" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger" style="width:100px" v-if="contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
-        <el-button round style="width:100px" @click="signature(3)" :disabled="iSsignature" v-if="examineState===1&&contState===1">签章打印</el-button>
-        <el-button round style="width:100px" @click="signature(2)" v-if="examineState===1&&contState===2">签章打印</el-button>
-        <!-- <el-button @click="dayin">打印</el-button> -->
+        <el-button round style="width:100px" @click="signature(3)" :disabled="iSsignature" v-if="examineState===1&&contState===1">签章</el-button>
+        <!-- <el-button round style="width:100px" @click="signature(2)" v-if="examineState===1&&contState===2">签章打印</el-button> -->
+        <el-button @click="dayin" v-if="examineState===1&&contState===2">打印</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0">审核</el-button>
       </div>
       <div class="btn" v-else>
@@ -77,7 +77,7 @@
         <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint> -->
+    <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
   </div>
 </template>
            
@@ -231,7 +231,7 @@ export default {
                 });
                 this.iSsignature=false;
                 let pdfUrl=res.data;
-                // this.getUrl(pdfUrl);
+                this.getUrl(pdfUrl);
                 this.getContImg();
               }
             })
@@ -251,34 +251,19 @@ export default {
           id:this.id,
           type:value
         }
-        this.iSsignature=true;
+        // this.iSsignature=true;
         this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
-            this.$message({
-              message:'操作成功'
-            });
+            // this.$message({
+            //   message:'操作成功'
+            // });
             let pdfUrl=res.data;
-            // this.getUrl(pdfUrl);
-            this.iSsignature=false
+            this.getUrl(pdfUrl);
+            // this.iSsignature=false
           }
         })
       }
-      // let param = {
-      //   id:this.id,
-      //   type:value
-      // }
-      // this.iSsignature=true
-      // this.$ajax.post('/api/contract/signture', param).then(res=>{
-      //   res=res.data;
-      //   if(res.status===200){
-      //     this.$message({
-      //       message:'操作成功'
-      //     });
-      //     this.iSsignature=false
-      //     this.getContImg();
-      //   }
-      // })
     },
     dayin(){
       this.$refs.pdfPrint.print();
@@ -357,6 +342,9 @@ export default {
       this.$ajax.get('/api/contract/preview', param).then(res=>{
         res=res.data;
         if(res.status===200){
+          if(res.data.contState.value===2){
+            this.signature(2)
+          }
           this.examineState=res.data.examineState.value;
           this.contState=res.data.contState.value;
           this.contType=res.data.contType.value;
@@ -467,6 +455,7 @@ export default {
         this.$ajax.post('/api/contract/invalid', param).then(res=>{
           res=res.data;
           if(res.status===200){
+            this.getContImg();
             this.dialogInvalid=false;
             this.$message({
               message:'操作成功'

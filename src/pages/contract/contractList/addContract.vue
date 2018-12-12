@@ -130,7 +130,7 @@
             <ul class="peopleMsg">
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="6" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                  <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'owner')" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyMobile(item.mobile)">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
@@ -182,7 +182,7 @@
             <ul class="peopleMsg">
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="6" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
+                  <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'guest')"  class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"  @input="verifyMobile(item.mobile)">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
@@ -209,7 +209,6 @@
         <div class="cooperation">
           <div v-show="cooperation">
             <el-form-item label="扣合作费：" class="width-250">
-              <!-- <el-input v-model="contractForm.otherCooperationCost" placeholder="请输入内容" style="width:140px"></el-input> -->
               <input type="text" v-model="contractForm.otherCooperationCost" @input="cutNumber('otherCooperationCost')" placeholder="请输入内容" class="dealPrice">
               <i class="yuan">元</i>
             </el-form-item>
@@ -221,7 +220,8 @@
             </el-form-item>
             <br>
             <el-form-item label="合作方姓名：" class="width-250">
-              <el-input v-model="contractForm.otherCooperationInfo.name" maxlength="6" placeholder="请输入姓名" style="width:140px"></el-input>
+              <!-- <el-input v-model="contractForm.otherCooperationInfo.name" maxlength="6" placeholder="请输入姓名" style="width:140px"></el-input> -->
+              <input type="text" v-model="contractForm.otherCooperationInfo.name" maxlength="6" @input="inputOnly(999,'other')" placeholder="请输入姓名" class="dealPrice">
             </el-form-item>
             <el-form-item label="联系方式：" class="width-250">
               <el-input v-model="contractForm.otherCooperationInfo.mobile" type="tel" maxlength="11" placeholder="请输入手机号" style="width:140px" @input="verifyMobile(contractForm.otherCooperationInfo.mobile)"></el-input>
@@ -231,7 +231,7 @@
             </el-form-item>
             <br>
             <el-form-item label="备注：" style="padding-left:51px">
-              <el-input type="textarea" :rows="6"  resize='none' v-model="contractForm.otherCooperationInfo.remarks" placeholder="无备注内容"></el-input>
+              <el-input type="textarea" :rows="6" maxlength="200" resize='none' v-model="contractForm.otherCooperationInfo.remarks" placeholder="无备注内容"></el-input>
             </el-form-item>
           </div>
         </div>
@@ -1059,14 +1059,19 @@ export default {
       if(id){
         let param = {
           depId: id,
-          briefInfo:false,
-          roleId:2
+          type:1
         };
-        this.$ajax.get('/api/organize/employees', param).then(res=>{
+        this.$ajax.get('/api/organize/dep/manager', param).then(res=>{
           res=res.data  
           if(res.status===200){
-            this.contractForm.houseInfo.ShopOwnerName=res.data[0].name;
-            this.contractForm.houseInfo.ShopOwnerMobile=res.data[0].mobile;
+            if(res.data){
+              this.contractForm.houseInfo.ShopOwnerName=res.data.name;
+              this.contractForm.houseInfo.ShopOwnerMobile=res.data.mobile;
+            }else{
+              this.$message({
+                message:'该门店没有店长'
+              })
+            }
           }
         })
       }
@@ -1082,14 +1087,19 @@ export default {
       if(id){
         let param = {
           depId: id,
-          briefInfo:false,
-          roleId:2
+          type:1
         };
-        this.$ajax.get('/api/organize/employees', param).then(res=>{
+        this.$ajax.get('/api/organize/dep/manager', param).then(res=>{
           res=res.data
           if(res.status===200){
-            this.contractForm.guestInfo.ShopOwnerName=res.data[0].name;
-            this.contractForm.guestInfo.ShopOwnerMobile=res.data[0].mobile;
+            if(res.data){
+              this.contractForm.guestInfo.ShopOwnerName=res.data.name;
+              this.contractForm.guestInfo.ShopOwnerMobile=res.data.mobile;
+            }else{
+              this.$message({
+                message:'该门店没有店长'
+              })
+            }
           }
         })
       }
@@ -1209,7 +1219,17 @@ export default {
       }else if(type==='owner'){
         this.ownerList[index].propertyRightRatio=this.$tool.cutFloat({val:this.ownerList[index].propertyRightRatio,max:100})
       }
+    },
+    inputOnly(index,type){
+      if(type==='owner'){
+        this.ownerList[index].name=this.$tool.textInput(this.ownerList[index].name)
+      }else if(type==='guest'){
+        this.guestList[index].name=this.$tool.textInput(this.guestList[index].name)
+      }else if(type==='other'){
+        this.contractForm.otherCooperationInfo.name=this.$tool.textInput(this.contractForm.otherCooperationInfo.name)
+      }
     }
+      
   },
   filters: {
     moneyFormat: function(val) {
@@ -1302,6 +1322,7 @@ export default {
     font-weight: bold;
   }
   .thirdParty {
+    cursor: pointer;
     display: inline-block;
     .attention {
       color: #ccc;
