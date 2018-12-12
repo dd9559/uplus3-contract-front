@@ -117,7 +117,7 @@
       <div class="table-tool">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button class="btn-info" round size="small" type="primary">导出</el-button>
+          <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
         </p>
       </div>
       <el-table ref="dataList" border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
@@ -165,16 +165,19 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="状态" prop="payStatus"></el-table-column>
-        <el-table-column align="center" label="结算信息">
+        <el-table-column align="center" label="结算信息" v-if="activeView===1">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="票据状态" prop="billStatus.label"></el-table-column>
+        <el-table-column align="center" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
         <el-table-column align="center" label="操作" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="cellOpera(scope.row)">审核</el-button>
-            <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="!scope.row.auditBy">作废</el-button>
+            <template v-if="scope.row.payStatus==='审核中'">
+              <el-button type="text" @click="cellOpera(scope.row)">审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row,'del')">作废</el-button>
+            </template>
+            <span v-else>--</span>
           </template>
         </el-table-column>
       </el-table>
@@ -281,6 +284,11 @@
       next()
     },
     methods: {
+      getExcel:function () {
+        this.$ajax.post('/api/postSigning/getExcel').then(res=>{
+          debugger
+        })
+      },
       /**
        * 列表横行滚动
        */

@@ -147,7 +147,7 @@
         <div class="input-group">
           <label>付款凭证:</label>
           <ul class="image-list" v-if="files.length>0">
-            <li class="margin-right" v-for="item in files" @click="previewImg">
+            <li class="margin-right" v-for="(item,index) in files" :key="index" @click="previewPhoto(files,index)">
               <upload-cell :type="item.type"></upload-cell>
               <span>{{item.name}}</span>
             </li>

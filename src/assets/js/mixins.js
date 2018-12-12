@@ -99,6 +99,7 @@ const MIXINS = {
      * @param {点击第几张图片} i
      */
     previewPhoto(arr,i){
+      // debugger
         let type = this.$tool.get_suffix(arr[i].path)
         if(this.imgBoolFn(type)){
             // 图片 和 视频 预览
@@ -119,7 +120,7 @@ const MIXINS = {
             }).then(res=>{
               res = res.data;
               if(res.status === 200){
-                let a = document.createElement('a');
+                var a = document.createElement('a');
                 a.download = undefined;
                 a.href = res.data.url;
                 a.click();

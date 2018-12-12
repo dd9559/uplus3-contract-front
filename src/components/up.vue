@@ -1,5 +1,7 @@
 <template>
-  <div :id="getId"><slot></slot></div>
+  <div :id="getParentId">
+    <div :id="getId"><slot></slot></div>
+  </div>
 </template>
 
 <script>
@@ -11,6 +13,10 @@
       id:{
         type:String,
         default:'selectfiles'
+      },
+      pId:{
+        type:String,
+        default:'container'
       },
       rules:{
         type:Array,
@@ -34,6 +40,7 @@
           runtimes: 'html5,flash,silverlight,html4',
           browse_button: that.getId, //选择文件按钮
           multi_selection: false,
+          drop_element:document.getElementById(this.getParentId),
           flash_swf_url: 'lib/plupload-2.1.2/js/Moxie.swf',
           silverlight_xap_url: 'lib/plupload-2.1.2/js/Moxie.xap',
           url: 'http://oss.aliyuncs.com',
@@ -148,6 +155,9 @@
       getId:function () {
         // debugger
         return this.id
+      },
+      getParentId:function () {
+        return this.pId
       }
     }
   }
