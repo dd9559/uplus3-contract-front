@@ -3,7 +3,7 @@
     <div class="dialog1">
       <el-dialog
         :visible.sync="shows"
-        :before-close="handleClose"
+        @closed="handleClose"
         :close-on-click-modal="false"
         custom-class="base-dialog"
       >
@@ -27,7 +27,7 @@
             <div class="house-left f_l">
               <h1 class="f14">房源方分成</h1>
             </div>
-            <div class="house-right f_r">
+            <div class="house-right f_r" v-if="!backAId">
               <el-button type="primary" @click="houseRelativeMans">相关人员</el-button>
               <el-button type="primary" @click="addMansHouse">添加分配人</el-button>
             </div>
@@ -177,7 +177,7 @@
             <div class="house-left f_l">
               <h1 class="f14">客源方分成</h1>
             </div>
-            <div class="house-right f_r">
+            <div class="house-right f_r" v-if="!backAId">
               <el-button type="primary" @click="clientRelativeMans">相关人员</el-button>
               <el-button type="primary" @click="addMansClient">添加分配人</el-button>
             </div>
@@ -330,16 +330,16 @@
             <el-input type="textarea" :rows="2" placeholder="请输入内容" class="f_l" v-model="remark"></el-input>
           </p>
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="passAch" class="color-green">通过</el-button>
-            <el-button type="primary" round @click="rejectAch" class="color-red">驳回</el-button>
+            <el-button type="primary" round @click="passAch" class="color-green"  v-dbClick>通过</el-button>
+            <el-button type="primary" round @click="rejectAch" class="color-red"  v-dbClick>驳回</el-button>
           </div>
         </div>
 
         <!-- 业绩编辑底部 -->
         <div class="ach-footer" v-if="dialogType==1">
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="keepAch(2,2)" class="color-white">保存</el-button>
-            <el-button type="primary" round @click="keepAch(2,1)" class="color-blue">保存并提审</el-button>
+            <el-button type="primary" round @click="keepAch(2,2)" class="color-white"  v-dbClick>保存</el-button>
+            <el-button type="primary" round @click="keepAch(2,1)" class="color-blue"   v-dbClick>保存并提审</el-button>
           </div>
         </div>
         <!-- 业绩反审核底部 -->
@@ -359,6 +359,7 @@
               @click="keepAch(1)"
               class="color-blue"
               style="margin-top:20px;"
+              v-dbClick
             >保存</el-button>
           </div>
         </div>
@@ -366,8 +367,8 @@
         <!-- 业绩分成底部      -->
         <div class="ach-footer" v-if="dialogType==3&&!backAId">
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click=" keepAchDivide(2)" class="color-white">保存</el-button>
-            <el-button type="primary" round @click=" keepAchDivide(1)" class="color-blue">保存并提审</el-button>
+            <el-button type="primary" round @click=" keepAchDivide(2)" class="color-white"  v-dbClick>保存</el-button>
+            <el-button type="primary" round @click=" keepAchDivide(1)" class="color-blue"   v-dbClick>保存并提审</el-button>
           </div>
         </div>
 
@@ -409,7 +410,7 @@
 
             <div class="dialog2-btn f_r">
               <el-button type="primary" round @click="showTips = false">取消</el-button>
-              <el-button type="primary" round @click="manSure(type)">确定</el-button>
+              <el-button type="primary" round @click="manSure(type)" v-dbClick>确定</el-button>
             </div>
           </el-dialog>
         </div>
@@ -581,12 +582,12 @@ export default {
         this.$message("分成人不满足最低人数要求");
         return false;
       }
-       // 判断房源客源角色类型不一样
+      // 判断房源客源角色类型不一样
       // ====================================
       let arr = [],
-      roleFlag = true;
+        roleFlag = true;
       for (var i = 0; i < this.houseArr.length; i++) {
-        let hRoleType= this.houseArr[i].roleType;
+        let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
         } else {
@@ -596,8 +597,8 @@ export default {
         }
       }
 
-     for (var i = 0; i < this.clientArr.length; i++) {
-        let cRoleType= this.clientArr[i].roleType;
+      for (var i = 0; i < this.clientArr.length; i++) {
+        let cRoleType = this.clientArr[i].roleType;
         if (arr.indexOf(cRoleType) == -1) {
           arr.push(cRoleType);
         } else {
@@ -612,7 +613,8 @@ export default {
       console.log(resultArr);
       let flag = true,
         sum = 0,
-        sumFlag = false;
+        sumFlag = false,
+        againFlag = true;
       for (var i = 0; i < resultArr.length; i++) {
         sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
         if (
@@ -637,7 +639,7 @@ export default {
       // debugger;
       // console.log(sumFlag);
 
-      if (flag && sumFlag) {
+      if (flag && sumFlag && againFlag) {
         // this.$emit("close", this.achIndex, 1);
         // this.$message("操作完成");
         let param = {
@@ -652,8 +654,11 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
+              againFlag = false;
               this.$message("操作完成");
-              this.$emit("adoptData", this.achIndex, resultArr);
+              console.log("pppppppp");
+              console.log(res.data.result);
+              this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
             } else if (res.data.status != 200) {
               this.$message(res.data.message);
             }
@@ -671,12 +676,12 @@ export default {
         return false;
       }
 
-       // 判断房源客源角色类型不一样
-       // ====================================
+      // 判断房源客源角色类型不一样
+      // ====================================
       let arr = [],
-      roleFlag = true;
+        roleFlag = true;
       for (var i = 0; i < this.houseArr.length; i++) {
-        let hRoleType= this.houseArr[i].roleType;
+        let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
         } else {
@@ -686,8 +691,8 @@ export default {
         }
       }
 
-     for (var i = 0; i < this.clientArr.length; i++) {
-        let cRoleType= this.clientArr[i].roleType;
+      for (var i = 0; i < this.clientArr.length; i++) {
+        let cRoleType = this.clientArr[i].roleType;
         if (arr.indexOf(cRoleType) == -1) {
           arr.push(cRoleType);
         } else {
@@ -752,18 +757,21 @@ export default {
     },
     // 反审核，编辑的保存
     keepAch(type, status) {
+      //resultArr表示房源客源加在一起之后组成的数组
+      let resultArr = this.houseArr.concat(this.clientArr);
+      let arr = [],
+        roleFlag = true,
+        flag = true,
+        sum = 0,
+        sumFlag = false;
       if (this.houseArr.length == 0 || this.clientArr.length == 0) {
         this.$message("分成人不满足最低人数要求");
         return false;
       }
-      let resultArr = this.houseArr.concat(this.clientArr);
-
       // 判断房源客源角色类型不一样
       // ====================================
-      let arr = [],
-      roleFlag = true;
       for (var i = 0; i < this.houseArr.length; i++) {
-        let hRoleType= this.houseArr[i].roleType;
+        let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
         } else {
@@ -773,8 +781,8 @@ export default {
         }
       }
 
-     for (var i = 0; i < this.clientArr.length; i++) {
-        let cRoleType= this.clientArr[i].roleType;
+      for (var i = 0; i < this.clientArr.length; i++) {
+        let cRoleType = this.clientArr[i].roleType;
         if (arr.indexOf(cRoleType) == -1) {
           arr.push(cRoleType);
         } else {
@@ -786,9 +794,6 @@ export default {
 
       // ==========================
 
-      let flag = true,
-        sum = 0,
-        sumFlag = false;
       for (var i = 0; i < resultArr.length; i++) {
         sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
         if (
@@ -834,9 +839,10 @@ export default {
             contractId: this.achObj.contractId
           };
         }
+
         this.$ajax.postJSON("/api/achievement/examineSave", param).then(res => {
-          // console.log(res.data.status);
           if (res.data.status == 200) {
+            this.againFlag = false;
             let sendObj = {
               agendIds: this.agendIds
             };
@@ -860,13 +866,12 @@ export default {
     },
     // 业绩分成的保存
     keepAchDivide(type) {
-
-       // 判断房源客源角色类型不一样
+      // 判断房源客源角色类型不一样
       // ====================================
       let arr = [],
-      roleFlag = true;
+        roleFlag = true;
       for (var i = 0; i < this.houseArr.length; i++) {
-        let hRoleType= this.houseArr[i].roleType;
+        let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
         } else {
@@ -876,8 +881,8 @@ export default {
         }
       }
 
-     for (var i = 0; i < this.clientArr.length; i++) {
-        let cRoleType= this.clientArr[i].roleType;
+      for (var i = 0; i < this.clientArr.length; i++) {
+        let cRoleType = this.clientArr[i].roleType;
         if (arr.indexOf(cRoleType) == -1) {
           arr.push(cRoleType);
         } else {

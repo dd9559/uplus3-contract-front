@@ -1258,7 +1258,7 @@
                             return ['.xlsx'];
                             break;
                         case STEPSINPUT.word:
-                            return ['.doc'];
+                            return ['.doc','docx'];
                             break;
                         case STEPSINPUT.pdf:
                             return ['.pdf'];

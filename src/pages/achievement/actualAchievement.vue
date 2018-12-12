@@ -12,7 +12,7 @@
     >
          <!-- 部门 -->
           <el-form-item  label="部门"   class="mr" >
-                <el-select v-model="propForm.department"  class="w200" filterable @change="selUser">
+                <el-select v-model="propForm.department"  class="w200" filterable @change="selUser" :clearable="true">
                      <el-option
                        v-for="(item,index) in departs"
                        :key="index"
@@ -23,7 +23,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-select v-model="propForm.departmentDetail" class="w100"filterable>
+            <el-select v-model="propForm.departmentDetail" class="w100"filterable :clearable="true">
                <el-option
                  v-for="(item,index) in users"
                  :key="index"
@@ -73,7 +73,7 @@
               :clearable="true"
             >
               <el-option
-                v-for="item in dictionary['52']"
+                v-for="item in dictionary['54']"
                 :key="item.value"
                 :label="item.value"
                 :value="item.key"
@@ -636,16 +636,16 @@
             >
               <template slot-scope="scope">
                 <div>
-                  <div v-if="scope.row.result.value==0">
+                  <div v-if="scope.row.contType==0">
                     <p class="blue">审核中</p>
                   </div>
-                  <div v-if="scope.row.result.value==-1">
+                  <div v-if="scope.row.contType==-1">
                     <p class="blue">待提审</p>
                   </div>
-                  <div v-else-if="scope.row.result.value==1">
+                  <div v-else-if="scope.row.contType==1">
                     <p class="green">已通过</p>
                   </div>
-                  <div v-else-if="scope.row.result.value==2">
+                  <div v-else-if="scope.row.contType==2">
                     <p class="orange">已驳回</p>
                   </div>
                   <div v-else>
@@ -693,7 +693,7 @@
                    <span>是否确认{{smallTips}}?</span>
                    <span slot="footer" class="dialog-footer">
                      <el-button @click="recallShow = false">取 消</el-button>
-                     <el-button type="primary" @click="changeStatus">确 定</el-button>
+                     <el-button type="primary" @click="changeStatus"  v-dbClick>确 定</el-button>
                    </span>
               </el-dialog>
        </div>
@@ -738,7 +738,7 @@ export default {
         //数据字典
         "10": "", //合同类型
         "21": "", //分成状态
-        "52": "" //业绩状态
+        "54": "" //业绩状态
       },
       beginData: false,
       currentPage: 1,
@@ -789,14 +789,17 @@ export default {
   methods: {
     selUser() {
       this.propForm.departmentDetail = "";
-      this.$ajax
-        .get("/api/organize/employees", { depId: this.propForm.department })
-        .then(res => {
-          console.log(res);
-          if (res.status == 200) {
-            this.users = res.data.data;
-          }
-        });
+      this.users=[];
+      if(this.propForm.department){
+          this.$ajax
+           .get("/api/organize/employees", { depId: this.propForm.department })
+           .then(res => {
+             console.log(res);
+             if (res.status == 200) {
+               this.users = res.data.data;
+             }
+           });
+      }
     },
     getData(ajaxParam) {
       let _that=this;
@@ -831,10 +834,10 @@ export default {
         }   
     },
     // 通过操作
-    adoptData(index,resultArr){
+    adoptData(index,resultArr,result){
         this.shows=false;
         this.selectAchList[index].distributions=resultArr;
-        this.selectAchList[index].achievementState=1;
+        this.selectAchList[index].achievementState=result;
     },
     // 驳回操作
     rejectData(index,resultArr){
@@ -873,6 +876,9 @@ export default {
                this.$message("操作完成");
                this.recallShow=false;
                this.selectAchList[this.statuIndex].achievementState=0;
+            }else{
+               this.$message(res.data.message);
+               this.recallShow=false;
             }
           });
        }
@@ -890,6 +896,9 @@ export default {
                this.$message("操作完成");
                this.recallShow=false;
                this.selectAchList[this.statuIndex].achievementState=-1;
+            }else{
+               this.$message(res.data.message);
+               this.recallShow=false;
             }
           });
        }

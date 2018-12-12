@@ -114,7 +114,7 @@ const MIXINS = {
             this.fileSign(arr2)
         }else{
             // 其他文件 下载
-            this.$ajax.get("/access/generateAccessURL",{
+            this.$ajax.get("/api/load/generateAccessURL",{
               url:arr[i].path
             }).then(res=>{
               res = res.data;
@@ -132,7 +132,7 @@ const MIXINS = {
     },
     // 判断图片类别
     imgBoolFn(type){
-        switch (type) {
+        switch (type.toLowerCase()) {
             case '.png':
                 return true
                 break;

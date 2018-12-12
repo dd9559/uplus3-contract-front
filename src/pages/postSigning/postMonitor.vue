@@ -136,7 +136,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="overtimeName" label="当前步骤责任人" min-width="130">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="specifiedTime" label="计划完成时间" min-width="130">
+                <el-table-column :formatter="dateFormat(nullFormatterData)" prop="specifiedTime" label="计划完成时间" min-width="130">
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="overtimeDay" label="超时天数">
                 </el-table-column>

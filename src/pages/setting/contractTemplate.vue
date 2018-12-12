@@ -133,14 +133,17 @@
                 if(res.status==200){
                     this.citys=res.data.data
                 }
-            }),
-      this.selectCity='武汉'
+            })
+      if(this.$route.query.cid){
+        this.selectCity=this.$route.query.cid==1?'武汉':this.$route.query.cid
+      }else{
+        this.selectCity='武汉'
+      }
       this.getList()
     },
 
     methods: {
       rowClick(){
-        // console.log(this.$refs.detail,'detail');
          this.$refs.detail.$el.classList.remove('detail')
       },
       tableStyle({row, rowIndex}){

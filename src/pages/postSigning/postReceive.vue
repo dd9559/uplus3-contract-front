@@ -209,7 +209,8 @@
                             <el-table-column :formatter="nullFormatterData" align="center" label="操作">
                                 <template slot-scope="scope">
                                     <el-button 
-                                    class="blue" 
+                                    :disabled="roleDisabledFn(scope.row)"
+                                    :class="!roleDisabledFn(scope.row)?'blue':''" 
                                     @click="dittoFn(scope.$index,scope.row)"
                                     type="text">同上</el-button>
                                 </template>
@@ -255,15 +256,13 @@
                 @click="saveBtnFn" 
                 round>保存</el-button>
                 <el-button 
-                class="paper-btn paper-btn-green" 
-                type="primary" 
+                class="paper-btn plain-btn-blue" 
                 size="small" 
                 v-show="receiveComFn(receive.receive,0)"
                 @click="receiveBtnFn" 
                 round>接收</el-button>
                 <el-button 
-                class="paper-btn paper-btn-red" 
-                type="primary" 
+                class="paper-btn plain-btn-red"
                 size="small" 
                 @click="refusedFn" 
                 v-show="receiveComFn(receive.receive,0)"
@@ -678,19 +677,21 @@
             },
             // 同上
             dittoFn(i,data){
-                if(i === 0){
-                    this.errMeFn('本步骤没有上一步，请手动进行分配');
-                }else{
-                    let arr = this.dealTable[i-1];
-                    let roleId = arr.roleId;
-                    let personLiableCode = arr.personLiableCode;
-                    let rules = arr.rules;
-                    let obj = Object.assign(this.dealTable[i],{
-                        roleId,
-                        personLiableCode,
-                        rules
-                    })
-                    this.$set(this.dealTable,i,obj)
+                if(!this.roleDisabledFn(data)){
+                    if(i === 0){
+                        this.errMeFn('本步骤没有上一步，请手动进行分配');
+                    }else{
+                        let arr = this.dealTable[i-1];
+                        let roleId = arr.roleId;
+                        let personLiableCode = arr.personLiableCode;
+                        let rules = arr.rules;
+                        let obj = Object.assign(this.dealTable[i],{
+                            roleId,
+                            personLiableCode,
+                            rules
+                        })
+                        this.$set(this.dealTable,i,obj)
+                    }
                 }
             },
             // 合同编号

@@ -31,27 +31,8 @@
         <el-form-item label="部门">
           <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
             <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </el-select>
-          <!-- <el-select
-            v-model="contractForm.dealAgentStoreId"
-            :multiple='false'
-            clearable
-            filterable
-            remote
-            reserve-keyword
-            @change="getBroker"
-            placeholder="部门"
-            :remote-method="remoteMethod"
-            :loading="loading">
-              <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                >
-              </el-option>
-            </el-select> -->
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-select v-model="contractForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
@@ -658,7 +639,7 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:'系统错误'
+            message:error
           })
         })
     },

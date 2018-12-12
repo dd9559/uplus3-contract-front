@@ -16,7 +16,7 @@
           </el-table-column> 
         </el-table>
         <!-- 添加编辑交易流程 弹出框 -->
-        <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="740px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
+        <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="700px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
           <el-form v-model="addForm" size="small">
             <el-form-item label="名称" class="add-form-item">
               <el-input v-model.trim="addForm.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
@@ -516,7 +516,7 @@
     }
     .processDialog {
       /deep/ .el-dialog__body {
-        margin-bottom: 271px;
+        // margin-bottom: 271px;
       }
       .add-form-item {
         display: flex;
@@ -525,7 +525,7 @@
           color: red;
         }
         .el-input {
-          width: 654px;
+          width: 600px;
         }
         .text-absolute {
           position: absolute;

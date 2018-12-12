@@ -178,10 +178,7 @@
             <div class="table">
               <p>房源方分成</p>
               <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
-                <el-table-column prop="category" label="角色类型">
-                  <template slot-scope="scope">
-                    房源录入人
-                  </template>
+                <el-table-column prop="roleName" label="角色类型">
                 </el-table-column>
                 <el-table-column label="分成比例">
                   <template slot-scope="scope">
@@ -200,10 +197,7 @@
             <div class="table">
               <p>客源方分成</p>
               <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" >
-                <el-table-column prop="category" label="角色类型">
-                  <template slot-scope="scope">
-                    客源录入人
-                  </template>
+                <el-table-column prop="roleName" label="角色类型">
                 </el-table-column>
                 <el-table-column label="分成比例">
                   <template slot-scope="scope">
@@ -710,7 +704,9 @@ export default {
       this.$ajax.get("/api/achievement/getContDetailsAgents", param).then(res => {
         res = res.data;
         if (res.status === 200) {
-          this.employeeData = res.data;
+          if(res.data){
+            this.employeeData = res.data;
+          }
         }
       });
     },
