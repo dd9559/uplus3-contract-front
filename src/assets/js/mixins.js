@@ -71,11 +71,11 @@ const MIXINS = {
         }
       })
     },
-    getEmploye:function (val) {
-      this.$ajax.get('/api/organize/employees/pages',{depId:val}).then(res=>{
+    getEmploye:function (val,page=1) {
+      this.$ajax.get('/api/organize/employees/pages',{depId:val,pageNum:page}).then(res=>{
         res=res.data
         if(res.status===200){
-          this.EmployeList=res.data.list
+          this.EmployeList=this.EmployeList.concat(res.data.list)
         }
       })
     },

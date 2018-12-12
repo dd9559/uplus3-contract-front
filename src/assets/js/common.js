@@ -1,5 +1,6 @@
 let stepIndex = 0 //记录执行合并次数
 let otherStep = 0 //除合并外，剩余行数
+let collapse = []
 
 let TOOL = {
   routers:[
@@ -186,9 +187,11 @@ let TOOL = {
   collapseRow: function ({
     rowIndex,
     rowTotal,
-    collapse,
+    collapseMsg,
     type
   }) {
+    // collapse=[].concat(collapseMsg)
+    collapse=collapseMsg
     // debugger
     if (type === 'all') {
       if (rowIndex === 0) {
@@ -203,7 +206,39 @@ let TOOL = {
         }
       }
     }
+    /*if (rowIndex + 1 === rowTotal) {
+      stepIndex = 0 //初始化合并次数，必需，不然再表格发生重绘时，会出现第一列消失的情况
+    }*/
+    if(collapse.length===0){
+      return
+    }
     if (rowIndex === 0 || rowIndex === rowTotal - otherStep) {
+      otherStep = 0 //初始化剩余行数
+      let activeItem=collapse.splice(0,1)
+      collapse.forEach(item=>{
+        otherStep=otherStep+item
+      })
+      // debugger
+      /*collapse.forEach((item, index) => {
+        //统计剩余行数
+        if (index > stepIndex) {
+          otherStep += item
+        }
+      })
+      stepIndex++*/
+      // collapse.splice(0,1)
+      return {
+        rowspan: activeItem[0],
+        colspan: 1
+      }
+    } else if (rowIndex < rowTotal - otherStep) {
+      return {
+        rowspan: 0,
+        colspan: 0
+      };
+    }
+    /*if (rowIndex === 0 || rowIndex === rowTotal - otherStep) {
+      debugger
       otherStep = 0 //初始化剩余行数
       collapse.forEach((item, index) => {
         //统计剩余行数
@@ -217,14 +252,11 @@ let TOOL = {
         colspan: 1
       }
     } else if (rowIndex < rowTotal - otherStep) {
-      if (rowIndex + 1 === rowTotal) {
-        stepIndex = 0 //初始化合并次数，必需，不然再表格发生重绘时，会出现第一列消失的情况
-      }
       return {
         rowspan: 0,
         colspan: 0
       };
-    }
+    }*/
   },
   /**
    * 重置表单对象

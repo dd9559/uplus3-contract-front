@@ -62,6 +62,20 @@ Vue.directive('loadmore', {
   }
 })
 
+//防止提交按钮 重复提交
+Vue.directive("dbClick", {
+  inserted(el, binding) {
+    el.addEventListener("click", e => {
+      if (!el.disabled) {
+        el.disabled = true;
+        let timer = setTimeout(() => {
+          el.disabled = false;
+        }, 1000);
+      }
+    });
+  }
+});
+
 router.beforeEach((to,from,next)=>{
   let pathList = localStorage.getItem('router')
   store.commit('setPath',pathList?JSON.parse(pathList):[])
