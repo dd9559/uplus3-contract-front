@@ -456,7 +456,11 @@
       >td{
         padding: 0;
         .cell{
-          padding: 0;
+          padding: 0 @margin-10;
+          >input{
+            text-align: center;
+          }
+          /*padding: 0;
           >ul{
             >li{
               padding: 12px 10px;
@@ -466,7 +470,7 @@
                 border: 0;
               }
             }
-          }
+          }*/
         }
       }
     }
