@@ -97,16 +97,18 @@
         methods: {
             // 图片请求
             getImgFn(url){
-                return (this.$ajax.get('/api/load/generateAccessURL',{
-                    url
-                }).then(res=>{
-                    res = res.data;
-                    if(res.status === 200){
-                        return res.data.url
-                    }
-                }).catch(err=>{
-                    this.$message.error(err);
-                }))
+                if(!!url){
+                    return (this.$ajax.get('/api/load/generateAccessURL',{
+                        url
+                    }).then(res=>{
+                        res = res.data;
+                        if(res.status === 200){
+                            return res.data.url
+                        }
+                    }).catch(err=>{
+                        this.$message.error(err);
+                    }))
+                }
             },
             // 弹层关闭
             propCloseFn() {
@@ -183,6 +185,7 @@
                 this.$ajax.post('/api/bills/print', obj).then(res => {
                     res = res.data
                     if(res.status === 200){
+                        debugger
                         let url = res.data;
                         this.$ajax.get("/api/load/generateAccessURL",{
                             url
