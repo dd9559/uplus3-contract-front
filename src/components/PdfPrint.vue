@@ -19,7 +19,7 @@ export default {
     methods:{
         print(){
             if(!this.getUrl){
-                this.$message.error('打印失败，请重新打印');
+                this.$message.error('打印失败，请传入pdf文件');
             }else{
                 window.frames["previewPdf"].document.getElementById("print").click();
             }
@@ -35,3 +35,4 @@ export default {
     height: 0;
 }
 </style>
+

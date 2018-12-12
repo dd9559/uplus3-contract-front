@@ -16,7 +16,7 @@
         <el-button round type="danger" style="width:100px" v-if="contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
         <el-button round style="width:100px" @click="signature(3)" :disabled="iSsignature" v-if="examineState===1&&contState===1">签章打印</el-button>
         <el-button round style="width:100px" @click="signature(2)" v-if="examineState===1&&contState===2">签章打印</el-button>
-        <!-- <el-button @click="dayin"></el-button> -->
+        <el-button @click="dayin">打印</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0">审核</el-button>
       </div>
       <div class="btn" v-else>
@@ -77,7 +77,7 @@
         <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint> -->
+    <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
   </div>
 </template>
            
@@ -151,7 +151,7 @@ export default {
       // this.getAuditNode();
     }
     this.getContImg();
-    // this.signature(2)
+    this.signature(2)
   },
   methods: {
     //居间买卖切换
@@ -202,7 +202,11 @@ export default {
             message:'审核成功'
           })
         }
-      })
+      }).catch(error => {
+          this.$message({
+            message:error
+          })
+        })
     },
     //签章
     signature(value){
@@ -426,7 +430,11 @@ export default {
           })
           this.isSubmitAudit=false
         }
-      })
+      }).catch(error => {
+          this.$message({
+            message:error
+          })
+        })
     },
     // 变更解约弹窗
     goChangeCancel(value) {
@@ -460,6 +468,10 @@ export default {
               message:'操作成功'
             })
           }
+        }).catch(error => {
+          this.$message({
+            message:error
+          })
         })
       }else{
         this.$message({

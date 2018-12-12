@@ -639,7 +639,7 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:'系统错误'
+            message:error
           })
         })
     },
