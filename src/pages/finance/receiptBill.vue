@@ -15,16 +15,16 @@
       </div>
       <div class="input-group">
         <label class="form-label no-width f14">收款人:</label>
-        <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="depName" placeholder="请选择">
+        <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
           <el-option class="drop-tree" value="">
             <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
           </el-option>
         </el-select>
-        <el-select :clearable="true" ref="employe" v-loadmore="moreData" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="form.inObj=''" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
+        <el-select :clearable="true" ref="employe" v-loadmore="moreData" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
           <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
           <el-option
-            v-for="item in EmployeList"
-            :key="item.empId"
+            v-for="(item,index) in EmployeList"
+            :key="index"
             :label="item.name"
             :value="item.empId">
           </el-option>
@@ -49,26 +49,29 @@
       <el-table v-if="activeType===1" class="collapse-cell" border :data="moneyType" :span-method="collapseRow"
                 style="width: 100%"
                 header-row-class-name="theader-bg">
-        <el-table-column align="center" prop="name" label="款类（大类）"></el-table-column>
+        <el-table-column align="center" prop="pName" label="款类（大类）"></el-table-column>
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
-            <ul>
+            <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row)">{{scope.row.name}}</el-radio>
+            <!--<ul>
               <li v-for="item in scope.row.moneyTypes">
                 <el-radio class="money-type-radio" v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}
                 </el-radio>
               </li>
-            </ul>
+            </ul>-->
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
-            <ul>
+            <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum(1)" v-if="form.moneyType===scope.row.key">
+            <span v-else @click="getType(scope.row,'focus')">请输入</span>
+            <!--<ul>
               <li v-for="(item,index) in scope.row.moneyTypes">
                 <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
                        v-if="form.moneyType===item.key">
                 <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
               </li>
-            </ul>
+            </ul>-->
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额大写">
@@ -277,7 +280,10 @@
     data() {
       return {
         contId:'',
-        depName:'',
+        dep:{
+          id:'',
+          name:''
+        },
         form: {
           contId: '',
           remark: '',
@@ -325,7 +331,12 @@
         files:[],
         imgList:[],
         activeLi:'',
-        employeInfo:true
+        employeInfo:true,
+        employePage:1,
+        collapseMsg:{
+          total:0,
+          row:[]
+        }
       }
     },
     created() {
@@ -335,7 +346,7 @@
       this.remoteMethod()
       this.getAcount()
       this.getDropdown()
-      this.getReceiptman()
+      // this.getReceiptman()
       this.getAdmin()
       let type = this.$route.query.edit
       let inAccount = this.$route.query.type
@@ -371,22 +382,30 @@
         this.fileSign(arr)
       },
       //收款人下拉选项操作
-      clearDep:function () {
-        this.depName=''
-        this.EmployeList=[]
-        this.form.inObjId=''
-        this.form.inObj=''
+      clearSelect:function (type='dep') {
+        if(type==='dep'){
+          this.dep.name=''
+          this.EmployeList=[]
+          this.form.inObjId=''
+          this.form.inObj=''
+          this.employePage=1
+        }else {
+          this.form.inObj=''
+          /*this.employePage=1
+          this.EmployeList=[]*/
+        }
       },
       handleNodeClick(data) {
         this.getEmploye(data.depId)
-        this.clearDep()
-        this.depName=data.name
+        this.clearSelect()
+        this.dep.id=data.depId
+        this.dep.name=data.name
         if(data.subs.length===0){
           this.$refs.tree.blur()
         }
       },
       moreData:function () {
-        console.log('test')
+        this.getEmploye(this.dep.id,++this.employePage)
       },
       /**
        * 修改款单，获取初始数据
@@ -430,12 +449,21 @@
         this.$ajax.get('/api/payInfo/selectMoneyType').then(res => {
           res = res.data
           if (res.status === 200) {
-            this.moneyType = this.moneyType.concat(res.data)
+            // this.moneyType = this.moneyType.concat(res.data)
             res.data.forEach((item, index) => {
               if (item.name === '代收代付') {
-                this.moneyType.splice(index, 1)
+                // this.moneyType.splice(index, 1)
                 this.moneyTypeOther = res.data.splice(index, 1)
               }
+            })
+            res.data.forEach(item=>{
+              this.collapseMsg.total=this.collapseMsg.total+item.moneyTypes.length
+              this.collapseMsg.row.push(item.moneyTypes.length)
+              item.moneyTypes.forEach(cell=>{
+                cell.pId=item.id
+                cell.pName=item.name
+              })
+              this.moneyType = this.moneyType.concat(item.moneyTypes)
             })
           }
         })
@@ -537,6 +565,10 @@
                 })
                 this.$router.go(-1)
               }
+            }).catch(error=>{
+              this.$message({
+                message:error
+              })
             })
           } else {
             this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
@@ -550,6 +582,10 @@
                   }
                 })
               }
+            }).catch(error=>{
+              this.$message({
+                message:error
+              })
             })
           }
       },
@@ -566,11 +602,21 @@
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
-        if (columnIndex >= 3 && this.activeType === 1) {
-          if (rowIndex === 0) {
-            return [this.moneyType.length, 1]
-          } else {
-            return [0, 0]
+        // debugger
+        if (this.activeType === 1) {
+          if(columnIndex >= 3){
+            if (rowIndex === 0) {
+              return [this.moneyType.length, 1]
+            } else {
+              return [0, 0]
+            }
+          }
+          if(columnIndex===0){
+            return this.$tool.collapseRow({
+              rowIndex:rowIndex,
+              rowTotal:this.collapseMsg.total,
+              collapse:this.collapseMsg.row
+            })
           }
         }
         if (columnIndex === 0 && this.activeType === 2) {
@@ -687,13 +733,13 @@
         this.activeAdmin = ''
         this.form = Object.assign({},this.form,obj)
         if (type === 'init'||type==='focus') {
-          this.form.moneyTypePid = label.id
+          this.form.moneyTypePid = label.pId
         } else if(type==='other') {
           this.form.moneyType=label.key
           this.form.moneyTypePid = this.moneyTypeOther[0].id
         }
         if(type==='focus'){
-          this.form.moneyType=label.moneyTypes[index].key
+          this.form.moneyType=label.key
         }
       },
     },
@@ -711,7 +757,8 @@
         }
       },
       userMsg:function (val) {
-        this.depName=val.depName
+        this.dep.id=val.depId
+        this.dep.name=val.depName
         this.getEmploye(val.depId)
         this.form.inObjId=val.empId
         this.form.inObj=val.name
@@ -729,7 +776,11 @@
       > td {
         padding: 0;
         .cell {
-          padding: 0;
+          padding: 0 @margin-10;
+          >input{
+            text-align: center;
+          }
+          /*padding: 0;
           > ul {
             > li {
               padding: 12px 10px;
@@ -739,7 +790,7 @@
                 border: 0;
               }
             }
-          }
+          }*/
         }
       }
     }

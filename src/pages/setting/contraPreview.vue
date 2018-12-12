@@ -99,6 +99,7 @@ export default{
             imgSrc:'',
             imgSrc2:'',
             cityId:'',
+            coun:1,
             enableTemplateId:'',
             showSed:false,
             divWidth:'',
@@ -113,7 +114,6 @@ export default{
             this.mmaiAddress = this.$route.query.mmaiAddress
             this.jjianAddress = this.$route.query.jjianAddress
             this.mbanAddress = this.$route.query.mbanAddress
-            console.log(this.mbanAddress,'this.mbanAddress');
             this.type = this.$route.query.type
             this.contraName = this.$route.query.contraName
             this.show=this.$route.query.show
@@ -198,8 +198,16 @@ export default{
                 }else{
                     this.sigtureShow=!this.sigtureShow
                 }
-                this.signPosition.x=0
-                this.signPosition.y=0
+                if(this.coun==1){
+                    this.signPosition.x=0
+                    this.signPosition.y=0
+                    this.coun=2
+                }else if(this.coun==2){
+                    this.signPosition.x=''
+                    this.signPosition.y=''
+                    this.coun=1
+                }
+                console.log(this.signPosition);
                  this.sigtureShow2=!this.sigtureShow2
             
                  this.tuozhuai()
@@ -265,9 +273,9 @@ export default{
                   if(res.status==200){
                         this.$router.push({
                         path: "/contractTemplate",
-                        query:{
-                            cid:this.cityId
-                        }
+                        // query:{
+                        //     cid:this.cityId
+                        // }
                     });
                   }
                 })

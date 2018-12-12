@@ -8,6 +8,7 @@
           class="paper-btn btn-info"
           size="small"
           @click="resetFormFn"
+          v-dbClick
           round>重 置
         </el-button>
         <el-button
@@ -15,6 +16,7 @@
           type="primary"
           size="small"
           @click="queryFn"
+           v-dbClick
           round>查 询
         </el-button>
       </p>
