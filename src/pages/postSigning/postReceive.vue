@@ -209,7 +209,8 @@
                             <el-table-column :formatter="nullFormatterData" align="center" label="操作">
                                 <template slot-scope="scope">
                                     <el-button 
-                                    :class="dittoBoolFn(data)?'blue':'cl-3'" 
+                                    :disabled="roleDisabledFn(scope.row)"
+                                    :class="!roleDisabledFn(scope.row)?'blue':''" 
                                     @click="dittoFn(scope.$index,scope.row)"
                                     type="text">同上</el-button>
                                 </template>
@@ -255,15 +256,13 @@
                 @click="saveBtnFn" 
                 round>保存</el-button>
                 <el-button 
-                class="paper-btn paper-btn-green" 
-                type="primary" 
+                class="paper-btn plain-btn-blue" 
                 size="small" 
                 v-show="receiveComFn(receive.receive,0)"
                 @click="receiveBtnFn" 
                 round>接收</el-button>
                 <el-button 
-                class="paper-btn paper-btn-red" 
-                type="primary" 
+                class="paper-btn plain-btn-red"
                 size="small" 
                 @click="refusedFn" 
                 v-show="receiveComFn(receive.receive,0)"
@@ -678,7 +677,7 @@
             },
             // 同上
             dittoFn(i,data){
-                if(this.dittoBoolFn(data)){
+                if(!this.roleDisabledFn(data)){
                     if(i === 0){
                         this.errMeFn('本步骤没有上一步，请手动进行分配');
                     }else{
@@ -693,17 +692,6 @@
                         })
                         this.$set(this.dealTable,i,obj)
                     }
-                }
-            },
-            dittoBoolFn(data){
-                let OPERATION = this.$tool.OPERATION;
-                if(!data.stepState){
-                    return true
-                }
-                if(data.stepState.value === OPERATION.backlog || data.stepState.value === OPERATION.not){
-                    return false
-                }else{
-                    return true
                 }
             },
             // 合同编号

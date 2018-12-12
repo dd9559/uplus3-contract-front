@@ -22,24 +22,29 @@
       <label class="form-label f14">款类</label>
       <el-table class="collapse-cell" :span-method="collapse" border :data="moneyType" style="width: 100%"
                 header-row-class-name="theader-bg">
-        <el-table-column align="center" label="款类（大类）" prop="name"></el-table-column>
+        <el-table-column align="center" label="款类（大类）" prop="pName">
+          <!--<template slot-scope="scope">{{s}}</template>-->
+        </el-table-column>
         <el-table-column align="center" label="款类（小类）">
           <template slot-scope="scope">
-            <ul>
+            <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row)">{{scope.row.name}}</el-radio>
+            <!--<ul>
               <li v-for="item in scope.row.moneyTypes">
                 <el-radio class="money-type-radio" v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}</el-radio>
               </li>
-            </ul>
+            </ul>-->
           </template>
         </el-table-column>
         <el-table-column align="center" label="付款金额（元） ">
           <template slot-scope="scope">
-            <ul>
+            <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===scope.row.key">
+            <span v-else @click="getType(scope.row,'focus')">请输入</span>
+            <!--<ul>
               <li v-for="(item,index) in scope.row.moneyTypes">
                 <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
                 <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
               </li>
-            </ul>
+            </ul>-->
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额大写">
@@ -169,6 +174,10 @@
         files:[],
         imgList:[],
         activeLi:'',
+        collapseRow:{
+          total:0,
+          row:[]
+        }
       }
     },
     created(){
@@ -263,7 +272,17 @@
         this.$ajax.get('/api/payInfo/selectMoneyType').then(res=>{
           res=res.data
           if(res.status===200){
-            this.moneyType = res.data
+            // this.moneyType = res.data
+            res.data.forEach(item=>{
+              this.collapseRow.total=this.collapseRow.total+item.moneyTypes.length
+              this.collapseRow.row.push(item.moneyTypes.length)
+              item.moneyTypes.forEach(cell=>{
+                cell.pId=item.id
+                cell.pName=item.name
+              })
+              this.moneyType = this.moneyType.concat(item.moneyTypes)
+            })
+            console.log(this.collapseRow)
             /*res.data.forEach((item,index)=>{
               if(item.name==='代收代付'){
                 this.moneyType.splice(index,1)
@@ -274,9 +293,11 @@
       },
       getType:function (label,type,index) {
         if(type==='focus'){
-          this.form.moneyType=label.moneyTypes[index].key
+          // this.form.moneyType=label.moneyTypes[index].key
+          this.form.moneyType=label.key
         }
-        this.form.moneyTypePid = label.id
+        // this.form.moneyTypePid = label.id
+        this.form.moneyTypePid = label.pId
         this.getAmount()
       },
       getAmount:function () {
@@ -304,7 +325,7 @@
           this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
             res=res.data
             if(res.status===200){
-              row.bankName = res.data.bankName
+              row.bankName = res.data.bankName?res.data.bankName:''
             }
           })
         }
@@ -322,6 +343,13 @@
           } else {
             return [0,0]
           }
+        }
+        if(columnIndex===0){
+          return this.$tool.collapseRow({
+            rowIndex:rowIndex,
+            rowTotal:this.collapseRow.total,
+            collapse:this.collapseRow.row
+          })
         }
       },
       /**
@@ -428,7 +456,11 @@
       >td{
         padding: 0;
         .cell{
-          padding: 0;
+          padding: 0 @margin-10;
+          >input{
+            text-align: center;
+          }
+          /*padding: 0;
           >ul{
             >li{
               padding: 12px 10px;
@@ -438,7 +470,7 @@
                 border: 0;
               }
             }
-          }
+          }*/
         }
       }
     }
