@@ -205,7 +205,7 @@
             <span>点击上传</span>
           </file-up>
         </li>
-        <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"  @click="getPicture">
+        <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"  @click="previewPhoto(imgList,index)">
           <upload-cell :type="item.type"></upload-cell>
           <span>{{item.name}}</span>
           <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
@@ -520,7 +520,7 @@
                 this.$tool.checkForm(item,RULE).then(()=>{
                   let count=0
                   param.outAccount.forEach(item=>{
-                    count = count+parseInt(item.amount)
+                    count = count+parseFloat(item.amount)
                     return count
                   })
                   if(count!==parseInt(this.form.smallAmount)){

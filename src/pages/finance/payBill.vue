@@ -56,7 +56,7 @@
           <template slot-scope="scope">
             <div v-if="amount" style="margin: 0 10px;">
               <p><span>款类大类余额：{{amount.balance}}元</span></p>
-              <p><span>合同余额：{{amount.contractBalance}}元</span></p>
+              <p v-if="showAmount"><span>合同余额：{{amount.contractBalance}}元</span></p>
             </div>
           </template>
         </el-table-column>
@@ -100,7 +100,7 @@
             <span>点击上传</span>
           </file-up>
         </li>
-        <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="getPicture">
+        <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="previewPhoto(imgList,index)">
           <upload-cell :type="item.type"></upload-cell>
           <span>{{item.name}}</span>
           <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
@@ -177,7 +177,8 @@
         collapseRow:{
           total:0,
           row:[]
-        }
+        },
+        showAmount:true,//是否显示合同余额
       }
     },
     created(){
@@ -292,6 +293,7 @@
         })
       },
       getType:function (label,type,index) {
+        this.showAmount=label.pName==='代收代付'?false:true
         if(type==='focus'){
           // this.form.moneyType=label.moneyTypes[index].key
           this.form.moneyType=label.key
