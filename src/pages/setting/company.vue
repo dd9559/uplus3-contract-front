@@ -123,10 +123,10 @@
             </div>
             <div class="item">
               <el-form-item label="门店名称: ">
-                <el-input size="mini" v-model="companyForm.name" placeholder="营业执照上的名字"></el-input>
+                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               </el-form-item>
               <el-form-item label="法人姓名: ">
-                <el-input size="mini" maxlength="15" v-model="companyForm.lepName" :disabled="directSaleSelect"></el-input>
+                <el-input size="mini" maxlength="15" v-model.trim="companyForm.lepName" :disabled="directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               </el-form-item>
               <el-form-item label="证件类型: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="directSaleSelect" @change="idTypeChange">
@@ -136,7 +136,7 @@
             </div>
             <div class="item">
               <el-form-item label="证件号: ">
-                <el-input size="mini" maxlength="18" v-model="companyForm.lepDocumentCard" :disabled="directSaleSelect" @blur="idCardChange"></el-input>
+                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" @blur="idCardChange" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: ">
                 <el-input size="mini" type="number" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" @blur="validPhone"></el-input>
@@ -179,7 +179,7 @@
               <el-table-column width="260px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model="companyBankList[scope.$index].bankAccountName" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect"></el-input>
+                    <el-input size="mini" maxlength="15" v-model.trim="companyBankList[scope.$index].bankAccountName" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -193,7 +193,7 @@
               <el-table-column align="center" label="" width="365px">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect"></el-input>
+                    <el-input size="mini" v-model.trim="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -288,7 +288,7 @@
     return /^1[34578]\d{9}$/.test(str)
   }
   let checkIdVlidate = function (str) {
-    return /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(str)
+    return /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/.test(str)
   }
   const rule = {
     cityId: {
