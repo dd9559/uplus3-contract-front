@@ -71,11 +71,11 @@ const MIXINS = {
         }
       })
     },
-    getEmploye:function (val) {
-      this.$ajax.get('/api/organize/employees/pages',{depId:val}).then(res=>{
+    getEmploye:function (val,page=1) {
+      this.$ajax.get('/api/organize/employees/pages',{depId:val,pageNum:page}).then(res=>{
         res=res.data
         if(res.status===200){
-          this.EmployeList=res.data.list
+          this.EmployeList=this.EmployeList.concat(res.data.list)
         }
       })
     },
@@ -99,6 +99,7 @@ const MIXINS = {
      * @param {点击第几张图片} i
      */
     previewPhoto(arr,i){
+      // debugger
         let type = this.$tool.get_suffix(arr[i].path)
         if(this.imgBoolFn(type)){
             // 图片 和 视频 预览
@@ -126,10 +127,14 @@ const MIXINS = {
             }).then(res=>{
               res = res.data;
               if(res.status === 200){
+<<<<<<< HEAD
                 // var isSupportDownload = 'download' in document.createElement('a');
                 // console.log(isSupportDownload)
                 // return false
                 let a = document.createElement('a');
+=======
+                var a = document.createElement('a');
+>>>>>>> 9182d80ef6e0a766280263b149ced1965190ceaa
                 a.download = undefined;
                 a.href = res.data.url;
                 a.href = 'http://192.168.1.51:5500/%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6.txt';

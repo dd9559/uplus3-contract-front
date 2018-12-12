@@ -353,15 +353,16 @@
         }
     }
     .gap {
-        padding: 15px 10px 0;
+        padding: 0px 10px 0;
         box-sizing: border-box;
     }
     .title {
-        padding: 0 10px;
+        padding: 6px 0;
+        height: 36px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 10px;
+        // margin-bottom: 10px;
         font-size: 18px;
         > span{
             font-size: 14px;

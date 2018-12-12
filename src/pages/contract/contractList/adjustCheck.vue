@@ -42,7 +42,7 @@
     <!-- 数据列表 -->
     <div class="contract-list">  
       <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
-      <el-table :data="tableData.list" style="width: 100%" v-loading="loadingTable">
+      <el-table :data="tableData.list" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail'>
         <el-table-column label="合同编号" width="150" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
@@ -181,31 +181,12 @@
                 <td>原金额</td>
                 <td>{{layerAudit.ownerCommission}}元</td>
                 <td>{{layerAudit.custCommission}}元</td>
-                <!-- <td>另外出<span>;</span>客户<span>;</span>0元</td> -->
                 <td>{{layerAudit.otherCooperationCost}}元</td>
               </tr>
               <tr>
                 <td>调整为</td>
                 <td>{{layerAudit.newOwnerCommission}}元</td>
                 <td>{{layerAudit.newCustCommission}}元</td>
-                <!-- <td class="flex">       
-                    <div>
-                      <el-select v-model="auditForm.getDepName" class="width70 mr10" :disabled="true">
-                        <el-option label="另外出" value="另外出"></el-option>
-                        <el-option label="佣金扣" value="佣金扣"></el-option>
-                        <el-option label="无" value="无"></el-option>
-                      </el-select>
-                    </div>
-                    <div>
-                      <el-select v-model="auditForm.getAgentName" class="width70 mr10" :disabled="true">
-                        <el-option label="客户" value="客户"></el-option>
-                        <el-option label="业主" value="业主"></el-option>
-                        <el-option label="无" value="无"></el-option>
-                      </el-select>
-                    </div> 
-                    <div><el-input v-model="auditForm.money3" placeholder="输入金额" class="width70" :disabled="true"></el-input>元</div>
-                  
-                </td> -->
                 <td>{{layerAudit.newOtherCooperationCost}}元</td>
               </tr>
             </tbody>
@@ -239,7 +220,118 @@
         <el-button type="primary"  @click="receptFn()" class="recept">通 过</el-button>  
       </div> 
       <!-- 图片放大 -->
-    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    </el-dialog>
+
+    <!-- 调佣详情 -->
+    <el-dialog title="调佣详情" :visible.sync="dialogVisible2" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
+      <div class="audit-box"  :style="{ height: clientHeight() }">
+        <div class="audit-col">
+          <div class="col-li">
+            <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
+            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
+          </div>
+          <div class="col-li">
+            <p>申请日期：<span>{{layerAudit.createTime | getDate}}</span></p>
+            <p>申请人：<span>{{layerAudit.createByDepName + '-' + layerAudit.createByName}}</span></p>
+          </div>
+          <div class="col-li">
+            <p>合同类型：<span>{{layerAudit.tradeType}}</span></p>
+            <p class="mr100">成交总价：<span>{{layerAudit.dealPrice}}元</span></p>
+            <p>可分配业绩：<span>{{layerAudit.money}}元</span></p>
+          </div>
+          <div class="col-li">
+            <p>调整类型：<span>佣金调整</span></p>
+            <p><el-checkbox v-model="relieveFn" :disabled="true">有解除协议</el-checkbox></p>
+          </div>
+          <div class="textareabox">
+            <span>调整原因</span>
+            <el-input type="textarea" :rows="3"  v-model="layerAudit.reason" class="textarea" maxlength=100 :disabled="true"></el-input>
+          </div>
+        </div>
+
+        <div class="audit-col">
+          <!-- 表格 -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>业主佣金</th>
+                <th>客户佣金</th>
+                <!-- <th>按揭手续费</th> -->
+                <th>合作费扣除</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>原金额</td>
+                <td>{{layerAudit.ownerCommission}}元</td>
+                <td>{{layerAudit.custCommission}}元</td>
+                <td>{{layerAudit.otherCooperationCost}}元</td>
+              </tr>
+              <tr>
+                <td>调整为</td>
+                <td>{{layerAudit.newOwnerCommission}}元</td>
+                <td>{{layerAudit.newCustCommission}}元</td>
+                <td>{{layerAudit.newOtherCooperationCost}}元</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- 上传附件 -->
+          <div class="uploadfile">
+            <div class="uploadtitle">附件:</div>
+            <ul class="ulData">
+
+                <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                  <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                    <div class="namePath">
+                        <upload-cell :type="item.fileType"></upload-cell>
+                        <p>{{item.name}}</p>
+                    </div>
+                  </el-tooltip>
+                  <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                </li>
+            </ul>
+          </div> 
+                                   
+        </div>
+
+        <div class="audit-col bordernone">
+          <!-- 表格 -->
+          <div class="mb20">审核信息：</div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>部门</th>
+                <th>员工</th>
+                <th>操作</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2018/09/03 12:19</td>
+                <td>技术部</td>
+                <td>雄伟</td>
+                <td>审批通过</td>
+                <td>审核备注信息</td>
+              </tr>
+              <tr>
+                <td>2018/09/03 12:19</td>
+                <td>技术部</td>
+                <td>雄伟</td>
+                <td>审批通过</td>
+                <td>审核备注信息</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- 图片放大 -->
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
 
   </div>
@@ -311,6 +403,7 @@
         // 弹框里用到的
         dialogImageUrl: '',
         dialogVisible: false,
+        dialogVisible2: false,
         // checked: false, //是否有解除协议
        
         tableData:[],
@@ -481,6 +574,31 @@
               message: error
             })
           })
+      },
+
+      // 双击详情事件
+      toDetail(e) {
+        this.dialogVisible2 = true
+        this.auditForm.textarea = ''
+        let param = {
+          checkId: e.checkId,
+          contractCode: e.contractCode
+        }
+        this.$ajax.get("/api/commission/toCheck", param)
+        .then(res => {
+          console.log(e);
+          let data = res.data;
+          if (res.data.status === 200) {
+            console.log(data.data)
+            this.layerAudit = data.data;
+            this.myCheckId = data.data.checkId;
+            this.uploadList = data.data.voucher;
+          }
+        }).catch(error => {
+            this.$message({
+              message: error
+            })
+        });
       },
 
       // 点击审核事件
@@ -706,6 +824,9 @@
   .width150{
     width: 150px;
   }
+  .mb20{
+    margin-bottom: 20px;
+  }
   .width100{
     width: 100px;
   }
@@ -837,7 +958,7 @@
         }
       }
       .uploadfile{
-        margin: 40px 0 30px;
+        margin: 40px 0 0;
         display: flex;
         .uploadtitle{
           color: #6C7986;

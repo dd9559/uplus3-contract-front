@@ -144,6 +144,7 @@
               <p>
                 <span class="tag">类型：</span>
                 <span class="text" v-for="item in dictionary['517']" :key="item.key" v-if='item.key===contractDetail.otherCooperationInfo.type'>{{item.value}}</span>
+                <span class="text" v-else>--</span>
               </p>
             </div>
             <div class="one_">
@@ -940,6 +941,7 @@ export default {
         this.$ajax.post('/api/contract/invalid', param).then(res=>{
           res=res.data;
           if(res.status===200){
+            this.getContractDetail();
             this.dialogInvalid=false;
             this.$message({
               message:'操作成功'

@@ -26,7 +26,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="关键字">
-          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:420px" :clearable="true"></el-input>
+          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
         </el-form-item>
         <el-form-item label="部门">
           <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">

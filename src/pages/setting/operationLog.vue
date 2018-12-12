@@ -34,7 +34,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="关键字">
-                        <el-input v-model="keyWord" placeholder="操作内容关/模块关键字"></el-input>
+                        <el-input v-model="keyWord" placeholder="操作内容/模块字"></el-input>
                     </el-form-item>
                 </div>
             </el-form>
@@ -163,7 +163,6 @@
 
 <style lang="less" scoped>
 .header {
-    padding: 10px;
     background-color: #fff;
     border-radius:2px;
     box-sizing: border-box;
@@ -192,15 +191,13 @@
 
 .table-list {
     background-color: #fff;
-    padding: 10px;
     margin-top: 20px;
     > p {
-        padding: 0 10px;
+        padding: 0 6px;
         display: flex;
         height: 36px;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 10px;
         font-size: 14px;
     }
 }

@@ -113,14 +113,14 @@
                 <div class="aduit-node">
                     <div>
                         <label>分支节点:</label>
-                        <el-radio-group v-model="isAudit">
+                        <el-radio-group v-model="isAudit" @change="aduitChange">
                             <el-radio label="1">需要审核</el-radio>
                             <el-radio label="0">无需审核</el-radio>
                         </el-radio-group>
                     </div>
                     <ul v-if="isAudit==='1'">
                         <li v-for="(item,index) in nodeList" :key="index">
-                            <el-input size="small" v-model="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                            <el-input size="small" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                             <el-select size="small" class="people-type" v-model="item.type" @change="getTypeOption(item.type,index)">
                                 <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
@@ -230,7 +230,9 @@
                 depsList: [],
                 roleList: [],
                 editDisabled: false,
-                currentFlowId: ""
+                currentFlowId: "",
+                tempAudit: "",
+                tempNodeList: []
             }
         },
         created() {
@@ -241,6 +243,13 @@
             this.getRoles()
         },
         methods: {
+            aduitChange(val) {
+                if(val !== this.tempAudit) {
+                    this.nodeList = JSON.parse(JSON.stringify(arr))
+                } else {
+                    this.nodeList = this.tempNodeList
+                }
+            },
             getData() {
                 let param = {
                     pageSize: this.pageSize,
@@ -286,13 +295,13 @@
                 this.aduitTitle = title
                 if(type === 1) {
                     this.nodeList = [...arr]
+                    this.tempNodeList = [...arr]
                     this.nodeList[1].type = ""
                     this.nodeList[1].name = ""
                     this.$tool.clearForm(this.aduitForm)
                     this.isAudit = ""
                     this.editDisabled = false
                 } else {
-                    this.nodeList = [...row.branch]
                     let {...currentRow} = row
                     this.currentFlowId = currentRow.id
                     this.aduitForm.cityId = currentRow.cityId
@@ -301,6 +310,9 @@
                     this.aduitForm.type = currentRow.type
                     this.aduitForm.branchCondition = +currentRow.branchCondition.split('=')[1]
                     this.isAudit = currentRow.branch[0].isAudit.toString()
+                    this.tempAudit = this.isAudit
+                    this.nodeList = JSON.parse(JSON.stringify(row.branch))
+                    this.tempNodeList = JSON.parse(JSON.stringify(row.branch))
                     this.aduitForm.flowDesc = currentRow.flowDesc
                     this.setConditionList(currentRow.type)
                     this.editDisabled = true
@@ -389,6 +401,10 @@
             },
             isSave() {
                 this.$tool.checkForm(this.aduitForm,rule).then(() => {
+                    if(!this.isAudit) {
+                        this.$message({message:"请选择分支节点"})
+                        return false
+                    }
                     let isOk
                     if(this.isAudit === '0') {
                         let arr1 = [{
@@ -425,22 +441,24 @@
                     const url = "/api/auditflow/operateFlow"
                     if(isOk || this.isAudit === '0') {
                         if(this.aduitTitle === "添加") {
-                            this.aduitPost(url,param)
+                            const msg = "添加成功"
+                            this.aduitPost(url,param,msg)
                         } else {
                             param.id = this.currentFlowId
-                            this.aduitPost(url,param)
+                            const msg = "修改成功"
+                            this.aduitPost(url,param,msg)
                         }
                     }
                 }).catch(error => {
                     this.$message({message:`${error.title}${error.msg}`})
                 })
             },
-            aduitPost(url,param) {
+            aduitPost(url,param,msg) {
                 this.$ajax.postJSON(url,param).then(res => {
                     res = res.data
                     if(res.status === 200) {
                         this.aduitDialog = false
-                        this.$message(res.message)
+                        this.$message(msg)
                         this.getData()
                     }
                 }).catch(error => {
@@ -526,7 +544,7 @@
 .aduit-content {
     .aduit-input {
         display: flex;
-        margin-bottom: 19px;
+        margin-bottom: @margin-10;
         > label {
             width: 70px;
             line-height: 32px;
@@ -604,6 +622,8 @@
                 }
                 &:first-child {
                     display: none;
+                }
+                &:nth-child(2) {
                     .row-icon {
                         span:last-child {
                             display: none;

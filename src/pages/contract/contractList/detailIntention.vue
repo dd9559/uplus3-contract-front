@@ -3,7 +3,7 @@
     <div class="newintention" id="intention" >
         <div class="detailbox">
            <el-tabs v-model="activeName" @tab-click="handleClick">
-                <el-tab-pane label="意向金详情" name="first" class="first-tab">
+                <el-tab-pane :label="detailData.contType.value === 4 ? '意向金详情':'定金详情'" name="first" class="first-tab">
                     <div class="tab" :style="{ height: clientHeight() }">
                         <ul class="ul2">
                             <li class="tabs-title">合同信息</li>
@@ -72,7 +72,7 @@
                                 <div class="fl">
                                     <ul>
                                         <li>录入时间：<span>{{detailData.createTime | getDate}}</span></li>
-                                        <li>录入人：<span>{{detailData.recordName}}</span></li>
+                                        <li>录入人：<span>{{detailData.recordDeptName + '-' + detailData.recordName}}</span></li>
                                         <li>最后修改：<span>{{detailData.updateTime | getDate}}</span></li>
                                     </ul>
                                 </div>
