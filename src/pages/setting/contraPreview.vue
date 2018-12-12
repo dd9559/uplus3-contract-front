@@ -4,7 +4,7 @@
           <span>合同模板预览</span>
           <el-button type="primary paper-btn" @click="saveAll" v-if="saveBtn">保存</el-button>
       </p>
-      <div class='bodycontainer'>
+      <div class="bodycontainer"  ref='bigbox'>
           <div class="ht-list listone"  ref='htlist'>
           <el-button type="primary paper-btn" @click="showPos" v-show='position'>签章位置</el-button>
           <div class='pagerUp'>
@@ -17,7 +17,7 @@
              
           </div>
       </div>
-       <div class="ht-list" v-show='showSed' ref='htlist'>
+       <div class="ht-list listone" v-show='showSed' ref='htlist'>
           <el-button type="primary paper-btn" @click="showPos" v-show='position2'>签章位置</el-button>
           <div class='pagerUp'>
               <el-button ref='delBtn' class="el-icon-caret-top" @click="del(2)"></el-button>
@@ -122,6 +122,7 @@ export default{
         },
         mounted(){
             this.divWidth=document.getElementsByClassName('listone')[0].offsetWidth
+            // console.log(document.getElementsByClassName('listone')[0].offsetWidth);
             this.divHeight=1163
             if(this.show==1){
                 
@@ -134,6 +135,9 @@ export default{
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
                             this.showSed=true 
+                            // console.log(this.$refs.bigbox);
+                            // this.$refs.bigbox.$el.classList.add('bodycontainer')
+                            this.divWidth=this.divWidth/2
                             this.sigtureShow=false
                             this.imgSrc=res.data.data.businessImg.url
                             this.imgSrc2=res.data.data.residenceImg.url
@@ -145,7 +149,7 @@ export default{
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                                console.log(dropbtn.style.left, dropbtn.style.top);
+                                console.log(this.divWidth, dropbtn.style.top);
                             }else{
                                this.sigtureShow2=false
                            }
@@ -170,6 +174,7 @@ export default{
                                this.sigtureShow=false
                            }
                            let htImg=document.getElementById('ht')
+                           htImg.style.width='auto'
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
                      }
@@ -225,14 +230,16 @@ export default{
                             document.onmousemove = function(ev){
                             var l = ev.clientX-disX;
                             var t = ev.clientY-disY;
-                            console.log(This.divHeight,'divheight');
-                            This.signPosition.x=(l/This.divWidth).toFixed(2)
-                            This.signPosition.y=(t/This.divHeight).toFixed(2)
+                            // this.divWidth=ev.target.parentNode.offsetWidth
+                            // console.dir(oDiv.parentNode.children[2].offsetWidth,'oDiv');
+                            This.signPosition.x=(l/(oDiv.parentNode.offsetWidth)).toFixed(2)
+                            This.signPosition.y=(t/(This.divHeight)).toFixed(2)
                             console.log(This.signPosition,'sign');
                             l > oDiv.parentNode.offsetWidth-100 ? l = oDiv.parentNode.offsetWidth-100 : l
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
                             t > oDiv.parentNode.offsetHeight-150 ? t = oDiv.parentNode.offsetWidth-150 : t
+                            console.log(l,t);
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
@@ -241,7 +248,6 @@ export default{
                             document.onmouseup=null;
                             };
                         };
-                
                 },
             saveAll(){
                 console.log(this.signPosition);
@@ -273,9 +279,6 @@ export default{
                   if(res.status==200){
                         this.$router.push({
                         path: "/contractTemplate",
-                        // query:{
-                        //     cid:this.cityId
-                        // }
                     });
                   }
                 })
@@ -453,6 +456,7 @@ export default{
                     }
                  if(this.cityId==1 && this.type==2){
                     this.showSed=true
+                    // this.$refs.bigbox.$el.classList.add('bodycontainer')
                     this.position=false
                     // console.log(res.data.data.businessImg.url,'imgsrc');
                     this.imgSrc=res.data.data.businessImg.url
@@ -472,10 +476,21 @@ export default{
                   this.imgSrc=res.data.data.img.url  //一个的
                   this.total=res.data.data.img.count
                   let htImg=document.getElementById('ht')
+                  htImg.style.width='auto'
                   var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                   this.autograph(htImg,newsrc)
                  }
               }
+            }).catch(error=>{
+                 this.$message({
+                    type: 'error',
+                    message: error
+                    })
+                    setTimeout(() => {
+                        this.$router.push({
+                            path: "/contractTemplate",
+                        });
+                    }, 1500);
             })
             }
         }
