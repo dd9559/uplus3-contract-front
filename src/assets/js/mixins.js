@@ -114,30 +114,16 @@ const MIXINS = {
             })
             this.fileSign(arr2)
         }else{
-          let a = document.createElement('a');
-              a.download = undefined;
-              a.href = 'http://localhost:5500/%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6.txt';
-              a.target = "_blank"
-              // a.href = 'data:text/plain;charset=utf-8,' + res.data.url;
-              a.click();
-              return false
             // 其他文件 下载
             this.$ajax.get("/api/load/generateAccessURL",{
               url:arr[i].path
             }).then(res=>{
               res = res.data;
               if(res.status === 200){
-<<<<<<< HEAD
-                // var isSupportDownload = 'download' in document.createElement('a');
-                // console.log(isSupportDownload)
-                // return false
-                let a = document.createElement('a');
-=======
                 var a = document.createElement('a');
->>>>>>> 9182d80ef6e0a766280263b149ced1965190ceaa
                 a.download = undefined;
                 a.href = res.data.url;
-                a.href = 'http://192.168.1.51:5500/%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6.txt';
+                // a.href = 'http://192.168.1.51:5500/%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6.txt';
                 // a.href = 'data:text/plain;charset=utf-8,' + res.data.url;
                 a.click();
                 // window.location = res.data.url;
