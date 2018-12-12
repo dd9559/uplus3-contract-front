@@ -16,7 +16,7 @@
         <el-button round type="danger" style="width:100px" v-if="contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
         <el-button round style="width:100px" @click="signature(3)" :disabled="iSsignature" v-if="examineState===1&&contState===1">签章打印</el-button>
         <el-button round style="width:100px" @click="signature(2)" v-if="examineState===1&&contState===2">签章打印</el-button>
-        <el-button @click="dayin">打印</el-button>
+        <!-- <el-button @click="dayin">打印</el-button> -->
         <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0">审核</el-button>
       </div>
       <div class="btn" v-else>
@@ -77,7 +77,7 @@
         <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
-    <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
+    <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint> -->
   </div>
 </template>
            
@@ -151,7 +151,7 @@ export default {
       // this.getAuditNode();
     }
     this.getContImg();
-    this.signature(2)
+    // this.signature(2)
   },
   methods: {
     //居间买卖切换
@@ -231,7 +231,7 @@ export default {
                 });
                 this.iSsignature=false;
                 let pdfUrl=res.data;
-                this.getUrl(pdfUrl);
+                // this.getUrl(pdfUrl);
                 this.getContImg();
               }
             })
@@ -259,7 +259,7 @@ export default {
               message:'操作成功'
             });
             let pdfUrl=res.data;
-            this.getUrl(pdfUrl);
+            // this.getUrl(pdfUrl);
             this.iSsignature=false
           }
         })
@@ -288,11 +288,15 @@ export default {
       let param = {
         url:url
       }
-      this.$ajax.get("/access/generateAccessURL",param).then(res=>{
+      this.$ajax.get("/api/load/generateAccessURL",param).then(res=>{
         res = res.data
         if(res.status ===200){
           this.pdfUrl = res.data.url;
-          // this.$refs.pdfPrint.print();
+          // setTimeout(function(){
+          //   alert('222')
+          //   this.$refs.pdfPrint.print();
+          // },500)
+          
         }
       })
     },

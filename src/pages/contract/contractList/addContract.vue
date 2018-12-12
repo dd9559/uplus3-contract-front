@@ -955,7 +955,8 @@ export default {
               element.name=element.OwnerName;
               element.mobile=element.OwnerMobile;
               element.relation=element.Relation;
-              this.ownerList.push(element)
+              let obj = Object.assign({}, element);
+              this.ownerList.push(obj);
             });
           }
           // this.options.push({
