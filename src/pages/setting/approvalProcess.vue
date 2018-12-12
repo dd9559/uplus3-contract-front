@@ -113,7 +113,7 @@
                 <div class="aduit-node">
                     <div>
                         <label>分支节点:</label>
-                        <el-radio-group v-model="isAudit">
+                        <el-radio-group v-model="isAudit" @change="aduitChange">
                             <el-radio label="1">需要审核</el-radio>
                             <el-radio label="0">无需审核</el-radio>
                         </el-radio-group>
@@ -230,7 +230,9 @@
                 depsList: [],
                 roleList: [],
                 editDisabled: false,
-                currentFlowId: ""
+                currentFlowId: "",
+                tempAudit: "",
+                tempNodeList: []
             }
         },
         created() {
@@ -241,6 +243,13 @@
             this.getRoles()
         },
         methods: {
+            aduitChange(val) {
+                if(val !== this.tempAudit) {
+                    this.nodeList = [...arr]
+                } else {
+                    this.nodeList = this.tempNodeList
+                }
+            },
             getData() {
                 let param = {
                     pageSize: this.pageSize,
@@ -292,7 +301,6 @@
                     this.isAudit = ""
                     this.editDisabled = false
                 } else {
-                    this.nodeList = [...row.branch]
                     let {...currentRow} = row
                     this.currentFlowId = currentRow.id
                     this.aduitForm.cityId = currentRow.cityId
@@ -301,6 +309,9 @@
                     this.aduitForm.type = currentRow.type
                     this.aduitForm.branchCondition = +currentRow.branchCondition.split('=')[1]
                     this.isAudit = currentRow.branch[0].isAudit.toString()
+                    this.tempAudit = this.isAudit
+                    this.nodeList = JSON.parse(JSON.stringify(row.branch))
+                    this.tempNodeList = JSON.parse(JSON.stringify(row.branch))
                     this.aduitForm.flowDesc = currentRow.flowDesc
                     this.setConditionList(currentRow.type)
                     this.editDisabled = true
@@ -604,6 +615,8 @@
                 }
                 &:first-child {
                     display: none;
+                }
+                &:nth-child(2) {
                     .row-icon {
                         span:last-child {
                             display: none;
