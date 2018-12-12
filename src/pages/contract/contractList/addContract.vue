@@ -214,6 +214,8 @@
             </el-form-item>
             <el-form-item label="类型：" class="width-250">
               <el-select v-model="contractForm.otherCooperationInfo.type" placeholder="请选择" style="width:140px">
+                <el-option label="无" :value="0">
+                </el-option>
                 <el-option v-for="item in dictionary['517']" :key="item.key" :label="item.value" :value="item.key">
                 </el-option>
               </el-select>
@@ -556,7 +558,7 @@ export default {
       if(value){
         this.hintText='确定提审？'
       }else{
-        this.hintText='确定保存已创建合同？'
+        this.hintText='确定保存合同？'
       }
       //验证合同信息
       this.$tool.checkForm(this.contractForm, rule).then(() => {
