@@ -63,7 +63,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===scope.row.key">
+            <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum(1)" v-if="form.moneyType===scope.row.key">
             <span v-else @click="getType(scope.row,'focus')">请输入</span>
             <!--<ul>
               <li v-for="(item,index) in scope.row.moneyTypes">
@@ -565,6 +565,10 @@
                 })
                 this.$router.go(-1)
               }
+            }).catch(error=>{
+              this.$message({
+                message:error
+              })
             })
           } else {
             this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
@@ -578,6 +582,10 @@
                   }
                 })
               }
+            }).catch(error=>{
+              this.$message({
+                message:error
+              })
             })
           }
       },
@@ -607,7 +615,7 @@
             return this.$tool.collapseRow({
               rowIndex:rowIndex,
               rowTotal:this.collapseMsg.total,
-              collapseMsg:this.collapseMsg.row
+              collapse:this.collapseMsg.row
             })
           }
         }
@@ -725,13 +733,13 @@
         this.activeAdmin = ''
         this.form = Object.assign({},this.form,obj)
         if (type === 'init'||type==='focus') {
-          this.form.moneyTypePid = label.id
+          this.form.moneyTypePid = label.pId
         } else if(type==='other') {
           this.form.moneyType=label.key
           this.form.moneyTypePid = this.moneyTypeOther[0].id
         }
         if(type==='focus'){
-          this.form.moneyType=label.moneyTypes[index].key
+          this.form.moneyType=label.key
         }
       },
     },
@@ -768,7 +776,11 @@
       > td {
         padding: 0;
         .cell {
-          padding: 0;
+          padding: 0 @margin-10;
+          >input{
+            text-align: center;
+          }
+          /*padding: 0;
           > ul {
             > li {
               padding: 12px 10px;
@@ -778,7 +790,7 @@
                 border: 0;
               }
             }
-          }
+          }*/
         }
       }
     }

@@ -1,71 +1,70 @@
 let stepIndex = 0 //记录执行合并次数
 let otherStep = 0 //除合并外，剩余行数
-let collapse = []
 
 let TOOL = {
-  routers:[
+  routers: [
     {
-      id:1,
-      name:'合同',
-      path:'1',
-      child:[
+      id: 1,
+      name: '合同',
+      path: '1',
+      child: [
         {
-          name:'合同列表',
-          path:'contractList'
+          name: '合同列表',
+          path: 'contractList'
         },
         {
-          name:'调佣审核',
-          path:'adjustCheck'
+          name: '调佣审核',
+          path: 'adjustCheck'
         },
         {
-          name:'结算审核',
-          path:'settleCheck'
+          name: '结算审核',
+          path: 'settleCheck'
         },
         {
-          name:'分账记录',
-          path:'routingRecord'
+          name: '分账记录',
+          path: 'routingRecord'
         },
       ]
     },
     {
-      id:2,
-      name:'财务',
-      path:'2',
-      child:[
+      id: 2,
+      name: '财务',
+      path: '2',
+      child: [
         {
-          name:'收付款单',
-          path:'Bill'
+          name: '收付款单',
+          path: 'Bill'
         },
         {
-          name:'收款审核',
-          path:'moneyCheck?type=1'
+          name: '收款审核',
+          path: 'moneyCheck?type=1'
         },
         {
-          name:'付款审核',
-          path:'moneyCheck?type=2'
+          name: '付款审核',
+          path: 'moneyCheck?type=2'
         },
         {
-          name:'应收实收',
-          path:'actualHarvest'
+          name: '应收实收',
+          path: 'actualHarvest'
         },
         {
-          name:'票据管理',
-          path:'paperSet'
+          name: '票据管理',
+          path: 'paperSet'
         }
       ]
     },
     {
-      id:3,
-      name:'业绩',
-      path:'3',
-      child:[
+      id: 3,
+      name: '业绩',
+      path: '3',
+      child: [
         {
-          name:'应收业绩',
-          path:'actualAchievement'
+          name: '应收业绩',
+          path: 'actualAchievement'
         },
         {
-          name:'实收业绩',
-          path:'receivableAchievement'
+          name: '实收业绩',
+          path: 'receivableAchievement'
         },
         // {
         //   name:'门店实收',
@@ -74,88 +73,88 @@ let TOOL = {
       ]
     },
     {
-      id:4,
-      name:'签后',
-      path:'4',
-      child:[
+      id: 4,
+      name: '签后',
+      path: '4',
+      child: [
         {
-          name:'后期接收',
-          path:'postReceive'
+          name: '后期接收',
+          path: 'postReceive'
         },
         {
-          name:'后期管理',
-          path:'postManage'
+          name: '后期管理',
+          path: 'postManage'
         },
         {
-          name:'后期监控',
-          path:'postMonitor'
+          name: '后期监控',
+          path: 'postMonitor'
         }
       ]
     },
     {
-      id:5,
-      name:'设置',
-      path:'setting',
-      child:[
+      id: 5,
+      name: '设置',
+      path: 'setting',
+      child: [
         {
-          name:'公司设置',
-          path:'company'
+          name: '公司设置',
+          path: 'company'
         },
         {
-          name:'合同模板设置',
-          path:'contractTemplate'
+          name: '合同模板设置',
+          path: 'contractTemplate'
         },
         {
-          name:'后期流程设置',
-          path:'postProcess'
+          name: '后期流程设置',
+          path: 'postProcess'
         },
         {
-          name:'款类设置',
-          path:'moneyType'
+          name: '款类设置',
+          path: 'moneyType'
         },
         {
-          name:'操作日志',
-          path:'operationLog'
+          name: '操作日志',
+          path: 'operationLog'
         },
         {
-          name:'审核流程',
-          path:'approvalProcess'
+          name: '审核流程',
+          path: 'approvalProcess'
         }
       ]
     }
   ],
-  closeOnClickModal:false,
-  contType:{
-    '4':4,//意向金
-    '5':5,//定金
+  closeOnClickModal: false,
+  contType: {
+    '4': 4,//意向金
+    '5': 5,//定金
   },
-  dropdown:{
-    dateType:[
+  dropdown: {
+    dateType: [
       {
-        label:'开票日期',
-        value:1
+        label: '开票日期',
+        value: 1
       },
       {
-        label:'作废日期',
-        value:2
+        label: '作废日期',
+        value: 2
       },
       {
-        label:'核销日期',
-        value:3
+        label: '核销日期',
+        value: 3
       },
       {
-        label:'回收日期',
-        value:4
+        label: '回收日期',
+        value: 4
       }
     ],
   },
   // 操作状态
-  OPERATION:{
-    start:1,    //已办理
-    backlog:2,    //待办理
-    sure:3,    //需确认（代办）
-    not:4,    //不可办理
-    amend:5,    //修改
+  OPERATION: {
+    start: 1,    //已办理
+    backlog: 2,    //待办理
+    sure: 3,    //需确认（代办）
+    not: 4,    //不可办理
+    amend: 5,    //修改
     // timeoutNot:5,    //超时未办
     // timeoutStart:6,    //超时已办
   },
@@ -185,13 +184,12 @@ let TOOL = {
    * @returns {*}
    */
   collapseRow: function ({
-    rowIndex,
-    rowTotal,
-    collapseMsg,
-    type
-  }) {
-    // collapse=[].concat(collapseMsg)
-    collapse=collapseMsg
+                           rowIndex,
+                           rowTotal,
+                           collapse,
+                           type
+                         }) {
+    // collapse=collapseMsg
     // debugger
     if (type === 'all') {
       if (rowIndex === 0) {
@@ -209,7 +207,7 @@ let TOOL = {
     /*if (rowIndex + 1 === rowTotal) {
       stepIndex = 0 //初始化合并次数，必需，不然再表格发生重绘时，会出现第一列消失的情况
     }*/
-    if(collapse.length===0){
+    /*if(collapse.length===0){
       return
     }
     if (rowIndex === 0 || rowIndex === rowTotal - otherStep) {
@@ -218,14 +216,14 @@ let TOOL = {
       collapse.forEach(item=>{
         otherStep=otherStep+item
       })
-      // debugger
-      /*collapse.forEach((item, index) => {
+      debugger
+      /!*collapse.forEach((item, index) => {
         //统计剩余行数
         if (index > stepIndex) {
           otherStep += item
         }
       })
-      stepIndex++*/
+      stepIndex++*!/
       // collapse.splice(0,1)
       return {
         rowspan: activeItem[0],
@@ -236,9 +234,9 @@ let TOOL = {
         rowspan: 0,
         colspan: 0
       };
-    }
-    /*if (rowIndex === 0 || rowIndex === rowTotal - otherStep) {
-      debugger
+    }*/
+    if (rowIndex === 0 || rowIndex === rowTotal - otherStep) {
+      // debugger
       otherStep = 0 //初始化剩余行数
       collapse.forEach((item, index) => {
         //统计剩余行数
@@ -246,17 +244,25 @@ let TOOL = {
           otherStep += item
         }
       })
-      stepIndex++
-      return {
-        rowspan: collapse[stepIndex - 1],
-        colspan: 1
+      if (rowIndex + collapse[collapse.length-1] === rowTotal) {
+        stepIndex = 0 //初始化合并次数，必需，不然再表格发生重绘时，会出现第一列消失的情况
+        return {
+          rowspan: collapse[collapse.length-1],
+          colspan: 1
+        }
+      } else {
+        stepIndex++
+        return {
+          rowspan: collapse[stepIndex - 1],
+          colspan: 1
+        }
       }
     } else if (rowIndex < rowTotal - otherStep) {
       return {
         rowspan: 0,
         colspan: 0
       };
-    }*/
+    }
   },
   /**
    * 重置表单对象
@@ -290,58 +296,58 @@ let TOOL = {
   /**
    * 表单校验 rule{'propName':{name:'label',type:'变量类型'}}
    */
-  checkForm:function (form,rule) {
-    return new Promise((resolve,reject)=>{
-      for(let item in rule){
+  checkForm: function (form, rule) {
+    return new Promise((resolve, reject) => {
+      for (let item in rule) {
         let val = form[item]
         let type = Object.prototype.toString.call(val)
         let typeInfo = rule[item].type
         let res = {
-          title:rule[item].name,
-          msg:''
+          title: rule[item].name,
+          msg: ''
         }
         // debugger
-        if(type==='[object Number]'){
-          if(val<=0){
+        if (type === '[object Number]') {
+          if (val <= 0) {
             res.msg = '请输入大于0的数字'
             reject(res)
             return
           }
         }
-        if(type==='[object String]'){
-          if(!val){
-            res.msg='不能为空'
+        if (type === '[object String]') {
+          if (!val) {
+            res.msg = '不能为空'
             reject(res)
             return
-          }else if(typeInfo==='money'){
-            if(parseFloat(val)<=0){
+          } else if (typeInfo === 'money') {
+            if (parseFloat(val) <= 0) {
               res.msg = '请输入大于0的数字'
               reject(res)
               return
             }
-          }else if(typeInfo==='bankCard'){
-            if(val.length<16){
+          } else if (typeInfo === 'bankCard') {
+            if (val.length < 16) {
               res.msg = '银行卡号位数不正确'
               reject(res)
               return
             }
-          }else if(typeInfo==='mobile'){
-            if(val.length<11){
+          } else if (typeInfo === 'mobile') {
+            if (val.length < 11) {
               res.msg = '手机号不正确'
               reject(res)
               return
             }
-          }else if(typeInfo==='idCard'){
-            if(val.length<18){
+          } else if (typeInfo === 'idCard') {
+            if (val.length < 18) {
               res.msg = '身份证号不正确'
               reject(res)
               return
             }
           }
         }
-        if(type==='[object Array]'){
-          if(val.length===0){
-            res.msg='不能为空'
+        if (type === '[object Array]') {
+          if (val.length === 0) {
+            res.msg = '不能为空'
             reject(res)
             return
           }
@@ -352,7 +358,7 @@ let TOOL = {
   },
 
   //数字转中文数字
-  toChineseNumber: function(money) {
+  toChineseNumber: function (money) {
     //汉字的数字
     var cnNums = new Array('零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖');
     //基本单位
@@ -436,21 +442,21 @@ let TOOL = {
     }
     return chineseStr;
   },
-  dateFormat:function (val,type=1) {
-    if(!val){
+  dateFormat: function (val, type = 1) {
+    if (!val) {
       return '--'
-    }else {
+    } else {
       let time = new Date(val)
       let y = time.getFullYear()
       let M = time.getMonth() + 1
       let D = time.getDate()
-      return type===1?`${y}-${M>9?M:'0'+M}-${D>9?D:'0'+D}`:`${y}/${M>9?M:'0'+M}/${D>9?D:'0'+D}`
+      return type === 1 ? `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D}` : `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D}`
     }
   },
-  timeFormat:function (val) {
-    if(!val){
+  timeFormat: function (val) {
+    if (!val) {
       return '--'
-    }else {
+    } else {
       let time = new Date(val)
       let y = time.getFullYear()
       let M = time.getMonth() + 1
@@ -458,11 +464,11 @@ let TOOL = {
       let h = time.getHours()
       let m = time.getMinutes()
       let s = time.getSeconds()
-      return `${y}-${M>9?M:'0'+M}-${D>9?D:'0'+D} ${h>9?h:'0'+h}:${m>9?m:'0'+m}:${s>9?s:'0'+s}`
+      return `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`
     }
   },
-  nullFormat:function (val) {
-    if (!val && typeof(val) !== 'number'){
+  nullFormat: function (val) {
+    if (!val && typeof(val) !== 'number') {
       return '--'
     }
     else {
@@ -470,20 +476,20 @@ let TOOL = {
     }
   },
   //上传拼接
-  getFilePath:function (arr) {
+  getFilePath: function (arr) {
     let newArr = []
-    arr.forEach(item=>{
+    arr.forEach(item => {
       newArr.push(`${item.path}?${item.name}`)
     })
     return newArr
   },
-  cutFilePath:function (arr) {
-    let newArr=[]
-    arr.forEach(item=>{
-      let cell={
-        path:item.split('?')[0],
-        name:item.split('?')[1],
-        type:this.get_suffix(item.split('?')[1])
+  cutFilePath: function (arr) {
+    let newArr = []
+    arr.forEach(item => {
+      let cell = {
+        path: item.split('?')[0],
+        name: item.split('?')[1],
+        type: this.get_suffix(item.split('?')[1])
       }
       newArr.push(cell)
     })
@@ -499,44 +505,44 @@ let TOOL = {
     return suffix;
   },
   //保留小数位
-  cutFloat:function ({val,max,num=2}) {
-    val=val.toString().replace(/[^\d.]/g,'').replace(/\.{2,}/g,'')
-    let point=''
-    if(parseFloat(val)>=max){
+  cutFloat: function ({val, max, num = 2}) {
+    val = val.toString().replace(/[^\d.]/g, '').replace(/\.{2,}/g, '')
+    let point = ''
+    if (parseFloat(val) >= max) {
       return max
     }
-    let pos=val.indexOf('.')
-    if(pos>-1){
-      point=val.split('.')[1]
-      if(point.length>num){
-        point=point.substring(0,num)
+    let pos = val.indexOf('.')
+    if (pos > -1) {
+      point = val.split('.')[1]
+      if (point.length > num) {
+        point = point.substring(0, num)
       }
-      return `${val.slice(0,pos)}.${point}`
-    }else {
+      return `${val.slice(0, pos)}.${point}`
+    } else {
       return val
     }
   },
-  textInput:function (val) {
-    return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,'').replace(/\s/g,'')
+  textInput: function (val) {
+    return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g, '').replace(/\s/g, '')
   },
-  numberInput:function (val) {
-    return val.replace(/[^\d]/g,'')
+  numberInput: function (val) {
+    return val.replace(/[^\d]/g, '')
   },
   //数组是否有重复元素
-  repeatCell:function (arr) {
+  repeatCell: function (arr) {
     // debugger
-    let old=arr.length
-    let newArr=new Set(arr)
-    if(old===newArr.size){
+    let old = arr.length
+    let newArr = new Set(arr)
+    if (old === newArr.size) {
       return true
-    }else {
+    } else {
       return false
     }
   },
   //生成面包屑导航数组
-  getRouter:function (arr,root) {
-    return arr.map(item=>{
-      return {name:item,path:root}
+  getRouter: function (arr, root) {
+    return arr.map(item => {
+      return {name: item, path: root}
     })
   }
 }
