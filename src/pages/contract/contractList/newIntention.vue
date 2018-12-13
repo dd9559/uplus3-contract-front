@@ -136,11 +136,11 @@
         <!-- 房客源弹框 -->
         <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
         <!-- 确定保存合同弹框 -->
-        <el-dialog title="提示" :visible.sync="dialogSure" class="myconfirm">
+        <el-dialog title="提示" :visible.sync="dialogSure" class="myconfirm" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
             <span>确定保存合同？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogSure = false">取 消</el-button>
-                <el-button type="primary" @click="onSubmit()">确 定</el-button>
+                <el-button type="primary" @click="onSubmit()" v-dbClick>确 定</el-button>
             </span>
         </el-dialog>
           

@@ -111,7 +111,7 @@
       </div>
       <div class="btnbox">
         <el-button @click="close">取 消</el-button>
-        <el-button type="primary" @click="auditApply()">保 存</el-button>  
+        <el-button type="primary" @click="auditApply()" v-dbClick>保 存</el-button>  
       </div> 
       <!-- 图片放大 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -285,6 +285,9 @@ export default {
           reason: this.auditForm.textarea,
           enclosure: this.uploadList,
           relieve: this.checked, 
+          ownerCommission: this.layerAudit.ownerCommission,
+          custCommission: this.layerAudit.custCommission,
+          otherCooperationCost: this.layerAudit.otherCooperationCost,
           newOwnerCommission: this.auditForm.money1,
           newCustCommission: this.auditForm.money2,
           newOtherCooperationCost: this.auditForm.money4

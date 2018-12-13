@@ -339,8 +339,8 @@
        */
       getCheckData:function () {
         let param={
-          pageSize:this.pageSize,
-          pageNum:this.currentPage,
+          /*pageSize:this.pageSize,
+          pageNum:this.currentPage,*/
           flowType:this.billMsg.audit.flowType,
           bizCode:this.billMsg.audit.bizCode
         }

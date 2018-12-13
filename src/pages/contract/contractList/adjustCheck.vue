@@ -122,7 +122,7 @@
         </el-table-column>             
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope" v-if="scope.row.checkState === 0">
-            <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
+            <el-button type="text" class="curPointer" @click="auditApply(scope.row)" v-dbClick>审核</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -216,8 +216,8 @@
         </div>  
       </div>
       <div class="btnbox">
-        <el-button class="refuse" @click="refuseFn()">驳 回</el-button>
-        <el-button type="primary"  @click="receptFn()" class="recept">通 过</el-button>  
+        <el-button class="refuse" @click="refuseFn()" v-dbClick>驳 回</el-button>
+        <el-button type="primary"  @click="receptFn()" class="recept" v-dbClick>通 过</el-button>  
       </div> 
       <!-- 图片放大 -->
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -225,7 +225,7 @@
 
     <!-- 调佣详情 -->
     <el-dialog title="调佣详情" :visible.sync="dialogVisible2" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
-      <div class="audit-box"  :style="{ height: clientHeight() }">
+      <div class="audit-box"  :style="{ height: clientHeight2() }">
         <div class="audit-col">
           <div class="col-li">
             <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
@@ -299,7 +299,7 @@
         <div class="audit-col bordernone">
           <!-- 表格 -->
           <div class="mb20">审核信息：</div>
-          <table class="table">
+          <!-- <table class="table">
             <thead>
               <tr>
                 <th>时间</th>
@@ -325,7 +325,39 @@
                 <td>审核备注信息</td>
               </tr>
             </tbody>
-          </table>
+          </table> -->
+          <el-table :data="checkInfo" border style="width: 100%" class="table table2 mt20">
+            <el-table-column label="时间" width=160 align=center>
+              <template slot-scope="scope">
+                <p>{{scope.row.auditTime | getTime}}</p>
+              </template>
+            </el-table-column>
+            <el-table-column prop="userName" label="姓名">
+            </el-table-column>
+            <el-table-column prop="roleName" label="职务"  width=110></el-table-column>
+            <el-table-column label="操作" :formatter="nullFormatter" align="center" width=100>
+              <template slot-scope="scope">
+                <span class="blue" v-if="scope.row.auditState === 0">审核中</span>
+                <span class="green" v-if="scope.row.auditState === 1">通过</span>
+                <span class="red" v-if="scope.row.auditState === 2">驳回</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="备注">
+              <template slot-scope="scope">
+                <span v-if="scope.row.auditInfo">
+                  <el-popover trigger="hover" placement="top">
+                    <div style="width:160px">
+                      {{scope.row.auditInfo}}
+                    </div>
+                    <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.auditInfo.length<16}">
+                      {{scope.row.auditInfo}}
+                    </div>
+                  </el-popover>
+                </span>
+                <span v-else>-</span>
+              </template>
+            </el-table-column>
+          </el-table> 
         </div>
 
       </div>
@@ -391,6 +423,8 @@
 
         },
 
+        checkInfo:[],
+
         isDelete:'',
         
         myCheckId: '',
@@ -429,6 +463,12 @@
     filters: {
        getDate(val) {
          return TOOL.dateFormat(val);
+       },
+       getTime(val) {
+         if(val === ''){
+           return '-'
+         }
+         return TOOL.timeFormat(val)
        }
     },
   
@@ -452,6 +492,10 @@
       // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
           return this.clientHei - 265 + 'px'
+      },
+
+      clientHeight2() {        
+          return this.clientHei - 197 + 'px'
       },
 
       // 得到部门门店和经纪人信息
@@ -579,20 +623,20 @@
       // 双击详情事件
       toDetail(e) {
         this.dialogVisible2 = true
-        this.auditForm.textarea = ''
         let param = {
           checkId: e.checkId,
           contractCode: e.contractCode
         }
         this.$ajax.get("/api/commission/toCheck", param)
         .then(res => {
-          console.log(e);
           let data = res.data;
           if (res.data.status === 200) {
             console.log(data.data)
             this.layerAudit = data.data;
             this.myCheckId = data.data.checkId;
             this.uploadList = data.data.voucher;
+            this.checkInfo = data.data.list
+            console.log()
           }
         }).catch(error => {
             this.$message({
@@ -729,6 +773,9 @@
 @import "~@/assets/common.less";
 
 #adjustcheck{
+  .mt20{
+    margin-bottom: 20px;
+  }
   .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{
     margin-bottom: 10px;
   }
@@ -957,6 +1004,11 @@
           }
         }
       }
+      .table2{
+        tr td{
+          padding: 12px 0;
+        }
+      }
       .uploadfile{
         margin: 40px 0 0;
         display: flex;
@@ -1050,12 +1102,15 @@
   }
   .name-wrapper {
     min-width: 80px;
-    height: 65px;
+    max-height: 65px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
     text-overflow:ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    word-wrap:break-word;
   }
   .isFlex{
     display: flex;
