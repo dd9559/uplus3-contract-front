@@ -352,6 +352,9 @@
           </el-table>
         </div>
       </el-tab-pane>
+      <el-tab-pane label="审核记录" name="fifth">
+
+      </el-tab-pane>
     </el-tabs>
     <div class="functionTable" v-if="contractDetail.contChangeState.value!=2">
       
@@ -1096,11 +1099,11 @@ export default {
     padding-top: 28px;
     border: 1px dashed @border-DE;
     border-radius:1px;
-    > i {
+     i {
       color: @bg-th;
       font-size: 50px;
     }
-    > p {
+     p {
       padding-top: 10px;
       color: @color-324;
       font-size: 12px;

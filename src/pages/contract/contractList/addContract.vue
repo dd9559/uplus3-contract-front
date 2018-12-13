@@ -1376,7 +1376,7 @@ export default {
       li{
         display: flex;
         height: 50px;
-        width: 350px;
+        width: 365px;
         line-height: 50px;
         > .title{
           width: 200px;
@@ -1385,9 +1385,10 @@ export default {
           color: #606266;
         }
         > .unit{
-          width: 40px;
+          width: 66px;
           padding-left: 10px;
           color: #606266;
+          overflow: hidden;
         }
       }
     }
