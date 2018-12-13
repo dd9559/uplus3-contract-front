@@ -32,7 +32,7 @@
             <div class="one_" v-if="contType!='1'">
               <p v-if="contType!='1'">
                 <span class="tag">佣金合计：</span>
-                <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission-contractDetail.commissionPayment}} 元</span>
+                <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
               </p>
               <p class="address">
                 <span class="tag">交易流程：</span>
@@ -246,10 +246,12 @@
               </file-up>
             </li>
             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
-              <div class="namePath" @click="getPicture(uploadList,index)">
-                <upload-cell :type="item.fileType"></upload-cell>
-                <p>{{item.name}}</p>
-              </div>
+              <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                <div class="namePath" @click="getPicture(uploadList,index)">
+                  <upload-cell :type="item.fileType"></upload-cell>
+                  <p>{{item.name}}</p>
+                </div>
+              </el-tooltip>
               <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
             </li>
           </ul>
@@ -273,10 +275,12 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath" @click="getPicture(item.value,index_)">
-                    <upload-cell :type="item_.fileType"></upload-cell>
-                    <p>{{item_.name}}</p>
-                  </div>
+                  <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                    <div class="namePath" @click="getPicture(item.value,index_)">
+                      <upload-cell :type="item_.fileType"></upload-cell>
+                      <p>{{item_.name}}</p>
+                    </div>
+                  </el-tooltip>
                   <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
@@ -294,10 +298,12 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath" @click="getPicture(item.value,index_)">
-                    <upload-cell :type="item_.fileType"></upload-cell>
-                    <p>{{item_.name}}</p>
-                  </div>
+                  <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                    <div class="namePath" @click="getPicture(item.value,index_)">
+                      <upload-cell :type="item_.fileType"></upload-cell>
+                      <p>{{item_.name}}</p>
+                    </div>
+                  </el-tooltip>
                   <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
@@ -315,10 +321,12 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath" @click="getPicture(item.value,index_)">
-                    <upload-cell :type="item_.fileType"></upload-cell>
-                    <p>{{item_.name}}</p>
-                  </div>
+                  <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                    <div class="namePath" @click="getPicture(item.value,index_)">
+                      <upload-cell :type="item_.fileType"></upload-cell>
+                      <p>{{item_.name}}</p>
+                    </div>
+                  </el-tooltip>
                   <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
@@ -353,7 +361,19 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="审核记录" name="fifth">
-
+        <div class="record">
+          <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+            <el-table-column prop="visitTime" label="时间">
+            </el-table-column>
+            <el-table-column prop="visitPeople" label="姓名">
+            </el-table-column>
+            <el-table-column prop="record" label="职务">
+            </el-table-column>
+            <el-table-column prop="record" label="操作">
+            </el-table-column>
+            <el-table-column prop="remakes" label="备注" width="320"></el-table-column>
+          </el-table>
+        </div>
       </el-tab-pane>
     </el-tabs>
     <div class="functionTable" v-if="contractDetail.contChangeState.value!=2">
@@ -399,7 +419,9 @@
         <div class="reason">
           <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100"></el-input>
           <span>{{invalidReason.length}}/100</span>
-          <p><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
+          <p v-if="contractDetail.toExamineState.value>-1&&contractDetail.contState.value!=2"><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
+          <p v-if="contractDetail.contState.value===2"><span>注：</span>您的合同已签章，是否确认要做无效？无效后，合同需要重新提审！</p>
+          <p v-if="contractDetail.toExamineState.value<0"><span>注：</span>您的合同是否确认要做无效？无效后，合同需要重新提审！</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -528,7 +550,9 @@ export default {
       preview:false,
       start:'',
       //提审确认
-      isSubmitAudit:false
+      isSubmitAudit:false,
+      //审核记录
+      checkData:[]
     };
   },
   created() {
@@ -1243,6 +1267,7 @@ export default {
       text-align: center;
       font-size: 14px;
       color: @color-blue;
+      cursor: pointer;
     }
     .active {
       background: @color-blue;

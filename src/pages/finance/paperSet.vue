@@ -182,26 +182,41 @@
         </el-table-column>
         <el-table-column prop="amount" label="开票金额（元）" min-width="122">
         </el-table-column>
-        <el-table-column prop="createTime" label="开票日期" min-width="150">
+        <el-table-column label="开票日期" min-width="150">
+          <template slot-scope="scope">
+            {{dateFormat(scope.row.createTime)}}
+          </template>
         </el-table-column>
         <el-table-column prop="printTimes" label="打印次数" min-width="85">
         </el-table-column>
         <el-table-column prop="printByName" label="打印人" min-width="72">
         </el-table-column>
-        <el-table-column prop="printTime" label="打印日期" min-width="152">
+        <el-table-column label="打印日期" min-width="152">
+           <template slot-scope="scope">
+            {{dateFormat(scope.row.printTime)}}
+          </template>
         </el-table-column>
-        <el-table-column prop="recycleTime" label="回收日期" min-width="152">
+        <el-table-column label="回收日期" min-width="152">
+          <template slot-scope="scope">
+            {{dateFormat(scope.row.recycleTime)}}
+          </template>
         </el-table-column>
-        <el-table-column prop="cavTime" label="核销日期" min-width="148">
+        <el-table-column label="核销日期" min-width="148">
+          <template slot-scope="scope">
+            {{dateFormat(scope.row.cavTime)}}
+          </template>
         </el-table-column>
-        <el-table-column prop="invalidTime" label="作废日期" min-width="152">
+        <el-table-column label="作废日期" min-width="152">
+          <template slot-scope="scope">
+            {{dateFormat(scope.row.invalidTime)}}
+          </template>
         </el-table-column>
         <el-table-column prop="invalidReason" label="作废原因" min-width="100">
         </el-table-column>
         <el-table-column label="操作人/时间" min-width="146">
           <template slot-scope="scope">
             <p>{{scope.row.updateByName}}</p>
-            <p>{{scope.row.updateTime}}</p>
+            <p>{{dateFormat(scope.row.updateTime)}}</p>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="148">
@@ -339,6 +354,10 @@
       this.getData();
     },
     methods: {
+      // 时间处理
+      dateFormat(val){
+          return this.$tool.dateFormat(val);
+      },
       reset: function () {
         this.$tool.clearForm(this.propForm)
       },

@@ -49,7 +49,7 @@
       <p class="tool-bar">
         <el-button round class="make-bill" type="primary" v-if="type===1" @click="toBill">开票</el-button>
         <el-button round @click="goBack('contractList')">返回合同列表</el-button>
-        <el-button round @click="goBack('bill')">返回收付款列表</el-button>
+        <el-button round @click="goBack('Bill')">返回收付款列表</el-button>
         <span class="btn-question" @click="answer">支付遇到问题？</span>
       </p>
     </div>

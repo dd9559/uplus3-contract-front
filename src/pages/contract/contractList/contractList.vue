@@ -87,7 +87,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
-          <el-dropdown placement="bottom">
+          <el-dropdown placement="bottom"  @command="printCont">
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -670,6 +670,33 @@ export default {
         statusReceiveAmount:item.receiveAmountState
       }
       this.$refs.lateProgress.show(value);
+    },
+
+    
+    //打印空白合同
+    printCont(command){
+      let param = {
+        type:command
+      };
+      this.$ajax.get('/api/setting/contractTemplate/getBlankPdf',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          let address = res.data;
+
+        }
+      })
+    },
+    //获取签名
+    getUrl(url){
+      let param = {
+        url:url
+      }
+      this.$ajax.get("/api/load/generateAccessURLBatch",param).then(res=>{
+        res = res.data
+        if(res.status ===200){
+          this.pdfUrl = res.data.url;
+        }
+      })
     }
   }
 };
