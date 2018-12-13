@@ -2,7 +2,7 @@
     <div class="preview">
       <div class="view-container" :class="[getType==='img'?'img-drag':'']" ref="drag" @mousedown="mousedown" @mouseup="dragging=false">
         <img ref="img" :src="imgSrc" :style="{width:getWidth,transform:getRotate}" alt="" v-if="getType==='img'">
-        <video controls v-else-if="getType==='video'">
+        <video width="750px" controls v-else-if="getType==='video'">
           <source  :src="imgSrc" type="video/mp4">
         </video>
         <a :href="imgSrc" download v-else>文件不支持预览，请手动下载</a>
@@ -20,8 +20,11 @@
 </template>
 
 <script>
+  import {MIXINS} from "@/assets/js/mixins";
+
   export default {
     name: "preview",
+    mixins:[MIXINS],
     props:{
       imgList:{
         type:Array,
@@ -102,7 +105,7 @@
       opera:function (type) {
         switch (type){
           case 1:
-            this.$emit('saveFile')
+            this.fileSign([].concat(this.imgSrc.split('?')[0]),'download')
             break
           case 2:
             this.transform+=90
@@ -275,6 +278,9 @@
         left: 0;
         z-index: 9;
       }
+    }
+    >.video{
+      max-width: 750px;
     }
   }
 </style>

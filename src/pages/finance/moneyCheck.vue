@@ -109,7 +109,7 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w394" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/手机号"></el-input>
+          <el-input class="w394" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -154,14 +154,14 @@
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
         <!--<el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>-->
-        <el-table-column align="center" label="收付时间" prop="createTime" :formatter="nullFormatter">
+        <el-table-column align="center" :label="activeView===1?'收付时间':'付款时间'" prop="createTime" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <span>{{scope.row.createTime|formatDate}}</span>
+            <span>{{scope.row.createTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="入账时间" prop="toAccountTime" :formatter="nullFormatter">
+        <el-table-column align="center" label="入账时间" prop="toAccountTime" :formatter="nullFormatter" v-if="activeView===1">
           <template slot-scope="scope">
-            <span>{{scope.row.toAccountTime|formatDate}}</span>
+            <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="状态" prop="payStatus"></el-table-column>
