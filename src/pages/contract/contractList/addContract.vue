@@ -159,7 +159,7 @@
             <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
           <el-form-item label="付款方式：" :class="{'form-label':type===1}">
-            <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择状态" :disabled="type===2?true:false" style="width:140px" :clearable="true">
+            <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
               <el-option v-for="item in dictionary['556']" :key="item.key" :label="item.value" :value="item.key">
               </el-option>
             </el-select>
@@ -562,18 +562,20 @@ export default {
       }
       //验证合同信息
       this.$tool.checkForm(this.contractForm, rule).then(() => {
-          // debugger
           if (
             this.contractForm.custCommission > 0 ||
             this.contractForm.ownerCommission > 0
           ) {
             if (this.contractForm.houseInfo.HouseStoreCode) {
+              this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
               if(this.contractForm.propertyCard||this.contractForm.type===1){
                 //业主产权比
               let ownerRightRatio = 0;
 
               let isOk;
-              this.ownerList.forEach(element => {
+              // this.ownerList.forEach(element => {
+              for(var i=0;i<this.ownerList.length;i++){
+                let element = this.ownerList[i]
                 isOk = false;
                 if (element.name) {
                   if (element.mobile.length === 11) {
@@ -595,38 +597,45 @@ export default {
                               this.$message({
                                 message: "业主身份证号不正确"
                               });
+                              break
                             }
                           } else {
                             this.$message({
                               message: "业主身份证号不能为空"
                             });
+                            break
                           }
                         } else {
                           this.$message({
                             message: "业主产权比不能为空或负"
                           });
+                          break
                         }
                     } else {
                       this.$message({
                         message: "业主关系不能为空"
                       });
+                      break
                     }
                     }else{
                       this.$message({
                         message: "业主电话号码不正确"
                       });
+                      break
                     }
                   } else {
                     this.$message({
                       message: "业主电话号码不正确"
                     });
+                    break
                   }
                 } else {
                   this.$message({
                     message: "业主姓名不能为空"
                   });
+                  break
                 }
-              });
+              };
               if (isOk) {
                 if (ownerRightRatio === 100||this.contractForm.type===1) {
                   if (this.contractForm.guestInfo.paymentMethod) {
@@ -634,7 +643,9 @@ export default {
                       //客户产权比
                       let guestRightRatio = 0;
                       let isOk_;
-                      this.guestList.forEach(element => {
+                      // this.guestList.forEach(element => {
+                      for(var i=0;i<this.guestList.length;i++){
+                        let element = this.guestList[i];
                         isOk_ = false;
                         if (element.name) {
                           if (element.mobile.length === 11) {
@@ -651,38 +662,45 @@ export default {
                                     this.$message({
                                       message: "客户身份证号不正确"
                                     });
+                                    break
                                   }
                                 } else {
                                   this.$message({
                                     message: "客户身份证号不能为空"
                                   });
+                                  break
                                 }
                               } else {
                                 this.$message({
                                   message: "客户产权比不能为空或负"
                                 });
+                                break
                               }
                             } else {
                               this.$message({
                                 message: "客户关系不能为空"
                               });
+                              break
                             }
                             }else{
                               this.$message({
                                 message: "业主电话号码不正确"
                               });
+                              break
                             }
                           } else {
                             this.$message({
                               message: "客户电话号码不正确"
                             });
+                            break
                           }
                         } else {
                           this.$message({
                             message: "客户姓名不能为空"
                           });
+                          break
                         }
-                      });
+                      };
                       if (isOk_) {
                         if (guestRightRatio === 100||this.contractForm.type===1) {
                           //验证身份证是否重复
