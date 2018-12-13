@@ -874,7 +874,7 @@
                         transFlowCode:this.propForm.time,
                         stagesBankCode:this.propForm.paper,
                         dealDeptId:this.propForm.region,
-                        dealBrokerName:this.propForm.regionName,
+                        dealAgentId:this.propForm.regionName,
                         statusLaterStage:this.propForm.late,
                         pageNum:this.pageNum,
                         pageSize:this.pageSize,
