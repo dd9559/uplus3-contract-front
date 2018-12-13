@@ -166,7 +166,6 @@
         }
     }
     let flowType = ["付款审核","收款审核","应收业绩审核","合同审核","调佣审核","结算审核"]
-    let sortNo = 2
     let arr = [
         {
             name: "提审人",
@@ -179,7 +178,7 @@
         {
             name: "",
             type: "",
-            sort: 2,
+            sort: "",
             userId: "",
             userName: "",
             isAudit: "1"
@@ -389,7 +388,7 @@
                 let row = {
                     name: "",
                     type: "",
-                    sort: ++sortNo,
+                    sort: "",
                     userId: "",
                     userName: "",
                     isAudit: "1"
@@ -417,14 +416,15 @@
                         }]
                         this.nodeList = arr1
                     } else {
-                        this.nodeList.forEach(item => {
+                        let item = this.nodeList
+                        for(var i = 1; i < item.length; i++) {
                             isOk = false
-                            if(item.name) {
-                                if(item.type !== "") {
-                                    if(item.userId>=0&&item.type===1 || item.userId>=0&&item.type===2 || item.type===0 || item.type===3) {
+                            if(item[i].name) {
+                                if(item[i].type !== "") {
+                                    if(item[i].userId!=""&&item[i].type===1 || item[i].userId!=""&&item[i].type===2 || item[i].type===3) {
                                         isOk = true
                                     } else {
-                                        this.$message({message:item.type===1?"请选择门店":"请选择职务"})
+                                        this.$message({message:item[i].type===1?"请选择门店":"请选择职务"})
                                     }
                                 } else {
                                     this.$message({message:"审批人类型不能为空"})
@@ -432,7 +432,7 @@
                             } else {
                                 this.$message({message:"节点名称不能为空"})
                             }
-                        })
+                        }
                     }
                     let param = {
                         branch: this.nodeList

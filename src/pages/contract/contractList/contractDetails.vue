@@ -32,7 +32,7 @@
             <div class="one_" v-if="contType!='1'">
               <p v-if="contType!='1'">
                 <span class="tag">佣金合计：</span>
-                <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission-contractDetail.commissionPayment}} 元</span>
+                <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
               </p>
               <p class="address">
                 <span class="tag">交易流程：</span>
@@ -227,7 +227,7 @@
             <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)" v-if="contractDetail.contState.value===3">解约</el-button>
             <el-button round type="danger" @click="invalid" class="search_btn" v-if="contractDetail.contState.value!=3&&contractDetail.contState.value!=0">无效</el-button>
             <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1">变更</el-button>
-            <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value<2">编辑</el-button>
+            <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2">编辑</el-button>
             <el-button round type="primary" class="search_btn" @click="isSubmitAudit=true" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value<0">提交审核</el-button>
           </div>
           <div v-else>
@@ -246,10 +246,12 @@
               </file-up>
             </li>
             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
-              <div class="namePath" @click="getPicture(uploadList,index)">
-                <upload-cell :type="item.fileType"></upload-cell>
-                <p>{{item.name}}</p>
-              </div>
+              <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                <div class="namePath" @click="getPicture(uploadList,index)">
+                  <upload-cell :type="item.fileType"></upload-cell>
+                  <p>{{item.name}}</p>
+                </div>
+              </el-tooltip>
               <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
             </li>
           </ul>
@@ -273,10 +275,12 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath" @click="getPicture(item.value,index_)">
-                    <upload-cell :type="item_.fileType"></upload-cell>
-                    <p>{{item_.name}}</p>
-                  </div>
+                  <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                    <div class="namePath" @click="getPicture(item.value,index_)">
+                      <upload-cell :type="item_.fileType"></upload-cell>
+                      <p>{{item_.name}}</p>
+                    </div>
+                  </el-tooltip>
                   <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
@@ -294,10 +298,12 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath" @click="getPicture(item.value,index_)">
-                    <upload-cell :type="item_.fileType"></upload-cell>
-                    <p>{{item_.name}}</p>
-                  </div>
+                  <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                    <div class="namePath" @click="getPicture(item.value,index_)">
+                      <upload-cell :type="item_.fileType"></upload-cell>
+                      <p>{{item_.name}}</p>
+                    </div>
+                  </el-tooltip>
                   <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
@@ -315,10 +321,12 @@
                   </file-up>
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                  <div class="namePath" @click="getPicture(item.value,index_)">
-                    <upload-cell :type="item_.fileType"></upload-cell>
-                    <p>{{item_.name}}</p>
-                  </div>
+                  <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                    <div class="namePath" @click="getPicture(item.value,index_)">
+                      <upload-cell :type="item_.fileType"></upload-cell>
+                      <p>{{item_.name}}</p>
+                    </div>
+                  </el-tooltip>
                   <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="isDelete===item.title+item_.path"></i>
                 </li>
               </ul>

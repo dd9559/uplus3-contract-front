@@ -76,11 +76,19 @@ export default new Router({
       },
       {
         path: "postProcess",
-        component: postProcess
+        component: postProcess,
+        meta: {
+          root: true,
+          list: ['设置', '后期流程设置']
+        }
       },
       {
         path: "company",
-        component: Company
+        component: Company,
+        meta: {
+          root: true,
+          list: ['设置', '公司设置']
+        }
       },
       {
         path: "moneyType",
@@ -100,7 +108,11 @@ export default new Router({
       },
       {
         path: "approvalProcess",
-        component: approvalProcess
+        component: approvalProcess,
+        meta: {
+          root: true,
+          list: ['设置', '审核流程']
+        }
       },
       //设置模块 end
       {

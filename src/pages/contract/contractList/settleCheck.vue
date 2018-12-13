@@ -129,7 +129,7 @@
               
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope" v-if="scope.row.examineState.value=== 0">
-            <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
+            <el-button type="text" class="curPointer" @click="auditApply(scope.row)" v-dbClick>审核</el-button>
           </template>
         </el-table-column>
         
@@ -188,14 +188,14 @@
           <div class="uploadfile">
               <div class="uploadtitle">结算凭证</div>
               <ul class="ulData">
-                <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath">
+                    <div class="namePath" @click="getPicture(uploadList,index)">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
                   </el-tooltip>
-                  <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                  <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
                 </li>
             </ul>
           </div>     
@@ -219,9 +219,11 @@
 
       </div>
       <div class="btnbox">
-        <el-button class="refuse" @click="refuseFn()">驳 回</el-button>
-        <el-button type="primary" class="recept"  @click="receptFn()">通 过</el-button>  
-      </div> 
+        <el-button class="refuse" @click="refuseFn()" v-dbClick>驳 回</el-button>
+        <el-button type="primary" class="recept"  @click="receptFn()" v-dbClick>通 过</el-button>  
+      </div>
+      <!-- 图片放大 -->
+      <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview> 
     </el-dialog>
 
     <!-- 结算详情 -->
@@ -268,14 +270,14 @@
           <div class="uploadfile">
               <div class="uploadtitle">结算凭证</div>
               <ul class="ulData">
-                <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath">
+                    <div class="namePath" @click="getPicture(uploadList,index)">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
                   </el-tooltip>
-                  <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                  <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
                 </li>
             </ul>
           </div>     
@@ -289,7 +291,8 @@
           </div>
         </div>
       </div>
-     
+      <!-- 图片放大 -->
+      <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
 
 
@@ -360,6 +363,8 @@
           }
 
         },
+        preview:false,
+        start:'',
         isDelete:'',
         //上传的协议
         uploadList: [],
@@ -396,20 +401,31 @@
     },
   
     methods:{
+      //图片预览
+      getPicture(value,index){
+          this.start=index;
+          let arr=[];
+          // console.log(value);
+          value.forEach(item =>{
+              arr.push(item.path)
+          })
+          this.fileSign(arr)
+      },
+      
       //合同主体的删除
-      ZTdelectData(index){
-          this.uploadList.splice(index,1)
-      },
+      // ZTdelectData(index){
+      //     this.uploadList.splice(index,1)
+      // },
 
-      //显示删除按钮
-      moveIn(value){
-          this.isDelete=value
-      },
-      moveOut(value){
-          if(this.isDelete===value){
-              this.isDelete=''
-          }
-      },
+      // //显示删除按钮
+      // moveIn(value){
+      //     this.isDelete=value
+      // },
+      // moveOut(value){
+      //     if(this.isDelete===value){
+      //         this.isDelete=''
+      //     }
+      // },
 
 
       // 控制弹框body内容高度，超过显示滚动条
@@ -1005,12 +1021,15 @@
   }
   .name-wrapper {
     min-width: 80px;
-    height: 65px;
+    max-height: 65px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
     text-overflow:ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    word-wrap:break-word;
   }
   .isFlex{
     display: flex;

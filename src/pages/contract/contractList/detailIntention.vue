@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="fr">                  
                                     <el-button type="primary" plain round class="btn1" @click="onPreview()">预 览</el-button>
-                                    <el-button type="primary" round class="mr30 btn2" @click="onEdit(detailData.contType)">编 辑</el-button>                  
+                                    <el-button type="primary" round class="mr30 btn2" @click="onEdit(detailData.contType)" v-dbClick>编 辑</el-button>                  
                                 </div>
                             </div>
                         </div>
@@ -93,9 +93,9 @@
                                     <p>点击上传</p>
                                 </file-up>
                             </li>
-                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                                    <div class="namePath">
+                                    <div class="namePath" @click="getPicture(uploadList,index)">
                                         <upload-cell :type="item.fileType"></upload-cell>
                                         <p>{{item.name}}</p>
                                     </div>
@@ -120,9 +120,9 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)"  @click="previewPhoto(item.value,index_)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                                         <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                                            <div class="namePath">
+                                            <div class="namePath" @click="getPicture(item.value,index_)">
                                                 <upload-cell :type="item_.fileType"></upload-cell>
                                                 <p>{{item_.name}}</p>                                              
                                             </div>
@@ -146,13 +146,13 @@
                                         </file-up>
                                     </li>
                                     
-                                        <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
-                                            <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                                                <div class="namePath">
+                                        <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                                            <!-- <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom"> -->
+                                                <div class="namePath" @click="getPicture(item.value,index_)">
                                                     <upload-cell :type="item_.fileType"></upload-cell>                                               
                                                     <p>{{item_.name}}</p>   
                                                 </div>
-                                            </el-tooltip>
+                                            <!-- </el-tooltip> -->
                                             <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>                                          
                                         </li>
                                     
@@ -172,9 +172,9 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" class="isDelete" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                                         <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                                            <div class="namePath">
+                                            <div class="namePath" @click="getPicture(item.value,index_)">
                                                 <upload-cell :type="item_.fileType"></upload-cell>
                                                 <p>{{item_.name}}</p>    
                                             </div>                                         
@@ -200,7 +200,7 @@
             </div>
             
             <!-- 图片放大 -->
-             <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+             <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
         </div>
        
             
@@ -221,6 +221,8 @@ export default {
             name:'first',
             dialogImageUrl: '',
             dialogVisible: false,
+            preview:false,
+            start:'',
             contState:'',
             detailData: {
                 signDate:'',
@@ -273,8 +275,17 @@ export default {
     },
     
     methods: {
-        // 图片放大
-       
+        //图片预览
+        getPicture(value,index){
+            this.start=index;
+            let arr=[];
+            // console.log(value);
+            value.forEach(item =>{
+                arr.push(item.path)
+            })
+            this.fileSign(arr)
+        },
+
         handleClick(tab, event) {
             this.name=tab.name;
         },
@@ -857,25 +868,7 @@ export default {
         .contractSubject {
             padding: 40px;
         }
-        .uploadSubject {
-            display: inline-block;
-            text-align: center;
-            width: 120px;
-            height: 120px;
-            box-sizing: border-box;
-            padding-top: 28px;
-            border: 1px dashed #DEDDE2;
-            border-radius:1px;
-            i {
-                color: #EEF2FB;
-                font-size: 50px;
-            }
-            p {
-                padding-top: 10px;
-                color: #32485F;
-                font-size: 12px;
-            }
-        }
+        
         .third-tab{
            padding: 20px 30px 30px 30px; 
         }

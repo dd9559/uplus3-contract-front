@@ -50,7 +50,7 @@
                 style="width: 100%"
                 header-row-class-name="theader-bg">
         <el-table-column align="center" prop="pName" label="款类（大类）"></el-table-column>
-        <el-table-column align="center" label="款类（小类）">
+        <el-table-column min-width="100" align="center" label="款类（小类）">
           <template slot-scope="scope">
             <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row)">{{scope.row.name}}</el-radio>
             <!--<ul>
@@ -93,7 +93,7 @@
         <el-table-column align="center" label="款类（大类）">
           <template slot-scope="scope">{{moneyTypeOther[0].name}}</template>
         </el-table-column>
-        <el-table-column align="center" label="款类（小类）">
+        <el-table-column min-width="100" align="center" label="款类（小类）">
           <template slot-scope="scope">
             <div class="box box-left">
               <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">
@@ -513,33 +513,39 @@
                 message:'收账账户不能为空'
               })
             }else {
+              // let state=false
               param.outAccount.find((item,index)=>{
-                this.$tool.checkForm(item,RULE).then(()=>{
-                  let count=0
-                  param.outAccount.forEach(item=>{
-                    count = count+parseFloat(item.amount)
-                    return count
-                  })
-                  if(count!==parseInt(this.form.smallAmount)){
-                    this.$message({
-                      message:'刷卡金额要等于收款金额'
+                if(!state){
+                  this.$tool.checkForm(item,RULE).then(()=>{
+                    let count=0
+                    param.outAccount.forEach(item=>{
+                      count = count+parseFloat(item.amount)
+                      // return count
                     })
-                    return true
-                  }
-                  if(this.files.length===0){
+                    if(count!==parseFloat(this.form.smallAmount)){
+                      this.$message({
+                        message:'刷卡金额要等于收款金额'
+                      })
+                      return true
+                    }
+                    if(index===param.outAccount.length-1){
+                      if(this.files.length===0){
+                        this.$message({
+                          message:'收款凭证不能为空'
+                        })
+                      }else {
+                        param.filePath = [].concat(this.files)
+                        this.getResult(param,this.$route.query.edit?'edit':'')
+                      }
+                    }
+                  }).catch(error=>{
+                    // debugger
+                    state=true
                     this.$message({
-                      message:'收款凭证不能为空'
+                      message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
                     })
-                  }else {
-                    param.filePath = [].concat(this.files)
-                    this.getResult(param,this.$route.query.edit?'edit':'')
-                  }
-                }).catch(error=>{
-                  this.$message({
-                    message:error.title==='刷卡银行'?'银行卡号输入有误':`${index>0?`刷卡资料补充第${index+1}行数据填写不全`:''}  ${error.title}${error.msg}`
                   })
-                  return true
-                })
+                }
               })
             }
           }

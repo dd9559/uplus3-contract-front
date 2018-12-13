@@ -25,7 +25,7 @@
         <el-table-column align="center" label="款类（大类）" prop="pName">
           <!--<template slot-scope="scope">{{s}}</template>-->
         </el-table-column>
-        <el-table-column align="center" label="款类（小类）">
+        <el-table-column min-width="100" align="center" label="款类（小类）">
           <template slot-scope="scope">
             <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row)">{{scope.row.name}}</el-radio>
             <!--<ul>
@@ -52,7 +52,7 @@
             <span>{{form.smallAmount|formatChinese}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="可支配金额">
+        <el-table-column min-width="100" align="center" label="可支配金额">
           <template slot-scope="scope">
             <div v-if="amount" style="margin: 0 10px;">
               <p><span>款类大类余额：{{amount.balance}}元</span></p>

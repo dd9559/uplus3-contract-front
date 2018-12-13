@@ -149,16 +149,16 @@
             </div>
             <div class="item">
               <el-form-item label="统一社会信用代码: " v-if="creditCodeShow">
-                <el-input size="mini" v-model="documentCard.creditCode" :disabled="directSaleSelect"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.creditCode" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="工商注册号: " v-if="icRegisterShow">
-                <el-input size="mini" v-model="documentCard.icRegisterCode" :disabled="directSaleSelect"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.icRegisterCode" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="组织机构代码: " v-if="icRegisterShow">
-                <el-input size="mini" v-model="documentCard.organizationCode" :disabled="directSaleSelect"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.organizationCode" :disabled="directSaleSelect"></el-input>
               </el-form-item>
               <el-form-item label="税务登记证: " v-if="icRegisterShow">
-                <el-input size="mini" v-model="documentCard.taxRegisterCode" :disabled="directSaleSelect"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.taxRegisterCode" :disabled="directSaleSelect"></el-input>
               </el-form-item>
             </div>
             <div class="tip tip-top">
@@ -200,7 +200,7 @@
               <el-table-column label="" width="65px">
                 <template slot-scope="scope">
                   <span @click="addRow" class="button"><i class="icon el-icon-plus"></i></span>
-                  <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':scope.$index<directInfo.companyBankList.length}"><i class="icon el-icon-minus"></i></span>
+                  <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':scope.$index<directInfo.companyBankList.length&&directSaleSelect}"><i class="icon el-icon-minus"></i></span>
                 </template>
               </el-table-column>
             </el-table>
@@ -319,12 +319,6 @@
     },
     documentType: {
       name: "企业证件"
-    },
-    contractSign: {
-      name: "合同章上传"
-    },
-    financialSign: {
-      name: "财务章上传"
     }
   }
   let obj1 = {
@@ -372,7 +366,7 @@
         storeList: [],
         searchTime: [],
         tableData: [], //公司设置列表
-        pageSize: 5,
+        pageSize: 10,
         pageNum: 1,
         count: 0,
         AddEditVisible: false, //新增编辑公司信息 弹出框
@@ -581,22 +575,54 @@
       submitConfirm() {
         this.$tool.checkForm(this.companyForm,rule).then(() => {
           let isOk
-          this.companyBankList.forEach(item => {
-            isOk = false
-            if(item.bankAccountName) {
-              if(item.bankCard.length === 16 || item.bankCard.length === 19) {
-                if(item.bankBranchName) {
-                  isOk = true
+          let that_ = this
+          function checkBank() {
+            that_.companyBankList.forEach(item => {
+              isOk = false
+              if(item.bankAccountName) {
+                if(item.bankCard.length === 16 || item.bankCard.length === 19) {
+                  if(item.bankBranchName) {
+                    if(that_.companyForm.contractSign) {
+                      if(that_.companyForm.financialSign) {
+                        isOk = true
+                      } else {
+                        that_.$message({message:"财务章上传不能为空"})
+                      }
+                    } else {
+                      that_.$message({message:"合同章上传不能为空"})
+                    }
+                  } else {
+                    that_.$message({message: "开户行不能为空"})
+                  }
                 } else {
-                  this.$message({message: "开户行不能为空"})
+                  that_.$message({message: "银行账户位数不正确"})
                 }
               } else {
-                this.$message({message: "银行账户位数不正确"})
+                that_.$message({message: "开户名不能为空"})
+              }
+            })
+          }
+          if(this.companyForm.documentType === 1) {
+            if(this.documentCard.creditCode) {
+              checkBank()
+            } else {
+              this.$message({message:"统一社会信用代码不能为空"})
+            }
+          } else {
+            if(this.documentCard.icRegisterCode) {
+              if(this.documentCard.organizationCode) {
+                if(this.documentCard.taxRegisterCode) {
+                  checkBank()
+                } else {
+                  this.$message({message:"税务登记证不能为空"})
+                }
+              } else {
+                this.$message({message:"组织机构代码不能为空"})
               }
             } else {
-              this.$message({message: "开户名不能为空"})
+              this.$message({message:"工商注册号不能为空"})
             }
-          })
+          }
           let obj = {
             companyBankList: this.companyBankList
           }
@@ -759,7 +785,6 @@
 <style lang="less" scoped>
 @import "~@/assets/common.less";
 .form-head {
-  padding: 10px 0;
   background-color: #fff;
   border-radius:2px;
   box-sizing: border-box;
@@ -804,7 +829,7 @@
 }
 .dialog-info {
   .company-info {
-    padding: 20px 20px;
+    padding: 10px 20px;
     /deep/ .el-form-item__label::before {
       content: "*";
       color: red;
@@ -815,7 +840,7 @@
     > p {
       font-size: 14px;
       font-weight: bold;
-      margin-bottom: 15px;
+      margin-bottom: @margin-10;
       color:rgba(35,50,65,1);
     }
     .tip {
@@ -943,7 +968,7 @@
       border-top: 1px solid #edecf0;
       > div {
         display: flex;
-        margin-bottom: 20px;
+        margin-bottom: @margin-10;
         > .stamp {
           display: inline-block;
           flex: 1;
@@ -952,7 +977,7 @@
           }
           > .upload {
             display: flex;
-            margin-top: 20px;
+            margin-top: @margin-10;
             .point::before {
               content: "*";
               color: red;
@@ -1048,7 +1073,7 @@
       > p {
         display: flex;
         align-items: center;
-        line-height: 3;
+        line-height: 2;
         > span {
           flex: 1;
         }
