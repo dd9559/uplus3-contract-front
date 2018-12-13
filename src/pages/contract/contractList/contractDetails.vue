@@ -144,6 +144,7 @@
               <p>
                 <span class="tag">类型：</span>
                 <span class="text" v-for="item in dictionary['517']" :key="item.key" v-if='item.key===contractDetail.otherCooperationInfo.type'>{{item.value}}</span>
+                <span class="text" v-else>--</span>
               </p>
             </div>
             <div class="one_">
@@ -350,6 +351,9 @@
             <el-table-column prop="remakes" label="备注" width="320"></el-table-column>
           </el-table>
         </div>
+      </el-tab-pane>
+      <el-tab-pane label="审核记录" name="fifth">
+
       </el-tab-pane>
     </el-tabs>
     <div class="functionTable" v-if="contractDetail.contChangeState.value!=2">
@@ -1095,11 +1099,11 @@ export default {
     padding-top: 28px;
     border: 1px dashed @border-DE;
     border-radius:1px;
-    > i {
+     i {
       color: @bg-th;
       font-size: 50px;
     }
-    > p {
+     p {
       padding-top: 10px;
       color: @color-324;
       font-size: 12px;

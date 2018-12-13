@@ -29,10 +29,10 @@
           <label>部门:</label>
           <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.dealAgentStoreName" placeholder="请选择">
             <el-option class="drop-tree" value="">
-              <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>
-          <el-select :clearable="true" size="small" class="margin-left" v-model="searchForm.dealAgentId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" size="small" class="margin-left" v-model="searchForm.dealAgentId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -196,16 +196,14 @@
       clearDep:function () {
         this.searchForm.dealAgentStoreName=''
         this.searchForm.dealAgentStoreId=''
-        this.EmployeList=[]
+        // this.EmployeList=[]
         this.searchForm.dealAgentId=''
+        this.clearSelect()
       },
-      handleNodeClick(data) {
-        this.getEmploye(data.depId)
+      depHandleClick(data) {
         this.searchForm.dealAgentStoreId=data.depId
         this.searchForm.dealAgentStoreName=data.name
-        if(data.subs.length===0){
-          this.$refs.tree.blur()
-        }
+        this.handleNodeClick(data)
       },
       getData: function () {
         // let param={}

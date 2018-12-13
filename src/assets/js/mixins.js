@@ -15,7 +15,14 @@ const MIXINS = {
       defaultProps: {
         children: 'subs',
         label: 'name'
-      }
+      },
+      //部门下拉筛选
+      dep:{
+        id:'',
+        name:''
+      },
+      employePage:1,
+      employeTotal:0
     }
   },
   methods: {
@@ -76,8 +83,37 @@ const MIXINS = {
         res=res.data
         if(res.status===200){
           this.EmployeList=this.EmployeList.concat(res.data.list)
+          this.employeTotal=res.data.total
         }
       })
+    },
+    clearSelect:function (type='dep') {
+      if(type==='dep'){
+        this.dep.id=''
+        this.dep.name=''
+        this.EmployeList=[]
+        this.employePage=1
+      }else {
+
+      }
+    },
+    //部门树结构选择操作
+    handleNodeClick(data) {
+      this.getEmploye(data.depId)
+      this.clearSelect()
+      this.dep.id=data.depId
+      this.dep.name=data.name
+      if(data.subs.length===0){
+        this.$refs.tree.blur()
+      }
+    },
+    //员工滚动加载更多
+    moreEmploye:function () {
+      if(this.EmployeList.length>=this.employeTotal){
+        return
+      }else {
+        this.getEmploye(this.dep.id,++this.employePage)
+      }
     },
     /**
      * 获取签名
@@ -123,6 +159,8 @@ const MIXINS = {
                 var a = document.createElement('a');
                 a.download = undefined;
                 a.href = res.data.url;
+                // a.href = 'http://192.168.1.51:5500/%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6.txt';
+                // a.href = 'data:text/plain;charset=utf-8,' + res.data.url;
                 a.click();
                 // window.location = res.data.url;
               }

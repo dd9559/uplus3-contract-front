@@ -40,10 +40,10 @@
           <label>部门:</label>
           <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @focus="tree=true" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="" v-show="tree">
-              <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>
-          <el-select :clearable="true" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -109,7 +109,7 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -323,16 +323,16 @@
       clearDep:function () {
         this.searchForm.depId=''
         this.searchForm.depName=''
-        this.EmployeList=[]
+        // this.EmployeList=[]
         this.searchForm.empId=''
+        this.clearSelect()
       },
-      handleNodeClick(data) {
-        this.getEmploye(data.depId)
+      depHandleClick(data) {
+        // this.getEmploye(data.depId)
         this.searchForm.depId=data.depId
         this.searchForm.depName=data.name
-        if(data.subs.length===0){
-          this.$refs.tree.blur()
-        }
+
+        this.handleNodeClick(data)
       },
       getData: function () {
         let param = JSON.parse(JSON.stringify(this.searchForm))

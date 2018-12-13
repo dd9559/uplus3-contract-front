@@ -707,7 +707,7 @@
             return{
                 // 页面初始数据
                 pageNum:1,
-                pageSize:20,
+                pageSize:10,
                 // 加载
                 loading:false,
                 loading2:false,
