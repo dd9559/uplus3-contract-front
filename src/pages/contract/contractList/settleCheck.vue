@@ -129,7 +129,7 @@
               
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope" v-if="scope.row.examineState.value=== 0">
-            <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
+            <el-button type="text" class="curPointer" @click="auditApply(scope.row)" v-dbClick>审核</el-button>
           </template>
         </el-table-column>
         
@@ -219,8 +219,8 @@
 
       </div>
       <div class="btnbox">
-        <el-button class="refuse" @click="refuseFn()">驳 回</el-button>
-        <el-button type="primary" class="recept"  @click="receptFn()">通 过</el-button>  
+        <el-button class="refuse" @click="refuseFn()" v-dbClick>驳 回</el-button>
+        <el-button type="primary" class="recept"  @click="receptFn()" v-dbClick>通 过</el-button>  
       </div> 
     </el-dialog>
 
@@ -1005,12 +1005,15 @@
   }
   .name-wrapper {
     min-width: 80px;
-    height: 65px;
+    max-height: 65px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
     text-overflow:ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    word-wrap:break-word;
   }
   .isFlex{
     display: flex;

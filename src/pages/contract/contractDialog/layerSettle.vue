@@ -77,7 +77,7 @@
             </div>
             <div class="btnbox">
                 <el-button @click="close">取 消</el-button>
-                <el-button type="primary"  @click="auditApply()">提交审核</el-button>  
+                <el-button type="primary"  @click="auditApply()" v-dbClick>提交审核</el-button>  
             </div> 
             <!-- 图片放大 -->
             <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -223,10 +223,10 @@ export default {
             let param = {
                 id: this.contId,
                 settlRemark: this.auditForm.textarea,
-                voucher: ''
+                voucher: this.uploadList
             }
             this.$ajax         
-            .post("/api/settlement/applySettlement", param)
+            .postJSON("/api/settlement/applySettlement", param)
             .then(res => {
                 if (res.data.status === 200) {
                 this.$message('已申请');
