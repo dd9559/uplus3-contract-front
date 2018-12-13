@@ -172,15 +172,14 @@
             if(res.status === 200) {
               this.manageData = res.data
               this.flowCount = this.manageData.length
-              // this.tempManage = JSON.parse(JSON.stringify(res.data))
             }
-            // this.manageData.forEach(i => {
-            //   this.AllSteps.forEach((v,index) => {
-            //     if(i.stepsName === v.name) {
-            //       i.sort = ++index
-            //     }
-            //   })
-            // })
+            this.manageData.forEach(i => {
+              this.AllSteps.forEach((v,index) => {
+                if(i.stepsName === v.name) {
+                  i.sort = ++index
+                }
+              })
+            })
             this.tempManage = JSON.parse(JSON.stringify(this.manageData))
           }).catch(error => {
               this.$message({message:error})
@@ -286,6 +285,7 @@
           item.tempList = []
           item.stepsSelect = false
         })
+        this.StepsOption = this.StepsOption.filter(item => item.stepsList.length)
         this.manageData.forEach(i => {
           this.StepsOption.forEach(v => {
             if(i.stepsTypeName === v.typeName) {
@@ -389,13 +389,13 @@
             if(this.flowCount === 0) {
               arr.push({
                 transStepsId: item.transStepsId,
-                sort: ++index,
+                sort: item.sort,
                 isSettle: item.isSettle
               })
             } else {
               arr.push({
                 transStepsId: item.transStepsId,
-                sort: ++index,
+                sort: item.sort,
                 isSettle: item.isSettle,
                 id: item.id ? item.id : null
               })
