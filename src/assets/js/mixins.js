@@ -118,12 +118,23 @@ const MIXINS = {
     /**
      * 获取签名
      */
-    fileSign:function (arr) {
-      this.$ajax.put('/api/load/generateAccessURLBatch',{urls:arr.join(',')},2).then(res=>{
+    fileSign:function (arr,type) {
+      let param={urls:arr.join(',')}
+      if(type==='download'){
+        param.rct='application%2Foctet-stream'
+      }
+      this.$ajax.put('/api/load/generateAccessURLBatch',param,2).then(res=>{
         res=res.data
         if(res.status===200){
-          this.previewFiles=res.data
-          this.preview=true
+          if(type==='download'){
+            var a = document.createElement('a');
+            a.download = undefined;
+            a.href = res.data[0];
+            a.click();
+          }else {
+            this.previewFiles=res.data
+            this.preview=true
+          }
         }
       })
     },
@@ -135,13 +146,12 @@ const MIXINS = {
      * @param {点击第几张图片} i
      */
     previewPhoto(arr,i){
-      // debugger
         let type = this.$tool.get_suffix(arr[i].path)
         if(this.imgBoolFn(type)){
             // 图片 和 视频 预览
             let arr2 = [];
             arr.map(e=>{
-                if(this.imgBoolFn(type)){
+                if(this.imgBoolFn(this.$tool.get_suffix(e.path))){
                     if(e.path === arr[i].path){
                       this.previewIndex = arr2.length;
                     }
@@ -151,7 +161,8 @@ const MIXINS = {
             this.fileSign(arr2)
         }else{
             // 其他文件 下载
-            this.$ajax.get("/api/load/generateAccessURL",{
+          this.fileSign([].concat(arr[i].path),'download')
+            /*this.$ajax.get("/api/load/generateAccessURL",{
               url:arr[i].path
             }).then(res=>{
               res = res.data;
@@ -166,7 +177,7 @@ const MIXINS = {
               }
             }).catch(err=>{
               console.log(err)
-            })
+            })*/
         }
     },
     // 判断图片类别
@@ -184,9 +195,9 @@ const MIXINS = {
             case '.jpeg':
                 return true
                 break;
-            case '.avi':
+            /*case '.avi':
                 return true
-                break;
+                break;*/
             case '.mp4':
                 return true
                 break;
