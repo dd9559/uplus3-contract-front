@@ -52,7 +52,7 @@
                                     <p>点击上传</p>
                                 </file-up>
                             </li>
-                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                                     <div class="namePath">
                                         <upload-cell :type="item.fileType"></upload-cell>
@@ -80,7 +80,7 @@
                 <el-button type="primary"  @click="auditApply()" v-dbClick>提交审核</el-button>  
             </div> 
             <!-- 图片放大 -->
-            <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+            <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
         </el-dialog>
     </div>
 </template>
@@ -126,6 +126,9 @@ export default {
                 textarea: '', //备注
             },
 
+            preview:false,
+            start:'',
+
             //上传的协议
           uploadList: [],
           isDelete:'',
@@ -150,15 +153,15 @@ export default {
     methods: {
 
         //图片预览
-        // getPicture(value,index){
-        //     this.start=index;
-        //     let arr=[];
-        //     // console.log(value);
-        //     value.forEach(item =>{
-        //         arr.push(item.path)
-        //     })
-        //     this.fileSign(arr)
-        // },
+        getPicture(value,index){
+            this.start=index;
+            let arr=[];
+            // console.log(value);
+            value.forEach(item =>{
+                arr.push(item.path)
+            })
+            this.fileSign(arr)
+        },
 
         //获取文件路径后缀名
         uploadSubject(data) {
