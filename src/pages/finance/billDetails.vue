@@ -95,7 +95,7 @@
           </el-table-column>
           <el-table-column min-width="200" align="center" label="收款账户">
             <template slot-scope="scope">
-              <p v-if="billMsg.inAccount===4">{{scope.row.userName}} {{scope.row.bankName}} {{scope.row.cardNumber}}</p>
+              <p v-if="billMsg.inAccountType===4">{{scope.row.userName}} {{scope.row.bankName}} {{scope.row.cardNumber}}</p>
               <span v-else>--</span>
             </template>
           </el-table-column>
