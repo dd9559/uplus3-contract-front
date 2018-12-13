@@ -136,7 +136,10 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="overtimeName" label="当前步骤责任人" min-width="130">
                 </el-table-column>
-                <el-table-column :formatter="dateFormat(nullFormatterData)" prop="specifiedTime" label="计划完成时间" min-width="130">
+                <el-table-column label="计划完成时间" min-width="130">
+                    <template slot-scope="scope">
+                        {{dateFormat(scope.row.specifiedTime)}}
+                    </template>
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="overtimeDay" label="超时天数">
                 </el-table-column>
@@ -190,7 +193,7 @@
             return{
                 // 初始列表页面
                 pageNum:1,
-                pageSize:20,
+                pageSize:10,
                 // 加载
                 loading:false,
                 loading2:false,

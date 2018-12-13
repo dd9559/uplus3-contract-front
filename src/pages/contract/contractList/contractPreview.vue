@@ -14,9 +14,10 @@
         <el-button round :type="examineState<0?'primary':''" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="isSubmitAudit=true">{{subCheck}}</el-button>
         <el-button round type="primary" style="width:100px" v-if="contState===3&&contChangeState!=2&&contChangeState!=1" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger" style="width:100px" v-if="contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
-        <el-button round style="width:100px" @click="signature(3)" :disabled="iSsignature" v-if="examineState===1&&contState===1">签章</el-button>
-        <!-- <el-button round style="width:100px" @click="signature(2)" v-if="examineState===1&&contState===2">签章打印</el-button> -->
-        <el-button @click="dayin" v-if="examineState===1&&contState===2">打印</el-button>
+        <el-button round style="width:100px" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading" v-if="examineState===1&&contState===1">签章打印</el-button>
+        <el-button round style="width:100px" @click="dayin" v-if="examineState===1&&contState===2">签章打印</el-button>
+        <!-- <el-button @click="signature(2)">打印1</el-button> -->
+        <!-- <el-button @click="dayin" v-if="examineState===1&&contState===2">打印</el-button> -->
         <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0">审核</el-button>
       </div>
       <div class="btn" v-else>
@@ -40,7 +41,9 @@
           <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100">
           </el-input>
           <span>{{invalidReason.length}}/100</span>
-          <p><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
+          <p v-if="examineState>-1&&contState!=2"><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
+          <p v-if="contState===2"><span>注：</span>您的合同已签章，是否确认要做无效？无效后，合同需要重新提审！</p>
+          <p v-if="examineState<0"><span>注：</span>您的合同是否确认要做无效？无效后，合同需要重新提审！</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -77,7 +80,7 @@
         <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
-    <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
+    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
   </div>
 </template>
            
@@ -135,12 +138,14 @@ export default {
       canceldialogType:'',
       changeCancel_:'',
       changeCancelId:'',
-      iSsignature:false,
       isSubmitAudit:false,
       //客源方门店id
       guestStoreId:'',
       //合同打印的pdf地址
-      pdfUrl:''
+      pdfUrl:'',
+      haveUrl:false,
+      //加载等待
+      fullscreenLoading:false
     };
   },
   created() {
@@ -148,10 +153,8 @@ export default {
     this.code = this.$route.query.code;
     if (this.$route.query.operationType) {
       this.operationType = this.$route.query.operationType;
-      // this.getAuditNode();
     }
     this.getContImg();
-    // this.signature(2)
   },
   methods: {
     //居间买卖切换
@@ -222,17 +225,19 @@ export default {
               id:this.id,
               type:value
             }
-            this.iSsignature=true;
+            this.fullscreenLoading=true;
             this.$ajax.post('/api/contract/signture', param).then(res=>{
               res=res.data;
               if(res.status===200){
-                this.$message({
-                  message:'操作成功'
-                });
-                this.iSsignature=false;
                 let pdfUrl=res.data;
+                // debugger
                 this.getUrl(pdfUrl);
-                this.getContImg();
+                this.haveUrl=true;
+                setTimeout(()=>{
+                  this.dayin();
+                  this.fullscreenLoading=false;
+                },1500);
+                this.getContImg()
               }
             })
           }else{
@@ -241,7 +246,7 @@ export default {
             });
           }
         }).catch(error => {
-          this.iSsignature=false
+          this.haveUrl=true;
           this.$message({
             message:'门店没有设置签章'
           })
@@ -251,16 +256,12 @@ export default {
           id:this.id,
           type:value
         }
-        // this.iSsignature=true;
         this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
-            // this.$message({
-            //   message:'操作成功'
-            // });
             let pdfUrl=res.data;
             this.getUrl(pdfUrl);
-            // this.iSsignature=false
+            this.haveUrl=true;
           }
         })
       }
@@ -277,11 +278,6 @@ export default {
         res = res.data
         if(res.status ===200){
           this.pdfUrl = res.data.url;
-          // setTimeout(function(){
-          //   alert('222')
-          //   this.$refs.pdfPrint.print();
-          // },500)
-          
         }
       })
     },
@@ -335,14 +331,14 @@ export default {
     //   })
     // },
     //获取合同预览图片
-    getContImg(){
+    getContImg(type){
       let param = {
         id:this.id
       };
       this.$ajax.get('/api/contract/preview', param).then(res=>{
         res=res.data;
         if(res.status===200){
-          if(res.data.contState.value===2){
+          if(res.data.contState.value===2&&!type){
             this.signature(2)
           }
           this.examineState=res.data.examineState.value;

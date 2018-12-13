@@ -470,11 +470,11 @@ export default {
 						box-sizing: border-box;
 						padding-top: 20px;
 						border: 2px dashed @border-DE;
-						> i{
+						i{
 							color: @bg-th;
 							font-size: 59px;
 						}
-						> p{
+						p{
 							padding-top: 5px;
 							color:@color-324;
 							font-size: 14px;

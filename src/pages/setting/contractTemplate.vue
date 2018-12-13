@@ -319,9 +319,10 @@
     border-radius:4px;
     border: 1px solid transparent;
     .selectCity {
-      margin-top: 24px;
+      padding: 6px 0;
       line-height: 32px;
       height: 32px;
+      margin-bottom: 0;
       .el-form-item__content,
       .el-form-item__label {
         line-height: 32px;
@@ -345,15 +346,14 @@
 } 
   .data-list {
     background-color: #fff;
-    padding: 10px;
-    margin-top: 3px;
+    padding: 6px 0;
+    margin-top: 1px;
       > p {
-        padding: 0 10px;
+        padding: 0 6px;
         display: flex;
         height: 36px;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 10px;
         font-size: 14px;
         .mr-8 {
              margin-right: 8px;
