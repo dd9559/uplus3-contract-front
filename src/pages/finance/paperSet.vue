@@ -262,7 +262,7 @@
           </li>
           <li>
             <span class="cl-1 mr-10">收款时间：</span>
-            <span class="cl-2">--</span>
+            <span class="cl-2">{{comPaymentTime}}</span>
           </li>
         </ul>
         <div class="input-box">
@@ -338,11 +338,15 @@
           reason:''
         },
         activeRow:{},
+        paymentTime:'',
       }
     },
     computed: {
       invalidNumber() {
         return this.layer.reason.length
+      },
+      comPaymentTime(){
+        return this.$tool.dateFormat(this.paymentTime)
       }
     },
     mounted() {
@@ -405,8 +409,19 @@
             break
           case 3:
             this.layer.title = '票据作废'
+            this.getPaperDetails(row.id)
             break
         }
+      },
+      getPaperDetails: function(id) {
+        this.$ajax.get(`/api/bills/${id}`).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.paymentTime = res.data.paymentTime
+          }
+        }).catch(err=>{
+          this.$message.error(err);
+        })
       },
       // 分页
       currentChangeFn(e){
@@ -425,7 +440,7 @@
               }
           });
         } else if (type === 'paper') {
-          this.$refs.layerInvoice.show(row.id);
+          this.$refs.layerInvoice.show(row.id,false,row.state.value===4);
         } else {
           this.$router.push({
             path:'billDetails',

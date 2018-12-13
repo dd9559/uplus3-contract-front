@@ -63,8 +63,8 @@
             <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
         </div>
         <p slot="footer" v-show="FooterShow">
-            <el-button round  size="small" class="paper-btn" @click="propCloseFn">取消</el-button>
-            <el-button round  size="small" class="paper-btn paper-btn-blue" @click="printPaperFn">打印</el-button>
+            <el-button round size="small" class="paper-btn" @click="propCloseFn">取消</el-button>
+            <el-button round size="small" class="paper-btn paper-btn-blue" @click="printPaperFn" v-if="!stateBoll">打印</el-button>
         </p>
     </el-dialog>
 </template>
@@ -93,6 +93,7 @@
                 pdfLoading:false,
                 pdfUrl:'',
                 imgUrl:'',
+                stateBoll:false,
             }
         },
         methods: {
@@ -137,6 +138,10 @@
                 })
             },
             billing: function() {
+                if(this.moneyTypes.length === 0){
+                    this.$message.error('无法开票');
+                    return false
+                }
                 if(!this.moneyTypes[this.activeType].project){
                     this.$message.error('请选择开票项目');
                     return false
@@ -163,7 +168,9 @@
                         obj.type = item.value
                     }
                 })
-                this.paperInfoData = Object.assign({}, this.paperInfoData, obj)
+                this.paperInfoData = Object.assign({}, this.paperInfoData, obj,{
+                    createTime:this.$tool.dateFormat(new Date())
+                })
                 this.printPaper();
             },
             // 票据详情 打印
@@ -238,11 +245,12 @@
                 })
             },
             // 打开
-            show(id, bool = false) {
+            show(id, bool = false,stateBoll = false) {
                 this.paperType = bool;
                 this.loading = true;
                 this.paperShow = true;
                 this.FooterShow = false;
+                this.stateBoll = stateBoll;
                 // this.pdfUrl= ""
                 this.ID = id
                 if (bool) {
