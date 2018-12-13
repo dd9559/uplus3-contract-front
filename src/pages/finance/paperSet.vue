@@ -361,6 +361,10 @@
       reset: function () {
         this.$tool.clearForm(this.propForm)
       },
+      // 错误提示
+      errMeFn(e){
+          this.$message.error(e);
+      },
       // 列表数据
       getData: function () {
         this.loadingList = true;
@@ -449,6 +453,10 @@
             break
           case '票据作废':
             // param.state = 5;
+            if(!this.layer.reason){
+              this.errMeFn('作废原因不能为空');
+              return false
+            }
             param.reason = this.layer.reason;
             url = 'bills/invalid'
             break
@@ -463,6 +471,8 @@
             });
             this.getData()
           }
+        }).catch(err=>{
+          this.errMeFn(err);
         })
       },
       // 接收成功
