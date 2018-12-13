@@ -52,10 +52,11 @@
               <div v-if="uploadType">
                 <p>
                   <fileUp @getUrl='getAdd("mmai",arguments)' :rules="mbrules"  id='mmai' class='fileup'>买卖</fileUp>
+                  <span v-show="mmaiAddress!==''">买卖模板上传成功！</span>
                 </p>
                 <p>
                    <fileUp id='jjian' :rules="mbrules"   @getUrl='getAdd("jjian",arguments)' class='fileup' >居间</fileUp>
-                   <!-- <span class="upMsg">上传成功</span>  -->
+                   <span v-show="jjianAddress!==''">居间模板上传成功！</span>
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>  
@@ -63,7 +64,7 @@
               <div v-else>
                 <p>
                   <fileUp id='mban' :rules="mbrules" @getUrl='getAdd("mban",arguments)' class='fileup'>模板</fileUp>
-                  <!-- <span class="upMsg">上传成功</span> -->
+                  <span v-show="mbanAddress!==''">模板上传成功！</span>
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>                  
@@ -285,11 +286,14 @@
         this.modal = true
         if(type===1){
             this.contraName=''
+            this.mbanAddress=''
+            this.mmaiAddress=''
+            this.jjianAddress=''
             this.template = 1
             this.id=row.id
             this.contraType=row.type.value
             this.titleStr='上传合同模板'
-            this.uploadType = (row.cityName==='武汉'&&row.type.label==='买卖')
+            this.uploadType = (row.cityName==='武汉'&&(row.type.label==='买卖'||row.type.label==='代办'))
         }
         //预览
         else if(type===2){
@@ -439,6 +443,8 @@
         display: flex;
         flex-direction: column;
         p{
+          position: relative;
+          height: 60px;
           /deep/
           .fileup{
             width:86px;
@@ -449,16 +455,24 @@
             color: white;
             text-align: center !important
           }
+          span{
+            position: absolute;
+            line-height: auto;
+            bottom: 8px;
+            font-style: italic;
+            padding-left: 0;
+            font-size: 12px;
+            color: darkseagreen;
+          }
         }
         p:nth-child(2){
-          margin-top: 30px;
+          // margin-top: 30px;
         }
         span{
           font-size:14px;
           font-family:MicrosoftYaHei;
           font-weight:400;
           color:rgba(108,121,134,1);
-          line-height:42px;
           padding-left: 14px;
         }
          .sureUp{
@@ -494,6 +508,7 @@
 .wordtip{
   padding-left: 0 !important
 }
+
 
 /deep/ .detail tr.linestyle{
     background-color: #ECF5FF;
