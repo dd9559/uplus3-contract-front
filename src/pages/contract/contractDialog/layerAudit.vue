@@ -518,11 +518,11 @@ export default {
             padding-top: 28px;
             border: 1px dashed #EDECF0;
             border-radius:1px;
-            > i {
+            i {
             color: #EEF2FB;
             font-size: 50px;
             }
-            > p {
+            p {
             padding-top: 10px;
             color: #32485F;
             font-size: 12px;

@@ -216,12 +216,12 @@ export default {
           })
       },
 
-      //发起调佣申请
+      //发起结算申请
       auditApply() {
         
         if(this.auditForm.textarea !== ""){
             let param = {
-                id: 1,
+                id: this.contId,
                 settlRemark: this.auditForm.textarea,
                 voucher: ''
             }
@@ -407,11 +407,11 @@ export default {
                     padding-top: 28px;
                     border: 1px dashed #EDECF0;
                     border-radius:1px;
-                    > i {
+                    i {
                     color: #EEF2FB;
                     font-size: 50px;
                     }
-                    > p {
+                    p {
                     padding-top: 10px;
                     color: #32485F;
                     font-size: 12px;
