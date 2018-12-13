@@ -676,9 +676,8 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
-
-.view-container {
-  //padding: 0 20px;
+/deep/.el-form-item{
+  margin-bottom: 10px;
 }
 /deep/.paper-box {
   padding-top: 10px !important;
