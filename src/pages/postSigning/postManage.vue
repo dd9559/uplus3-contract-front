@@ -1448,7 +1448,10 @@
                 let handleTimeStar = '';
                 let receiveTimeEnd = '';
                 let receiveTimeStar = '';
-                let datamo = [...this.propForm.dateMo];
+                let datamo = '';
+                if(this.propForm.dateMo){
+                   datamo = [...this.propForm.dateMo];
+                }
                 let dataMoBool = datamo.length === 2;
                 // 办理日期
                 if(this.propForm.region === RECEIVINGDATE.end && dataMoBool){

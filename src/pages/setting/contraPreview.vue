@@ -1,5 +1,5 @@
 <template>
-    <div class='view-container'>
+    <div class='view-container'  v-loading="loading">
       <p class='title'>
           <span>合同模板预览</span>
           <el-button type="primary paper-btn" @click="saveAll" v-if="saveBtn">保存</el-button>
@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <el-dialog class='expand' title="请设置以下扩展参数" :closeOnClickModal="$tool.closeOnClickModal" :before-close="handleClose" width="760px" :visible.sync="modalDialog" >
+      <el-dialog class='expand'  title="请设置以下扩展参数" :closeOnClickModal="$tool.closeOnClickModal" :before-close="handleClose" width="760px" :visible.sync="modalDialog" >
           <p class='tip'>系统暂不支持以下合同参数，需要进行设置</p>
           <div class="ex-body">
               <p>温馨提示：选项值之间请用英文下的逗号隔开！</p>
@@ -83,6 +83,7 @@ export default{
             sigtureShow:false,
             sigtureShow2:false,
             id:'',
+            loading:true,
             contraName:'',
             mmaiAddress:'',
             jjianAddress:'',
@@ -99,14 +100,13 @@ export default{
             imgSrc:'',
             imgSrc2:'',
             cityId:'',
-            coun:1,
             enableTemplateId:'',
             showSed:false,
             divWidth:'',
             divHeight:'',
             timeout:0,
             qmnewsrcArr:[],
-            signPosition:{x:'',y:'',pageIndex:''},
+            signPosition:{x:0,y:0,pageIndex:''},
           }
         },
         created(){
@@ -122,6 +122,7 @@ export default{
         },
         mounted(){
             this.divWidth=document.getElementsByClassName('listone')[0].offsetWidth
+            console.dir(document.getElementsByClassName('listone')[0])
             // console.log(document.getElementsByClassName('listone')[0].offsetWidth);
             this.divHeight=1163
             if(this.show==1){
@@ -132,6 +133,7 @@ export default{
                 this.position2=false
                 this.saveBtn=false
                 this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:this.enableTemplateId}).then((res)=>{
+                      this.loading=false
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
                             this.showSed=true 
@@ -160,6 +162,7 @@ export default{
                             this.autograph(htImg,newsrc)
                             this.autograph(htImg2,newsrc2)
                      }else{
+                           this.divWidth=this.divWidth/2
                            this.imgSrc=resadd.img.url
                            this.total=res.data.data.img.count
                            this.signPosition=res.data.data.signPosition
@@ -174,7 +177,9 @@ export default{
                                this.sigtureShow=false
                            }
                            let htImg=document.getElementById('ht')
-                           htImg.style.width='auto'
+                           let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
+                           bodycontainer.style.display='block'
+                           htImg.style.width='622px'
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
                      }
@@ -203,16 +208,6 @@ export default{
                 }else{
                     this.sigtureShow=!this.sigtureShow
                 }
-                if(this.coun==1){
-                    this.signPosition.x=0
-                    this.signPosition.y=0
-                    this.coun=2
-                }else if(this.coun==2){
-                    this.signPosition.x=''
-                    this.signPosition.y=''
-                    this.coun=1
-                }
-                console.log(this.signPosition);
                  this.sigtureShow2=!this.sigtureShow2
             
                  this.tuozhuai()
@@ -250,13 +245,22 @@ export default{
                         };
                 },
             saveAll(){
-                console.log(this.signPosition);
-                if(this.signPosition.x===''){
-                    this.$message({
-                    type: 'error',
-                    message: '请设置签章位置！'
-                    })
+                if(this.showSed){
+                    if(this.sigtureShow2==false){
+                        this.$message({
+                        type: 'error',
+                        message: '请设置签章位置！'
+                        })
                     return
+                    }
+                }else{
+                    if(this.sigtureShow==false){
+                        this.$message({
+                        type: 'error',
+                        message: '请设置签章位置！'
+                        })
+                        return
+                    }
                 }
                  this.signPosition.pageIndex=this.showSed?this.count2:this.count
                  let param={
@@ -434,6 +438,7 @@ export default{
               console.log(param,'param');
               this.$ajax.get('/api/setting/contractTemplate/checkTemplate',param).then(res=>{
               if(res.status==200){
+                  this.loading=false
                   if(res.data.data.unPlaceholder!==''){
                       this.tableDate=res.data.data.unPlaceholder
                   }else{
@@ -476,7 +481,9 @@ export default{
                   this.imgSrc=res.data.data.img.url  //一个的
                   this.total=res.data.data.img.count
                   let htImg=document.getElementById('ht')
-                  htImg.style.width='auto'
+                  let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
+                  bodycontainer.style.display='block'
+                  htImg.style.width='622px'
                   var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                   this.autograph(htImg,newsrc)
                  }
@@ -487,6 +494,7 @@ export default{
                     message: error
                     })
                     setTimeout(() => {
+                        this.loading=false
                         this.$router.push({
                             path: "/contractTemplate",
                         });
@@ -501,6 +509,7 @@ export default{
 .view-container{
     display: flex;
     flex-wrap: wrap;
+    // justify-content: center;
     .title{
         height: 58px;
         display: flex;
@@ -512,16 +521,20 @@ export default{
         border-bottom: solid 1px rgba(206,225,246,1)
     }
     .ht-list{
-        display: flex;
-        flex: 1;
-        justify-content: center;
+        // display: flex;
+        // flex: 1;
+        // justify-content: center;
         // width: 700px;
         // width: 800px;
         min-height: 500px;
         // background-color: grey;
-        margin: 11px auto;
+        margin: 0 auto;
         position: relative;
-        padding: 20px 80px 20px 30px;
+        width: 50%;
+        // padding: 20px 80px 20px 30px;
+        img{
+            width: 622px;
+        }
         .signature{
             position: absolute;
             background-color:rgba(110,0,0,0.5);
@@ -597,7 +610,7 @@ export default{
         // box-sizing: content-box;
         width: 50%;
         img{
-            width:530px
+            width:622px
         }
     }
 }

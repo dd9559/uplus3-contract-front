@@ -11,7 +11,7 @@
         </ul>
         <p>
           <el-button round @click="goBack('contractList')">返回合同列表</el-button>
-          <el-button round @click="goBack('bill')">返回收付款列表</el-button>
+          <el-button round @click="goBack('Bill')">返回收付款列表</el-button>
         </p>
       </div>
     </div>

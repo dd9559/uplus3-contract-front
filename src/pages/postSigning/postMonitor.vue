@@ -337,8 +337,11 @@
                 this.loadingList = true;
                 let receiveTimeEnd = '';
                 let receiveTimeStar = '';
-                let time = this.propForm.dateMo;
-                if(time === 2){
+                let time ='';
+                if(time){
+                    time = this.propForm.dateMo;
+                }
+                if(time.length === 2){
                     receiveTimeStar = this.dateFormat(time[0]);
                     receiveTimeEnd = this.dateFormat(time[1]);
                 }

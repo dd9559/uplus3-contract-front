@@ -80,7 +80,7 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
+          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>

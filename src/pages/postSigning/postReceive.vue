@@ -636,7 +636,7 @@
                 let arr = [...this.dealTable];
                 arr.map(e=>{
                     e.contractCode = this.receive.e.id;
-                    e.rules.map(i=>{
+                    e.rules.list.map(i=>{
                         if(i.empId === e.personLiableCode){
                             e.personLiableName = i.name
                         }
@@ -659,11 +659,11 @@
             },
             // 接收
             receiveBtnFn(){
-                let arr = [...this.dealTable];
+                let arr = [...this.dealTable.list];
                 let bool = true;
                 arr.map(e=>{
                     e.contractCode = this.receive.e.id;
-                    e.rules.map(i=>{
+                    e.rules.list.map(i=>{
                         if(i.empId === e.personLiableCode){
                             e.personLiableName = i.name
                         }
@@ -863,10 +863,13 @@
                 this.loadingList = true;
                 let signDateSta = '';
                 let signDateEnd = '';
-                if(this.propForm.dateMo.length === 2){
-                    signDateSta = TOOL.dateFormat(this.propForm.dateMo[0]);
-                    signDateEnd = TOOL.dateFormat(this.propForm.dateMo[1]);
+                if(this.propForm.dateMo){
+                    if(this.propForm.dateMo.length === 2){
+                        signDateSta = TOOL.dateFormat(this.propForm.dateMo[0]);
+                        signDateEnd = TOOL.dateFormat(this.propForm.dateMo[1]);
+                    }
                 }
+                
                     this.$ajax.postJSON('/api/postSigning/getContract',{
                         keyword:this.propForm.search,
                         signDateSta,

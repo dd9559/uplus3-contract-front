@@ -218,7 +218,7 @@
     <el-button round type="primary" @click="checkBill(1)">同 意</el-button>
   </span>
     </el-dialog>
-    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
+    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
   </div>
 </template>
