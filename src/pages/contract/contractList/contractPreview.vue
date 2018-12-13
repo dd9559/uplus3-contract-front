@@ -226,6 +226,7 @@ export default {
               type:value
             }
             this.fullscreenLoading=true;
+            //签章
             this.$ajax.post('/api/contract/signture', param).then(res=>{
               res=res.data;
               if(res.status===200){
@@ -236,9 +237,14 @@ export default {
                 setTimeout(()=>{
                   this.dayin();
                   this.fullscreenLoading=false;
-                },1500);
+                },2000);
                 this.getContImg()
               }
+            }).catch(error =>{
+              this.fullscreenLoading=false;
+              this.$message({
+                message:error
+              })
             })
           }else{
             this.$message({

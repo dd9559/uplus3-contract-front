@@ -23,10 +23,12 @@
 								</file-up>
 							</li>
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
-								<div class="namePath">
-									<upload-cell :type="item.fileType"></upload-cell>
-									<p>{{item.name}}</p>
-								</div>
+								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+									<div class="namePath">
+										<upload-cell :type="item.fileType"></upload-cell>
+										<p>{{item.name}}</p>
+									</div>
+								</el-tooltip>
 								<i class="iconfont icon-tubiao-6" @click="delectData(index)" v-if="isDelete===item.title+item.path"></i>
 							</li>
 						</ul>
@@ -51,10 +53,12 @@
 					<div class="uploadbtn">
 						<ul>
 							<li v-for="(item,index) in address.value" :key="index">
-								<div class="namePath" @click="getPicture(address.value,index)">
-									<upload-cell :type="item.fileType"></upload-cell>
-									<p>{{item.name}}</p>
-								</div>
+								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+									<div class="namePath" @click="getPicture(address.value,index)">
+										<upload-cell :type="item.fileType"></upload-cell>
+										<p>{{item.name}}</p>
+									</div>
+								</el-tooltip>
 							</li>
 						</ul>
 						<!-- <span class="dataPreview" v-for="item in address.value" :key="item.path">
@@ -87,10 +91,12 @@
 								</file-up>
 							</li>
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
-								<div class="namePath">
-									<upload-cell :type="item.fileType"></upload-cell>
-									<p>{{item.name}}</p>
-								</div>
+								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+									<div class="namePath">
+										<upload-cell :type="item.fileType"></upload-cell>
+										<p>{{item.name}}</p>
+									</div>
+								</el-tooltip>
 								<i class="iconfont icon-tubiao-6" @click="delectData(index)" v-if="isDelete===item.title+item.path"></i>
 							</li>
 						</ul>
@@ -115,10 +121,12 @@
 					<div class="uploadbtn">
 						<ul>
 							<li v-for="(item,index) in address.value" :key="index">
-								<div class="namePath" @click="getPicture(address.value,index)">
-									<upload-cell :type="item.fileType"></upload-cell>
-									<p>{{item.name}}</p>
-								</div>
+								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+									<div class="namePath" @click="getPicture(address.value,index)">
+										<upload-cell :type="item.fileType"></upload-cell>
+										<p>{{item.name}}</p>
+									</div>
+								</el-tooltip>
 							</li>
 						</ul>
 					</div>
@@ -139,10 +147,12 @@
 								</file-up>
 							</li>
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
-								<div class="namePath" @click="getPicture(uploadList,index)">
-									<upload-cell :type="item.fileType"></upload-cell>
-									<p>{{item.name}}</p>
-								</div>
+								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+									<div class="namePath" @click="getPicture(uploadList,index)">
+										<upload-cell :type="item.fileType"></upload-cell>
+										<p>{{item.name}}</p>
+									</div>
+								</el-tooltip>
 								<i class="iconfont icon-tubiao-6" @click="delectData(index)" v-if="isDelete===item.title+item.path"></i>
 							</li>
 						</ul>
