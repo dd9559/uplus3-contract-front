@@ -20,7 +20,7 @@
             <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
           </el-option>
         </el-select>
-        <el-select :clearable="true" ref="employe" v-loadmore="moreData" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
+        <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
           <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
           <el-option
             v-for="(item,index) in EmployeList"
@@ -403,9 +403,6 @@
         if(data.subs.length===0){
           this.$refs.tree.blur()
         }
-      },
-      moreData:function () {
-        this.getEmploye(this.dep.id,++this.employePage)
       },
       /**
        * 修改款单，获取初始数据
