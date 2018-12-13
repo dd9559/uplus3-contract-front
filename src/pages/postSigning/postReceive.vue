@@ -187,19 +187,22 @@
                             </el-table-column>
                             <el-table-column :formatter="nullFormatterData" align="center" min-width="185" label="责任人">
                                 <template slot-scope="scope">
+                                    <!-- @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)" -->
                                     <el-select 
                                     v-model="scope.row.personLiableCode" 
-                                    :value="scope.row.value"
                                     :disabled="roleDisabledFn(scope.row)"
-                                    @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)"
+                                    v-loadmore="loadMoreFn"
                                     placeholder="选择责任人" 
+                                    @focus="roleRemoteFn(scope.$index,scope.row.roleId)"
                                     filterable
+                                    remote
+                                    :remote-method="roleRemoteMethodFn"
                                     :loading="loading4"
                                     @change="roleRemoteChangeFn($event,scope.$index)"
                                     size="small" 
                                     class="w185">
                                         <el-option 
-                                        v-for="item in scope.row.rules" 
+                                        v-for="item in empRulesList(scope.row.rules)" 
                                         :key="'zrr'+item.empId + scope.$index" 
                                         :label="item.name" 
                                         :value="item.empId"></el-option>
@@ -291,7 +294,7 @@
                 tableData:{},
                 // 列表请求的页数
                 pageNum:1,
-                pageSize:20,
+                pageSize:10,
                 // 加载
                 loading:false,
                 loading2:false,
@@ -331,6 +334,12 @@
                         label:'全部',
                         key:''
                     }]
+                },
+                // 搜索变量
+                employees:{
+                    keyword:'',
+                    roleId:0,
+                    index:0,
                 },
                 // 搜索展示内容
                 restaurants: [{
@@ -482,11 +491,12 @@
                     if(res.status === 200){
                         let arr = [...res.data];
                         arr.map(e => {
-                           e.rules = [{
+                            e.rules = {};
+                           e.rules.list = [{
                                empId:e.personLiableCode,
                                name:e.personLiableName
                            }]
-                           e.roleBool = true;
+                        //    e.roleBool = true;
                         })
                         this.dealTable = arr;
                         this.loadingdealTable = false;
@@ -545,7 +555,7 @@
                         this.dealTable[i].personLiableCode = "";
                         this.dealTable[i].rules = [...res.data];
                         this.dealTable[i].personLiableName = '';
-                        this.dealTable[i].roleBool = false;
+                        // this.dealTable[i].roleBool = false;
                     }
                     this.loading4 = false;
                 }).catch(err=>{
@@ -559,22 +569,66 @@
                 this.$set(this.dealTable,i,arr)
             },
             // 展示下拉列表的时候执行
-            roleRemoteFn(i,e,bool){
-                if(bool && !!e && this.dealTable[i].roleBool){
+            roleRemoteFn(i,e){
+                this.employees={
+                    keyword:'',
+                    roleId:e,
+                    index:i
+                };
+                // && this.dealTable[i].roleBool
+                if(!!e ){
+                    if(!this.dealTable[i].rules.pageNum){
+                        this.dealTable[i].rules.pageNum = 1;
+                    }
+                    this.getEmployeesFn();
+                }
+            },
+            roleRemoteMethodFn(query){
+                this.employees.keyword = query;
+                this.getEmployeesFn();
+            },
+            // 下拉加载更多
+            loadMoreFn(){
+                this.dealTable[this.employees.index].rules.pageNum++;
+                this.getEmployeesFn(true);
+            },
+            getEmployeesFn(bool){
+                if(!bool){
                     this.loading4 = true;
-                    this.$ajax.get('/api/organize/employees',{
-                        cityId:this.cityId,
-                        roleId:e
-                    }).then(res=>{
-                        res = res.data;
-                        if(res.status === 200){
-                            this.dealTable[i].rules = [...res.data];
+                }
+                this.$ajax.get('/api/organize/employees/pages',{
+                    cityId:this.cityId,
+                    roleId:this.employees.roleId,
+                    keyword:this.employees.keyword,
+                    pageNum:this.dealTable[this.employees.index].rules.pageNum,
+                }).then(res=>{
+                    res = res.data;
+                    if(res.status === 200){
+                        let rul = this.dealTable[this.employees.index].rules;
+                        if(bool){
+                            if(rul.hasNextPage){
+                                this.dealTable[this.employees.index].rules = Object.assign(rul,{
+                                    list:[...rul.list,...res.data.list],
+                                    pageNum:res.data.pageNum,
+                                    hasNextPage:res.data.hasNextPage,
+                                })
+                            }
+                        }else{
+                            this.dealTable[this.employees.index].rules = res.data;
                         }
-                        this.loading4 = false;
-                    }).catch(err=>{
-                        this.errMeFn(err);
-                        this.loading4 = false;
-                    })
+                    }
+                    this.loading4 = false;
+                }).catch(err=>{
+                    this.errMeFn(err);
+                    this.loading4 = false;
+                })
+            },
+            // 数据处理
+            empRulesList(data){
+                if(!data.list){
+                   return [] 
+                }else{
+                    return data.list
                 }
             },
             // 保存
@@ -875,6 +929,28 @@
                 }).catch(err=>{
                     this.errMeFn(err);
                 })
+            },
+        },
+        directives:{
+            loadmore:{
+                inserted(el,binding){
+                    // console.log(el,binding)
+                    // 获取element-ui定义好的scroll盒子
+                    const SELECTWRAP_DOM = el.querySelector('.el-select-dropdown .el-select-dropdown__wrap');
+                    SELECTWRAP_DOM.addEventListener('scroll', function() {
+                        /*
+                        * scrollHeight 获取元素内容高度(只读)
+                        * scrollTop 获取或者设置元素的偏移值,常用于, 计算滚动条的位置, 当一个元素的容器没有产生垂直方向的滚动条, 那它的scrollTop的值默认为0.
+                        * clientHeight 读取元素的可见高度(只读)
+                        * 如果元素滚动到底, 下面等式返回true, 没有则返回false:
+                        * ele.scrollHeight - ele.scrollTop === ele.clientHeight;
+                        */
+                        const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight; 
+                        if(CONDITION) { 　　 
+                            binding.value(); 
+                        } 　　　 
+                    }); 
+                } 
             }
         },
         components: {
