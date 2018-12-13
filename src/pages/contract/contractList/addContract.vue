@@ -27,7 +27,7 @@
             <span class="chineseNum">{{contractForm.dealPrice|moneyFormat}}</span>
           </el-form-item>
           <br>
-          <el-form-item label="客户保证金：" v-if="contractForm.type===2" class="width-250">
+          <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
             <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
             <i class="yuan">元</i>
             <!-- <el-input v-model="contractForm.custEnsure" maxlength="13" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input> -->
@@ -88,14 +88,14 @@
           <el-form-item label="店长：">
             {{contractForm.houseInfo.ShopOwnerName}} {{contractForm.houseInfo.ShopOwnerMobile}}
           </el-form-item>
-          <br v-if="contractForm.type===2">
-          <el-form-item label="产权状态：" v-if="contractForm.type===2" class="width-250">
+          <br v-if="contractForm.type===2||contractForm.type===3">
+          <el-form-item label="产权状态：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
             <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
               <el-option  label="无" value=""></el-option>
               <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="按揭银行：" v-if="contractForm.type===2" class="width-250">
+          <el-form-item label="按揭银行：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
             <el-select v-model="contractForm.houseInfo.stagesBankName" placeholder="请选择银行" :disabled="type===2?true:false" style="width:140px" :clearable="true">
               <el-option label="中国工商银行" value="中国工商银行"></el-option>
               <el-option label="中国建设银行" value="中国建设银行"></el-option>
@@ -113,16 +113,16 @@
               <el-option label="华夏银行" value="华夏银行"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="按揭欠款：" v-if="contractForm.type===2" class="width-250">
+          <el-form-item label="按揭欠款：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.stagesArrears" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input> -->
             <input type="text" v-model="contractForm.houseInfo.stagesArrears" :disabled="type===2?true:false" @input="cutNumber('stagesArrears')" placeholder="请输入内容" class="dealPrice" :class="{'forbid':type===2}">
             <i class="yuan">元</i>
           </el-form-item>
-          <br v-if="contractForm.type===2">
-          <el-form-item label="产权地址：" v-if="contractForm.type===2" style="width:520px;text-align:right">
+          <br v-if="contractForm.type===2||contractForm.type===3">
+          <el-form-item label="产权地址：" v-if="contractForm.type===2||contractForm.type===3" style="width:520px;text-align:right">
             <el-input v-model="contractForm.houseInfo.propertyRightAddr" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:416px"></el-input>
           </el-form-item>
-          <el-form-item label="房产证号：" v-if="contractForm.type===2" :class="{'form-label':type===1}">
+          <el-form-item label="房产证号：" v-if="contractForm.type===2||contractForm.type===3" :class="{'form-label':type===1}">
             <el-input v-model="contractForm.propertyCard" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:200px"></el-input>
           </el-form-item>
           <br>
@@ -567,7 +567,9 @@ export default {
             this.contractForm.ownerCommission > 0
           ) {
             if (this.contractForm.houseInfo.HouseStoreCode) {
-              this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
+              if(this.contractForm.propertyCard){
+                this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
+              }
               if(this.contractForm.propertyCard||this.contractForm.type===1){
                 //业主产权比
               let ownerRightRatio = 0;

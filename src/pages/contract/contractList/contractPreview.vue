@@ -9,7 +9,7 @@
         <span :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</span>
       </div>
       <div class="btn" v-if="contType<4">
-        <el-button type="primary" round style="width:100px" @click="toEdit" v-if="contState<2">编 辑</el-button>
+        <el-button type="primary" round style="width:100px" @click="toEdit" v-if="examineState<0||examineState===2">编 辑</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogInvalid = true" v-if="contState!=3&&contState!=0">无 效</el-button>
         <el-button round :type="examineState<0?'primary':''" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="isSubmitAudit=true">{{subCheck}}</el-button>
         <el-button round type="primary" style="width:100px" v-if="contState===3&&contChangeState!=2&&contChangeState!=1" @click="goChangeCancel(1)">变更</el-button>
@@ -353,7 +353,7 @@ export default {
           this.guestStoreId=res.data.guestStoreId;
           this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
-          if(res.data.cityId===1&&res.data.contType.value===2){
+          if(res.data.cityId===1&&res.data.contType.value===2){  //||res.data.contType.value===3
             this.isShowType=true;
             //买卖
             this.business=res.data.imgAddress.business;
