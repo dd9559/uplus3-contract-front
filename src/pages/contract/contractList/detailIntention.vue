@@ -93,7 +93,7 @@
                                     <p>点击上传</p>
                                 </file-up>
                             </li>
-                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                            <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                                     <div class="namePath" @click="getPicture(uploadList,index)">
                                         <upload-cell :type="item.fileType"></upload-cell>
@@ -120,7 +120,7 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)"  @click="previewPhoto(item.value,index_)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                                         <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                                             <div class="namePath" @click="getPicture(item.value,index_)">
                                                 <upload-cell :type="item_.fileType"></upload-cell>
@@ -146,7 +146,7 @@
                                         </file-up>
                                     </li>
                                     
-                                        <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
+                                        <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                                             <!-- <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom"> -->
                                                 <div class="namePath" @click="getPicture(item.value,index_)">
                                                     <upload-cell :type="item_.fileType"></upload-cell>                                               
@@ -172,7 +172,7 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)" @click="previewPhoto(item.value,index_)">
+                                    <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                                         <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                                             <div class="namePath" @click="getPicture(item.value,index_)">
                                                 <upload-cell :type="item_.fileType"></upload-cell>

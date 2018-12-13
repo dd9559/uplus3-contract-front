@@ -196,14 +196,14 @@
             <div class="uploadtitle">附件:</div>
             <ul class="ulData">
 
-                <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath">
+                    <div class="namePath" @click="getPicture(uploadList,index)">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
                   </el-tooltip>
-                  <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                  <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
                 </li>
             </ul>
           </div>                  
@@ -220,7 +220,7 @@
         <el-button type="primary"  @click="receptFn()" class="recept" v-dbClick>通 过</el-button>  
       </div> 
       <!-- 图片放大 -->
-      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+      <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
 
     <!-- 调佣详情 -->
@@ -282,14 +282,14 @@
             <div class="uploadtitle">附件:</div>
             <ul class="ulData">
 
-                <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" @click="previewPhoto(uploadList,index)">
+                <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath">
+                    <div class="namePath" @click="getPicture(uploadList,index)">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
                   </el-tooltip>
-                  <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                  <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
                 </li>
             </ul>
           </div> 
@@ -299,33 +299,7 @@
         <div class="audit-col bordernone">
           <!-- 表格 -->
           <div class="mb20">审核信息：</div>
-          <!-- <table class="table">
-            <thead>
-              <tr>
-                <th>时间</th>
-                <th>部门</th>
-                <th>员工</th>
-                <th>操作</th>
-                <th>备注</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>2018/09/03 12:19</td>
-                <td>技术部</td>
-                <td>雄伟</td>
-                <td>审批通过</td>
-                <td>审核备注信息</td>
-              </tr>
-              <tr>
-                <td>2018/09/03 12:19</td>
-                <td>技术部</td>
-                <td>雄伟</td>
-                <td>审批通过</td>
-                <td>审核备注信息</td>
-              </tr>
-            </tbody>
-          </table> -->
+
           <el-table :data="checkInfo" border style="width: 100%" class="table table2 mt20">
             <el-table-column label="时间" width=160 align=center>
               <template slot-scope="scope">
@@ -335,12 +309,12 @@
             <el-table-column prop="userName" label="姓名">
             </el-table-column>
             <el-table-column prop="roleName" label="职务"  width=110></el-table-column>
-            <el-table-column label="操作" :formatter="nullFormatter" align="center" width=100>
-              <template slot-scope="scope">
-                <span class="blue" v-if="scope.row.auditState === 0">审核中</span>
+            <el-table-column prop="operate" label="操作" :formatter="nullFormatter" align="center" width=100>
+              <!-- <template slot-scope="scope">
+                <span class="blue" v-if="scope.row.auditState === 4">未审核</span>
                 <span class="green" v-if="scope.row.auditState === 1">通过</span>
                 <span class="red" v-if="scope.row.auditState === 2">驳回</span>
-              </template>
+              </template> -->
             </el-table-column>
             <el-table-column label="备注">
               <template slot-scope="scope">
@@ -354,7 +328,7 @@
                     </div>
                   </el-popover>
                 </span>
-                <span v-else>-</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
           </el-table> 
@@ -363,7 +337,7 @@
       </div>
 
       <!-- 图片放大 -->
-      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+      <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
 
   </div>
@@ -425,6 +399,9 @@
 
         checkInfo:[],
 
+        preview:false,
+        start:'',
+
         isDelete:'',
         
         myCheckId: '',
@@ -473,20 +450,32 @@
     },
   
     methods:{
-      //合同主体的删除
-      ZTdelectData(index){
-          this.uploadList.splice(index,1)
+
+      //图片预览
+      getPicture(value,index){
+          this.start=index;
+          let arr=[];
+          // console.log(value);
+          value.forEach(item =>{
+              arr.push(item.path)
+          })
+          this.fileSign(arr)
       },
 
-      //显示删除按钮
-      moveIn(value){
-          this.isDelete=value
-      },
-      moveOut(value){
-          if(this.isDelete===value){
-              this.isDelete=''
-          }
-      },
+      // //文件的删除
+      // ZTdelectData(index){
+      //     this.uploadList.splice(index,1)
+      // },
+
+      // //显示删除按钮
+      // moveIn(value){
+      //     this.isDelete=value
+      // },
+      // moveOut(value){
+      //     if(this.isDelete===value){
+      //         this.isDelete=''
+      //     }
+      // },
 
 
       // 控制弹框body内容高度，超过显示滚动条
