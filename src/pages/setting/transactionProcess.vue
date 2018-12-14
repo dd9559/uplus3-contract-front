@@ -35,7 +35,7 @@
             <el-input v-model="settlePercent"  @keyup.native="getInt"></el-input>%
           </div>
           <div class="manage-list">
-            <el-table :data="manageData">
+            <el-table :data="manageData" height="400">
               <el-table-column align="center" type="index" label="序号"></el-table-column>
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
               <el-table-column align="center" label="步骤名称" prop="stepsName"></el-table-column>
@@ -63,7 +63,7 @@
         </el-dialog>
         <!-- 添加流程步骤 弹出框 -->
         <el-dialog title="添加流程步骤" :visible.sync="ProcessStepVisible" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
-          <el-table :data="StepsOption" border class="process-list">
+          <el-table :data="StepsOption" border class="process-list" height="400">
             <el-table-column label="步骤类型">
               <template slot-scope="scope">
                 <p>
@@ -172,7 +172,6 @@
             if(res.status === 200) {
               this.manageData = res.data
               this.flowCount = this.manageData.length
-              // this.tempManage = JSON.parse(JSON.stringify(res.data))
             }
             this.manageData.forEach(i => {
               this.AllSteps.forEach((v,index) => {
@@ -286,6 +285,7 @@
           item.tempList = []
           item.stepsSelect = false
         })
+        this.StepsOption = this.StepsOption.filter(item => item.stepsList.length)
         this.manageData.forEach(i => {
           this.StepsOption.forEach(v => {
             if(i.stepsTypeName === v.typeName) {
@@ -385,7 +385,7 @@
           let flag = equar(this.manageData,this.tempManage)
 
           let arr = []
-          this.manageData.forEach(item => {
+          this.manageData.forEach((item,index) => {
             if(this.flowCount === 0) {
               arr.push({
                 transStepsId: item.transStepsId,
@@ -515,9 +515,6 @@
       padding: 0 12px;
     }
     .processDialog {
-      /deep/ .el-dialog__body {
-        // margin-bottom: 271px;
-      }
       .add-form-item {
         display: flex;
         /deep/ .el-form-item__label::before {

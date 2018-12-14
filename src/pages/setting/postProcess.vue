@@ -82,13 +82,13 @@
   background-color: #F2F3F8!important;
   height: 100%;
   .form-head {
-    height: 82px;
+    // height: 82px;
     background: #fff;
     box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
     border-radius: 4px 4px 0 0;
     display: flex;
     align-items: center;
-    padding-left: 20px;
+    padding: 5px 0 5px 20px;
     .el-form-item {
       display: flex;
       margin-bottom: 0;
