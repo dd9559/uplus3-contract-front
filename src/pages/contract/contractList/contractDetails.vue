@@ -247,7 +247,7 @@
             </li>
             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
               <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                <div class="namePath" @click="getPicture(uploadList,index)">
+                <div class="namePath" @click="previewPhoto(uploadList,index)">
                   <upload-cell :type="item.fileType"></upload-cell>
                   <p>{{item.name}}</p>
                 </div>
@@ -276,7 +276,7 @@
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                   <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                    <div class="namePath" @click="getPicture(item.value,index_)">
+                    <div class="namePath" @click="previewPhoto(item.value,index_)">
                       <upload-cell :type="item_.fileType"></upload-cell>
                       <p>{{item_.name}}</p>
                     </div>
@@ -299,7 +299,7 @@
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                   <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                    <div class="namePath" @click="getPicture(item.value,index_)">
+                    <div class="namePath" @click="previewPhoto(item.value,index_)">
                       <upload-cell :type="item_.fileType"></upload-cell>
                       <p>{{item_.name}}</p>
                     </div>
@@ -322,7 +322,7 @@
                 </li>
                 <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                   <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                    <div class="namePath" @click="getPicture(item.value,index_)">
+                    <div class="namePath" @click="previewPhoto(item.value,index_)">
                       <upload-cell :type="item_.fileType"></upload-cell>
                       <p>{{item_.name}}</p>
                     </div>
@@ -443,7 +443,7 @@
     <!-- 变更/解约编辑弹窗 -->
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
-    <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
+    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
            
@@ -580,6 +580,8 @@ export default {
             message:'合同未签章,不允许上传'
           })
         }
+      }else if(tab.name==="fifth"){
+        this.getAuditList();//合同审核信息
       }
     },
     //打电话
@@ -982,15 +984,29 @@ export default {
       }
     },
     //图片预览
-    getPicture(value,index){
-      this.start=index;
-      let arr=[];
-      // console.log(value);
-      value.forEach(item =>{
-        arr.push(item.path)
+    // getPicture(value,index){
+    //   this.start=index;
+    //   let arr=[];
+    //   // console.log(value);
+    //   value.forEach(item =>{
+    //     arr.push(item.path)
+    //   })
+    //   this.fileSign(arr)
+    // },
+    //合同审核信息
+    getAuditList(){
+      let param = {
+        flowType:3,
+        bizCode:this.contCode
+      };
+      this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.checkData=res.data;
+          console.log(this.checkData)
+        }
       })
-      this.fileSign(arr)
-    },
+    }
   },
   filters: {
     moneyFormat: function(val) {

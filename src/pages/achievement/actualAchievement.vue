@@ -739,10 +739,10 @@
       <el-dialog
         :title="'操作-'+smallTips"
         :visible.sync="recallShow"
-        width="20%"
         :close-on-click-modal="false"
+        custom-class="sure-dialog"
       >
-        <span>是否确认{{smallTips}}?</span>
+        <span class="tips">是否确认{{smallTips}}?</span>
         <span
           slot="footer"
           class="dialog-footer"
@@ -801,7 +801,7 @@ export default {
       },
       beginData: false,
       currentPage: 1,
-      pageSize:5,
+      pageSize:10,
       comm: "", //业绩分成
       aId: null, //业绩id
       contractId: null, //合同id
@@ -1257,8 +1257,8 @@ export default {
 
   //业绩详情弹框改变样式
   /deep/ .el-dialog.base-dialog {
-    max-width: 1000 !important;
-    margin: 13vh auto 0!important;
+    max-width: 1000px !important;
+    margin: 13vh auto 0 !important;
     overflow: auto;
     b {
       position: absolute;
@@ -1284,10 +1284,10 @@ export default {
         line-height: 0;
       }
     }
-    .ach-body {
+    /deep/ .ach-body {
       max-height: 500px;
       // background-color: pink;
-      padding: 0 20px;
+      padding: 0 20px !important;
       box-sizing: border-box;
       overflow-y: auto;
       /deep/ .el-table {
@@ -1341,5 +1341,23 @@ export default {
 }
 .w430 {
   width: 430px;
+}
+/deep/ .sure-dialog {
+  width: 450px;
+  height: 200px;
+  overflow: hidden;
+  // .el-table__header {
+  //   padding-bottom: 60px;
+  // }
+  .tips {
+    margin-left: 10px;
+    font-size: 18px;
+    padding-top: 20px;
+    display: block;
+    padding-bottom: 30px;
+  }
+}
+ .el-dialog.base-dialog .ach-body {
+  padding: 0 20px;
 }
 </style>
