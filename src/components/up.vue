@@ -51,7 +51,7 @@
           init:{
             FilesAdded: function(up, files) {
               // 选择文件后执行
-              let fileType=get_suffix(files[0].name)
+              let fileType=get_suffix(files[0].name).toLowerCase();
               if(that.rules.length>0){
                 if(that.rules.indexOf(fileType)>-1){
                   that.up()

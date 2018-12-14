@@ -203,7 +203,7 @@ export default{
                 }else{
                      this.signPosition.pageIndex=this.count
                 }
-                if(this.cityId==1 && this.type==2){
+                if(this.showSed){
                     this.sigtureShow=false
                 }else{
                     this.sigtureShow=!this.sigtureShow
@@ -213,7 +213,7 @@ export default{
                  this.tuozhuai()
             },
             tuozhuai(){
-                    if(this.cityId==1 && this.type==2){
+                    if(this.showSed){
                     var oDiv=document.getElementsByClassName('signature')[1]
                     }else{
                     var oDiv=document.getElementsByClassName('signature')[0]
@@ -273,7 +273,7 @@ export default{
                   type:this.type,
                   name:this.contraName,
                   signPosition:this.signPosition,
-                  imgAddress:{"business":this.cityId==1&&this.type==2?this.imgSrc:'', "residence":this.cityId==1&&this.type==2?this.imgSrc2:'',"address":!(this.cityId==1&&this.type==2)?this.imgSrc:''},
+                  imgAddress:{"business":this.showSed?this.imgSrc:'', "residence":this.showSed?this.imgSrc2:'',"address":!this.showSed?this.imgSrc:''},
                   imgPage:{"business":this.showSed?this.total:0, "residence": this.showSed?this.total2:0,"count": !this.showSed?this.total:0},
                   cityId:this.cityId,
                   id:this.id
@@ -459,7 +459,7 @@ export default{
                   if(this.tableDate.length!==0 && this.show==1 && this.flag==1){
                       this.modalDialog=true
                     }
-                 if(this.cityId==1 && this.type==2){
+                 if(this.cityId==1 && (this.type==2||this.type==3)){
                     this.showSed=true
                     // this.$refs.bigbox.$el.classList.add('bodycontainer')
                     this.position=false

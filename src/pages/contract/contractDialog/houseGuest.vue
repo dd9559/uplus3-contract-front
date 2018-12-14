@@ -549,6 +549,7 @@ export default {
   }
   .dataList {
     height: 360px;
+    min-width: 960px;
     overflow-y: auto;
   }
   .outSide {

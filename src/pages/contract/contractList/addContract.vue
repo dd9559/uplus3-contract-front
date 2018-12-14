@@ -831,11 +831,13 @@ export default {
       //debugger
       this.contractForm.contPersons=[]
       this.ownerList.forEach(element => {
-        console.log("22");
+        delete element.edit
+        // console.log("22");
         this.contractForm.contPersons.push(element);
       });
       this.guestList.forEach(element => {
-        console.log("11");
+        delete element.edit
+        // console.log("11");
         this.contractForm.contPersons.push(element);
       });
       /* 新增/编辑租赁合同 */
@@ -977,6 +979,9 @@ export default {
               element.name=element.OwnerName;
               element.mobile=element.OwnerMobile;
               element.relation=element.Relation;
+              delete element.OwnerName
+              delete element.OwnerMobile
+              delete element.Relation
               let obj = Object.assign({}, element);
               this.ownerList.push(obj);
             });
@@ -1414,7 +1419,7 @@ export default {
     }
   }
   .cooperation {
-    height: 240px;
+    min-height: 240px;
     padding-left: 30px;
     /deep/.el-textarea__inner {
       width: 600px;
@@ -1423,6 +1428,7 @@ export default {
   }
   .peopleMsg {
     li {
+      min-width: 540px;
       font-size: 14px;
       margin-bottom: 10px;
       .merge {

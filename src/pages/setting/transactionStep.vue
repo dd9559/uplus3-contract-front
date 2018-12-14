@@ -7,7 +7,7 @@
         <span>步骤类型</span>
         <el-button type="primary" @click="addStepsType">添加步骤类型</el-button>
       </div>
-      <el-table :data="listData" @cell-click="cellClick">
+      <el-table :data="listData" @cell-click="cellClick" border>
         <el-table-column
         align="center"
         :label="item.name"
@@ -30,7 +30,7 @@
         <span>交易步骤</span>
         <el-button type="primary" @click="addTradeSteps">添加交易步骤</el-button>
       </div>
-      <el-table :data="listData_other">
+      <el-table :data="listData_other" border>
         <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
                         v-for="item in tHeader_other" :key="item.id">
         </el-table-column>
@@ -67,9 +67,10 @@
           <el-input v-model.trim="addForm.name" autocomplete="off" maxlength="30" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
         </el-form-item>
         <el-form-item label="分配负责角色">
-          <el-select v-model="addForm.dutyType" filterable>
+          <!-- <el-select v-model="addForm.dutyType" filterable>
             <el-option v-for="item in roleList" :key="item.key" :label="item.value" :value="item.value"></el-option>
-          </el-select>
+          </el-select> -->
+          <el-autocomplete v-model="addForm.dutyType" :fetch-suggestions="querySearch"></el-autocomplete>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -221,6 +222,7 @@
           '570':''
         },
         roleList: [],
+        tempRoleList: [],
         inputMax: 30,
         allRows: []
       }
@@ -231,6 +233,20 @@
       this.getData()
     },
     methods: {
+      querySearch(queryString,cb) {
+        this.roleList = JSON.parse(JSON.stringify(this.tempRoleList))
+        if(queryString) {
+          this.roleList = this.roleList.filter(this.createFilter(queryString))
+        }
+        cb(this.roleList)
+      },
+      createFilter(queryString) {
+        return restaurant => {
+          return (
+            restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) >= 0
+          );
+        };
+      },
       //获取步骤类型列表
       getData: function () {
         this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: this.cityId}).then(res => {
@@ -273,6 +289,7 @@
           res = res.data
           if(res.status === 200) {
             this.roleList = res.data
+            this.tempRoleList = [...res.data]
           }
         })
       },
@@ -315,42 +332,55 @@
         if(this.addForm.name === "") {
             this.$message("步骤类型不能为空")
           } else {
+            let flag
             if(this.addForm.dutyType) {
-              this.roleList.find(item => {
-                if(this.addForm.dutyType === item.value) {
-                  this.addForm.dutyId = item.key
+              debugger
+              for(let i = 0; i < this.tempRoleList.length; i++) {
+                if(this.addForm.dutyType === this.tempRoleList[i].value) {
+                  this.addForm.dutyId = this.tempRoleList[i].key
+                  flag = true
+                  break
                 }
-              })
-            }
-            if(this.modalTitle === "添加步骤类型") {
-              this.$ajax.postJSON(`/api/flowmanage/insertStepsType`,this.addForm).then(res => {
-                res = res.data
-                if(res.status === 200) {
-                  this.$message(res.message)
-                  this.stepsTypeDialog = false
-                  this.getData()
-                  this.firstCellLight()
-                }
-              }).catch(error => {
-                  this.$message({message:error})
-                })
-            } else {
-              let param = {
-                id: this.currentRow.typeId
               }
-              param = Object.assign({},this.addForm,param)
-              this.$ajax.postJSON(`/api/flowmanage/updateStepsType`,param).then(res => {
-                res = res.data
-                if(res.status === 200) {
-                  this.$message("编辑步骤类型成功")
-                  this.stepsTypeDialog = false
-                  this.getData()
-                  this.firstCellLight()
+              if(!flag) {
+                for(let i = 0; i < this.tempRoleList.length; i++) {
+                  if(this.addForm.dutyType != this.tempRoleList[i].value) {
+                    this.$message({message:"选择的角色不存在"})
+                  }
                 }
-              }).catch(error => {
-                  this.$message({message:error})
-                })
-            }  
+              } 
+            }
+            if(flag || !this.addForm.dutyType) {
+              if(this.modalTitle === "添加步骤类型") {
+                this.$ajax.postJSON(`/api/flowmanage/insertStepsType`,this.addForm).then(res => {
+                  res = res.data
+                  if(res.status === 200) {
+                    this.$message(res.message)
+                    this.stepsTypeDialog = false
+                    this.getData()
+                    this.firstCellLight()
+                  }
+                }).catch(error => {
+                    this.$message({message:error})
+                  })
+              } else {
+                let param = {
+                  id: this.currentRow.typeId
+                }
+                param = Object.assign({},this.addForm,param)
+                this.$ajax.postJSON(`/api/flowmanage/updateStepsType`,param).then(res => {
+                  res = res.data
+                  if(res.status === 200) {
+                    this.$message("编辑步骤类型成功")
+                    this.stepsTypeDialog = false
+                    this.getData()
+                    this.firstCellLight()
+                  }
+                }).catch(error => {
+                    this.$message({message:error})
+                  })
+              }
+            }   
           }
       },
       confirmForm() {
@@ -541,7 +571,7 @@
 .data-list {
   margin-top: 12px;
   display: flex;
-  height: calc(100% - 142px);
+  // height: calc(100% - 103px);
   //步骤类型
   .stepsType {
     min-width: 29%;
@@ -628,12 +658,6 @@
     padding: 0 12px;
     box-sizing: border-box;
     border-radius: 4px;
-    /deep/ .el-table {
-      border-left: 1px solid #EDECF0;
-      td {
-        border-right: 1px solid #EDECF0;
-      }
-    }
   }
   .steps-type {
     /deep/ .el-dialog__body { margin-bottom: 220px; }

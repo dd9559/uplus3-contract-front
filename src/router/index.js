@@ -76,11 +76,19 @@ export default new Router({
       },
       {
         path: "postProcess",
-        component: postProcess
+        component: postProcess,
+        meta: {
+          root: true,
+          list: ['设置', '后期流程设置']
+        }
       },
       {
         path: "company",
-        component: Company
+        component: Company,
+        meta: {
+          root: true,
+          list: ['设置', '公司设置']
+        }
       },
       {
         path: "moneyType",
@@ -100,7 +108,11 @@ export default new Router({
       },
       {
         path: "approvalProcess",
-        component: approvalProcess
+        component: approvalProcess,
+        meta: {
+          root: true,
+          list: ['设置', '审核流程']
+        }
       },
       //设置模块 end
       {
@@ -124,7 +136,7 @@ export default new Router({
         component: actualAchievement,
         meta: {
           root: true,
-          list: ['业绩', '应收列表']
+          list: ['业绩', '应收业绩']
         }
       },
       {
@@ -132,7 +144,7 @@ export default new Router({
         component: receivableAchievement,
         meta: {
           root: true,
-          list: ['业绩', '实收列表']
+          list: ['业绩', '实收业绩']
         }
       },
       {
@@ -241,15 +253,27 @@ export default new Router({
       // 签后
       {
         path: "postReceive",
-        component: postReceive
+        component: postReceive,
+        meta: {
+          root: true,
+          list: ['签后', '后期接收']
+        }
       },
       {
         path: "postManage",
-        component: postManage
+        component: postManage,
+        meta: {
+          root: true,
+          list: ['签后', '后期管理']
+        }
       },
       {
         path: "postMonitor",
-        component: postMonitor
+        component: postMonitor,
+        meta: {
+          root: true,
+          list: ['签后', '后期监控']
+        }
       },
       //新增合同
       {
@@ -284,7 +308,11 @@ export default new Router({
       //分账记录
       {
         path: "routingRecord",
-        component: routingRecord
+        component: routingRecord,
+        meta: {
+          root: true,
+          list: ['合同', '分账记录']
+        }
       },
       {
         path: 'login',

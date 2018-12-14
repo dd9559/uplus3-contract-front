@@ -865,6 +865,9 @@
         methods:{
             // 是否显示上的按钮
             isUpBtnFn(index){
+                if(!this.tableProgress[index-1]){
+                    return true
+                }
                 if(this.tableProgress[index-1].stepState.value === OPERATION.sure){
                     return false
                 }else{
@@ -1135,6 +1138,7 @@
                     let upId = e.row.id;
                     let downId = this.tableProgress[index-1].id;
                     this.oderStepFn(upId,downId);
+                    this.getDataList();
                     // }
                 }
             },
@@ -1148,6 +1152,7 @@
                     let upId = this.tableProgress[index+1].id;
                     let downId = e.row.id;
                     this.oderStepFn(upId,downId);
+                    this.getDataList();
                     // }
                 }
             },
@@ -1258,7 +1263,7 @@
                             return ['.xlsx'];
                             break;
                         case STEPSINPUT.word:
-                            return ['.doc','docx'];
+                            return ['.doc','.docx'];
                             break;
                         case STEPSINPUT.pdf:
                             return ['.pdf'];
