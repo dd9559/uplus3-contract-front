@@ -228,7 +228,7 @@
 
     <!-- 结算详情 -->
     <el-dialog title="结算详情" :visible.sync="dialogVisible2" width="820px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
-      <div class="audit-box"  :style="{ height: clientHeight() }">
+      <div class="audit-box"  :style="{ height: clientHeight2() }">
         <div class="audit-col">
           <div class="col-li col-li2">
             <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
@@ -290,6 +290,47 @@
             <el-input type="textarea" :rows="6" class="textarea" maxlength=200 v-model="layerAudit.settlementRemarks" :disabled="true"></el-input>
           </div>
         </div>
+
+        <!-- 审核信息 -->
+        <div class="audit-col bordernone">
+          <!-- 表格 -->
+          <div class="mb20">审核信息：</div>
+
+          <el-table :data="checkInfo" border style="width: 100%" class="table table2 mt20">
+            <el-table-column label="时间" width=160 align=center>
+              <template slot-scope="scope">
+                <p>{{scope.row.auditTime | getTime}}</p>
+              </template>
+            </el-table-column>
+            <el-table-column prop="userName" label="姓名">
+            </el-table-column>
+            <el-table-column prop="roleName" label="职务"  width=110></el-table-column>
+            <el-table-column prop="operate" label="操作" :formatter="nullFormatter" align="center" width=100>
+              <!-- <template slot-scope="scope">
+                <span class="blue" v-if="scope.row.auditState === 4">未审核</span>
+                <span class="green" v-if="scope.row.auditState === 1">通过</span>
+                <span class="red" v-if="scope.row.auditState === 2">驳回</span>
+              </template> -->
+            </el-table-column>
+            <el-table-column label="备注">
+              <template slot-scope="scope">
+                <span v-if="scope.row.auditInfo">
+                  <el-popover trigger="hover" placement="top">
+                    <div style="width:160px">
+                      {{scope.row.auditInfo}}
+                    </div>
+                    <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.auditInfo.length<16}">
+                      {{scope.row.auditInfo}}
+                    </div>
+                  </el-popover>
+                </span>
+                <span v-else>--</span>
+              </template>
+            </el-table-column>
+          </el-table> 
+        </div>
+
+
       </div>
       <!-- 图片放大 -->
       <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
@@ -363,6 +404,7 @@
           }
 
         },
+        checkInfo:[],
         preview:false,
         start:'',
         isDelete:'',
@@ -397,6 +439,12 @@
     filters: {
        getDate(val) {
          return TOOL.dateFormat(val);
+       },
+       getTime(val) {
+         if(val === ''){
+           return '-'
+         }
+         return TOOL.timeFormat(val)
        }
     },
   
@@ -431,6 +479,9 @@
       // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
           return this.clientHei - 265 + 'px'
+      },
+      clientHeight2() {        
+          return this.clientHei - 197 + 'px'
       },
 
       // 得到部门门店和经纪人信息
@@ -568,12 +619,12 @@
         }
         this.$ajax.get("/api/settlement/applyExamineById", param)
         .then(res => {
-          let data = res.data;
-          if (res.data.status === 200) {
-            console.log(data.data)
-            this.layerAudit = data.data;
-            this.myCheckId = data.data.id; //结算id
-            this.uploadList = data.data.vouchers;
+          if (res.data.status === 200) {        
+             
+            this.layerAudit = res.data.data.contractResult;
+            this.myCheckId = res.data.data.contractResult.id; //结算id
+            this.uploadList = res.data.data.contractResult.vouchers;
+            this.checkInfo = res.data.data.examineDetails
           }
         }).catch(error => {
             this.$message({
@@ -589,13 +640,11 @@
           id: e.id,
         }
         this.$ajax.get("/api/settlement/applyExamineById", param)
-        .then(res => {
-          let data = res.data;
+        .then(res => {     
           if (res.data.status === 200) {
-            console.log(data.data)
-            this.layerAudit = data.data;
-            this.myCheckId = data.data.id; //结算id
-            this.uploadList = data.data.vouchers;
+           this.layerAudit = res.data.data.contractResult;
+            this.myCheckId = res.data.data.contractResult.id; //结算id
+            this.uploadList = res.data.data.contractResult.vouchers;
           }
         }).catch(error => {
             this.$message({
@@ -794,7 +843,9 @@
     color: @color-blue;
     cursor: pointer;
   }
-
+  .mb20{
+    margin-bottom: 20px;
+  }
   .width250{
     width: 250px;
   }
@@ -844,7 +895,7 @@
       }
   }
   .audit-box{
-    padding: 0 30px 0px 30px;
+    padding: 0 20px 0px 20px;
     overflow-y: auto;
     .audit-col{
       padding: 30px 0;
@@ -907,8 +958,10 @@
       
       .uploadfile{
         margin: 20px 0 30px;
+        display: flex;
         .uploadtitle{
           color: #6C7986;
+          width: 78px;
           em{
             color: #FF3E3E;
             margin-right: 4px;
