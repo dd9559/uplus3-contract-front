@@ -97,7 +97,16 @@
         this.confirm = true
       },
       toBill:function () {
-        this.$refs.layerInvoice.show(this.result.id,true)
+        this.$ajax.get('/api/payInfo/checkBill',{payCode:this.result.payCode}).then(res=>{
+          res=res.data
+          if(res.status===200&&res.data.value===1){
+            this.$refs.layerInvoice.show(this.result.id,true)
+          }else {
+            this.$message({
+              message:'未付款还不能开票'
+            })
+          }
+        })
       },
       emitPaperSetFn:function () {
 
