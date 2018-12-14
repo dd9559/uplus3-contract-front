@@ -52,11 +52,11 @@
               <div v-if="uploadType">
                 <p>
                   <fileUp @getUrl='getAdd("mmai",arguments)' :rules="mbrules"  id='mmai' class='fileup'>买卖</fileUp>
-                  <span v-show="mmaiAddress!==''">买卖模板上传成功！</span>
+                  <span v-show="mmaiAddress!==''">上传成功！  {{mmaiAddress.name}}</span>
                 </p>
                 <p>
                    <fileUp id='jjian' :rules="mbrules"   @getUrl='getAdd("jjian",arguments)' class='fileup' >居间</fileUp>
-                   <span v-show="jjianAddress!==''">居间模板上传成功！</span>
+                   <span v-show="jjianAddress!==''">上传成功！  {{jjianAddress.name}}</span>
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>  
@@ -64,7 +64,7 @@
               <div v-else>
                 <p>
                   <fileUp id='mban' :rules="mbrules" @getUrl='getAdd("mban",arguments)' class='fileup'>模板</fileUp>
-                  <span v-show="mbanAddress!==''">模板上传成功！</span>
+                  <span v-show="mbanAddress!==''">上传成功！  {{mbanAddress.name}}</span>
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span> 
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>                  
@@ -153,6 +153,7 @@
       getAdd(type,obj){
         if(type=='mmai'){
            this.mmaiAddress=obj[0].param[obj[0].param.length-1];
+           console.log(this.mmaiAddress,'this.mmaiAddress');
         }else if(type=='jjian'){
           this.jjianAddress=obj[0].param[obj[0].param.length-1]
         }else if(type=='mban'){
@@ -445,6 +446,7 @@
         p{
           position: relative;
           height: 60px;
+          width: 391px;
           /deep/
           .fileup{
             width:86px;

@@ -409,6 +409,10 @@
                     })
                     this.$router.go(-1)
                   }
+                }).catch(error=>{
+                  this.$message({
+                    message:error
+                  })
                 })
               }else {
                 this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
@@ -417,10 +421,14 @@
                     this.$router.push({
                       path: 'payResult',
                       query:{
-                        content:JSON.stringify(res.data)
+                        content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):''
                       }
                     })
                   }
+                }).catch(error=>{
+                  this.$message({
+                    message:error
+                  })
                 })
               }
             }

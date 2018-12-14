@@ -38,7 +38,7 @@ const receiptResult = () => import('@/pages/finance/receiptResult')
 
 // 合同模块
 const newIntention = () => import("@/pages/contract/contractList/newIntention")
-const editIntention = () => import("@/pages/contract/contractList/editIntention")
+// const editIntention = () => import("@/pages/contract/contractList/editIntention")
 const detailIntention = () => import("@/pages/contract/contractList/detailIntention")
 const adjustCheck = () => import("@/pages/contract/contractList/adjustCheck");
 const settleCheck = () => import("@/pages/contract/contractList/settleCheck");
@@ -46,9 +46,9 @@ const contractList = () => import("@/pages/contract/contractList/contractList")
 const addContract = () => import("@/pages/contract/contractList/addContract")
 const contractDetails = () => import("@/pages/contract/contractList/contractDetails")
 const contractPreview = () => import("@/pages/contract/contractList/contractPreview")
-const layerAudit = () => import("@/pages/contract/contractDialog/layerAudit");
-const layerSettle = () => import("@/pages/contract/contractDialog/layerSettle");
-const changeCancel = () => import("@/pages/contract/contractDialog/changeCancel");
+// const layerAudit = () => import("@/pages/contract/contractDialog/layerAudit");
+// const layerSettle = () => import("@/pages/contract/contractDialog/layerSettle");
+// const changeCancel = () => import("@/pages/contract/contractDialog/changeCancel");
 const routingRecord = () => import("@/pages/contract/contractList/routingRecord");
 
 const Login = () => import("@/login")
@@ -136,7 +136,7 @@ export default new Router({
         component: actualAchievement,
         meta: {
           root: true,
-          list: ['业绩', '应收列表']
+          list: ['业绩', '应收业绩']
         }
       },
       {
@@ -144,7 +144,7 @@ export default new Router({
         component: receivableAchievement,
         meta: {
           root: true,
-          list: ['业绩', '实收列表']
+          list: ['业绩', '实收业绩']
         }
       },
       {
@@ -173,15 +173,23 @@ export default new Router({
       // 合同——合同列表——新增意向金
       {
         path: "newIntention",
-        component: newIntention
+        component: newIntention,
+        meta: {
+          root: true,
+          list: ['合同', '新增合同']
+        }
       },
-      {
-        path: "editIntention",
-        component: editIntention
-      },
+      // {
+      //   path: "editIntention",
+      //   component: editIntention
+      // },
       {
         path: "detailIntention",
-        component: detailIntention
+        component: detailIntention,
+        meta: {
+          root: true,
+          list: ['合同', '合同详情']
+        }
       },
       {
         path: "adjustCheck",
@@ -193,12 +201,16 @@ export default new Router({
       },
       {
         path: "settleCheck",
-        component: settleCheck
+        component: settleCheck,
+        meta: {
+          root: true,
+          list: ['合同', '结算审核']
+        }
       },
-      {
-        path: "layerAudit",
-        component: layerAudit
-      },
+      // {
+      //   path: "layerAudit",
+      //   component: layerAudit
+      // },
       {
         path: "payBill",
         component: payBill,
@@ -241,15 +253,27 @@ export default new Router({
       // 签后
       {
         path: "postReceive",
-        component: postReceive
+        component: postReceive,
+        meta: {
+          root: true,
+          list: ['签后', '后期接收']
+        }
       },
       {
         path: "postManage",
-        component: postManage
+        component: postManage,
+        meta: {
+          root: true,
+          list: ['签后', '后期管理']
+        }
       },
       {
         path: "postMonitor",
-        component: postMonitor
+        component: postMonitor,
+        meta: {
+          root: true,
+          list: ['签后', '后期监控']
+        }
       },
       //新增合同
       {
@@ -267,24 +291,28 @@ export default new Router({
         component: contractPreview
       },
       //调佣申请弹层（最后需要删掉）
-      {
-        path: "layerAudit",
-        component: layerAudit
-      },
+      // {
+      //   path: "layerAudit",
+      //   component: layerAudit
+      // },
       //结算申请弹层（最后需要删掉）
-      {
-        path: "layerSettle",
-        component: layerSettle
-      },
+      // {
+      //   path: "layerSettle",
+      //   component: layerSettle
+      // },
       //变更/解约弹层（最后需要删掉）
-      {
-        path: "changeCancel",
-        component: changeCancel
-      },
+      // {
+      //   path: "changeCancel",
+      //   component: changeCancel
+      // },
       //分账记录
       {
         path: "routingRecord",
-        component: routingRecord
+        component: routingRecord,
+        meta: {
+          root: true,
+          list: ['合同', '分账记录']
+        }
       },
       {
         path: 'login',

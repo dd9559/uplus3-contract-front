@@ -3,142 +3,174 @@
     class="layout"
     style="background-color: #f5f5f5"
   >
-   <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
-    <el-form
-          :inline="true"
-          :model="propForm"
-          class="prop-form"
-          size="small"
+    <ScreeningTop
+      @propQueryFn="queryFn"
+      @propResetFormFn="resetFormFn"
     >
-         <!-- 部门 -->
-          <el-form-item  label="部门"   class="mr" >
-                <el-select v-model="propForm.department"  class="w200" filterable @change="selUser" :clearable="true">
-                     <el-option
-                       v-for="(item,index) in departs"
-                       :key="index"
-                       :label="item.name"
-                       :value="item.id"
-                     ></el-option>
-                </el-select>
-          </el-form-item>
+      <el-form
+        :inline="true"
+        :model="propForm"
+        class="prop-form"
+        size="small"
+      >
+        <!-- 部门 -->
+        <el-form-item
+          label="部门"
+          class="mr"
+        >
+          <el-select
+            v-model="propForm.department"
+            class="w200"
+            filterable
+            @change="selUser"
+            :clearable="true"
+          >
+            <el-option
+              v-for="(item,index) in departs"
+              :key="index"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
 
-          <el-form-item>
-            <el-select v-model="propForm.departmentDetail" class="w100"filterable :clearable="true">
-               <el-option
-                 v-for="(item,index) in users"
-                 :key="index"
-                 ref="user"
-                 :label="item.name"
-                 :value="item.empId"
-               ></el-option>
-            </el-select>
-          </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="propForm.departmentDetail"
+            class="w100"
+            filterable
+            :clearable="true"
+          >
+            <el-option
+              v-for="(item,index) in users"
+              :key="index"
+              ref="user"
+              :label="item.name"
+              :value="item.empId"
+            ></el-option>
+          </el-select>
+        </el-form-item>
 
-          
+        <el-form-item
+          label="合同类型"
+          prop="contractType"
+        >
+          <el-select
+            v-model="propForm.contractType"
+            class="w120"
+            :clearable="true"
+          >
+            <el-option
+              v-for="item in dictionary['10']"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
 
-          <el-form-item label="合同类型" prop="contractType">
-            <el-select
-              v-model="propForm.contractType"
-              class="w120"
-              :clearable="true"
-            >
-              <el-option
-                v-for="item in dictionary['10']"
-                :key="item.value"
-                :label="item.value"
-                :value="item.key"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+        <el-form-item
+          label="分成类型"
+          prop="divideType"
+        >
+          <el-select
+            v-model="propForm.divideType"
+            class="w120"
+            :clearable="true"
+          >
+            <el-option
+              v-for="item in dictionary['21']"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
 
-          <el-form-item label="分成类型" prop="divideType">
-            <el-select
-              v-model="propForm.divideType"
-              class="w120"
-              :clearable="true"
-            >
-              <el-option
-                v-for="item in dictionary['21']"
-                :key="item.value"
-                :label="item.value"
-                :value="item.key"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+        <el-form-item
+          label="业绩状态"
+          prop="achType"
+        >
+          <el-select
+            v-model="propForm.achType"
+            class="w120"
+            :clearable="true"
+          >
+            <el-option
+              v-for="item in dictionary['54']"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
 
-          <el-form-item label="业绩状态" prop="achType">
-            <el-select
-              v-model="propForm.achType"
-              class="w120"
-              :clearable="true"
-            >
-              <el-option
-                v-for="item in dictionary['54']"
-                :key="item.value"
-                :label="item.value"
-                :value="item.key"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+        <el-form-item
+          label="签约日期"
+          prop="dateMo"
+          class="mr"
+        >
+          <el-date-picker
+            v-model="propForm.dateMo"
+            class="w330"
+            type="daterange"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+        </el-form-item>
 
-          <el-form-item label="签约日期"   prop="dateMo" class="mr">
-            <el-date-picker
-              v-model="propForm.dateMo"
-              class="w330"
-              type="daterange"
-              range-separator="至"
-              value-format="yyyy-MM-dd"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            >
-            </el-date-picker>
-          </el-form-item>
+        <el-form-item
+          label="关键字"
+          prop="search"
+        >
+          <el-input
+            class="w460"
+            v-model="propForm.search"
+            placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
+            :trigger-on-focus="false"
+            clearable
+          ></el-input>
+        </el-form-item>
 
-          <el-form-item label="关键字"  prop="search">
-            <el-input
-              class="w460"
-              v-model="propForm.search"
-              placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
-              :trigger-on-focus="false"
-              clearable
-            ></el-input>
-          </el-form-item>
-
-        </el-form>
-  </ScreeningTop>
-
-
+      </el-form>
+    </ScreeningTop>
 
     <!-- 筛选条件 end -->
     <!-- 数据列表 -->
     <div class="data-layout">
       <!-- 头部 -->
-      <div class="table-tool">           
-          <div class="tool-left">
-              <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
-              <ul>
-                <li>
-                  <span>总分成：<b class="orange">{{countData[3]}}元</b>，</span>
-                </li>
-                <li>
-                  <span>分类分成：</span>
-                </li>
-                <li>
-                  <span>出售：<b class="orange">{{countData[1]}}元</b>，</span>
-                </li>
-                <li>
-                  <span>代办：<b class="orange">{{countData[2]}}元</b>，</span>
-                </li>
-                <li>
-                   <span>出租：<b class="orange">{{countData[0]}}元</b></span>
-                </li>
-              </ul>
-           </div>
+      <div class="table-tool">
+        <div class="tool-left">
+          <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
+          <ul>
+            <li>
+              <span>总分成：<b class="orange">{{countData[3]}}元</b>，</span>
+            </li>
+            <li>
+              <span>分类分成：</span>
+            </li>
+            <li>
+              <span>出售：<b class="orange">{{countData[1]}}元</b>，</span>
+            </li>
+            <li>
+              <span>代办：<b class="orange">{{countData[2]}}元</b>，</span>
+            </li>
+            <li>
+              <span>出租：<b class="orange">{{countData[0]}}元</b></span>
+            </li>
+          </ul>
+        </div>
       </div>
       <!-- 头部 end -->
 
       <!-- 表格 -->
-      <div class="data-list"  v-loading="loading">
+      <div
+        class="data-list"
+        v-loading="loading"
+      >
         <el-table
           :data="selectAchList"
           style="width: 100%"
@@ -187,9 +219,9 @@
             label="合同类型"
             width="120"
           >
-              <template slot-scope="scope">
-                   <p>{{scope.row.contType.label}}</p>
-              </template>
+            <template slot-scope="scope">
+              <p>{{scope.row.contType.label}}</p>
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -234,14 +266,14 @@
             width="230"
           >
             <template slot-scope="scope">
-                 <div v-if="scope.row.distributions.length==0">
-                      <div>--</div>
-                  </div> 
-                 <div v-else>
-                    <div v-for="item in scope.row.distributions"> 
-                            <p>{{item.level4}}-{{item.assignor}}</p>
-                     </div> 
-                 </div>    
+              <div v-if="scope.row.distributions.length==0">
+                <div>--</div>
+              </div>
+              <div v-else>
+                <div v-for="item in scope.row.distributions">
+                  <p>{{item.level4}}-{{item.assignor}}</p>
+                </div>
+              </div>
             </template>
           </el-table-column>
 
@@ -250,79 +282,75 @@
             width="160"
           >
             <template slot-scope="scope">
-                <div v-if="scope.row.distributions.length==0">
-                      <div>--</div>
-                 </div> 
-                <div v-else>
-                   <div v-for="item in scope.row.distributions">
-                      <div>
-                          <div v-if="item.roleType==1"> 
-                             <p>录入</p>
-                          </div>
-                          <div v-if="item.roleType==2">
-                             <p>维护</p>
-                          </div>
-                          <div v-if="item.roleType==3">
-                             <p>独家</p>
-                          </div>
-                           <div v-if="item.roleType==4">
-                             <p>房勘</p>
-                          </div>
-                           <div v-if="item.roleType==5">
-                             <p>钥匙</p>
-                          </div>
-                           <div v-if="item.roleType==15">
-                             <p>委托</p>
-                          </div>
-                           <div v-if="item.roleType==16">
-                             <p>建盘</p>
-                          </div>
-
-                           <div v-if="item.roleType==6">
-                             <p>主客方</p>
-                          </div>
-
-                          <div v-if="item.roleType==14">
-                             <p>签约人</p>
-                          </div>
-
-                           <div v-if="item.roleType==11">
-                             <p>A/M</p>
-                          </div>
-                          <div v-if="item.roleType==7">
-                             <p>协议方</p>
-                          </div>
-                          <div v-if="item.roleType==17">
-                             <p>协议方2</p>
-                          </div>
-
-
-                          <div v-if="item.roleType==8">
-                             <p>金融业绩分成人</p>
-                          </div>
-
-
-                          <div v-if="item.roleType==9">
-                             <p>其他业绩分成人</p>
-                          </div>
-
-                          <div v-if="item.roleType==12">
-                             <p>意向违约金</p>
-                          </div>
-
-                         <div v-if="item.roleType==13">
-                             <p>公共业绩</p>
-                          </div>
-
-                          <div v-if="item.roleType==10">
-                             <p>推荐人</p>
-                          </div>
-                      </div>
+              <div v-if="scope.row.distributions.length==0">
+                <div>--</div>
+              </div>
+              <div v-else>
+                <div v-for="item in scope.row.distributions">
+                  <div>
+                    <div v-if="item.roleType==1">
+                      <p>录入</p>
                     </div>
-                </div> 
-           
+                    <div v-if="item.roleType==2">
+                      <p>维护</p>
+                    </div>
+                    <div v-if="item.roleType==3">
+                      <p>独家</p>
+                    </div>
+                    <div v-if="item.roleType==4">
+                      <p>房勘</p>
+                    </div>
+                    <div v-if="item.roleType==5">
+                      <p>钥匙</p>
+                    </div>
+                    <div v-if="item.roleType==15">
+                      <p>委托</p>
+                    </div>
+                    <div v-if="item.roleType==16">
+                      <p>建盘</p>
+                    </div>
 
-             
+                    <div v-if="item.roleType==6">
+                      <p>主客方</p>
+                    </div>
+
+                    <div v-if="item.roleType==14">
+                      <p>签约人</p>
+                    </div>
+
+                    <div v-if="item.roleType==11">
+                      <p>A/M</p>
+                    </div>
+                    <div v-if="item.roleType==7">
+                      <p>协议方</p>
+                    </div>
+                    <div v-if="item.roleType==17">
+                      <p>协议方2</p>
+                    </div>
+
+                    <div v-if="item.roleType==8">
+                      <p>金融业绩分成人</p>
+                    </div>
+
+                    <div v-if="item.roleType==9">
+                      <p>其他业绩分成人</p>
+                    </div>
+
+                    <div v-if="item.roleType==12">
+                      <p>意向违约金</p>
+                    </div>
+
+                    <div v-if="item.roleType==13">
+                      <p>公共业绩</p>
+                    </div>
+
+                    <div v-if="item.roleType==10">
+                      <p>推荐人</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </template>
           </el-table-column>
 
@@ -331,28 +359,31 @@
             width="80"
           >
             <template slot-scope="scope">
-                 <div v-if="scope.row.distributions.length==0">
-                      <div>--</div>
-                  </div> 
-                 <div v-else>
-                    <div v-for="item in scope.row.distributions"> 
-                           <p>{{item.ratio}}%</p>
-                     </div> 
-                 </div>  
+              <div v-if="scope.row.distributions.length==0">
+                <div>--</div>
+              </div>
+              <div v-else>
+                <div v-for="item in scope.row.distributions">
+                  <p>{{item.ratio}}%</p>
+                </div>
+              </div>
             </template>
           </el-table-column>
 
-          <el-table-column label="应收分成金额（元）" width="150">
+          <el-table-column
+            label="应收分成金额（元）"
+            width="150"
+          >
             <template slot-scope="scope">
-                 <div v-if="scope.row.distributions.length==0">
-                      <div>--</div>
-                  </div> 
-                 <div v-else>
-                    <p v-for="item in scope.row.distributions">
-                       {{item.ratio/100*scope.row.receiptsCommission | rounding}}
-                    </p>
-                 </div> 
-              
+              <div v-if="scope.row.distributions.length==0">
+                <div>--</div>
+              </div>
+              <div v-else>
+                <p v-for="item in scope.row.distributions">
+                  {{item.ratio/100*scope.row.receiptsCommission | rounding}}
+                </p>
+              </div>
+
             </template>
           </el-table-column>
           </el-table-columfn>
@@ -362,38 +393,56 @@
           >
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
-                       <div
-                         v-if="scope.row.achievementState==-1"
-                         class="check-btn"
-                       >
-                         <span @click.stop="tishen(scope.row,scope.$index)" style="cursor:pointer;">提审</span>
-                         <span @click.stop="editAch(scope.row,scope.$index)" style="cursor:pointer;">编辑</span>
-                       </div>
-                       <div
-                         v-if="scope.row.achievementState==1"
-                         class="check-btn"
-                       >
-                         <span @click.stop="againCheck(scope.row,scope.$index)" style="cursor:pointer;">反审核</span>
-                       </div>
-                       <div
-                         v-if="scope.row.achievementState==2"
-                         class="check-btn"
-                       >
-                         <span @click.stop="editAch(scope.row,scope.$index)" style="cursor:pointer;">编辑</span>
-                       </div>
+                <div
+                  v-if="scope.row.achievementState==-1"
+                  class="check-btn"
+                >
+                  <span
+                    @click.stop="tishen(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                  >提审</span>
+                  <span
+                    @click.stop="editAch(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                  >编辑</span>
+                </div>
+                <div
+                  v-if="scope.row.achievementState==1"
+                  class="check-btn"
+                >
+                  <span
+                    @click.stop="againCheck(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                  >反审核</span>
+                </div>
+                <div
+                  v-if="scope.row.achievementState==2"
+                  class="check-btn"
+                >
+                  <span
+                    @click.stop="editAch(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                  >编辑</span>
+                </div>
 
-                       <div
-                         v-if="scope.row.achievementState==0"
-                         class="check-btn"
-                       >
-                            <span @click.stop="chehui(scope.row,scope.$index)" style="cursor:pointer;">撤回</span>
-                            <span @click.stop="checkAch(scope.row,scope.$index)" style="cursor:pointer;">审核</span>
-                       </div>
+                <div
+                  v-if="scope.row.achievementState==0"
+                  class="check-btn"
+                >
+                  <span
+                    @click.stop="chehui(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                  >撤回</span>
+                  <span
+                    @click.stop="checkAch(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                  >审核</span>
+                </div>
               </div>
-             <div v-else>
-                   <p>-</p>
+              <div v-else>
+                <p>-</p>
               </div>
-           
+
             </template>
           </el-table-column>
         </el-table>
@@ -413,7 +462,12 @@
     </div>
 
     <!-- 表单列表弹出框（业绩详情） -->
-     <el-dialog :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false" custom-class="base-dialog">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      width="30%"
+      :close-on-click-modal="false"
+      custom-class="base-dialog"
+    >
       <b
         class="el-icon-close"
         @click="closeDialog"
@@ -552,7 +606,7 @@
             >
               <template slot-scope="scope">
                 <div v-if="scope.row.isJob">
-                   <p>{{scope.row.isJob.label}}</p>
+                  <p>{{scope.row.isJob.label}}</p>
                 </div>
               </template>
             </el-table-column>
@@ -600,17 +654,15 @@
         <h1 class="f14">审核信息</h1>
 
         <div class="ach-check-list">
-          <el-table
-            :data="checkArr"
-          >
+          <el-table :data="checkArr">
             <!-- examineDate -->
             <el-table-column
               label="时间"
               width="200"
             >
               <template slot-scope="scope">
-                   <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatDate}}</p>
-                   <p v-else>-</p>
+                <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatDate}}</p>
+                <p v-else>-</p>
               </template>
             </el-table-column>
             <!-- auditorDepartment -->
@@ -656,11 +708,9 @@
             </el-table-column>
 
             <!-- remark -->
-            <el-table-column
-              label="备注"
-            >
-               <template slot-scope="scope">
-                   {{scope.row.remark?scope.row.remark:'-'}}
+            <el-table-column label="备注">
+              <template slot-scope="scope">
+                {{scope.row.remark?scope.row.remark:'-'}}
               </template>
             </el-table-column>
 
@@ -673,32 +723,41 @@
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog
       :shows="shows"
-      @saveData="saveData"    
-      @adoptData="adoptData" 
-      @rejectData="rejectData" 
-      @close="shows=false"
+      @saveData="saveData"
+      @adoptData="adoptData"
+      @rejectData="rejectData"
+      @close="shows=false;code2=''"
       :dialogType="dialogType"
       :contractCode="code2"
       :aId="aId"
       :achIndex="achIndex"
       :achObj="achObj"
     ></achDialog>
-     
-     <!-- 撤回提审弹框 -->
-       <div>
-               <el-dialog
-                   :title="'操作-'+smallTips"
-                   :visible.sync="recallShow"
-                    width="20%">
-                   <span>是否确认{{smallTips}}?</span>
-                   <span slot="footer" class="dialog-footer">
-                     <el-button @click="recallShow = false">取 消</el-button>
-                     <el-button type="primary" @click="changeStatus"  v-dbClick>确 定</el-button>
-                   </span>
-              </el-dialog>
-       </div>
+
+    <!-- 撤回提审弹框 -->
+    <div>
+      <el-dialog
+        :title="'操作-'+smallTips"
+        :visible.sync="recallShow"
+        width="20%"
+        :close-on-click-modal="false"
+      >
+        <span>是否确认{{smallTips}}?</span>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="recallShow = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="changeStatus"
+            v-dbClick
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
-  
+
 </template>
 
 <script>
@@ -876,11 +935,10 @@ export default {
                this.$message("操作完成");
                this.recallShow=false;
                this.selectAchList[this.statuIndex].achievementState=0;
-            }else{
-               this.$message(res.data.message);
-               this.recallShow=false;
             }
-          });
+          }).catch(error => {
+               this.$message({message: error})
+          })
        }
       // 撤回
        if(this.statuType==1){
@@ -888,19 +946,18 @@ export default {
            contId:this.statuContId,
            aId:this.statuAid,
            status:-1
-         }
-         this.$ajax
-          .post("/api/achievement/applyStatusArraign", param)
-          .then(res => {
-            if (res.data.status == 200) {
+         }    
+        this.$ajax         
+          .postJSON("/api/achievement/applyStatusArraign", param)
+           .then(res => {
+          if (res.data.status == 200) {
                this.$message("操作完成");
                this.recallShow=false;
                this.selectAchList[this.statuIndex].achievementState=-1;
-            }else{
-               this.$message(res.data.message);
-               this.recallShow=false;
             }
-          });
+            }).catch(error => {
+                  this.$message({message: error})
+            })
        }
     },
     //获取应收列表详情
@@ -1144,24 +1201,24 @@ export default {
     padding-top: 0;
     background-color: #fff;
     margin-top: 20px;
-       .table-tool{
+    .table-tool {
       position: relative;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: @margin-base 0;
-      .tool-left{
+      .tool-left {
         display: inherit;
         align-items: center;
-        >h4{
-          >i{
+        > h4 {
+          > i {
             margin-right: 8px;
           }
         }
-        >ul{
+        > ul {
           display: flex;
           margin-left: 20px;
-          >li{
+          > li {
             color: @color-6c;
           }
         }
@@ -1261,30 +1318,29 @@ export default {
         margin: 20px 0 0 0px;
       }
     }
-      /deep/ .el-dialog__header,
-      /deep/ .el-dialog__footer,
-      /deep/ .el-dialog__body {
-        padding: 0 !important;
+    /deep/ .el-dialog__header,
+    /deep/ .el-dialog__footer,
+    /deep/ .el-dialog__body {
+      padding: 0 !important;
+    }
+    /deep/ .el-dialog__header {
+      .el-dialog__headerbtn {
+        right: 0;
+        top: 0;
+        display: none;
       }
-     /deep/ .el-dialog__header {
-       .el-dialog__headerbtn {
-         right: 0;
-         top: 0;
-         display: none;
-      }
+    }
   }
-  }
-
 }
 /deep/ .el-pagination {
   text-align: center;
   padding-bottom: 50px;
   padding-top: 50px;
 }
-/deep/ tr.el-table__row{
-  overflow: scroll!important;
+/deep/ tr.el-table__row {
+  overflow: scroll !important;
 }
-.w430{
-    width: 430px;
+.w430 {
+  width: 430px;
 }
 </style>

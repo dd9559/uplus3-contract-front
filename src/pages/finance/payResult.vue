@@ -6,7 +6,7 @@
         <p>请等待付款审核结果</p>
         <ul class="step-list">
           <li v-for="item in steps" :key="item.index" :class="[item.state?'active':'',activeStep===item.index?'active-last-step':'']">
-            <section>{{item.name}}<p v-if="item.index===1"><span>{{result.name}}</span><span>{{result.time}}</span></p></section>
+            <section>{{item.name}}<p v-if="item.index===1"><span>{{result.dep}}-{{result.name}}</span><span>{{result.time}}</span></p></section>
           </li>
         </ul>
         <p>

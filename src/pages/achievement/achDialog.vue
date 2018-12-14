@@ -8,13 +8,22 @@
         custom-class="base-dialog"
       >
         <!-- 头部右边关闭按钮 -->
-        <b class="el-icon-close" @click="closeDialog"></b>
+        <b
+          class="el-icon-close"
+          @click="closeDialog"
+        ></b>
         <!-- 头部左边业绩分成title -->
         <div class="ach-header">
-          <h1 v-if="dialogType==0" class="f14">业绩审核</h1>
+          <h1
+            v-if="dialogType==0"
+            class="f14"
+          >业绩审核</h1>
           <h1 v-if="dialogType==1">业绩编辑</h1>
           <h1 v-if="dialogType==2">业绩反审核</h1>
-          <h1 v-if="dialogType==3" style="fontSize:20px;">业绩分成</h1>
+          <h1
+            v-if="dialogType==3"
+            style="fontSize:20px;"
+          >业绩分成</h1>
           <p>
             可分配业绩：
             <span class="orange">{{comm}}元</span>
@@ -27,18 +36,36 @@
             <div class="house-left f_l">
               <h1 class="f14">房源方分成</h1>
             </div>
-            <div class="house-right f_r" v-if="!backAId">
-              <el-button type="primary" @click="houseRelativeMans">相关人员</el-button>
-              <el-button type="primary" @click="addMansHouse">添加分配人</el-button>
+            <div
+              class="house-right f_r"
+              v-if="!backAId"
+            >
+              <el-button
+                type="primary"
+                @click="houseRelativeMans"
+              >相关人员</el-button>
+              <el-button
+                type="primary"
+                @click="addMansHouse"
+              >添加分配人</el-button>
             </div>
           </div>
 
           <div class="ach-divide-list">
-            <el-table :data="houseArr" style="width: 100%">
-              <el-table-column label="角色类型" width="160">
+            <el-table
+              :data="houseArr"
+              style="width: 100%"
+            >
+              <!-- 角色类型 不可输入-->
+              <el-table-column
+                label="角色类型"
+                width="160"
+              >
                 <template slot-scope="scope">
-                  <!-- filterable -->
-                  <el-select v-model="scope.row.roleType" placeholder="请选择">
+                  <el-select
+                    v-model="scope.row.roleType"
+                    placeholder="请选择"
+                  >
                     <el-option
                       v-for="item in roleType0"
                       :key="item.id"
@@ -49,7 +76,11 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="分成比例" width="100">
+              <!-- 分成比例保留小数点后一位有效数字 可输入,不可下拉-->
+              <el-table-column
+                label="分成比例"
+                width="100"
+              >
                 <template slot-scope="scope">
                   <el-input
                     v-model.number="scope.row.ratio"
@@ -59,99 +90,187 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="经纪人" width="140">
+              <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
+              <el-table-column
+                label="经纪人"
+                width="140"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.assignor"
-                    :fetch-suggestions="querySearch"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="((item)=>{ handleSelectDeal(item, scope.$index,1)}) "
-                  ></el-autocomplete>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="在职状况" width="110">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.isJob.label" placeholder="请选择">
+                    :remote-method="getAssignors"
+                    :loading="loading1"
+                    @change="changeAssignors(scope.row.assignor,scope.$index,0)"
+                  >
                     <el-option
-                      v-for="item in dictionary['20']"
-                      :key="item.value"
-                      :label="item.label"
-                      @select="handleSelect"
-                      :value="item.value"
+                      v-for="item in assignors"
+                      :key="item.empId"
+                      :label="item.name"
+                      :value="item.empId"
                     ></el-option>
                   </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="门店" width="140">
+              <!-- 在职状况  可下拉,不可输入    0待入职,1在职,2离职 (通过枚举id=20查询)-->
+              <el-table-column
+                label="在职状况"
+                width="110"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
+                    v-model="scope.row.isJob"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in dictionary['20']"
+                      :key="item.key"
+                      :label="item.value"
+                      :value="{'label':item.value,'value':item.key}"
+                    ></el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
+
+              <!-- 门店，可输入，可下拉 -->
+              <el-table-column
+                label="门店"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-select
                     v-model="scope.row.level3"
-                    :fetch-suggestions="queryInfo(3)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getLevel(3)"
+                    @change="changeLevel3(scope.row.level3,scope.$index,0,0)"
+                  >
+                    <el-option
+                      v-for="item in level3s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="店长" width="140">
+              <!-- 店长，可输入，可下拉 -->
+              <el-table-column
+                label="店长"
+                width="150"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.shopkeeper"
-                    :fetch-suggestions="queryInfo(2)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getShopInfo(2)"
+                    @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,0)"
+                  >
+                    <el-option
+                      v-for="item in shopkeepers"
+                      :key="item.empId"
+                      :label="item.name"
+                      :value="item.depId+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="单组" width="150">
+              <!-- 单组，可输入，可下拉 -->
+              <el-table-column
+                label="单组"
+                width="200"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.level4"
-                    :fetch-suggestions="queryInfo(4)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getLevel(4)"
+                    @change="changeLevel3(scope.row.level4,scope.$index,0,1)"
+                  >
+                    <el-option
+                      v-for="item in level4s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="区经" width="100">
+              <!-- 区经，可输入，可下拉   changeAmaldar-->
+              <el-table-column
+                label="区经"
+                width="150"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.amaldar"
-                    :fetch-suggestions="queryInfo(1)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getShopInfo(1)"
+                    @change="changeAmaldar(scope.row.amaldar,scope.$index,0)"
+                  >
+                    <el-option
+                      v-for="item in amaldars"
+                      :key="item.empId"
+                      :label="item.name"
+                      :value="item.depId+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="区总" width="100">
+              <!-- 区总，可输入，可下拉 changeManager-->
+              <el-table-column
+                label="区总"
+                width="150"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.manager"
-                    :fetch-suggestions="queryInfo(0)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getShopInfo(0)"
+                    @change="changeManager(scope.row.manager,scope.$index,0)"
+                  >
+                    <el-option
+                      v-for="item in managers"
+                      :key="item.empId"
+                      :label="item.name"
+                      :value="item.depId+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="门店/公司公共业绩" width="170">
+              <el-table-column
+                label="门店/公司公共业绩"
+                width="170"
+              >
                 <template slot-scope="scope">
                   <el-radio-group v-model="scope.row.place">
                     <el-radio :label="0">门店</el-radio>
@@ -160,7 +279,11 @@
                 </template>
               </el-table-column>
 
-              <el-table-column prop="manager" label="操作" width="80">
+              <el-table-column
+                prop="manager"
+                label="操作"
+                width="80"
+              >
                 <template slot-scope="scope">
                   <a
                     class="delete"
@@ -177,18 +300,36 @@
             <div class="house-left f_l">
               <h1 class="f14">客源方分成</h1>
             </div>
-            <div class="house-right f_r" v-if="!backAId">
-              <el-button type="primary" @click="clientRelativeMans">相关人员</el-button>
-              <el-button type="primary" @click="addMansClient">添加分配人</el-button>
+            <div
+              class="house-right f_r"
+              v-if="!backAId"
+            >
+              <el-button
+                type="primary"
+                @click="clientRelativeMans"
+              >相关人员</el-button>
+              <el-button
+                type="primary"
+                @click="addMansClient"
+              >添加分配人</el-button>
             </div>
           </div>
 
           <div class="ach-divide-list">
-            <el-table :data="clientArr" style="width: 100%">
-              <el-table-column label="角色类型" width="160">
+            <el-table
+              :data="clientArr"
+              style="width: 100%"
+            >
+              <el-table-column
+                label="角色类型"
+                width="160"
+              >
                 <template slot-scope="scope">
                   <!-- filterable -->
-                  <el-select v-model="scope.row.roleType" placeholder="请选择">
+                  <el-select
+                    v-model="scope.row.roleType"
+                    placeholder="请选择"
+                  >
                     <el-option
                       v-for="item in roleType1"
                       :key="item.id"
@@ -199,7 +340,10 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="分成比例" width="100">
+              <el-table-column
+                label="分成比例"
+                width="100"
+              >
                 <template slot-scope="scope">
                   <el-input
                     v-model="scope.row.ratio"
@@ -209,99 +353,185 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="经纪人" width="140">
+              <el-table-column
+                label="经纪人"
+                width="140"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.assignor"
-                    :fetch-suggestions="querySearch"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="((item)=>{ handleSelectDeal(item, scope.$index,2)})"
-                  ></el-autocomplete>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="在职状况" width="110">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.isJob.label" placeholder="请选择">
+                    :remote-method="getAssignors"
+                    :loading="loading1"
+                    @change="changeAssignors(scope.row.assignor,scope.$index,1)"
+                  >
                     <el-option
-                      v-for="item in dictionary['20']"
-                      :key="item.value"
-                      :label="item.label"
-                      @select="handleSelect"
-                      :value="item.value"
+                      v-for="item in assignors"
+                      :key="item.empId"
+                      :label="item.name"
+                      :value="item.empId"
                     ></el-option>
                   </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="门店" width="140">
+              <el-table-column
+                label="在职状况"
+                width="110"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
+                    v-model="scope.row.isJob"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in dictionary['20']"
+                      :key="item.key"
+                      :label="item.value"
+                     :value="{'label':item.value,'value':item.key}"
+                    ></el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
+
+              <!-- 门店，可输入，可下拉 -->
+              <el-table-column
+                label="门店"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-select
                     v-model="scope.row.level3"
-                    :fetch-suggestions="queryInfo(3)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getLevel(3)"
+                    @change="changeLevel3(scope.row.level3,scope.$index,1,0)"
+                  >
+                    <el-option
+                      v-for="item in level3s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="店长" width="140">
+              <!-- 店长，可输入，可下拉 -->
+              <el-table-column
+                label="店长"
+                width="150"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.shopkeeper"
-                    :fetch-suggestions="queryInfo(2)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getShopInfo(2)"
+                    @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,1)"
+                  >
+                    <el-option
+                      v-for="item in shopkeepers"
+                      :key="item.empId"
+                      :label="item.name"
+                      :value="item.depId+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="单组" width="150">
+              <!-- 单组，可输入，可下拉 -->
+              <el-table-column
+                label="单组"
+                width="200"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.level4"
-                    :fetch-suggestions="queryInfo(4)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getLevel(4)"
+                    @change="changeLevel3(scope.row.level4,scope.$index,1,1)"
+                  >
+                    <el-option
+                      v-for="item in level4s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="区经" width="100">
+              <!-- 区经，可输入，可下拉 -->
+              <el-table-column
+                label="区经"
+                width="150"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.amaldar"
-                    :fetch-suggestions="queryInfo(1)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getShopInfo(1)"
+                    @change="changeAmaldar(scope.row.amaldar,scope.$index,1)"
+                  >
+                    <el-option
+                      v-for="item in amaldars"
+                      :key="item.empId"
+                      :label="item.name"
+                      :value="item.depId+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="区总" width="100">
+              <!-- 区总，可输入，可下拉 -->
+              <el-table-column
+                label="区总"
+                width="150"
+              >
                 <template slot-scope="scope">
-                  <el-autocomplete
-                    class="inline-input"
+                  <el-select
                     v-model="scope.row.manager"
-                    :fetch-suggestions="queryInfo(0)"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
                     placeholder="请输入内容"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  ></el-autocomplete>
+                    :remote-method="getShopInfo(0)"
+                    @change="changeManager(scope.row.manager,scope.$index,1)"
+                  >
+                    <el-option
+                      v-for="item in managers"
+                      :key="item.empId"
+                      :label="item.name"
+                      :value="item.depId+'-'+item.name"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
 
-              <el-table-column label="门店/公司公共业绩" width="170">
+              <el-table-column
+                label="门店/公司公共业绩"
+                width="170"
+              >
                 <template slot-scope="scope">
                   <el-radio-group v-model="scope.row.place">
                     <el-radio :label="0">门店</el-radio>
@@ -310,7 +540,11 @@
                 </template>
               </el-table-column>
 
-              <el-table-column prop="manager" label="操作" width="80">
+              <el-table-column
+                prop="manager"
+                label="操作"
+                width="80"
+              >
                 <template slot-scope="scope">
                   <a
                     class="delete"
@@ -325,25 +559,64 @@
         </div>
 
         <!-- 业绩审核底部 -->
-        <div class="ach-footer" v-if="dialogType==0">
+        <div
+          class="ach-footer"
+          v-if="dialogType==0"
+        >
           <p>备注：
-            <el-input type="textarea" :rows="2" placeholder="请输入内容" class="f_l" v-model="remark"></el-input>
+            <el-input
+              type="textarea"
+              :rows="2"
+              placeholder="请输入内容"
+              class="f_l"
+              v-model="remark"
+            ></el-input>
           </p>
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="passAch" class="color-green"  v-dbClick>通过</el-button>
-            <el-button type="primary" round @click="rejectAch" class="color-red"  v-dbClick>驳回</el-button>
+            <el-button
+              type="primary"
+              round
+              @click="passAch"
+              class="color-green"
+              v-dbClick
+            >通过</el-button>
+            <el-button
+              type="primary"
+              round
+              @click="rejectAch"
+              class="color-red"
+              v-dbClick
+            >驳回</el-button>
           </div>
         </div>
 
         <!-- 业绩编辑底部 -->
-        <div class="ach-footer" v-if="dialogType==1">
+        <div
+          class="ach-footer"
+          v-if="dialogType==1"
+        >
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click="keepAch(2,2)" class="color-white"  v-dbClick>保存</el-button>
-            <el-button type="primary" round @click="keepAch(2,1)" class="color-blue"   v-dbClick>保存并提审</el-button>
+            <el-button
+              type="primary"
+              round
+              @click="keepAch(2,2)"
+              class="color-white"
+              v-dbClick
+            >保存</el-button>
+            <el-button
+              type="primary"
+              round
+              @click="keepAch(2,1)"
+              class="color-blue"
+              v-dbClick
+            >保存并提审</el-button>
           </div>
         </div>
         <!-- 业绩反审核底部 -->
-        <div class="ach-footer" v-if="dialogType==2">
+        <div
+          class="ach-footer"
+          v-if="dialogType==2"
+        >
           <p class="f_l">审核日期：
             <el-date-picker
               v-model="examineDate"
@@ -365,10 +638,25 @@
         </div>
 
         <!-- 业绩分成底部      -->
-        <div class="ach-footer" v-if="dialogType==3&&!backAId">
+        <div
+          class="ach-footer"
+          v-if="dialogType==3&&!backAId"
+        >
           <div class="footer-btn-layout f_r">
-            <el-button type="primary" round @click=" keepAchDivide(2)" class="color-white"  v-dbClick>保存</el-button>
-            <el-button type="primary" round @click=" keepAchDivide(1)" class="color-blue"   v-dbClick>保存并提审</el-button>
+            <el-button
+              type="primary"
+              round
+              @click=" keepAchDivide(2)"
+              class="color-white"
+              v-dbClick
+            >保存</el-button>
+            <el-button
+              type="primary"
+              round
+              @click=" keepAchDivide(1)"
+              class="color-blue"
+              v-dbClick
+            >保存并提审</el-button>
           </div>
         </div>
 
@@ -386,21 +674,33 @@
                 style="width: 100%"
                 @selection-change="handleSelectionChange"
               >
-                <el-table-column type="selection" width="70"></el-table-column>
+                <el-table-column
+                  type="selection"
+                  width="70"
+                ></el-table-column>
 
-                <el-table-column label="经纪人" width="90">
+                <el-table-column
+                  label="经纪人"
+                  width="90"
+                >
                   <template slot-scope="scope">
                     <p>{{scope.row.assignor}}</p>
                   </template>
                 </el-table-column>
 
-                <el-table-column label="门店" width="120">
+                <el-table-column
+                  label="门店"
+                  width="120"
+                >
                   <template slot-scope="scope">
                     <p>{{scope.row.level3}}</p>
                   </template>
                 </el-table-column>
 
-                <el-table-column label="角色类型" width="120">
+                <el-table-column
+                  label="角色类型"
+                  width="120"
+                >
                   <template slot-scope="scope">
                     <p>{{scope.row.roleName}}</p>
                   </template>
@@ -409,8 +709,17 @@
             </div>
 
             <div class="dialog2-btn f_r">
-              <el-button type="primary" round @click="showTips = false">取消</el-button>
-              <el-button type="primary" round @click="manSure(type)" v-dbClick>确定</el-button>
+              <el-button
+                type="primary"
+                round
+                @click="showTips = false"
+              >取消</el-button>
+              <el-button
+                type="primary"
+                round
+                @click="manSure(type)"
+                v-dbClick
+              >确定</el-button>
             </div>
           </el-dialog>
         </div>
@@ -443,9 +752,16 @@ export default {
       },
       type: "", //房源1 客源2
       remark: "",
-      agendIds: [],
+      agendIds: [],  //存放 删除经纪人的流水id
       addArr: [],
-      backAId: null
+      backAId: null,
+      assignors: [],  //模糊搜索经纪人
+      level3s: [],   //模糊搜索门店
+      level4s: [],   //模糊搜索单组
+      shopkeepers:[],  //模糊搜索店长
+      amaldars:[],   //模糊搜索区经
+      managers:[],    //模糊搜索区总
+      loading1: false
     };
   },
   created() {},
@@ -461,6 +777,8 @@ export default {
     handleClose() {
       this.$emit("close");
       this.agendIds = [];
+      this.houseArr = [];
+      this.clientArr = [];
     },
     //判断分成比例只能输入1-100的正整数
     filterHouseNumber(val, index) {
@@ -479,6 +797,191 @@ export default {
         this.clientArr[index].ratio = val;
       }
     },
+    // 获取经纪人
+    getAssignors(queryString) {
+      if (queryString !== "") {
+        this.loading1 = true;
+        let list = [{}];
+        let param = {
+          keyword: queryString
+        };
+        this.$ajax.get("/api/organize/employee/agent", param).then(res => {
+          console.log(res.status);
+          if (res.status === 200) {
+            console.log(res.data.data);
+            this.loading1 = false;
+            this.assignors = res.data.data;
+          }
+        });
+      }
+    },
+    // 改变经纪人
+    changeAssignors(val, index, type) {
+      if (val) {
+        this.$ajax.get("/api/organize/employee/agent/" + val).then(res => {
+          let data = res.data.data;
+          if (type == 0) {
+            this.houseArr[index].assignor = data.assignor;
+            this.houseArr[index].isJob = data.isJob;
+            this.houseArr[index].level3 = data.level3; //门店
+            this.houseArr[index].shopkeeper = data.shopkeeper; //店长
+            this.houseArr[index].level4 = data.level4; //单组
+            this.houseArr[index].amaldar = data.amaldar; //区经
+            this.houseArr[index].manager = data.manager; //区总
+            this.houseArr[index].assignorId = data.assignorId; //经纪人id
+            this.houseArr[index].storefront3Id = data.storefront3Id; //三级门店
+            this.houseArr[index].storefront4Id = data.storefront4Id; //四级门店
+            this.houseArr[index].managerId = data.managerId; //区总id
+            this.houseArr[index].amaldarId = data.amaldarId; //区经id
+            this.houseArr[index].shopkeeperId = data.shopkeeperId; //店长id
+            this.houseArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
+          } else {
+            this.clientArr[index].assignor = data.assignor;
+            this.clientArr[index].isJob = data.isJob;
+            this.clientArr[index].level3 = data.level3; //门店
+            this.clientArr[index].shopkeeper = data.shopkeeper; //店长
+            this.clientArr[index].level4 = data.level4; //单组
+            this.clientArr[index].amaldar = data.amaldar; //区经
+            this.clientArr[index].manager = data.manager; //区总
+            this.clientArr[index].assignorId = data.assignorId; //经纪人id
+            this.clientArr[index].storefront3Id = data.storefront3Id; //三级门店
+            this.clientArr[index].storefront4Id = data.storefront4Id; //四级门店
+            this.clientArr[index].managerId = data.managerId; //区总id
+            this.clientArr[index].amaldarId = data.amaldarId; //区经id
+            this.clientArr[index].shopkeeperId = data.shopkeeperId; //店长id
+            this.clientArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
+          }
+        });
+      } else {
+        if (type == 0) {
+          this.houseArr[index].isJob = "";
+          this.houseArr[index].level3 = "";
+          this.houseArr[index].shopkeeper = "";
+          this.houseArr[index].level4 = "";
+          this.houseArr[index].amaldar = "";
+          this.houseArr[index].manager = "";
+          this.houseArr[index].assignorId = "";
+          this.houseArr[index].storefront3Id = "";
+          this.houseArr[index].storefront4Id = "";
+          this.houseArr[index].managerId = "";
+          this.houseArr[index].amaldarId = "";
+          this.houseArr[index].shopkeeperId = "";
+          this.houseArr[index].platformFeeRatio = "";
+        } else {
+          this.clientArr[index].isJob = "";
+          this.clientArr[index].level3 = "";
+          this.clientArr[index].shopkeeper = "";
+          this.clientArr[index].level4 = "";
+          this.clientArr[index].amaldar = "";
+          this.clientArr[index].manager = "";
+          this.clientArr[index].assignorId = "";
+          this.clientArr[index].storefront3Id = "";
+          this.clientArr[index].storefront4Id = "";
+          this.clientArr[index].managerId = "";
+          this.clientArr[index].amaldarId = "";
+          this.clientArr[index].shopkeeperId = "";
+          this.clientArr[index].platformFeeRatio = "";
+        }
+      }
+    },
+    // 获取门店，单组信息  type=3(门店)  type=4(单组)
+    getLevel(type) {
+      return queryString => {
+        let param = {
+          type: type,
+          keyword: queryString
+        };
+        this.$ajax.get("/api/organize/deps", param).then(res => {
+          if (type == 3) {
+            this.level3s = res.data.data;
+          } else {
+            this.level4s = res.data.data;
+          }
+        });
+      };
+    },
+    // 改变门店,单组
+    changeLevel3(val, index, type1, type2) {
+      if (val) {
+        let level3Arr = val.split("-");
+        if (type1 == 0 && type2 == 0) {
+          this.houseArr[index].storefront3Id = level3Arr[0];
+          this.houseArr[index].level3 = level3Arr[1];
+        } else if (type1 == 0 && type2 == 1) {
+          this.houseArr[index].storefront4Id = level3Arr[0];
+          this.houseArr[index].level4 = level3Arr[1];
+        } else if (type1 == 1 && type2 == 0) {
+          this.clientArr[index].storefront3Id = level3Arr[0];
+          this.clientArr[index].level3 = level3Arr[1];
+        } else {
+          this.clientArr[index].storefront4Id = level3Arr[0];
+          this.clientArr[index].level4 = level3Arr[1];
+        }
+      }
+    },
+    // 获取店长，区经,区总
+    getShopInfo(roleId){
+      return (queryString) => {
+        let list = [{}];
+        let param = {
+          "roleId": roleId,
+          "keyword": queryString
+        };
+        this.$ajax.get("/api/organize/employees", param).then(res => {
+         if(roleId==2){
+            this.shopkeepers = res.data.data;
+         }else if(roleId==1){
+            this.amaldars = res.data.data;
+         }else if(roleId==0){
+            this.managers = res.data.data;
+         }
+         
+        });
+      };
+    },
+    // 改变店长
+    changeShopkeeper(val, index, type1){
+      if(val){
+         let idName=val.split("-");
+         console.log(idName);
+        if (type1 == 0) {
+          this.houseArr[index].shopkeeperId = idName[0]; 
+          this.houseArr[index].shopkeeper = idName[1];
+        }else if(type1 == 1){
+          this.clientArr[index].shopkeeperId = idName[0];
+          this.clientArr[index].shopkeeper = idName[1];
+        }  
+      }
+    },
+    // 改变区经
+    changeAmaldar(val, index, type1){
+       if(val){
+            let idName=val.split("-");
+            console.log(idName);
+           if (type1 == 0) {
+             this.houseArr[index].amaldar = idName[0]; 
+             this.houseArr[index].amaldar = idName[1];
+           }else if(type1 == 1){
+             this.clientArr[index].amaldar = idName[0];
+             this.clientArr[index].amaldar = idName[1];
+           }  
+         }
+    },
+    // 改变区总
+    changeManager(val, index, type1){
+       if(val){
+            let idName=val.split("-");
+            console.log(idName);
+           if (type1 == 0) {
+             this.houseArr[index].manager = idName[0]; 
+             this.houseArr[index].manager = idName[1];
+           }else if(type1 == 1){
+             this.clientArr[index].manager = idName[0];
+             this.clientArr[index].manager = idName[1];
+           }  
+         }
+
+    },   
     //获取房源客源相关人员
     getMans(type) {
       let param = {
@@ -570,29 +1073,26 @@ export default {
       this.agendIds.push(id);
       rows.splice(index, 1);
     },
-    noData() {
-      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
-        this.$message("分成人不满足最低人数要求");
-        return false;
-      }
-    },
     // 弹框通过操作
     passAch() {
       if (this.houseArr.length == 0 || this.clientArr.length == 0) {
-        this.$message("分成人不满足最低人数要求");
+        this.$message.error("分成人不满足最低人数要求");
         return false;
       }
       // 判断房源客源角色类型不一样
       // ====================================
       let arr = [],
-        roleFlag = true;
+        roleFlag = true,
+        flag = true,
+        sum = 0,
+        sumFlag = false;
       for (var i = 0; i < this.houseArr.length; i++) {
         let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
         } else {
           roleFlag = false;
-          this.$message("房源不可有重复角色类型");
+          this.$message.error("房源不可有重复角色类型");
           return false;
         }
       }
@@ -603,18 +1103,13 @@ export default {
           arr.push(cRoleType);
         } else {
           roleFlag = false;
-          this.$message("客源不可有重复角色类型");
+          this.$message.error("客源不可有重复角色类型");
           return false;
         }
       }
 
       // ==========================
       let resultArr = this.houseArr.concat(this.clientArr);
-      console.log(resultArr);
-      let flag = true,
-        sum = 0,
-        sumFlag = false,
-        againFlag = true;
       for (var i = 0; i < resultArr.length; i++) {
         sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
         if (
@@ -639,9 +1134,7 @@ export default {
       // debugger;
       // console.log(sumFlag);
 
-      if (flag && sumFlag && againFlag) {
-        // this.$emit("close", this.achIndex, 1);
-        // this.$message("操作完成");
+      if (flag && sumFlag) {
         let param = {
           id: this.aId,
           remark: this.remark,
@@ -654,39 +1147,39 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
-              againFlag = false;
-              this.$message("操作完成");
-              console.log("pppppppp");
-              console.log(res.data.result);
+              this.$message({ message: "操作成功", type: "success" });
               this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
-            } else if (res.data.status != 200) {
-              this.$message(res.data.message);
-            }
+            } 
+          }).catch(error => {
+               this.$message({message: error})
           });
       } else if (!sumFlag && flag) {
-        this.$message("请输入正确的分成比例");
+        this.$message.error("请输入正确的分成比例");
       } else {
-        this.$message("请完善信息");
+        this.$message.error("请完善信息");
       }
     },
     //弹框驳回操作
     rejectAch() {
       if (this.houseArr.length == 0 || this.clientArr.length == 0) {
-        this.$message("分成人不满足最低人数要求");
+        this.$message.error("分成人不满足最低人数要求");
         return false;
       }
 
       // 判断房源客源角色类型不一样
       // ====================================
       let arr = [],
-        roleFlag = true;
+        roleFlag = true,
+        flag = true,
+        sum = 0,
+        sumFlag = false;
       for (var i = 0; i < this.houseArr.length; i++) {
         let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
         } else {
           roleFlag = false;
-          this.$message("房源不可有重复角色类型");
+          this.$message.error("房源不可有重复角色类型");
           return false;
         }
       }
@@ -697,16 +1190,13 @@ export default {
           arr.push(cRoleType);
         } else {
           roleFlag = false;
-          this.$message("客源不可有重复角色类型");
+          this.$message.error("客源不可有重复角色类型");
           return false;
         }
       }
 
       // ==========================
       let resultArr = this.houseArr.concat(this.clientArr);
-      let flag = true,
-        sum = 0,
-        sumFlag = false;
       for (var i = 0; i < resultArr.length; i++) {
         sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
         if (
@@ -727,7 +1217,6 @@ export default {
           sumFlag = false;
         }
       }
-      console.log(sum);
       if (flag && sumFlag && this.remark != "") {
         let param = {
           id: this.aId,
@@ -741,18 +1230,20 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
-              this.$message("操作完成");
+              this.$message({ message: "操作成功", type: "success" });
               this.$emit("rejectData", this.achIndex, resultArr);
             } else if (res.data.status != 200) {
-              this.$message(res.data.message);
+              this.$message.error(res.data.message);
             }
-          });
+          }).catch(error => {
+               this.$message({message: error})
+          });;
       } else if (!sumFlag && flag) {
-        this.$message("请输入正确的分成比例");
+        this.$message.error("请输入正确的分成比例");
       } else if (this.remark == "") {
-        this.$message("请填写备注");
+        this.$message.error("请填写备注");
       } else {
-        this.$message("请完善信息");
+        this.$message.error("请完善信息");
       }
     },
     // 反审核，编辑的保存
@@ -765,7 +1256,7 @@ export default {
         sum = 0,
         sumFlag = false;
       if (this.houseArr.length == 0 || this.clientArr.length == 0) {
-        this.$message("分成人不满足最低人数要求");
+        this.$message.error("分成人不满足最低人数要求");
         return false;
       }
       // 判断房源客源角色类型不一样
@@ -776,7 +1267,7 @@ export default {
           arr.push(hRoleType);
         } else {
           roleFlag = false;
-          this.$message("房源不可有重复角色类型");
+          this.$message.error("房源不可有重复角色类型");
           return false;
         }
       }
@@ -787,7 +1278,7 @@ export default {
           arr.push(cRoleType);
         } else {
           roleFlag = false;
-          this.$message("客源不可有重复角色类型");
+          this.$message.error("客源不可有重复角色类型");
           return false;
         }
       }
@@ -842,7 +1333,6 @@ export default {
 
         this.$ajax.postJSON("/api/achievement/examineSave", param).then(res => {
           if (res.data.status == 200) {
-            this.againFlag = false;
             let sendObj = {
               agendIds: this.agendIds
             };
@@ -855,13 +1345,15 @@ export default {
             if (type == 2 && status == 1) {
               this.$emit("saveData", this.achIndex, resultArr, 0);
             }
-            this.$message("操作完成");
+            this.$message({ message: "操作成功", type: "success" });
           }
-        });
+        }).catch(error => {
+               this.$message({message: error})
+        });;
       } else if (!sumFlag && flag) {
-        this.$message("请输入正确的分成比例");
+        this.$message.error("请输入正确的分成比例");
       } else {
-        this.$message("请完善信息");
+        this.$message.error("请完善信息");
       }
     },
     // 业绩分成的保存
@@ -869,14 +1361,17 @@ export default {
       // 判断房源客源角色类型不一样
       // ====================================
       let arr = [],
-        roleFlag = true;
+        roleFlag = true,
+        flag = true,
+        sum = 0,
+        sumFlag = false;
       for (var i = 0; i < this.houseArr.length; i++) {
         let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
         } else {
           roleFlag = false;
-          this.$message("房源不可有重复角色类型");
+          this.$message.error("房源不可有重复角色类型");
           return false;
         }
       }
@@ -887,17 +1382,13 @@ export default {
           arr.push(cRoleType);
         } else {
           roleFlag = false;
-          this.$message("客源不可有重复角色类型");
+          this.$message.error("客源不可有重复角色类型");
           return false;
         }
       }
 
       // ==========================
       let resultArr = this.houseArr.concat(this.clientArr);
-      console.log(resultArr);
-      let flag = true,
-        sum = 0,
-        sumFlag = false;
       for (var i = 0; i < resultArr.length; i++) {
         sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
         if (
@@ -954,14 +1445,16 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
-              this.$message("操作完成");
+              this.$message({ message: "操作成功", type: "success" });
             }
             this.$emit("close");
-          });
+          }).catch(error => {
+               this.$message({message: error})
+          });;
       } else if (!sumFlag && flag) {
-        this.$message("请输入正确的分成比例");
+        this.$message.error("请输入正确的分成比例");
       } else {
-        this.$message("请完善信息");
+        this.$message.error("请完善信息");
       }
     },
     closeDialog() {
@@ -999,84 +1492,6 @@ export default {
         }
       });
     },
-    handleSelectDeal(item, index, type) {
-      console.log(item);
-      console.log(item.empId);
-      this.$ajax.get("/api/organize/employee/agent/" + item.empId).then(res => {
-        let data = res.data.data;
-        if (type == 1) {
-          this.houseArr[index].isJob = data.isJob;
-          this.houseArr[index].level3 = data.level3; //门店
-          this.houseArr[index].shopkeeper = data.shopkeeper; //店长
-          this.houseArr[index].level4 = data.level4; //单组
-          this.houseArr[index].amaldar = data.amaldar; //区经
-          this.houseArr[index].manager = data.manager; //区总
-          this.houseArr[index].assignorId = data.assignorId; //经纪人id
-          this.houseArr[index].storefront3Id = data.storefront3Id; //三级门店
-          this.houseArr[index].storefront4Id = data.storefront4Id; //四级门店
-          this.houseArr[index].managerId = data.managerId; //区总id
-          this.houseArr[index].amaldarId = data.amaldarId; //区经id
-          this.houseArr[index].shopkeeperId = data.shopkeeperId; //店长id
-          this.houseArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
-        } else {
-          this.clientArr[index].isJob = data.isJob;
-          this.clientArr[index].level3 = data.level3; //门店
-          this.clientArr[index].shopkeeper = data.shopkeeper; //店长
-          this.clientArr[index].level4 = data.level4; //单组
-          this.clientArr[index].amaldar = data.amaldar; //区经
-          this.clientArr[index].manager = data.manager; //区总
-          this.clientArr[index].assignorId = data.assignorId; //经纪人id
-          this.clientArr[index].storefront3Id = data.storefront3Id; //三级门店
-          this.clientArr[index].storefront4Id = data.storefront4Id; //四级门店
-          this.clientArr[index].managerId = data.managerId; //区总id
-          this.clientArr[index].amaldarId = data.amaldarId; //区经id
-          this.clientArr[index].shopkeeperId = data.shopkeeperId; //店长id
-          this.clientArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
-        }
-      });
-    },
-    handleSelect(item) {
-      console.log(item);
-    },
-    // 经纪人模糊查询
-    querySearch(queryString, cb) {
-      let list = [{}];
-      let param = {
-        keyword: queryString
-      };
-      this.$ajax.get("/api/organize/employee/agent", param).then(res => {
-        console.log(res.status);
-        if (res.status === 200) {
-          console.log(res.data.data);
-          for (let i of res.data.data) {
-            i.value = i.name; //将想要展示的数据作为value
-          }
-          list = res.data.data;
-          cb(list);
-        }
-      });
-    },
-    //门店，店长，单组，区经，区总模糊查询
-    queryInfo(roleId) {
-      return (queryString, cb) => {
-        let list = [{}];
-        let param = {
-          roleId: roleId,
-          keyword: queryString
-        };
-        this.$ajax.get("/api/organize/employees", param).then(res => {
-          console.log(res.status);
-          if (res.status === 200) {
-            console.log(res.data.data);
-            for (let i of res.data.data) {
-              i.value = i.depName; //将想要展示的数据作为value
-            }
-            list = res.data.data;
-            cb(list);
-          }
-        });
-      };
-    },
     // 相关人员确定按钮
     manSure(type) {
       let addhouseArr = [];
@@ -1086,8 +1501,6 @@ export default {
         addhouseArr = this.clientArr.concat(this.addManList);
       }
       let resultArr = [];
-      console.log("eeeeeeeeeeeeeeeeeeeeeeeee");
-      console.log(addhouseArr);
       // 相关人员和房源客源数组去重
       for (var i = 0; i < addhouseArr.length; i++) {
         var flag = true;
@@ -1104,7 +1517,7 @@ export default {
         if (flag) {
           resultArr.push(addhouseArr[i]);
         } else {
-          this.$message("请勿重复添加");
+          this.$message.error("请勿重复添加");
         }
       }
       if (this.type == 1) {
@@ -1115,6 +1528,7 @@ export default {
       this.showTips = false;
     }
   },
+
   watch: {
     contractCode(val) {
       // 字典初始化
@@ -1156,7 +1570,6 @@ export default {
               if (data.data.aId) {
                 this.backAId = data.data.aId;
               }
-              // 需要从页面带一个分配业绩,业绩id
             }
           });
         }
