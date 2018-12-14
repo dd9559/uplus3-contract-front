@@ -363,22 +363,25 @@
       <el-tab-pane label="审核记录" name="fifth">
         <div class="record">
           <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
-            <el-table-column prop="visitTime" label="时间">
+            <el-table-column label="时间">
+              <template slot-scope="scope">
+                {{scope.row.auditTime|formatTime}}
+              </template>
             </el-table-column>
-            <el-table-column prop="visitPeople" label="姓名">
+            <el-table-column prop="userName" label="姓名">
             </el-table-column>
-            <el-table-column prop="record" label="职务">
+            <el-table-column prop="roleName" label="职务">
             </el-table-column>
-            <el-table-column prop="record" label="操作">
+            <el-table-column prop="operate" label="操作">
             </el-table-column>
-            <el-table-column prop="remakes" label="备注" width="320"></el-table-column>
+            <el-table-column prop="auditInfo" label="备注" width="320"></el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
     </el-tabs>
     <div class="functionTable" v-if="contractDetail.contChangeState.value!=2">
       
-      <el-button round class="search_btn" v-if="name==='first'">打印成交报告</el-button>
+      <el-button round class="search_btn" v-if="name==='first'">打印成交报告</el-button>  <!-- @click="printDemo" -->
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'&&contractDetail.contState.value===3">分成</el-button>
       <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
@@ -444,6 +447,142 @@
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+
+    <vue-easy-print tableShow ref="easyPrint" v-show="false">
+      <div class="printContent">
+        <div class="printHeader">
+          <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
+        </div>
+        <div class="printMsg">
+          <div class="contTitle">合同信息</div>
+          <div class="printItem">
+            <p><span class="printTag">签约日期：</span><span class="printTxt">{{contractDetail.signDate}}</span></p>
+            <p>
+              <span class="printTag">合同类型：</span>
+              <span class="printTxt" v-if="contractDetail.contType.value===1">租赁</span>
+              <span class="printTxt" v-if="contractDetail.contType.value===2">买卖</span>
+              <span class="printTxt" v-if="contractDetail.contType.value===3">代办</span>
+              <span class="printTxt" v-if="contractDetail.contType.value===4">意向</span>
+              <span class="printTxt" v-if="contractDetail.contType.value===5">定金</span>
+            </p>
+            <p><span class="printTag">客户保证金：</span><span class="printTxt">{{contractDetail.custEnsure}} 元</span></p>
+          </div>
+          <div class="printItem">
+            <p class="p_width">
+              <span class="printTag">成交总价：</span>
+              <span class="dealPrice">{{contractDetail.dealPrice}} 元
+                <i v-for="item in dictionary['507']" :key="item.key" v-if="item.key===contractDetail.timeUnit&&contractDetail.contType.value===1"> / {{item.value}}</i>
+                <i>{{contractDetail.dealPrice|moneyFormat}}</i>
+              </span>
+            </p>
+          </div>
+          <div class="printItem">
+            <p><span class="printTag">客户佣金：</span><span class="printTxt">{{contractDetail.custCommission}} 元</span></p>
+            <p><span class="printTag">业主佣金：</span><span class="printTxt">{{contractDetail.ownerCommission}} 元</span></p>
+            <p><span class="printTag">佣金支付费：</span><span class="printTxt">{{contractDetail.commissionPayment}} 元</span></p>
+          </div>
+        </div>
+        <div class="printMsg">
+          <div class="contTitle">房源信息</div>
+          <div class="printItem">
+            <p><span class="printTag">房源编号：</span><span class="serialNumber">{{contractDetail.houseinfoCode}}</span></p>
+              <p class="p_width">
+                <span class="printTag">物业地址：</span>
+                <span class="printTxt">{{contractDetail.houseInfo.EstateName}}</span>
+                <span class="printTxt">{{contractDetail.houseInfo.BuildingName}}</span>
+                <span class="printTxt">{{contractDetail.houseInfo.Unit}}单元</span>
+                <span class="printTxt">{{contractDetail.houseInfo.RoomNo}}</span>
+              </p>
+          </div>
+          <div class="printItem">
+            <p><span class="printTag">建筑面积：</span><span class="printTxt">{{contractDetail.houseInfo.Square}} m²</span></p>
+            <p><span class="printTag">套内面积：</span><span class="printTxt">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
+            <p><span class="printTag">用 途：</span><span class="printTxt">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p>
+          </div>
+          <div class="printItem">
+            <p><span class="printTag">房 型：</span><span class="printTxt">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
+            <p><span class="printTag">朝 向：</span><span class="printTxt">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p>
+            <p><span class="printTag">装 修：</span><span class="printTxt">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p>
+          </div>
+          <div class="printItem">
+            <p><span class="printTag">房源方门店：</span><span class="printTxt">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
+            <p><span class="printTag">店 长：</span><span class="printTxt">{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
+            <p><span class="printTag">手 机：</span><span class="printTxt">{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
+          </div>
+          <div class="printItem">
+            <el-table :data="ownerData" border header-row-class-name="theader-bg">
+              <el-table-column prop="name" label="业主姓名"></el-table-column>
+              <el-table-column prop="mobile" label="电话"></el-table-column>
+              <el-table-column prop="relation" label="关系"></el-table-column>
+              <el-table-column label="产权比" v-if="contType!='1'">
+                <template slot-scope="scope">
+                  {{scope.row.propertyRightRatio+'%'}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <div class="printMsg">
+          <div class="contTitle">客源信息</div>
+          <div class="printItem">
+            <p><span class="printTag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
+            <p>
+              <span class="printTag">付款方式：</span>
+              <span class="printTxt" v-for="item in dictionary['556']" :key="item.key" v-if="contractDetail.guestInfo.paymentMethod===item.key">{{item.value}}</span>
+            </p>
+          </div>
+          <div class="printItem">
+              <p><span class="printTag">客源方门店：</span><span class="printTxt">{{contractDetail.guestInfo.GuestStoreName}}</span></p>
+              <p><span class="printTag">店 长：</span><span class="printTxt">{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
+              <p><span class="printTag">手 机：</span><span class="printTxt">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
+          </div>
+          <div class="printItem">
+            <el-table :data="clientrData" border header-row-class-name="theader-bg">
+              <el-table-column prop="name" label="客户姓名"></el-table-column>
+              <el-table-column label="电话">
+                <template slot-scope="scope">
+                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
+                  <i class="iconfont tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                </template>
+              </el-table-column>
+              <el-table-column prop="relation" label="关系"></el-table-column>
+              <el-table-column label="产权比" v-if="contType!='1'">
+                <template slot-scope="scope">
+                  {{scope.row.propertyRightRatio+'%'}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <div class="printMsg">
+          <div class="contTitle">三方合作</div>
+          <div class="printItem">
+            <p><span class="printTag">扣合作费：</span><span class="printTxt">{{contractDetail.otherCooperationCost}}元</span></p>
+            <p>
+              <span class="printTag">类型：</span>
+              <span class="printTxt" v-for="item in dictionary['517']" :key="item.key" v-if='item.key===contractDetail.otherCooperationInfo.type'>{{item.value}}</span>
+              <span class="printTxt" v-else>--</span>
+            </p>
+          </div>
+          <div class="printItem">
+            <p><span class="printTag">合作方姓名：</span><span class="printTxt">{{contractDetail.otherCooperationInfo.name}}</span></p>
+            <p><span class="printTag">联系方式：</span><span class="printTxt">{{contractDetail.otherCooperationInfo.mobile}}</span></p>
+            <p><span class="printTag">身份证号：</span><span class="printTxt">{{contractDetail.otherCooperationInfo.identifyCode}}</span></p>
+          </div>
+          <div class="remark">
+            <div>
+              <span class="printTag">备注：</span>
+            </div>
+            <div>
+              <p style="width:500px" v-if="contractDetail.otherCooperationInfo.remarks">{{contractDetail.otherCooperationInfo.remarks}}</p>
+              <p v-else>暂无备注</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </vue-easy-print>
   </div>
 </template>
            
@@ -452,11 +591,13 @@ import achDialog from "./../../achievement/achDialog";
 import changeCancel from "../contractDialog/changeCancel";
 import { MIXINS } from "@/assets/js/mixins";
 import { TOOL } from "@/assets/js/common";
+import vueEasyPrint from "vue-easy-print";
 export default {
   mixins: [MIXINS],
   components: {
     achDialog,
-    changeCancel
+    changeCancel,
+    vueEasyPrint,
   },
   data() {
     return {
@@ -571,6 +712,9 @@ export default {
     this.getExtendParams();//获取扩展参数
   },
   methods: {
+    printDemo(){
+      this.$refs.easyPrint.print()
+    },
     handleClick(tab, event) {
       console.log(tab.name);
       this.name=tab.name;
@@ -916,13 +1060,13 @@ export default {
           break
         }else if(uploadContData[i].isrequire&&uploadContData[i].value.length>0){
           uploadContData[i].value.forEach(element => {
-            delete element.fileType;
+            // delete element.fileType;
           });
           arr_.push(uploadContData[i]);
           isOk = true;
         }else if(!uploadContData[i].isrequire&&uploadContData[i].value.length>0){
           uploadContData[i].value.forEach(element => {
-            delete element.fileType;
+            // delete element.fileType;
           });
           arr_.push(uploadContData[i]);
           isOk = true;
@@ -1002,8 +1146,7 @@ export default {
       this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
         res=res.data;
         if(res.status===200){
-          this.checkData=res.data;
-          console.log(this.checkData)
+          this.checkData=res.data.data;
         }
       })
     }
@@ -1319,6 +1462,50 @@ export default {
         }
       }
     }
+  }
+}
+//打印模块
+.printContent{
+  // width: 1000px;
+  font-size: 16px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  p{
+    display: inline-block;
+    width: 270px;
+    >.dealPrice {
+      color: @color-yellow;
+    }
+  }
+  .p_width{
+    width: 400px;
+  }
+  .printTag{
+    padding-left: 0;
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    padding-left: 10px;
+    color:@color-6c;
+  }
+  .printTxt{
+    color: @color-233;
+  }
+  .contTitle{
+    padding: 10px 0;
+    color: @color-233;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .printHeader{
+    padding: 16px 0;
+    border-bottom: 1px solid @border-ED;
+  }
+  .printMsg{
+    padding: 0 12px;
+  }
+  .remark{
+    display: flex;
   }
 }
 </style>
