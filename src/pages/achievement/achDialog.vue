@@ -667,7 +667,7 @@
             custom-class="dialog2In"
             :close-on-click-modal="false"
           >
-            <h1>选择相关人员</h1>
+            <h1 style="font-size:16px;">选择相关人员</h1>
             <div class="mansList">
               <el-table
                 :data="mansList"
@@ -1151,7 +1151,7 @@ export default {
               this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
             } 
           }).catch(error => {
-               this.$message({message: error})
+               this.$message.error({message: error})
           });
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1236,7 +1236,7 @@ export default {
               this.$message.error(res.data.message);
             }
           }).catch(error => {
-               this.$message({message: error})
+               this.$message.error({message: error})
           });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1348,7 +1348,7 @@ export default {
             this.$message({ message: "操作成功", type: "success" });
           }
         }).catch(error => {
-               this.$message({message: error})
+               this.$message.error({message: error})
         });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1449,7 +1449,7 @@ export default {
             }
             this.$emit("close");
           }).catch(error => {
-               this.$message({message: error})
+               this.$message.error({message: error})
           });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1635,7 +1635,7 @@ export default {
 .dialog1 {
   /deep/ .el-dialog {
     max-width: 1000 !important;
-    height: 666px;
+    margin: 13vh auto 0 !important;
     overflow: auto;
 
     /deep/ .el-input__suffix {
@@ -1649,7 +1649,6 @@ export default {
     }
     .ach-header {
       min-height: 80px;
-      min-width: 100%;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;
       overflow: hidden;
@@ -1666,10 +1665,9 @@ export default {
       }
     }
     .ach-body {
-      min-height: 585px;
-      min-width: 1200;
+      max-height: 500px;
       // background-color: pink;
-      padding: 0 30px;
+      padding: 0 20px;
       box-sizing: border-box;
       overflow-y: auto;
       /deep/ .el-input__inner {
@@ -1821,6 +1819,9 @@ export default {
   }
   .input-ratio {
     color: #606266;
+  }
+  .orange {
+    color: #f56c6c;
   }
 }
 </style>
