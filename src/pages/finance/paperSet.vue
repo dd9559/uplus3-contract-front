@@ -262,7 +262,7 @@
           </li>
           <li>
             <span class="cl-1 mr-10">收款时间：</span>
-            <span class="cl-2">--</span>
+            <span class="cl-2">{{comPaymentTime}}</span>
           </li>
         </ul>
         <div class="input-box">
@@ -338,11 +338,15 @@
           reason:''
         },
         activeRow:{},
+        paymentTime:'',
       }
     },
     computed: {
       invalidNumber() {
         return this.layer.reason.length
+      },
+      comPaymentTime(){
+        return this.$tool.dateFormat(this.paymentTime)
       }
     },
     mounted() {
@@ -360,6 +364,10 @@
       },
       reset: function () {
         this.$tool.clearForm(this.propForm)
+      },
+      // 错误提示
+      errMeFn(e){
+          this.$message.error(e);
       },
       // 列表数据
       getData: function () {
@@ -401,8 +409,19 @@
             break
           case 3:
             this.layer.title = '票据作废'
+            this.getPaperDetails(row.id)
             break
         }
+      },
+      getPaperDetails: function(id) {
+        this.$ajax.get(`/api/bills/${id}`).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.paymentTime = res.data.paymentTime
+          }
+        }).catch(err=>{
+          this.$message.error(err);
+        })
       },
       // 分页
       currentChangeFn(e){
@@ -421,7 +440,7 @@
               }
           });
         } else if (type === 'paper') {
-          this.$refs.layerInvoice.show(row.id);
+          this.$refs.layerInvoice.show(row.id,false,row.state.value===4);
         } else {
           this.$router.push({
             path:'billDetails',
@@ -449,6 +468,10 @@
             break
           case '票据作废':
             // param.state = 5;
+            if(!this.layer.reason){
+              this.errMeFn('作废原因不能为空');
+              return false
+            }
             param.reason = this.layer.reason;
             url = 'bills/invalid'
             break
@@ -463,6 +486,8 @@
             });
             this.getData()
           }
+        }).catch(err=>{
+          this.errMeFn(err);
         })
       },
       // 接收成功

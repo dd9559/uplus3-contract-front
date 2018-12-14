@@ -216,7 +216,7 @@
       <el-button class="btn-info" round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
-    <preview :imgList="previewFiles" :start="activeLi===''?0:activeLi" v-if="preview" @close="preview=false"></preview>
+    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
@@ -514,8 +514,13 @@
               })
             }else {
               // let state=false
+              let arr=[]
+              let moneyArr=[] //刷卡资料补充,输入金额集合
+              let feeArr=[] //刷卡资料补充,输入手续费集合
+
+              let count=0
               param.outAccount.find((item,index)=>{
-                if(!state){
+                /*if(!state){
                   this.$tool.checkForm(item,RULE).then(()=>{
                     let count=0
                     param.outAccount.forEach(item=>{
@@ -545,7 +550,41 @@
                       message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
                     })
                   })
+                }*/
+                count = count+parseFloat(item.amount)
+                moneyArr.push(item.amount)
+                feeArr.push(item.fee)
+                arr.push(this.$tool.checkForm(item,RULE))
+              })
+              Promise.all(arr).then(res=>{
+                if(count!==parseFloat(this.form.smallAmount)){
+                  this.$message({
+                    message:'刷卡金额要等于收款金额'
+                  })
+                  return true
+                }else if(moneyArr.includes('0')){
+                  this.$message({
+                    message:'输入金额必须大于0'
+                  })
+                  return
+                }else if(feeArr.includes('0')){
+                  this.$message({
+                    message:'输入手续费必须大于0'
+                  })
+                  return
                 }
+                if(this.files.length===0){
+                  this.$message({
+                    message:'收款凭证不能为空'
+                  })
+                }else {
+                  param.filePath = [].concat(this.files)
+                  this.getResult(param,this.$route.query.edit?'edit':'')
+                }
+              }).catch(error=>{
+                this.$message({
+                  message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
+                })
               })
             }
           }
