@@ -54,7 +54,7 @@
                             </li>
                             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                                    <div class="namePath">
+                                    <div class="namePath" @click="getPicture(uploadList,index)">
                                         <upload-cell :type="item.fileType"></upload-cell>
                                         <p>{{item.name}}</p>
                                     </div>

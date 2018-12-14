@@ -663,8 +663,8 @@
         <div class="dialog2">
           <el-dialog
             :visible.sync="showTips"
-            append-to-body
-            custom-class="dialog2In"
+             append-to-body
+             custom-class="dialog2In"
             :close-on-click-modal="false"
           >
             <h1 style="font-size:16px;">选择相关人员</h1>
@@ -1580,60 +1580,60 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/ .dialog2In {
-  width: 400px !important;
-  height: 400px !important;
-  background-color: #fff;
-  margin-top: 30vh !important;
-  overflow: auto;
-  .is-checked {
-    color: #478de3 !important;
-  }
-  /deep/ .el-dialog__header {
-    padding: 0 !important;
-  }
-  /deep/ .el-dialog__body {
-    padding: 0 !important;
-  }
-  h1 {
-    height: 53px;
-    line-height: 53px;
-    // font-size: 20px;
-    color: #233241;
-    padding-left: 20px;
-    box-sizing: border-box;
-    border-bottom: 1px solid #edecf0;
-    // /deep/ .delete {
-    //   color: #478de3 !important;
-    // }
-  }
-  .mansList {
-    margin-top: 25px;
-  }
-  /deep/ tr td:first-of-type,
-  th:first-of-type {
-    padding-left: 20px;
-  }
-
-  .dialog2-btn {
-    margin-top: 40px;
-    margin-right: 20px;
-    button {
-      width: 100px;
-      height: 38px;
-      border-radius: 19px;
-    }
-    button:first-of-type {
+     // 相关人员弹框
+    /deep/ .dialog2In {
+      width: 400px !important;
+      height: 400px !important;
       background-color: #fff;
-      color: #000;
-      border: 1px solid #e8eaf6;
-    }
-  }
-}
+      margin-top: 30vh !important;
+      overflow: auto;
+      .is-checked {
+        color: #478de3 !important;
+      }
+      /deep/ .el-dialog__header {
+        padding: 0 !important;
+      }
+      /deep/ .el-dialog__body {
+        padding: 0 !important;
+      }
+      h1 {
+        height: 53px;
+        line-height: 53px;
+        // font-size: 20px;
+        color: #233241;
+        padding-left: 20px;
+        box-sizing: border-box;
+        border-bottom: 1px solid #edecf0;
+        // /deep/ .delete {
+        //   color: #478de3 !important;
+        // }
+      }
+      .mansList {
+        margin-top: 25px;
+      }
+      /deep/ tr td:first-of-type,
+      th:first-of-type {
+        padding-left: 20px;
+      }
 
+      .dialog2-btn {
+        margin-top: 40px;
+        margin-right: 20px;
+        button {
+          width: 100px;
+          height: 38px;
+          border-radius: 19px;
+        }
+        button:first-of-type {
+          background-color: #fff;
+          color: #000;
+          border: 1px solid #e8eaf6;
+        }
+      }
+    }
 //业绩详情弹框改变样式
 .dialog1 {
-  /deep/ .el-dialog {
+  /deep/ .el-dialog.base-dialog {
     max-width: 1000 !important;
     margin: 13vh auto 0 !important;
     overflow: auto;
