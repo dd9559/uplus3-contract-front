@@ -66,8 +66,7 @@
        
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName}}</p>
-            <p>{{scope.row.dealAgentName}}</p>
+            <p>{{scope.row.dealAgentStoreName + '-' + scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
 
@@ -79,8 +78,7 @@
 
         <el-table-column label="发起人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.sponsorStoreName}}</p>
-            <p>{{scope.row.sponsorName}}</p>
+            <p>{{scope.row.sponsorStoreName + '-' + scope.row.sponsorName}}</p>
           </template>
         </el-table-column>
 
@@ -106,8 +104,7 @@
         
         <el-table-column label="审核人" :formatter="nullFormatter"  width="180">
           <template slot-scope="scope">
-            <p>{{scope.row.examineStoreName}}</p>
-            <p>{{scope.row.examineName}}</p>
+            <p>{{scope.row.examineStoreName + '-' + scope.row.examineName}}</p>
           </template>
         </el-table-column>
 
@@ -190,7 +187,7 @@
               <ul class="ulData">
                 <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath" @click="getPicture(uploadList,index)">
+                    <div class="namePath" @click="previewPhoto(uploadList,index)">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
@@ -203,17 +200,19 @@
 
         <!-- 结算备注 -->
         <div class="audit-col">
-          <div class="textareabox2 mt0">
+          <div class="textareabox2 mt0 textlengthbox">
             <span><em>*</em>结算备注</span>
-            <el-input type="textarea" :rows="6" class="textarea" maxlength=200 v-model="layerAudit.settlementRemarks" :disabled="true"></el-input>
+            <el-input type="textarea" :rows="5" class="textarea" maxlength=200 v-model="layerAudit.settlementRemarks" :disabled="true"></el-input>
+            <!-- <span class="textLength">{{}}/200</span> -->
           </div>
         </div>
 
         <!-- 审核备注 -->
         <div class="audit-col bordernone">
-          <div class="textareabox2">
+          <div class="textareabox2 textlengthbox">
             <span><em>*</em>审核备注</span>
-            <el-input type="textarea" :rows="6" class="textarea" maxlength=200 placeholder="请填写备注审核" v-model="auditForm.textarea"></el-input>
+            <el-input type="textarea" :rows="5" class="textarea" maxlength=200 placeholder="请填写备注审核" v-model="auditForm.textarea"></el-input>
+            <span class="textLength">{{auditForm.textarea.length}}/200</span>
           </div>
         </div>
 
@@ -223,7 +222,7 @@
         <el-button type="primary" class="recept"  @click="receptFn()" v-dbClick>通 过</el-button>  
       </div>
       <!-- 图片放大 -->
-      <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview> 
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview> 
     </el-dialog>
 
     <!-- 结算详情 -->
@@ -272,7 +271,7 @@
               <ul class="ulData">
                 <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath" @click="getPicture(uploadList,index)">
+                    <div class="namePath" @click="previewPhoto(uploadList,index)">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
@@ -285,9 +284,10 @@
 
         <!-- 结算备注 -->
         <div class="audit-col">
-          <div class="textareabox2 mt0">
+          <div class="textareabox2 mt0 textlengthbox">
             <span><em>*</em>结算备注</span>
-            <el-input type="textarea" :rows="6" class="textarea" maxlength=200 v-model="layerAudit.settlementRemarks" :disabled="true"></el-input>
+            <el-input type="textarea" :rows="5" class="textarea" maxlength=200 v-model="layerAudit.settlementRemarks" :disabled="true"></el-input>
+            <!-- <span class="textLength">{{}}/200</span> -->
           </div>
         </div>
 
@@ -333,7 +333,7 @@
 
       </div>
       <!-- 图片放大 -->
-      <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
 
 
@@ -356,6 +356,7 @@
         loading:false,
         loading2:false,
         loadingTable:false,
+        // settleMarks:'',
          adjustForm:{
           signDate: '', //发起日期
           contType: '', //合同类型
@@ -401,12 +402,13 @@
           },
           statusLaterStage: {
             label:""
-          }
+          },
+          
 
         },
         checkInfo:[],
-        preview:false,
-        start:'',
+        // preview:false,
+        // start:'',
         isDelete:'',
         //上传的协议
         uploadList: [],
@@ -433,7 +435,9 @@
     },
 
     computed: {
-        
+        // settleMarks(){
+        //   return this.layerAudit.examineRemarks.length;
+        // }
     },
 
     filters: {
@@ -450,15 +454,15 @@
   
     methods:{
       //图片预览
-      getPicture(value,index){
-          this.start=index;
-          let arr=[];
-          // console.log(value);
-          value.forEach(item =>{
-              arr.push(item.path)
-          })
-          this.fileSign(arr)
-      },
+      // getPicture(value,index){
+      //     this.start=index;
+      //     let arr=[];
+      //     // console.log(value);
+      //     value.forEach(item =>{
+      //         arr.push(item.path)
+      //     })
+      //     this.fileSign(arr)
+      // },
       
       //合同主体的删除
       // ZTdelectData(index){
@@ -622,6 +626,7 @@
           if (res.data.status === 200) {        
              
             this.layerAudit = res.data.data.contractResult;
+            // this.settleMarks = res.data.data.examineRemarks.length;
             this.myCheckId = res.data.data.contractResult.id; //结算id
             this.uploadList = res.data.data.contractResult.vouchers;
             this.checkInfo = res.data.data.examineDetails
@@ -643,6 +648,7 @@
         .then(res => {     
           if (res.data.status === 200) {
            this.layerAudit = res.data.data.contractResult;
+          //  this.settleMarks = res.data.data.examineRemarks.length;
             this.myCheckId = res.data.data.contractResult.id; //结算id
             this.uploadList = res.data.data.contractResult.vouchers;
           }
@@ -1078,6 +1084,16 @@
   .isFlex{
     display: flex;
     align-items: center;
+  }
+  .textlengthbox{
+      position: relative;
+  }
+  .textLength{
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      color: #6C7986;
+      text-align: right;
   }
 
 }

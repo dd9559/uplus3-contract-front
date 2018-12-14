@@ -66,8 +66,7 @@
         </el-table-column>
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName}}</p>
-            <p>{{scope.row.dealAgentName}}</p>
+            <p>{{scope.row.dealAgentStoreName + '-' + scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="签约日期">
@@ -82,8 +81,7 @@
         </el-table-column>
         <el-table-column label="发起人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.createByDepName}}</p>
-            <p>{{scope.row.createByName}}</p>
+            <p>{{scope.row.createByDepName + '-' + scope.row.createByName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="审核状态" :formatter="nullFormatter" align="center">
@@ -100,8 +98,7 @@
         </el-table-column>   
         <el-table-column label="当前审核人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.checkByDepName}}</p>
-            <p>{{scope.row.checkByName}}</p>
+            <p>{{scope.row.checkByDepName + '-' + scope.row.checkByName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200" :formatter="nullFormatter">
@@ -198,7 +195,7 @@
 
                 <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath" @click="getPicture(uploadList,index)">
+                    <div class="namePath" @click="previewPhoto(uploadList,index)">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
@@ -211,7 +208,7 @@
         <!-- 审核备注 -->
         <div class="textareabox2 textlengthbox">
           <span>审核备注</span>
-          <el-input type="textarea" :rows="5"  v-model="auditForm.textarea" class="textarea" maxlength=200 ></el-input>
+          <el-input type="textarea" :rows="5" v-model="auditForm.textarea" class="textarea" maxlength=200 ></el-input>
           <span class="textLength">{{auditForm.textarea.length}}/200</span>
         </div>  
       </div>
@@ -220,7 +217,7 @@
         <el-button type="primary"  @click="receptFn()" class="recept" v-dbClick>通 过</el-button>  
       </div> 
       <!-- 图片放大 -->
-      <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
 
     <!-- 调佣详情 -->
@@ -284,7 +281,7 @@
 
                 <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath" @click="getPicture(uploadList,index)">
+                    <div class="namePath" @click="previewPhoto(uploadList,index)">
                         <upload-cell :type="item.fileType"></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
@@ -337,7 +334,7 @@
       </div>
 
       <!-- 图片放大 -->
-      <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
 
   </div>
@@ -399,8 +396,8 @@
 
         checkInfo:[],
 
-        preview:false,
-        start:'',
+        // preview:false,
+        // start:'',
 
         isDelete:'',
         
@@ -452,15 +449,15 @@
     methods:{
 
       //图片预览
-      getPicture(value,index){
-          this.start=index;
-          let arr=[];
-          // console.log(value);
-          value.forEach(item =>{
-              arr.push(item.path)
-          })
-          this.fileSign(arr)
-      },
+      // getPicture(value,index){
+      //     this.start=index;
+      //     let arr=[];
+      //     // console.log(value);
+      //     value.forEach(item =>{
+      //         arr.push(item.path)
+      //     })
+      //     this.fileSign(arr)
+      // },
 
       // //文件的删除
       // ZTdelectData(index){
