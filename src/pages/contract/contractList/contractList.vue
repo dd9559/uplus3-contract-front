@@ -87,7 +87,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
-          <el-dropdown placement="bottom">  <!-- @command="printCont" -->
+          <el-dropdown placement="bottom" @command="printCont">
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -119,7 +119,7 @@
                 <!-- 代办 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
                 <!-- 低佣 -->
-                <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===2"></i>
+                <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i>
               </div>
               <ul class="contract-msglist">
                 <li>合同编号：<span>{{scope.row.code}}</span></li>
@@ -428,6 +428,7 @@ export default {
     //收款
     gathering(id) {
       //console.log(id);
+      // this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'))
       this.$router.push({
         path:'/receiptBill',
         query:{
@@ -561,6 +562,7 @@ export default {
     ChangeCancelDialog() {
       this.changeCancel = false;
       this.contId='';
+      this.getContractList();
     },
     //字典查询
     getDictionaries() {
@@ -690,7 +692,7 @@ export default {
       this.haveUrl=false;
       if(command===1){
         if(this.blankPdf1){
-          // this.getUrl(this.blankPdf1);
+          this.getUrl(this.blankPdf1);
           // this.pdfUrl='http://jjw-test.oss-cn-shenzhen.aliyuncs.com/template/20181213/1GxWuzL4B9yULfWKf7PEEB.pdf?Expires=1544701276&OSSAccessKeyId=LTAI699jkFRmo7TI&Signature=c05r185XfkRoz2yZJfGZgo%2F6gfU%3D'
           this.haveUrl=true;
           setTimeout(()=>{

@@ -54,7 +54,7 @@
 						<ul>
 							<li v-for="(item,index) in address.value" :key="index">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-									<div class="namePath" @click="getPicture(address.value,index)">
+									<div class="namePath" @click="previewPhoto(address.value,index)">
 										<upload-cell :type="item.fileType"></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
@@ -122,7 +122,7 @@
 						<ul>
 							<li v-for="(item,index) in address.value" :key="index">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-									<div class="namePath" @click="getPicture(address.value,index)">
+									<div class="namePath" @click="previewPhoto(address.value,index)">
 										<upload-cell :type="item.fileType"></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
@@ -148,7 +148,7 @@
 							</li>
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-									<div class="namePath" @click="getPicture(uploadList,index)">
+									<div class="namePath" @click="previewPhoto(uploadList,index)">
 										<upload-cell :type="item.fileType"></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
@@ -164,7 +164,7 @@
 				<el-button type="primary" @click="saveFile">保 存</el-button>
 			</div>
 			<!-- 图片预览 -->
-    	<preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
+    	<preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
 		</el-dialog>
 	</div>
 </template>
@@ -363,15 +363,15 @@ export default {
 			})
 		},
 		//图片预览
-    getPicture(value,index){
-      this.start=index;
-      let arr=[];
-      // console.log(value);
-      value.forEach(item =>{
-        arr.push(item.path)
-      })
-      this.fileSign(arr)
-    }
+  //   getPicture(value,index){
+  //     this.start=index;
+  //     let arr=[];
+  //     // console.log(value);
+  //     value.forEach(item =>{
+  //       arr.push(item.path)
+  //     })
+  //     this.fileSign(arr)
+  //   }
   },
 
   created() {

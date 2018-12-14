@@ -147,12 +147,12 @@
                                     </li>
                                     
                                         <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
-                                            <!-- <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom"> -->
+                                            <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                                                 <div class="namePath" @click="getPicture(item.value,index_)">
                                                     <upload-cell :type="item_.fileType"></upload-cell>                                               
                                                     <p>{{item_.name}}</p>   
                                                 </div>
-                                            <!-- </el-tooltip> -->
+                                            </el-tooltip>
                                             <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>                                          
                                         </li>
                                     

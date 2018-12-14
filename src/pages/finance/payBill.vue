@@ -238,6 +238,7 @@
             })
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
+            this.getAmount()
           }
         })
       },
