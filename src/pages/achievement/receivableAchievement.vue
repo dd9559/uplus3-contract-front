@@ -325,7 +325,7 @@ export default {
         //数据字典
         "10": "" //合同类型
       },
-      pageSize: 5,
+      pageSize: 10,
       currentPage: 1,
       ajaxParam: {},
       total: 0,
