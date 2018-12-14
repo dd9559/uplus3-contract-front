@@ -70,7 +70,7 @@
           <!-- <el-select v-model="addForm.dutyType" filterable>
             <el-option v-for="item in roleList" :key="item.key" :label="item.value" :value="item.value"></el-option>
           </el-select> -->
-          <el-autocomplete v-model="addForm.dutyType" :fetch-suggestions="querySearch"></el-autocomplete>
+          <el-autocomplete v-model="addForm.dutyType" :fetch-suggestions="querySearch" placeholder="请选择角色"></el-autocomplete>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -87,24 +87,24 @@
           </div>
           <div class="input-group">
             <label class="step-name">步骤名称：</label>
-            <el-input type="text" v-model.trim="stepBusiness.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+            <el-input type="text" v-model.trim="stepBusiness.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')" size="small"></el-input>
             <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
           </div>
           <div class="input-group">
             <label>计划天数：</label>
-            <el-input v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')"></el-input>
+            <el-input v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')" size="small"></el-input>
           </div>
           <div class="menu-table">
             <h4>附属信息：</h4>
             <el-table border :data="tableForm" style="width: 100%">
               <el-table-column align="center" label="名称" min-width="150">
                 <template slot-scope="scope">
-                  <el-input v-model="tableForm[scope.$index].title" maxlength="15" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                  <el-input v-model="tableForm[scope.$index].title" maxlength="15" onkeyup="value=value.replace(/\s+/g,'')" size="small"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="信息类型" min-width="150">
                 <template slot-scope="scope">
-                  <el-select v-model="tableForm[scope.$index].type" placeholder="请选择信息类型">
+                  <el-select v-model="tableForm[scope.$index].type" placeholder="请选择信息类型" size="small">
                     <el-option
                       v-for="item in dictionary['561']"
                       :key="item.key"
@@ -641,7 +641,7 @@
     }
     /deep/ .el-table td {
       background-color: rgba(254,252,247,1);
-      padding: 0;
+      padding: 0!important;
       .cell {
         padding: 0;
         p {
@@ -679,16 +679,10 @@
   }
   .modal-context {
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: @margin-10;
       .step-name::before {
         content: "*";
         color: red;
-      }
-      /deep/ .el-input {
-        height: 32px;
-        .el-input__inner {
-          height: 32px;
-        }
       }
     }
     .text-absolute {
@@ -710,12 +704,6 @@
             color: #CECECE;
           }
         }
-      }
-    }
-    /deep/ .el-input {
-      height: 32px;
-      .el-input__inner {
-        height: 32px;
       }
     }
   }

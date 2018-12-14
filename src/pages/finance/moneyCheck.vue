@@ -120,7 +120,7 @@
           <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
         </p>
       </div>
-      <el-table ref="dataList" border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+      <el-table ref="dataList" border :data="list" :key="activeView" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="150" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -144,7 +144,7 @@
         </el-table-column>
         <el-table-column align="center" :label="activeView===1?'收款人':'付款人'">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}-{{scope.row.store}}</span>
+            <span>{{scope.row.store}}-{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="当前审核人">
@@ -196,6 +196,7 @@
     <el-dialog
       title="作废"
       :visible.sync="layer.show"
+      :closeOnClickModal="$tool.closeOnClickModal"
       width="740px">
       <div class="delete-dialog" v-if="layer.content.length>0">
         <p>是否作废该{{activeView===1?'收款单':'付款单'}}</p>
@@ -208,14 +209,14 @@
           </el-table-column>
           <el-table-column align="center" :label="activeView===1?'付款方':'收款方'" prop="cityName" :formatter="nullFormatter">
             <template slot-scope="scope">
-              <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}-{{scope.row.store}}</span>
+              <span>{{scope.row.type===1?scope.row.outObjType.label:scope.row.inObjType.label}}-{{scope.row.type===1?scope.row.outObjName:scope.row.inObjName}}</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
-    <el-button size="small" round @click="layer.show = false">返 回</el-button>
-    <el-button size="small" round type="primary" @click="deleteBill">确 定</el-button>
+    <el-button size="small" class="btn-info" round @click="layer.show = false">返 回</el-button>
+    <el-button size="small" class="btn-info" round type="primary" @click="deleteBill">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -431,6 +432,13 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .delete-dialog{
+    >p{
+      text-align: center;
+      margin-bottom: @margin-10;
+      font-size: @size-16;
+    }
+  }
 
   .contract-msglist {
     > li {

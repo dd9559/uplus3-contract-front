@@ -445,7 +445,7 @@
         flex-direction: column;
         p{
           position: relative;
-          height: 60px;
+          height: 70px;
           width: 391px;
           /deep/
           .fileup{
@@ -460,7 +460,7 @@
           span{
             position: absolute;
             line-height: auto;
-            bottom: 8px;
+            bottom: 12px;
             font-style: italic;
             padding-left: 0;
             font-size: 12px;
