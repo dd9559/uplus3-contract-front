@@ -102,6 +102,20 @@
       }
     }
   }
+  /*.el-dialog{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    -o-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    margin: 0 !important;
+  }*/
+  .el-dialog__body{
+    padding: 0 @margin-10;
+  }
   .money-type-radio[role='radio']{
     display: flex;
     >span{
