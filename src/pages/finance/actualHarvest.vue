@@ -109,8 +109,8 @@
         </el-table-column>
         <el-table-column align="center" min-width="160" label="成交经纪人" prop="broker">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentName}}</p>
             {{scope.row.dealAgentStoreName}}
+            <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="应收款（元）" prop="receivableCommission" :formatter="nullFormatter"></el-table-column>

@@ -155,8 +155,8 @@
         </el-table-column>
         <el-table-column align="center" label="收款人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</p>
             <span>{{scope.row.store}}</span>
+            <p>{{scope.row.type===1?scope.row.inObjName:scope.row.createByName}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
