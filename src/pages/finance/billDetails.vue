@@ -165,11 +165,7 @@
           </el-table-column>
           <el-table-column align="center" prop="userName" label="姓名"></el-table-column>
           <el-table-column align="center" prop="roleName" label="职务"></el-table-column>
-          <el-table-column align="center" label="操作">
-            <template slot-scope="scope">
-              {{scope.row.auditResult===1?'':''}}
-            </template>
-          </el-table-column>
+          <el-table-column align="center" prop="operate" label="操作"></el-table-column>
           <el-table-column align="center" prop="auditInfo" label="备注"></el-table-column>
         </el-table>
         <!--<el-pagination

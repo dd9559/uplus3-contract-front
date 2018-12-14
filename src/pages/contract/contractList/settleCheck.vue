@@ -609,7 +609,7 @@
         
         if(this.auditForm.textarea !== ""){
           let param = {
-            id: 1,
+            id: this.myCheckId,
             examine: 2, //驳回
             examineRemark: this.auditForm.textarea
           }
@@ -640,7 +640,7 @@
       // 通过操作
       receptFn() {
         let param = {
-          id: 1,
+          id: this.myCheckId,
           examine: 1, //通过
           examineRemark: this.auditForm.textarea
         }
@@ -683,15 +683,6 @@
         this.queryFn();
       },
       
-
-      // 弹层里上传附件
-      // handleRemove(file, fileList) {
-      //   console.log(file, fileList);
-      // },
-      // handlePictureCardPreview(file) {
-      //   this.dialogImageUrl = file.url;
-      //   this.dialogVisible = true;
-      // }
       
     },
 
