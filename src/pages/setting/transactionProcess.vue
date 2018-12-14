@@ -4,8 +4,8 @@
             <el-button type="primary" @click="addProcess('添加交易流程')">添加</el-button>
         </div>
         <el-table :data="listData" style="width: 100%" class="list1">
-          <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
+          <el-table-column align="left" label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
@@ -513,6 +513,9 @@
     }
     .list1 {
       padding: 0 12px;
+      /deep/ .has-gutter th:nth-child(2) {
+        text-align: center;
+      }
     }
     .processDialog {
       .add-form-item {

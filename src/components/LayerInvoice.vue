@@ -57,6 +57,8 @@
                 :create="paperInfoData.createByName"
                 :rules="paperInfoData.remark"
                 :imgSrc="imgUrl"
+                :time="paperInfoData.printDate"
+                :num="paperInfoData.printTimes"
                 :payerType="paperInfoData.payerType"></LayerPaperInfo>
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
@@ -178,7 +180,8 @@
                 let obj = {}
                 if (!this.paperType) {
                     obj = {
-                        code: this.paperInfoData.billCode
+                        code: this.paperInfoData.billCode,
+                        isPrint:false
                     }
                 } else {
                     let type = this.moneyTypes[this.activeType]
@@ -187,7 +190,8 @@
                         payId: this.ID,
                         payDetailsId: type.payDetailsId,
                         isHiddenAddress: type.addressHidden,
-                        billType: type.project
+                        billType: type.project,
+                        isPrint:false
                     }
                 }
         
@@ -219,7 +223,21 @@
                     this.$message.error('请先设置财务专用电子签章');
                     return false
                 }
-                this.$refs.pdfPrint.print();
+                this.pdfLoading = true;
+                this.$ajax.post('/api/bills/print', {
+                    code:this.paperInfoData.billCode,
+                    isPrint:true,
+                }).then(res => {
+                    res = res.data
+                    this.pdfLoading = false;
+                    if(res.status === 200){
+                        this.$emit("emitPaperSet");
+                        this.$refs.pdfPrint.print();
+                    }
+                }).catch(err=>{
+                    this.$message.error(err)
+                    this.pdfLoading = false;
+                })
             },
             // 获取开票列表
             paperList: function() {
@@ -242,6 +260,7 @@
                 }).catch(err=>{
                     this.$message.error(err);
                     this.loading = false;
+                    // this.paperShow = false;
                 })
             },
             // 打开

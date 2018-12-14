@@ -640,7 +640,7 @@
     border-bottom: 1px solid #EDECF0;
 }
 /deep/ .el-dialog__body {
-    padding-bottom: 0;
+    padding-top: 20px;
 }
 /deep/ .el-dialog__footer {
     padding-bottom: 34px;

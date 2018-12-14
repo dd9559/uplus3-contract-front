@@ -2,7 +2,7 @@
   <div class="paper-info">
     <div class="paper-border">
       <div class="paper-tit">专用收款收据</div>
-      <div class="paper-number">合同编号：{{comNumber}}</div>
+      <div class="paper-number">合同编号：{{comNumber}}<span class="red">{{comText}}</span></div>
       <ul class="paper-ul">
         <li class="w1"><span class="cl-1 mr-10">交款单位：</span>{{comName}}</li>
         <li><span class="cl-1 mr-10">收款日期：</span>{{comCollectionTime}}</li>
@@ -11,14 +11,28 @@
       </ul>
       <div class="paper-small-tit">收款项目明细</div>
       <div class="paper-table">
-        <ul class="cl-2">
+        <table class="paper-table-main">
+            <thead>
+                <tr>
+                    <th class="paper-table-w">摘要</th>
+                    <th class="paper-table-w2">金额</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{comProject}}</td>
+                    <td>￥{{comMoney}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- <ul class="cl-2">
           <li>摘要</li>
           <li class="wi">金额</li>
         </ul>
         <ul>
           <li>{{comProject}}</li>
           <li class="wi">￥{{comMoney}}</li>
-        </ul>
+        </ul> -->
         <div class="paper-absolute">
           <p>客</p>
           <p>户</p>
@@ -27,8 +41,8 @@
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
-        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
-        <div class="fr mr-20"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
+        <div class="fr ml-20"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
+        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
@@ -49,7 +63,7 @@
     <div class="paper-dashed"></div>
     <div class="paper-border">
       <div class="paper-tit">专用收款收据</div>
-      <div class="paper-number">合同编号：{{comNumber}}</div>
+      <div class="paper-number">合同编号：{{comNumber}}<span class="red">{{comText}}</span></div>
       <ul class="paper-ul">
         <li class="w1"><span class="cl-1 mr-10">交款单位：</span>{{comName}}</li>
         <li><span class="cl-1 mr-10">收款日期：</span>{{comCollectionTime}}</li>
@@ -58,14 +72,28 @@
       </ul>
       <div class="paper-small-tit">收款项目明细</div>
       <div class="paper-table">
-        <ul class="cl-2">
+                <table class="paper-table-main">
+            <thead>
+                <tr>
+                    <th class="paper-table-w">摘要</th>
+                    <th class="paper-table-w2">金额</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{comProject}}</td>
+                    <td>￥{{comMoney}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- <ul class="cl-2">
           <li>摘要</li>
           <li class="wi">金额</li>
         </ul>
         <ul>
           <li>{{comProject}}</li>
           <li class="wi">￥{{comMoney}}</li>
-        </ul>
+        </ul> -->
         <div class="paper-absolute">
           <p>记</p>
           <p>账</p>
@@ -74,8 +102,8 @@
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">客户身份：</span>{{comPayerType}}</div>
-        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
-        <div class="fr mr-20"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
+        <div class="fr ml-20"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
+        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
@@ -159,8 +187,23 @@
         type: String,
         default: ''
       },
+      time:{
+        type:String,
+        default:'',
+      },
+      num:{
+        type:Number,
+        default:0,
+      }
     },
     computed: {
+      comText(){
+        if(this.num > 1){
+          return `第${this.num}次打印，重复无效，打印日期:${this.$tool.dateFormat(this.time)}`
+        }else{
+          return ``
+        }
+      },
       comNumber() {
         return this.defaultFn(this.number);
       },
@@ -223,6 +266,11 @@
 </script>
 
 <style lang="less" scoped>
+  .red{
+    color: #FF3E3E;
+    font-weight: normal;
+    margin-left: 10px;
+  }
   .cl-1 {
     color: #999;
   }
@@ -237,6 +285,9 @@
 
   .mr-20 {
     margin-right: 20px;
+  }
+  .ml-20 {
+    margin-left: 20px;
   }
 
   .ml-28 {
@@ -269,7 +320,7 @@
 
   .paper-tit {
     font-size: 24px;
-    padding-top: 28px;
+    padding-top: 24px;
     text-align: center;
     font-weight: bold;
   }
@@ -277,27 +328,29 @@
   .paper-number {
     color: #666;
     padding-top: 14px;
-    text-align: center;
+    // text-align: center;
     font-weight: 400;
   }
 
   .paper-ul {
-    display: flex;
-    padding: 26px 0 16px;
+    // display: flex;
+    padding-top: 22px;
     border-bottom: 1px solid #E5E5E5;
+    overflow: hidden;
   }
 
   .paper-ul > li {
     float: left;
-    width: 28%;
+    min-width: 25%;
+    margin-bottom: 14px;
   }
 
-  /*.paper-ul .w1{
-      width: 23%;
+  .paper-ul .w1{
+      min-width: 23%;
   }
   .paper-ul .w2{
-      width: 21%;
-  }*/
+      min-width: 21%;
+  }
   .paper-small-tit {
     font-weight: bold;
     padding-top: 24px;
@@ -318,23 +371,52 @@
     font-weight: bold;
   }
 
-  .paper-table > ul {
-    overflow: hidden;
+  // .paper-table > ul {
+  //   overflow: hidden;
+  // }
+
+  // .paper-table > ul > li {
+  //   border-bottom: 1px solid #C8C8C8;
+  //   border-right: 1px solid #C8C8C8;
+  //   width: 69%;
+  //   box-sizing: border-box;
+  //   float: left;
+  //   line-height: 40px;
+  //   height: 40px;
+  //   text-align: center;
+  // }
+
+  // .paper-table > ul > li.wi {
+  //   width: 31%;
+  // }
+  .paper-table-w{
+      width: 69%;
+  }
+  .paper-table-w2{
+      width: 31%;
+  }
+  .paper-table-main {
+      width: 100%;
+      text-align: center;
+      border-collapse: collapse;
+      /* border-spacing: 1; */
+      border-spacing: 0;
   }
 
-  .paper-table > ul > li {
-    border-bottom: 1px solid #C8C8C8;
-    border-right: 1px solid #C8C8C8;
-    width: 69%;
-    box-sizing: border-box;
-    float: left;
-    line-height: 40px;
-    height: 40px;
-    text-align: center;
+  .paper-table-main td,
+  .paper-table-main th {
+      word-break: break-all;
+      word-wrap: break-word;
+      padding: 0;
+      line-height: 38px;
+      min-height: 38px;
+      border-bottom: 1px solid #C8C8C8;
+      border-right: 1px solid #C8C8C8;
   }
 
-  .paper-table > ul > li.wi {
-    width: 31%;
+  .paper-table-main th {
+      font-weight: normal;
+      color: #666;
   }
 
   .paper-ov {
