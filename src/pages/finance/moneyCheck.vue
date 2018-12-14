@@ -139,12 +139,12 @@
         <el-table-column align="center" label="收付方式" prop="method" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="对象">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.inObjType:scope.row.outObjType|getLabel}}</span>
+            <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" :label="activeView===1?'收款人':'付款人'">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
+            <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}-{{scope.row.store}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="当前审核人">
@@ -171,7 +171,7 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
-        <el-table-column align="center" label="操作" fixed="right">
+        <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
             <template v-if="scope.row.payStatus==='审核中'">
               <el-button type="text" @click="cellOpera(scope.row)">审核</el-button>
@@ -200,22 +200,22 @@
       <div class="delete-dialog" v-if="layer.content.length>0">
         <p>是否作废该{{activeView===1?'收款单':'付款单'}}</p>
         <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="other">
-          <el-table-column align="center" min-width="200px" label="收付编号" prop="payCode" :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" min-width="120" label="收付编号" prop="payCode" :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" :label="activeView===1?'收款金额':'付款金额'" prop="cityName" :formatter="nullFormatter">
             <template slot-scope="scope">
               <span>{{scope.row.amount}}元</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" :label="activeView===1?'收款方':'付款方'" prop="cityName" :formatter="nullFormatter">
+          <el-table-column align="center" :label="activeView===1?'付款方':'收款方'" prop="cityName" :formatter="nullFormatter">
             <template slot-scope="scope">
-              <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
+              <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}-{{scope.row.store}}</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
-    <el-button round @click="layer.show = false">返 回</el-button>
-    <el-button round type="primary" @click="deleteBill">确 定</el-button>
+    <el-button size="small" round @click="layer.show = false">返 回</el-button>
+    <el-button size="small" round type="primary" @click="deleteBill">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -397,7 +397,14 @@
           if(res.status===200){
             this.getData()
             this.layer.show=false
+            this.$message({
+              message:'作废成功'
+            })
           }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
         })
       },
       // 获取收付款类

@@ -150,12 +150,12 @@
         <el-table-column align="center" label="收付方式" prop="method" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="对象">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.inObjType:scope.row.outObjType|getLabel}}</span>
+            <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款人">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
+            <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}-{{scope.row.store}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -185,12 +185,13 @@
           <template slot-scope="scope">
             <template v-if="scope.row.type===1">
               <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(scope.row.payStatus==='已通过'||scope.row.payStatus==='已到账')&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">开票</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,1)" v-else-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0&&scope.row.inAccountType===4">修改</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)" v-else-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0&&scope.row.inAccountType===4">作废</el-button>
+              <template v-else-if="scope.row.caozuo===1">
+                <el-button type="text" @click="btnOpera(scope.row,1)">修改</el-button>
+                <el-button type="text" @click="btnOpera(scope.row,2)">作废</el-button>
+              </template>
               <span v-else>--</span>
             </template>
-            <template v-else-if="scope.row.auditBy===-1&&scope.row.checkStatus&&scope.row.checkStatus.value===0
-">
+            <template v-else-if="scope.row.type===2&&scope.row.caozuo===1">
               <el-button type="text" @click="btnOpera(scope.row,1)">修改</el-button>
               <el-button type="text" @click="btnOpera(scope.row,2)">作废</el-button>
             </template>
@@ -222,22 +223,22 @@
       <div class="delete-dialog" v-if="layer.content.length>0">
         <p>是否作废该{{layer.content[0].type===1?'收款单':'付款单'}}</p>
         <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="other">
-          <el-table-column align="center" min-width="200px" label="收付编号" prop="payCode" :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" min-width="120" label="收付编号" prop="payCode" :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" :label="layer.content[0].type===1?'收款金额':'付款金额'" prop="cityName" :formatter="nullFormatter">
             <template slot-scope="scope">
               <span>{{scope.row.amount}}元</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" :label="layer.content[0].type===1?'收款方':'付款方'" prop="cityName" :formatter="nullFormatter">
+          <el-table-column align="center" :label="layer.content[0].type===1?'付款方':'收款方'" prop="cityName" :formatter="nullFormatter">
             <template slot-scope="scope">
-              <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
+              <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}-{{scope.row.store}}</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
-    <el-button round @click="layer.show = false">返 回</el-button>
-    <el-button round type="primary" @click="deleteBill">确 定</el-button>
+    <el-button size="small" round @click="layer.show = false">返 回</el-button>
+    <el-button size="small" round type="primary" @click="deleteBill">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -401,7 +402,14 @@
           if(res.status===200){
             this.getData()
             this.layer.show=false
+            this.$message({
+              message:'作废成功'
+            })
           }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
         })
       },
       emitPaperSetFn:function (payload) {

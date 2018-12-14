@@ -165,7 +165,11 @@
           </el-table-column>
           <el-table-column align="center" prop="userName" label="姓名"></el-table-column>
           <el-table-column align="center" prop="roleName" label="职务"></el-table-column>
-          <el-table-column align="center" label="操作"></el-table-column>
+          <el-table-column align="center" label="操作">
+            <template slot-scope="scope">
+              {{scope.row.auditResult===1?'':''}}
+            </template>
+          </el-table-column>
           <el-table-column align="center" prop="auditInfo" label="备注"></el-table-column>
         </el-table>
         <!--<el-pagination
@@ -470,6 +474,7 @@
     ul.image-list {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       > li {
         width: 120px;
         height: 120px;
@@ -478,6 +483,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        margin-bottom: @margin-base;
         span {
           width: 100px;
           text-align: center;
