@@ -291,7 +291,7 @@
     }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 @import "~@/assets/common.less";
 .blue {
     color: @color-blue;
@@ -352,7 +352,7 @@
 }
 // 后期进度弹层
 .layer-progress {
-    padding: 30px 20px;
+    padding: 20px 20px 30px;
     line-height: 36px;
     .ul {
         display: flex;

@@ -194,4 +194,8 @@
   .margin-right{
     margin-right: @margin-10;
   }
+  .wordp{
+    word-wrap: break-word; 
+    word-break: normal; 
+}
 </style>

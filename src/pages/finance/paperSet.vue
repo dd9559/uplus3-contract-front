@@ -212,6 +212,17 @@
           </template>
         </el-table-column>
         <el-table-column prop="invalidReason" label="作废原因" min-width="100">
+          <template slot-scope="scope">
+             <el-popover
+              placement="top-start"
+              width="200"
+              trigger="hover"
+              popper-class="wordp"
+              :content="scope.row.invalidReason">
+              <p class="norwap" slot="reference">{{scope.row.invalidReason}}</p>
+            </el-popover>
+              <!-- <p class="norwap">{{scope.row.invalidReason}}</p> -->
+          </template>
         </el-table-column>
         <el-table-column label="操作人/时间" min-width="146">
           <template slot-scope="scope">
@@ -268,7 +279,7 @@
         <div class="input-box">
           <span class="cl-1 mr-10">作废备注：</span>
           <div class="input">
-            <el-input type="textarea" resize="none" placeholder="请输入核销理由" :maxlength="invalidMax" v-model="layer.reason" class="input">
+            <el-input type="textarea" resize="none" placeholder="请输入作废理由" :maxlength="invalidMax" v-model="layer.reason" class="input">
             </el-input>
             <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
           </div>
@@ -440,7 +451,7 @@
               }
           });
         } else if (type === 'paper') {
-          this.$refs.layerInvoice.show(row.id,false,row.state.value===4);
+          this.$refs.layerInvoice.show(row.id,false,row.state.value===4||row.state.value===5||row.state.value===3);
         } else {
           this.$router.push({
             path:'billDetails',
@@ -572,8 +583,6 @@
 
 <style lang="less" scoped>
   @import "~@/assets/less/lsx.less";
-  
-
   .content {
     display: flex;
     flex-wrap: wrap;
