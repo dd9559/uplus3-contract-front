@@ -1636,7 +1636,7 @@ export default {
   /deep/ .el-dialog.base-dialog {
     max-width: 1000 !important;
     margin: 13vh auto 0 !important;
-    overflow: auto;
+   overflow: hidden;
 
     /deep/ .el-input__suffix {
       right: 21px;
@@ -1667,7 +1667,7 @@ export default {
     .ach-body {
       max-height: 500px;
       // background-color: pink;
-      padding: 0 20px;
+      // padding: 0 20px;
       box-sizing: border-box;
       overflow-y: auto;
       /deep/ .el-input__inner {
