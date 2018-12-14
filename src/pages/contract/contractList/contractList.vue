@@ -87,7 +87,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
-          <el-dropdown placement="bottom"  @command="printCont">
+          <el-dropdown placement="bottom">
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
