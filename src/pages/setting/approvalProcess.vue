@@ -499,6 +499,7 @@
 @import "~@/assets/common.less";
 .content {
     display: flex;
+    flex-wrap: wrap;
     color: #6C7986;
     .input-group {
         margin-right: 20px;
@@ -508,14 +509,9 @@
         /deep/ .el-input {
             margin-left: -10px;
         }
-        &:last-child {
-            /deep/ .el-input {
-                width: 162px;
-            }
-        }
         .branch-condition {
             /deep/ .el-input {
-                margin-left: 20px;
+                margin-left: -2px;
             }
         }
     }

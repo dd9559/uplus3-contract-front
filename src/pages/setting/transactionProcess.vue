@@ -32,17 +32,17 @@
           <span class="flow-name">({{flowName}})</span>
           <div class="manage-title">
             <label>结算百分比 : </label>
-            <el-input v-model="settlePercent"  @keyup.native="getInt"></el-input>%
+            <el-input v-model="settlePercent"  @keyup.native="getInt" size="small"></el-input>%
           </div>
           <div class="manage-list">
-            <el-table :data="manageData" height="400">
+            <el-table :data="manageData" max-height="400">
               <el-table-column align="center" type="index" label="序号"></el-table-column>
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
               <el-table-column align="center" label="步骤名称" prop="stepsName"></el-table-column>
               <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
               <el-table-column align="center" label="是否可以结算">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.isSettle" @change="isSettleChange(scope.$index,$event)">
+                  <el-select v-model="scope.row.isSettle" @change="isSettleChange(scope.$index,$event)" size="small">
                     <el-option v-for="item in isSettleOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-select>
                 </template>
@@ -63,7 +63,7 @@
         </el-dialog>
         <!-- 添加流程步骤 弹出框 -->
         <el-dialog title="添加流程步骤" :visible.sync="ProcessStepVisible" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
-          <el-table :data="StepsOption" border class="process-list" height="400">
+          <el-table :data="StepsOption" border class="process-list" max-height="400">
             <el-table-column label="步骤类型">
               <template slot-scope="scope">
                 <p>
@@ -545,9 +545,7 @@
       margin-bottom: 10px;
       .el-input {
         width: 90px;
-        height: 32px;
         margin-left: 5px;
-        /deep/ .el-input__inner {height: 32px; }
       }
     }
     .manage-list {
@@ -556,8 +554,6 @@
       }
       /deep/ .el-input {
         width: 94px;
-        height: 32px;
-        .el-input__inner { width: 100%; height: 32px; }
         .el-input__icon { line-height: 0; }
       }
     }
