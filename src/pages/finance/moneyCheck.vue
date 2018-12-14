@@ -142,14 +142,16 @@
             <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" :label="activeView===1?'收款人':'付款人'">
+        <el-table-column align="center" :label="activeView===1?'收款人':'付款人'" min-width="140">
           <template slot-scope="scope">
-            <span>{{scope.row.store}}-{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
+            <p>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</p>
+            <span>{{scope.row.store}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="当前审核人">
+        <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <span>{{scope.row.auditStore}}-{{scope.row.auditName}}</span>
+            <p>{{scope.row.auditName}}</p>
+            <span>{{scope.row.auditStore}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>

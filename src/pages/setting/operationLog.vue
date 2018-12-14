@@ -100,7 +100,6 @@
         },
         methods: {
             selUser(){
-                console.log(this.department,'进入seluser');
                 this.depUser=''
                 this.$ajax.get('/api/organize/employees',{depId:this.department}).then((res)=>{
                 console.log(res);

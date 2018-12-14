@@ -457,6 +457,7 @@
             this.companyForm.cityName = item.name
           }
         })
+        this.searchForm.storeId = ""
         this.companyForm.storeId = ""
       },
       storeSelect(val) {

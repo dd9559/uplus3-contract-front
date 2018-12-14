@@ -667,16 +667,16 @@
             </el-table-column>
             <!-- auditorDepartment -->
             <el-table-column
-              prop="auditorDepartment"
-              label="部门"
-              width="100"
+              prop="auditor"
+              label="姓名"
+              width="200"
             >
             </el-table-column>
             <!-- auditor -->
             <el-table-column
-              prop="auditor"
-              label="员工"
-              width="100"
+              prop="auditorDepartment"
+              label="职务"
+              width="120"
             >
             </el-table-column>
 
@@ -684,7 +684,7 @@
             <el-table-column
               prop="done"
               label="操作"
-              width="170"
+              width="150"
             >
               <template slot-scope="scope">
                 <div>
@@ -1257,8 +1257,8 @@ export default {
 
   //业绩详情弹框改变样式
   /deep/ .el-dialog.base-dialog {
-    max-width: 1000 !important;
-    margin: 13vh auto 0!important;
+    max-width: 1000px !important;
+    margin: 13vh auto 0 !important;
     overflow: auto;
     b {
       position: absolute;
@@ -1284,10 +1284,10 @@ export default {
         line-height: 0;
       }
     }
-    .ach-body {
+    /deep/ .ach-body {
       max-height: 500px;
       // background-color: pink;
-      padding: 0 20px;
+      padding: 0 20px !important;
       box-sizing: border-box;
       overflow-y: auto;
       /deep/ .el-table {
@@ -1342,19 +1342,22 @@ export default {
 .w430 {
   width: 430px;
 }
-/deep/ .sure-dialog{
+/deep/ .sure-dialog {
   width: 450px;
   height: 200px;
   overflow: hidden;
   // .el-table__header {
   //   padding-bottom: 60px;
   // }
-  .tips{
+  .tips {
     margin-left: 10px;
     font-size: 18px;
     padding-top: 20px;
     display: block;
     padding-bottom: 30px;
   }
+}
+ .el-dialog.base-dialog .ach-body {
+  padding: 0 20px;
 }
 </style>

@@ -267,7 +267,7 @@
             rowClick(row, event, column) {
                 this.bigName=row.name
                 var index=row.index
-                var top=137+index*47.4
+                var top=115+index*34.6
                 var sjx=document.getElementsByClassName('sjx')
                 var paperBtn=document.getElementsByClassName('paper-btn')
                 if(row.name=='代收代付'){
@@ -313,7 +313,7 @@
         > .sjx{
                 width:0;
                 right:-14px;
-                top: 137px;
+                top: 115px;
                 position: absolute;
                 border-width:7px;
                 border-style:solid;
