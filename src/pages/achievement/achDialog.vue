@@ -1634,9 +1634,9 @@ export default {
 //业绩详情弹框改变样式
 .dialog1 {
   /deep/ .el-dialog.base-dialog {
-    max-width: 1000 !important;
+    width: 820px !important;
     margin: 13vh auto 0 !important;
-   overflow: hidden;
+    overflow: hidden;
 
     /deep/ .el-input__suffix {
       right: 21px;
@@ -1759,7 +1759,7 @@ export default {
         width: 60%;
       }
       textarea {
-        width: 500px !important;
+        width: 350px !important;
       }
       .footer-btn-layout {
         height: 38px;
@@ -1823,5 +1823,8 @@ export default {
   .orange {
     color: #f56c6c;
   }
+}
+ /deep/ .el-dialog.base-dialog .ach-body {
+  padding: 0 20px !important;
 }
 </style>
