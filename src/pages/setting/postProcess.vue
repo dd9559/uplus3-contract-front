@@ -120,6 +120,9 @@
     }
   }
 }
+/deep/ .el-dialog__body {
+    padding-top: 20px;
+}
 /deep/ .el-table th {
   background:rgba(238,242,251,1);
 }

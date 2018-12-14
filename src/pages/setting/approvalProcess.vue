@@ -499,6 +499,7 @@
 @import "~@/assets/common.less";
 .content {
     display: flex;
+    flex-wrap: wrap;
     color: #6C7986;
     .input-group {
         margin-right: 20px;
@@ -508,14 +509,9 @@
         /deep/ .el-input {
             margin-left: -10px;
         }
-        &:last-child {
-            /deep/ .el-input {
-                width: 162px;
-            }
-        }
         .branch-condition {
             /deep/ .el-input {
-                margin-left: 20px;
+                margin-left: -2px;
             }
         }
     }
@@ -644,7 +640,7 @@
     border-bottom: 1px solid #EDECF0;
 }
 /deep/ .el-dialog__body {
-    padding-bottom: 0;
+    padding-top: 20px;
 }
 /deep/ .el-dialog__footer {
     padding-bottom: 34px;

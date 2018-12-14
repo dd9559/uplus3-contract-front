@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <el-dialog :title="title" :visible="getDialogVisible" @close='close' width="1000px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog :title="title" :visible="getDialogVisible" @close='close' :closeOnClickModal="$tool.closeOnClickModal">
       <!-- 选择房源弹窗 -->
       <div v-if="getDialogType==='house'" class="dataList" >
         <el-form :inline="true" :model="searchForm" class="search-form" size="mini" >
@@ -50,7 +50,7 @@
             </el-table-column>
             <el-table-column prop="PropertyNo" label="房源编号" width="150" ></el-table-column>
             <el-table-column prop="EstateName" label="楼盘名称" width="150" ></el-table-column>
-            <el-table-column label="状态" prop="RunningStatus" width="60" ></el-table-column>
+            <el-table-column label="状态" prop="LStatus" width="60" ></el-table-column>
             <el-table-column prop="FloorNum" label="楼层" width="80" ></el-table-column>
             <el-table-column prop="HouseType" label="房型" width="80" ></el-table-column>
             <el-table-column label="面积" width="70" >
@@ -616,6 +616,7 @@ export default {
   background: oldlace;
 }
 /deep/.el-dialog {
+  min-width: 1000px;
   .el-dialog__header {
     padding-top: 15px;
     padding-bottom: 15px;

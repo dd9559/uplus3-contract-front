@@ -126,7 +126,6 @@
                   <el-select
                     v-model="scope.row.isJob"
                     placeholder="请选择"
-                    @change="changeIsJob(scope.row.isJob,scope.$index,0)"
                   >
                     <el-option
                       v-for="item in dictionary['20']"
@@ -388,13 +387,12 @@
                   <el-select
                     v-model="scope.row.isJob"
                     placeholder="请选择"
-                    @change="changeIsJob(scope.row.isJob,scope.$index,1)"
                   >
                     <el-option
                       v-for="item in dictionary['20']"
                       :key="item.key"
                       :label="item.value"
-                      :value="{'label':item.value,'value':item.key}"
+                     :value="{'label':item.value,'value':item.key}"
                     ></el-option>
                   </el-select>
                 </template>
@@ -669,7 +667,7 @@
             custom-class="dialog2In"
             :close-on-click-modal="false"
           >
-            <h1>选择相关人员</h1>
+            <h1 style="font-size:16px;">选择相关人员</h1>
             <div class="mansList">
               <el-table
                 :data="mansList"
@@ -883,16 +881,6 @@ export default {
           this.clientArr[index].amaldarId = "";
           this.clientArr[index].shopkeeperId = "";
           this.clientArr[index].platformFeeRatio = "";
-        }
-      }
-    },
-    // 改变在职状态
-    changeIsJob(val, index, type) {
-      if (val) {
-        if (type == 0) {
-          this.houseArr[index].isJob = val.label;
-        } else {
-          this.clientArr[index].isJob = val.label;
         }
       }
     },
@@ -1163,7 +1151,7 @@ export default {
               this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
             } 
           }).catch(error => {
-               this.$message({message: error})
+               this.$message.error({message: error})
           });
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1248,7 +1236,7 @@ export default {
               this.$message.error(res.data.message);
             }
           }).catch(error => {
-               this.$message({message: error})
+               this.$message.error({message: error})
           });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1360,7 +1348,7 @@ export default {
             this.$message({ message: "操作成功", type: "success" });
           }
         }).catch(error => {
-               this.$message({message: error})
+               this.$message.error({message: error})
         });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1461,7 +1449,7 @@ export default {
             }
             this.$emit("close");
           }).catch(error => {
-               this.$message({message: error})
+               this.$message.error({message: error})
           });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1647,7 +1635,7 @@ export default {
 .dialog1 {
   /deep/ .el-dialog {
     max-width: 1000 !important;
-    height: 666px;
+    margin: 13vh auto 0 !important;
     overflow: auto;
 
     /deep/ .el-input__suffix {
@@ -1661,7 +1649,6 @@ export default {
     }
     .ach-header {
       min-height: 80px;
-      min-width: 100%;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;
       overflow: hidden;
@@ -1678,10 +1665,9 @@ export default {
       }
     }
     .ach-body {
-      min-height: 585px;
-      min-width: 1200;
+      max-height: 500px;
       // background-color: pink;
-      padding: 0 30px;
+      padding: 0 20px;
       box-sizing: border-box;
       overflow-y: auto;
       /deep/ .el-input__inner {
@@ -1833,6 +1819,9 @@ export default {
   }
   .input-ratio {
     color: #606266;
+  }
+  .orange {
+    color: #f56c6c;
   }
 }
 </style>

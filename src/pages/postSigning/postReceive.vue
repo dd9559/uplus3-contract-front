@@ -659,7 +659,7 @@
             },
             // 接收
             receiveBtnFn(){
-                let arr = [...this.dealTable.list];
+                let arr = [...this.dealTable];
                 let bool = true;
                 arr.map(e=>{
                     e.contractCode = this.receive.e.id;

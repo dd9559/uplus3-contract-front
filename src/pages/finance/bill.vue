@@ -155,7 +155,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款人">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}-{{scope.row.store}}</span>
+            <span>{{scope.row.store}}-{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -231,14 +231,14 @@
           </el-table-column>
           <el-table-column align="center" :label="layer.content[0].type===1?'付款方':'收款方'" prop="cityName" :formatter="nullFormatter">
             <template slot-scope="scope">
-              <span>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}-{{scope.row.store}}</span>
+              <span>{{scope.row.type===1?scope.row.outObjType.label:scope.row.inObjType.label}}-{{scope.row.type===1?scope.row.outObjName:scope.row.inObjName}}</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
-    <el-button size="small" round @click="layer.show = false">返 回</el-button>
-    <el-button size="small" round type="primary" @click="deleteBill">确 定</el-button>
+    <el-button size="small" class="btn-info" round @click="layer.show = false">返 回</el-button>
+    <el-button size="small" class="btn-info" round type="primary" @click="deleteBill">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -657,10 +657,9 @@
     }
   }
   .delete-dialog{
-    margin: 0 50px;
     >p{
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: @margin-10;
       font-size: @size-16;
     }
   }

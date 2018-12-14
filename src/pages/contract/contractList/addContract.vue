@@ -65,7 +65,7 @@
             <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
           <el-form-item label="物业地址：" :class="{'form-label':type===1}" style="width:605px;text-align:right">
-            <span class="propertyAddress" v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+'单元'+contractForm.houseInfo.RoomNo}}</span>
+            <span class="propertyAddress" v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}}</span>
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
           <br>
@@ -1054,50 +1054,30 @@ export default {
         if (res.status === 200) {
             this.options=res.data
             this.options_=res.data
-          // res.data.forEach(element => {
-          //   if (type === "house") {
-          //     this.options.push(element);
-          //   } else if (type === "guest") {
-          //     this.options_.push(element);
-          //   }
-          // });
         }
       });
     },
-    // remoteMethod(query) {
-    //   if (query !== "") {
-    //     this.loading = true;
-    //     this.getShopList(query,'house');
-    //   }
-    // },
-    // remoteMethod_(query) {
-    //   if (query !== "") {
-    //     this.loading = true;
-    //     this.getShopList(query,'guest');
-    //   }
-    // },
     getShop(id) {
       console.log(id);
-      // this.options.forEach(element => {
-      //   if(element.id===id){
-      //     this.contractForm.houseInfo.HouseStoreName=element.name
-      //   }
-      // });
       if(id){
-        let param = {
+        let param1 = {
           depId: id,
           type:1
         };
-        this.$ajax.get('/api/organize/dep/manager', param).then(res=>{
+        this.$ajax.get('/api/organize/dep/manager', param1).then(res=>{
           res=res.data  
           if(res.status===200){
             if(res.data){
               this.contractForm.houseInfo.ShopOwnerName=res.data.name;
               this.contractForm.houseInfo.ShopOwnerMobile=res.data.mobile;
             }else{
-              this.$message({
-                message:'该门店没有店长'
-              })
+              let param2 = {
+                depId: id,
+                type:2
+              }
+              // this.$message({
+              //   message:'该门店没有店长'
+              // })
             }
           }
         })
