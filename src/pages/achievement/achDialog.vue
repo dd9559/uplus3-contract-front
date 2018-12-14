@@ -93,7 +93,7 @@
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
               <el-table-column
                 label="经纪人"
-                width="140"
+                width="200"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -166,7 +166,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="150"
+                width="100"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -355,7 +355,7 @@
 
               <el-table-column
                 label="经纪人"
-                width="140"
+                width="200"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -427,7 +427,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="150"
+                width="100"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -533,10 +533,10 @@
                 width="170"
               >
                 <template slot-scope="scope">
-                  <el-radio-group v-model="scope.row.place">
-                    <el-radio :label="0">门店</el-radio>
-                    <el-radio :label="1">公司</el-radio>
-                  </el-radio-group>
+                    <el-radio-group v-model="scope.row.place">
+                         <el-radio :label="0">门店</el-radio>
+                         <el-radio :label="1">公司</el-radio>
+                    </el-radio-group>
                 </template>
               </el-table-column>
 
@@ -681,7 +681,7 @@
 
                 <el-table-column
                   label="经纪人"
-                  width="90"
+                  width="100"
                 >
                   <template slot-scope="scope">
                     <p>{{scope.row.assignor}}</p>
@@ -699,7 +699,7 @@
 
                 <el-table-column
                   label="角色类型"
-                  width="120"
+                  width="100"
                 >
                   <template slot-scope="scope">
                     <p>{{scope.row.roleName}}</p>
@@ -888,7 +888,7 @@ export default {
     getLevel(type) {
       return queryString => {
         let param = {
-          type: type,
+          // type: type,
           keyword: queryString
         };
         this.$ajax.get("/api/organize/deps", param).then(res => {
@@ -924,7 +924,7 @@ export default {
       return (queryString) => {
         let list = [{}];
         let param = {
-          "roleId": roleId,
+          // "roleId": roleId,
           "keyword": queryString
         };
         this.$ajax.get("/api/organize/employees", param).then(res => {
@@ -1759,7 +1759,7 @@ export default {
         width: 60%;
       }
       textarea {
-        width: 350px !important;
+        width: 400px !important;
       }
       .footer-btn-layout {
         height: 38px;

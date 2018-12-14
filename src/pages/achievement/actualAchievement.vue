@@ -667,16 +667,16 @@
             </el-table-column>
             <!-- auditorDepartment -->
             <el-table-column
-              prop="auditorDepartment"
-              label="部门"
-              width="100"
+              prop="auditor"
+              label="姓名"
+              width="200"
             >
             </el-table-column>
             <!-- auditor -->
             <el-table-column
-              prop="auditor"
-              label="员工"
-              width="100"
+              prop="auditorDepartment"
+              label="职务"
+              width="120"
             >
             </el-table-column>
 
@@ -684,7 +684,7 @@
             <el-table-column
               prop="done"
               label="操作"
-              width="170"
+              width="150"
             >
               <template slot-scope="scope">
                 <div>
