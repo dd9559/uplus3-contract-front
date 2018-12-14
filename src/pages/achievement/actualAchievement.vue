@@ -464,7 +464,7 @@
     <!-- 表单列表弹出框（业绩详情） -->
     <el-dialog
       :visible.sync="dialogVisible"
-      width="30%"
+       width="820px"
       :close-on-click-modal="false"
       custom-class="base-dialog"
     >
@@ -509,7 +509,7 @@
             <el-table-column
               prop="assignor"
               label="经纪人"
-              width="80"
+              width="100"
             >
             </el-table-column>
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
@@ -528,21 +528,21 @@
             <el-table-column
               prop="shopkeeper"
               label="店长"
-              width="80"
+              width="100"
             >
             </el-table-column>
             <!-- level4 -->
             <el-table-column
               prop="level4"
               label="单组"
-              width="120"
+              width="200"
             >
             </el-table-column>
             <!-- level3 -->
             <el-table-column
               prop="level3"
               label="门店"
-              width="110"
+              width="200"
             >
             </el-table-column>
 
@@ -550,7 +550,7 @@
             <el-table-column
               prop="amaldar"
               label="区经"
-              width="60"
+              width="100"
             >
             </el-table-column>
 
@@ -558,7 +558,7 @@
             <el-table-column
               prop="manager"
               label="区总"
-              width="60"
+              width="100"
             >
             </el-table-column>
           </el-table>
@@ -596,7 +596,7 @@
             <el-table-column
               prop="assignor"
               label="经纪人"
-              width="80"
+              width="100"
             >
             </el-table-column>
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
@@ -615,21 +615,21 @@
             <el-table-column
               prop="shopkeeper"
               label="店长"
-              width="80"
+              width="100"
             >
             </el-table-column>
             <!-- level4 -->
             <el-table-column
               prop="level4"
               label="单组"
-              width="120"
+              width="200"
             >
             </el-table-column>
             <!-- level3 -->
             <el-table-column
               prop="level3"
               label="门店"
-              width="110"
+              width="200"
             >
             </el-table-column>
 
@@ -637,7 +637,7 @@
             <el-table-column
               prop="amaldar"
               label="区经"
-              width="60"
+              width="100"
             >
             </el-table-column>
 
@@ -645,7 +645,7 @@
             <el-table-column
               prop="manager"
               label="区总"
-              width="60"
+              width="100"
             >
             </el-table-column>
           </el-table>
@@ -937,7 +937,7 @@ export default {
                this.selectAchList[this.statuIndex].achievementState=0;
             }
           }).catch(error => {
-               this.$message({message: error})
+               this.$message.error({message: error})
           })
        }
       // 撤回
@@ -956,7 +956,7 @@ export default {
                this.selectAchList[this.statuIndex].achievementState=-1;
             }
             }).catch(error => {
-                  this.$message({message: error})
+                  this.$message.error({message: error})
             })
        }
     },
@@ -1257,8 +1257,8 @@ export default {
 
   //业绩详情弹框改变样式
   /deep/ .el-dialog.base-dialog {
-    min-width: 856px;
-    height: 666px;
+    max-width: 1000 !important;
+    margin: 13vh auto 0!important;
     overflow: auto;
     b {
       position: absolute;
@@ -1285,10 +1285,9 @@ export default {
       }
     }
     .ach-body {
-      min-height: 585px;
-      min-width: 100%;
+      max-height: 500px;
       // background-color: pink;
-      padding: 0 30px;
+      padding: 0 20px;
       box-sizing: border-box;
       overflow-y: auto;
       /deep/ .el-table {
