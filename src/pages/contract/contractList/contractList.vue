@@ -87,7 +87,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
-          <el-dropdown placement="bottom"  @command="printCont">
+          <el-dropdown placement="bottom">  <!-- @command="printCont" -->
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -117,7 +117,7 @@
                 <!-- 风险单 -->
                 <i class="iconfont icon-tubiao_shiyong-1 risk" v-if="scope.row.isRisk"></i>
                 <!-- 代办 -->
-                <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i>
+                <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
                 <!-- 低佣 -->
                 <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===2"></i>
               </div>
@@ -196,11 +196,6 @@
               </el-popover>
             </span>
             <span v-else>-</span>
-            <!-- <span v-if="scope.row.remarksExamine">-</span>
-            <span v-else class="shell" @mouseover="moveIn()" @mouseout="moveOut()">
-              <span class="shellTitle">{{scope.row.remarksExamine}}</span>
-              <span v-if="showRemarks" class="shellContent">{{scope.row.remarksExamine}}</span>
-            </span> -->
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
@@ -282,6 +277,11 @@
         <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 打印 -->
+    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
+    <!-- <a :href="pdfUrl">hah</a> -->
+    <!-- <button @click="dayin"></button> -->
+
   </div>
 </template>
            
@@ -294,6 +294,7 @@ import changeCancel from "../contractDialog/changeCancel";
 import LayerLateProgress from '@/components/LayerLateProgress';
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
+import PdfPrint from '@/components/PdfPrint';
 
 export default {
   mixins: [MIXINS],
@@ -303,7 +304,8 @@ export default {
     layerAudit,
     layerSettle,
     changeCancel,
-    LayerLateProgress
+    LayerLateProgress,
+    PdfPrint
   },
   data() {
     return {
@@ -346,14 +348,21 @@ export default {
       housePurpose:[],
       isSubmitAudit:false,
       submitAuditData:{},
-      showRemarks:false,
+      blankPdf1:'',
+      blankPdf2:'',
+      blankPdf3:'',
+      blankPdf4:'',
+      blankPdf5:'',
+      pdfUrl:'',
+      haveUrl:false
     };
   },
   created() {
-    this.getContractList();
-    this.getDictionary();
-    this.getHousePurpose();
-    this.getDeps();
+    this.getContractList();//合同列表
+    this.getDictionary();//字典
+    this.getHousePurpose();//用途
+    this.getDeps();//部门
+    this.getBlankPdf();//空白合同pdf
   },
   methods: {
     //用途
@@ -672,18 +681,54 @@ export default {
       this.$refs.lateProgress.show(value);
     },
 
-    
+    // dayin(){
+    //   this.$refs.pdfPrint.print();
+    // },
     //打印空白合同
     printCont(command){
-      let param = {
-        type:command
-      };
-      this.$ajax.get('/api/setting/contractTemplate/getBlankPdf',param).then(res=>{
+      // console.log(command)
+      this.haveUrl=false;
+      if(command===1){
+        if(this.blankPdf1){
+          // this.getUrl(this.blankPdf1);
+          // this.pdfUrl='http://jjw-test.oss-cn-shenzhen.aliyuncs.com/template/20181213/1GxWuzL4B9yULfWKf7PEEB.pdf?Expires=1544701276&OSSAccessKeyId=LTAI699jkFRmo7TI&Signature=c05r185XfkRoz2yZJfGZgo%2F6gfU%3D'
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },3000)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }
+    },
+    //获取空白合同pdf
+    getBlankPdf(){
+      this.$ajax.get('/api/setting/contractTemplate/getBlankPdf').then(res=>{
         res=res.data;
         if(res.status===200){
-          let address = res.data;
-
+          if(res.data){
+            let addData = res.data;
+            addData.forEach(element => {
+              if(element.type.value===1){
+                this.blankPdf1=element.blankPdf;
+              }else if(element.type.value===2){
+                this.blankPdf2=element.blankPdf;
+              }else if(element.type.value===3){
+                this.blankPdf3=element.blankPdf;
+              }else if(element.type.value===4){
+                this.blankPdf4=element.blankPdf;
+              }else if(element.type.value===5){
+                this.blankPdf5=element.blankPdf;
+              }
+            });
+          }
         }
+      }).catch(error=>{
+        this.$message({
+          message:error
+        })
       })
     },
     //获取签名
@@ -691,7 +736,7 @@ export default {
       let param = {
         url:url
       }
-      this.$ajax.get("/api/load/generateAccessURLBatch",param).then(res=>{
+      this.$ajax.get("/api/load/generateAccessURL",param).then(res=>{
         res = res.data
         if(res.status ===200){
           this.pdfUrl = res.data.url;
