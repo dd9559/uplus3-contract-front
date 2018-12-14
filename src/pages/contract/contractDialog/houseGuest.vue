@@ -50,7 +50,7 @@
             </el-table-column>
             <el-table-column prop="PropertyNo" label="房源编号" width="150" ></el-table-column>
             <el-table-column prop="EstateName" label="楼盘名称" width="150" ></el-table-column>
-            <el-table-column label="状态" prop="RunningStatus" width="60" ></el-table-column>
+            <el-table-column label="状态" prop="LStatus" width="60" ></el-table-column>
             <el-table-column prop="FloorNum" label="楼层" width="80" ></el-table-column>
             <el-table-column prop="HouseType" label="房型" width="80" ></el-table-column>
             <el-table-column label="面积" width="70" >

@@ -58,20 +58,50 @@
         <el-table-column align="left" label="成交总价" prop="totalPrice" width="150">
         </el-table-column>
         <el-table-column align="left" label="成交经纪人" prop="dealAgentName" width="200">
-        </el-table-column>
-        <el-table-column align="left" label="合作门店" prop="store">
-        </el-table-column>
-        <el-table-column align="left" label="分账日期" width="150">
           <template slot-scope="scope">
-            <!-- {{scope.row.time.substr(0, 10)}} -->
-            {{scope.row.time}}
+            <p>{{scope.row.dealStoreName}}</p>
+            <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="本次实收分成（元）" prop="shishou">
+        <el-table-column align="left" label="合作门店">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.level4}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="业绩分成比例">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.ratio}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="特许服务费比例">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.platformRatio}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="特许服务费（元）">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.platform}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="分账时间" width="150">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.prorate|formatTime}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="当期实收分成（元）" prop="shishou">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.platform}}</p>
+          </template>
         </el-table-column>
         <el-table-column align="left" label="分账手续费（元）" prop="shouxufei">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.serviceFee}}</p>
+          </template>
         </el-table-column>
-        <el-table-column align="left" label="实际到账金额（元）" prop="daozhang">
+        <el-table-column align="left" label="实际到账金额（元）">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.storefrontReceipts}}</p>
+          </template>
         </el-table-column>
       </el-table>
       <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
