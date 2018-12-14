@@ -126,7 +126,6 @@
                   <el-select
                     v-model="scope.row.isJob"
                     placeholder="请选择"
-                    @change="changeIsJob(scope.row.isJob,scope.$index,0)"
                   >
                     <el-option
                       v-for="item in dictionary['20']"
@@ -388,13 +387,12 @@
                   <el-select
                     v-model="scope.row.isJob"
                     placeholder="请选择"
-                    @change="changeIsJob(scope.row.isJob,scope.$index,1)"
                   >
                     <el-option
                       v-for="item in dictionary['20']"
                       :key="item.key"
                       :label="item.value"
-                      :value="{'label':item.value,'value':item.key}"
+                     :value="{'label':item.value,'value':item.key}"
                     ></el-option>
                   </el-select>
                 </template>
@@ -883,16 +881,6 @@ export default {
           this.clientArr[index].amaldarId = "";
           this.clientArr[index].shopkeeperId = "";
           this.clientArr[index].platformFeeRatio = "";
-        }
-      }
-    },
-    // 改变在职状态
-    changeIsJob(val, index, type) {
-      if (val) {
-        if (type == 0) {
-          this.houseArr[index].isJob = val.label;
-        } else {
-          this.clientArr[index].isJob = val.label;
         }
       }
     },
