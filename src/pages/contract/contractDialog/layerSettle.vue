@@ -54,7 +54,7 @@
                             </li>
                             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                                    <div class="namePath" @click="getPicture(uploadList,index)">
+                                    <div class="namePath" @click="previewPhoto(uploadList,index)">
                                         <upload-cell :type="item.fileType"></upload-cell>
                                         <p>{{item.name}}</p>
                                     </div>
@@ -67,9 +67,10 @@
 
                 <!-- 审核备注 -->
                 <div class="audit-col bordernone">
-                    <div class="textareabox2">
+                    <div class="textareabox2 textlengthbox">
                         <span><em>*</em>结算备注</span>
-                        <el-input type="textarea" :rows="6" class="textarea" maxlength=200  v-model="auditForm.textarea" placeholder="请填写审核备注"></el-input>
+                        <el-input type="textarea" :rows="5" class="textarea" maxlength=200  v-model="auditForm.textarea" placeholder="请填写审核备注"></el-input>
+                        <span class="textLength">{{auditForm.textarea.length}}/200</span>
                     </div>
                 </div>
                     
@@ -80,7 +81,7 @@
                 <el-button type="primary"  @click="auditApply()" v-dbClick>提交审核</el-button>  
             </div> 
             <!-- 图片放大 -->
-            <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
+            <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
         </el-dialog>
     </div>
 </template>
@@ -126,8 +127,8 @@ export default {
                 textarea: '', //备注
             },
 
-            preview:false,
-            start:'',
+            // preview:false,
+            // start:'',
 
             //上传的协议
           uploadList: [],
@@ -153,15 +154,15 @@ export default {
     methods: {
 
         //图片预览
-        getPicture(value,index){
-            this.start=index;
-            let arr=[];
-            // console.log(value);
-            value.forEach(item =>{
-                arr.push(item.path)
-            })
-            this.fileSign(arr)
-        },
+        // getPicture(value,index){
+        //     this.start=index;
+        //     let arr=[];
+        //     // console.log(value);
+        //     value.forEach(item =>{
+        //         arr.push(item.path)
+        //     })
+        //     this.fileSign(arr)
+        // },
 
         //获取文件路径后缀名
         uploadSubject(data) {
@@ -488,6 +489,16 @@ export default {
             margin-top: 20px;
             font-size: 12px;
             color: #6C7986;
+        }
+        .textlengthbox{
+            position: relative;
+        }
+        .textLength{
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            color: #6C7986;
+            text-align: right;
         }
     }
 </style>

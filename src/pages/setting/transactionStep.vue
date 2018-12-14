@@ -571,7 +571,7 @@
 .data-list {
   margin-top: 12px;
   display: flex;
-  // height: calc(100% - 103px);
+  height: calc(100% - 103px);
   //步骤类型
   .stepsType {
     min-width: 29%;

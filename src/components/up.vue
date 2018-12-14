@@ -23,6 +23,10 @@
         default:function () {
           return []
         }
+      },
+      more:{
+        type:Boolean,
+        default:false
       }
     },
     data(){
@@ -39,8 +43,8 @@
         this.uploader = new plupload.Uploader({
           runtimes: 'html5,flash,silverlight,html4',
           browse_button: that.getId, //选择文件按钮
-          multi_selection: false,
-          drop_element:document.getElementById(this.getParentId),
+          multi_selection: that.more,
+          drop_element:document.getElementById(that.getParentId),
           flash_swf_url: 'lib/plupload-2.1.2/js/Moxie.swf',
           silverlight_xap_url: 'lib/plupload-2.1.2/js/Moxie.xap',
           url: 'http://oss.aliyuncs.com',
@@ -59,7 +63,7 @@
                   that.$message({
                     message:'上传文件格式不正确'
                   })
-                  that.uploader.splice(0,1)
+                  that.uploader.splice(0,up.files.length)
                 }
               }else {
                 that.up()
@@ -84,10 +88,11 @@
                   name:file.name
                 })
                 that.$emit('getUrl',{param:that.filePath,btnId:that.getId})
-                that.uploader.splice(0,1)
+                that.uploader.splice(0,up.files.length)
               }
             },
             Error: function(up, err) {
+              debugger
               if(err.code===-602){
                 that.$message({
                   message:`${err.file.name}已经上传`
@@ -134,7 +139,7 @@
             }
           }).catch(error=>{
             reject()
-            this.uploader.splice(0,1)
+            this.uploader.splice(0,this.uploader.files.length)
             this.$message({
               message:'网络异常，稍后再试'
             })

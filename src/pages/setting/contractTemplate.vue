@@ -39,7 +39,7 @@
       </el-table>
     </div>
     <!-- 上传,预览,详情弹出框 -->
-    <el-dialog class="modal" :closeOnClickModal="$tool.closeOnClickModal" :title='titleStr' :visible.sync="modal" >
+    <el-dialog class="modal"  :closeOnClickModal="$tool.closeOnClickModal" :title='titleStr' :visible.sync="modal" >
       <template v-if="template===1">
         <div class="">
           <div class="modal-context">
@@ -74,7 +74,7 @@
         </div>
       </template>
       <template v-if="template===3">
-        <el-table :data="rowData" class="contractType detail" ref='detail' @row-click="rowClick" :row-class-name='tableStyle' highlight-current-row >
+        <el-table max-height="452" :data="rowData" class="contractType detail" ref='detail' @row-click="rowClick" :row-class-name='tableStyle' highlight-current-row >
           <el-table-column align="center" min-width="100px" label="合同版本号" prop="version"
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="合同名称" prop="name"
@@ -510,6 +510,9 @@
 .wordtip{
   padding-left: 0 !important
 }
+/deep/ .el-dialog__body{
+    padding: 30px 20px !important
+  }
 
 
 /deep/ .detail tr.linestyle{

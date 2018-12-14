@@ -125,6 +125,13 @@
     }
   }
 
+  .three-row{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
   // 清除浮动
   .clearfix:after {
     content: " ";

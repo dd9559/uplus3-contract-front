@@ -144,8 +144,8 @@
         </el-table-column>
         <el-table-column align="left" label="成交经纪人" width="150 ">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentName}}</p>
             <p>{{scope.row.dealAgentStoreName}}</p>
+            <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
         <el-table-column align="left" label="签约日期" width="100">

@@ -95,7 +95,7 @@
                             </li>
                             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                                    <div class="namePath" @click="getPicture(uploadList,index)">
+                                    <div class="namePath" @click="previewPhoto(uploadList,index)">
                                         <upload-cell :type="item.fileType"></upload-cell>
                                         <p>{{item.name}}</p>
                                     </div>
@@ -122,7 +122,7 @@
                                     </li>
                                     <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                                         <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                                            <div class="namePath" @click="getPicture(item.value,index_)">
+                                            <div class="namePath" @click="previewPhoto(item.value,index_)">
                                                 <upload-cell :type="item_.fileType"></upload-cell>
                                                 <p>{{item_.name}}</p>                                              
                                             </div>
@@ -148,7 +148,7 @@
                                     
                                         <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                                             <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                                                <div class="namePath" @click="getPicture(item.value,index_)">
+                                                <div class="namePath" @click="previewPhoto(item.value,index_)">
                                                     <upload-cell :type="item_.fileType"></upload-cell>                                               
                                                     <p>{{item_.name}}</p>   
                                                 </div>
@@ -174,7 +174,7 @@
                                     </li>
                                     <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                                         <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                                            <div class="namePath" @click="getPicture(item.value,index_)">
+                                            <div class="namePath" @click="previewPhoto(item.value,index_)">
                                                 <upload-cell :type="item_.fileType"></upload-cell>
                                                 <p>{{item_.name}}</p>    
                                             </div>                                         
@@ -200,7 +200,7 @@
             </div>
             
             <!-- 图片放大 -->
-             <preview :imgList="previewFiles" :start="start" v-if="preview" @close="preview=false"></preview>
+             <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
         </div>
        
             
@@ -221,8 +221,8 @@ export default {
             name:'first',
             dialogImageUrl: '',
             dialogVisible: false,
-            preview:false,
-            start:'',
+            // preview:false,
+            // start:'',
             contState:'',
             detailData: {
                 signDate:'',
@@ -276,15 +276,15 @@ export default {
     
     methods: {
         //图片预览
-        getPicture(value,index){
-            this.start=index;
-            let arr=[];
-            // console.log(value);
-            value.forEach(item =>{
-                arr.push(item.path)
-            })
-            this.fileSign(arr)
-        },
+        // getPicture(value,index){
+        //     this.start=index;
+        //     let arr=[];
+        //     // console.log(value);
+        //     value.forEach(item =>{
+        //         arr.push(item.path)
+        //     })
+        //     this.fileSign(arr)
+        // },
 
         handleClick(tab, event) {
             this.name=tab.name;
@@ -447,13 +447,13 @@ export default {
                 break
                 }else if(uploadContData[i].isrequire&&uploadContData[i].value.length>0){
                 uploadContData[i].value.forEach(element => {
-                    delete element.fileType;
+                    // delete element.fileType;
                 });
                 arr_.push(uploadContData[i]);
                 isOk = true;
                 }else if(!uploadContData[i].isrequire&&uploadContData[i].value.length>0){
                 uploadContData[i].value.forEach(element => {
-                    delete element.fileType;
+                    // delete element.fileType;
                 });
                 arr_.push(uploadContData[i]);
                 isOk = true;

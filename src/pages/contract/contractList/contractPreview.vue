@@ -22,7 +22,6 @@
       </div>
       <div class="btn" v-else>
         <el-button type="primary" round style="width:100px" @click="toEdit">编 辑</el-button>
-        <el-button type="primary" round style="width:100px" @click="dialogInvalid = true">无 效</el-button>
       </div>
     </div>
     <div class="content">
