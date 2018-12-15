@@ -1358,6 +1358,9 @@ export default {
       padding-bottom: 30px;
     }
   }
+  .el-dialog__body{
+    padding: 0!important;
+  }
 }
 
 .el-dialog.base-dialog .ach-body {
