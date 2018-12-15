@@ -113,11 +113,11 @@
     transform: translate(-50%,-50%);
     margin: 0 !important;
   }*/
-  /*.el-dialog{
+  .el-dialog{
     .el-dialog__body{
       padding: 0 @margin-10;
     }
-  }*/
+  }
   .money-type-radio[role='radio']{
     display: flex;
     >span{
