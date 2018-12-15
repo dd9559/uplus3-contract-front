@@ -735,7 +735,7 @@
     ></achDialog>
 
     <!-- 撤回提审弹框 -->
-    <div>
+    <div class="sure-layout">
       <el-dialog
         :title="'操作-'+smallTips"
         :visible.sync="recallShow"
@@ -1342,22 +1342,25 @@ export default {
 .w430 {
   width: 430px;
 }
-/deep/ .sure-dialog {
-  width: 450px;
-  height: 200px;
-  overflow: hidden;
-  // .el-table__header {
-  //   padding-bottom: 60px;
-  // }
-  .tips {
-    margin-left: 10px;
-    font-size: 18px;
-    padding-top: 20px;
-    display: block;
-    padding-bottom: 30px;
+.sure-layout {
+  /deep/ .sure-dialog {
+    width: 450px;
+    height: 200px;
+    overflow: hidden;
+    // .el-table__header {
+    //   padding-bottom: 60px;
+    // }
+    .tips {
+      margin-left: 10px;
+      font-size: 18px;
+      padding-top: 20px;
+      display: block;
+      padding-bottom: 30px;
+    }
   }
 }
- .el-dialog.base-dialog .ach-body {
+
+.el-dialog.base-dialog .ach-body {
   padding: 0 20px;
 }
 </style>
