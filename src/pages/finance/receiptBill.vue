@@ -425,8 +425,8 @@
               proceedsType: res.data.type,
               id: res.data.id
             }
-            this.dep.id=res.data.deptId
-            this.dep.name=res.data.store
+            this.dep.id=res.data.inObjStoreId
+            this.dep.name=res.data.inObjStore
             this.getEmploye(res.data.deptId)
             if(res.data.filePath){
               this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
