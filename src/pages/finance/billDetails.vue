@@ -9,7 +9,7 @@
         </li>
       </ul>
       <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
-        <el-button class="btn-info" round size="small" type="primary" @click="showDialog" v-if="activeItem==='付款信息'||billMsg.auditButton">审核</el-button>
+        <el-button class="btn-info" round size="small" type="primary" @click="showDialog" v-if="billMsg.auditButton">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -296,7 +296,8 @@
       },
       //监听点击票据打印
       emitPaperSetFn:function () {
-
+        this.getData()
+        this.$refs.layerInvoice.propCloseFn()
       },
       //开票
       getPaper:function (type) {
