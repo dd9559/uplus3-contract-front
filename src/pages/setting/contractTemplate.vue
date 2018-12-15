@@ -511,7 +511,7 @@
   padding-left: 0 !important
 }
 /deep/ .el-dialog__body{
-    padding: 30px 20px !important
+    padding: 30px 20px;
   }
 
 

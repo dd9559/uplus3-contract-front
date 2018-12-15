@@ -188,6 +188,7 @@
                 let param={
                     id:row.id,
                     status:row.status,
+                    name:row.name,
                 }
                  this.statusOp(param,'转换成功')
             },
