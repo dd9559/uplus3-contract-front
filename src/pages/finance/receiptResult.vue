@@ -46,11 +46,11 @@
           </el-table-column>
         </el-table>
       </div>
-      <p class="tool-bar">
+      <p class="tool-bar" :class="[type!==1?'tool-bar-other':'']">
         <el-button round class="make-bill" type="primary" v-if="type===1" @click="toBill">开票</el-button>
         <el-button round @click="goBack('contractList')">返回合同列表</el-button>
         <el-button round @click="goBack('Bill')">返回收付款列表</el-button>
-        <span class="btn-question" @click="answer">支付遇到问题？</span>
+        <span class="btn-question" @click="answer" v-if="type===1">支付遇到问题？</span>
       </p>
     </div>
     <el-dialog
@@ -168,6 +168,9 @@
     position: relative;
     padding-right: 130px;
     white-space: nowrap;
+    &-other{
+      padding: 0;
+    }
     .btn-question {
       position: absolute;
       right: 0;

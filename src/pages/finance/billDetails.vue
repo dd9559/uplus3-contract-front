@@ -297,7 +297,7 @@
       //监听点击票据打印
       emitPaperSetFn:function () {
         this.getData()
-        this.$refs.layerInvoice.propCloseFn()
+        // this.$refs.layerInvoice.propCloseFn()
       },
       //开票
       getPaper:function (type) {

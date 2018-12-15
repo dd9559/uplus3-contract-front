@@ -415,7 +415,7 @@
       },
       emitPaperSetFn:function (payload) {
         this.getData()
-        this.$refs.layerInvoice.propCloseFn()
+        // this.$refs.layerInvoice.propCloseFn()
       },
       /**
        * 合同信息操作

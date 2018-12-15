@@ -92,12 +92,10 @@
               }
             },
             Error: function(up, err) {
-              debugger
-              if(err.code===-602){
-                that.$message({
-                  message:`${err.file.name}已经上传`
-                })
-              }
+              that.uploader.splice(0,up.files.length)
+              that.$message({
+                message:`上传失败，请稍后重试`
+              })
               // ...
             }
           }

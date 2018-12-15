@@ -213,7 +213,7 @@
       </ul>
     </div>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+      <el-button class="btn-info" round size="small" type="primary" v-dbClick @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -425,14 +425,17 @@
               proceedsType: res.data.type,
               id: res.data.id
             }
+            this.dep.id=res.data.deptId
+            this.dep.name=res.data.store
+            this.getEmploye(res.data.deptId)
             if(res.data.filePath){
               this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
             }
             this.imgList.forEach(item=>{
               this.files.push(`${item.path}?${item.name}`)
             })
-            this.cardList = res.data.account
-            if(res.data.inAccount&&res.data.inAccount.length>0){
+            this.cardList = res.data.account //刷卡补充
+            if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
               this.activeAdmin = res.data.inAccount[0].cardNumber
             }
             this.form = Object.assign({}, this.form, obj)
@@ -799,11 +802,13 @@
         }
       },
       userMsg:function (val) {
-        this.dep.id=val.depId
-        this.dep.name=val.depName
-        this.getEmploye(val.depId)
-        this.form.inObjId=val.empId
-        this.form.inObj=val.name
+        if(!this.$route.query.edit){
+          this.dep.id=val.depId
+          this.dep.name=val.depName
+          this.getEmploye(val.depId)
+          this.form.inObjId=val.empId
+          this.form.inObj=val.name
+        }
       }
     }
   }
