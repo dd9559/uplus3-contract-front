@@ -97,6 +97,7 @@
     },*/
     created(){
       this.Index=this.$store.state.path
+      // debugger
       this.activeIndex = this.Index[1].path.split('/')[1]
     },
     beforeRouteUpdate(to,from,next){
@@ -128,8 +129,7 @@
         this.$router.go(-1)
       },
       ...mapMutations([
-        'setPath',
-        'sliderRouter'
+        'setPath'
       ])
     },
   }
