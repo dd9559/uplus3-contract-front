@@ -121,10 +121,10 @@ export default{
             this.enableTemplateId=this.$route.query.enableTemplateId
         },
         mounted(){
-            this.divWidth=document.getElementsByClassName('listone')[0].offsetWidth
+            this.divWidth=622
             console.dir(document.getElementsByClassName('listone')[0])
             // console.log(document.getElementsByClassName('listone')[0].offsetWidth);
-            this.divHeight=1163
+            this.divHeight=802
             if(this.show==1){
                 
                this.getImgAdd(this.count)
@@ -139,7 +139,7 @@ export default{
                             this.showSed=true 
                             // console.log(this.$refs.bigbox);
                             // this.$refs.bigbox.$el.classList.add('bodycontainer')
-                            this.divWidth=this.divWidth/2
+                            this.divWidth=this.divWidth
                             this.sigtureShow=false
                             this.imgSrc=res.data.data.businessImg.url
                             this.imgSrc2=res.data.data.residenceImg.url
@@ -162,7 +162,7 @@ export default{
                             this.autograph(htImg,newsrc)
                             this.autograph(htImg2,newsrc2)
                      }else{
-                           this.divWidth=this.divWidth/2
+                           this.divWidth=this.divWidth
                            this.imgSrc=resadd.img.url
                            this.total=res.data.data.img.count
                            this.signPosition=res.data.data.signPosition
@@ -227,13 +227,13 @@ export default{
                             var t = ev.clientY-disY;
                             // this.divWidth=ev.target.parentNode.offsetWidth
                             // console.dir(oDiv.parentNode.children[2].offsetWidth,'oDiv');
-                            This.signPosition.x=(l/(oDiv.parentNode.offsetWidth)).toFixed(2)
-                            This.signPosition.y=(t/(This.divHeight)).toFixed(2)
+                            This.signPosition.x=(l/622).toFixed(2)
+                            This.signPosition.y=(t/802).toFixed(2)
                             console.log(This.signPosition,'sign');
-                            l > oDiv.parentNode.offsetWidth-100 ? l = oDiv.parentNode.offsetWidth-100 : l
+                            l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-100 : l
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
-                            t > oDiv.parentNode.offsetHeight-150 ? t = oDiv.parentNode.offsetWidth-150 : t
+                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-150 : t
                             console.log(l,t);
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
@@ -530,7 +530,8 @@ export default{
         // background-color: grey;
         margin: 0 auto;
         position: relative;
-        width: 50%;
+       width:622px;
+            height:802px;
         // padding: 20px 80px 20px 30px;
         img{
             width: 622px;
@@ -538,11 +539,10 @@ export default{
         .signature{
             position: absolute;
             background-color:rgba(110,0,0,0.5);
-            left:20px;
-            width: 100px;
-            height: 150px;
+            width: 130px;
+            left: 0;
+            height: 130px;
             top:0;
-           
         }
         > button{
             position: absolute;
@@ -606,11 +606,12 @@ export default{
     display: flex;
     width:100%;
     .ht-list{
-        flex: 1;
+        // flex: 1;
         // box-sizing: content-box;
-        width: 50%;
+        // width: 50%;
         img{
-            width:622px
+            width:622px;
+            height:802px;
         }
     }
 }
