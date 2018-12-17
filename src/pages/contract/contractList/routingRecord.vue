@@ -163,6 +163,7 @@ export default {
         res=res.data;
         if(res.status===200){
           this.tableData=res.data;
+
         }
       })
     },
@@ -174,8 +175,26 @@ export default {
       console.log(`当前页: ${val}`);
     },
     //合同详情
-    goContractDetail(item){
-      console.log('111')
+    goContractDetail(value){
+      // console.log('111')
+      if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
+        this.$router.push({
+          path: "/contractDetails",
+          query: {
+            id: value.contractId,//合同id
+            code: value.contractCode,//合同编号
+            contType: value.contType.value//合同类型
+          }
+        });
+      }else{
+        this.$router.push({
+        path: "/detailIntention",
+        query: {
+          id: value.contractId,
+          contType: value.contType.value
+        }
+      });
+      }
     },
     //获取当前部门
     getDeps(key){
@@ -232,6 +251,7 @@ export default {
   }
   .contCode{
     color: @color-blue;
+    cursor: pointer;
   }
 }
 /deep/.paper-box {
