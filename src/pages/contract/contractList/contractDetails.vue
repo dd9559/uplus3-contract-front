@@ -448,7 +448,7 @@
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
 
-    <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px">
+    <vue-easy-print tableShow ref="easyPrint" v-show="true" style="width:900px">
       <div class="printContent">
         <div class="printHeader">
           <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
@@ -509,17 +509,17 @@
             <p><span class="printTag">店 长：</span><span class="printTxt">{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
             <p><span class="printTag">手 机：</span><span class="printTxt">{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
           </div>
-          <div class="printItem" style="width:800px;margin-top:5px">
-            <el-table :data="ownerData" border header-row-class-name="theader-bg">
-              <el-table-column prop="name" label="业主姓名"></el-table-column>
-              <el-table-column prop="mobile" label="电话"></el-table-column>
-              <el-table-column prop="relation" label="关系"></el-table-column>
-              <el-table-column label="产权比" v-if="contType!='1'">
+          <div class="printItem printItem_" style="width:900px;margin-top:5px">
+            <el-table :data="ownerData" border header-row-class-name="theader-bg" style="width:100%">
+              <el-table-column prop="name" label="业主姓名" width="150"></el-table-column>
+              <el-table-column prop="mobile" label="电话" min-width="150"></el-table-column>
+              <el-table-column prop="relation" label="关系" width="120"></el-table-column>
+              <el-table-column label="产权比" v-if="contType!='1'" width="120">
                 <template slot-scope="scope">
                   {{scope.row.propertyRightRatio+'%'}}
                 </template>
               </el-table-column>
-              <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
+              <el-table-column prop="identifyCode" min-width="200" label="身份证号"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -537,10 +537,10 @@
               <p><span class="printTag">店 长：</span><span class="printTxt">{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
               <p><span class="printTag">手 机：</span><span class="printTxt">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
           </div>
-          <div class="printItem" style="width:800px;margin-top:5px;margin-bottom:5px">
-            <el-table :data="clientrData" border header-row-class-name="theader-bg" style="width:100%">
+          <div class="printItem" style="width:900px;margin-top:5px">
+            <el-table :data="clientrData" border header-row-class-name="theader-bg">
               <el-table-column prop="name" label="客户姓名" width="150"></el-table-column>
-              <el-table-column label="电话" width="150">
+              <el-table-column label="电话" min-width="150">
                 <template slot-scope="scope">
                   {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
                   <i class="iconfont tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
@@ -552,7 +552,7 @@
                   {{scope.row.propertyRightRatio+'%'}}
                 </template>
               </el-table-column>
-              <el-table-column prop="identifyCode" width="200" label="身份证号"></el-table-column>
+              <el-table-column prop="identifyCode" min-width="200" label="身份证号"></el-table-column>
             </el-table>
           </div>
         </div>

@@ -670,10 +670,24 @@ export default {
           message:'已结算完成，无需发起结算'
         })
       }else{
-        this.jiesuan=true;
-        this.settleId=item.id;
+        // this.jiesuan=true;
+        // this.settleId=item.id;
+        let param = {
+            id: item.id         
+          }
+        this.$ajax.get("/api/settlement/getSettlById", param).then(res => {
+          // console.log(res);
+          let data = res.data;
+          if (res.data.status === 200) {
+            this.jiesuan=true;
+            this.settleId=item.id;
+          }
+        }).catch(error => {
+          this.$message({
+            message: error
+          })
+        })
       }
-      
     },
     //关闭结算弹窗
     closeSettle(){
