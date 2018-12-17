@@ -203,7 +203,7 @@
           <div class="textareabox2 mt0 textlengthbox">
             <span><em>*</em>结算备注</span>
             <el-input type="textarea" :rows="5" class="textarea" maxlength=200 v-model="layerAudit.settlementRemarks" :disabled="true"></el-input>
-            <!-- <span class="textLength">{{}}/200</span> -->
+            <span class="textLength">{{this.settleMarks}}/200</span>
           </div>
         </div>
 
@@ -287,7 +287,7 @@
           <div class="textareabox2 mt0 textlengthbox">
             <span><em>*</em>结算备注</span>
             <el-input type="textarea" :rows="5" class="textarea" maxlength=200 v-model="layerAudit.settlementRemarks" :disabled="true"></el-input>
-            <!-- <span class="textLength">{{}}/200</span> -->
+            <span class="textLength">{{this.settleMarks}}/200</span>
           </div>
         </div>
 
@@ -356,6 +356,7 @@
         loading:false,
         loading2:false,
         loadingTable:false,
+        settleMarks: '',
         // settleMarks:'',
          adjustForm:{
           signDate: '', //发起日期
@@ -435,8 +436,8 @@
     },
 
     computed: {
-        // settleMarks(){
-        //   return this.layerAudit.examineRemarks.length;
+        // settlemark(){
+        //   return this.layerAudit.settlementRemarks.length;
         // }
     },
 
@@ -626,7 +627,7 @@
           if (res.data.status === 200) {        
              
             this.layerAudit = res.data.data.contractResult;
-            // this.settleMarks = res.data.data.examineRemarks.length;
+            this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
             this.myCheckId = res.data.data.contractResult.id; //结算id
             this.uploadList = res.data.data.contractResult.vouchers;
             this.checkInfo = res.data.data.examineDetails
@@ -648,9 +649,9 @@
         .then(res => {     
           if (res.data.status === 200) {
            this.layerAudit = res.data.data.contractResult;
-          //  this.settleMarks = res.data.data.examineRemarks.length;
-            this.myCheckId = res.data.data.contractResult.id; //结算id
-            this.uploadList = res.data.data.contractResult.vouchers;
+           this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
+           this.myCheckId = res.data.data.contractResult.id; //结算id
+           this.uploadList = res.data.data.contractResult.vouchers;
           }
         }).catch(error => {
             this.$message({
