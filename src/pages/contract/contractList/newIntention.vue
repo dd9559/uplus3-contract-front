@@ -70,7 +70,7 @@
 
                             <el-form-item label="业主信息：" class="disb" required>
                                 <el-form-item prop="ownname">
-                                    <el-input v-model="contractForm.ownname" @input="cutText('ownname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
+                                    <el-input v-model="contractForm.ownname" @input="cutText('ownname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false" maxlength=5></el-input>
                                 </el-form-item>
                                 <el-form-item prop="ownmobile">
                                     <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
@@ -103,7 +103,7 @@
                             </el-form-item>
                             <el-form-item label="客户信息：" class="disb" required>
                                 <el-form-item prop="custname">
-                                    <el-input v-model="contractForm.custname" @input="cutText('custname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
+                                    <el-input v-model="contractForm.custname" @input="cutText('custname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false" maxlength=5></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custmobile">
                                     <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
@@ -753,12 +753,7 @@ export default {
     }
 
 
-    if(this.$route.query.contType) {
-       if(this.$route.query.contType == 4 || this.$route.query.contType == 5){
-         
-        //  this.contractForm.type = this.$route.query.contType
-       }
-    }
+    
 
   }
 };
@@ -784,6 +779,7 @@ export default {
                 color: #233241;
                 font-size: 16px;
                 padding-top: 60px;
+                padding-bottom: 26px;
             }
             .el-dialog__footer{
                 text-align: center;
