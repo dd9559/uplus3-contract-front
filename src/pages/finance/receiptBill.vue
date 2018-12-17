@@ -15,7 +15,7 @@
       </div>
       <div class="input-group">
         <label class="form-label no-width f14">收款人:</label>
-        <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
+        <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
           <el-option class="drop-tree" value="">
             <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
           </el-option>
@@ -380,6 +380,11 @@
           arr.push(item.path)
         })
         this.fileSign(arr)
+      },
+      initDepList:function (val) {
+        if(!val){
+          this.remoteMethod()
+        }
       },
       //收款人下拉选项操作
       clearSelect:function (type='dep') {

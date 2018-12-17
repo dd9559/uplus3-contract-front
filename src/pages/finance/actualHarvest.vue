@@ -120,9 +120,14 @@
             {{scope.row.receivableCommission-scope.row.receivedCommission}}
           </template>
         </el-table-column>
-        <el-table-column align="center" min-width="160" label="操作时间" prop="operation time">
+        <el-table-column align="center" min-width="160" label="签约时间" prop="operation time">
           <template slot-scope="scope">
-            {{scope.row.signDate|formatTime}}
+            {{scope.row.signDate}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" min-width="160" label="收款时间" prop="operation time">
+          <template slot-scope="scope">
+            {{scope.row.lastCollectCommissionTime}}
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款状态" prop="receiveAmountState" :formatter="nullFormatter">
