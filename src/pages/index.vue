@@ -6,20 +6,26 @@
       </ul>
     </div>-->
     <div class="container">
-      <div class="slider">
+      <div class="slider" :class="[collapse?'collapse-off':'']">
         <el-menu
           :default-active="activeIndex"
           :unique-opened="true"
           class="el-menu-demo"
           :router="true"
+          :collapse="collapse"
+          :collapse-transition="false"
           @select="handleSelect"
           text-color="#333333"
           active-text-color="#478DE3">
           <el-submenu :index="item.path" v-for="item in views" :key="item.id">
-            <template slot="title">{{item.name}}</template>
+            <template slot="title">
+              <i class="iconfont" :class="item.icon"></i>
+              <span>{{item.name}}</span>
+            </template>
             <el-menu-item :index="grade.path" v-for="grade in item.child" :key="grade.name">{{grade.name}}</el-menu-item>
           </el-submenu>
         </el-menu>
+        <p class="slider-bar-control" @click="test"></p>
         <!--<ul>
           <li v-for="item in views">
             <span>{{item.name}}</span>
@@ -57,7 +63,8 @@
         activeIndex: '',
         views:this.$tool.routers,
         Index:[],
-        back:false
+        back:false,
+        collapse:true
       }
     },
     /*beforeRouteEnter(to,from,next){
@@ -106,6 +113,9 @@
       next()
     },
     methods: {
+      test:function () {
+        this.collapse=!this.collapse
+      },
       handleSelect(key, keyPath) {
         /*this.Index = []
         keyPath.forEach(item=>{
@@ -163,10 +173,27 @@
       right: 0;
       bottom: 0;
       .slider{
-        width: 160px;
+        max-width: 160px;
         border-right: 1px solid @border-e6;
+        position: relative;
         /deep/ .el-menu{
           border: 0px;
+        }
+        &.collapse-off{
+          /*width: 54px;*/
+        }
+        &-bar-control{
+          width: 56px;
+          height: 17px;
+          position: absolute;
+          right: -36px;
+          top: 50%;
+          transform: translateY(-50%) rotate(270deg);
+          margin-left: -28px;
+          z-index: 9;
+          background: url(.././assets/img/icon-dowm.png) no-repeat center center;
+          background-size: 56px auto;
+          cursor: pointer;
         }
       }
       /deep/ .page-view{
@@ -210,7 +237,7 @@
           }
         }
         &-content{
-          padding: 0px @margin-10;
+          padding: 0px @margin-15;
           position: absolute;
           top: 40px;
           right: 0;

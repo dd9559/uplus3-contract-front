@@ -47,7 +47,7 @@
             <el-table :data="tableData" style="width: 100%">
                 <el-table-column label="操作日期">
                     <template slot-scope="scope">
-                        {{scope.row.createTime | formatDate}}
+                        {{scope.row.createTime | formatTime}}
                     </template>
                 </el-table-column>
                 <el-table-column label="操作人">
@@ -55,8 +55,8 @@
                         <span>{{ scope.row.createByDepName }}+{{ scope.row.createByName }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="功能模块" prop="functionName"></el-table-column>
-                <el-table-column label="子类型" prop="type"></el-table-column>
+                <el-table-column label="功能模块" prop="objectType.label"></el-table-column>
+                <el-table-column label="子类型" prop="type.label"></el-table-column>
                 <el-table-column label="操作内容" prop="content"></el-table-column>
                 <el-table-column label="IP地址" prop="ip"></el-table-column>
             </el-table>
@@ -65,7 +65,7 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
-            :page-sizes="[1, 2, 3, 4]"
+            :page-sizes="[30, 40, 50, 60]"
             :page-size="pageSize"
             layout="prev, pager, next,  total, sizes, jumper"
             :total="total">
@@ -82,7 +82,7 @@
                 keyWord: "",
                 searchTime: '',
                 tableData: [],
-                pageSize: 3,
+                pageSize: 30,
                 pageNum: 1,
                 total:0,
                 departs:[],
