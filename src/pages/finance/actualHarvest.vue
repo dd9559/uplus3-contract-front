@@ -127,7 +127,7 @@
         </el-table-column>
         <el-table-column align="center" min-width="160" label="收款时间" prop="operation time">
           <template slot-scope="scope">
-            {{scope.row.lastCollectCommissionTime}}
+            {{scope.row.lastCollectCommissionTime|formatTime}}
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款状态" prop="receiveAmountState" :formatter="nullFormatter">

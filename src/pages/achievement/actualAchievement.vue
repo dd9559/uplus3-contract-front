@@ -500,8 +500,8 @@
             <!-- ratio -->
             <el-table-column
               prop="ratio"
-              label="分成比例"
-              width="80"
+              label="分成比例(%)"
+              width="100"
             >
             </el-table-column>
 
@@ -587,8 +587,8 @@
             <!-- ratio -->
             <el-table-column
               prop="ratio"
-              label="分成比例"
-              width="80"
+              label="分成比例(%)"
+              width="100"
             >
             </el-table-column>
 
