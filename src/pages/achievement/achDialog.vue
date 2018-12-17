@@ -150,6 +150,7 @@
                     reserve-keyword
                     :clearable="true"
                     placeholder="请输入内容"
+                    :loading="loading1"
                     :remote-method="getLevel(3)"
                     @change="changeLevel3(scope.row.level3,scope.$index,0,0)"
                   >
@@ -175,6 +176,7 @@
                     remote
                     reserve-keyword
                     :clearable="true"
+                    :loading="loading1"
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(2)"
                     @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,0)"
@@ -201,6 +203,7 @@
                     remote
                     reserve-keyword
                     :clearable="true"
+                    :loading="loading1"
                     placeholder="请输入内容"
                     :remote-method="getLevel(4)"
                     @change="changeLevel3(scope.row.level4,scope.$index,0,1)"
@@ -227,6 +230,7 @@
                     remote
                     reserve-keyword
                     :clearable="true"
+                    :loading="loading1"
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(1)"
                     @change="changeAmaldar(scope.row.amaldar,scope.$index,0)"
@@ -253,6 +257,7 @@
                     remote
                     reserve-keyword
                     :clearable="true"
+                    :loading="loading1"
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(0)"
                     @change="changeManager(scope.row.manager,scope.$index,0)"
@@ -411,6 +416,7 @@
                     reserve-keyword
                     :clearable="true"
                     placeholder="请输入内容"
+                    :loading="loading1"
                     :remote-method="getLevel(3)"
                     @change="changeLevel3(scope.row.level3,scope.$index,1,0)"
                   >
@@ -437,6 +443,7 @@
                     reserve-keyword
                     :clearable="true"
                     placeholder="请输入内容"
+                    :loading="loading1"
                     :remote-method="getShopInfo(2)"
                     @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,1)"
                   >
@@ -463,6 +470,7 @@
                     reserve-keyword
                     :clearable="true"
                     placeholder="请输入内容"
+                    :loading="loading1"
                     :remote-method="getLevel(4)"
                     @change="changeLevel3(scope.row.level4,scope.$index,1,1)"
                   >
@@ -489,6 +497,7 @@
                     reserve-keyword
                     :clearable="true"
                     placeholder="请输入内容"
+                    :loading="loading1"
                     :remote-method="getShopInfo(1)"
                     @change="changeAmaldar(scope.row.amaldar,scope.$index,1)"
                   >
@@ -515,6 +524,7 @@
                     reserve-keyword
                     :clearable="true"
                     placeholder="请输入内容"
+                    :loading="loading1"
                     :remote-method="getShopInfo(0)"
                     @change="changeManager(scope.row.manager,scope.$index,1)"
                   >
@@ -888,17 +898,24 @@ export default {
     // 获取门店，单组信息  type=3(门店)  type=4(单组)
     getLevel(type) {
       return queryString => {
-        let param = {
-          // type: type,
-          keyword: queryString
-        };
-        this.$ajax.get("/api/organize/deps", param).then(res => {
-          if (type == 3) {
-            this.level3s = res.data.data;
-          } else {
-            this.level4s = res.data.data;
-          }
-        });
+      if (queryString !== "") {
+          this.loading1 = true;
+           let param = {
+             // type: type,
+             keyword: queryString
+           };
+           this.$ajax.get("/api/organize/deps", param).then(res => {
+              if (res.status === 200) {  
+                 if (type == 3) {
+                   this.level3s = res.data.data;
+                 } else {
+                   this.level4s = res.data.data;
+                 }
+                 this.loading1 = false;
+              }
+           
+           });
+       }
       };
     },
     // 改变门店,单组
@@ -923,21 +940,24 @@ export default {
     // 获取店长，区经,区总
     getShopInfo(roleId){
       return (queryString) => {
-        let list = [{}];
-        let param = {
-          // "roleId": roleId,
-          "keyword": queryString
-        };
-        this.$ajax.get("/api/organize/employees", param).then(res => {
-         if(roleId==2){
-            this.shopkeepers = res.data.data;
-         }else if(roleId==1){
-            this.amaldars = res.data.data;
-         }else if(roleId==0){
-            this.managers = res.data.data;
-         }
-         
-        });
+       if (queryString !== "") {
+         this.loading1 = true;
+         let list = [{}];
+         let param = {
+           // "roleId": roleId,
+           "keyword": queryString
+         };
+         this.$ajax.get("/api/organize/employees", param).then(res => {
+          if(roleId==2){
+             this.shopkeepers = res.data.data;
+          }else if(roleId==1){
+             this.amaldars = res.data.data;
+          }else if(roleId==0){
+             this.managers = res.data.data;
+          }
+          this.loading1 = false;
+         });
+       } 
       };
     },
     // 改变店长

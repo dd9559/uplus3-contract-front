@@ -14,7 +14,6 @@
           </div>
           <img id='ht' src="" alt="">
           <div class='signature signatureone'  ref='dropBtn'  v-show='sigtureShow'>
-             
           </div>
       </div>
        <div class="ht-list listone" v-show='showSed' ref='htlist'>
@@ -26,7 +25,6 @@
           </div>
           <img id='ht2' src="" alt="">
           <div class='signature signaturetwo' ref='dropBtn' v-show='sigtureShow2'>
-             
           </div>
         </div>
       </div>
@@ -538,7 +536,8 @@ export default{
         }
         .signature{
             position: absolute;
-            background-color:rgba(110,0,0,0.5);
+            background-image: url('../../assets/img/seal.png');
+            background-size: 130px;
             width: 130px;
             left: 0;
             height: 130px;

@@ -905,7 +905,7 @@ export default {
         this.selectAchList[index].achievementState=2;
     },
     tishen(value,index){
-      this.smallTips="提审";
+         this.smallTips="提审";
          this.statuIndex=index;
          this.statuContId=value.id;
          this.statuType=0;
@@ -929,7 +929,7 @@ export default {
            status:0
          }
          this.$ajax
-          .post("/api/achievement/applyStatusArraign", param)
+          .postJSON("/api/achievement/applyStatusArraign", param)
           .then(res => {
             if (res.data.status == 200) {
                this.$message("操作完成");

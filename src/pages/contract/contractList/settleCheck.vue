@@ -550,7 +550,7 @@
                 name: "全部",
                 empId: ""
             }]
-            this.Form.getDepName = '全部'; 
+            this.Form.getDepName = ''; 
             this.getDepNameFn('');
         }
       },
