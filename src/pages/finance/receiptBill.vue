@@ -41,7 +41,7 @@
     </section>
     <div class="input-group">
       <p><label class="form-label f14">款类</label></p>
-      <ul class="money-type-list">
+      <ul class="money-type-list" v-if="moneyTypeOther.length>0">
         <li v-for="item in types" :key="item.id" :class="[activeType===item.id?'active':'']"
             @click="choseType(item)">{{item.name}}
         </li>
@@ -213,7 +213,7 @@
       </ul>
     </div>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" v-dbClick @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -336,7 +336,8 @@
         collapseMsg:{
           total:0,
           row:[]
-        }
+        },
+        fullscreenLoading:false,//提交表单防抖
       }
     },
     created() {
@@ -492,6 +493,7 @@
         })
       },
       goResult: function () {
+        this.fullscreenLoading=true
         let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
 
@@ -609,11 +611,16 @@
         if (type==='edit') {
             this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
               res=res.data
+              this.fullscreenLoading=false
               if(res.status===200){
-                this.$message({
-                  message:'修改成功'
+                this.$router.push({
+                  path: 'receiptResult',
+                  query:{
+                    type:this.activeType,
+                    content:JSON.stringify(res.data),
+                    edit:1
+                  }
                 })
-                this.$router.go(-1)
               }
             }).catch(error=>{
               this.$message({
@@ -623,6 +630,7 @@
           } else {
             this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
               res = res.data
+              this.fullscreenLoading=false
               if (res.status === 200) {
                 this.$router.push({
                   path: 'receiptResult',

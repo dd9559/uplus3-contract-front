@@ -78,7 +78,7 @@
 
               <!-- 分成比例保留小数点后一位有效数字 可输入,不可下拉-->
               <el-table-column
-                label="分成比例"
+                label="分成比例(%)"
                 width="100"
               >
                 <template slot-scope="scope">
@@ -167,7 +167,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="100"
+                width="130"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -346,7 +346,7 @@
               </el-table-column>
 
               <el-table-column
-                label="分成比例"
+                label="分成比例(%)"
                 width="100"
               >
                 <template slot-scope="scope">
@@ -433,7 +433,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="100"
+                width="130"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -816,7 +816,7 @@ export default {
         let param = {
           keyword: queryString
         };
-        this.$ajax.get("/api/organize/employee/agent", param).then(res => {
+        this.$ajax.get("/api/organize/employees", param).then(res => {
           console.log(res.status);
           if (res.status === 200) {
             console.log(res.data.data);
