@@ -116,6 +116,25 @@ const MIXINS = {
       }
     },
     /**
+     * 合同信息操作
+     * @param type
+     */
+    msgOpera:function ({contType,contId,contCode,operaType}) {
+      if(operaType==='cont'){
+        // this.setPath(this.getPath.concat({name:'合同详情'}))
+        this.setPath(this.getPath.concat({name:'合同详情'}))
+        this.$router.push({
+          path:contType===this.$tool.contType['4']||contType===this.$tool.contType['5']?'detailIntention':'contractDetails',
+          query:{
+            contType:contType,
+            id:contId,
+            code:contCode,
+            pageName:'合同详情'
+          }
+        })
+      }
+    },
+    /**
      * 获取签名
      */
     fileSign:function (arr,type) {

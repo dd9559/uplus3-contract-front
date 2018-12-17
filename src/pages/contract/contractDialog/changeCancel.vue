@@ -271,6 +271,10 @@ export default {
 					});
 					this.close();
 				}
+			}).catch(error=>{
+				this.$message({
+					message:error
+				})
 			})
 		},
 		//保存上传文件

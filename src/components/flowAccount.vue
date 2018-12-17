@@ -9,9 +9,9 @@
 					<el-table :data="gridData1" border :row-class-name="rowClass">
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
-						<el-table-column prop="pay" label="付款（元）">
+						<el-table-column label="付款（元）">
               <template slot-scope="scope">
-                {{scope.row.pay?scope.row.pay:0}}
+                {{scope.row.pay==="-0"?"0":scope.row.pay}}
               </template>
             </el-table-column>
 						<el-table-column prop="amount" label="金额（元）"></el-table-column>
@@ -22,7 +22,11 @@
 					<el-table :data="gridData2" border :row-class-name="rowClass">
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
-						<el-table-column prop="pay" label="付款（元）"></el-table-column>
+						<el-table-column label="付款（元）">
+              <template slot-scope="scope">
+                {{scope.row.pay==="-0"?"0":scope.row.pay}}
+              </template>
+            </el-table-column>
 						<el-table-column prop="amount" label="金额（元）"></el-table-column>
 					</el-table>
 				</el-tab-pane>
@@ -31,7 +35,11 @@
 					<el-table :data="gridData2" border :row-class-name="rowClass">
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
-						<el-table-column prop="pay" label="付款（元）"></el-table-column>
+						<el-table-column label="付款（元）">
+              <template slot-scope="scope">
+                {{scope.row.pay==="-0"?"0":scope.row.pay}}
+              </template>
+            </el-table-column>
 						<el-table-column prop="amount" label="金额（元）"></el-table-column>
 					</el-table>
 
@@ -49,7 +57,11 @@
             </el-table-column>
 						<el-table-column prop="obj" label="业务对象" width="50"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
-						<el-table-column prop="pay" label="付款（元）"></el-table-column>
+						<el-table-column label="付款（元）">
+              <template slot-scope="scope">
+                {{scope.row.pay==="-0"?"0":scope.row.pay}}
+              </template>
+            </el-table-column>
 						<el-table-column prop="amount" label="金额（元）"></el-table-column>
 						<el-table-column prop="checkStatus" label="审核状态" width="70"></el-table-column>
 					</el-table>
