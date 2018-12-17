@@ -50,7 +50,7 @@
     },
     mounted(){
       this.result=JSON.parse(this.$route.query.content)
-      this.edit = this.$route.query.edit==='1'?true:false
+      this.edit = parseInt(this.$route.query.edit)==='1'?true:false
       this.steps.find(item=>{
         if(!item.state){
           this.activeStep=item.index-1

@@ -86,7 +86,7 @@
     },
     created() {
       this.type = parseInt(this.$route.query.type)
-      this.edit = this.$route.query.edit==='1'?true:false
+      this.edit = parseInt(this.$route.query.edit)===1?true:false
       this.result = JSON.parse(this.$route.query.content)
     },
     methods: {
