@@ -384,7 +384,6 @@
         })
       },
       goResult:function () {
-        this.fullscreenLoading=true
         let param = Object.assign({},this.form)
         this.list[0].amount = param.smallAmount
         param.inAccount = [].concat(this.list)
@@ -404,6 +403,7 @@
               message:'付款凭证不能为空'
             })
           }else {
+            this.fullscreenLoading=true
             param.filePath = [].concat(this.files)
             if(this.$route.query.edit){
               delete param.contId
@@ -420,6 +420,7 @@
                   })
                 }
               }).catch(error=>{
+                this.fullscreenLoading=false
                 this.$message({
                   message:error
                 })
@@ -437,6 +438,7 @@
                   })
                 }
               }).catch(error=>{
+                this.fullscreenLoading=false
                 this.$message({
                   message:error
                 })

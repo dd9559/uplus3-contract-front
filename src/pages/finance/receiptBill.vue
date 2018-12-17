@@ -493,7 +493,6 @@
         })
       },
       goResult: function () {
-        this.fullscreenLoading=true
         let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
 
@@ -608,6 +607,7 @@
         })
       },
       getResult:function (param,type='add') {
+        this.fullscreenLoading=true
         if (type==='edit') {
             this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
               res=res.data
@@ -623,6 +623,7 @@
                 })
               }
             }).catch(error=>{
+              this.fullscreenLoading=false
               this.$message({
                 message:error
               })
@@ -641,6 +642,7 @@
                 })
               }
             }).catch(error=>{
+              this.fullscreenLoading=false
               this.$message({
                 message:error
               })
