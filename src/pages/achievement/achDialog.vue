@@ -888,17 +888,24 @@ export default {
     // 获取门店，单组信息  type=3(门店)  type=4(单组)
     getLevel(type) {
       return queryString => {
-        let param = {
-          // type: type,
-          keyword: queryString
-        };
-        this.$ajax.get("/api/organize/deps", param).then(res => {
-          if (type == 3) {
-            this.level3s = res.data.data;
-          } else {
-            this.level4s = res.data.data;
-          }
-        });
+      if (queryString !== "") {
+          this.loading1 = true;
+           let param = {
+             // type: type,
+             keyword: queryString
+           };
+           this.$ajax.get("/api/organize/deps", param).then(res => {
+              if (res.status === 200) {  
+                 if (type == 3) {
+                   this.level3s = res.data.data;
+                 } else {
+                   this.level4s = res.data.data;
+                 }
+                 this.loading1 = false;
+              }
+           
+           });
+       }
       };
     },
     // 改变门店,单组
