@@ -15,16 +15,12 @@
       </div>
       <div class="input-group">
         <label class="form-label no-width f14">收款人:</label>
-        <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading"
-                   :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')"
-                   v-model="dep.name" placeholder="请选择">
+        <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
           <el-option class="drop-tree" value="">
             <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
           </el-option>
         </el-select>
-        <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small"
-                   v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false"
-                   @change="getOption(form.inObjId,2)">
+        <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
           <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
           <el-option
             v-for="(item,index) in EmployeList"
@@ -56,9 +52,7 @@
         <el-table-column align="center" prop="pName" label="款类（大类）"></el-table-column>
         <el-table-column min-width="100" align="center" label="款类（小类）">
           <template slot-scope="scope">
-            <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key"
-                      @change="getType(scope.row)">{{scope.row.name}}
-            </el-radio>
+            <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row)">{{scope.row.name}}</el-radio>
             <!--<ul>
               <li v-for="item in scope.row.moneyTypes">
                 <el-radio class="money-type-radio" v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}
@@ -69,8 +63,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum(1)"
-                   v-if="form.moneyType===scope.row.key">
+            <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum(1)" v-if="form.moneyType===scope.row.key">
             <span v-else @click="getType(scope.row,'focus')">请输入</span>
             <!--<ul>
               <li v-for="(item,index) in scope.row.moneyTypes">
@@ -94,8 +87,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-table v-else-if="moneyTypeOther.length>0" class="collapse-cell" border :data="moneyTypeOther[0].moneyTypes"
-                :span-method="collapseRow"
+      <el-table v-else-if="moneyTypeOther.length>0" class="collapse-cell" border :data="moneyTypeOther[0].moneyTypes" :span-method="collapseRow"
                 style="width: 100%"
                 header-row-class-name="theader-bg" key="other">
         <el-table-column align="center" label="款类（大类）">
@@ -104,8 +96,7 @@
         <el-table-column min-width="100" align="center" label="款类（小类）">
           <template slot-scope="scope">
             <div class="box box-left">
-              <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key"
-                        @change="getType(scope.row,'other')">
+              <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">
                 {{scope.row.name}}
               </el-radio>
             </div>
@@ -114,8 +105,7 @@
         <el-table-column align="center" label="收款金额（元） ">
           <template slot-scope="scope">
             <div class="box">
-              <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)"
-                     v-model="form.smallAmount"
+              <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
                      v-if="form.moneyType===scope.row.key">
               <span v-else @click="getType(scope.row,'other')">请输入</span>
             </div>
@@ -170,8 +160,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入"
-                   @input="inputOnly(scope.$index)">
+            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="账户 ">
@@ -182,8 +171,7 @@
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.amount" class="no-style" @input="cutNum(scope.row,'amount')"
-                   placeholder="请输入">
+            <input type="text" v-model="scope.row.amount" class="no-style" @input="cutNum(scope.row,'amount')" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="订单编号">
@@ -193,8 +181,7 @@
         </el-table-column>
         <el-table-column align="center" label="手续费（元）">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.fee" class="no-style" @input="cutNum(scope.row,'fee')"
-                   placeholder="请输入">
+            <input type="text" v-model="scope.row.fee" class="no-style" @input="cutNum(scope.row,'fee')" placeholder="请输入">
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
@@ -218,8 +205,7 @@
             <span>点击上传</span>
           </file-up>
         </li>
-        <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"
-            @click="previewPhoto(imgList,index)">
+        <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"  @click="previewPhoto(imgList,index)">
           <upload-cell :type="item.type"></upload-cell>
           <span>{{item.name}}</span>
           <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
@@ -227,9 +213,7 @@
       </ul>
     </div>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" @click="goResult"
-                 v-loading.fullscreen.lock="fullscreenLoading">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}
-      </el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -239,55 +223,55 @@
 <script>
   import {MIXINS} from "@/assets/js/mixins";
 
-  const rule = {
-    outObj: {
-      name: '付款方'
+  const rule={
+    outObj:{
+      name:'付款方'
     },
-    inObj: {
-      name: '收款人',
+    inObj:{
+      name:'收款人',
     },
-    moneyType: {
-      name: '款类',
+    moneyType:{
+      name:'款类',
     },
-    smallAmount: {
-      name: '收款金额',
-      type: 'money'
+    smallAmount:{
+      name:'收款金额',
+      type:'money'
     }
   }
-  const otherRule = {
-    outObj: {
-      name: '付款方'
+  const otherRule={
+    outObj:{
+      name:'付款方'
     },
-    inObj: {
-      name: '收款人',
+    inObj:{
+      name:'收款人',
     },
-    moneyType: {
-      name: '款类',
+    moneyType:{
+      name:'款类',
     },
-    smallAmount: {
-      name: '收款金额',
-      type: 'money'
+    smallAmount:{
+      name:'收款金额',
+      type:'money'
     },
-    proceedsType: {
-      name: '收款方式'
+    proceedsType:{
+      name:'收款方式'
     },
-    userName: {
-      name: '户名'
+    userName:{
+      name:'户名'
     },
-    cardNumber: {
-      name: '账户'
+    cardNumber:{
+      name:'账户'
     },
-    bankName: {
-      name: '刷卡银行'
+    bankName:{
+      name:'刷卡银行'
     },
-    amount: {
-      name: '金额'
+    amount:{
+      name:'金额'
     },
-    orderNo: {
-      name: '订单号'
+    orderNo:{
+      name:'订单号'
     },
-    fee: {
-      name: '手续费'
+    fee:{
+      name:'手续费'
     }
   }
 
@@ -295,10 +279,10 @@
     mixins: [MIXINS],
     data() {
       return {
-        contId: '',
-        dep: {
-          id: '',
-          name: ''
+        contId:'',
+        dep:{
+          id:'',
+          name:''
         },
         form: {
           contId: '',
@@ -344,20 +328,20 @@
         account: [],
         dropdown: [],
         receiptMan: [],
-        files: [],
-        imgList: [],
-        activeLi: '',
-        employeInfo: true,
-        employePage: 1,
-        collapseMsg: {
-          total: 0,
-          row: []
+        files:[],
+        imgList:[],
+        activeLi:'',
+        employeInfo:true,
+        employePage:1,
+        collapseMsg:{
+          total:0,
+          row:[]
         },
-        fullscreenLoading: false,//提交表单防抖
+        fullscreenLoading:false,//提交表单防抖
       }
     },
     created() {
-      this.form.contId = this.$route.query.contId ? parseInt(this.$route.query.contId) : ''
+      this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
       this.getMoneyType()
       this.getDictionary()
       this.remoteMethod()
@@ -370,49 +354,49 @@
       if (type) {
         this.getDetails({type: type, payId: this.$route.query.id})
       }
-      if (inAccount) {
-        this.activeType = parseInt(inAccount) === 4 ? 2 : 1
+      if(inAccount){
+        this.activeType=parseInt(inAccount)===4?2:1
       }
     },
     methods: {
-      clearData: function () {
+      clearData:function () {
         this.$tool.clearForm(this.form)
-        this.cardList = []
-        this.files = []
-        this.imgList = []
+        this.cardList=[]
+        this.files=[]
+        this.imgList=[]
       },
-      cutNum: function (val, item) {
-        if (val === 1) {
-          this.form.smallAmount = this.$tool.cutFloat({val: this.form.smallAmount, max: 999999999.99})
-        } else {
-          val[item] = this.$tool.cutFloat({val: val[item], max: 999999999.99})
+      cutNum:function (val,item) {
+        if(val===1){
+          this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+        }else {
+          val[item]=this.$tool.cutFloat({val:val[item],max:999999999.99})
         }
       },
-      inputOnly: function (index) {
-        this.cardList[index].userName = this.$tool.textInput(this.cardList[index].userName)
+      inputOnly:function (index) {
+        this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
       },
-      getPicture: function () {
-        let arr = []
-        this.imgList.forEach(item => {
+      getPicture:function () {
+        let arr=[]
+        this.imgList.forEach(item=>{
           arr.push(item.path)
         })
         this.fileSign(arr)
       },
-      initDepList: function (val) {
-        if (!val) {
+      initDepList:function (val) {
+        if(!val){
           this.remoteMethod()
         }
       },
       //收款人下拉选项操作
-      clearSelect: function (type = 'dep') {
-        if (type === 'dep') {
-          this.dep.name = ''
-          this.EmployeList = []
-          this.form.inObjId = ''
-          this.form.inObj = ''
-          this.employePage = 1
-        } else {
-          this.form.inObj = ''
+      clearSelect:function (type='dep') {
+        if(type==='dep'){
+          this.dep.name=''
+          this.EmployeList=[]
+          this.form.inObjId=''
+          this.form.inObj=''
+          this.employePage=1
+        }else {
+          this.form.inObj=''
           /*this.employePage=1
           this.EmployeList=[]*/
         }
@@ -420,9 +404,9 @@
       handleNodeClick(data) {
         this.getEmploye(data.depId)
         this.clearSelect()
-        this.dep.id = data.depId
-        this.dep.name = data.name
-        if (data.subs.length === 0) {
+        this.dep.id=data.depId
+        this.dep.name=data.name
+        if(data.subs.length===0){
           this.$refs.tree.blur()
         }
       },
@@ -447,17 +431,17 @@
               proceedsType: res.data.type,
               id: res.data.id
             }
-            this.dep.id = res.data.inObjStoreId
-            this.dep.name = res.data.inObjStore
+            this.dep.id=res.data.inObjStoreId
+            this.dep.name=res.data.inObjStore
             this.getEmploye(res.data.deptId)
-            if (res.data.filePath) {
-              this.imgList = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+            if(res.data.filePath){
+              this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
             }
-            this.imgList.forEach(item => {
+            this.imgList.forEach(item=>{
               this.files.push(`${item.path}?${item.name}`)
             })
             this.cardList = res.data.account //刷卡补充
-            if (res.data.inAccount && res.data.inAccount.length > 0) { //收账账户
+            if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
               this.activeAdmin = res.data.inAccount[0].cardNumber
             }
             this.form = Object.assign({}, this.form, obj)
@@ -478,12 +462,12 @@
                 this.moneyTypeOther = res.data.splice(index, 1)
               }
             })
-            res.data.forEach(item => {
-              this.collapseMsg.total = this.collapseMsg.total + item.moneyTypes.length
+            res.data.forEach(item=>{
+              this.collapseMsg.total=this.collapseMsg.total+item.moneyTypes.length
               this.collapseMsg.row.push(item.moneyTypes.length)
-              item.moneyTypes.forEach(cell => {
-                cell.pId = item.id
-                cell.pName = item.name
+              item.moneyTypes.forEach(cell=>{
+                cell.pId=item.id
+                cell.pName=item.name
               })
               this.moneyType = this.moneyType.concat(item.moneyTypes)
             })
@@ -493,28 +477,28 @@
       /**
        * 获取上传文件
        */
-      getFiles: function (payload) {
-        this.files = this.files.concat(this.$tool.getFilePath(payload.param))
-        this.imgList = this.$tool.cutFilePath(this.files)
+      getFiles:function (payload) {
+        this.files=this.files.concat(this.$tool.getFilePath(payload.param))
+        this.imgList=this.$tool.cutFilePath(this.files)
       },
-      delFile: function () {
-        this.imgList.splice(this.activeLi, 1)
-        this.files.splice(this.activeLi, 1)
+      delFile:function () {
+        this.imgList.splice(this.activeLi,1)
+        this.files.splice(this.activeLi,1)
       },
-      goCancel: function () {
-        this.$confirm('是否取消当前操作', {closeOnClickModal: false}).then(() => {
+      goCancel:function () {
+        this.$confirm('是否取消当前操作',{closeOnClickModal:false}).then(()=>{
           this.$router.go(-1)
-        }).catch(() => {
+        }).catch(()=>{
 
         })
       },
       goResult: function () {
-        this.fullscreenLoading = true
-        let RULE = this.activeType === 1 ? rule : otherRule
+        this.fullscreenLoading=true
+        let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
 
-        param.outAccount = []
-        param.inAccount = []
+        param.outAccount=[]
+        param.inAccount=[]
         if (this.activeType === 2) {
           param.outAccount = [].concat(this.cardList)
           this.account.find(item => {
@@ -530,22 +514,22 @@
             }
           })
         }
-        this.$tool.checkForm(param, RULE).then(() => {
+        this.$tool.checkForm(param,RULE).then(()=>{
           // debugger
           let state = false
-          if (this.activeType === 2) {
-            if (param.inAccount.length === 0) {
+          if(this.activeType===2){
+            if(param.inAccount.length===0){
               this.$message({
-                message: '收账账户不能为空'
+                message:'收账账户不能为空'
               })
-            } else {
+            }else {
               // let state=false
-              let arr = []
-              let moneyArr = [] //刷卡资料补充,输入金额集合
-              let feeArr = [] //刷卡资料补充,输入手续费集合
+              let arr=[]
+              let moneyArr=[] //刷卡资料补充,输入金额集合
+              let feeArr=[] //刷卡资料补充,输入手续费集合
 
-              let count = 0
-              param.outAccount.find((item, index) => {
+              let count=0
+              param.outAccount.find((item,index)=>{
                 /*if(!state){
                   this.$tool.checkForm(item,RULE).then(()=>{
                     let count=0
@@ -577,75 +561,91 @@
                     })
                   })
                 }*/
-                count = count + parseFloat(item.amount)
+                count = count+parseFloat(item.amount)
                 moneyArr.push(item.amount)
                 feeArr.push(item.fee)
-                arr.push(this.$tool.checkForm(item, RULE))
+                arr.push(this.$tool.checkForm(item,RULE))
               })
-              Promise.all(arr).then(res => {
-                if (count !== parseFloat(this.form.smallAmount)) {
+              Promise.all(arr).then(res=>{
+                if(count!==parseFloat(this.form.smallAmount)){
                   this.$message({
-                    message: '刷卡金额要等于收款金额'
+                    message:'刷卡金额要等于收款金额'
                   })
                   return true
-                } else if (moneyArr.includes('0')) {
+                }else if(moneyArr.includes('0')){
                   this.$message({
-                    message: '输入金额必须大于0'
+                    message:'输入金额必须大于0'
                   })
                   return
-                } else if (feeArr.includes('0')) {
+                }else if(feeArr.includes('0')){
                   this.$message({
-                    message: '输入手续费必须大于0'
+                    message:'输入手续费必须大于0'
                   })
                   return
                 }
-                if (this.files.length === 0) {
+                if(this.files.length===0){
                   this.$message({
-                    message: '收款凭证不能为空'
+                    message:'收款凭证不能为空'
                   })
-                } else {
+                }else {
                   param.filePath = [].concat(this.files)
-                  this.getResult(param, this.$route.query.edit ? 'edit' : '')
+                  this.getResult(param,this.$route.query.edit?'edit':'')
                 }
-              }).catch(error => {
+              }).catch(error=>{
                 this.$message({
-                  message: error.title === '刷卡银行' ? '银行卡号输入有误' : `${error.title}${error.msg}`
+                  message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
                 })
               })
             }
           }
-          if (this.activeType === 1) {
-            this.getResult(param, this.$route.query.edit ? 'edit' : '')
+          if(this.activeType===1){
+            this.getResult(param,this.$route.query.edit?'edit':'')
           }
-        }).catch(error => {
+        }).catch(error=>{
           this.$message({
-            message: `${error.title}${error.msg}`
+            message:`${error.title}${error.msg}`
           })
         })
       },
-      getResult: function (param, type = 'add') {
-        let api = '/api/payInfo/saveProceeds'
-        if (type === 'edit') {
-          api = '/api/payInfo/updateProceedsInfo'
-        }
-        this.$ajax.postJSON(api, param).then(res => {
-          res = res.data
-          this.fullscreenLoading = false
-          if (res.status === 200) {
-            this.$router.push({
-              path: 'receiptResult',
-              query: {
-                type: this.activeType,
-                content: JSON.stringify(res.data),
-                edit:this.$route.query.edit?1:0
+      getResult:function (param,type='add') {
+        if (type==='edit') {
+            this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
+              res=res.data
+              this.fullscreenLoading=false
+              if(res.status===200){
+                this.$router.push({
+                  path: 'receiptResult',
+                  query:{
+                    type:this.activeType,
+                    content:JSON.stringify(res.data),
+                    edit:1
+                  }
+                })
               }
+            }).catch(error=>{
+              this.$message({
+                message:error
+              })
+            })
+          } else {
+            this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
+              res = res.data
+              this.fullscreenLoading=false
+              if (res.status === 200) {
+                this.$router.push({
+                  path: 'receiptResult',
+                  query:{
+                    type:this.activeType,
+                    content:JSON.stringify(res.data)
+                  }
+                })
+              }
+            }).catch(error=>{
+              this.$message({
+                message:error
+              })
             })
           }
-        }).catch(error => {
-          this.$message({
-            message: error
-          })
-        })
       },
       choseType: function (item) {
         let obj = {
@@ -656,24 +656,24 @@
         }
         // this.activeAdmin = ''
         this.activeType = item.id
-        this.form = Object.assign({}, this.form, obj)
+        this.form = Object.assign({},this.form,obj)
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
         // debugger
         if (this.activeType === 1) {
-          if (columnIndex >= 3) {
+          if(columnIndex >= 3){
             if (rowIndex === 0) {
               return [this.moneyType.length, 1]
             } else {
               return [0, 0]
             }
           }
-          if (columnIndex === 0) {
+          if(columnIndex===0){
             return this.$tool.collapseRow({
-              rowIndex: rowIndex,
-              rowTotal: this.collapseMsg.total,
-              collapse: this.collapseMsg.row
+              rowIndex:rowIndex,
+              rowTotal:this.collapseMsg.total,
+              collapse:this.collapseMsg.row
             })
           }
         }
@@ -745,7 +745,7 @@
       /**
        * 刷卡资料补充
        */
-      cardOpera: function (type, row, index) {
+      cardOpera: function (type, row,index) {
         if (type === 'add') {
           let cell = {
             bankName: '',
@@ -764,24 +764,24 @@
        * 根据卡号获取银行信息
        */
       getBank: function (row, index) {
-        row.cardNumber = this.$tool.numberInput(row.cardNumber)
+        row.cardNumber=this.$tool.numberInput(row.cardNumber)
         let param = {
           cardNumber: row.cardNumber
         }
-        if (param.cardNumber.length > 20) {
-          row.cardNumber = row.cardNumber.substr(0, 20)
+        if(param.cardNumber.length>20){
+          row.cardNumber = row.cardNumber.substr(0,20)
           return
         }
         if (param.cardNumber.length >= 16) {
           this.$ajax.get('/api/system/selectBankNameByCard', param).then(res => {
             res = res.data
             if (res.status === 200) {
-              this.cardList[index].bankName = res.data.bankName ? res.data.bankName : ''
+              this.cardList[index].bankName = res.data.bankName?res.data.bankName:''
             }
           })
         }
       },
-      getType: function (label, type = 'init', index) {
+      getType: function (label, type = 'init',index) {
         let obj = {
           /*moneyType: '',
           moneyTypePid: '',*/
@@ -789,21 +789,21 @@
           proceedsType: '',
         }
         this.activeAdmin = ''
-        this.form = Object.assign({}, this.form, obj)
-        if (type === 'init' || type === 'focus') {
+        this.form = Object.assign({},this.form,obj)
+        if (type === 'init'||type==='focus') {
           this.form.moneyTypePid = label.pId
-        } else if (type === 'other') {
-          this.form.moneyType = label.key
+        } else if(type==='other') {
+          this.form.moneyType=label.key
           this.form.moneyTypePid = this.moneyTypeOther[0].id
         }
-        if (type === 'focus') {
-          this.form.moneyType = label.key
+        if(type==='focus'){
+          this.form.moneyType=label.key
         }
       },
     },
-    watch: {
-      cardList: function (val) {
-        if (val.length === 0) {
+    watch:{
+      cardList:function (val) {
+        if(val.length===0){
           this.cardList.push({
             bankName: '',
             userName: '',
@@ -814,13 +814,13 @@
           })
         }
       },
-      userMsg: function (val) {
-        if (!this.$route.query.edit) {
-          this.dep.id = val.depId
-          this.dep.name = val.depName
+      userMsg:function (val) {
+        if(!this.$route.query.edit){
+          this.dep.id=val.depId
+          this.dep.name=val.depName
           this.getEmploye(val.depId)
-          this.form.inObjId = val.empId
-          this.form.inObj = val.name
+          this.form.inObjId=val.empId
+          this.form.inObj=val.name
         }
       }
     }
@@ -837,7 +837,7 @@
         padding: 0;
         .cell {
           padding: 0 @margin-10;
-          > input {
+          >input{
             text-align: center;
           }
           /*padding: 0;
@@ -977,7 +977,7 @@
       display: flex;
       flex-wrap: wrap;
       margin: @margin-base 0;
-      > li {
+      >li{
         border: 1px dashed @color-D6;
         width: 120px;
         height: 120px;
@@ -985,46 +985,46 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        > span {
+        >span{
           width: 100px;
           text-align: center;
           /*word-break: break-all;*/
           white-space: nowrap;
           overflow: hidden;
-          text-overflow: ellipsis;
+          text-overflow:ellipsis;
         }
-        &:first-of-type {
-          .iconfont {
+        &:first-of-type{
+          .iconfont{
             color: @bg-th;
             font-size: 58px;
             position: relative;
             display: flex;
             align-items: center;
-            &:before {
+            &:before{
 
             }
           }
         }
-        &:nth-of-type(n+1) {
+        &:nth-of-type(n+1){
           margin-right: @margin-base;
           position: relative;
-          > p {
+          >p{
             position: absolute;
             top: 0;
             right: 0;
             color: @color-red;
-            .iconfont {
+            .iconfont{
               font-size: 20px;
             }
           }
         }
       }
     }
-    .upload-text {
+    .upload-text{
       color: @color-99A;
       padding: @margin-base;
-      > span {
-        &:first-of-type {
+      >span{
+        &:first-of-type{
           color: @color-blue;
         }
       }
@@ -1050,8 +1050,8 @@
         }
       }
     }
-    > p {
-      &:last-of-type {
+    >p{
+      &:last-of-type{
         margin-top: @margin-15;
       }
     }

@@ -405,28 +405,43 @@
             })
           }else {
             param.filePath = [].concat(this.files)
-            let api='/api/payInfo/savePayment'
             if(this.$route.query.edit){
               delete param.contId
-              api='/api/payInfo/updatePayMentInfo'
-            }
-            this.$ajax.postJSON(api, param).then(res => {
-              res = res.data
-              this.fullscreenLoading=false
-              if (res.status === 200) {
-                this.$router.push({
-                  path: 'payResult',
-                  query:{
-                    content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):'',
-                    edit:this.$route.query.edit?1:0
-                  }
+              this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
+                res = res.data
+                this.fullscreenLoading=false
+                if (res.status === 200) {
+                  this.$router.push({
+                    path: 'payResult',
+                    query:{
+                      content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):'',
+                      edit:1
+                    }
+                  })
+                }
+              }).catch(error=>{
+                this.$message({
+                  message:error
                 })
-              }
-            }).catch(error=>{
-              this.$message({
-                message:error
               })
-            })
+            }else {
+              this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
+                res = res.data
+                this.fullscreenLoading=false
+                if (res.status === 200) {
+                  this.$router.push({
+                    path: 'payResult',
+                    query:{
+                      content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):''
+                    }
+                  })
+                }
+              }).catch(error=>{
+                this.$message({
+                  message:error
+                })
+              })
+            }
           }
         }).catch(error=>{
           this.$message({
