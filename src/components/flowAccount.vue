@@ -9,7 +9,11 @@
 					<el-table :data="gridData1" border :row-class-name="rowClass">
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
-						<el-table-column prop="pay" label="付款（元）"></el-table-column>
+						<el-table-column prop="pay" label="付款（元）">
+              <template slot-scope="scope">
+                {{scope.row.pay?scope.row.pay:0}}
+              </template>
+            </el-table-column>
 						<el-table-column prop="amount" label="金额（元）"></el-table-column>
 					</el-table>
 				</el-tab-pane>
@@ -121,6 +125,10 @@ export default {
     contCode: {
       type: String,
       default: ''
+    },
+    contId: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -215,7 +223,7 @@ export default {
 				})
 			}else if(tab.name==='sixth'){
 				let param = {
-          contractId: '2'
+          contractId: this.contId
 				};
 				this.$ajax.get("/api/flows/bill", param).then(res => {
 					 res = res.data;

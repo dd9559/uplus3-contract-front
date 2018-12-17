@@ -137,7 +137,7 @@
         </el-table-column>
         <el-table-column align="left" label="财务收付" width="100" fixed>
           <template slot-scope="scope">
-            <div class="btn" @click="runningWater(scope.row.code)">流水</div>
+            <div class="btn" @click="runningWater(scope.row)">流水</div>
             <div class="btn" @click="gathering(scope.row.id)">收款</div>
             <div class="btn" @click="payment(scope.row.id)">付款</div>
           </template>
@@ -260,7 +260,7 @@
       </el-pagination>
     </div>
     <!-- 流水明细弹框 -->
-    <flowAccount :dialogTableVisible="water" :contCode="contCode" @closeRunningWater="closeWater" v-if="water"></flowAccount>
+    <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterContId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 调佣弹框 -->
     <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
     <!-- 结算弹窗 -->
@@ -345,6 +345,7 @@ export default {
       settleId:'',
       //流水用合同编号
       contCode:'',
+      waterContId:'',
       housePurpose:[],
       isSubmitAudit:false,
       submitAuditData:{},
@@ -416,14 +417,16 @@ export default {
       this.getContractList();
     },
     //流水
-    runningWater(code) {
+    runningWater(item) {
       this.water = true;
-      this.contCode=code;
+      this.contCode=item.code;
+      this.waterContId=item.id;
     },
     //关闭流水弹窗
     closeWater() {
       this.water = false;
-      this.contCode=''
+      this.contCode='';
+      this.waterContId='';
     },
     //收款
     gathering(id) {

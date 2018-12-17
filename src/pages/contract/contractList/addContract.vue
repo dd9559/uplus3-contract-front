@@ -70,10 +70,14 @@
           </el-form-item>
           <br>
           <el-form-item label="建筑面积：" class="width-250">
-            <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input>
+            <!-- <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
+            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
+            <i class="yuan">㎡</i>
           </el-form-item>
           <el-form-item label="套内面积：" class="width-250">
-            <el-input v-model="contractForm.houseInfo.SquareUse" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input>
+            <!-- <el-input v-model="contractForm.houseInfo.SquareUse" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
+            <input type="text" v-model="contractForm.houseInfo.SquareUse" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
+            <i class="yuan">㎡</i>
           </el-form-item>
           <el-form-item label="房源方门店：" class="form-label" style="width:320px;text-align:right">
             <!-- <el-select v-model="contractForm.houseInfo.HouseStoreCode" :multiple='false' clearable filterable remote reserve-keyword @change="getShop" placeholder="部门" :remote-method="remoteMethod" :loading="loading">
@@ -1217,6 +1221,14 @@ export default {
       }else if(val==="otherCooperationCost"){
         this.$nextTick(()=>{
           this.contractForm.otherCooperationCost=this.$tool.cutFloat({val:this.contractForm.otherCooperationCost,max:999999999.99})
+        })
+      }else if(val==="Square"){
+        this.$nextTick(()=>{
+          this.contractForm.houseInfo.Square=this.$tool.cutFloat({val:this.contractForm.houseInfo.Square,max:999999999.99})
+        })
+      }else if(val==="SquareUse"){
+        this.$nextTick(()=>{
+          this.contractForm.houseInfo.SquareUse=this.$tool.cutFloat({val:this.contractForm.houseInfo.SquareUse,max:999999999.99})
         })
       }
     },

@@ -306,6 +306,10 @@
           moneyTypePid:this.form.moneyTypePid,
           moneyType:this.form.moneyType
         }
+        if(this.$route.query.edit){
+          param.payId=this.$route.query.id
+          param.flag=1
+        }
         this.$ajax.get('/api/payInfo/selectAvailableBalance',param).then(res=>{
           res=res.data
           if(res.status===200){
