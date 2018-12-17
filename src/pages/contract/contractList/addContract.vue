@@ -1224,11 +1224,11 @@ export default {
         })
       }else if(val==="Square"){
         this.$nextTick(()=>{
-          this.contractForm.houseInfo.Square=this.$tool.cutFloat({val:this.contractForm.houseInfo.Square,max:999999999.99})
+          this.contractForm.houseInfo.Square=this.$tool.cutFloat({val:this.contractForm.houseInfo.Square,max:999999.99})
         })
       }else if(val==="SquareUse"){
         this.$nextTick(()=>{
-          this.contractForm.houseInfo.SquareUse=this.$tool.cutFloat({val:this.contractForm.houseInfo.SquareUse,max:999999999.99})
+          this.contractForm.houseInfo.SquareUse=this.$tool.cutFloat({val:this.contractForm.houseInfo.SquareUse,max:999999.99})
         })
       }
     },

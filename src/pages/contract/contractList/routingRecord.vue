@@ -13,28 +13,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select
-            v-model="searchForm.dealAgentStoreId"
-            :multiple='false'
-            clearable
-            filterable
-            remote
-            reserve-keyword
-            @change="getBroker"
-            placeholder="部门"
-            :remote-method="remoteMethod"
-            :loading="loading">
-              <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                >
-              </el-option>
-            </el-select>
+          <el-select v-model="searchForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
+            <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchForm.dealAgentId" placeholder="请选择" style="width:100px">
+          <el-select v-model="searchForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
             <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
             </el-option>
           </el-select>
@@ -144,8 +129,9 @@ export default {
     };
   },
   created() {
-    this.getDictionary();
-    this.getProateNotes();
+    this.getDictionary();//字典
+    this.getProateNotes();//列表
+    this.getDeps();//部门
   },
   methods: {
     //获取分账记录列表
@@ -154,11 +140,11 @@ export default {
         pageNum:this.currentPage,
         pageSize:this.pageSize
       }
-      // param = Object.assign({}, param, this.searchForm);
-      // if (this.signDate.length > 0) {
-      //   param.startTime = this.signDate[0];
-      //   param.endTime = this.signDate[1];
-      // };
+      param = Object.assign({}, param, this.searchForm);
+      if (this.signDate.length > 0) {
+        param.startTime = this.signDate[0];
+        param.endTime = this.signDate[1];
+      };
       this.$ajax.get('/api/settlement/getProateNotes',param).then(res=>{
         res=res.data;
         if(res.status===200){
@@ -168,7 +154,9 @@ export default {
       })
     },
     // 查询
-    queryFn() {},
+    queryFn() {
+      this.getProateNotes();
+    },
     // 重置
     resetFormFn() {},
     handleCurrentChange(val) {
@@ -209,12 +197,11 @@ export default {
         }
       })
     },
-    remoteMethod(query){
-      if (query !== '') {
-        this.loading = true;
-        this.getDeps(query)
-      } else{
-
+    selectDep(value){
+      delete this.searchForm.dealAgentId;
+      this.brokersList=[];
+      if(value){
+        this.getBroker(value)
       }
     },
     getBroker(id){
