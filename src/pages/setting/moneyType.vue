@@ -33,7 +33,22 @@
             <el-table :data="moneyTypes">
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(小类)" prop="name"></el-table-column>
-                <el-table-column align="center" label="描述" prop="remark"></el-table-column>
+                <el-table-column align="center" label="描述" prop="remark">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.remark.length>24">
+                        <el-popover trigger="hover" width="160" placement="top">
+                            <div>
+                            {{scope.row.remark}}
+                            </div>
+                            <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remark.length<16}">
+                            {{scope.row.remark}}
+                            </div>
+                        </el-popover>
+                        </span>
+                        <span v-else-if="scope.row.remark.length>0">{{scope.row.remark}}</span>
+                        <span v-else>-</span>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" label="是否启用">
                     <template slot-scope="scope">
                         <div v-if="scope.row.status==0?true:scope.row.status==1?true:false">
@@ -172,7 +187,8 @@
                 console.log(row,'row');
                 let param={
                     id:row.id,
-                    status:row.status
+                    status:row.status,
+                    name:row.name,
                 }
                  this.statusOp(param,'转换成功')
             },
@@ -180,7 +196,8 @@
                 let status2 = row.status===false?1:0
                 let param={
                     id:row.id,
-                    status:status2
+                    status:status2,
+                    name:row.name
                 }
                 this.statusOp(param,'转换成功')
             },
@@ -252,7 +269,7 @@
                    }).catch(error=>{
                      this.$message({
                         type: 'error',
-                        message: '款类名称已经存在, 请重新输入!'
+                        message: error
                         })
                 })
             },
@@ -432,6 +449,22 @@
     color:#ACA899;
     border: 1px solid #DDD;
 }
+  .name-wrapper {
+    min-width: 80px;
+    max-height: 65px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    word-wrap:break-word;
+  }
+.isFlex{
+    display: flex;
+    align-items: center;
+  }
 .text-absolute {
       position: absolute;
       right: 4px;

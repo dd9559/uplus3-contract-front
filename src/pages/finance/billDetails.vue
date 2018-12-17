@@ -9,7 +9,7 @@
         </li>
       </ul>
       <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
-        <el-button class="btn-info" round size="small" type="primary" @click="showDialog" v-if="activeItem==='付款信息'||billMsg.audit&&billMsg.audit.auditResult!==100">审核</el-button>
+        <el-button class="btn-info" round size="small" type="primary" @click="showDialog" v-if="billMsg.auditButton">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -53,12 +53,12 @@
           </el-table-column>
           <el-table-column align="center" label="发起人" v-if="activeItem==='付款信息'">
             <template slot-scope="scope">
-              <span>{{billMsg.createByName}}-{{billMsg.store}}</span>
+              <span>{{billMsg.store}}-{{billMsg.createByName}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="收款人" v-else>
             <template slot-scope="scope">
-              <span>{{billMsg.inObjName}}-{{billMsg.store}}</span>
+              <span>{{billMsg.store}}-{{billMsg.inObjName}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="款类" v-if="activeItem==='付款信息'">
@@ -166,7 +166,19 @@
           <el-table-column align="center" prop="userName" label="姓名"></el-table-column>
           <el-table-column align="center" prop="roleName" label="职务"></el-table-column>
           <el-table-column align="center" prop="operate" label="操作"></el-table-column>
-          <el-table-column align="center" prop="auditInfo" label="备注"></el-table-column>
+          <el-table-column align="center" label="备注">
+            <template slot-scope="scope">
+              <el-popover
+                v-if="scope.row.auditInfo!=='-'"
+                placement="top-start"
+                width="200"
+                trigger="hover"
+                :content="scope.row.auditInfo">
+                <p class="three-row" slot="reference">{{scope.row.auditInfo}}</p>
+              </el-popover>
+              <span v-else>{{scope.row.auditInfo}}</span>
+            </template>
+          </el-table-column>
         </el-table>
         <!--<el-pagination
           v-if="checkList.length>1"
@@ -284,7 +296,8 @@
       },
       //监听点击票据打印
       emitPaperSetFn:function () {
-
+        this.getData()
+        // this.$refs.layerInvoice.propCloseFn()
       },
       //开票
       getPaper:function (type) {
@@ -387,6 +400,10 @@
               this.layer.show = false
             }
           }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
         })
       },
       secondCheck:function () {

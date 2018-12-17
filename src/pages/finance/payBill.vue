@@ -109,7 +109,7 @@
       <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
     </div>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" @click="goResult">提交付款申请</el-button>
+      <el-button class="btn-info" round size="small" type="primary" v-dbClick @click="goResult">提交付款申请</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -191,9 +191,11 @@
       if (type) {
         this.getDetails({type: type, payId: this.$route.query.id})
       }
-      console.log(this.$tool.repeatCell([1,2,3,4,2]))
     },
     methods:{
+      /**
+       * 户名输入，只能输入中文、英文
+       */
       inputOnly:function () {
         this.list[0].userName=this.$tool.textInput(this.list[0].userName)
       },
@@ -203,15 +205,9 @@
         this.files=[]
         this.imgList=[]
       },
+      //金额输入
       cutNum:function () {
         this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
-      },
-      getPicture:function () {
-        let arr=[]
-        this.imgList.forEach(item=>{
-          arr.push(item.path)
-        })
-        this.fileSign(arr)
       },
       /**
        * 修改款单，获取初始数据
@@ -293,6 +289,7 @@
           }
         })
       },
+      //款类选择
       getType:function (label,type,index) {
         this.showAmount=label.pName==='代收代付'?false:true
         if(type==='focus'){
@@ -386,7 +383,61 @@
         this.list[0].amount = param.smallAmount
         param.inAccount = [].concat(this.list)
 
-        this.$tool.checkForm(param,rule).then((res)=>{
+        let promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
+        console.log(promiseArr)
+
+        Promise.all(promiseArr).then(res=>{
+          if(param.smallAmount>this.amount.balance){
+            this.$message({
+              message:'输入金额不能大于可支配金额'
+            })
+            return
+          }
+          if(this.files.length===0){
+            this.$message({
+              message:'付款凭证不能为空'
+            })
+          }else {
+            param.filePath = [].concat(this.files)
+            if(this.$route.query.edit){
+              delete param.contId
+              this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
+                res = res.data
+                if (res.status === 200) {
+                  this.$message({
+                    message:'修改成功'
+                  })
+                  this.$router.go(-1)
+                }
+              }).catch(error=>{
+                this.$message({
+                  message:error
+                })
+              })
+            }else {
+              this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
+                res = res.data
+                if (res.status === 200) {
+                  this.$router.push({
+                    path: 'payResult',
+                    query:{
+                      content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):''
+                    }
+                  })
+                }
+              }).catch(error=>{
+                this.$message({
+                  message:error
+                })
+              })
+            }
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
+          })
+        })
+        /*this.$tool.checkForm(param,rule).then((res)=>{
           if(param.smallAmount>this.amount.balance){
             this.$message({
               message:'输入金额不能大于可支配金额'
@@ -442,7 +493,7 @@
           this.$message({
             message:`${error.title}${error.msg}`
           })
-        })
+        })*/
       }
     },
     watch:{

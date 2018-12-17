@@ -207,8 +207,7 @@ const MIXINS = {
         }
     },
     ...mapMutations([
-      'setPath',
-      'sliderRouter'
+      'setPath'
     ])
   },
   computed:{

@@ -155,8 +155,8 @@
         </el-table-column>
         <el-table-column align="center" label="收款人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</p>
             <span>{{scope.row.store}}</span>
+            <p>{{scope.row.type===1?scope.row.inObjName:scope.row.createByName}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -177,7 +177,7 @@
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="票据状态" prop="billStatus.label">
+        <el-table-column align="center" label="票据状态">
           <template slot-scope="scope">
             {{scope.row|billState}}
           </template>
@@ -391,8 +391,6 @@
           this.layer.show=true
           this.layer.content=[].concat(row)
         }else if(type===3){
-          /*this.paperShow=true
-          this.paperList(row.id)*/
           this.$refs.layerInvoice.show(row.id,true)
         }
       },
@@ -414,7 +412,8 @@
         })
       },
       emitPaperSetFn:function (payload) {
-
+        this.getData()
+        // this.$refs.layerInvoice.propCloseFn()
       },
       /**
        * 合同信息操作
@@ -444,66 +443,6 @@
           }
         })
       },
-      // 获取开票列表
-      paperList:function (id) {
-        this.$ajax.get('/api/bills/tobe',{id:id}).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.paperInfoData=Object.assign({},res.data)
-            let obj = JSON.parse(JSON.stringify(res.data))
-            this.moneyTypes=[].concat(obj.list)
-            this.moneyTypes.forEach((item,index)=>{
-              let obj = Object.assign({
-                check:true,
-                addressHidden:false,
-                project:''
-              },item)
-              this.moneyTypes.splice(index,1,obj)
-            })
-          }
-        })
-      },
-      billing:function () {
-        let param = this.moneyTypes[this.activeType]
-        let obj = {
-          createTime:'',
-          billCode:param.billCode,
-          hide:param.addressHidden,
-          amount:param.amount,
-          amountZh:param.amountZh,
-          createByName:this.paperInfoData.createBy,
-          remark:param.remark
-        }
-        this.dictionary['542'].find(item=>{
-          if(item.key===param.project){
-            obj.type=item.value
-          }
-        })
-        this.paperInfoData=Object.assign({},this.paperInfoData,obj)
-      },
-      // 票据详情 打印
-      printPaper() {
-        let type = this.moneyTypes[this.activeType]
-        let obj={
-          code:type.billCode,
-          payId:this.paperInfoData.payId,
-          payDetailsId:type.payDetailsId,
-          isHiddenAddress:type.addressHidden,
-          billType:type.project
-        }
-        this.$ajax.post('/api/bills/print',obj).then(res=>{
-          debugger
-        })
-      }
-    },
-    computed:{
-      getView:function () {
-        if(this.activeView===1){
-          return '收款ID'
-        }else {
-          return '付款ID'
-        }
-      }
     },
     filters:{
       zeroFormatter:function (val) {

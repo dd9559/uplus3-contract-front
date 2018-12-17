@@ -113,8 +113,10 @@
     transform: translate(-50%,-50%);
     margin: 0 !important;
   }*/
-  .el-dialog__body{
-    padding: 0 @margin-10;
+  .el-dialog{
+    .el-dialog__body{
+      padding: 0 @margin-10;
+    }
   }
   .money-type-radio[role='radio']{
     display: flex;
@@ -123,6 +125,13 @@
         white-space: normal;
       }
     }
+  }
+
+  .three-row{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
   }
 
   // 清除浮动
@@ -194,4 +203,8 @@
   .margin-right{
     margin-right: @margin-10;
   }
+  .wordp{
+    word-wrap: break-word;
+    word-break: normal;
+}
 </style>

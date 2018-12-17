@@ -39,6 +39,12 @@
 .fl{
     float: left;
 }
+.norwap{
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+
 
 // margin
 .mt-20 {
@@ -741,4 +747,11 @@
 }
 .fileUp{
     display: inline-block;
+}
+
+// 自适应高度
+.layer-scroll-auto{
+    /deep/.el-dialog{
+     margin-top: 80px !important; 
+    }
 }

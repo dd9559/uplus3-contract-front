@@ -370,7 +370,7 @@
                                 <el-button class="blue" type="text" @click="operationFn(scope.row.id)">查看</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.backlog">
-                                <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" @click="downFn(scope)">下</el-button>
+                                <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" v-if="scope.$index !== tableProgress.length-1" @click="downFn(scope)">下</el-button>
                             </template>
                             <template v-else-if="scope.row.stepState.value === OPERATION.sure">
                                 <el-button class="blue" type="text" @click="sureFn(scope.row.id)">确认</el-button>

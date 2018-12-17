@@ -93,7 +93,7 @@
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
               <el-table-column
                 label="经纪人"
-                width="140"
+                width="200"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -166,7 +166,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="150"
+                width="100"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -273,8 +273,8 @@
               >
                 <template slot-scope="scope">
                   <el-radio-group v-model="scope.row.place">
-                    <el-radio :label="0">门店</el-radio>
-                    <el-radio :label="1">公司</el-radio>
+                     <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,0)">门店</el-radio>
+                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)">公司</el-radio>
                   </el-radio-group>
                 </template>
               </el-table-column>
@@ -355,7 +355,7 @@
 
               <el-table-column
                 label="经纪人"
-                width="140"
+                width="200"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -427,7 +427,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="150"
+                width="100"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -533,10 +533,10 @@
                 width="170"
               >
                 <template slot-scope="scope">
-                  <el-radio-group v-model="scope.row.place">
-                    <el-radio :label="0">门店</el-radio>
-                    <el-radio :label="1">公司</el-radio>
-                  </el-radio-group>
+                    <el-radio-group v-model="scope.row.place">
+                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)">门店</el-radio>
+                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)">公司</el-radio>
+                    </el-radio-group>
                 </template>
               </el-table-column>
 
@@ -681,7 +681,7 @@
 
                 <el-table-column
                   label="经纪人"
-                  width="90"
+                  width="100"
                 >
                   <template slot-scope="scope">
                     <p>{{scope.row.assignor}}</p>
@@ -699,7 +699,7 @@
 
                 <el-table-column
                   label="角色类型"
-                  width="120"
+                  width="100"
                 >
                   <template slot-scope="scope">
                     <p>{{scope.row.roleName}}</p>
@@ -761,7 +761,8 @@ export default {
       shopkeepers:[],  //模糊搜索店长
       amaldars:[],   //模糊搜索区经
       managers:[],    //模糊搜索区总
-      loading1: false
+      loading1: false,
+      radioFlag:3
     };
   },
   created() {},
@@ -887,17 +888,24 @@ export default {
     // 获取门店，单组信息  type=3(门店)  type=4(单组)
     getLevel(type) {
       return queryString => {
-        let param = {
-          type: type,
-          keyword: queryString
-        };
-        this.$ajax.get("/api/organize/deps", param).then(res => {
-          if (type == 3) {
-            this.level3s = res.data.data;
-          } else {
-            this.level4s = res.data.data;
-          }
-        });
+      if (queryString !== "") {
+          this.loading1 = true;
+           let param = {
+             // type: type,
+             keyword: queryString
+           };
+           this.$ajax.get("/api/organize/deps", param).then(res => {
+              if (res.status === 200) {  
+                 if (type == 3) {
+                   this.level3s = res.data.data;
+                 } else {
+                   this.level4s = res.data.data;
+                 }
+                 this.loading1 = false;
+              }
+           
+           });
+       }
       };
     },
     // 改变门店,单组
@@ -924,7 +932,7 @@ export default {
       return (queryString) => {
         let list = [{}];
         let param = {
-          "roleId": roleId,
+          // "roleId": roleId,
           "keyword": queryString
         };
         this.$ajax.get("/api/organize/employees", param).then(res => {
@@ -1023,7 +1031,7 @@ export default {
         level3: "",
         level4: "",
         manager: "",
-        place: "",
+        place: -1,
         ratio: "",
         roleType: "",
         shopkeeper: "",
@@ -1050,7 +1058,7 @@ export default {
         level3: null,
         level4: "",
         manager: "",
-        place: "",
+        place: -1,
         ratio: "",
         roleType: "",
         shopkeeper: "",
@@ -1088,9 +1096,9 @@ export default {
         sumFlag = false;
       for (var i = 0; i < this.houseArr.length; i++) {
         let hRoleType = this.houseArr[i].roleType;
-        if (arr.indexOf(hRoleType) == -1) {
+        if (arr.indexOf(hRoleType) == -1&&this.houseArr[i].roleType!="") {
           arr.push(hRoleType);
-        } else {
+        } else if(hRoleType){
           roleFlag = false;
           this.$message.error("房源不可有重复角色类型");
           return false;
@@ -1099,9 +1107,9 @@ export default {
 
       for (var i = 0; i < this.clientArr.length; i++) {
         let cRoleType = this.clientArr[i].roleType;
-        if (arr.indexOf(cRoleType) == -1) {
+        if (arr.indexOf(cRoleType) == -1&&this.houseArr[i].roleType!="") {
           arr.push(cRoleType);
-        } else {
+        } else if(cRoleType){
           roleFlag = false;
           this.$message.error("客源不可有重复角色类型");
           return false;
@@ -1177,7 +1185,7 @@ export default {
         let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
-        } else {
+        } else if(hRoleType){
           roleFlag = false;
           this.$message.error("房源不可有重复角色类型");
           return false;
@@ -1188,7 +1196,7 @@ export default {
         let cRoleType = this.clientArr[i].roleType;
         if (arr.indexOf(cRoleType) == -1) {
           arr.push(cRoleType);
-        } else {
+        } else if(cRoleType){
           roleFlag = false;
           this.$message.error("客源不可有重复角色类型");
           return false;
@@ -1265,7 +1273,7 @@ export default {
         let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
-        } else {
+        } else if(hRoleType) {
           roleFlag = false;
           this.$message.error("房源不可有重复角色类型");
           return false;
@@ -1276,7 +1284,7 @@ export default {
         let cRoleType = this.clientArr[i].roleType;
         if (arr.indexOf(cRoleType) == -1) {
           arr.push(cRoleType);
-        } else {
+        } else if(cRoleType){
           roleFlag = false;
           this.$message.error("客源不可有重复角色类型");
           return false;
@@ -1369,7 +1377,7 @@ export default {
         let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
           arr.push(hRoleType);
-        } else {
+        } else if(hRoleType) {
           roleFlag = false;
           this.$message.error("房源不可有重复角色类型");
           return false;
@@ -1380,7 +1388,7 @@ export default {
         let cRoleType = this.clientArr[i].roleType;
         if (arr.indexOf(cRoleType) == -1) {
           arr.push(cRoleType);
-        } else {
+        } else if(cRoleType){
           roleFlag = false;
           this.$message.error("客源不可有重复角色类型");
           return false;
@@ -1526,6 +1534,17 @@ export default {
         this.clientArr = resultArr;
       }
       this.showTips = false;
+    },
+    selectRadio(index, event,type){
+      if(type==0){
+        if(event.target.checked){ 
+             this.houseArr[index].place = -1;
+        }
+      }else{
+         if(event.target.checked){ 
+             this.clientArr[index].place = -1;
+        }
+      }       
     }
   },
 
@@ -1580,57 +1599,57 @@ export default {
 </script>
 
 <style lang="less" scoped>
-     // 相关人员弹框
-    /deep/ .dialog2In {
-      width: 400px !important;
-      height: 400px !important;
-      background-color: #fff;
-      margin-top: 30vh !important;
-      overflow: auto;
-      .is-checked {
-        color: #478de3 !important;
-      }
-      /deep/ .el-dialog__header {
-        padding: 0 !important;
-      }
-      /deep/ .el-dialog__body {
-        padding: 0 !important;
-      }
-      h1 {
-        height: 53px;
-        line-height: 53px;
-        // font-size: 20px;
-        color: #233241;
-        padding-left: 20px;
-        box-sizing: border-box;
-        border-bottom: 1px solid #edecf0;
-        // /deep/ .delete {
-        //   color: #478de3 !important;
-        // }
-      }
-      .mansList {
-        margin-top: 25px;
-      }
-      /deep/ tr td:first-of-type,
-      th:first-of-type {
-        padding-left: 20px;
-      }
+// 相关人员弹框
+/deep/ .dialog2In {
+  width: 400px !important;
+  height: 400px !important;
+  background-color: #fff;
+  margin-top: 30vh !important;
+  overflow: auto;
+  .is-checked {
+    color: #478de3 !important;
+  }
+  /deep/ .el-dialog__header {
+    padding: 0 !important;
+  }
+  /deep/ .el-dialog__body {
+    padding: 0 !important;
+  }
+  h1 {
+    height: 53px;
+    line-height: 53px;
+    // font-size: 20px;
+    color: #233241;
+    padding-left: 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #edecf0;
+    // /deep/ .delete {
+    //   color: #478de3 !important;
+    // }
+  }
+  .mansList {
+    margin-top: 25px;
+  }
+  /deep/ tr td:first-of-type,
+  th:first-of-type {
+    padding-left: 20px;
+  }
 
-      .dialog2-btn {
-        margin-top: 40px;
-        margin-right: 20px;
-        button {
-          width: 100px;
-          height: 38px;
-          border-radius: 19px;
-        }
-        button:first-of-type {
-          background-color: #fff;
-          color: #000;
-          border: 1px solid #e8eaf6;
-        }
-      }
+  .dialog2-btn {
+    margin-top: 40px;
+    margin-right: 20px;
+    button {
+      width: 100px;
+      height: 38px;
+      border-radius: 19px;
     }
+    button:first-of-type {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #e8eaf6;
+    }
+  }
+}
 //业绩详情弹框改变样式
 .dialog1 {
   /deep/ .el-dialog.base-dialog {
@@ -1759,7 +1778,7 @@ export default {
         width: 60%;
       }
       textarea {
-        width: 350px !important;
+        width: 400px !important;
       }
       .footer-btn-layout {
         height: 38px;
@@ -1824,7 +1843,7 @@ export default {
     color: #f56c6c;
   }
 }
- /deep/ .el-dialog.base-dialog .ach-body {
+/deep/ .el-dialog.base-dialog .ach-body {
   padding: 0 20px !important;
 }
 </style>

@@ -63,7 +63,7 @@
                   that.$message({
                     message:'上传文件格式不正确'
                   })
-                  that.uploader.splice(0,1)
+                  that.uploader.splice(0,up.files.length)
                 }
               }else {
                 that.up()
@@ -88,15 +88,14 @@
                   name:file.name
                 })
                 that.$emit('getUrl',{param:that.filePath,btnId:that.getId})
-                that.uploader.splice(0,1)
+                that.uploader.splice(0,up.files.length)
               }
             },
             Error: function(up, err) {
-              if(err.code===-602){
-                that.$message({
-                  message:`${err.file.name}已经上传`
-                })
-              }
+              that.uploader.splice(0,up.files.length)
+              that.$message({
+                message:`上传失败，请稍后重试`
+              })
               // ...
             }
           }
@@ -138,7 +137,7 @@
             }
           }).catch(error=>{
             reject()
-            this.uploader.splice(0,1)
+            this.uploader.splice(0,this.uploader.files.length)
             this.$message({
               message:'网络异常，稍后再试'
             })

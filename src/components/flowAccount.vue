@@ -38,7 +38,11 @@
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="payCode" label="收付款编号"> </el-table-column>
 						<el-table-column prop="type" label="类型" width="50"></el-table-column>
-						<el-table-column prop="createTime" label="业务日期"></el-table-column>
+						<el-table-column label="业务日期">
+              <template slot-scope="scope">
+                {{scope.row.createTime|formatTime}}
+              </template>
+            </el-table-column>
 						<el-table-column prop="obj" label="业务对象" width="50"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
 						<el-table-column prop="pay" label="付款（元）"></el-table-column>
@@ -51,7 +55,11 @@
 					<el-table :data="gridData5" border>
 						<el-table-column prop="createByName" label="录入人"></el-table-column>
 						<el-table-column prop="deptName" label="录入门店"> </el-table-column>
-						<el-table-column prop="createTime" label="录入日期"></el-table-column>
+						<el-table-column label="录入日期">
+              <template slot-scope="scope">
+                {{scope.row.createTime|formatTime}}
+              </template>
+            </el-table-column>
 						<el-table-column prop="type" label="类型"></el-table-column>
 						<el-table-column prop="objType" label="业务对象"></el-table-column>
 						<el-table-column prop="moneyType" label="款类"></el-table-column>
@@ -64,7 +72,11 @@
 				<el-tab-pane label="票据" name="sixth">
 					<el-table :data="gridData6" border>
 						<el-table-column prop="moneyType" label="款类"></el-table-column>
-						<el-table-column prop="createTime" label="开票时间"> </el-table-column>
+						<el-table-column label="开票时间">
+              <template slot-scope="scope">
+                {{scope.row.createTime|formatTime}}
+              </template>
+            </el-table-column>
 						<el-table-column prop="amount" label="开票金额（元）"></el-table-column>
 						<el-table-column prop="code" label="票据号"></el-table-column>
 						<el-table-column prop="status" label="票据状态"></el-table-column>

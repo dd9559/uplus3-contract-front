@@ -12,10 +12,6 @@ const store = new Vuex.Store({
     setPath (state,payload) {
       localStorage.setItem('router',JSON.stringify(payload))
       state.path=payload
-    },
-    sliderRouter(state,payload){
-      localStorage.setItem('slider',payload)
-      state.slider=payload
     }
   },
   getters:{

@@ -285,7 +285,7 @@
 <script>
   import {MIXINS} from "@/assets/js/mixins";
   let checkPhoneVlidate = function (str) {
-    return /^1[34578]\d{9}$/.test(str)
+    return /^1[345789]\d{9}$/.test(str)
   }
   let checkIdVlidate = function (str) {
     return /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/.test(str)
@@ -457,6 +457,7 @@
             this.companyForm.cityName = item.name
           }
         })
+        this.searchForm.storeId = ""
         this.companyForm.storeId = ""
       },
       storeSelect(val) {

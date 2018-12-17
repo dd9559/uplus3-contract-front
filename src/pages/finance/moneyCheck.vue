@@ -144,24 +144,24 @@
         </el-table-column>
         <el-table-column align="center" :label="activeView===1?'收款人':'付款人'" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.type===1?scope.row.inObjName:scope.row.outObjName}}</p>
             <span>{{scope.row.store}}</span>
+            <p>{{scope.row.type===1?scope.row.inObjName:scope.row.createByName}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.auditName}}</p>
             <span>{{scope.row.auditStore}}</span>
+            <p>{{scope.row.auditName}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
         <!--<el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>-->
-        <el-table-column align="center" :label="activeView===1?'收付时间':'付款时间'" prop="createTime" :formatter="nullFormatter">
+        <el-table-column align="center" :label="activeView===1?'收付时间':'付款时间'" prop="createTime" :formatter="nullFormatter" min-width="140">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="入账时间" prop="toAccountTime" :formatter="nullFormatter" v-if="activeView===1">
+        <el-table-column align="center" label="入账时间" prop="toAccountTime" :formatter="nullFormatter" v-if="activeView===1" min-width="140">
           <template slot-scope="scope">
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
@@ -176,7 +176,7 @@
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
             <template v-if="scope.row.caozuo===1">
-              <el-button type="text" @click="cellOpera(scope.row)">审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
               <el-button type="text" @click="cellOpera(scope.row,'del')">作废</el-button>
             </template>
             <span v-else>--</span>

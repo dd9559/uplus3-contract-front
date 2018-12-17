@@ -17,61 +17,25 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="贷款银行" prop="paper">
-                    <el-select 
-                    v-model="propForm.paper" 
-                    class="w262"
-                    :remote-method="remoteMethodFn"
-                    remote 
-                    clearable
-                    filterable>
-                        <el-option 
-                        v-for="item in rules.paper" 
-                        :key="'bank'+item.bankId" 
-                        :label="item.bankName" 
-                        :value="item.id"></el-option>
+                    <el-select v-model="propForm.paper" class="w262" :remote-method="remoteMethodFn" remote clearable filterable>
+                        <el-option v-for="item in rules.paper" :key="'bank'+item.bankId" :label="item.bankName" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <div class="in-block">
                     <el-form-item label="部门" prop="region" class="mr">
-                        <el-select 
-                        v-model="propForm.region" 
-                        class="w200" 
-                        clearable
-                        :remote-method="regionMethodFn"
-                        :loading="loading"
-                        @change="regionChangeFn"
-                        @clear="regionClearFn"
-                        remote 
-                        filterable>
-                            <el-option 
-                            v-for="(item,index) in rules.region" 
-                            :key="'bk'+item.id + index" 
-                            :label="item.name" 
-                            :value="item.id"></el-option>
+                        <el-select v-model="propForm.region" class="w200" clearable :remote-method="regionMethodFn" :loading="loading" @change="regionChangeFn" @clear="regionClearFn" remote filterable>
+                            <el-option v-for="(item,index) in rules.region" :key="'bk'+item.id + index" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="regionName">
-                        <el-select 
-                        v-model="propForm.regionName" 
-                        class="w100" 
-                        :loading="loading2"
-                        clearable
-                        filterable>
-                            <el-option 
-                            v-for="item in rules.regionName" 
-                            :key="'bmName'+item.empId" 
-                            :label="item.name" 
-                            :value="item.empId"></el-option>
+                        <el-select v-model="propForm.regionName" class="w100" :loading="loading2" clearable filterable>
+                            <el-option v-for="item in rules.regionName" :key="'bmName'+item.empId" :label="item.name" :value="item.empId"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
                 <el-form-item label="后期状态" prop="late" class="mr">
                     <el-select v-model="propForm.late" class="w180">
-                        <el-option 
-                        v-for="item in rules.late" 
-                        :key="'state'+item.key" 
-                        :label="item.label" 
-                        :value="item.key"></el-option>
+                        <el-option v-for="item in rules.late" :key="'state'+item.key" :label="item.label" :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -81,10 +45,7 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
-            <el-table 
-            :data="tableData.list" 
-            v-loading="loadingList"
-            class="paper-table mt-20">
+            <el-table :data="tableData.list" v-loading="loadingList" class="paper-table mt-20">
                 <el-table-column :formatter="nullFormatterData" label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>
@@ -122,12 +83,7 @@
         </div>
         <!-- 分页 -->
         <div class="pagination" v-if="tableData.total">
-            <el-pagination
-                :current-page="tableData.pageNum"
-                :page-size="tableData.pageSize"
-                @current-change="currentChangeFn"
-                layout=" total, prev, next, jumper"
-                :total="tableData.total">
+            <el-pagination :current-page="tableData.pageNum" :page-size="tableData.pageSize" @current-change="currentChangeFn" layout=" total, prev, next, jumper" :total="tableData.total">
             </el-pagination>
         </div>
         <!-- 拒绝弹层 -->
@@ -148,128 +104,75 @@
             </span>
         </el-dialog>
         <!-- 接收弹层 -->
-        <el-dialog :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :title="receive.tit" :visible.sync="receive.show" width="1000px" :center="receive.center" class="layer-paper">
-            <div class="layer-receive-tab">
-                <el-tabs 
-                v-model="activeName" 
-                class="contract-tab">
-                    <el-tab-pane label="交易流程指派">
-                        <el-table 
-                        :data="dealTable" 
-                        border 
-                        v-loading="loadingdealTable"
-                        class="paper-table mt-20">
-                            <el-table-column :formatter="nullFormatterData" prop="transactionStepsType" align="center" label="步骤类型">
-                            </el-table-column>
-                            <el-table-column :formatter="nullFormatterData" prop="transactionSteps" align="center" label="步骤名称">
-                            </el-table-column>
-                            <el-table-column :formatter="nullFormatterData" prop="specifiedDay" align="center" label="计划天数">
-                            </el-table-column>
-                            <el-table-column :formatter="nullFormatterData" prop="a4" align="center" min-width="185" label="分配角色">
-                                <template slot-scope="scope">
-                                    <!-- @change="roleChangeFn(scope.$index,$event)"  -->
-                                    <el-select 
-                                    v-model="scope.row.roleId" 
-                                    placeholder="分配角色" 
-                                    filterable 
-                                    :loading="loading3"
-                                    :disabled="roleDisabledFn(scope.row)"
-                                    @change="roleChangeFn(scope.$index,$event)"
-                                    size="small" 
-                                    class="w185">
-                                        <el-option 
-                                        v-for="item in dealTableRule" 
-                                        :key="'fp'+item.key + scope.$index" 
-                                        :label="item.value" 
-                                        :value="item.key"></el-option>
-                                    </el-select>
-                                </template>
-                            </el-table-column>
-                            <el-table-column :formatter="nullFormatterData" align="center" min-width="185" label="责任人">
-                                <template slot-scope="scope">
-                                    <!-- @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)" -->
-                                    <el-select 
-                                    v-model="scope.row.personLiableCode" 
-                                    :disabled="roleDisabledFn(scope.row)"
-                                    v-loadmore="loadMoreFn"
-                                    placeholder="选择责任人" 
-                                    @focus="roleRemoteFn(scope.$index,scope.row.roleId)"
-                                    filterable
-                                    remote
-                                    :remote-method="roleRemoteMethodFn"
-                                    :loading="loading4"
-                                    @change="roleRemoteChangeFn($event,scope.$index)"
-                                    size="small" 
-                                    class="w185">
-                                        <el-option 
-                                        v-for="item in empRulesList(scope.row.rules)" 
-                                        :key="'zrr'+item.empId + scope.$index" 
-                                        :label="item.name" 
-                                        :value="item.empId"></el-option>
-                                    </el-select>
-                                </template>
-                            </el-table-column>
-                            <el-table-column :formatter="nullFormatterData" align="center" label="操作">
-                                <template slot-scope="scope">
-                                    <el-button 
-                                    :disabled="roleDisabledFn(scope.row)"
-                                    :class="!roleDisabledFn(scope.row)?'blue':''" 
-                                    @click="dittoFn(scope.$index,scope.row)"
-                                    type="text">同上</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <div class="receive-label" v-if="receive.refuseReasons">
-                            <span class="cl-1 mr-10">拒绝原因：</span>
-                            <div class="receive-txt">{{receive.refuseReasons}}</div>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane label="合同资料库">
-                        <div class="contract-box">
-                            <template v-if="ContractDatabase.length > 0">
-                                <div v-for="items in ContractDatabase" :key="items.kind">
-                                    <div class="contract-tit">{{items.kind}}</div>
-                                    <div class="contract-main" v-for="item in items.children" :key="item.title">
-                                        <p class="cl-1 mb-10"><span class="spna"><template v-if="item.isrequire">*</template></span>{{item.title}}</p>
-                                        <ul class="steps-img">
-                                            <li 
-                                            v-for="(ies,i) in item.value"
-                                            :key="ies.name"
-                                            @click="previewPhoto(item.value,i)"
-                                            >
-                                                <div class="img"><uploadCell :type="stepsTypeImg(ies.path)"></uploadCell></div>
-                                                <p class="p">{{ies.name}}</p>
-                                            </li>
-                                        </ul>
+        <el-dialog :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :title="receive.tit" :visible.sync="receive.show" width="1000px" :center="receive.center" class="layer-paper"><!--  layer-scroll-auto -->
+            <!-- <LayerScrollAuto> -->
+                <div class="layer-receive-tab">
+                    <el-tabs v-model="activeName" class="contract-tab">
+                        <el-tab-pane label="交易流程指派">
+                            <el-table :data="dealTable" border v-loading="loadingdealTable" class="paper-table mt-20">
+                                <el-table-column :formatter="nullFormatterData" prop="transactionStepsType" align="center" label="步骤类型">
+                                </el-table-column>
+                                <el-table-column :formatter="nullFormatterData" prop="transactionSteps" align="center" label="步骤名称">
+                                </el-table-column>
+                                <el-table-column :formatter="nullFormatterData" prop="specifiedDay" align="center" label="计划天数">
+                                </el-table-column>
+                                <el-table-column :formatter="nullFormatterData" prop="a4" align="center" min-width="185" label="分配角色">
+                                    <template slot-scope="scope">
+                                        <!-- @change="roleChangeFn(scope.$index,$event)"  -->
+                                        <el-select v-model="scope.row.roleId" placeholder="分配角色" filterable :loading="loading3" :disabled="roleDisabledFn(scope.row)" @change="roleChangeFn(scope.$index,$event)" size="small" class="w185">
+                                            <el-option v-for="item in dealTableRule" :key="'fp'+item.key + scope.$index" :label="item.value" :value="item.key"></el-option>
+                                        </el-select>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column :formatter="nullFormatterData" align="center" min-width="185" label="责任人">
+                                    <template slot-scope="scope">
+                                        <!-- @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)" -->
+                                        <el-select v-model="scope.row.personLiableCode" :disabled="roleDisabledFn(scope.row)" v-loadmore="loadMoreFn" placeholder="选择责任人" @focus="roleRemoteFn(scope.$index,scope.row.roleId)" filterable remote :remote-method="roleRemoteMethodFn" :loading="loading4" @change="roleRemoteChangeFn($event,scope.$index)" size="small" class="w185">
+                                            <el-option v-for="item in empRulesList(scope.row.rules)" :key="'zrr'+item.empId + scope.$index" :label="item.name" :value="item.empId"></el-option>
+                                        </el-select>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column :formatter="nullFormatterData" align="center" label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button :disabled="roleDisabledFn(scope.row)" :class="!roleDisabledFn(scope.row)?'blue':''" @click="dittoFn(scope.$index,scope.row)" type="text">同上</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <div class="receive-label" v-if="receive.refuseReasons">
+                                <span class="cl-1 mr-10">拒绝原因：</span>
+                                <div class="receive-txt">{{receive.refuseReasons}}</div>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane label="合同资料库">
+                            <div class="contract-box">
+                                <template v-if="ContractDatabase.length > 0">
+                                    <div v-for="items in ContractDatabase" :key="items.kind">
+                                        <div class="contract-tit">{{items.kind}}</div>
+                                        <div class="contract-main" v-for="item in items.children" :key="item.title">
+                                            <p class="cl-1 mb-10"><span class="spna"><template v-if="item.isrequire">*</template></span>{{item.title}}</p>
+                                            <ul class="steps-img">
+                                                <li v-for="(ies,i) in item.value" :key="ies.name" @click="previewPhoto(item.value,i)">
+                                                    <div class="img">
+                                                        <uploadCell :type="stepsTypeImg(ies.path)"></uploadCell>
+                                                    </div>
+                                                    <p class="p">{{ies.name}}</p>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                            </template>
-                            <div class="no-data-table" v-else>暂无数据</div>
-                        </div>
-                    </el-tab-pane>
-                </el-tabs>
-                <!-- 预览 -->
-                <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-            </div>
+                                </template>
+                                <div class="no-data-table" v-else>暂无数据</div>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+                    <!-- 预览 -->
+                    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+                </div>
+            <!-- </LayerScrollAuto> -->
             <span slot="footer">
-                <el-button 
-                class="paper-btn paper-btn-blue" 
-                type="primary" 
-                size="small" 
-                @click="saveBtnFn" 
-                round>保存</el-button>
-                <el-button 
-                class="paper-btn plain-btn-blue" 
-                size="small" 
-                v-show="receiveComFn(receive.receive,0)"
-                @click="receiveBtnFn" 
-                round>接收</el-button>
-                <el-button 
-                class="paper-btn plain-btn-red"
-                size="small" 
-                @click="refusedFn" 
-                v-show="receiveComFn(receive.receive,0)"
-                round>拒绝</el-button>
+                <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn" round>保存</el-button>
+                <el-button class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
+                <el-button class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button>
             </span>
         </el-dialog>
     </div>
@@ -277,31 +180,32 @@
 
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
-    import {FILTER} from '@/assets/js/filter';
-    import {MIXINS} from '@/assets/js/mixins';
-    import {TOOL} from '@/assets/js/common';
+    import { FILTER } from '@/assets/js/filter';
+    import { MIXINS } from '@/assets/js/mixins';
+    import { TOOL } from '@/assets/js/common';
+    import LayerScrollAuto from '@/components/LayerScrollAuto';
 
     const RECEIVE = {
-        receive:2,          //接收
-        haveReceive:3       //已接收
+        receive: 2, //接收
+        haveReceive: 3 //已接收
     }
 
     export default {
-        mixins: [FILTER,MIXINS],
+        mixins: [FILTER, MIXINS],
         data() {
             return {
                 // 列表数据
-                tableData:{},
+                tableData: {},
                 // 列表请求的页数
-                pageNum:1,
-                pageSize:10,
+                pageNum: 1,
+                pageSize: 10,
                 // 加载
-                loading:false,
-                loading2:false,
-                loading3:false,
-                loading4:false,
-                loadingList:false,
-                loadingdealTable:false,
+                loading: false,
+                loading2: false,
+                loading3: false,
+                loading4: false,
+                loadingList: false,
+                loadingdealTable: false,
                 // 筛选条件
                 propForm: {
                     region: '',
@@ -330,16 +234,16 @@
                         name: "全部",
                         id: ""
                     }],
-                    late:[{
-                        label:'全部',
-                        key:''
+                    late: [{
+                        label: '全部',
+                        key: ''
                     }]
                 },
                 // 搜索变量
-                employees:{
-                    keyword:'',
-                    roleId:0,
-                    index:0,
+                employees: {
+                    keyword: '',
+                    roleId: 0,
+                    index: 0,
                 },
                 // 搜索展示内容
                 restaurants: [{
@@ -364,9 +268,9 @@
                 activeName: '0',
                 // 交易流程 表格数据
                 dealTable: [],
-                dealTableRule:[],
+                dealTableRule: [],
                 // 合同资料库
-                ContractDatabase:[],
+                ContractDatabase: [],
             }
         },
         computed: {
@@ -374,85 +278,85 @@
                 return this.invalidInput.length
             },
             // 城市
-            cityId(){
-                if(!!this.userMsg){
+            cityId() {
+                if (!!this.userMsg) {
                     return this.userMsg.cityId
-                }else{
+                } else {
                     return ''
                 }
             }
         },
         methods: {
             // 图片格式状态判定
-            stepsTypeImg(type){
+            stepsTypeImg(type) {
                 return this.$tool.get_suffix(type)
             },
             // 成功提示
-            successMeFn(e){
+            successMeFn(e) {
                 this.$message({
                     message: e,
                     type: 'success'
                 });
             },
             // 错误提示
-            errMeFn(e){
+            errMeFn(e) {
                 this.$message.error(e);
             },
             // 接收状态显示
-            receiveComFn(state,bol){
-                if(bol){
-                    if(state === RECEIVE.receive){
+            receiveComFn(state, bol) {
+                if (bol) {
+                    if (state === RECEIVE.receive) {
                         return '接收'
-                    }else{
+                    } else {
                         return '已接收'
                     }
-                }else{
-                    if(state === RECEIVE.receive){
+                } else {
+                    if (state === RECEIVE.receive) {
                         return true
-                    }else{
+                    } else {
                         return false
                     }
                 }
-                
+
             },
             // 是否禁用下拉
-            roleDisabledFn(data){
+            roleDisabledFn(data) {
                 let OPERATION = this.$tool.OPERATION;
-                if(!data.stepState){
+                if (!data.stepState) {
                     return false
                 }
-                if(data.stepState.value === OPERATION.backlog || data.stepState.value === OPERATION.not){
+                if (data.stepState.value === OPERATION.backlog || data.stepState.value === OPERATION.not) {
                     return false
-                }else{
+                } else {
                     return true
                 }
             },
             // 开始状态接收
-            statusLaterStageFn(state){
-                if(state === RECEIVE.receive){
+            statusLaterStageFn(state) {
+                if (state === RECEIVE.receive) {
                     return '未开始'
-                }else{
+                } else {
                     return '已开始'
                 }
             },
             // 经纪人
-            agentFn(s,t){
-                if(!!s && !!t){
+            agentFn(s, t) {
+                if (!!s && !!t) {
                     return `${s}-${t}`
-                }else if(!!s){
+                } else if (!!s) {
                     return s
-                }else if(!!t){
+                } else if (!!t) {
                     return t
-                }else{
+                } else {
                     return '--'
                 }
             },
             // 时间处理
-            dateFormat(val){
+            dateFormat(val) {
                 return TOOL.dateFormat(val);
             },
             // 分页
-            currentChangeFn(e){
+            currentChangeFn(e) {
                 this.pageNum = e;
                 this.getListData();
             },
@@ -465,228 +369,228 @@
                     rabbet: true,
                     center: false,
                     footer: true,
-                    receive:e.statusLaterStage.value,
-                    refuseReasons:e.refuseReasons,
+                    receive: e.statusLaterStage.value,
+                    refuseReasons: e.refuseReasons,
                     e,
                 }
                 // 获取角色
                 this.loading4 = true;
-                this.$ajax.get("/api/roles").then(res=>{
+                this.$ajax.get("/api/roles").then(res => {
                     res = res.data;
-                    if(res.status === 200){
+                    if (res.status === 200) {
                         this.dealTableRule = [...res.data];
                     }
                     this.loading4 = false;
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                     this.loading4 = false;
                 })
                 // 获取列表数据
                 this.loadingdealTable = true;
-                this.$ajax.get('/api/postSigning/clickReceive',{
-                    contractCode:e.id,
-                    transFlowCode:e.transFlowCode
-                }).then(res=>{
+                this.$ajax.get('/api/postSigning/clickReceive', {
+                    contractCode: e.id,
+                    transFlowCode: e.transFlowCode
+                }).then(res => {
                     res = res.data
-                    if(res.status === 200){
+                    if (res.status === 200) {
                         let arr = [...res.data];
                         arr.map(e => {
                             e.rules = {};
-                           e.rules.list = [{
-                               empId:e.personLiableCode,
-                               name:e.personLiableName
-                           }]
-                        //    e.roleBool = true;
+                            e.rules.list = [{
+                                empId: e.personLiableCode,
+                                name: e.personLiableName
+                            }]
+                            //    e.roleBool = true;
                         })
                         this.dealTable = arr;
                         this.loadingdealTable = false;
                     }
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                     this.loadingdealTable = false;
                 })
                 // 合同资料库数据
-                this.$ajax.get("/api/postSigning/getDatabase",{
-                    contractCode:e.id
-                }).then(res=>{
+                this.$ajax.get("/api/postSigning/getDatabase", {
+                    contractCode: e.id
+                }).then(res => {
                     res = res.data;
-                    if(res.status === 200){
+                    if (res.status === 200) {
                         let arr = [];
-                        if(!!res.data){
+                        if (!!res.data) {
                             let j = JSON.parse(res.data.address)
                             arr = this.recursiveFn([...j]);
                         }
                         this.ContractDatabase = arr;
                     }
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                 })
             },
-            recursiveFn(n,arr=[]){
-                if(n.length === 0){
+            recursiveFn(n, arr = []) {
+                if (n.length === 0) {
                     return arr
                 }
                 let bool = n[0].kind;
                 let children = [];
                 let num = 0;
                 let arr2 = [...n];
-                arr2.map((e,i)=>{
-                    if(e.kind === bool){
+                arr2.map((e, i) => {
+                    if (e.kind === bool) {
                         children.push(e);
-                        n.splice(i-num,1);
+                        n.splice(i - num, 1);
                         num++;
                     }
                 })
                 arr.push({
-                    kind:bool,
+                    kind: bool,
                     children,
                 })
-                return this.recursiveFn(n,arr)
+                return this.recursiveFn(n, arr)
             },
             // 分配角色改变时候 数据联动
-            roleChangeFn(i,e) {
+            roleChangeFn(i, e) {
                 this.loading4 = true;
-                this.$ajax.get('/api/organize/employees',{
-                    cityId:this.cityId,
-                    roleId:e
-                }).then(res=>{
+                this.$ajax.get('/api/organize/employees', {
+                    cityId: this.cityId,
+                    roleId: e
+                }).then(res => {
                     res = res.data;
-                    if(res.status === 200){
+                    if (res.status === 200) {
                         this.dealTable[i].personLiableCode = "";
                         this.dealTable[i].rules = [...res.data];
                         this.dealTable[i].personLiableName = '';
                         // this.dealTable[i].roleBool = false;
                     }
                     this.loading4 = false;
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                     this.loading4 = false;
                 })
             },
-            roleRemoteChangeFn(e,i){
+            roleRemoteChangeFn(e, i) {
                 let arr = this.dealTable[i];
                 arr.personLiableCode = e;
-                this.$set(this.dealTable,i,arr)
+                this.$set(this.dealTable, i, arr)
             },
             // 展示下拉列表的时候执行
-            roleRemoteFn(i,e){
-                this.employees={
-                    keyword:'',
-                    roleId:e,
-                    index:i
+            roleRemoteFn(i, e) {
+                this.employees = {
+                    keyword: '',
+                    roleId: e,
+                    index: i
                 };
                 // && this.dealTable[i].roleBool
-                if(!!e ){
-                    if(!this.dealTable[i].rules.pageNum){
+                if (!!e) {
+                    if (!this.dealTable[i].rules.pageNum) {
                         this.dealTable[i].rules.pageNum = 1;
                     }
                     this.getEmployeesFn();
                 }
             },
-            roleRemoteMethodFn(query){
+            roleRemoteMethodFn(query) {
                 this.employees.keyword = query;
                 this.getEmployeesFn();
             },
             // 下拉加载更多
-            loadMoreFn(){
+            loadMoreFn() {
                 this.dealTable[this.employees.index].rules.pageNum++;
                 this.getEmployeesFn(true);
             },
-            getEmployeesFn(bool){
-                if(!bool){
+            getEmployeesFn(bool) {
+                if (!bool) {
                     this.loading4 = true;
                 }
-                this.$ajax.get('/api/organize/employees/pages',{
-                    cityId:this.cityId,
-                    roleId:this.employees.roleId,
-                    keyword:this.employees.keyword,
-                    pageNum:this.dealTable[this.employees.index].rules.pageNum,
-                }).then(res=>{
+                this.$ajax.get('/api/organize/employees/pages', {
+                    cityId: this.cityId,
+                    roleId: this.employees.roleId,
+                    keyword: this.employees.keyword,
+                    pageNum: this.dealTable[this.employees.index].rules.pageNum,
+                }).then(res => {
                     res = res.data;
-                    if(res.status === 200){
+                    if (res.status === 200) {
                         let rul = this.dealTable[this.employees.index].rules;
-                        if(bool){
-                            if(rul.hasNextPage){
-                                this.dealTable[this.employees.index].rules = Object.assign(rul,{
-                                    list:[...rul.list,...res.data.list],
-                                    pageNum:res.data.pageNum,
-                                    hasNextPage:res.data.hasNextPage,
+                        if (bool) {
+                            if (rul.hasNextPage) {
+                                this.dealTable[this.employees.index].rules = Object.assign(rul, {
+                                    list: [...rul.list, ...res.data.list],
+                                    pageNum: res.data.pageNum,
+                                    hasNextPage: res.data.hasNextPage,
                                 })
                             }
-                        }else{
+                        } else {
                             this.dealTable[this.employees.index].rules = res.data;
                         }
                     }
                     this.loading4 = false;
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                     this.loading4 = false;
                 })
             },
             // 数据处理
-            empRulesList(data){
-                if(!data.list){
-                   return [] 
-                }else{
+            empRulesList(data) {
+                if (!data.list) {
+                    return []
+                } else {
                     return data.list
                 }
             },
             // 保存
-            saveBtnFn(){
+            saveBtnFn() {
                 let arr = [...this.dealTable];
-                arr.map(e=>{
+                arr.map(e => {
                     e.contractCode = this.receive.e.id;
-                    e.rules.list.map(i=>{
-                        if(i.empId === e.personLiableCode){
+                    e.rules.list.map(i => {
+                        if (i.empId === e.personLiableCode) {
                             e.personLiableName = i.name
                         }
                     })
                     // e.rules = [];
                 })
-                this.$ajax.postJSON('/api/postSigning/saveStepFlow',arr).then(res=>{
+                this.$ajax.postJSON('/api/postSigning/saveStepFlow', arr).then(res => {
                     res = res.data;
-                    if(res.status === 200){
+                    if (res.status === 200) {
                         this.successMeFn(res.message)
                         this.receive.show = false;
                         // 数据刷新
                         this.getListData();
-                    }else{
+                    } else {
                         this.errMeFn(res.message);
                     }
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                 })
             },
             // 接收
-            receiveBtnFn(){
+            receiveBtnFn() {
                 let arr = [...this.dealTable];
                 let bool = true;
-                arr.map(e=>{
+                arr.map(e => {
                     e.contractCode = this.receive.e.id;
-                    e.rules.list.map(i=>{
-                        if(i.empId === e.personLiableCode){
+                    e.rules.list.map(i => {
+                        if (i.empId === e.personLiableCode) {
                             e.personLiableName = i.name
                         }
                     })
-                    if(!e.personLiableName){
+                    if (!e.personLiableName) {
                         bool = false;
                     }
                     // e.rules = [];
                 })
-                if(!bool){
+                if (!bool) {
                     this.errMeFn('请将交易步骤分配完，才能接收并开始办理后期');
-                }else{
-                    this.$ajax.postJSON('/api/postSigning/addStepFlow',arr).then(res=>{
+                } else {
+                    this.$ajax.postJSON('/api/postSigning/addStepFlow', arr).then(res => {
                         res = res.data;
-                        if(res.status === 200){
+                        if (res.status === 200) {
                             this.successMeFn(res.message);
                             this.receive.show = false;
                             // 数据刷新
                             this.getListData();
-                        }else{
+                        } else {
                             this.errMeFn(res.message);
                         }
-                    }).catch(err=>{
+                    }).catch(err => {
                         this.errMeFn(err);
                     })
                 }
@@ -703,48 +607,48 @@
             },
             // 拒绝后期 弹层事件
             propCloseFn(bool) {
-                if(bool){
-                    if(this.invalidInput.length < 1){
+                if (bool) {
+                    if (this.invalidInput.length < 1) {
                         this.errMeFn('输入不能为空');
-                    }else{
-                        this.$ajax.post('/api/postSigning/refuseReceive',{
-                            contractCode:this.receive.e.id,
-                            refuseReasons:this.invalidInput
-                        }).then(res=>{
+                    } else {
+                        this.$ajax.post('/api/postSigning/refuseReceive', {
+                            contractCode: this.receive.e.id,
+                            refuseReasons: this.invalidInput
+                        }).then(res => {
                             res = res.data;
-                            if(res.status === 200){
+                            if (res.status === 200) {
                                 this.successMeFn(res.message);
                                 this.receive.show = false;
                                 this.layer.show = false;
                                 // 数据刷新
                                 this.getListData();
-                            }else{
+                            } else {
                                 this.errMeFn(res.message);
                             }
-                        }).catch(err=>{
+                        }).catch(err => {
                             this.errMeFn(err);
                         })
                     }
-                }else{
+                } else {
                     this.layer.show = false
                 }
             },
             // 同上
-            dittoFn(i,data){
-                if(!this.roleDisabledFn(data)){
-                    if(i === 0){
+            dittoFn(i, data) {
+                if (!this.roleDisabledFn(data)) {
+                    if (i === 0) {
                         this.errMeFn('本步骤没有上一步，请手动进行分配');
-                    }else{
-                        let arr = this.dealTable[i-1];
+                    } else {
+                        let arr = this.dealTable[i - 1];
                         let roleId = arr.roleId;
                         let personLiableCode = arr.personLiableCode;
                         let rules = arr.rules;
-                        let obj = Object.assign(this.dealTable[i],{
+                        let obj = Object.assign(this.dealTable[i], {
                             roleId,
                             personLiableCode,
                             rules
                         })
-                        this.$set(this.dealTable,i,obj)
+                        this.$set(this.dealTable, i, obj)
                     }
                 }
             },
@@ -753,9 +657,9 @@
                 this.$router.push({
                     path: "/contractDetails",
                     query: {
-                        id: value.id,//合同id
-                        code: value.code,//合同编号
-                        contType: value.tradeType.value//合同类型
+                        id: value.id, //合同id
+                        code: value.code, //合同编号
+                        contType: value.tradeType.value //合同类型
                     }
                 });
             },
@@ -773,191 +677,192 @@
             },
             // 部门筛选回调
             regionChangeFn(e) {
-                if( e !=="" || !!e){
+                if (e !== "" || !!e) {
                     this.loading2 = true;
-                    this.$ajax.get("/api/organize/employees",{
-                    cityId:this.cityId,
-                    depId:e,
-                    }).then(res=>{
+                    this.$ajax.get("/api/organize/employees", {
+                        cityId: this.cityId,
+                        depId: e,
+                    }).then(res => {
                         res = res.data
-                        if(res.status === 200){
+                        if (res.status === 200) {
                             this.propForm.regionName = '';
                             let arr = [];
-                            if(res.data.length > 0){
-                                    arr = [{
+                            if (res.data.length > 0) {
+                                arr = [{
                                     name: "全部",
                                     empId: ""
-                                },...res.data]
+                                }, ...res.data]
                             }
                             this.rules.regionName = arr;
                             this.loading2 = false;
                         }
-                    }).catch(err=>{
+                    }).catch(err => {
                         this.errMeFn(err);
                         this.loading2 = false;
                     })
-                }else{
+                } else {
                     this.propForm.regionName = '';
                     this.rules.regionName = [{
-                                        name: "全部",
-                                        empId: ""
-                                    }]
+                        name: "全部",
+                        empId: ""
+                    }]
                 }
-                
+
             },
             // 部门下拉搜索
-            regionMethodFn(e){
+            regionMethodFn(e) {
                 this.loading = true;
-                this.$ajax.get("/api/access/deps",{
-                    keyword:e
-                }).then(res=>{
+                this.$ajax.get("/api/access/deps", {
+                    keyword: e
+                }).then(res => {
                     res = res.data
-                    if(res.status === 200){
-                        if(e==='' || !e){
+                    if (res.status === 200) {
+                        if (e === '' || !e) {
                             this.rules.region = [{
                                 name: "全部",
                                 id: ""
-                            },...res.data]
-                        }else{
+                            }, ...res.data]
+                        } else {
                             this.rules.region = res.data
                         }
                         this.loading = false;
                     }
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                     this.loading = false;
                 })
             },
             // 清除部门搜索
-            regionClearFn(){
+            regionClearFn() {
                 this.regionMethodFn('');
             },
             // 贷款银行搜索
-            remoteMethodFn(e){
+            remoteMethodFn(e) {
                 let t;
-                if(e === "全部"){
+                if (e === "全部") {
                     t = '';
-                }else{
+                } else {
                     t = e;
                 }
-                this.$ajax.get('/api/system/selectBankName',{
-                    keyWord:t
-                }).then(res=>{
+                this.$ajax.get('/api/system/selectBankName', {
+                    keyWord: t
+                }).then(res => {
                     res = res.data
                     if (res.status === 200) {
-                        if(t==='' || t==="全部" || !t){
+                        if (t === '' || t === "全部" || !t) {
                             this.rules.paper = [{
                                 bankName: "全部",
                                 id: ""
-                            },...res.data]
-                        }else{
+                            }, ...res.data]
+                        } else {
                             this.rules.paper = res.data
                         }
                     }
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                 })
             },
             // 获取数据
-            getListData(){
+            getListData() {
                 this.loadingList = true;
                 let signDateSta = '';
                 let signDateEnd = '';
-                if(this.propForm.dateMo){
-                    if(this.propForm.dateMo.length === 2){
+                if (this.propForm.dateMo) {
+                    if (this.propForm.dateMo.length === 2) {
                         signDateSta = TOOL.dateFormat(this.propForm.dateMo[0]);
                         signDateEnd = TOOL.dateFormat(this.propForm.dateMo[1]);
                     }
                 }
-                
-                    this.$ajax.postJSON('/api/postSigning/getContract',{
-                        keyword:this.propForm.search,
-                        signDateSta,
-                        signDateEnd,
-                        transFlowCode:this.propForm.time,
-                        stagesBankCode:this.propForm.paper,
-                        dealDeptId:this.propForm.region,
-                        dealAgentId:this.propForm.regionName,
-                        statusLaterStage:this.propForm.late,
-                        pageNum:this.pageNum,
-                        pageSize:this.pageSize,
-                    }).then((res)=>{
-                        res = res.data
-                        if (res.status === 200) {
-                            this.tableData = res.data;
-                        }
-                        this.loadingList = false;
-                    }).catch(err=>{
-                        this.errMeFn(err);
-                        this.loadingList = false;
-                    })
+
+                this.$ajax.postJSON('/api/postSigning/getContract', {
+                    keyword: this.propForm.search,
+                    signDateSta,
+                    signDateEnd,
+                    transFlowCode: this.propForm.time,
+                    stagesBankCode: this.propForm.paper,
+                    dealDeptId: this.propForm.region,
+                    dealAgentId: this.propForm.regionName,
+                    statusLaterStage: this.propForm.late,
+                    pageNum: this.pageNum,
+                    pageSize: this.pageSize,
+                }).then((res) => {
+                    res = res.data
+                    if (res.status === 200) {
+                        this.tableData = res.data;
+                    }
+                    this.loadingList = false;
+                }).catch(err => {
+                    this.errMeFn(err);
+                    this.loadingList = false;
+                })
             },
             // 交易流程获取数据
-            getTransactionProcess(){
-                this.$ajax.post('/api/flowmanage/selectFlowPageList',{
-                    cityId:this.cityId
-                }).then(res=>{
+            getTransactionProcess() {
+                this.$ajax.post('/api/flowmanage/selectFlowPageList', {
+                    cityId: this.cityId
+                }).then(res => {
                     res = res.data
                     if (res.status === 200) {
                         this.rules.time = [{
                             name: "全部",
                             id: ""
-                        },...res.data];
+                        }, ...res.data];
                     }
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                 })
             },
             // 后期状态
-            getLateState(){
-                this.$ajax.get("/api/dictionary/query",{
-                    parentId:43
-                }).then(res=>{
+            getLateState() {
+                this.$ajax.get("/api/dictionary/query", {
+                    parentId: 43
+                }).then(res => {
                     res = res.data
-                    if(res.status === 200){
+                    if (res.status === 200) {
                         let arr = [];
                         res.data.children.forEach(e => {
-                            if(e.key === RECEIVE.receive || e.key === RECEIVE.haveReceive){
+                            if (e.key === RECEIVE.receive || e.key === RECEIVE.haveReceive) {
                                 arr.push({
-                                    key:e.key,
-                                    label:this.statusLaterStageFn(e.key)
+                                    key: e.key,
+                                    label: this.statusLaterStageFn(e.key)
                                 })
                             }
                         });
                         this.rules.late = [{
-                            label:'全部',
-                            key:''
-                        },...arr]
+                            label: '全部',
+                            key: ''
+                        }, ...arr]
                     }
-                }).catch(err=>{
+                }).catch(err => {
                     this.errMeFn(err);
                 })
             },
         },
-        directives:{
-            loadmore:{
-                inserted(el,binding){
+        directives: {
+            loadmore: {
+                inserted(el, binding) {
                     // console.log(el,binding)
                     // 获取element-ui定义好的scroll盒子
                     const SELECTWRAP_DOM = el.querySelector('.el-select-dropdown .el-select-dropdown__wrap');
                     SELECTWRAP_DOM.addEventListener('scroll', function() {
                         /*
-                        * scrollHeight 获取元素内容高度(只读)
-                        * scrollTop 获取或者设置元素的偏移值,常用于, 计算滚动条的位置, 当一个元素的容器没有产生垂直方向的滚动条, 那它的scrollTop的值默认为0.
-                        * clientHeight 读取元素的可见高度(只读)
-                        * 如果元素滚动到底, 下面等式返回true, 没有则返回false:
-                        * ele.scrollHeight - ele.scrollTop === ele.clientHeight;
-                        */
-                        const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight; 
-                        if(CONDITION) { 　　 
-                            binding.value(); 
-                        } 　　　 
-                    }); 
-                } 
+                         * scrollHeight 获取元素内容高度(只读)
+                         * scrollTop 获取或者设置元素的偏移值,常用于, 计算滚动条的位置, 当一个元素的容器没有产生垂直方向的滚动条, 那它的scrollTop的值默认为0.
+                         * clientHeight 读取元素的可见高度(只读)
+                         * 如果元素滚动到底, 下面等式返回true, 没有则返回false:
+                         * ele.scrollHeight - ele.scrollTop === ele.clientHeight;
+                         */
+                        const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight;
+                        if (CONDITION) {
+                            binding.value();
+                        }
+                    });
+                }
             }
         },
         components: {
-            ScreeningTop
+            ScreeningTop,
+            LayerScrollAuto
         },
         mounted() {
             // 获取城市id
@@ -971,11 +876,11 @@
             // 列表数据
             this.getListData();
         },
-        watch:{
-            cityId(){
-               // 交易流程
+        watch: {
+            cityId() {
+                // 交易流程
                 this.getTransactionProcess();
-           }
+            }
         }
     }
 </script>

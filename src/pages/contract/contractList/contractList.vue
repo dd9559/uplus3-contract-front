@@ -87,7 +87,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
-          <el-dropdown placement="bottom">
+          <el-dropdown placement="bottom" @command="printCont">
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -144,8 +144,8 @@
         </el-table-column>
         <el-table-column align="left" label="成交经纪人" width="150 ">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentName}}</p>
             <p>{{scope.row.dealAgentStoreName}}</p>
+            <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
         <el-table-column align="left" label="签约日期" width="100">
