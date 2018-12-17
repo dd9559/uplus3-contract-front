@@ -133,7 +133,11 @@
         </el-table-column>
         <el-table-column align="left" label="物业地址" prop="propertyAddr" width="150" fixed>
         </el-table-column>
-        <el-table-column align="left" label="成交总价" prop="dealPrice" width="100" fixed>
+        <el-table-column align="left" label="成交总价" prop="dealPrice" width="120" fixed>
+          <template slot-scope="scope">
+            <span>{{scope.row.dealPrice}} 元</span>
+            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span> 
+          </template>
         </el-table-column>
         <el-table-column align="left" label="财务收付" width="100" fixed>
           <template slot-scope="scope">
@@ -153,7 +157,7 @@
             {{scope.row.signDate.substr(0, 10)}}
           </template>
         </el-table-column>
-        <el-table-column align="left" label="可分配业绩" width="100">
+        <el-table-column align="left" label="可分配业绩 (元)" width="110">
           <template slot-scope="scope">
             <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
               <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
@@ -331,7 +335,8 @@ export default {
         "14": "", //结算状态
         "13": "", //收佣状态
         "54": "", //业绩状态
-        "538": "" //用途
+        "538": "", //用途
+        "507": ""
       },
       loading:false,
       //部门选择列表

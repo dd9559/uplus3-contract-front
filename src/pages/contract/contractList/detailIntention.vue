@@ -55,7 +55,7 @@
                                     
                                 </li>
                                 <li>
-                                    <div class="div1"><span>业主姓名：</span>{{custInfo[0].name | nullData}}</div>
+                                    <div class="div1"><span>客户姓名：</span>{{custInfo[0].name | nullData}}</div>
                                     <div class="div2"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
                                     <div><span>身份证号：</span>{{custInfo[0].identifyCode | nullData}}</div>
                                 </li>

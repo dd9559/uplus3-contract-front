@@ -228,7 +228,7 @@
                   }).catch(error=>{
                      this.$message({
                         type: 'error',
-                        message: '款类名称不可重复, 请重新添加!!'
+                        message: error
                         })
                 })
                 }else if(this.title==`编辑【${this.bigName}】小类`){

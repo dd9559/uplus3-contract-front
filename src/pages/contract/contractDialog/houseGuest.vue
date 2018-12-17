@@ -119,6 +119,7 @@
               round
               class="search_btn"
               @click="inquireGuest"
+              :disabled="true"
             >查询</el-button>
           </div>
         </el-form>
@@ -317,7 +318,8 @@ export default {
       BuildingCode: "",
       selectCode: "",
       loading_: false,
-      showDataList: true
+      showDataList: true,
+      isReady:true
     };
   },
   created() {
