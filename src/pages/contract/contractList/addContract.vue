@@ -863,6 +863,7 @@ export default {
           delete param.leaseCont.pids;
           delete param.leaseCont.pmobiles;
           delete param.leaseCont.pnames;
+          delete param.saleCont.distributableAchievement;
         }
         //console.log(param);
         this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {
@@ -900,6 +901,7 @@ export default {
           delete param.saleCont.previewImg;
           delete param.saleCont.subscriptionTerm;
           delete param.saleCont.updateTime;
+          delete param.saleCont.distributableAchievement;
           param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");  
         }
 
