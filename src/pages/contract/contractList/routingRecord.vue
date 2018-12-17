@@ -98,6 +98,7 @@
 <script>
 import ScreeningTop from "@/components/ScreeningTop";
 import { MIXINS } from "@/assets/js/mixins";
+import { TOOL } from "@/assets/js/common";
 
 export default {
   mixins: [MIXINS],
@@ -158,7 +159,9 @@ export default {
       this.getProateNotes();
     },
     // 重置
-    resetFormFn() {},
+    resetFormFn() {
+      TOOL.clearForm(this.searchForm);
+    },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },

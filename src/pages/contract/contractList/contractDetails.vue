@@ -50,10 +50,11 @@
               <p><span class="tag">房源编号：</span><span class="serialNumber">{{contractDetail.houseinfoCode}}</span></p>
               <p class="address">
                 <span class="tag">物业地址：</span>
-                <span class="text">{{contractDetail.houseInfo.EstateName}}</span>
+                <span class="text">{{contractDetail.propertyAddr}}</span>
+                <!-- <span class="text">{{contractDetail.houseInfo.EstateName}}</span>
                 <span class="text">{{contractDetail.houseInfo.BuildingName}}</span>
                 <span class="text">{{contractDetail.houseInfo.Unit}}</span>
-                <span class="text">{{contractDetail.houseInfo.RoomNo}}</span>
+                <span class="text">{{contractDetail.houseInfo.RoomNo}}</span> -->
               </p>
             </div>
             <div class="one_">
@@ -448,7 +449,7 @@
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
 
-    <vue-easy-print tableShow ref="easyPrint" v-show="true" style="width:900px">
+    <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px">
       <div class="printContent">
         <div class="printHeader">
           <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
@@ -485,13 +486,14 @@
         <div class="printMsg">
           <div class="contTitle">房源信息</div>
           <div class="printItem">
-            <p><span class="printTag">房源编号：</span><span class="serialNumber">{{contractDetail.houseinfoCode}}</span></p>
+            <p><span class="printTag">房源编号：</span><span class="printCode">{{contractDetail.houseinfoCode}}</span></p>
               <p class="p_width">
                 <span class="printTag">物业地址：</span>
-                <span class="printTxt">{{contractDetail.houseInfo.EstateName}}</span>
+                <span class="text">{{contractDetail.propertyAddr}}</span>
+                <!-- <span class="printTxt">{{contractDetail.houseInfo.EstateName}}</span>
                 <span class="printTxt">{{contractDetail.houseInfo.BuildingName}}</span>
                 <span class="printTxt">{{contractDetail.houseInfo.Unit}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.RoomNo}}</span>
+                <span class="printTxt">{{contractDetail.houseInfo.RoomNo}}</span> -->
               </p>
           </div>
           <div class="printItem">
@@ -511,10 +513,10 @@
           </div>
           <div class="printItem printItem_" style="width:900px;margin-top:5px">
             <el-table :data="ownerData" border header-row-class-name="theader-bg" style="width:100%">
-              <el-table-column prop="name" label="业主姓名" width="150"></el-table-column>
-              <el-table-column prop="mobile" label="电话" min-width="150"></el-table-column>
-              <el-table-column prop="relation" label="关系" width="120"></el-table-column>
-              <el-table-column label="产权比" v-if="contType!='1'" width="120">
+              <el-table-column prop="name" label="业主姓名" width="200"></el-table-column>
+              <el-table-column prop="mobile" label="电话" min-width="200"></el-table-column>
+              <el-table-column prop="relation" label="关系" width="150"></el-table-column>
+              <el-table-column label="产权比" v-if="contType!='1'" width="149">
                 <template slot-scope="scope">
                   {{scope.row.propertyRightRatio+'%'}}
                 </template>
@@ -526,7 +528,7 @@
         <div class="printMsg">
           <div class="contTitle">客源信息</div>
           <div class="printItem">
-            <p><span class="printTag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
+            <p><span class="printTag">客源编号：</span><span class="printCode">{{contractDetail.guestinfoCode}}</span></p>
             <p>
               <span class="printTag">付款方式：</span>
               <span class="printTxt" v-for="item in dictionary['556']" :key="item.key" v-if="contractDetail.guestInfo.paymentMethod===item.key">{{item.value}}</span>
@@ -537,17 +539,17 @@
               <p><span class="printTag">店 长：</span><span class="printTxt">{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
               <p><span class="printTag">手 机：</span><span class="printTxt">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
           </div>
-          <div class="printItem" style="width:900px;margin-top:5px">
+          <div class="printItem printItem_" style="width:900px;margin-top:5px">
             <el-table :data="clientrData" border header-row-class-name="theader-bg">
-              <el-table-column prop="name" label="客户姓名" width="150"></el-table-column>
-              <el-table-column label="电话" min-width="150">
+              <el-table-column prop="name" label="客户姓名" width="200"></el-table-column>
+              <el-table-column label="电话" min-width="200">
                 <template slot-scope="scope">
                   {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
                   <i class="iconfont tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
                 </template>
               </el-table-column>
-              <el-table-column prop="relation" label="关系" width="120"></el-table-column>
-              <el-table-column label="产权比" v-if="contType!='1'" width="120">
+              <el-table-column prop="relation" label="关系" width="150"></el-table-column>
+              <el-table-column label="产权比" v-if="contType!='1'" width="149">
                 <template slot-scope="scope">
                   {{scope.row.propertyRightRatio+'%'}}
                 </template>
@@ -567,15 +569,24 @@
             </p>
           </div>
           <div class="printItem">
-            <p><span class="printTag">合作方姓名：</span><span class="printTxt">{{contractDetail.otherCooperationInfo.name}}</span></p>
-            <p><span class="printTag">联系方式：</span><span class="printTxt">{{contractDetail.otherCooperationInfo.mobile}}</span></p>
-            <p><span class="printTag">身份证号：</span><span class="printTxt">{{contractDetail.otherCooperationInfo.identifyCode}}</span></p>
+            <p>
+              <span class="printTag">合作方姓名：</span>
+              <span class="printTxt">{{contractDetail.otherCooperationInfo.name?contractDetail.otherCooperationInfo.name:"--"}}</span>
+            </p>
+            <p>
+              <span class="printTag">联系方式：</span>
+              <span class="printTxt">{{contractDetail.otherCooperationInfo.mobile?contractDetail.otherCooperationInfo.mobile:"--"}}</span>
+            </p>
+            <p>
+              <span class="printTag">身份证号：</span>
+              <span class="printTxt">{{contractDetail.otherCooperationInfo.identifyCode?contractDetail.otherCooperationInfo.identifyCode:"--"}}</span>
+            </p>
           </div>
           <div class="remark">
             <div>
               <span class="printTag">备注：</span>
             </div>
-            <div>
+            <div class="remarks">
               <p style="width:500px" v-if="contractDetail.otherCooperationInfo.remarks">{{contractDetail.otherCooperationInfo.remarks}}</p>
               <p v-else>暂无备注</p>
             </div>
@@ -735,7 +746,8 @@ export default {
     },
     //合同预览
     goPreview() {
-      this.$router.push({
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+      this.$router.replace({
         path: "/contractPreview",
         query: {
           id: this.id,
@@ -1481,6 +1493,10 @@ export default {
   .p_width{
     width: 400px;
   }
+  .printItem_{
+    border-right: 1px solid #ebeef5;
+    border-bottom: 1px solid #ebeef5;
+  }
   .printTag{
     padding-left: 0!important;
     display: inline-block;
@@ -1498,6 +1514,10 @@ export default {
     font-size: 20px;
     font-weight: bold;
   }
+  .printCode{
+    color: @color-blue;
+    font-weight: bold;
+  }
   .printHeader{
     padding: 16px 0;
     border-bottom: 1px solid @border-ED;
@@ -1506,7 +1526,17 @@ export default {
     padding: 0 12px;
   }
   .remark{
+    margin-top: 10px;
     display: flex;
+    .remarks{
+      color: @color-233;
+      padding: 10px;
+      box-sizing: border-box;
+      width: 800px;
+      height: 200px;
+      border: 1px solid #ebeef5;
+      border-radius: 4px;
+    }
   }
 }
 </style>
