@@ -2,7 +2,6 @@
   <div class="layout" style="background-color: #f5f5f5">
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <!-- 筛选条件 -->
-      <!-- 部门 -->
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
         <el-form-item label="签约日期" prop="dateMo" class="mr">
           <el-date-picker
@@ -15,30 +14,26 @@
             end-placeholder="结束日期"
           ></el-date-picker>
         </el-form-item>
+
         <!-- 部门 -->
-        <el-form-item label="部门" class="mr">
-          <el-select
-            v-model="propForm.department"
-            class="w200"
-            filterable
-            @change="selUser"
-            :clearable="true"
-          >
-            <el-option v-for="item in departs" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
+        <el-form-item label="部门" style="margin-right:0px;">
+              <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
+                <el-option class="drop-tree" value="">
+                  <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+                </el-option>
+              </el-select>
+       </el-form-item>
 
         <el-form-item>
-          <el-select v-model="propForm.departmentDetail" class="w100" filterable :clearable="true">
-            <el-option
-              v-for="(item,index) in users"
-              :key="index"
-              ref="user"
-              :label="item.name"
-              :value="item.empId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+             <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="propForm.dealAgentId" placeholder="请选择">
+               <el-option
+                 v-for="item in EmployeList"
+                 :key="item.empId"
+                 :label="item.name"
+                 :value="item.empId">
+               </el-option>
+             </el-select>
+       </el-form-item>
 
         <el-form-item label="合同类型" prop="contractType">
           <el-select v-model="propForm.contractType" class="w120" :clearable="true">
@@ -316,6 +311,8 @@ export default {
       // 筛选条件
       propForm: {
         department: "", //部门
+        dealAgentStoreId:null,
+        dealAgentId:null,
         departmentDetail: "", //部门详情
         contractType: "", //合同类型
         dateMo: "", //时间
@@ -341,23 +338,37 @@ export default {
     this.getData(this.ajaxParam);
     // 字典初始化
     this.getDictionary();
-    // 查询部门
-    this.$ajax.get("/api/access/deps").then(res => {
-      if (res.status == 200) {
-        this.departs = res.data.data;
-      }
-    });
+     
+    //部门初始化
+    this.remoteMethod();
   },
   components: {},
   methods: {
+       //获取当前部门
+    initDepList:function (val) {
+      if(!val){
+        this.remoteMethod()
+      }
+    },   
+     clearDep:function () {
+      this.propForm.department=''
+      this.EmployeList=[]
+      this.propForm.dealAgentId=''
+      this.clearSelect()
+    },
+     depHandleClick(data) {
+      this.propForm.dealAgentStoreId=data.depId
+      this.propForm.department=data.name
+      this.handleNodeClick(data)
+    },
     queryFn() {
       // console.log("ssssssssssss");
       // console.log(this.ajaxParam);
       // console.log(this.propForm);
       if (this.propForm.dateMo) {
         this.ajaxParam = {
-          dealAgentStoreId: this.propForm.department, //部门
-          dealAgentId: this.propForm.departmentDetail, //员工
+          dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
+          dealAgentId: this.propForm.dealAgentId, //员工
           contractType: this.propForm.contractType, //合同类型
           startTime: this.propForm.dateMo[0], //开始时间
           endTime: this.propForm.dateMo[1], //结束时间
@@ -367,8 +378,8 @@ export default {
         };
       } else {
         this.ajaxParam = {
-          dealAgentStoreId: this.propForm.department, //部门
-          dealAgentId: this.propForm.departmentDetail, //员工
+          dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
+          dealAgentId: this.propForm.dealAgentId, //员工
           contractType: this.propForm.contractType, //合同类型
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
@@ -397,23 +408,6 @@ export default {
         dateMo: "",
         search: ""
       };
-    },
-    // 查询部门员工
-    selUser() {
-      this.propForm.departmentDetail = "";
-      this.users = [];
-      if(this.propForm.department){
-         this.$ajax
-           .get("/api/organize/employees", { depId: this.propForm.department })
-           .then(res => {
-             console.log(res);
-             if (res.status == 200) {
-               this.users = res.data.data;
-               console.log(this.users);
-             }
-         });
-      }
- 
     },
     getData(param) {
       // 实收列表
