@@ -1243,6 +1243,12 @@ export default {
     max-width: 1000px !important;
     margin: 13vh auto 0 !important;
     overflow: auto;
+    
+   .el-dialog__headerbtn {
+      right: 0;
+      top: 0;
+      display: none !important;
+    }
     b {
       position: absolute;
       right: 30px;
@@ -1348,5 +1354,8 @@ export default {
 
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
+}
+/deep/  .el-dialog.base-dialog .el-dialog__header {
+      padding: 0 !important;
 }
 </style>
