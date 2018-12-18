@@ -151,12 +151,14 @@
                                         <div class="contract-main" v-for="item in items.children" :key="item.title">
                                             <p class="cl-1 mb-10"><span class="spna"><template v-if="item.isrequire">*</template></span>{{item.title}}</p>
                                             <ul class="steps-img">
-                                                <li v-for="(ies,i) in item.value" :key="ies.name" @click="previewPhoto(item.value,i)">
-                                                    <div class="img">
-                                                        <uploadCell :type="stepsTypeImg(ies.path)"></uploadCell>
-                                                    </div>
-                                                    <p class="p">{{ies.name}}</p>
-                                                </li>
+                                                <el-tooltip class="item" effect="dark" :content="ies.name" placement="bottom" v-for="(ies,i) in item.value" :key="ies.name">
+                                                    <li @click="previewPhoto(item.value,i)">
+                                                        <div class="img">
+                                                            <uploadCell :type="stepsTypeImg(ies.path)"></uploadCell>
+                                                        </div>
+                                                        <p class="p">{{ies.name}}</p>
+                                                    </li>
+                                                </el-tooltip>
                                             </ul>
                                         </div>
                                     </div>

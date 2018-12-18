@@ -489,15 +489,20 @@
                                         </fileUp>
                                     </div>
                                     <ul class="steps-img">
-                                        <li 
+                                        <el-tooltip class="item" 
+                                        effect="dark" 
+                                        :content="i.name" 
+                                        placement="bottom" 
                                         v-for="(i,n) in item.val"
-                                        :key="i.name"
-                                        @click="previewPhoto(item.val,n)"
-                                        >
-                                            <i @click.stop="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
-                                            <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
-                                            <p class="p">{{i.name}}</p>
-                                        </li>
+                                        :key="i.name">
+                                            <li 
+                                            @click="previewPhoto(item.val,n)"
+                                            >
+                                                <i @click.stop="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
+                                                <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                                <p class="p">{{i.name}}</p>
+                                            </li>
+                                        </el-tooltip>
                                     </ul>
                                 </template>
                                 <!-- <template v-else>
@@ -576,14 +581,16 @@
                                         </li>
                                     </ul> -->
                                     <ul class="steps-img">
-                                        <li 
-                                        v-for="(i,n) in item.val"
-                                        :key="i.name"
-                                        @click="previewPhoto(item.val,n)"
-                                        >
-                                            <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
-                                            <p class="p">{{i.name}}</p>
-                                        </li>
+                                        <el-tooltip class="item" effect="dark" :content="i.name" placement="bottom" 
+                                            v-for="(i,n) in item.val"
+                                            :key="i.name">
+                                            <li 
+                                            @click="previewPhoto(item.val,n)"
+                                            >
+                                                <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                                <p class="p">{{i.name}}</p>
+                                            </li>
+                                        </el-tooltip>
                                     </ul>
                                 </template>
                             </template>
