@@ -9,33 +9,32 @@ export default {
     data(){
         return{
             winHeight:0,
+            comHeight:'auto',
         }
     },
     mounted() {
         window.onresize = this.winSizeFn;
     },
     updated() {
-        let that = this;
-        setTimeout(()=>{
-            that.winSizeFn()
-        },0)
-    },
-    computed:{
-        comHeight(){
-            let h = this.winHeight - (80+80+65+62);
-            if(!this.$refs.layer){
-                return ''
-            }
-            if(this.$refs.layer.children[0].clientHeight > h){
-                return `height:${h}px`
-            }else{
-                return ''
-            }
-        }
+        // setTimeout(()=>{
+            this.winSizeFn();
+            this.comHeightFn();
+        // },100)
     },
     methods:{
         winSizeFn(){
             this.winHeight = document.documentElement.clientHeight;
+        },
+        comHeightFn(){
+            let h = this.winHeight - (80+80+65+62);
+            if(!this.$refs.layer){
+                this.comHeight = ''
+            }
+            if(this.$refs.layer.children[0].clientHeight > h){
+                this.comHeight = `height:${h}px`
+            }else{
+                this.comHeight = ''
+            }
         }
     },
 }

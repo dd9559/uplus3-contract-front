@@ -424,10 +424,11 @@
                 >li {
                     margin-bottom: 20px;
                     display: flex;
-                    align-items: center;
+                    // align-items: center;
 
                     >label {
                         margin-right: 10px;
+                        margin-top: 7px;
                     }
 
                     &:first-of-type,
