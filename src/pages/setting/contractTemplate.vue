@@ -130,12 +130,12 @@
       }
     },
     created() {
-      // if(this.$route.query.cid>0){
-      //   this.selectCity=this.$route.query.cid
-      // }else{
+      if(this.$route.query.cid>0){
+        this.selectCity=parseInt(this.$route.query.cid)
+      }else{
         this.selectCity='武汉'
         this.cityName='武汉'
-      // }
+      }
       this.$ajax.get('/api/organize/cities').then((res)=>{
                 if(res.status==200){
                     this.citys=res.data.data

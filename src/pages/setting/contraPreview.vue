@@ -281,6 +281,9 @@ export default{
                             this.touch=false
                             this.$router.push({
                             path: "/contractTemplate",
+                            query:{
+                                cid:this.cityId
+                            }
                         });
                     }
                 })
