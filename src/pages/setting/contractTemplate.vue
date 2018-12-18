@@ -119,6 +119,7 @@
         fileList3: [],
         titleStr:'',
         contraName:'',
+        cityName:'',
         citys:[],
         mbrules:['.doc','.docx'],
         contraType:'',
@@ -129,11 +130,12 @@
       }
     },
     created() {
-      // if(this.$route.query.cid>0){
-      //   this.selectCity=this.$route.query.cid
-      // }else{
+      if(this.$route.query.cid>0){
+        this.selectCity=parseInt(this.$route.query.cid)
+      }else{
         this.selectCity='武汉'
-      // }
+        this.cityName='武汉'
+      }
       this.$ajax.get('/api/organize/cities').then((res)=>{
                 if(res.status==200){
                     this.citys=res.data.data
@@ -153,7 +155,6 @@
       getAdd(type,obj){
         if(type=='mmai'){
            this.mmaiAddress=obj[0].param[obj[0].param.length-1];
-           console.log(this.mmaiAddress,'this.mmaiAddress');
         }else if(type=='jjian'){
           this.jjianAddress=obj[0].param[obj[0].param.length-1]
         }else if(type=='mban'){
@@ -184,6 +185,7 @@
           res = res.data
           if (res.status === 200) {
             this.list = res.data
+            this.cityName=res.data[0].cityName
           }
         }).catch(error => {
           console.log(error)
@@ -232,6 +234,7 @@
           mbanAddress:this.mbanAddress,
           selectCity:this.selectCity=='武汉'?1:this.selectCity,
           type:this.contraType,
+          cityName:this.cityName,
           contraName:this.contraName,
           show:1,
           id:this.id

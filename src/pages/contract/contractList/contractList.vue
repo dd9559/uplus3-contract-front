@@ -35,7 +35,7 @@
             </el-option>
           </el-select> -->
 
-          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
+          <el-select style="width:160px" :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
@@ -47,7 +47,7 @@
             </el-option>
           </el-select> -->
 
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
+          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -383,9 +383,8 @@ export default {
     this.getContractList();//合同列表
     this.getDictionary();//字典
     this.getHousePurpose();//用途
-    this.getDeps();//部门
     this.getBlankPdf();//空白合同pdf
-    this.remoteMethod();
+    this.remoteMethod();//部门
   },
   methods: {
     //用途
@@ -641,37 +640,37 @@ export default {
       this.handleNodeClick(data)
     },
 
-    getDeps(key){
-      let param = {
-        keyword:key
-      }
-      this.$ajax.get('/api/access/deps', param).then(res=>{
-        this.loading=false;
-        res=res.data
-        if(res.status===200){
-          this.options=res.data
-        }
-      })
-    },
-    selectDep(value){
-      delete this.contractForm.dealAgentId;
-      this.brokersList=[];
-      if(value){
-        this.getBroker(value)
-      }
-    },
-    getBroker(id){
-      console.log(id)
-      let param = {
-        depId:id
-      }
-      this.$ajax.get('/api/organize/employees', param).then(res=>{
-        res=res.data
-        if(res.status===200){
-          this.brokersList=res.data
-        }
-      })
-    },
+    // getDeps(key){
+    //   let param = {
+    //     keyword:key
+    //   }
+    //   this.$ajax.get('/api/access/deps', param).then(res=>{
+    //     this.loading=false;
+    //     res=res.data
+    //     if(res.status===200){
+    //       this.options=res.data
+    //     }
+    //   })
+    // },
+    // selectDep(value){
+    //   delete this.contractForm.dealAgentId;
+    //   this.brokersList=[];
+    //   if(value){
+    //     this.getBroker(value)
+    //   }
+    // },
+    // getBroker(id){
+    //   console.log(id)
+    //   let param = {
+    //     depId:id
+    //   }
+    //   this.$ajax.get('/api/organize/employees', param).then(res=>{
+    //     res=res.data
+    //     if(res.status===200){
+    //       this.brokersList=res.data
+    //     }
+    //   })
+    // },
     //提审
     goSave(item){
       this.isSubmitAudit=true;
