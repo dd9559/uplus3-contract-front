@@ -46,7 +46,7 @@
             @click="choseType(item)">{{item.name}}
         </li>
       </ul>
-      <el-table v-if="activeType===1" class="collapse-cell" border :data="moneyType" :span-method="collapseRow"
+      <el-table v-if="activeType===1||moneyTypeOther.length===0" class="collapse-cell" border :data="moneyType" :span-method="collapseRow"
                 style="width: 100%"
                 header-row-class-name="theader-bg">
         <el-table-column align="center" prop="pName" label="款类（大类）"></el-table-column>
@@ -211,6 +211,7 @@
           <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
         </li>
       </ul>
+      <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
     </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
@@ -665,7 +666,7 @@
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
         // debugger
-        if (this.activeType === 1) {
+        if (this.activeType === 1||this.moneyTypeOther.length===0) {//当款类为收入或代收代付的数据为0时
           if(columnIndex >= 3){
             if (rowIndex === 0) {
               return [this.moneyType.length, 1]
@@ -826,7 +827,7 @@
           this.form.inObjId=val.empId
           this.form.inObj=val.name
         }
-      }
+      },
     }
   }
 </script>
@@ -1022,14 +1023,18 @@
             }
           }
         }
+        &:nth-of-type(n+7){
+          margin-top: @margin-base;
+        }
       }
     }
     .upload-text{
       color: @color-99A;
-      padding: @margin-base;
+      padding: 0 @margin-base;
       >span{
         &:first-of-type{
           color: @color-blue;
+          margin: 0;
         }
       }
     }

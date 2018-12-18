@@ -255,7 +255,7 @@
             :current-page="tableData.pageNum"
             :page-size="tableData.pageSize"
             @current-change="currentChangeFn"
-            layout=" total, prev, next, jumper"
+            layout=" total, prev, pager, next, jumper"
             :total="tableData.total">
         </el-pagination>
     </div>
@@ -419,7 +419,8 @@
             this.layer.msg = '确认要收回该票据吗?'
             break
           case 3:
-            this.layer.title = '票据作废'
+            this.layer.title = '票据作废';
+            this.layer.reason ='';
             this.getPaperDetails(row.id)
             break
         }

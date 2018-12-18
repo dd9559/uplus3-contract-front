@@ -110,7 +110,7 @@
     data() {
       return {
         rowenableId:'',
-        selectCity: '',
+        selectCity: 1,
         list: [],
         rowData: [],
         modal: false,
@@ -130,8 +130,8 @@
       }
     },
     created() {
-      if(this.$route.query.cid>0){
-        this.selectCity=parseInt(this.$route.query.cid)
+      if(localStorage.getItem('cid')){
+        this.selectCity=parseInt(localStorage.getItem('cid'))
       }else{
         this.selectCity='武汉'
         this.cityName='武汉'
@@ -139,11 +139,10 @@
       this.$ajax.get('/api/organize/cities').then((res)=>{
                 if(res.status==200){
                     this.citys=res.data.data
-                }
-            })
+          }
+      })
       this.getList()
     },
-
     methods: {
       rowClick(){
          this.$refs.detail.$el.classList.remove('detail')
@@ -162,6 +161,7 @@
         }
       },
       selCity(){
+            localStorage.setItem('cid',this.selectCity)
             this.getList()
       },
       popMsg(msg,callback){
@@ -308,7 +308,7 @@
             path: "/contraPreview",
             query: {
               enableTemplateId:showType==2?row.id:row.enableTemplateId,
-              show:2
+              show:2,
             }
           });
         }
@@ -517,10 +517,8 @@
     padding: 30px 20px;
   }
 
-
 /deep/ .detail tr.linestyle{
     background-color: #ECF5FF;
 }
-
 }
 </style>

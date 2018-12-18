@@ -233,6 +233,7 @@
             this.imgList.forEach(item=>{
               this.files.push(`${item.path}?${item.name}`)
             })
+            this.showAmount=res.data.outAccountType===4?false:true
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
             this.getAmount()
@@ -629,6 +630,9 @@
               font-size: 20px;
             }
           }
+        }
+        &:nth-of-type(n+7){
+          margin-top: @margin-base;
         }
       }
     }
