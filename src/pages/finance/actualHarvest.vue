@@ -214,6 +214,7 @@
       depHandleClick(data) {
         this.searchForm.dealAgentStoreId=data.depId
         this.searchForm.dealAgentStoreName=data.name
+        this.searchForm.dealAgentId=''
         this.handleNodeClick(data)
       },
       toLink:function (row) {
