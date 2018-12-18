@@ -30,13 +30,13 @@
                 <span>{{this.bigName}}</span>
                  <el-button type="primary"  class='paper-btn' round size="medium"  @click='operation(null,1)'>新增</el-button> 
             </p>
-            <el-table :data="moneyTypes">
+            <el-table :data="moneyTypes" v-if="isMoney">
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(小类)" prop="name"></el-table-column>
                 <el-table-column align="center" label="描述" prop="remark">
                     <template slot-scope="scope">
                         <span v-if="scope.row.remark.length>24">
-                        <el-popover trigger="hover" width="160" placement="top">
+                        <el-popover trigger="hover"  width="160" placement="top">
                             <div>
                             {{scope.row.remark}}
                             </div>
@@ -117,8 +117,9 @@
                 value2:'',
                 moneyTypes: [],
                 cityName: "",
-                isSF:true,
+                // isSF:true,
                 title:'',
+                isMoney:true,
                 smallId:'',
                 addDialog:false,
                 bigId:'',
@@ -282,6 +283,7 @@
             },
             //单击行事件
             rowClick(row, event, column) {
+                this.isMoney=false
                 this.bigName=row.name
                 var index=row.index
                 var top=115+index*34.6
@@ -296,17 +298,15 @@
                 }
                 console.log(sjx[0]);
                 sjx[0].style.top=top+'px'
-                // console.log(this.$refs.onetable,'代收代付');
                 this.$refs.onetable.$el.classList.remove('onetable')
-                if(row.name =='代收代付'){
-                    this.isSF=false
-                }else{
-                    this.isSF=true
-                }
-                this.moneyTypes=row.moneyTypes
+                // this.moneyTypes=row.moneyTypes
                 this.addForm.parentId=row.id
                 this.bigId=row.id
-                this.initList()
+                  this.$ajax.get('api/setting/moneyType/list',{id:this.bigId}).then((res)=>{
+                    if(res.status==200){
+                        this.moneyTypes=res.data.data
+                        this.isMoney=true
+                    }})
             }
         }
     }

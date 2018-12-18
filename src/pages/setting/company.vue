@@ -119,7 +119,7 @@
                 <!-- <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
                   <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select> -->
-                <el-input v-model="companyForm.cooperationMode" size="mini"></el-input>
+                <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input>
               </el-form-item>
             </div>
             <div class="item">
@@ -633,7 +633,6 @@
             }
           }
           if(isOk) {
-            this.companyForm.cooperationMode = this.companyForm.cooperationMode == "直营" ? 1 : 2
             let obj = {
               companyBankList: this.companyBankList
             }
@@ -641,7 +640,8 @@
               documentCard: this.documentCard
             }
             param = Object.assign({},this.companyForm,obj,param)
-
+            param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
+            
             if(this.companyFormTitle === "添加企业信息") {
               this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
                 res = res.data
@@ -708,7 +708,7 @@
           cityName: currentRow.cityName,
           storeId: currentRow.storeId,
           storeName: currentRow.storeName,
-          cooperationMode: currentRow.cooperationMode.value === 1 ? "直营" : "加盟",
+          cooperationMode: currentRow.cooperationMode.label,
           name: currentRow.name,
           lepName: currentRow.lepName,
           lepDocumentType: type === 'init' ? currentRow.lepDocumentType.label :currentRow.lepDocumentType.value,
@@ -1032,7 +1032,6 @@
                 }
                 .del {
                   position: absolute;
-                  display: inline-block;
                   width: 20px;
                   height: 20px;
                   background-color: #F56C6C;
@@ -1042,6 +1041,7 @@
                   text-align: center;
                   line-height: 20px;
                   color: #fff;
+                  display: none;
                 }
                 &:first-child {
                   .up {
@@ -1059,6 +1059,9 @@
                 &:last-child {
                   border: none;
                   background-color: #F2F3F8;
+                  &:hover .del {
+                    display: inline-block;
+                  }
                 }
               }
             }
@@ -1093,7 +1096,6 @@
         }
       }
       > .stamp {
-        display: inline-block;
         width: 50%;
         display: flex;
         float: left;

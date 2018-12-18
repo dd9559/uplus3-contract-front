@@ -6,7 +6,7 @@
       </ul>
     </div>-->
     <div class="container">
-      <div class="slider" :class="[collapse?'collapse-off':'']">
+      <div class="slider" :class="[collapse?'':'collapse-on']">
         <el-menu
           :default-active="activeIndex"
           :unique-opened="true"
@@ -40,8 +40,9 @@
           <ul>
             <li v-for="(item,index) in Index" :key="index" @click="toLink(item,index)">{{item.name}}</li>
           </ul>
-          <p class="operation">
-            <el-button  type="text" @click="goBack" v-if="Index.length>2">返回</el-button>
+          <p class="operation" @click="goBack" v-if="Index.length>2">
+            <i class="iconfont icon-fanhui"></i>
+            <span>返回</span>
           </p>
         </div>
         <div class="page-view-content">
@@ -173,14 +174,14 @@
       right: 0;
       bottom: 0;
       .slider{
-        max-width: 160px;
+        /*max-width: 160px;*/
         border-right: 1px solid @border-e6;
         position: relative;
         /deep/ .el-menu{
           border: 0px;
         }
-        &.collapse-off{
-          /*width: 54px;*/
+        &.collapse-on{
+          width:160px
         }
         &-bar-control{
           width: 56px;
@@ -234,6 +235,11 @@
             top: 50%;
             right: 0;
             transform:translateY(-50%);
+            display: flex;
+            align-items: center;
+            background-color: @bg-white;
+            padding: @margin-base @margin-base @margin-base 0;
+            border-radius: 4px;
           }
         }
         &-content{

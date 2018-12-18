@@ -5,19 +5,19 @@
       <p class="f14"><i class="iconfont icon-tubiao-5 mr-10 font-cl1"></i>筛选查询</p>
       <p>
         <el-button
+          class="paper-btn paper-btn-blue btn-info"
+          type="primary"
+          size="small"
+          @click="queryFn"
+          v-dbClick
+          round>查 询
+        </el-button>
+        <el-button
           class="paper-btn btn-info"
           size="small"
           @click="resetFormFn"
           v-dbClick
           round>重 置
-        </el-button>
-        <el-button
-          class="paper-btn paper-btn-blue btn-info"
-          type="primary"
-          size="small"
-          @click="queryFn"
-           v-dbClick
-          round>查 询
         </el-button>
       </p>
     </div>

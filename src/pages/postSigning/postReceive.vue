@@ -22,14 +22,52 @@
                     </el-select>
                 </el-form-item>
                 <div class="in-block">
-                    <el-form-item label="部门" prop="region" class="mr">
-                        <el-select v-model="propForm.region" class="w200" clearable :remote-method="regionMethodFn" :loading="loading" @change="regionChangeFn" @clear="regionClearFn" remote filterable>
-                            <el-option v-for="(item,index) in rules.region" :key="'bk'+item.id + index" :label="item.name" :value="item.id"></el-option>
+                    <el-form-item label="部门" prop="regionS" class="mr">
+                        <el-select 
+                        ref="tree" 
+                        size="small" 
+                        :loading="Loading" 
+                        :remote-method="remoteMethod" 
+                        v-model="propForm.regionS"
+                        @clear="clearDep"
+                        @visible-change="initDepList" 
+                        clearable 
+                        filterable
+                        remote 
+                        placeholder="请选择">
+                            <el-option 
+                            class="drop-tree" 
+                            value="">
+                                <el-tree 
+                                :data="DepList" 
+                                :props="defaultProps" 
+                                @node-click="depHandleClick"></el-tree> 
+                            </el-option>
                         </el-select>
+                        <!-- <el-select 
+                        v-model="propForm.region" 
+                        class="w200" 
+                        clearable 
+                        :remote-method="regionMethodFn" 
+                        :loading="loading" 
+                        @change="regionChangeFn"
+                        @clear="regionClearFn" 
+                        remote 
+                        filterable>
+                            <el-option v-for="(item,index) in rules.region" :key="'bk'+item.id + index" :label="item.name" :value="item.id"></el-option>
+                        </el-select> -->
                     </el-form-item>
                     <el-form-item prop="regionName">
-                        <el-select v-model="propForm.regionName" class="w100" :loading="loading2" clearable filterable>
-                            <el-option v-for="item in rules.regionName" :key="'bmName'+item.empId" :label="item.name" :value="item.empId"></el-option>
+                        <el-select 
+                        v-model="propForm.regionName" 
+                        v-loadmore="moreEmploye"
+                        class="w100" 
+                        clearable>
+                            <el-option 
+                            v-for="item in EmployeList" 
+                            :key="'bmName'+item.empId" 
+                            :label="item.name" 
+                            :value="item.empId"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
@@ -83,7 +121,7 @@
         </div>
         <!-- 分页 -->
         <div class="pagination" v-if="tableData.total">
-            <el-pagination :current-page="tableData.pageNum" :page-size="tableData.pageSize" @current-change="currentChangeFn" layout=" total, prev, next, jumper" :total="tableData.total">
+            <el-pagination :current-page="tableData.pageNum" :page-size="tableData.pageSize" @current-change="currentChangeFn" layout=" total, prev, pager, next, jumper" :total="tableData.total">
             </el-pagination>
         </div>
         <!-- 拒绝弹层 -->
@@ -104,8 +142,8 @@
             </span>
         </el-dialog>
         <!-- 接收弹层 -->
-        <el-dialog :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :title="receive.tit" :visible.sync="receive.show" width="1000px" :center="receive.center" class="layer-paper"><!--  layer-scroll-auto -->
-            <!-- <LayerScrollAuto> -->
+        <el-dialog :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :title="receive.tit" :visible.sync="receive.show" width="1000px" :center="receive.center" class="layer-paper layer-scroll-auto"><!--  layer-scroll-auto -->
+            <LayerScrollAuto>
                 <div class="layer-receive-tab">
                     <el-tabs v-model="activeName" class="contract-tab">
                         <el-tab-pane label="交易流程指派">
@@ -116,9 +154,8 @@
                                 </el-table-column>
                                 <el-table-column :formatter="nullFormatterData" prop="specifiedDay" align="center" label="计划天数">
                                 </el-table-column>
-                                <el-table-column :formatter="nullFormatterData" prop="a4" align="center" min-width="185" label="分配角色">
+                                <!-- <el-table-column :formatter="nullFormatterData" prop="a4" align="center" min-width="185" label="分配角色">
                                     <template slot-scope="scope">
-                                        <!-- @change="roleChangeFn(scope.$index,$event)"  -->
                                         <el-select v-model="scope.row.roleId" placeholder="分配角色" filterable :loading="loading3" :disabled="roleDisabledFn(scope.row)" @change="roleChangeFn(scope.$index,$event)" size="small" class="w185">
                                             <el-option v-for="item in dealTableRule" :key="'fp'+item.key + scope.$index" :label="item.value" :value="item.key"></el-option>
                                         </el-select>
@@ -126,9 +163,49 @@
                                 </el-table-column>
                                 <el-table-column :formatter="nullFormatterData" align="center" min-width="185" label="责任人">
                                     <template slot-scope="scope">
-                                        <!-- @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)" -->
                                         <el-select v-model="scope.row.personLiableCode" :disabled="roleDisabledFn(scope.row)" v-loadmore="loadMoreFn" placeholder="选择责任人" @focus="roleRemoteFn(scope.$index,scope.row.roleId)" filterable remote :remote-method="roleRemoteMethodFn" :loading="loading4" @change="roleRemoteChangeFn($event,scope.$index)" size="small" class="w185">
                                             <el-option v-for="item in empRulesList(scope.row.rules)" :key="'zrr'+item.empId + scope.$index" :label="item.name" :value="item.empId"></el-option>
+                                        </el-select>
+                                    </template>
+                                </el-table-column> -->
+                                <el-table-column align="center" min-width="185" label="分配角色">
+                                    <template slot-scope="scope">
+                                        <!-- @change="roleChangeFn(scope.$index,$event)"  -->
+                                        <el-select 
+                                        v-model="scope.row.roleId" 
+                                        placeholder="分配角色" 
+                                        filterable 
+                                        :loading="loading3"
+                                        :disabled="roleDisabledFn(scope.row)"
+                                        @change="roleChangeFn(scope.$index,$event)"
+                                        size="small" 
+                                        class="w185">
+                                            <el-option 
+                                            v-for="item in dealTableRule" 
+                                            :key="'fp'+item.key + scope.$index" 
+                                            :label="item.value" 
+                                            :value="item.key"></el-option>
+                                        </el-select>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column align="center" min-width="185" label="责任人">
+                                    <template slot-scope="scope">
+                                        <el-select 
+                                        v-model="scope.row.personLiableCode" 
+                                        :value="scope.row.value"
+                                        :disabled="roleDisabledFn(scope.row)"
+                                        @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)"
+                                        placeholder="选择责任人" 
+                                        filterable
+                                        :loading="loading4"
+                                        @change="roleRemoteChangeFn($event,scope.$index)"
+                                        size="small" 
+                                        class="w185">
+                                            <el-option 
+                                            v-for="item in scope.row.rules" 
+                                            :key="'zrr'+item.empId + scope.$index" 
+                                            :label="item.name" 
+                                            :value="item.empId"></el-option>
                                         </el-select>
                                     </template>
                                 </el-table-column>
@@ -151,12 +228,14 @@
                                         <div class="contract-main" v-for="item in items.children" :key="item.title">
                                             <p class="cl-1 mb-10"><span class="spna"><template v-if="item.isrequire">*</template></span>{{item.title}}</p>
                                             <ul class="steps-img">
-                                                <li v-for="(ies,i) in item.value" :key="ies.name" @click="previewPhoto(item.value,i)">
-                                                    <div class="img">
-                                                        <uploadCell :type="stepsTypeImg(ies.path)"></uploadCell>
-                                                    </div>
-                                                    <p class="p">{{ies.name}}</p>
-                                                </li>
+                                                <el-tooltip class="item" effect="dark" :content="ies.name" placement="bottom" v-for="(ies,i) in item.value" :key="ies.name">
+                                                    <li @click="previewPhoto(item.value,i)">
+                                                        <div class="img">
+                                                            <uploadCell :type="stepsTypeImg(ies.path)"></uploadCell>
+                                                        </div>
+                                                        <p class="p">{{ies.name}}</p>
+                                                    </li>
+                                                </el-tooltip>
                                             </ul>
                                         </div>
                                     </div>
@@ -168,7 +247,7 @@
                     <!-- 预览 -->
                     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
                 </div>
-            <!-- </LayerScrollAuto> -->
+            </LayerScrollAuto>
             <span slot="footer">
                 <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn" round>保存</el-button>
                 <el-button class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
@@ -201,7 +280,6 @@
                 pageSize: 10,
                 // 加载
                 loading: false,
-                loading2: false,
                 loading3: false,
                 loading4: false,
                 loadingList: false,
@@ -209,7 +287,9 @@
                 // 筛选条件
                 propForm: {
                     region: '',
+                    regionS: '',
                     regionName: '',
+                    regionNameS: '',
                     search: '',
                     paper: '',
                     time: '',
@@ -395,12 +475,11 @@
                     if (res.status === 200) {
                         let arr = [...res.data];
                         arr.map(e => {
-                            e.rules = {};
-                            e.rules.list = [{
+                            e.rules = [{
+                                name: e.personLiableName,
                                 empId: e.personLiableCode,
-                                name: e.personLiableName
                             }]
-                            //    e.roleBool = true;
+                               e.roleBool = true;
                         })
                         this.dealTable = arr;
                         this.loadingdealTable = false;
@@ -448,21 +527,22 @@
                 return this.recursiveFn(n, arr)
             },
             // 分配角色改变时候 数据联动
-            roleChangeFn(i, e) {
+            roleChangeFn(i,e) {
                 this.loading4 = true;
-                this.$ajax.get('/api/organize/employees', {
-                    cityId: this.cityId,
-                    roleId: e
-                }).then(res => {
+                this.$ajax.get('/api/employee/postsigning/duty',{
+                    roleId:e,
+                    empId:this.receive.e.dealAgentId,
+                    depId:this.receive.e.dealagentStoreId,
+                }).then(res=>{
                     res = res.data;
-                    if (res.status === 200) {
+                    if(res.status === 200){
                         this.dealTable[i].personLiableCode = "";
                         this.dealTable[i].rules = [...res.data];
                         this.dealTable[i].personLiableName = '';
-                        // this.dealTable[i].roleBool = false;
+                        this.dealTable[i].roleBool = false;
                     }
                     this.loading4 = false;
-                }).catch(err => {
+                }).catch(err=>{
                     this.errMeFn(err);
                     this.loading4 = false;
                 })
@@ -473,18 +553,23 @@
                 this.$set(this.dealTable, i, arr)
             },
             // 展示下拉列表的时候执行
-            roleRemoteFn(i, e) {
-                this.employees = {
-                    keyword: '',
-                    roleId: e,
-                    index: i
-                };
-                // && this.dealTable[i].roleBool
-                if (!!e) {
-                    if (!this.dealTable[i].rules.pageNum) {
-                        this.dealTable[i].rules.pageNum = 1;
-                    }
-                    this.getEmployeesFn();
+            roleRemoteFn(i,e,bool){
+                if(bool && !!e && this.dealTable[i].roleBool){
+                    this.loading4 = true;
+                    this.$ajax.get('/api/employee/postsigning/duty',{
+                        roleId:e,
+                        empId:this.receive.e.dealAgentId,
+                        depId:this.receive.e.dealagentStoreId,
+                    }).then(res=>{
+                        res = res.data;
+                        if(res.status === 200){
+                            this.dealTable[i].rules = [...res.data];
+                        }
+                        this.loading4 = false;
+                    }).catch(err=>{
+                        this.errMeFn(err);
+                        this.loading4 = false;
+                    })
                 }
             },
             roleRemoteMethodFn(query) {
@@ -540,7 +625,7 @@
                 let arr = [...this.dealTable];
                 arr.map(e => {
                     e.contractCode = this.receive.e.id;
-                    e.rules.list.map(i => {
+                    e.rules.map(i => {
                         if (i.empId === e.personLiableCode) {
                             e.personLiableName = i.name
                         }
@@ -567,7 +652,7 @@
                 let bool = true;
                 arr.map(e => {
                     e.contractCode = this.receive.e.id;
-                    e.rules.list.map(i => {
+                    e.rules.map(i => {
                         if (i.empId === e.personLiableCode) {
                             e.personLiableName = i.name
                         }
@@ -675,66 +760,24 @@
                 this.getListData();
                 // console.log('查询');
             },
-            // 部门筛选回调
-            regionChangeFn(e) {
-                if (e !== "" || !!e) {
-                    this.loading2 = true;
-                    this.$ajax.get("/api/organize/employees", {
-                        cityId: this.cityId,
-                        depId: e,
-                    }).then(res => {
-                        res = res.data
-                        if (res.status === 200) {
-                            this.propForm.regionName = '';
-                            let arr = [];
-                            if (res.data.length > 0) {
-                                arr = [{
-                                    name: "全部",
-                                    empId: ""
-                                }, ...res.data]
-                            }
-                            this.rules.regionName = arr;
-                            this.loading2 = false;
-                        }
-                    }).catch(err => {
-                        this.errMeFn(err);
-                        this.loading2 = false;
-                    })
-                } else {
-                    this.propForm.regionName = '';
-                    this.rules.regionName = [{
-                        name: "全部",
-                        empId: ""
-                    }]
+            // 部门第二版 选择部门
+            depHandleClick(data){
+                this.propForm.region=data.depId
+                this.propForm.regionS=data.name
+                this.handleNodeClick(data);
+            },
+            // 部门第二版 删除
+            clearDep(){
+                this.propForm.region='';
+                this.propForm.regionName='';
+                this.clearSelect();
+                this.remoteMethod();
+            },
+            // 部门第二版 下拉隐藏时 刷新数据清除上一次数据
+            initDepList(val){
+                if(!val){
+                    this.remoteMethod()
                 }
-
-            },
-            // 部门下拉搜索
-            regionMethodFn(e) {
-                this.loading = true;
-                this.$ajax.get("/api/access/deps", {
-                    keyword: e
-                }).then(res => {
-                    res = res.data
-                    if (res.status === 200) {
-                        if (e === '' || !e) {
-                            this.rules.region = [{
-                                name: "全部",
-                                id: ""
-                            }, ...res.data]
-                        } else {
-                            this.rules.region = res.data
-                        }
-                        this.loading = false;
-                    }
-                }).catch(err => {
-                    this.errMeFn(err);
-                    this.loading = false;
-                })
-            },
-            // 清除部门搜索
-            regionClearFn() {
-                this.regionMethodFn('');
             },
             // 贷款银行搜索
             remoteMethodFn(e) {
@@ -838,28 +881,6 @@
                 })
             },
         },
-        directives: {
-            loadmore: {
-                inserted(el, binding) {
-                    // console.log(el,binding)
-                    // 获取element-ui定义好的scroll盒子
-                    const SELECTWRAP_DOM = el.querySelector('.el-select-dropdown .el-select-dropdown__wrap');
-                    SELECTWRAP_DOM.addEventListener('scroll', function() {
-                        /*
-                         * scrollHeight 获取元素内容高度(只读)
-                         * scrollTop 获取或者设置元素的偏移值,常用于, 计算滚动条的位置, 当一个元素的容器没有产生垂直方向的滚动条, 那它的scrollTop的值默认为0.
-                         * clientHeight 读取元素的可见高度(只读)
-                         * 如果元素滚动到底, 下面等式返回true, 没有则返回false:
-                         * ele.scrollHeight - ele.scrollTop === ele.clientHeight;
-                         */
-                        const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight;
-                        if (CONDITION) {
-                            binding.value();
-                        }
-                    });
-                }
-            }
-        },
         components: {
             ScreeningTop,
             LayerScrollAuto
@@ -869,12 +890,15 @@
             this.getAdmin();
             // 贷款银行
             this.remoteMethodFn();
+            // // 部门搜索
+            // this.regionMethodFn('');
             // 部门搜索
-            this.regionMethodFn('');
+            this.remoteMethod();
             // 后期状态
             this.getLateState();
             // 列表数据
             this.getListData();
+            
         },
         watch: {
             cityId() {

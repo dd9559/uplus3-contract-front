@@ -95,7 +95,7 @@
           <br v-if="contractForm.type===2||contractForm.type===3">
           <el-form-item label="产权状态：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
             <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
-              <el-option  label="无" value=""></el-option>
+              <el-option  label="无" :value="0"></el-option>
               <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
           </el-form-item>

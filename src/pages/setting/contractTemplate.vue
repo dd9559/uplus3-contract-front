@@ -110,7 +110,7 @@
     data() {
       return {
         rowenableId:'',
-        selectCity: '',
+        selectCity: 1,
         list: [],
         rowData: [],
         modal: false,
@@ -119,6 +119,7 @@
         fileList3: [],
         titleStr:'',
         contraName:'',
+        cityName:'',
         citys:[],
         mbrules:['.doc','.docx'],
         contraType:'',
@@ -129,19 +130,19 @@
       }
     },
     created() {
-      // if(this.$route.query.cid>0){
-      //   this.selectCity=this.$route.query.cid
-      // }else{
+      if(localStorage.getItem('cid')){
+        this.selectCity=parseInt(localStorage.getItem('cid'))
+      }else{
         this.selectCity='武汉'
-      // }
+        this.cityName='武汉'
+      }
       this.$ajax.get('/api/organize/cities').then((res)=>{
                 if(res.status==200){
                     this.citys=res.data.data
-                }
-            })
+          }
+      })
       this.getList()
     },
-
     methods: {
       rowClick(){
          this.$refs.detail.$el.classList.remove('detail')
@@ -153,7 +154,6 @@
       getAdd(type,obj){
         if(type=='mmai'){
            this.mmaiAddress=obj[0].param[obj[0].param.length-1];
-           console.log(this.mmaiAddress,'this.mmaiAddress');
         }else if(type=='jjian'){
           this.jjianAddress=obj[0].param[obj[0].param.length-1]
         }else if(type=='mban'){
@@ -161,6 +161,7 @@
         }
       },
       selCity(){
+            localStorage.setItem('cid',this.selectCity)
             this.getList()
       },
       popMsg(msg,callback){
@@ -184,6 +185,7 @@
           res = res.data
           if (res.status === 200) {
             this.list = res.data
+            this.cityName=res.data[0].cityName
           }
         }).catch(error => {
           console.log(error)
@@ -232,6 +234,7 @@
           mbanAddress:this.mbanAddress,
           selectCity:this.selectCity=='武汉'?1:this.selectCity,
           type:this.contraType,
+          cityName:this.cityName,
           contraName:this.contraName,
           show:1,
           id:this.id
@@ -305,7 +308,7 @@
             path: "/contraPreview",
             query: {
               enableTemplateId:showType==2?row.id:row.enableTemplateId,
-              show:2
+              show:2,
             }
           });
         }
@@ -514,10 +517,8 @@
     padding: 30px 20px;
   }
 
-
 /deep/ .detail tr.linestyle{
     background-color: #ECF5FF;
 }
-
 }
 </style>

@@ -6,36 +6,36 @@
 
 <script>
 export default {
+    name:'LayerScrollAuto',
     data(){
         return{
             winHeight:0,
+            comHeight:'auto',
         }
     },
     mounted() {
-        window.onresize = this.winSizeFn;
+        window.onresize = this.comHeightFn;
     },
     updated() {
-        let that = this;
-        setTimeout(()=>{
-            that.winSizeFn()
-        },0)
-    },
-    computed:{
-        comHeight(){
-            let h = this.winHeight - (80+80+65+62);
-            if(!this.$refs.layer){
-                return ''
-            }
-            if(this.$refs.layer.children[0].clientHeight > h){
-                return `height:${h}px`
-            }else{
-                return ''
-            }
-        }
+        // setTimeout(()=>{
+            this.comHeightFn();
+        // },100)
     },
     methods:{
-        winSizeFn(){
+        comHeightFn(){
             this.winHeight = document.documentElement.clientHeight;
+            let h = this.winHeight - (80+80+65+62);
+            let min = 350;
+            if(!this.$refs.layer){
+                this.comHeight = ''
+            }
+            if(h < min){
+                this.comHeight = `height:${min}px`
+            }else if(this.$refs.layer.children[0].clientHeight > h){
+                this.comHeight = `height:${h}px`
+            }else{
+                this.comHeight = ''
+            }
         }
     },
 }

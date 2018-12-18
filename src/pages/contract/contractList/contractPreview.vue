@@ -11,14 +11,16 @@
       <div class="btn" v-if="contType<4">
         <el-button type="primary" round style="width:100px" @click="toEdit" v-if="examineState<0||examineState===2">编 辑</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogInvalid = true" v-if="contState!=3&&contState!=0">无 效</el-button>
-        <el-button round :type="examineState<0?'primary':''" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="isSubmitAudit=true">{{subCheck}}</el-button>
+        <!-- <el-button round :type="examineState<0?'primary':''" style="width:100px" v-if="examineState<0&&contType<4" :disabled="subCheck==='审核中'?true:false" @click="isSubmitAudit=true">{{subCheck}}</el-button> -->
+        <el-button round type="primary" style="width:100px" v-if="examineState<0&&contType<4" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" style="width:100px" v-if="contState===3&&contChangeState!=2&&contChangeState!=1" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger" style="width:100px" v-if="contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
         <el-button round style="width:100px" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading" v-if="examineState===1&&contState===1">签章打印</el-button>
         <el-button round style="width:100px" @click="dayin" v-if="examineState===1&&contState===2">签章打印</el-button>
         <!-- <el-button @click="signature(2)">打印1</el-button> -->
         <!-- <el-button @click="dayin" v-if="examineState===1&&contState===2">打印</el-button> -->
-        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0">审核</el-button>
+        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
+        <el-button round style="width:100px" v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
       </div>
       <div class="btn" v-else>
         <el-button type="primary" round style="width:100px" @click="toEdit">编 辑</el-button>
@@ -53,11 +55,10 @@
     <!-- 合同审核弹窗 -->
     <el-dialog title="合同审核" :visible.sync="dialogCheck" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="checkTop">
-        <p>审核结果</p>
-        <div @click="sign"><span :class="{'sign':isSign}"><i class="el-icon-success"></i></span>标记风险单</div>
+        <div @click="sign"><span :class="{'sign':isSign}">标记风险单</span></div>
       </div>
       <div class="checkBottom">
-        <p><span>*</span>审核备注</p>
+        <p><span v-if="isSign">*</span>审核备注</p>
         <div class="reason">
           <el-input type="textarea" :rows="5" placeholder="请填写审核原因以及风险单原因，最多100字 " v-model="textarea" resize='none' style="width:624px" maxlength="100">
           </el-input>
@@ -86,8 +87,10 @@
 <script>
 import changeCancel from "../contractDialog/changeCancel";
 import PdfPrint from '@/components/PdfPrint';
+import { MIXINS } from "@/assets/js/mixins";
 
 export default {
+  mixins: [MIXINS],
   components: {
     changeCancel,
     PdfPrint
@@ -108,7 +111,7 @@ export default {
       cityId:'',
       isShowType:false,
       //审批流节点信息
-      auditNodeResult:{},
+      // auditNodeResult:{},
       //签章
       isSignature:false,
       //买卖合同地址
@@ -133,6 +136,10 @@ export default {
       contType:'',
       //变更解约
       contChangeState:'',
+      //当前待审人id
+      auditId:'',
+      //当前登录人信息
+      userMsg:{},
       subCheck:'提交审核',
       canceldialogType:'',
       changeCancel_:'',
@@ -154,6 +161,7 @@ export default {
       this.operationType = this.$route.query.operationType;
     }
     this.getContImg();
+    this.getAdmin();//获取当前登录人信息
   },
   methods: {
     //居间买卖切换
@@ -273,6 +281,7 @@ export default {
     },
     dayin(){
       this.$refs.pdfPrint.print();
+      this.signature(4);
     },
     //获取签名
     getUrl(url){
@@ -352,6 +361,7 @@ export default {
           this.guestStoreId=res.data.guestStoreId;
           this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
+          this.auditId=res.data.auditId;
           if(res.data.cityId===1&&res.data.contType.value===2||res.data.contType.value===3){  //||res.data.contType.value===3
             this.isShowType=true;
             //买卖
@@ -415,6 +425,7 @@ export default {
             message:'提交审核成功',
             type:'success'
           });
+          this.getContImg();
           this.isSubmitAudit=false
           this.subCheck="审核中"
         }else{
@@ -547,6 +558,7 @@ export default {
     }
   }
   .content{
+    padding-top: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -576,6 +588,7 @@ export default {
   }
   .top {
     display: flex;
+    padding-top: 20px;
     > p {
       padding-right: 15px;
       font-size: 14px;
@@ -601,16 +614,18 @@ export default {
     }
   }
   .checkTop {
-    padding-bottom: 20px;
-    display: flex;
-    i {
-      padding-right: 5px;
-    }
-    > p {
-      width: 75px;
+    padding: 20px 0 20px 80px;
+    span{
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      color: @color-blank;
+      font-size: 14px;
+      cursor: pointer;
     }
     .sign {
-      color: @color-blue;
+      color: @color-warning;
+      border-color: @color-warning;
     }
   }
   .checkBottom {

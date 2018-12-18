@@ -222,8 +222,12 @@ export default {
 
       //发起结算申请
       auditApply() {
-        
-        if(this.auditForm.textarea !== ""){
+        if(this.uploadList.length > 10){
+            this.$message('结算凭证数量上限10个'); 
+        }
+        else if(this.auditForm.textarea !== ""){
+            
+                
             let param = {
                 id: this.contId,
                 settlRemark: this.auditForm.textarea,
@@ -244,10 +248,11 @@ export default {
                     message: error
                 })
             })
-         
+        
         }else if(this.auditForm.textarea === ""){
-           this.$message('请填写结算备注'); 
+        this.$message('请填写结算备注'); 
         }
+            
        
       }
 

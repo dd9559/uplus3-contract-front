@@ -58,34 +58,38 @@
                 </el-form-item>
                 <div class="in-block">
                     <el-form-item label="部门" 
-                    prop="department"
+                    prop="departmentS"
                     class="mr">
                         <el-select 
-                        v-model="propForm.department" 
-                        :remote-method="regionMethodFn"
-                        :loading="loading"
-                        @change="regionChangeFn"
-                        @clear="regionClearFn"
-                        clearable
-                        remote 
+                        ref="tree" 
+                        size="small" 
+                        :loading="Loading" 
+                        :remote-method="remoteMethod" 
+                        v-model="propForm.departmentS" 
+                        @clear="clearDep"
+                        @visible-change="initDepList" 
+                        clearable 
                         filterable
-                        class="w200">
+                        remote 
+                        placeholder="请选择">
                             <el-option 
-                            v-for="item in rules.department" 
-                            :key="'department'+item.id"
-                            :label="item.name" 
-                            :value="item.id"></el-option>
+                            class="drop-tree" 
+                            value="">
+                                <el-tree 
+                                :data="DepList" 
+                                :props="defaultProps" 
+                                @node-click="depHandleClick"></el-tree> 
+                            </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="departmentMo">
                         <el-select 
                         v-model="propForm.departmentMo" 
-                        :loading="loading2"
+                        v-loadmore="moreEmploye"
                         clearable
-                        filterable
                         class="w100">
                             <el-option 
-                            v-for="item in rules.departmentMo" 
+                            v-for="item in EmployeList" 
                             :key="'departmentMo'+item.empId" 
                             :label="item.name"
                             :value="item.empId"></el-option>
@@ -163,7 +167,7 @@
                 :current-page="tableData.pageNum"
                 :page-size="tableData.pageSize"
                 @current-change="currentChangeFn"
-                layout=" total, prev, next, jumper"
+                layout=" total, prev, pager, next, jumper"
                 :total="tableData.total">
             </el-pagination>
         </div>
@@ -384,66 +388,24 @@
                     this.errMeFn(err);
                 })
             },
-            // 部门筛选回调
-            regionChangeFn(e) {
-                if( e !=="" || !!e){
-                    this.loading2 = true;
-                    this.$ajax.get("/api/organize/employees",{
-                    cityId:this.cityId,
-                    depId:e,
-                    }).then(res=>{
-                        res = res.data
-                        if(res.status === 200){
-                            this.propForm.departmentMo = '';
-                            let arr = [];
-                            if(res.data.length > 0){
-                                    arr = [{
-                                    name: "全部",
-                                    empId: ""
-                                },...res.data]
-                            }
-                            this.rules.departmentMo = arr;
-                            this.loading2 = false;
-                        }
-                    }).catch(err=>{
-                        this.errMeFn(err);
-                        this.loading2 = false;
-                    })
-                }else{
-                    this.propForm.departmentMo = '';
-                    this.rules.departmentMo = [{
-                                        name: "全部",
-                                        empId: ""
-                                    }]
+            // 部门第二版 选择部门
+            depHandleClick(data){
+                this.propForm.department=data.depId
+                this.propForm.departmentS=data.name
+                this.handleNodeClick(data);
+            },
+            // 部门第二版 删除
+            clearDep(){
+                this.propForm.department='';
+                this.propForm.departmentMo='';
+                this.clearSelect();
+                this.remoteMethod();
+            },
+            // 部门第二版 下拉隐藏时 刷新数据清除上一次数据
+            initDepList(val){
+                if(!val){
+                    this.remoteMethod()
                 }
-                
-            },
-            // 部门下拉搜索
-            regionMethodFn(e){
-                this.loading = true;
-                this.$ajax.get("/api/access/deps",{
-                    keyword:e
-                }).then(res=>{
-                    res = res.data
-                    if(res.status === 200){
-                        if(e==='' || !e){
-                            this.rules.department = [{
-                                name: "全部",
-                                id: ""
-                            },...res.data]
-                        }else{
-                            this.rules.department = res.data
-                        }
-                        this.loading = false;
-                    }
-                }).catch(err=>{
-                    this.errMeFn(err);
-                    this.loading = false;
-                })
-            },
-            // 清除部门搜索
-            regionClearFn(){
-                this.regionMethodFn('');
             },
             // 交易流程获取数据
             getTransactionProcess(){
@@ -468,7 +430,7 @@
             // 交易步骤
             this.getTradingSteps();
             // 部门搜索
-            this.regionMethodFn('');
+            this.remoteMethod();
             // 枚举数据查询
             this.getDictionary();
             // 列表数据
