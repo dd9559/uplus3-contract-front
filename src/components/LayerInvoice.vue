@@ -448,6 +448,7 @@
 
         .type-list {
             display: flex;
+            flex-wrap: wrap;
 
             >p {
                 min-width: 110px;

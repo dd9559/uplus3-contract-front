@@ -86,14 +86,19 @@
                             </template>
                             <template v-else>
                                 <ul class="steps-img">
-                                    <li 
+                                    <el-tooltip class="item" 
+                                    effect="dark" 
+                                    :content="i.name" 
+                                    placement="bottom" 
                                     v-for="(i,n) in item.val"
-                                    :key="i.name"
+                                    :key="i.name">
+                                    <li 
                                     @click="previewPhoto(item.val,n)"
                                     >
                                         <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                         <p class="p">{{i.name}}</p>
                                     </li>
+                                    </el-tooltip>
                                 </ul>
                             </template>
                     </el-form-item>
