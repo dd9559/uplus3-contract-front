@@ -367,7 +367,8 @@
                 this.setConditionList(val)
             },
             getTypeOption(type,index) {
-                this.nodeList[index].userId = ""
+                this.$set(this.nodeList[index],'userId',"")
+                this.$set(this.nodeList[index],'userName',"")
             },
             selectUser(type,index) {
                 if(type === 1) {
@@ -421,10 +422,28 @@
                             isOk = false
                             if(item[i].name) {
                                 if(item[i].type !== "") {
-                                    if(item[i].userId!=""&&item[i].type===1 || item[i].userId!=""&&item[i].type===2 || item[i].type===3) {
+                                    // if(item[i].userId!=""&&item[i].type===1 || item[i].userId!=""&&item[i].type===2 || item[i].userId==""&&item[i].type===3) {
+                                    //     isOk = true
+                                    // } else {
+                                    //     this.$message({message:item[i].type===1?"请选择门店":"请选择职务"})
+                                    //     return false
+                                    // }
+                                    if(item[i].type===1) {
+                                        if(item[i].userId!="") {
+                                            isOk = true
+                                        } else {
+                                            this.$message({message:"请选择门店"})
+                                            return false
+                                        }
+                                    } else if(item[i].type===2) {
+                                        if(item[i].userId!="") {
+                                            isOk = true
+                                        } else {
+                                            this.$message({message:"请选择职务"})
+                                            return false
+                                        }
+                                    } else if(item[i].type===3) {
                                         isOk = true
-                                    } else {
-                                        this.$message({message:item[i].type===1?"请选择门店":"请选择职务"})
                                     }
                                 } else {
                                     this.$message({message:"审批人类型不能为空"})

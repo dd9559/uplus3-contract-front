@@ -40,7 +40,7 @@
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">
-          <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" >
+          <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" height="240">
             <el-table-column width="40">
               <template slot-scope="scope">
                 <span class="outSide">
@@ -150,7 +150,8 @@
             </el-table-column>
             <el-table-column :label="priceType" min-width="60" >
               <template slot-scope="scope">
-                {{scope.row.PriceMin}}-{{scope.row.PriceMax}}{{scope.row.Trade==='求租'?'元':'万元'}}
+                <span v-if="scope.row.PriceMin||scope.row.PriceMax">{{scope.row.PriceMin}}-{{scope.row.PriceMax}}{{scope.row.Trade==='求租'?'元':'万元'}}</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
           </el-table>
@@ -234,32 +235,14 @@
             </el-form-item>
           </el-form>
           <div class="client_b">
-            <el-button
-              round
-              class="search_btn"
-              @click="innerVisible=false"
-            >取消</el-button>
-            <el-button
-              type="primary"
-              round
-              class="search_btn"
-              @click="innerVisible=false"
-            >确定</el-button>
+            <el-button round class="search_btn" @click="innerVisible=false">取消</el-button>
+            <el-button type="primary" round class="search_btn" @click="innerVisible=false">确定</el-button>
           </div>
         </el-dialog>
       </div>
       <div class="floor_btn">
-        <el-button
-          round
-          class="search_btn"
-          @click="close"
-        >取消</el-button>
-        <el-button
-          type="primary"
-          round
-          class="search_btn"
-          @click="confirm"
-        >确定</el-button>
+        <el-button round class="search_btn" @click="close">取消</el-button>
+        <el-button type="primary" round class="search_btn" @click="confirm">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -317,7 +300,8 @@ export default {
       BuildingCode: "",
       selectCode: "",
       loading_: false,
-      showDataList: true
+      showDataList: true,
+      isReady:true
     };
   },
   created() {

@@ -4,9 +4,8 @@
     :visible.sync="paperShow"
     width="1000px"
     class="layer-paper"
-    v-loading="pdfLoading"
     @close="propCloseFn">
-        <div v-loading="loading">
+        <div>
             <div class="paper-edit-box" v-if="paperType">
                 <ul>
                     <li>
@@ -21,7 +20,7 @@
                         <label class="checkbox-info iconfont" :class="[item.check?'active':'']" @click="item.check=!item.check"></label>
                         <div class="type-list">
                             <p><label>款类：</label><span>{{item.typeName}}</span></p>
-                            <p><label>金额：</label><span>{{item.amount}}</span></p>
+                            <p><label>金额：</label><span>{{item.amount}}元</span></p>
                             <div class="input-group">
                                 <label>开票项目：</label>
                                 <el-select class="w120" size="small" v-model="item.project" placeholder="请选择">
@@ -75,6 +74,7 @@
     import LayerPaperInfo from '@/components/LayerPaperInfo';
     import PdfPrint from '@/components/PdfPrint';
     import { MIXINS } from "@/assets/js/mixins";
+    import { Loading } from 'element-ui';
 
     export default {
         props: {},
@@ -91,11 +91,10 @@
                 paperInfoData: {}, //票据对象
                 moneyTypes: [], //临时存放勾选的款类
                 activeType: 0, //当前预览项
-                loading:false,
-                pdfLoading:false,
                 pdfUrl:'',
                 imgUrl:'',
                 stateBoll:false,
+                layerLoading:'',
             }
         },
         methods: {
@@ -130,13 +129,14 @@
                     if (res.status === 200) {
                         this.paperInfoData = Object.assign({}, res.data)
                         // this.paperShow = true
-                        this.loading = false;
+                        this.layerLoading.close();
+                        this.paperShow = true;
                         this.FooterShow = true;
                         this.printPaper();
                     }
                 }).catch(err=>{
                     this.$message.error(err);
-                    this.loading = false;
+                    this.layerLoading.close();
                 })
             },
             billing: function() {
@@ -207,15 +207,15 @@
                                 this.pdfUrl = res.data.url;
                                 // this.$refs.pdfPrint.print();
                             }
-                            this.pdfLoading = false;
+                            this.layerLoading.close();
                         }).catch(err=>{
                             this.$message.error(err)
-                            this.pdfLoading = false;
+                            this.layerLoading.close();
                         })
                     }
                 }).catch(err=>{
                     this.$message.error(err)
-                    this.pdfLoading = false;
+                    this.layerLoading.close();
                 })
             },
             printPaperFn(){
@@ -223,20 +223,20 @@
                     this.$message.error('请先设置财务专用电子签章');
                     return false
                 }
-                this.pdfLoading = true;
+                this.layerLoading = Loading.service({});
                 this.$ajax.post('/api/bills/print', {
                     code:this.paperInfoData.billCode,
                     isPrint:true,
                 }).then(res => {
                     res = res.data
-                    this.pdfLoading = false;
+                    this.layerLoading.close();
                     if(res.status === 200){
                         this.$emit("emitPaperSet");
                         this.$refs.pdfPrint.print();
                     }
                 }).catch(err=>{
                     this.$message.error(err)
-                    this.pdfLoading = false;
+                    this.layerLoading.close();
                 })
             },
             // 获取开票列表
@@ -255,22 +255,24 @@
                             }, item)
                             this.moneyTypes.splice(index, 1, obj)
                         })
-                        this.loading = false;
+                        this.layerLoading.close();
+                        if(this.moneyTypes.length>0){
+                            this.paperShow = true;
+                        }
                     }
                 }).catch(err=>{
                     this.$message.error(err);
-                    this.loading = false;
-                    // this.paperShow = false;
+                    this.layerLoading.close();
                 })
             },
             // 打开
             show(id, bool = false,stateBoll = false) {
+                this.layerLoading = Loading.service({});
                 this.paperType = bool;
-                this.loading = true;
-                this.paperShow = true;
+                // this.paperShow = true;
                 this.FooterShow = false;
                 this.stateBoll = stateBoll;
-                // this.pdfUrl= ""
+                this.pdfUrl= "";
                 this.ID = id
                 if (bool) {
                     this.paperList();

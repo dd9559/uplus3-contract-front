@@ -13,29 +13,29 @@
           </el-select>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select
-            v-model="searchForm.dealAgentStoreId"
-            :multiple='false'
-            clearable
-            filterable
-            remote
-            reserve-keyword
-            @change="getBroker"
-            placeholder="部门"
-            :remote-method="remoteMethod"
-            :loading="loading">
-              <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                >
-              </el-option>
-            </el-select>
+          <!-- <el-select v-model="searchForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
+            <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select> -->
+
+          <el-select style="width:160px" :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+            <el-option class="drop-tree" value="">
+              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchForm.dealAgentId" placeholder="请选择" style="width:100px">
+          <!-- <el-select v-model="searchForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
             <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
+            </el-option>
+          </el-select> -->
+
+          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.dealAgentId" placeholder="请选择">
+            <el-option
+              v-for="item in EmployeList"
+              :key="item.empId"
+              :label="item.name"
+              :value="item.empId">
             </el-option>
           </el-select>
         </el-form-item>
@@ -113,6 +113,7 @@
 <script>
 import ScreeningTop from "@/components/ScreeningTop";
 import { MIXINS } from "@/assets/js/mixins";
+import { TOOL } from "@/assets/js/common";
 
 export default {
   mixins: [MIXINS],
@@ -144,8 +145,9 @@ export default {
     };
   },
   created() {
-    this.getDictionary();
-    this.getProateNotes();
+    this.getDictionary();//字典
+    this.getProateNotes();//列表
+    this.remoteMethod();//部门
   },
   methods: {
     //获取分账记录列表
@@ -154,11 +156,11 @@ export default {
         pageNum:this.currentPage,
         pageSize:this.pageSize
       }
-      // param = Object.assign({}, param, this.searchForm);
-      // if (this.signDate.length > 0) {
-      //   param.startTime = this.signDate[0];
-      //   param.endTime = this.signDate[1];
-      // };
+      param = Object.assign({}, param, this.searchForm);
+      if (this.signDate.length > 0) {
+        param.startTime = this.signDate[0];
+        param.endTime = this.signDate[1];
+      };
       this.$ajax.get('/api/settlement/getProateNotes',param).then(res=>{
         res=res.data;
         if(res.status===200){
@@ -168,9 +170,13 @@ export default {
       })
     },
     // 查询
-    queryFn() {},
+    queryFn() {
+      this.getProateNotes();
+    },
     // 重置
-    resetFormFn() {},
+    resetFormFn() {
+      TOOL.clearForm(this.searchForm);
+    },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
@@ -197,38 +203,56 @@ export default {
       }
     },
     //获取当前部门
-    getDeps(key){
-      let param = {
-        keyword:key
+    initDepList:function (val) {
+      if(!val){
+        this.remoteMethod()
       }
-      this.$ajax.get('/api/access/deps', param).then(res=>{
-        this.loading=false;
-        res=res.data
-        if(res.status===200){
-          this.options=res.data
-        }
-      })
     },
-    remoteMethod(query){
-      if (query !== '') {
-        this.loading = true;
-        this.getDeps(query)
-      } else{
+    clearDep:function () {
+      this.searchForm.dealAgentStoreId=''
+      this.searchForm.depName=''
+      // this.EmployeList=[]
+      this.searchForm.dealAgentId=''
+      this.clearSelect()
+    },
+    depHandleClick(data) {
+      // this.getEmploye(data.depId)
+      this.searchForm.dealAgentStoreId=data.depId
+      this.searchForm.depName=data.name
 
-      }
+      this.handleNodeClick(data)
     },
-    getBroker(id){
-      console.log(id)
-      let param = {
-        depId:id
-      }
-      this.$ajax.get('/api/organize/employees', param).then(res=>{
-        res=res.data
-        if(res.status===200){
-          this.brokersList=res.data
-        }
-      })
-    },
+    // getDeps(key){
+    //   let param = {
+    //     keyword:key
+    //   }
+    //   this.$ajax.get('/api/access/deps', param).then(res=>{
+    //     this.loading=false;
+    //     res=res.data
+    //     if(res.status===200){
+    //       this.options=res.data
+    //     }
+    //   })
+    // },
+    // selectDep(value){
+    //   delete this.searchForm.dealAgentId;
+    //   this.brokersList=[];
+    //   if(value){
+    //     this.getBroker(value)
+    //   }
+    // },
+    // getBroker(id){
+    //   console.log(id)
+    //   let param = {
+    //     depId:id
+    //   }
+    //   this.$ajax.get('/api/organize/employees', param).then(res=>{
+    //     res=res.data
+    //     if(res.status===200){
+    //       this.brokersList=res.data
+    //     }
+    //   })
+    // },
   }
 };
 </script>

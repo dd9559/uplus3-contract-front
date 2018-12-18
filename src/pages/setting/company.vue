@@ -47,33 +47,33 @@
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="center" label="城市" prop="cityName" width="90">
         </el-table-column>
-        <el-table-column align="center" label="门店" prop="storeName" width="220">
+        <el-table-column align="center" label="门店" prop="storeName">
         </el-table-column>
-        <el-table-column align="center" label="开户行" width="220">
+        <el-table-column align="center" label="开户行">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankBranchName }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="开户名" width="220">
+        <el-table-column align="center" label="开户名">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="银行账户" width="200">
+        <el-table-column align="center" label="银行账户">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard|formatBankCard }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合作方式" prop="cooperationMode.label" width="150">
+        <el-table-column align="center" label="合作方式" prop="cooperationMode.label">
         </el-table-column>
-        <el-table-column align="center" label="添加时间" prop="createTime" width="208">
+        <el-table-column align="center" label="添加时间" prop="createTime">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatDate(2)}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="添加人" prop="createByName" width="150">
+        <el-table-column align="center" label="添加人" prop="createByName">
         </el-table-column>
-        <el-table-column align="center" label="操作" width="260">
+        <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium">查看</el-button>
             <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium">编辑</el-button>
@@ -116,9 +116,10 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="合作方式: ">
-                <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
+                <!-- <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
                   <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                </el-select>
+                </el-select> -->
+                <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input>
               </el-form-item>
             </div>
             <div class="item">
@@ -444,7 +445,7 @@
           cityId: val,
           keyWord: ""
         }
-        this.$ajax.get('/api/organize/deps', param).then(res => {
+        this.$ajax.get('/api/setting/company/queryAllStore', param).then(res => {
           res = res.data
           if(res.status === 200) {
             this.storeList = res.data
@@ -467,6 +468,8 @@
             this.storeList.find(item => {
               if(item.id === val) {
                 this.companyForm.storeName = item.name
+                this.companyForm.cooperationMode = item.cooperationMode.label
+                this.cooModeChange(item.cooperationMode.value)
               }
             })
           }
@@ -476,7 +479,12 @@
             this.noticeShow = false
           }, 2000)
           this.companyForm.storeId = ""
+          this.cooModeChange(2)
+          this.companyForm.cooperationMode = ""
         })
+        this.companyForm.name = ""
+        this.companyForm.contractSign = ""
+        this.companyForm.financialSign = ""
       },
       //关闭模态窗
       handleClose(done) {
@@ -624,14 +632,16 @@
               this.$message({message:"工商注册号不能为空"})
             }
           }
-          let obj = {
-            companyBankList: this.companyBankList
-          }
-          let param = {
-            documentCard: this.documentCard
-          }
-          param = Object.assign({},this.companyForm,obj,param)
           if(isOk) {
+            let obj = {
+              companyBankList: this.companyBankList
+            }
+            let param = {
+              documentCard: this.documentCard
+            }
+            param = Object.assign({},this.companyForm,obj,param)
+            param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
+            
             if(this.companyFormTitle === "添加企业信息") {
               this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
                 res = res.data
@@ -698,7 +708,7 @@
           cityName: currentRow.cityName,
           storeId: currentRow.storeId,
           storeName: currentRow.storeName,
-          cooperationMode: currentRow.cooperationMode.value,
+          cooperationMode: currentRow.cooperationMode.label,
           name: currentRow.name,
           lepName: currentRow.lepName,
           lepDocumentType: type === 'init' ? currentRow.lepDocumentType.label :currentRow.lepDocumentType.value,
@@ -1022,7 +1032,6 @@
                 }
                 .del {
                   position: absolute;
-                  display: inline-block;
                   width: 20px;
                   height: 20px;
                   background-color: #F56C6C;
@@ -1032,6 +1041,7 @@
                   text-align: center;
                   line-height: 20px;
                   color: #fff;
+                  display: none;
                 }
                 &:first-child {
                   .up {
@@ -1049,6 +1059,9 @@
                 &:last-child {
                   border: none;
                   background-color: #F2F3F8;
+                  &:hover .del {
+                    display: inline-block;
+                  }
                 }
               }
             }

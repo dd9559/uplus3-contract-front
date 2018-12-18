@@ -28,15 +28,31 @@
         <el-form-item label="关键字">
           <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
         </el-form-item>
+        <br>
         <el-form-item label="部门">
-          <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
+          <!-- <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
             <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select> -->
+
+          <el-select style="width:160px" :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
+            <el-option class="drop-tree" value="">
+              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="contractForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
+          <!-- <el-select v-model="contractForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
             <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
+            </el-option>
+          </el-select> -->
+
+          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
+            <el-option
+              v-for="item in EmployeList"
+              :key="item.empId"
+              :label="item.name"
+              :value="item.empId">
             </el-option>
           </el-select>
         </el-form-item>
@@ -133,7 +149,11 @@
         </el-table-column>
         <el-table-column align="left" label="物业地址" prop="propertyAddr" width="150" fixed>
         </el-table-column>
-        <el-table-column align="left" label="成交总价" prop="dealPrice" width="100" fixed>
+        <el-table-column align="left" label="成交总价" prop="dealPrice" width="120" fixed>
+          <template slot-scope="scope">
+            <span>{{scope.row.dealPrice}} 元</span>
+            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span> 
+          </template>
         </el-table-column>
         <el-table-column align="left" label="财务收付" width="100" fixed>
           <template slot-scope="scope">
@@ -153,7 +173,7 @@
             {{scope.row.signDate.substr(0, 10)}}
           </template>
         </el-table-column>
-        <el-table-column align="left" label="可分配业绩" width="100">
+        <el-table-column align="left" label="可分配业绩 (元)" width="110">
           <template slot-scope="scope">
             <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
               <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
@@ -331,7 +351,8 @@ export default {
         "14": "", //结算状态
         "13": "", //收佣状态
         "54": "", //业绩状态
-        "538": "" //用途
+        "538": "", //用途
+        "507": ""
       },
       loading:false,
       //部门选择列表
@@ -362,8 +383,8 @@ export default {
     this.getContractList();//合同列表
     this.getDictionary();//字典
     this.getHousePurpose();//用途
-    this.getDeps();//部门
     this.getBlankPdf();//空白合同pdf
+    this.remoteMethod();//部门
   },
   methods: {
     //用途
@@ -431,7 +452,7 @@ export default {
     //收款
     gathering(id) {
       //console.log(id);
-      // this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'))
+      this.setPath(this.$tool.getRouter(['合同','合同列表','创建收款'],'contractList'));
       this.$router.push({
         path:'/receiptBill',
         query:{
@@ -442,6 +463,7 @@ export default {
     //付款
     payment(id) {
       //console.log(id);
+      this.setPath(this.$tool.getRouter(['合同','合同列表','创建付款'],'contractList'));
        this.$router.push({
         path:'/payBill',
         query:{
@@ -451,7 +473,7 @@ export default {
     },
     //合同详情页
     toDetail(value) {
-      console.log(value)
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
       if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
         this.$router.push({
           path: "/contractDetails",
@@ -496,6 +518,7 @@ export default {
       this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
         res=res.data;
         if(res.status===200){
+          this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
           if (command === 1 || command === 2 || command === 3) {
             this.$router.push({
               path: "/addContract",
@@ -524,6 +547,7 @@ export default {
     },
     //合同预览
     goPreview(item) {
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
       this.$router.push({
         path: "/contractPreview",
         query: {
@@ -534,6 +558,7 @@ export default {
     },
     //合同审核
     goCheck(item) {
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
       this.$router.push({
         path:'/contractPreview',
         query:{
@@ -595,37 +620,57 @@ export default {
       this.contState=item.contState.value
     },
     //获取当前部门
-    getDeps(key){
-      let param = {
-        keyword:key
-      }
-      this.$ajax.get('/api/access/deps', param).then(res=>{
-        this.loading=false;
-        res=res.data
-        if(res.status===200){
-          this.options=res.data
-        }
-      })
-    },
-    selectDep(value){
-      delete this.contractForm.dealAgentId;
-      this.brokersList=[];
-      if(value){
-        this.getBroker(value)
+    initDepList:function (val) {
+      if(!val){
+        this.remoteMethod()
       }
     },
-    getBroker(id){
-      console.log(id)
-      let param = {
-        depId:id
-      }
-      this.$ajax.get('/api/organize/employees', param).then(res=>{
-        res=res.data
-        if(res.status===200){
-          this.brokersList=res.data
-        }
-      })
+    clearDep:function () {
+      this.contractForm.dealAgentStoreId=''
+      this.contractForm.depName=''
+      // this.EmployeList=[]
+      this.contractForm.dealAgentId=''
+      this.clearSelect()
     },
+    depHandleClick(data) {
+      // this.getEmploye(data.depId)
+      this.contractForm.dealAgentStoreId=data.depId
+      this.contractForm.depName=data.name
+
+      this.handleNodeClick(data)
+    },
+
+    // getDeps(key){
+    //   let param = {
+    //     keyword:key
+    //   }
+    //   this.$ajax.get('/api/access/deps', param).then(res=>{
+    //     this.loading=false;
+    //     res=res.data
+    //     if(res.status===200){
+    //       this.options=res.data
+    //     }
+    //   })
+    // },
+    // selectDep(value){
+    //   delete this.contractForm.dealAgentId;
+    //   this.brokersList=[];
+    //   if(value){
+    //     this.getBroker(value)
+    //   }
+    // },
+    // getBroker(id){
+    //   console.log(id)
+    //   let param = {
+    //     depId:id
+    //   }
+    //   this.$ajax.get('/api/organize/employees', param).then(res=>{
+    //     res=res.data
+    //     if(res.status===200){
+    //       this.brokersList=res.data
+    //     }
+    //   })
+    // },
     //提审
     goSave(item){
       this.isSubmitAudit=true;
@@ -665,10 +710,24 @@ export default {
           message:'已结算完成，无需发起结算'
         })
       }else{
-        this.jiesuan=true;
-        this.settleId=item.id;
+        // this.jiesuan=true;
+        // this.settleId=item.id;
+        let param = {
+            id: item.id         
+          }
+        this.$ajax.get("/api/settlement/getSettlById", param).then(res => {
+          // console.log(res);
+          let data = res.data;
+          if (res.data.status === 200) {
+            this.jiesuan=true;
+            this.settleId=item.id;
+          }
+        }).catch(error => {
+          this.$message({
+            message: error
+          })
+        })
       }
-      
     },
     //关闭结算弹窗
     closeSettle(){
@@ -766,6 +825,9 @@ export default {
   .paper-set-tit {
     padding-bottom: 10px;
   }
+}
+/deep/.margin-left{
+  margin-left: 0;
 }
 .contract-list {
   margin-top: 20px;

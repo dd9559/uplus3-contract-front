@@ -2,7 +2,7 @@
     <div class='view-container'  v-loading="loading">
       <p class='title'>
           <span>合同模板预览</span>
-          <el-button type="primary paper-btn" @click="saveAll" v-if="saveBtn">保存</el-button>
+          <el-button type="primary saveAll paper-btn" @click="saveAll" v-if="saveBtn">保存</el-button>
       </p>
       <div class="bodycontainer"  ref='bigbox'>
           <div class="ht-list listone"  ref='htlist'>
@@ -103,12 +103,14 @@ export default{
             divWidth:'',
             divHeight:'',
             timeout:0,
+            touch:true,
             qmnewsrcArr:[],
             signPosition:{x:0,y:0,pageIndex:''},
           }
         },
         created(){
             this.cityId=this.$route.query.selectCity
+            this.cityName=this.$route.query.cityName
             this.mmaiAddress = this.$route.query.mmaiAddress
             this.jjianAddress = this.$route.query.jjianAddress
             this.mbanAddress = this.$route.query.mbanAddress
@@ -124,7 +126,6 @@ export default{
             // console.log(document.getElementsByClassName('listone')[0].offsetWidth);
             this.divHeight=802
             if(this.show==1){
-                
                this.getImgAdd(this.count)
             }else{
                 this.position=false
@@ -135,8 +136,6 @@ export default{
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
                             this.showSed=true 
-                            // console.log(this.$refs.bigbox);
-                            // this.$refs.bigbox.$el.classList.add('bodycontainer')
                             this.divWidth=this.divWidth
                             this.sigtureShow=false
                             this.imgSrc=res.data.data.businessImg.url
@@ -223,8 +222,6 @@ export default{
                             document.onmousemove = function(ev){
                             var l = ev.clientX-disX;
                             var t = ev.clientY-disY;
-                            // this.divWidth=ev.target.parentNode.offsetWidth
-                            // console.dir(oDiv.parentNode.children[2].offsetWidth,'oDiv');
                             This.signPosition.x=(l/622).toFixed(2)
                             This.signPosition.y=(t/802).toFixed(2)
                             console.log(This.signPosition,'sign');
@@ -269,20 +266,26 @@ export default{
                   },
                   contractSeats:this.tableDate,
                   type:this.type,
+                  cityName:this.cityName,
                   name:this.contraName,
                   signPosition:this.signPosition,
                   imgAddress:{"business":this.showSed?this.imgSrc:'', "residence":this.showSed?this.imgSrc2:'',"address":!this.showSed?this.imgSrc:''},
                   imgPage:{"business":this.showSed?this.total:0, "residence": this.showSed?this.total2:0,"count": !this.showSed?this.total:0},
                   cityId:this.cityId,
                   id:this.id
-              }
-              console.log(param,'zuizhong');
-              this.$ajax.postJSON('/api/setting/contractTemplate/insert',param).then(res=>{
-                  if(res.status==200){
-                        this.$router.push({
-                        path: "/contractTemplate",
-                    });
-                  }
+                }
+                    let saveAll=document.getElementsByClassName('saveAll')[0]
+                    saveAll.disabled=true
+                    this.$ajax.postJSON('/api/setting/contractTemplate/insert',param).then(res=>{
+                    if(res.status==200){
+                            this.touch=false
+                            this.$router.push({
+                            path: "/contractTemplate",
+                            // query:{
+                            //     cid:this.cityId
+                            // }
+                        });
+                    }
                 })
             },
             numSave(){
@@ -410,7 +413,6 @@ export default{
                      if(flag==0){
                           this.$ajax.get('/api/load/generateAccessURL',{url:newsrc}).then(res=>{
                           if(res.status==200){
-                        //   console.log(this.timeout,'this.timeout');
                           this.timeout=res.data.data.url.split('?')[1].split('&')[0].split('=')[1]
                           let newsrc2=res.data.data.url
                           let a={}

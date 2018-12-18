@@ -109,7 +109,7 @@
       <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
     </div>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" v-dbClick @click="goResult">提交付款申请</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">提交付款申请</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -179,6 +179,7 @@
           row:[]
         },
         showAmount:true,//是否显示合同余额
+        fullscreenLoading:false,//创建按钮防抖
       }
     },
     created(){
@@ -232,6 +233,7 @@
             this.imgList.forEach(item=>{
               this.files.push(`${item.path}?${item.name}`)
             })
+            this.showAmount=res.data.outAccountType===4?false:true
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
             this.getAmount()
@@ -402,18 +404,24 @@
               message:'付款凭证不能为空'
             })
           }else {
+            this.fullscreenLoading=true
             param.filePath = [].concat(this.files)
             if(this.$route.query.edit){
               delete param.contId
               this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
                 res = res.data
+                this.fullscreenLoading=false
                 if (res.status === 200) {
-                  this.$message({
-                    message:'修改成功'
+                  this.$router.replace({
+                    path: 'payResult',
+                    query:{
+                      content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):'',
+                      edit:1
+                    }
                   })
-                  this.$router.go(-1)
                 }
               }).catch(error=>{
+                this.fullscreenLoading=false
                 this.$message({
                   message:error
                 })
@@ -421,8 +429,9 @@
             }else {
               this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
                 res = res.data
+                this.fullscreenLoading=false
                 if (res.status === 200) {
-                  this.$router.push({
+                  this.$router.replace({
                     path: 'payResult',
                     query:{
                       content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):''
@@ -430,6 +439,7 @@
                   })
                 }
               }).catch(error=>{
+                this.fullscreenLoading=false
                 this.$message({
                   message:error
                 })

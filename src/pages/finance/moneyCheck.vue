@@ -38,7 +38,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
@@ -175,10 +175,8 @@
         <el-table-column align="center" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
-            <template v-if="scope.row.caozuo===1">
-              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
-              <el-button type="text" @click="cellOpera(scope.row,'del')">作废</el-button>
-            </template>
+            <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
+            <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="scope.row.caozuo===1">作废</el-button>
             <span v-else>--</span>
           </template>
         </el-table-column>
@@ -312,6 +310,11 @@
         console.log(`当前页: ${val}`);
         this.currentPage = val
         this.getData()
+      },
+      initDepList:function (val) {
+        if(!val){
+          this.remoteMethod()
+        }
       },
       clearDep:function () {
         this.searchForm.depId=''

@@ -41,7 +41,7 @@
     </section>
     <div class="input-group">
       <p><label class="form-label f14">款类</label></p>
-      <ul class="money-type-list">
+      <ul class="money-type-list" v-if="moneyTypeOther.length>0">
         <li v-for="item in types" :key="item.id" :class="[activeType===item.id?'active':'']"
             @click="choseType(item)">{{item.name}}
         </li>
@@ -211,9 +211,10 @@
           <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
         </li>
       </ul>
+      <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
     </div>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" v-dbClick @click="goResult">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -336,7 +337,8 @@
         collapseMsg:{
           total:0,
           row:[]
-        }
+        },
+        fullscreenLoading:false,//提交表单防抖
       }
     },
     created() {
@@ -433,15 +435,17 @@
             this.dep.id=res.data.inObjStoreId
             this.dep.name=res.data.inObjStore
             this.getEmploye(res.data.deptId)
-            if(res.data.filePath){
-              this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
-            }
-            this.imgList.forEach(item=>{
-              this.files.push(`${item.path}?${item.name}`)
-            })
-            this.cardList = res.data.account //刷卡补充
-            if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
-              this.activeAdmin = res.data.inAccount[0].cardNumber
+            if(this.activeType===2){
+              if(res.data.filePath){
+                this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+              }
+              this.imgList.forEach(item=>{
+                this.files.push(`${item.path}?${item.name}`)
+              })
+              this.cardList = res.data.account //刷卡补充
+              if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
+                this.activeAdmin = res.data.inAccount[0].cardNumber
+              }
             }
             this.form = Object.assign({}, this.form, obj)
           }
@@ -606,16 +610,23 @@
         })
       },
       getResult:function (param,type='add') {
+        this.fullscreenLoading=true
         if (type==='edit') {
             this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
               res=res.data
+              this.fullscreenLoading=false
               if(res.status===200){
-                this.$message({
-                  message:'修改成功'
+                this.$router.replace({
+                  path: 'receiptResult',
+                  query:{
+                    type:this.activeType,
+                    content:JSON.stringify(res.data),
+                    edit:1
+                  }
                 })
-                this.$router.go(-1)
               }
             }).catch(error=>{
+              this.fullscreenLoading=false
               this.$message({
                 message:error
               })
@@ -623,8 +634,9 @@
           } else {
             this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
               res = res.data
+              this.fullscreenLoading=false
               if (res.status === 200) {
-                this.$router.push({
+                this.$router.replace({
                   path: 'receiptResult',
                   query:{
                     type:this.activeType,
@@ -633,6 +645,7 @@
                 })
               }
             }).catch(error=>{
+              this.fullscreenLoading=false
               this.$message({
                 message:error
               })

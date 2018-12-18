@@ -95,7 +95,7 @@
           <br v-if="contractForm.type===2||contractForm.type===3">
           <el-form-item label="产权状态：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
             <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
-              <el-option  label="无" value=""></el-option>
+              <el-option  label="无" :value="0"></el-option>
               <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
           </el-form-item>
@@ -863,6 +863,7 @@ export default {
           delete param.leaseCont.pids;
           delete param.leaseCont.pmobiles;
           delete param.leaseCont.pnames;
+          delete param.saleCont.distributableAchievement;
         }
         //console.log(param);
         this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {
@@ -900,6 +901,7 @@ export default {
           delete param.saleCont.previewImg;
           delete param.saleCont.subscriptionTerm;
           delete param.saleCont.updateTime;
+          delete param.saleCont.distributableAchievement;
           param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");  
         }
 
@@ -1224,11 +1226,11 @@ export default {
         })
       }else if(val==="Square"){
         this.$nextTick(()=>{
-          this.contractForm.houseInfo.Square=this.$tool.cutFloat({val:this.contractForm.houseInfo.Square,max:999999999.99})
+          this.contractForm.houseInfo.Square=this.$tool.cutFloat({val:this.contractForm.houseInfo.Square,max:999999.99})
         })
       }else if(val==="SquareUse"){
         this.$nextTick(()=>{
-          this.contractForm.houseInfo.SquareUse=this.$tool.cutFloat({val:this.contractForm.houseInfo.SquareUse,max:999999999.99})
+          this.contractForm.houseInfo.SquareUse=this.$tool.cutFloat({val:this.contractForm.houseInfo.SquareUse,max:999999.99})
         })
       }
     },

@@ -27,7 +27,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @clear="clearDep" v-model="searchForm.dealAgentStoreName" placeholder="请选择">
+          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.dealAgentStoreName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
@@ -95,7 +95,7 @@
         <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span class="span-cursor">{{scope.row.code}}</span></li>
+              <li>合同编号:<span class="span-cursor" @click="toLink(scope.row)">{{scope.row.code}}</span></li>
               <li>房源编号:<span class="span-cursor">{{scope.row.houseinfoCode}}</span><span>{{scope.row.showOwnerName}}</span></li>
               <li>客源编号:<span class="span-cursor">{{scope.row.guestinfoCode}}</span><span>{{scope.row.showCustName}}</span></li>
             </ul>
@@ -117,7 +117,7 @@
         <el-table-column align="center" label="已收款（元）" prop="receivedCommission" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="待收款（元）" prop="useNum" :formatter="nullFormatter">
           <template slot-scope="scope">
-            {{scope.row.receivableCommission-scope.row.receivedCommission}}
+            {{scope.row.receivableCommission-scope.row.receivedCommission|moneyFormatter}}
           </template>
         </el-table-column>
         <el-table-column align="center" min-width="160" label="签约时间" prop="operation time">
@@ -127,7 +127,7 @@
         </el-table-column>
         <el-table-column align="center" min-width="160" label="收款时间" prop="operation time">
           <template slot-scope="scope">
-            {{scope.row.lastCollectCommissionTime}}
+            {{scope.row.lastCollectCommissionTime|formatTime}}
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款状态" prop="receiveAmountState" :formatter="nullFormatter">
@@ -199,6 +199,11 @@
         this.currentPage = val
         this.getData()
       },
+      initDepList:function (val) {
+        if(!val){
+          this.remoteMethod()
+        }
+      },
       clearDep:function () {
         this.searchForm.dealAgentStoreName=''
         this.searchForm.dealAgentStoreId=''
@@ -210,6 +215,15 @@
         this.searchForm.dealAgentStoreId=data.depId
         this.searchForm.dealAgentStoreName=data.name
         this.handleNodeClick(data)
+      },
+      toLink:function (row) {
+        let param={
+          contType:row.contType.value,
+          contId:row.id,
+          contCode:row.code,
+          operaType:'cont'
+        }
+        this.msgOpera(param)
       },
       getData: function () {
         // let param={}
@@ -246,6 +260,15 @@
           }
         })
       },
+    },
+    filters:{
+      moneyFormatter:function (val) {
+        if(val>0){
+          return val
+        }else {
+          return 0
+        }
+      }
     }
   }
 </script>

@@ -500,8 +500,8 @@
             <!-- ratio -->
             <el-table-column
               prop="ratio"
-              label="分成比例"
-              width="80"
+              label="分成比例(%)"
+              width="100"
             >
             </el-table-column>
 
@@ -587,8 +587,8 @@
             <!-- ratio -->
             <el-table-column
               prop="ratio"
-              label="分成比例"
-              width="80"
+              label="分成比例(%)"
+              width="100"
             >
             </el-table-column>
 
@@ -932,7 +932,7 @@ export default {
           .postJSON("/api/achievement/applyStatusArraign", param)
           .then(res => {
             if (res.data.status == 200) {
-               this.$message("操作完成");
+               this.$message({ message: "操作成功", type: "success" });
                this.recallShow=false;
                this.selectAchList[this.statuIndex].achievementState=0;
             }
@@ -951,7 +951,7 @@ export default {
           .postJSON("/api/achievement/applyStatusArraign", param)
            .then(res => {
           if (res.data.status == 200) {
-               this.$message("操作完成");
+               this.$message({ message: "操作成功", type: "success" });
                this.recallShow=false;
                this.selectAchList[this.statuIndex].achievementState=-1;
             }
