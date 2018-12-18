@@ -28,15 +28,31 @@
         <el-form-item label="关键字">
           <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
         </el-form-item>
+        <br>
         <el-form-item label="部门">
-          <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
+          <!-- <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
             <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select> -->
+
+          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
+            <el-option class="drop-tree" value="">
+              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="contractForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
+          <!-- <el-select v-model="contractForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
             <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
+            </el-option>
+          </el-select> -->
+
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
+            <el-option
+              v-for="item in EmployeList"
+              :key="item.empId"
+              :label="item.name"
+              :value="item.empId">
             </el-option>
           </el-select>
         </el-form-item>
@@ -369,6 +385,7 @@ export default {
     this.getHousePurpose();//用途
     this.getDeps();//部门
     this.getBlankPdf();//空白合同pdf
+    this.remoteMethod();
   },
   methods: {
     //用途
@@ -436,7 +453,7 @@ export default {
     //收款
     gathering(id) {
       //console.log(id);
-      // this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'))
+      this.setPath(this.$tool.getRouter(['合同','合同列表','创建收款'],'contractList'));
       this.$router.push({
         path:'/receiptBill',
         query:{
@@ -447,6 +464,7 @@ export default {
     //付款
     payment(id) {
       //console.log(id);
+      this.setPath(this.$tool.getRouter(['合同','合同列表','创建付款'],'contractList'));
        this.$router.push({
         path:'/payBill',
         query:{
@@ -456,7 +474,7 @@ export default {
     },
     //合同详情页
     toDetail(value) {
-      console.log(value)
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
       if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
         this.$router.push({
           path: "/contractDetails",
@@ -501,6 +519,7 @@ export default {
       this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
         res=res.data;
         if(res.status===200){
+          this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
           if (command === 1 || command === 2 || command === 3) {
             this.$router.push({
               path: "/addContract",
@@ -529,6 +548,7 @@ export default {
     },
     //合同预览
     goPreview(item) {
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
       this.$router.push({
         path: "/contractPreview",
         query: {
@@ -539,6 +559,7 @@ export default {
     },
     //合同审核
     goCheck(item) {
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
       this.$router.push({
         path:'/contractPreview',
         query:{
@@ -600,6 +621,26 @@ export default {
       this.contState=item.contState.value
     },
     //获取当前部门
+    initDepList:function (val) {
+      if(!val){
+        this.remoteMethod()
+      }
+    },
+    clearDep:function () {
+      this.contractForm.dealAgentStoreId=''
+      this.contractForm.depName=''
+      // this.EmployeList=[]
+      this.contractForm.dealAgentId=''
+      this.clearSelect()
+    },
+    depHandleClick(data) {
+      // this.getEmploye(data.depId)
+      this.contractForm.dealAgentStoreId=data.depId
+      this.contractForm.depName=data.name
+
+      this.handleNodeClick(data)
+    },
+
     getDeps(key){
       let param = {
         keyword:key
@@ -785,6 +826,9 @@ export default {
   .paper-set-tit {
     padding-bottom: 10px;
   }
+}
+/deep/.margin-left{
+  margin-left: 0;
 }
 .contract-list {
   margin-top: 20px;
