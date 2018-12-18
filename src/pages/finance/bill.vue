@@ -38,7 +38,17 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+          <el-select 
+          :clearable="true" 
+          ref="tree" 
+          size="small" 
+          filterable remote 
+          :loading="Loading" 
+          :remote-method="remoteMethod" 
+          @visible-change="initDepList" 
+          @clear="clearDep" 
+          v-model="searchForm.depName" 
+          placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
@@ -125,7 +135,7 @@
               付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
             </li>
             <li>
-              账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter('fiexed')}}</span>元
+              账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter}}</span>元
             </li>
           </ul>
         </div>
@@ -449,11 +459,11 @@
       },
     },
     filters:{
-      zeroFormatter:function (val,type='init') {
+      zeroFormatter:function (val) {
         if(!val){
           return 0
         }else {
-          return type==='fixed'?val.toFixed(2):val
+          return val.toFixed(2)
         }
       },
       billState:function (val) {
