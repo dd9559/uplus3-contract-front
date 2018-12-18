@@ -411,7 +411,7 @@
                 res = res.data
                 this.fullscreenLoading=false
                 if (res.status === 200) {
-                  this.$router.push({
+                  this.$router.replace({
                     path: 'payResult',
                     query:{
                       content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):'',
@@ -430,7 +430,7 @@
                 res = res.data
                 this.fullscreenLoading=false
                 if (res.status === 200) {
-                  this.$router.push({
+                  this.$router.replace({
                     path: 'payResult',
                     query:{
                       content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):''
