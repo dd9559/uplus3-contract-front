@@ -326,6 +326,7 @@
       depHandleClick(data) {
         this.searchForm.depId=data.depId
         this.searchForm.depName=data.name
+        this.searchForm.empId=''
         this.handleNodeClick(data)
       },
       getData: function () {
