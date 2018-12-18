@@ -105,7 +105,7 @@
           <template slot-scope="scope">
             <span v-if="scope.row.checkRemark">
               <el-popover trigger="hover" placement="top">
-                <div style="width:160px">
+                <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
                   {{scope.row.checkRemark}}
                 </div>
                 <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.checkRemark.length<16}">
@@ -317,7 +317,7 @@
               <template slot-scope="scope">
                 <span v-if="scope.row.auditInfo">
                   <el-popover trigger="hover" placement="top">
-                    <div style="width:160px">
+                    <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
                       {{scope.row.auditInfo}}
                     </div>
                     <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.auditInfo.length<16}">
@@ -756,10 +756,13 @@
       }
   };
 </script>
-<style lang="less">
+<style lang="less" scoped>
+
 @import "~@/assets/common.less";
 
 #adjustcheck{
+  
+
   .mt20{
     margin-bottom: 20px;
   }
@@ -1099,6 +1102,7 @@
     word-break: break-all;
     word-wrap:break-word;
   }
+   
   .isFlex{
     display: flex;
     align-items: center;
@@ -1115,7 +1119,6 @@
   }
 
 }
-
 
 
 

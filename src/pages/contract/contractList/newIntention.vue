@@ -744,7 +744,7 @@ export default {
    
     //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType
     if (this.$route.query.operateType) {
-       this.type = this.$route.query.operateType
+        this.type = this.$route.query.operateType
       if(this.$route.query.operateType ==2 ){
         this.type = this.$route.query.operateType;
         this.id = this.$route.query.id;
