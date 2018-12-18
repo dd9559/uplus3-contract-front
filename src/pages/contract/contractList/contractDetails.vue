@@ -1451,6 +1451,7 @@ export default {
   }
   .top {
     display: flex;
+    padding-top: 20px;
     > p {
       padding-right: 15px;
       font-size: 14px;

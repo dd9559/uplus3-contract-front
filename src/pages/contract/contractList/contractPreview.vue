@@ -53,11 +53,10 @@
     <!-- 合同审核弹窗 -->
     <el-dialog title="合同审核" :visible.sync="dialogCheck" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="checkTop">
-        <p>审核结果</p>
-        <div @click="sign"><span :class="{'sign':isSign}"><i class="el-icon-success"></i></span>标记风险单</div>
+        <div @click="sign"><span :class="{'sign':isSign}">标记风险单</span></div>
       </div>
       <div class="checkBottom">
-        <p><span>*</span>审核备注</p>
+        <p><span v-if="isSign">*</span>审核备注</p>
         <div class="reason">
           <el-input type="textarea" :rows="5" placeholder="请填写审核原因以及风险单原因，最多100字 " v-model="textarea" resize='none' style="width:624px" maxlength="100">
           </el-input>
@@ -601,16 +600,18 @@ export default {
     }
   }
   .checkTop {
-    padding-bottom: 20px;
-    display: flex;
-    i {
-      padding-right: 5px;
-    }
-    > p {
-      width: 75px;
+    padding: 20px 0 20px 80px;
+    span{
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      color: @color-blank;
+      font-size: 14px;
+      cursor: pointer;
     }
     .sign {
-      color: @color-blue;
+      color: @color-warning;
+      border-color: @color-warning;
     }
   }
   .checkBottom {
