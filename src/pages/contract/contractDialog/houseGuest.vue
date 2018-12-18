@@ -40,7 +40,7 @@
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">
-          <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" >
+          <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName">
             <el-table-column width="40">
               <template slot-scope="scope">
                 <span class="outSide">
@@ -234,32 +234,14 @@
             </el-form-item>
           </el-form>
           <div class="client_b">
-            <el-button
-              round
-              class="search_btn"
-              @click="innerVisible=false"
-            >取消</el-button>
-            <el-button
-              type="primary"
-              round
-              class="search_btn"
-              @click="innerVisible=false"
-            >确定</el-button>
+            <el-button round class="search_btn" @click="innerVisible=false">取消</el-button>
+            <el-button type="primary" round class="search_btn" @click="innerVisible=false">确定</el-button>
           </div>
         </el-dialog>
       </div>
       <div class="floor_btn">
-        <el-button
-          round
-          class="search_btn"
-          @click="close"
-        >取消</el-button>
-        <el-button
-          type="primary"
-          round
-          class="search_btn"
-          @click="confirm"
-        >确定</el-button>
+        <el-button round class="search_btn" @click="close">取消</el-button>
+        <el-button type="primary" round class="search_btn" @click="confirm">确定</el-button>
       </div>
     </el-dialog>
   </div>
