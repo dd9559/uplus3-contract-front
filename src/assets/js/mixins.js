@@ -59,10 +59,10 @@ const MIXINS = {
      * 获取当前用户信息
      */
     getAdmin:function () {
-      this.$ajax.get('/api/payInfo/selectLogined').then(res=>{
+      this.$ajax.get('/api/me').then(res=>{
         res=res.data
         if(res.status===200){
-          this.userMsg = res.data
+          this.userMsg = res.data.user;
         }
       })
     },
@@ -149,7 +149,9 @@ const MIXINS = {
             var a = document.createElement('a');
             a.download = undefined;
             a.href = res.data[0];
+            document.body.appendChild(a)
             a.click();
+            document.body.removeChild(a)
           }else {
             this.previewFiles=res.data
             this.preview=true

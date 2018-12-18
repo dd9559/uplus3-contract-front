@@ -103,7 +103,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
-          <el-dropdown placement="bottom" @command="printCont">
+          <el-dropdown placement="bottom"><!--  @command="printCont" -->
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -267,7 +267,7 @@
             <div style="text-align:center">
               <el-button type="text" size="medium" v-if="scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4" @click="goCheck(scope.row)">审核</el-button> 
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> 
               <el-button type="text" size="medium" @click="toLayerAudit(scope.row)" v-if="scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2">调佣</el-button>
               <span v-if="scope.row.contType.value<4">
                 <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===2" @click="goSave(scope.row)">提审</el-button>
@@ -300,7 +300,8 @@
     <!-- 打印 -->
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
     <!-- <a :href="pdfUrl">hah</a> -->
-    <!-- <button @click="dayin"></button> -->
+    <!-- <button @click="dayin">打印</button> -->
+    <!-- <iframe ref="iframe" src="http://jjw-test.oss-cn-shenzhen.aliyuncs.com/template/20181215/3DSnUcPqx2mbnewri2KBvc.pdf?Expires=1545107200&OSSAccessKeyId=LTAI699jkFRmo7TI&Signature=ICkjPOr4BjK%2BEOmGypBb8yVyRtw%3D" frameborder="0"></iframe> -->
 
   </div>
 </template>
@@ -385,6 +386,7 @@ export default {
     this.getHousePurpose();//用途
     this.getBlankPdf();//空白合同pdf
     this.remoteMethod();//部门
+    this.getAdmin();//获取当前登录人信息
   },
   methods: {
     //用途
@@ -411,6 +413,7 @@ export default {
         param.beginDate = this.signDate[0];
         param.endDate = this.signDate[1];
       }
+      delete param.depName
       //console.log(param)
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
         res = res.data;
@@ -745,9 +748,10 @@ export default {
       this.$refs.lateProgress.show(value);
     },
 
-    // dayin(){
-    //   this.$refs.pdfPrint.print();
-    // },
+    dayin(){
+      debugger
+      this.$refs.iframe.contentWindow.print();
+    },
     //打印空白合同
     printCont(command){
       // console.log(command)
@@ -755,7 +759,7 @@ export default {
       if(command===1){
         if(this.blankPdf1){
           this.getUrl(this.blankPdf1);
-          // this.pdfUrl='http://jjw-test.oss-cn-shenzhen.aliyuncs.com/template/20181213/1GxWuzL4B9yULfWKf7PEEB.pdf?Expires=1544701276&OSSAccessKeyId=LTAI699jkFRmo7TI&Signature=c05r185XfkRoz2yZJfGZgo%2F6gfU%3D'
+          // this.pdfUrl=''
           this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
