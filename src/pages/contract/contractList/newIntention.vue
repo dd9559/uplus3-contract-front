@@ -89,7 +89,7 @@
                                         <el-button type="text" v-if="this.$route.query.operateType==2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
                                 </el-form-item>
                                 <el-form-item label="成交经纪人：" required>
-                                    <el-form-item prop="guestInfo.GuestStoreName">
+                                    <!-- <el-form-item prop="guestInfo.GuestStoreName">
                                         <el-select v-model="contractForm.guestInfo.GuestStoreName" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
                                             <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.id + ',' + item.name"></el-option>
                                         </el-select>
@@ -98,7 +98,24 @@
                                         <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable remote placeholder="请选择经纪人" ref="select2" :remote-method="getEmployee" @change="changeAgent" @clear="clearEmpName">
                                             <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId + ',' + item.name"></el-option>
                                         </el-select>
+                                    </el-form-item> -->
+                                    <el-form-item prop="guestInfo.GuestStoreName">
+                                      <el-select :clearable="true" ref="tree" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.guestInfo.GuestStoreName" placeholder="请选择">
+                                        <el-option class="drop-tree" value="">
+                                          <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+                                        </el-option>
+                                      </el-select>
                                     </el-form-item>
+                                    <el-form-item prop="guestInfo.EmpName" class="small-input">
+                                      <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" v-model="contractForm.guestInfo.EmpName" @change="changeAgent" placeholder="请选择">
+                                        <el-option
+                                          v-for="item in EmployeList"
+                                          :key="item.empId"
+                                          :label="item.name"
+                                          :value="item.empId + ',' + item.name">
+                                        </el-option>
+                                      </el-select>
+                                    </el-form-item> 
                                 </el-form-item>
                             </el-form-item>
                             <el-form-item label="客户信息：" class="disb" required>
@@ -150,8 +167,11 @@
 
 <script>
 import houseGuest from "../contractDialog/houseGuest";
+//  import {FILTER} from "@/assets/js/filter";
 import { TOOL } from "@/assets/js/common";
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+  mixins: [MIXINS],
   data() {
     // 表单正则
     var checkNull = (rule, value, callback) => {
@@ -327,6 +347,29 @@ export default {
   },
 
   methods: {
+    depHandleClick(data) {
+      // this.getEmploye(data.depId)
+      this.contractForm.guestInfo.GuestStoreCode=data.depId
+      this.contractForm.guestInfo.GuestStoreName=data.name
+
+      this.handleNodeClick(data)
+    },
+
+    clearDep:function () {
+      this.contractForm.guestInfo.GuestStoreCode=''
+      this.contractForm.guestInfo.GuestStoreName=''
+      // this.EmployeList=[]
+      this.contractForm.guestInfo.EmpCode=''
+      this.clearSelect()
+    },
+
+    initDepList:function (val) {
+      if(!val){
+        this.remoteMethod()
+      }
+    },
+
+
     cutText(val) {
       // console.log(val)
       if (val === "ownname") {  
@@ -421,7 +464,7 @@ export default {
             this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
           }
-          this.getEmployee()
+          // this.getEmployee()
         })
         .catch(error => {
           this.$message({
@@ -488,7 +531,7 @@ export default {
                 ].identifyCode;
               }
             }
-            this.getEmployee()
+            // this.getEmployee()
           }
         })
         .catch(error => {
@@ -499,57 +542,57 @@ export default {
     },
 
     //获取门店
-    getShopList(e) {
-      let param = {
-        keyword: e
-      };
-      this.$ajax
-        .get("/api/contract/getDepsByCityId", param)
-        .then(res => {
-          this.loading = true;
-          if (res.data.status === 200) {
-            this.loading = false;
+    // getShopList(e) {
+    //   let param = {
+    //     keyword: e
+    //   };
+    //   this.$ajax
+    //     .get("/api/contract/getDepsByCityId", param)
+    //     .then(res => {
+    //       this.loading = true;
+    //       if (res.data.status === 200) {
+    //         this.loading = false;
 
-            if (res.data.data.length > 0) {
-              this.option2 = res.data.data;
-            }
-          }
-        })
-        .catch(error => {
-          this.$message({
-            message: error
-          });
-        });
-    },
+    //         if (res.data.data.length > 0) {
+    //           this.option2 = res.data.data;
+    //         }
+    //       }
+    //     })
+    //     .catch(error => {
+    //       this.$message({
+    //         message: error
+    //       });
+    //     });
+    // },
 
     //获取经纪人
-    getEmployee() {
+    // getEmployee() {
       
-      let id = this.contractForm.guestInfo.GuestStoreCode
-      if(id) {
-        let param = {
-          depId: id
+    //   let id = this.contractForm.guestInfo.GuestStoreCode
+    //   if(id) {
+    //     let param = {
+    //       depId: id
           
-        };
-        this.$ajax
-          .get("/api/organize/employees", param)
-          .then(res => {
-            if (res.data.status === 200) {
-              this.loading = false;
+    //     };
+    //     this.$ajax
+    //       .get("/api/organize/employees", param)
+    //       .then(res => {
+    //         if (res.data.status === 200) {
+    //           this.loading = false;
 
-              if (res.data.data.length > 0) {
-                this.option3 = res.data.data;
-              }
-            }
-          })
-          .catch(error => {
-            this.$message({
-              message: error
-            });
-          });
-      }
+    //           if (res.data.data.length > 0) {
+    //             this.option3 = res.data.data;
+    //           }
+    //         }
+    //       })
+    //       .catch(error => {
+    //         this.$message({
+    //           message: error
+    //         });
+    //       });
+    //   }
       
-    },
+    // },
 
     changeAgent(val) {
 
@@ -560,48 +603,48 @@ export default {
       console.log(this.contractForm.guestInfo);
     },
 
-    clearEmpName() {
-      this.contractForm.guestInfo.EmpName = "";
-      // this.contractForm.guestInfo.EmpCode = ''
-    },
+    // clearEmpName() {
+    //   this.contractForm.guestInfo.EmpName = "";
+    //   // this.contractForm.guestInfo.EmpCode = ''
+    // },
 
     //获取门店更改时的
-    getShop_(val) {
-      // if(id !== "" || !!id){
+    // getShop_(val) {
+    //   // if(id !== "" || !!id){
 
-    this.loading2 = true;  
+    // this.loading2 = true;  
     
-     let id = val.split(",")[0]
-     let name = val.split(",")[1]
+    //  let id = val.split(",")[0]
+    //  let name = val.split(",")[1]
 
-     let param = {
-        depId: id
-      };
+    //  let param = {
+    //     depId: id
+    //   };
 
-      this.$set(this.contractForm.guestInfo, "GuestStoreCode", id);
-      this.$set(this.contractForm.guestInfo,'GuestStoreName',name)
+    //   this.$set(this.contractForm.guestInfo, "GuestStoreCode", id);
+    //   this.$set(this.contractForm.guestInfo,'GuestStoreName',name)
 
-      this.$ajax
-        .get("/api/organize/employees", param)
-        .then(res => {
-          if (res.data.status === 200) {
-            this.loading = false;
+    //   this.$ajax
+    //     .get("/api/organize/employees", param)
+    //     .then(res => {
+    //       if (res.data.status === 200) {
+    //         this.loading = false;
 
-            if (res.data.data.length > 0) {
-              this.option3 = res.data.data;
-            }
-          }
-        })
-        .catch(error => {
-          this.$message({
-            message: error
-          });
-        });
-      // debugger
-      this.clearEmpName();
+    //         if (res.data.data.length > 0) {
+    //           this.option3 = res.data.data;
+    //         }
+    //       }
+    //     })
+    //     .catch(error => {
+    //       this.$message({
+    //         message: error
+    //       });
+    //     });
+    //   // debugger
+    //   this.clearEmpName();
 
-      // }
-    },
+    //   // }
+    // },
 
     //关闭选择房源客源弹窗
     closeCommission(value) {
@@ -739,7 +782,8 @@ export default {
     }
   },
   created() {
-    this.getShopList();
+    this.remoteMethod()
+    // this.getShopList();
     this.contractForm.type = this.$route.query.contType //区分合同类型
    
     //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType

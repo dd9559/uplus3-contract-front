@@ -17,11 +17,24 @@
         </el-form-item>  
 
         <el-form-item label="部门">
-          <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" :loading="loading" class="width200">
+          <!-- <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" :loading="loading" class="width200">
               <el-option v-for="item in adjustForm.getDepName" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
           <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
+          </el-select> -->
+          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="adjustForm.depName" placeholder="请选择">
+            <el-option class="drop-tree" value="">
+              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+            </el-option>
+          </el-select>
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="adjustForm.empId" placeholder="请选择">
+            <el-option
+              v-for="item in EmployeList"
+              :key="item.empId"
+              :label="item.name"
+              :value="item.empId">
+            </el-option>
           </el-select>
         </el-form-item>
 
@@ -362,14 +375,17 @@
           signDate: '', //发起日期
           contType: '', //合同类型
           examineState:'',
-          getDepName: [{
-            name: "全部",
-            id: ""
-          }],    //选择门店
-          getAgentName: [{
-            name: "全部",
-            empId: ""
-          }], 
+          depName:'',
+          depId: '',
+          empId: '',
+          // getDepName: [{
+          //   name: "全部",
+          //   id: ""
+          // }],    //选择门店
+          // getAgentName: [{
+          //   name: "全部",
+          //   empId: ""
+          // }], 
                      //审核状态
           keyWord: ''   //关键字
 
@@ -388,10 +404,10 @@
         //   label: '驳回',
         //   value: 2
         // }],
-        Form :{
-          getDepName: '',
-          getAgentName: ''
-        },
+        // Form :{
+        //   getDepName: '',
+        //   getAgentName: ''
+        // },
         dictionary: {
           //数据字典
           "10": "", //合同类型
@@ -490,83 +506,83 @@
       },
 
       // 得到部门门店和经纪人信息
-      getDepNameFn(e) {
-        this.loading = true;
-        this.$ajax.get("/api/access/deps", {keyword: e})
-        .then(res => {       
-          let data = res.data;         
-          if (res.data.status === 200) { 
-            this.loading = false; 
-            if(e === '' || !e){
-              this.adjustForm.getDepName = [{
-                name: "全部",
-                id: ""
-              },...data.data]
-            }else{
-              this.adjustForm.getDepName = data.data
-            } 
+      // getDepNameFn(e) {
+      //   this.loading = true;
+      //   this.$ajax.get("/api/access/deps", {keyword: e})
+      //   .then(res => {       
+      //     let data = res.data;         
+      //     if (res.data.status === 200) { 
+      //       this.loading = false; 
+      //       if(e === '' || !e){
+      //         this.adjustForm.getDepName = [{
+      //           name: "全部",
+      //           id: ""
+      //         },...data.data]
+      //       }else{
+      //         this.adjustForm.getDepName = data.data
+      //       } 
              
-          }
-        }).catch(error => {
-            this.$message({
-              message: error
-            })
-        })
-      },
+      //     }
+      //   }).catch(error => {
+      //       this.$message({
+      //         message: error
+      //       })
+      //   })
+      // },
 
 
-      changeDepNameFn(e) {
-        if(e !== "" || !!e){
-          this.loading2 = true;
-          this.$ajax.get("/api/organize/employees",{
-            cityId:this.userMsg.cityId,
-            depId: e
-          })
-          .then(res => {       
+      // changeDepNameFn(e) {
+      //   if(e !== "" || !!e){
+      //     this.loading2 = true;
+      //     this.$ajax.get("/api/organize/employees",{
+      //       cityId:this.userMsg.cityId,
+      //       depId: e
+      //     })
+      //     .then(res => {       
                     
-            if (res.data.status === 200) {  
-              this.loading2 = false;
-              this.Form.getAgentName = ''; 
-              if(res.data.data.length > 0){ 
+      //       if (res.data.status === 200) {  
+      //         this.loading2 = false;
+      //         this.Form.getAgentName = ''; 
+      //         if(res.data.data.length > 0){ 
                 
-                this.adjustForm.getAgentName = [{
-                  name: "全部",
-                  empId: ""
-                },...res.data.data]
-              }
-              else{
-                this.adjustForm.getAgentName = res.data.data
-              }
+      //           this.adjustForm.getAgentName = [{
+      //             name: "全部",
+      //             empId: ""
+      //           },...res.data.data]
+      //         }
+      //         else{
+      //           this.adjustForm.getAgentName = res.data.data
+      //         }
               
-            }
+      //       }
 
-          }).catch(error => {
-              this.$message({
-                message: error
-              })
-          })  
-        }else{    
-            this.Form.getAgentName = '';       
-            this.adjustForm.getAgentName = [{
-                name: "全部",
-                empId: ""
-            }]
-            this.Form.getDepName = ''; 
-            this.getDepNameFn('');
-        }
-      },
+      //     }).catch(error => {
+      //         this.$message({
+      //           message: error
+      //         })
+      //     })  
+      //   }else{    
+      //       this.Form.getAgentName = '';       
+      //       this.adjustForm.getAgentName = [{
+      //           name: "全部",
+      //           empId: ""
+      //       }]
+      //       this.Form.getDepName = ''; 
+      //       this.getDepNameFn('');
+      //   }
+      // },
 
       // 清除部门搜索
-      clearDepNameFn(){
-          this.getDepNameFn('');
-      }, 
+      // clearDepNameFn(){
+      //     this.getDepNameFn('');
+      // }, 
       
 
 
       // 重置
       resetFormFn() {
           TOOL.clearForm(this.adjustForm);
-          this.changeDepNameFn('');
+          // this.changeDepNameFn('');
           // this.pageNum=1;
           // this.queryFn();
       },
@@ -590,8 +606,8 @@
             endDate,
             examineState: this.adjustForm.examineState,    //this.examineState
             contractType: this.adjustForm.contType,    //this.adjustForm.contType.key,
-            dealAgentStoreId:this.Form.getDepName,    //this.Form.getDepName.id,
-            dealAgentId: this.Form.getAgentName,    //this.Form.getAgentName.empId,
+            dealAgentStoreId: this.adjustForm.depId,    //this.Form.getDepName.id,
+            dealAgentId: this.adjustForm.empId,    //this.Form.getAgentName.empId,
             keyword: this.adjustForm.keyWord
             
           },
@@ -738,15 +754,39 @@
         this.pageNum = e;
         this.queryFn();
       },
+
+
+      depHandleClick(data) {
+        // this.getEmploye(data.depId)
+        this.adjustForm.depId=data.depId
+        this.adjustForm.depName=data.name
+
+        this.handleNodeClick(data)
+      },
+
+      clearDep:function () {
+        this.adjustForm.depId=''
+        this.adjustForm.depName=''
+        // this.EmployeList=[]
+        this.adjustForm.empId=''
+        this.clearSelect()
+      },
+
+      initDepList:function (val) {
+        if(!val){
+          this.remoteMethod()
+        }
+      },
       
       
     },
 
     created() {
       this.queryFn();
-      this.getDepNameFn();
+      // this.getDepNameFn();
       this.getDictionary();
       this.getAdmin();
+      this.remoteMethod();
     },
 
     mounted() {
