@@ -13,14 +13,29 @@
           </el-select>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="searchForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
+          <!-- <el-select v-model="searchForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
             <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select> -->
+
+          <el-select style="width:160px" :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+            <el-option class="drop-tree" value="">
+              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="searchForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
+          <!-- <el-select v-model="searchForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
             <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
+            </el-option>
+          </el-select> -->
+
+          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.dealAgentId" placeholder="请选择">
+            <el-option
+              v-for="item in EmployeList"
+              :key="item.empId"
+              :label="item.name"
+              :value="item.empId">
             </el-option>
           </el-select>
         </el-form-item>
@@ -132,7 +147,7 @@ export default {
   created() {
     this.getDictionary();//字典
     this.getProateNotes();//列表
-    this.getDeps();//部门
+    this.remoteMethod();//部门
   },
   methods: {
     //获取分账记录列表
@@ -188,37 +203,56 @@ export default {
       }
     },
     //获取当前部门
-    getDeps(key){
-      let param = {
-        keyword:key
-      }
-      this.$ajax.get('/api/access/deps', param).then(res=>{
-        this.loading=false;
-        res=res.data
-        if(res.status===200){
-          this.options=res.data
-        }
-      })
-    },
-    selectDep(value){
-      delete this.searchForm.dealAgentId;
-      this.brokersList=[];
-      if(value){
-        this.getBroker(value)
+    initDepList:function (val) {
+      if(!val){
+        this.remoteMethod()
       }
     },
-    getBroker(id){
-      console.log(id)
-      let param = {
-        depId:id
-      }
-      this.$ajax.get('/api/organize/employees', param).then(res=>{
-        res=res.data
-        if(res.status===200){
-          this.brokersList=res.data
-        }
-      })
+    clearDep:function () {
+      this.searchForm.dealAgentStoreId=''
+      this.searchForm.depName=''
+      // this.EmployeList=[]
+      this.searchForm.dealAgentId=''
+      this.clearSelect()
     },
+    depHandleClick(data) {
+      // this.getEmploye(data.depId)
+      this.searchForm.dealAgentStoreId=data.depId
+      this.searchForm.depName=data.name
+
+      this.handleNodeClick(data)
+    },
+    // getDeps(key){
+    //   let param = {
+    //     keyword:key
+    //   }
+    //   this.$ajax.get('/api/access/deps', param).then(res=>{
+    //     this.loading=false;
+    //     res=res.data
+    //     if(res.status===200){
+    //       this.options=res.data
+    //     }
+    //   })
+    // },
+    // selectDep(value){
+    //   delete this.searchForm.dealAgentId;
+    //   this.brokersList=[];
+    //   if(value){
+    //     this.getBroker(value)
+    //   }
+    // },
+    // getBroker(id){
+    //   console.log(id)
+    //   let param = {
+    //     depId:id
+    //   }
+    //   this.$ajax.get('/api/organize/employees', param).then(res=>{
+    //     res=res.data
+    //     if(res.status===200){
+    //       this.brokersList=res.data
+    //     }
+    //   })
+    // },
   }
 };
 </script>
