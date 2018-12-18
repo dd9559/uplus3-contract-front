@@ -359,6 +359,7 @@ export default {
      depHandleClick(data) {
       this.propForm.dealAgentStoreId=data.depId
       this.propForm.department=data.name
+      this.propForm.dealAgentId=''
       this.handleNodeClick(data)
     },
     queryFn() {
