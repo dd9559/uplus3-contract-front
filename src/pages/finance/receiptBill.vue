@@ -434,15 +434,17 @@
             this.dep.id=res.data.inObjStoreId
             this.dep.name=res.data.inObjStore
             this.getEmploye(res.data.deptId)
-            if(res.data.filePath){
-              this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
-            }
-            this.imgList.forEach(item=>{
-              this.files.push(`${item.path}?${item.name}`)
-            })
-            this.cardList = res.data.account //刷卡补充
-            if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
-              this.activeAdmin = res.data.inAccount[0].cardNumber
+            if(this.activeType===2){
+              if(res.data.filePath){
+                this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+              }
+              this.imgList.forEach(item=>{
+                this.files.push(`${item.path}?${item.name}`)
+              })
+              this.cardList = res.data.account //刷卡补充
+              if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
+                this.activeAdmin = res.data.inAccount[0].cardNumber
+              }
             }
             this.form = Object.assign({}, this.form, obj)
           }
@@ -613,7 +615,7 @@
               res=res.data
               this.fullscreenLoading=false
               if(res.status===200){
-                this.$router.push({
+                this.$router.replace({
                   path: 'receiptResult',
                   query:{
                     type:this.activeType,
@@ -633,7 +635,7 @@
               res = res.data
               this.fullscreenLoading=false
               if (res.status === 200) {
-                this.$router.push({
+                this.$router.replace({
                   path: 'receiptResult',
                   query:{
                     type:this.activeType,

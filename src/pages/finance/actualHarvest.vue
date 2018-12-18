@@ -117,7 +117,7 @@
         <el-table-column align="center" label="已收款（元）" prop="receivedCommission" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="待收款（元）" prop="useNum" :formatter="nullFormatter">
           <template slot-scope="scope">
-            {{scope.row.receivableCommission-scope.row.receivedCommission}}
+            {{scope.row.receivableCommission-scope.row.receivedCommission|moneyFormatter}}
           </template>
         </el-table-column>
         <el-table-column align="center" min-width="160" label="签约时间" prop="operation time">
@@ -260,6 +260,15 @@
           }
         })
       },
+    },
+    filters:{
+      moneyFormatter:function (val) {
+        if(val>0){
+          return val
+        }else {
+          return 0
+        }
+      }
     }
   }
 </script>

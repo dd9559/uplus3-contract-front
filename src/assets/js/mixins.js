@@ -225,6 +225,12 @@ const MIXINS = {
                 break;
         }
     },
+    /**
+     * 权限判断
+     */
+    havePower:function (url) {
+      console.log('test')
+    },
     ...mapMutations([
       'setPath'
     ])

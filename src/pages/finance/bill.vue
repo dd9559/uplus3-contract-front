@@ -453,7 +453,7 @@
         if(!val){
           return 0
         }else {
-          return val
+          return val.toFixed(2)
         }
       },
       billState:function (val) {
