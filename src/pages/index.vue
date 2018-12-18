@@ -40,8 +40,9 @@
           <ul>
             <li v-for="(item,index) in Index" :key="index" @click="toLink(item,index)">{{item.name}}</li>
           </ul>
-          <p class="operation">
-            <el-button  type="text" @click="goBack" v-if="Index.length>2">返回</el-button>
+          <p class="operation" @click="goBack" v-if="Index.length>2">
+            <i class="iconfont icon-fanhui"></i>
+            <span>返回</span>
           </p>
         </div>
         <div class="page-view-content">
@@ -234,6 +235,11 @@
             top: 50%;
             right: 0;
             transform:translateY(-50%);
+            display: flex;
+            align-items: center;
+            background-color: @bg-white;
+            padding: @margin-base @margin-base @margin-base 0;
+            border-radius: 4px;
           }
         }
         &-content{
