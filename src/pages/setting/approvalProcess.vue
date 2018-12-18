@@ -436,7 +436,7 @@
                                             return false
                                         }
                                     } else if(item[i].type===2) {
-                                        if(item[i].userId!="") {
+                                        if(typeof(item[i].userId)=="number") {
                                             isOk = true
                                         } else {
                                             this.$message({message:"请选择职务"})
@@ -530,6 +530,7 @@
         }
         .branch-condition {
             /deep/ .el-input {
+                width: 180px;
                 margin-left: -2px;
             }
         }
