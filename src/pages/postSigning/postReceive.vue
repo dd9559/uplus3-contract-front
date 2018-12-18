@@ -83,7 +83,7 @@
         </div>
         <!-- 分页 -->
         <div class="pagination" v-if="tableData.total">
-            <el-pagination :current-page="tableData.pageNum" :page-size="tableData.pageSize" @current-change="currentChangeFn" layout=" total, prev, next, jumper" :total="tableData.total">
+            <el-pagination :current-page="tableData.pageNum" :page-size="tableData.pageSize" @current-change="currentChangeFn" layout=" total, prev, pager, next, jumper" :total="tableData.total">
             </el-pagination>
         </div>
         <!-- 拒绝弹层 -->

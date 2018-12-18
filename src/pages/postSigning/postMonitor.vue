@@ -163,7 +163,7 @@
                 :current-page="tableData.pageNum"
                 :page-size="tableData.pageSize"
                 @current-change="currentChangeFn"
-                layout=" total, prev, next, jumper"
+                layout=" total, prev, pager, next, jumper"
                 :total="tableData.total">
             </el-pagination>
         </div>

@@ -154,6 +154,7 @@
               <p><span class="tag">身份证号：</span><span class="text">{{contractDetail.otherCooperationInfo.identifyCode}}</span></p>
             </div>
             <div class="remark">
+              <span>备注：</span>
               <p v-if="contractDetail.otherCooperationInfo.remarks">{{contractDetail.otherCooperationInfo.remarks}}</p>
               <p v-else>暂无备注</p>
             </div>
@@ -515,13 +516,13 @@
             <el-table :data="ownerData" border header-row-class-name="theader-bg" style="width:100%">
               <el-table-column prop="name" label="业主姓名" width="200"></el-table-column>
               <el-table-column prop="mobile" label="电话" min-width="200"></el-table-column>
-              <el-table-column prop="relation" label="关系" width="150"></el-table-column>
-              <el-table-column label="产权比" v-if="contType!='1'" width="149">
+              <el-table-column prop="relation" label="关系" width="200"></el-table-column>
+              <!-- <el-table-column label="产权比" v-if="contType!='1'" width="149">
                 <template slot-scope="scope">
                   {{scope.row.propertyRightRatio+'%'}}
                 </template>
-              </el-table-column>
-              <el-table-column prop="identifyCode" min-width="200" label="身份证号"></el-table-column>
+              </el-table-column> -->
+              <el-table-column prop="identifyCode" min-width="299" label="身份证号"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -548,13 +549,13 @@
                   <i class="iconfont tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
                 </template>
               </el-table-column>
-              <el-table-column prop="relation" label="关系" width="150"></el-table-column>
-              <el-table-column label="产权比" v-if="contType!='1'" width="149">
+              <el-table-column prop="relation" label="关系" width="200"></el-table-column>
+              <!-- <el-table-column label="产权比" v-if="contType!='1'" width="149">
                 <template slot-scope="scope">
                   {{scope.row.propertyRightRatio+'%'}}
                 </template>
-              </el-table-column>
-              <el-table-column prop="identifyCode" min-width="200" label="身份证号"></el-table-column>
+              </el-table-column> -->
+              <el-table-column prop="identifyCode" min-width="299" label="身份证号"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -577,17 +578,17 @@
               <span class="printTag">联系方式：</span>
               <span class="printTxt">{{contractDetail.otherCooperationInfo.mobile?contractDetail.otherCooperationInfo.mobile:"--"}}</span>
             </p>
-            <p>
+            <p class="p_idcard">
               <span class="printTag">身份证号：</span>
               <span class="printTxt">{{contractDetail.otherCooperationInfo.identifyCode?contractDetail.otherCooperationInfo.identifyCode:"--"}}</span>
             </p>
           </div>
-          <div class="remark">
+          <div class="remark_">
             <div>
               <span class="printTag">备注：</span>
             </div>
             <div class="remarks">
-              <p style="width:500px" v-if="contractDetail.otherCooperationInfo.remarks">{{contractDetail.otherCooperationInfo.remarks}}</p>
+              <p  v-if="contractDetail.otherCooperationInfo.remarks">{{contractDetail.otherCooperationInfo.remarks}}</p>
               <p v-else>暂无备注</p>
             </div>
           </div>
@@ -1269,14 +1270,19 @@ export default {
         }
       }
       .remark {
-        width: 650px;
-        height: 100px;
-        padding: 10px;
-        border-radius: 4px;
-        border: 1px solid rgba(236, 239, 242, 1);
-        background: @bg-FA;
+        display: flex;
+        padding-left: 15px;
+        >span{
+          color: @color-6c;
+        }
         > p {
           color: @color-D6;
+          width: 650px;
+          height: 100px;
+          padding: 10px;
+          border-radius: 4px;
+          border: 1px solid rgba(236, 239, 242, 1);
+          background: @bg-FA;
         }
       }
     }
@@ -1494,6 +1500,9 @@ export default {
   .p_width{
     width: 400px;
   }
+  .p_idcard{
+    width: 300px;
+  }
   .printItem_{
     border-right: 1px solid #ebeef5;
     border-bottom: 1px solid #ebeef5;
@@ -1526,7 +1535,7 @@ export default {
   .printMsg{
     padding: 0 12px;
   }
-  .remark{
+  .remark_{
     margin-top: 10px;
     display: flex;
     .remarks{
@@ -1537,6 +1546,9 @@ export default {
       height: 200px;
       border: 1px solid #ebeef5;
       border-radius: 4px;
+      >P{
+        width: 770px;
+      }
     }
   }
 }
