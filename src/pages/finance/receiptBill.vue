@@ -787,6 +787,9 @@
         }
       },
       getType: function (label, type = 'init',index) {
+        if(this.moneyTypeOther.length===0){
+          this.activeType=1
+        }
         let obj = {
           /*moneyType: '',
           moneyTypePid: '',*/

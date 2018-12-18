@@ -38,16 +38,16 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select 
-          :clearable="true" 
-          ref="tree" 
-          size="small" 
-          filterable remote 
-          :loading="Loading" 
-          :remote-method="remoteMethod" 
-          @visible-change="initDepList" 
-          @clear="clearDep" 
-          v-model="searchForm.depName" 
+          <el-select
+          :clearable="true"
+          ref="tree"
+          size="small"
+          filterable remote
+          :loading="Loading"
+          :remote-method="remoteMethod"
+          @visible-change="initDepList"
+          @clear="clearDep"
+          v-model="searchForm.depName"
           placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
@@ -135,7 +135,7 @@
               付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
             </li>
             <li>
-              账户余额：<span>{{tableTotal.balance|zeroFormatter('fiexed')}}</span>元
+              账户余额：<span>{{tableTotal.balance|zeroFormatter}}</span>元
             </li>
           </ul>
         </div>
@@ -262,7 +262,7 @@
   import LayerInvoice from '@/components/LayerInvoice'
 
   export default {
-    mixins: [FILTER,MIXINS],
+    mixins: [MIXINS,FILTER],
     components:{
       LayerPaperInfo,
       LayerInvoice
@@ -318,6 +318,7 @@
       this.getDictionary()
       this.getMoneyTypes()
       this.remoteMethod()
+      this.getAdmin()
     },
     methods: {
       reset: function () {
