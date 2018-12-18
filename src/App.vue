@@ -146,6 +146,9 @@
   .clearfix {
     display: inline-block;
   }
+.el-popover{
+    word-break: break-all !important;
+  }
 
   // 左右浮动
   .f_l {
