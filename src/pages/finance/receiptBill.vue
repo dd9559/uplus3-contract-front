@@ -1023,14 +1023,18 @@
             }
           }
         }
+        &:nth-of-type(n+7){
+          margin-top: @margin-base;
+        }
       }
     }
     .upload-text{
       color: @color-99A;
-      padding: @margin-base;
+      padding: 0 @margin-base;
       >span{
         &:first-of-type{
           color: @color-blue;
+          margin: 0;
         }
       }
     }

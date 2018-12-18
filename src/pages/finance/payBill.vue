@@ -631,6 +631,9 @@
             }
           }
         }
+        &:nth-of-type(n+7){
+          margin-top: @margin-base;
+        }
       }
     }
     .upload-text{
