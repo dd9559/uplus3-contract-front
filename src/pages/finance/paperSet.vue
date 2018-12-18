@@ -264,7 +264,7 @@
       <div v-if="layer.title==='票据作废'" class="layer-invalid">
         <ul class="ul">
           <li>
-            <span class="cl-1 mr-10">票据编号：</span>
+            <span class="cl-1 mr-10 pl-9">票据编号：</span>
             <span class="cl-2 mr-40">{{activeRow.billCode}}</span>
           </li>
           <li>
@@ -277,7 +277,7 @@
           </li>
         </ul>
         <div class="input-box">
-          <span class="cl-1 mr-10">作废备注：</span>
+          <span class="cl-1 mr-10"><span class="red mr-5">*</span>作废备注：</span>
           <div class="input">
             <el-input type="textarea" resize="none" placeholder="请输入作废理由" :maxlength="invalidMax" v-model="layer.reason" class="input">
             </el-input>
