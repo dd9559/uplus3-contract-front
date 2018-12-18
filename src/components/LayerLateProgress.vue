@@ -1,111 +1,115 @@
 <template>
     <div>
         <!-- 后期进度弹层 -->
-        <el-dialog :title="getTitle" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layerShow" width="1000px" class="layer-paper">
-            <div class="layer-progress">
-                <ul class="ul">
-                    <li>
-                        <span class="cl-2 mr-30">{{layerShowData.transFlowName}}</span>
-                    </li>
-                    <li>
-                        <span class="cl-1 mr-10">佣金结算状态：</span>
-                        <span class="cl-2">{{layerShowData.statusReceiveAmount.label}}</span>
-                    </li>
-                </ul>
-                <el-table border v-loading="loading" :data="tableProgress" :formatter="nullFormatter" class="paper-table mt-20">
-                    <el-table-column label="步骤类型" align="center">
-                        <template slot-scope="scope">
-                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionStepsType)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="步骤名称" align="center">
-                        <template slot-scope="scope">
-                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionSteps)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作人" align="center">
-                        <template slot-scope="scope">
-                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.operatorName)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作日期" align="center">
-                        <template slot-scope="scope">
-                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.operationTime)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="责任人" align="center">
-                        <template slot-scope="scope">
-                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.personLiableName)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="确定日期" align="center">
-                        <template slot-scope="scope">
-                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.endDatetime)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="办理天数" align="center">
-                        <template slot-scope="scope">
-                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.actualDay)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="规定天数" align="center">
-                        <template slot-scope="scope">
-                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.specifiedDay)}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作" min-width="120px" align="center">
-                        <template slot-scope="scope">
-                            <el-button v-if="operationBoolFn(scope.row)" @click="operationFn(scope.row.id)" class="blue" type="text">查看</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </div>
+        <el-dialog :title="getTitle" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layerShow" width="1000px" class="layer-paper layer-scroll-auto">
+            <LayerScrollAuto>
+                <div class="layer-progress">
+                    <ul class="ul">
+                        <li>
+                            <span class="cl-2 mr-30">{{layerShowData.transFlowName}}</span>
+                        </li>
+                        <li>
+                            <span class="cl-1 mr-10">佣金结算状态：</span>
+                            <span class="cl-2">{{layerShowData.statusReceiveAmount.label}}</span>
+                        </li>
+                    </ul>
+                    <el-table border v-loading="loading" :data="tableProgress" :formatter="nullFormatter" class="paper-table mt-20">
+                        <el-table-column label="步骤类型" align="center">
+                            <template slot-scope="scope">
+                                <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionStepsType)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="步骤名称" align="center">
+                            <template slot-scope="scope">
+                                <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionSteps)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作人" align="center">
+                            <template slot-scope="scope">
+                                <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.operatorName)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作日期" align="center">
+                            <template slot-scope="scope">
+                                <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.operationTime)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="责任人" align="center">
+                            <template slot-scope="scope">
+                                <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.personLiableName)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="确定日期" align="center">
+                            <template slot-scope="scope">
+                                <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.endDatetime)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="办理天数" align="center">
+                            <template slot-scope="scope">
+                                <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.actualDay)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="规定天数" align="center">
+                            <template slot-scope="scope">
+                                <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.specifiedDay)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" min-width="120px" align="center">
+                            <template slot-scope="scope">
+                                <el-button v-if="operationBoolFn(scope.row)" @click="operationFn(scope.row.id)" class="blue" type="text">查看</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </LayerScrollAuto>
         </el-dialog>
         <!-- 查看 -->
         <el-dialog  :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal"
         title="查看" 
         :visible.sync="stepsDataShow" 
         width="740px"  
-        class="layer-paper">
-            <div class="steps-from">
-                <el-form 
-                ref="stepsFrom"
-                :model="stepsFrom"
-                v-loading="LookStepLoad"
-                label-width="150px">
-                    <el-form-item
-                        v-for="(item,index) in stepsFrom.list"
-                        :prop="'list.' + index + '.val'"
-                        :key="'bl'+item.id + index"
-                        :label="item.title+ '：'"
-                        :rules="item.rules"
-                    >
-                        <!-- 查看 -->
-                            <template v-if="item.type === STEPSINPUT.start || item.type === STEPSINPUT.time || item.type === STEPSINPUT.textarea || item.type === STEPSINPUT.num">
-                                <div class="steps-see">{{item.val}}</div>
-                            </template>
-                            <template v-else>
-                                <ul class="steps-img">
-                                    <el-tooltip class="item" 
-                                    effect="dark" 
-                                    :content="i.name" 
-                                    placement="bottom" 
-                                    v-for="(i,n) in item.val"
-                                    :key="i.name">
-                                    <li 
-                                    @click="previewPhoto(item.val,n)"
-                                    >
-                                        <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
-                                        <p class="p">{{i.name}}</p>
-                                    </li>
-                                    </el-tooltip>
-                                </ul>
-                            </template>
-                    </el-form-item>
-                </el-form>
-                <!-- 预览 -->
-                <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-            </div>
+        class="layer-paper layer-scroll-auto">
+            <LayerScrollAuto>
+                <div class="steps-from">
+                    <el-form 
+                    ref="stepsFrom"
+                    :model="stepsFrom"
+                    v-loading="LookStepLoad"
+                    label-width="150px">
+                        <el-form-item
+                            v-for="(item,index) in stepsFrom.list"
+                            :prop="'list.' + index + '.val'"
+                            :key="'bl'+item.id + index"
+                            :label="item.title+ '：'"
+                            :rules="item.rules"
+                        >
+                            <!-- 查看 -->
+                                <template v-if="item.type === STEPSINPUT.start || item.type === STEPSINPUT.time || item.type === STEPSINPUT.textarea || item.type === STEPSINPUT.num">
+                                    <div class="steps-see">{{item.val}}</div>
+                                </template>
+                                <template v-else>
+                                    <ul class="steps-img">
+                                        <el-tooltip class="item" 
+                                        effect="dark" 
+                                        :content="i.name" 
+                                        placement="bottom" 
+                                        v-for="(i,n) in item.val"
+                                        :key="i.name">
+                                        <li 
+                                        @click="previewPhoto(item.val,n)"
+                                        >
+                                            <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                            <p class="p">{{i.name}}</p>
+                                        </li>
+                                        </el-tooltip>
+                                    </ul>
+                                </template>
+                        </el-form-item>
+                    </el-form>
+                    <!-- 预览 -->
+                    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+                </div>
+            </LayerScrollAuto>
         </el-dialog>
     </div>
 
@@ -115,6 +119,7 @@
     import { FILTER } from '@/assets/js/filter';
     import { TOOL } from '@/assets/js/common';
     import {MIXINS} from '@/assets/js/mixins';
+    import LayerScrollAuto from '@/components/LayerScrollAuto';
 
     // 是否超时
     const ISOVERTIME = 1;
@@ -293,6 +298,9 @@
                 }
             },
         },
+        components:{
+            LayerScrollAuto
+        }
     }
 </script>
 

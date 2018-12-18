@@ -530,6 +530,7 @@
         }
         .branch-condition {
             /deep/ .el-input {
+                width: 180px;
                 margin-left: -2px;
             }
         }

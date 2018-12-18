@@ -1096,7 +1096,6 @@
         }
       }
       > .stamp {
-        display: inline-block;
         width: 50%;
         display: flex;
         float: left;
