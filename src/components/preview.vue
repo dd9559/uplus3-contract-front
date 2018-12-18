@@ -2,7 +2,7 @@
     <div class="preview">
       <div class="view-container" :class="[getType==='img'?'img-drag':'']" ref="drag" @mousedown="mousedown" @mouseup="dragging=false">
         <img ref="img" :src="imgSrc" :style="{width:getWidth,transform:getRotate}" alt="" v-if="getType==='img'">
-        <video width="750px" controls v-else-if="getType==='video'">
+        <video width="750px" ref="video" controls v-else-if="getType==='video'">
           <source  :src="imgSrc" type="video/mp4">
         </video>
         <a :href="imgSrc" download v-else>文件不支持预览，请手动下载</a>

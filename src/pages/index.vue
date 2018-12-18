@@ -6,7 +6,7 @@
       </ul>
     </div>-->
     <div class="container">
-      <div class="slider" :class="[collapse?'collapse-off':'']">
+      <div class="slider" :class="[collapse?'':'collapse-on']">
         <el-menu
           :default-active="activeIndex"
           :unique-opened="true"
@@ -174,14 +174,14 @@
       right: 0;
       bottom: 0;
       .slider{
-        max-width: 160px;
+        /*max-width: 160px;*/
         border-right: 1px solid @border-e6;
         position: relative;
         /deep/ .el-menu{
           border: 0px;
         }
-        &.collapse-off{
-          /*width: 54px;*/
+        &.collapse-on{
+          width:160px
         }
         &-bar-control{
           width: 56px;

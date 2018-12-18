@@ -125,7 +125,7 @@
               付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
             </li>
             <li>
-              账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter}}</span>元
+              账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter('fiexed')}}</span>元
             </li>
           </ul>
         </div>
@@ -449,11 +449,11 @@
       },
     },
     filters:{
-      zeroFormatter:function (val) {
+      zeroFormatter:function (val,type='init') {
         if(!val){
           return 0
         }else {
-          return val.toFixed(2)
+          return type==='fixed'?val.toFixed(2):val
         }
       },
       billState:function (val) {
