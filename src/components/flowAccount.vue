@@ -176,7 +176,7 @@ export default {
         //业主分类账
         let param = {
           contractCode: this.contCode,
-          type: tab.name === "second" ? 1 : 2
+          type: tab.name === "second" ? 2 : 1
         };
         this.$ajax.get("/api/flows/account", param).then(res => {
           res = res.data;
