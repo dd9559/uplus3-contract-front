@@ -25,6 +25,13 @@ const MIXINS = {
       employeTotal:0
     }
   },
+  created(){
+    for (let item in this.power){
+      if(this.getUser&&this.getUser.privileges.indexOf(item)>-1){
+        this.power[item].state=true
+      }
+    }
+  },
   methods: {
     /**
      * 收取字典id，拼接字符串
@@ -239,7 +246,8 @@ const MIXINS = {
   },
   computed:{
     ...mapGetters([
-      'getPath'
+      'getPath',
+      'getUser'
     ])
   }
 }
