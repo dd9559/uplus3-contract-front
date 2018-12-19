@@ -79,7 +79,7 @@
             :clearable="true"
           >
             <el-option
-              v-for="item in dictionary['54']"
+              v-for="item in achStatuArr"
               :key="item.value"
               :label="item.value"
               :value="item.key"
@@ -781,7 +781,6 @@ export default {
         //数据字典
         "10": "", //合同类型
         "21": "", //分成状态
-        "54": "" //业绩状态
       },
       beginData: false,
       currentPage: 1,
@@ -799,7 +798,25 @@ export default {
       statuIndex:null,
       statuContId:null,
       statuType:null,
-      statuAid:null
+      statuAid:null,
+      achStatuArr:[
+        {
+          key:-1,
+          value:"待提审"
+        },
+        {
+          key:0,
+          value:"审核中"
+        },
+        {
+          key:1,
+          value:"已通过"
+        },
+        {
+          key:2,
+          value:"已驳回"
+        }
+      ]
     };
   },
   created() {
@@ -1243,8 +1260,8 @@ export default {
     max-width: 1000px !important;
     margin: 13vh auto 0 !important;
     overflow: auto;
-    
-   .el-dialog__headerbtn {
+
+    .el-dialog__headerbtn {
       right: 0;
       top: 0;
       display: none !important;
@@ -1355,7 +1372,7 @@ export default {
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
 }
-/deep/  .el-dialog.base-dialog .el-dialog__header {
-      padding: 0 !important;
+/deep/ .el-dialog.base-dialog .el-dialog__header {
+  padding: 0 !important;
 }
 </style>
