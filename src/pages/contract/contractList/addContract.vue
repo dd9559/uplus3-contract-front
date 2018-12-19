@@ -874,15 +874,30 @@ export default {
           })
         })
       }else if(this.type===2){
-        delete param.saleCont.contChangeState;
-        delete param.saleCont.contState;
-        delete param.saleCont.contType;
-        delete param.saleCont.laterStageState;
-        delete param.saleCont.toExamineState;
-        delete param.saleCont.previewImg;
-        delete param.saleCont.subscriptionTerm;
-        delete param.saleCont.updateTime;
-        delete param.saleCont.distributableAchievement;
+        if(this.contractForm.type===1){
+          delete param.leaseCont.contChangeState;
+          delete param.leaseCont.contState;
+          delete param.leaseCont.contType;
+          delete param.leaseCont.laterStageState;
+          delete param.leaseCont.toExamineState;
+          delete param.leaseCont.previewImg;
+          delete param.leaseCont.updateTimes;
+          delete param.leaseCont.propertyRightRatios;
+          delete param.leaseCont.pids;
+          delete param.leaseCont.pmobiles;
+          delete param.leaseCont.pnames;
+        }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
+          delete param.saleCont.contChangeState;
+          delete param.saleCont.contState;
+          delete param.saleCont.contType;
+          delete param.saleCont.laterStageState;
+          delete param.saleCont.toExamineState;
+          delete param.saleCont.previewImg;
+          delete param.saleCont.subscriptionTerm;
+          delete param.saleCont.updateTime;
+          delete param.saleCont.distributableAchievement;
+        }
+        
         this.$ajax.postJSON("/api/contract/updateContract", param).then(res => {
           res = res.data;
           this.fullscreenLoading=false;

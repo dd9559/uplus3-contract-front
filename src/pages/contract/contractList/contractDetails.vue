@@ -846,6 +846,8 @@ export default {
           this.contractDetail = res.data;
           this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
+          this.ownerData=[];
+          this.clientrData=[];
           for (var i = 0; i < this.contractDetail.contPersons.length; i++) {
             if (this.contractDetail.contPersons[i].personType.value === 1) {
               this.ownerData.push(this.contractDetail.contPersons[i]);
