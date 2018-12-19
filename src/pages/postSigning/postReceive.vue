@@ -114,7 +114,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作" min-width="70">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
+                        <el-button v-if="power['sign-qh-rev-receive'].state" class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -249,8 +249,8 @@
                 </div>
             </LayerScrollAuto>
             <span slot="footer">
-                <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn" round>保存</el-button>
-                <el-button class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
+                <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn" round>保存</el-button>
+                <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
                 <el-button class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button>
             </span>
         </el-dialog>
@@ -351,6 +351,21 @@
                 dealTableRule: [],
                 // 合同资料库
                 ContractDatabase: [],
+                // 权限
+                power:{
+                    'sign-qh-rev-query':{
+                        name:'查询',
+                        state:false
+                    },
+                    'sign-qh-rev-receive':{
+                        name:{
+                            saveStepFlow:'保存合同后期和修改责任人',
+                            clickReceive:'点解接收和已接收按钮',
+                            addStepFlow:'接收合同后期',
+                        },
+                        state:false
+                    },
+                }
             }
         },
         computed: {
@@ -442,6 +457,10 @@
             },
             // 接收
             receiveFn(e) {
+                if(!this.power['sign-qh-rev-receive'].state){
+                    this.noPower(this.power['sign-qh-rev-receive'].name.clickReceive);
+                    return false
+                }
                 this.receive = {
                     show: true,
                     tit: '接收',
@@ -622,6 +641,10 @@
             },
             // 保存
             saveBtnFn() {
+                if(!this.power['sign-qh-rev-receive'].state){
+                    this.noPower(this.power['sign-qh-rev-receive'].name.saveStepFlow);
+                    return false
+                }
                 let arr = [...this.dealTable];
                 arr.map(e => {
                     e.contractCode = this.receive.e.id;
@@ -648,6 +671,10 @@
             },
             // 接收
             receiveBtnFn() {
+                if(!this.power['sign-qh-rev-receive'].state){
+                    this.noPower(this.power['sign-qh-rev-receive'].name.addStepFlow);
+                    return false
+                }
                 let arr = [...this.dealTable];
                 let bool = true;
                 arr.map(e => {
@@ -807,6 +834,10 @@
             },
             // 获取数据
             getListData() {
+                if(!this.power['sign-qh-rev-query'].state){
+                    this.noPower(this.power['sign-qh-rev-query'].name);
+                    return false
+                }
                 this.loadingList = true;
                 let signDateSta = '';
                 let signDateEnd = '';

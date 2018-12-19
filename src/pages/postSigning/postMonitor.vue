@@ -156,7 +156,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)">流水</el-button>
+                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)" v-if="power['sign-qh-cont-bill'].state">流水</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -257,6 +257,17 @@
                 dialogTableVisible:false,
                 // code
                 contCode:'',
+                // 权限
+                power:{
+                    'sign-qh-cont-query':{
+                        name:'查询',
+                        state:false
+                    },
+                    'sign-qh-cont-bill':{
+                        name:'流水',
+                        state:false
+                    },
+                }
             }
         },
         computed:{
@@ -309,6 +320,10 @@
             },
             // 操作
             operationFn(code){
+                if(!this.power['sign-qh-cont-bill'].state){
+                    this.noPower(this.power['sign-qh-cont-bill'].name);
+                    return false
+                }
                 this.contCode = code;
                 this.dialogTableVisible = true;
             },
@@ -338,6 +353,10 @@
             },
             // 获取列表数据
             getListData(){
+                if(!this.power['sign-qh-cont-query'].state){
+                    this.noPower(this.power['sign-qh-cont-query'].name);
+                    return false
+                }
                 this.loadingList = true;
                 let receiveTimeEnd = '';
                 let receiveTimeStar = '';
