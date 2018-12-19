@@ -150,7 +150,7 @@
     display: inline-block;
   }
 .el-popover{
-    word-break: break-all !important;
+    word-break: break-all;
   }
 
   // 左右浮动

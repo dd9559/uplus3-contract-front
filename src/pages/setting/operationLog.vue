@@ -6,7 +6,7 @@
             <el-form  class="header" ref="propForm" size="small">
                 <div class="content">
                     <el-form-item label="部门">
-                         <el-select v-model="department" filterable placeholder="请选择"  @change="selUser">
+                         <!-- <el-select v-model="department" filterable placeholder="请选择"  @change="selUser">
                             <el-option
                             v-for="(item) in departs"
                             :key="item.id"
@@ -14,13 +14,25 @@
                             :value="item.id"
                            >
                             </el-option>
+                        </el-select> -->
+                        <el-select style="width:160px" :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
+                            <el-option class="drop-tree" value="">
+                            <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+                            </el-option>
                         </el-select>
-                        <el-select v-model="depUser" filterable placeholder="请选择">
-                            <el-option v-for="(item,index) in users" 
+                        <el-select v-model="depUser" :clearable="true" v-loadmore="moreEmploye" filterable placeholder="请选择">
+                            <!-- <el-option v-for="(item,index) in users" 
                             :key="index"
                             ref="user" 
                             :label="item.name"
-                            :value="item.empId"></el-option>
+                            :value="item.empId"></el-option> -->
+                            <el-option
+                                v-for="item in EmployeList"
+                                :key="item.empId"
+                                :label="item.name"
+                                :value="item.empId">
+                            </el-option>
+                            
                         </el-select>
                     </el-form-item>
                     <el-form-item label="日期">
@@ -74,9 +86,13 @@
 
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
+    import { MIXINS } from "@/assets/js/mixins";
     export default {
+        mixins: [MIXINS],
         data() {
             return {
+                Loading:false,
+                departmentName:'',
                 department: [],
                 keyWord: "",
                 searchTime: '',
@@ -84,30 +100,44 @@
                 pageSize: 30,
                 pageNum: 1,
                 total:0,
-                departs:[],
                 users:[],
                 depUser:'',
             }
         },
         created() {
-            this.$ajax.get('/api/access/deps').then((res)=>{
-                if(res.status==200){
-                    this.departs=res.data.data
-                }
-            }),
+            this.remoteMethod()
             this.getLogList()
         },
         methods: {
-            selUser(){
+            depHandleClick(data) {
                 this.depUser=''
-                this.$ajax.get('/api/organize/employees',{depId:this.department}).then((res)=>{
-                console.log(res);
-                if(res.status==200){
-                    this.users=res.data.data
-                    console.log(this.users);
-                }
-            })
+                this.department=data.depId
+                this.departmentName=data.name
+                this.handleNodeClick(data)
             },
+            //获取当前部门
+            initDepList:function (val) {
+                    if(!val){
+                        this.remoteMethod()
+                    }
+                },
+            clearDep:function () {
+                    this.depUser=''
+                    this.department=''
+                    this.departmentName=''
+                    // this.EmployeList=[]
+                    this.clearSelect()
+            },
+            // selUser(){
+            //     this.depUser=''
+            //     this.$ajax.get('/api/organize/employees',{depId:this.department}).then((res)=>{
+            //     console.log(res);
+            //     if(res.status==200){
+            //         this.users=res.data.data
+            //         console.log(this.users);
+            //     }
+            // })
+            // },
             handleSizeChange (val) {
             this.pageSize = val
             console.log(this.pageSize,'pageSize');
