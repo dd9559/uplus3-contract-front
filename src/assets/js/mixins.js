@@ -27,8 +27,15 @@ const MIXINS = {
   },
   created(){
     for (let item in this.power){
-      if(this.getUser&&this.getUser.privileges.indexOf(item)>-1){
-        this.power[item].state=true
+      if(this.getUser){
+        //权限为空表示所有权限都有
+        if(this.getUser.privileges.length===0){
+          this.power[item].state=true
+        }else {
+          if(this.getUser.privileges.indexOf(item)>-1){
+            this.power[item].state=true
+          }
+        }
       }
     }
   },
