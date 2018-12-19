@@ -40,6 +40,11 @@ const MIXINS = {
     }
   },
   methods: {
+    noPower:function (msg) {
+      this.$message({
+        message:`没有${msg}权限`
+      })
+    },
     /**
      * 收取字典id，拼接字符串
      * @param obj
@@ -133,8 +138,8 @@ const MIXINS = {
      * 合同信息操作
      * @param type
      */
-    msgOpera:function ({contType,contId,contCode,operaType}) {
-      if(operaType==='cont'){
+    msgOpera:function ({contType,contId,contCode,operaType,power}) {
+      if(operaType==='cont'&&power.state){
         // this.setPath(this.getPath.concat({name:'合同详情'}))
         this.setPath(this.getPath.concat({name:'合同详情'}))
         this.$router.push({
@@ -146,6 +151,8 @@ const MIXINS = {
             pageName:'合同详情'
           }
         })
+      }else {
+        this.noPower(`查看${power.name}`)
       }
     },
     /**

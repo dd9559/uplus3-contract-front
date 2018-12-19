@@ -151,7 +151,7 @@
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span @click="msgOpera(scope.row,'cont')">{{scope.row.contCode}}</span></li>
+              <li>合同编号:<span @click="toLink(scope.row,'cont')">{{scope.row.contCode}}</span></li>
               <li>房源编号:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
               <li>客源编号:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
             </ul>
@@ -406,24 +406,28 @@
         this.handleNodeClick(data)
       },
       getData: function () {
-        let param = JSON.parse(JSON.stringify(this.searchForm))
-        if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {
-          param.startTime = param.timeRange[0]
-          param.endTime = param.timeRange[1]
-        }
-        delete param.timeRange
-        param.pageNum = this.currentPage
-        param.pageSize = this.pageSize
-        this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.list = res.data.page.list
-            this.total = res.data.page.total
-            this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+        if(this.power['sign-cw-debt-query'].state){
+          let param = JSON.parse(JSON.stringify(this.searchForm))
+          if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {
+            param.startTime = param.timeRange[0]
+            param.endTime = param.timeRange[1]
           }
-        }).catch(error => {
-          console.log(error)
-        })
+          delete param.timeRange
+          param.pageNum = this.currentPage
+          param.pageSize = this.pageSize
+          this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              this.list = res.data.page.list
+              this.total = res.data.page.total
+              this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+            }
+          }).catch(error => {
+            console.log(error)
+          })
+        }else {
+          this.noPower(this.power['sign-cw-debt-query'].name)
+        }
       },
       /**
        * 跳转详情页
@@ -439,7 +443,7 @@
             query: {
               id: row.id,
               tab: row.type === 1 ? '收款信息' : '付款信息',
-              pageName: row.type === 1 ? '收款详情' : '付款详情'
+              power: this.power[row.type===1?'sign-cw-debt-rev-verify':'sign-cw-debt-pay-verify'].state
             }
           })
         }
@@ -488,8 +492,18 @@
        * 合同信息操作
        * @param type
        */
-      msgOpera: function (row, type) {
-        if (type === 'cont') {
+      toLink:function (row,type) {
+        let param={
+          contType:row.contTypeId,
+          contId:row.contId,
+          contCode:row.contCode,
+          operaType:type,
+          power:type==='cont'?this.power['sign-cw-debt-contract']:type==='house'?this.power['sign-cw-debt-house']:type==='customer'?this.power['sign-cw-debt-cust']:''
+        }
+        this.msgOpera(param)
+      },
+      /*msgOpera: function (row, type) {
+        if (type === 'cont'&&this.power['sign-cw-debt-contract'].state) {
           // this.setPath(this.getPath.concat({name:'合同详情'}))
           this.setPath(this.$tool.getRouter(['合同', '合同列表', '合同详情'], 'contractList'))
           this.$router.push({
@@ -502,7 +516,7 @@
             }
           })
         }
-      },
+      },*/
       // 获取收付款类
       getMoneyTypes: function () {
         this.$ajax.get('/api/payInfo/selectSmallMoneyType').then(res => {
