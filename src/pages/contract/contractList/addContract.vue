@@ -1151,12 +1151,19 @@ export default {
     getShop(id) {
       console.log(id);
       if(id){
+        this.contractForm.houseInfo.ShopOwnerName='';
+        this.contractForm.houseInfo.ShopOwnerMobile='';
+        this.options.forEach(element => {
+          if(element.id===id){
+            this.contractForm.houseInfo.HouseStoreName=element.name;
+          }
+        });
         let param1 = {
           depId: id,
           type:1
         };
         this.$ajax.get('/api/organize/dep/manager', param1).then(res=>{
-          res=res.data  
+          res=res.data;  
           if(res.status===200){
             if(res.data){
               this.contractForm.houseInfo.ShopOwnerName=res.data.name;
@@ -1165,40 +1172,100 @@ export default {
               let param2 = {
                 depId: id,
                 type:2
-              }
-              // this.$message({
-              //   message:'该门店没有店长'
-              // })
+              };
+              this.$ajax.get('/api/organize/dep/manager', param2).then(res=>{
+                res=res.data;
+                if(res.status===200){
+                  if(res.data){
+                    this.contractForm.houseInfo.ShopOwnerName=res.data.name;
+                    this.contractForm.houseInfo.ShopOwnerMobile=res.data.mobile;
+                  }else{
+                    let param3 = {
+                      depId: id,
+                      type:3
+                    };
+                    this.$ajax.get('/api/organize/dep/manager', param3).then(res=>{
+                      res=res.data;
+                      if(res.status===200){
+                        if(res.data){
+                          this.contractForm.houseInfo.ShopOwnerName=res.data.name;
+                          this.contractForm.houseInfo.ShopOwnerMobile=res.data.mobile;
+                        }else{
+                          this.$message({
+                            message:'该门店没有店长'
+                          })
+                        }
+                      }
+                    })
+                  }
+                }
+              })
             }
           }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
         })
       }
     },
     getShop_(id) {
-      // debugger
-      // console.log(id);
-      // this.options.forEach(element => {
-      //   if(element.id===id){
-      //     this.contractForm.guestInfo.GuestStoreName=element.name
-      //   }
-      // });
       if(id){
-        let param = {
+        this.contractForm.houseInfo.ShopOwnerName='';
+        this.contractForm.houseInfo.ShopOwnerMobile='';
+        this.options_.forEach(element => {
+          if(element.id===id){
+            this.contractForm.guestInfo.GuestStoreName=element.name
+          }
+        });
+        let param1 = {
           depId: id,
           type:1
         };
-        this.$ajax.get('/api/organize/dep/manager', param).then(res=>{
-          res=res.data
+        this.$ajax.get('/api/organize/dep/manager', param1).then(res=>{
+          res=res.data;  
           if(res.status===200){
             if(res.data){
               this.contractForm.guestInfo.ShopOwnerName=res.data.name;
               this.contractForm.guestInfo.ShopOwnerMobile=res.data.mobile;
             }else{
-              this.$message({
-                message:'该门店没有店长'
+              let param2 = {
+                depId: id,
+                type:2
+              };
+              this.$ajax.get('/api/organize/dep/manager', param2).then(res=>{
+                res=res.data;
+                if(res.status===200){
+                  if(res.data){
+                    this.contractForm.guestInfo.ShopOwnerName=res.data.name;
+                    this.contractForm.guestInfo.ShopOwnerMobile=res.data.mobile;
+                  }else{
+                    let param3 = {
+                      depId: id,
+                      type:3
+                    };
+                    this.$ajax.get('/api/organize/dep/manager', param3).then(res=>{
+                      res=res.data;
+                      if(res.status===200){
+                        if(res.data){
+                          this.contractForm.guestInfo.ShopOwnerName=res.data.name;
+                          this.contractForm.guestInfo.ShopOwnerMobile=res.data.mobile;
+                        }else{
+                          this.$message({
+                            message:'该门店没有店长'
+                          })
+                        }
+                      }
+                    })
+                  }
+                }
               })
             }
           }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
         })
       }
     },
