@@ -14,13 +14,13 @@
         <el-button round type="primary" style="width:100px" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" style="width:100px" v-if="power['sign-ht-view-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  style="width:100px" v-if="power['sign-ht-view-cancel'].state&&contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
-        <el-button round style="width:100px" v-if="examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
-        <el-button round style="width:100px" v-if="examineState===1&&contState===2" @click="dayin">签章打印</el-button>
+        <el-button round style="width:100px" v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+        <el-button round style="width:100px" v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round style="width:100px" v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
       </div>
       <div class="btn" v-else>
-        <el-button type="primary" round style="width:100px" @click="toEdit">编 辑</el-button>
+        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-view-edit'].state" @click="toEdit">编 辑</el-button>
       </div>
     </div>
     <div class="content">

@@ -557,25 +557,29 @@ export default {
     },
     //合同详情页
     toDetail(value) {
-      this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
-      if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-        this.$router.push({
-          path: "/contractDetails",
-          query: {
-            id: value.id,//合同id
-            code: value.code,//合同编号
-            contType: value.contType.value//合同类型
-          }
-        });
-      }else{
-        this.$router.push({
-        path: "/detailIntention",
-        query: {
-          id: value.id,
-          contType: value.contType.value
+      // if(this.power['sign-cw-debt-contract'].state){
+        this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+        if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
+          this.$router.push({
+            path: "/contractDetails",
+            query: {
+              id: value.id,//合同id
+              code: value.code,//合同编号
+              contType: value.contType.value//合同类型
+            }
+          });
+        }else{
+          this.$router.push({
+            path: "/detailIntention",
+            query: {
+              id: value.id,
+              contType: value.contType.value
+            }
+          });
         }
-      });
-      }
+      // }else{
+      //   this.noPower('合同详情查看')
+      // }
     },
     uploadData(value) {
       if(this.power['sign-ht-info-reject'].state){
