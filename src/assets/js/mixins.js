@@ -25,6 +25,20 @@ const MIXINS = {
       employeTotal:0
     }
   },
+  created(){
+    for (let item in this.power){
+      if(this.getUser){
+        //权限为空表示所有权限都有
+        if(this.getUser.privileges.length===0){
+          this.power[item].state=true
+        }else {
+          if(this.getUser.privileges.indexOf(item)>-1){
+            this.power[item].state=true
+          }
+        }
+      }
+    }
+  },
   methods: {
     /**
      * 收取字典id，拼接字符串
@@ -239,7 +253,8 @@ const MIXINS = {
   },
   computed:{
     ...mapGetters([
-      'getPath'
+      'getPath',
+      'getUser'
     ])
   }
 }
