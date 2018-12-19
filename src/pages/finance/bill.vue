@@ -38,7 +38,17 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+          <el-select
+          :clearable="true"
+          ref="tree"
+          size="small"
+          filterable remote
+          :loading="Loading"
+          :remote-method="remoteMethod"
+          @visible-change="initDepList"
+          @clear="clearDep"
+          v-model="searchForm.depName"
+          placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
@@ -125,7 +135,7 @@
               付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
             </li>
             <li>
-              账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter}}</span>元
+              账户余额：<span>{{tableTotal.balance|zeroFormatter}}</span>元
             </li>
           </ul>
         </div>
@@ -252,7 +262,7 @@
   import LayerInvoice from '@/components/LayerInvoice'
 
   export default {
-    mixins: [FILTER,MIXINS],
+    mixins: [MIXINS,FILTER],
     components:{
       LayerPaperInfo,
       LayerInvoice
@@ -308,6 +318,7 @@
       this.getDictionary()
       this.getMoneyTypes()
       this.remoteMethod()
+      this.getAdmin()
     },
     methods: {
       reset: function () {
@@ -337,6 +348,7 @@
         // this.getEmploye(data.depId)
         this.searchForm.depId=data.depId
         this.searchForm.depName=data.name
+        this.searchForm.empId=''
 
         this.handleNodeClick(data)
       },
@@ -354,7 +366,7 @@
           if (res.status === 200) {
             this.list = res.data.page.list
             this.total = res.data.page.total
-            this.tableTotal = Object.assign({},res.data.payMentDataList,res.data.paymentDataList)
+            this.tableTotal = Object.assign({},res.data.payMentDataList,res.data.paymentDataList,{balance:res.data.balance})
           }
         }).catch(error => {
           console.log(error)
@@ -453,7 +465,7 @@
         if(!val){
           return 0
         }else {
-          return val.toFixed(2)
+          return val
         }
       },
       billState:function (val) {
@@ -677,3 +689,4 @@
     }
   }
 </style>
+

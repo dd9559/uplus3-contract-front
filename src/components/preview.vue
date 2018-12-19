@@ -1,8 +1,8 @@
 <template>
     <div class="preview">
       <div class="view-container" :class="[getType==='img'?'img-drag':'']" ref="drag" @mousedown="mousedown" @mouseup="dragging=false">
-        <img ref="img" :src="imgSrc" :style="{width:getWidth,transform:getRotate}" alt="" v-if="getType==='img'">
-        <video width="750px" controls v-else-if="getType==='video'">
+        <img ref="img" :src="imgSrc" :style="{width:getWidth,height:getHeight,transform:getRotate}" alt="" v-if="getType==='img'">
+        <video ref="video" controls v-else-if="getType==='video'">
           <source  :src="imgSrc" type="video/mp4">
         </video>
         <a :href="imgSrc" download v-else>文件不支持预览，请手动下载</a>
@@ -52,7 +52,8 @@
           y:0
         },
         typeList:[],
-        activeType:''
+        activeType:'',
+        persent:0,//缩放比例
       }
     },
     created(){
@@ -141,22 +142,54 @@
         }
       },
       /**
-       * 获取图片原始信息
+       * 获取预览资源原始信息
        */
       init:function (src) {
-        let img = new Image()
-        img.src=src
-        img.onload=function () {
-          //防止图片未加载，获取width为0的情况
-          if(img.width<=200){
-            this.imgWidth=img.width
-          }else if(img.width>=1000){
-            this.imgWidth=img.width*0.4
-          }else {
-            this.imgWidth=img.width*0.5
-          }
-          this.initWidth=this.imgWidth
-        }.bind(this)
+        if(this.getType==='img'){
+          this.$nextTick(()=>{
+            let picture=this.$refs.img
+            let img = new Image()
+            img.src=src
+            img.onload=function () {
+              //防止图片未加载，获取width为0的情况
+              this.persent = parseFloat((img.width/img.height).toFixed(2))
+              this.imgWidth=img.width
+              if(img.width>1000){
+                this.imgWidth=800
+                picture.style.height=`${800/this.persent}px`
+              }
+              if(img.height>window.innerHeight){
+                picture.style.height=`${window.innerHeight}px`
+                this.imgWidth=window.innerHeight*this.persent
+              }
+              this.initWidth=this.imgWidth
+              /*if(img.width<=200){
+                this.imgWidth=img.width
+              }else if(img.width>=1000){
+                this.imgWidth=img.width*0.4
+              }else {
+                this.imgWidth=img.width*0.5
+              }
+              this.initWidth=this.imgWidth*/
+            }.bind(this)
+          })
+        }else {
+          this.$nextTick(()=>{
+            let video=this.$refs.video
+            video.src=src
+            video.onloadedmetadata=function () {
+              let persent=parseFloat((video.videoWidth/video.videoHeight).toFixed(2))
+              if(video.videoHeight>window.innerHeight){
+                video.style.width=`${window.innerHeight*persent}px`
+                video.style.height=`${window.innerHeight}px`
+              }
+              if(video.videoWidth>1000){
+                video.style.width='800px'
+                video.style.height=`${800/persent}px`
+              }
+            }
+          })
+        }
       },
     },
     computed:{
@@ -174,6 +207,9 @@
       },
       getWidth:function () {
         return `${this.imgWidth}px`
+      },
+      getHeight:function () {
+        return `${this.imgWidth/this.persent}px`
       },
       getRotate:function () {
         return `rotate(${this.transform}deg)`
@@ -251,6 +287,7 @@
     width:190px;
     background:rgba(0,0,0,0.6);
     border-radius:4px;
+    z-index: 10;
     >li{
       flex: 1;
       text-align: center;

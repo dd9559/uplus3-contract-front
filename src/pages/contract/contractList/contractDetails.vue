@@ -183,11 +183,7 @@
               <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
                 <el-table-column prop="roleName" label="角色类型">
                 </el-table-column>
-                <el-table-column label="分成比例">
-                  <template slot-scope="scope">
-                    {{scope.row.ratio+'%'}}
-                  </template>
-                </el-table-column>
+                <el-table-column prop="ratio" label="分成比例(%)"></el-table-column>
                 <el-table-column prop="assignor" label="经纪人" min-width="100"></el-table-column>
                 <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
                 <el-table-column prop="level3" label="门店"></el-table-column>
@@ -202,11 +198,7 @@
               <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" >
                 <el-table-column prop="roleName" label="角色类型">
                 </el-table-column>
-                <el-table-column label="分成比例">
-                  <template slot-scope="scope">
-                    {{scope.row.ratio+'%'}}
-                  </template>
-                </el-table-column>
+                <el-table-column prop="ratio" label="分成比例(%)"></el-table-column>
                 <el-table-column prop="assignor" label="经纪人"></el-table-column>
                 <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
                 <el-table-column prop="level3" label="门店"></el-table-column>

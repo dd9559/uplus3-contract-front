@@ -228,8 +228,8 @@
         </li>
       </ul>
       <span slot="footer" class="dialog-footer">
-    <el-button round @click="checkBill(2)">拒 绝</el-button>
-    <el-button round type="primary" @click="checkBill(1)">同 意</el-button>
+    <el-button round @click="checkBill(2)" v-loading.fullscreen.lock="fullscreenLoading">拒 绝</el-button>
+    <el-button round type="primary" @click="checkBill(1)" v-loading.fullscreen.lock="fullscreenLoading">同 意</el-button>
   </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -273,6 +273,7 @@
         amount:{},
         payRadio:0,
         checkBoxShow:false,//是否只展示审核信息
+        fullscreenLoading:false,//防抖
         //分页
         currentPage:1,
         pageSize:10,
@@ -390,9 +391,11 @@
           result: type,
           remark: this.layer.reasion
         }
+        this.fullscreenLoading=true
         this.$ajax.postJSON('/api/machine/audit', param).then(res => {
           res = res.data
           if (res.status === 200) {
+            this.fullscreenLoading=false
             this.getData()
             if(this.radioMask){
               this.secondCheck()
@@ -404,6 +407,7 @@
             }
           }
         }).catch(error=>{
+          this.fullscreenLoading=false
           this.$message({
             message:error
           })

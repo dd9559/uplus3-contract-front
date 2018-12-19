@@ -46,7 +46,7 @@
             @click="choseType(item)">{{item.name}}
         </li>
       </ul>
-      <el-table v-if="activeType===1" class="collapse-cell" border :data="moneyType" :span-method="collapseRow"
+      <el-table v-if="activeType===1||moneyTypeOther.length===0" class="collapse-cell" border :data="moneyType" :span-method="collapseRow"
                 style="width: 100%"
                 header-row-class-name="theader-bg">
         <el-table-column align="center" prop="pName" label="款类（大类）"></el-table-column>
@@ -666,7 +666,7 @@
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
         // debugger
-        if (this.activeType === 1) {
+        if (this.activeType === 1||this.moneyTypeOther.length===0) {//当款类为收入或代收代付的数据为0时
           if(columnIndex >= 3){
             if (rowIndex === 0) {
               return [this.moneyType.length, 1]
@@ -787,6 +787,9 @@
         }
       },
       getType: function (label, type = 'init',index) {
+        if(this.moneyTypeOther.length===0){
+          this.activeType=1
+        }
         let obj = {
           /*moneyType: '',
           moneyTypePid: '',*/
@@ -827,7 +830,7 @@
           this.form.inObjId=val.empId
           this.form.inObj=val.name
         }
-      }
+      },
     }
   }
 </script>

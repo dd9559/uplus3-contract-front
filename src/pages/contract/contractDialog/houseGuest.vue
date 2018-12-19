@@ -336,6 +336,7 @@ export default {
       }else{
         this.attention=1
       }
+      this.showDataList = true;
       // this.attention = !this.attention;
       this.getHouseList();
     },
@@ -580,7 +581,6 @@ export default {
     background: @color-blue;
   }
   .floor_btn {
-    padding: 10px 0;
     overflow: hidden;
     display: flex;
     justify-content: flex-end;
@@ -609,7 +609,7 @@ export default {
     }
   }
   .el-dialog__body {
-    padding-top: 20px;
+    padding: 20px;
     border-top: 1px solid #edecf0;
   }
   .client_b {
