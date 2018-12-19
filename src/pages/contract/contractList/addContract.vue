@@ -840,21 +840,26 @@ export default {
         delete element.edit;
         this.contractForm.contPersons.push(element);
       });
-      if (this.contractForm.type === 1) {
+      if (this.contractForm.type === 1) {//租赁合同
         var param = {
           leaseCont: this.contractForm,
           type: this.type,
           haveExamine:this.haveExamine
         };
-      }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
+      }else if(this.contractForm.type === 2 || this.contractForm.type === 3){//买卖代办合同
         var param = {
           saleCont: this.contractForm,
           type: this.type,
           haveExamine:this.haveExamine
         };
       }
-      if(this.type===1){
-        this.$ajax.postJSON("/api/contract/addContract", param).then(res => {
+      if(this.type===1){//新增
+        if(this.haveExamine===1){//新增并提审
+          var url = '/api/contract/addContractAudit';
+        }else{
+          var url = '/api/contract/addContract';
+        }
+        this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           this.fullscreenLoading=false;
           if (res.status === 200) {
@@ -872,7 +877,7 @@ export default {
             message:error
           })
         })
-      }else if(this.type===2){
+      }else if(this.type===2){//编辑
         if(this.contractForm.type===1){
           delete param.leaseCont.contChangeState;
           delete param.leaseCont.contState;
@@ -896,8 +901,12 @@ export default {
           delete param.saleCont.updateTime;
           delete param.saleCont.distributableAchievement;
         }
-        
-        this.$ajax.postJSON("/api/contract/updateContract", param).then(res => {
+        if(this.haveExamine===1){//编辑并提审
+          var url = '/api/contract/updateContractAudit';
+        }else{
+          var url = '/api/contract/updateContract';
+        }
+        this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           this.fullscreenLoading=false;
           if (res.status === 200) {
