@@ -124,7 +124,9 @@
              * @param row
              */
             getPaperDetails: function(id) {
-                this.$ajax.get(`/api/bills/${id}`).then(res => {
+                this.$ajax.get(`/api/bills/details`,{
+                    id
+                }).then(res => {
                     res = res.data
                     if (res.status === 200) {
                         this.paperInfoData = Object.assign({}, res.data)
