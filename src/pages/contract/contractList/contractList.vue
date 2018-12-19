@@ -265,12 +265,12 @@
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
             <div style="text-align:center">
-              <el-button type="text" size="medium" v-if="scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
-              <el-button type="text" size="medium" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> 
-              <el-button type="text" size="medium" @click="toLayerAudit(scope.row)" v-if="scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2">调佣</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-upload'].state&&scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-verify'].state&&scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> 
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2" @click="toLayerAudit(scope.row)">调佣</el-button>
               <span v-if="scope.row.contType.value<4">
-                <el-button type="text" size="medium" v-if="scope.row.toExamineState.value<0||scope.row.toExamineState.value===2" @click="goSave(scope.row)">提审</el-button>
+                <el-button type="text" size="medium" v-if="power['sign-ht-info-sverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)" @click="goSave(scope.row)">提审</el-button>
               </span>
             </div>
           </template>
@@ -377,7 +377,78 @@ export default {
       blankPdf4:'',
       blankPdf5:'',
       pdfUrl:'',
-      haveUrl:false
+      haveUrl:false,
+      //权限配置
+      power: {
+        'sign-qh-cont-bill': {
+          state: false,
+          name: '流水'
+        },
+        'sign-ht-info-collect': {
+          state: false,
+          name: '收款'
+        },
+        'sign-ht-info-pay': {
+          state: false,
+          name: '付款'
+        },
+        'sign-ht-info-print': {
+          state: false,
+          name: '打印空白合同'
+        },
+        'sign-ht-info-add': {
+          state: false,
+          name: '创建正式合同'
+        },
+        'sign-ht-info-view': {
+          state: false,
+          name: '预览'
+        },
+        'sign-ht-info-sverify': {
+          state: false,
+          name: '提审'
+        },
+        'sign-ht-info-upload': {
+          state: false,
+          name: '上传'
+        },
+        'sign-ht-info-adjust': {
+          state: false,
+          name: '调佣'
+        },
+        'sign-ht-info-verify': {
+          state: false,
+          name: '审核'
+        },
+        'sign-ht-info-end': {
+          state: false,
+          name: '结算状态'
+        },
+        'sign-ht-info-rec': {
+          state: false,
+          name: '收佣状态'
+        },
+        'sign-ht-info-prog': {
+          state: false,
+          name: '后期进度'
+        },
+        'sign-ht-info-reject': {
+          state: false,
+          name: '已拒绝' //后期状态
+        },
+        'sign-cw-debt-contract': {
+          state: false,
+          name: '合同详情'
+        },
+        'sign-cw-debt-house': {
+          state: false,
+          name: '房源详情'
+        },
+        'sign-cw-debt-cust': {
+          state: false,
+          name: '客源详情'
+        }
+      }
     };
   },
   created() {
@@ -442,9 +513,13 @@ export default {
     },
     //流水
     runningWater(item) {
-      this.water = true;
-      this.contCode=item.code;
-      this.waterContId=item.id;
+      if(this.power['sign-qh-cont-bill'].state){
+        this.water = true;
+        this.contCode=item.code;
+        this.waterContId=item.id;
+      }else{
+        this.noPower('流水查看')
+      }
     },
     //关闭流水弹窗
     closeWater() {
@@ -454,25 +529,31 @@ export default {
     },
     //收款
     gathering(id) {
-      //console.log(id);
-      this.setPath(this.$tool.getRouter(['合同','合同列表','创建收款'],'contractList'));
-      this.$router.push({
-        path:'/receiptBill',
-        query:{
-          contId:id
-        }
-      })
+      if(this.power['sign-ht-info-collect'].state){
+        this.setPath(this.$tool.getRouter(['合同','合同列表','创建收款'],'contractList'));
+        this.$router.push({
+          path:'/receiptBill',
+          query:{
+            contId:id
+          }
+        })
+      }else{
+        this.noPower('收款')
+      }
     },
     //付款
     payment(id) {
-      //console.log(id);
-      this.setPath(this.$tool.getRouter(['合同','合同列表','创建付款'],'contractList'));
-       this.$router.push({
-        path:'/payBill',
-        query:{
-          contId:id
-        }
-      })
+      if(this.power['sign-ht-info-pay'].state){
+        this.setPath(this.$tool.getRouter(['合同','合同列表','创建付款'],'contractList'));
+        this.$router.push({
+          path:'/payBill',
+          query:{
+            contId:id
+          }
+        })
+      }else{
+        this.noPower('付款')
+      }
     },
     //合同详情页
     toDetail(value) {
@@ -497,16 +578,20 @@ export default {
       }
     },
     uploadData(value) {
-      // console.log(value)
-      this.$router.push({
-        path: "/contractDetails",
-        query: {
-          type: "dataBank",
-          id: value.id,
-          code:value.code,
-          contType: value.contType.value
-        }
-      });
+      if(this.power['sign-ht-info-reject'].state){
+        this.$router.push({
+          path: "/contractDetails",
+          query: {
+            type: "dataBank",
+            id: value.id,
+            code:value.code,
+            contType: value.contType.value
+          }
+        });
+      }else{
+        this.noPower('后期状态')
+      }
+      
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
@@ -515,38 +600,42 @@ export default {
     },
     //新增合同
     toAddcontract(command) {
-      let param = {
-        type:command
-      };
-      this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
-        res=res.data;
-        if(res.status===200){
-          this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-          if (command === 1 || command === 2 || command === 3) {
-            this.$router.push({
-              path: "/addContract",
-              query: {
-                type: command
-              }
-            });
-          } else if (command === 4 || command === 5) {
-            this.$router.push({
-              path: "/newIntention",
-              query: {
-                contType: command
-              }
-            });
+      if(this.power['sign-ht-info-add'].state){
+        let param = {
+          type:command
+        };
+        this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
+          res=res.data;
+          if(res.status===200){
+            this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+            if (command === 1 || command === 2 || command === 3) {
+              this.$router.push({
+                path: "/addContract",
+                query: {
+                  type: command
+                }
+              });
+            } else if (command === 4 || command === 5) {
+              this.$router.push({
+                path: "/newIntention",
+                query: {
+                  contType: command
+                }
+              });
+            }
+          }else{
+            this.$message({
+              message:'该类型合同模板未上传,请上传后再创建'
+            })
           }
-        }else{
-          this.$message({
-            message:'该类型合同模板未上传,请上传后再创建'
-          })
-        }
-      }).catch(error => {
-          this.$message({
-            message: '该类型合同模板未上传,请上传后再创建'
+        }).catch(error => {
+            this.$message({
+              message: '该类型合同模板未上传,请上传后再创建'
+            });
           });
-        });
+      }else{
+        this.noPower('创建合同')
+      }
     },
     //合同预览
     goPreview(item) {
@@ -642,38 +731,6 @@ export default {
 
       this.handleNodeClick(data)
     },
-
-    // getDeps(key){
-    //   let param = {
-    //     keyword:key
-    //   }
-    //   this.$ajax.get('/api/access/deps', param).then(res=>{
-    //     this.loading=false;
-    //     res=res.data
-    //     if(res.status===200){
-    //       this.options=res.data
-    //     }
-    //   })
-    // },
-    // selectDep(value){
-    //   delete this.contractForm.dealAgentId;
-    //   this.brokersList=[];
-    //   if(value){
-    //     this.getBroker(value)
-    //   }
-    // },
-    // getBroker(id){
-    //   console.log(id)
-    //   let param = {
-    //     depId:id
-    //   }
-    //   this.$ajax.get('/api/organize/employees', param).then(res=>{
-    //     res=res.data
-    //     if(res.status===200){
-    //       this.brokersList=res.data
-    //     }
-    //   })
-    // },
     //提审
     goSave(item){
       this.isSubmitAudit=true;
@@ -707,29 +764,30 @@ export default {
     },
     //发起结算弹窗
     closeAccount(item){
-      console.log(item);
-      if(item.resultState.value===2){
-        this.$message({
-          message:'已结算完成，无需发起结算'
-        })
-      }else{
-        // this.jiesuan=true;
-        // this.settleId=item.id;
-        let param = {
+      if(this.power['sign-ht-info-end'].state){
+        if(item.resultState.value===2){
+          this.$message({
+            message:'已结算完成，无需发起结算'
+          })
+        }else{
+          let param = {
             id: item.id         
           }
-        this.$ajax.get("/api/settlement/getSettlById", param).then(res => {
-          // console.log(res);
-          let data = res.data;
-          if (res.data.status === 200) {
-            this.jiesuan=true;
-            this.settleId=item.id;
-          }
-        }).catch(error => {
-          this.$message({
-            message: error
+          this.$ajax.get("/api/settlement/getSettlById", param).then(res => {
+            // console.log(res);
+            let data = res.data;
+            if (res.data.status === 200) {
+              this.jiesuan=true;
+              this.settleId=item.id;
+            }
+          }).catch(error => {
+            this.$message({
+              message: error
+            })
           })
-        })
+        }
+      }else{
+        this.noPower('结算')
       }
     },
     //关闭结算弹窗
@@ -740,12 +798,16 @@ export default {
     },
     //后期流程查看
     showStepInstance(item){
-      let value = {
-        id:item.id,
-        transFlowName:item.stepInstanceName,
-        statusReceiveAmount:item.receiveAmountState
+      if(this.power['sign-ht-info-prog'].state){
+        let value = {
+          id:item.id,
+          transFlowName:item.stepInstanceName,
+          statusReceiveAmount:item.receiveAmountState
+        }
+        this.$refs.lateProgress.show(value);
+      }else{
+        this.noPower('后期流程查看')
       }
-      this.$refs.lateProgress.show(value);
     },
 
     dayin(){

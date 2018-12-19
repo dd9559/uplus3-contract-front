@@ -446,7 +446,7 @@
     <!-- 表单列表弹出框（业绩详情） -->
     <el-dialog
       :visible.sync="dialogVisible"
-       width="820px"
+       width="1000px"
       :close-on-click-modal="false"
       custom-class="base-dialog"
     >

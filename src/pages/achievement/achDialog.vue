@@ -93,7 +93,7 @@
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
               <el-table-column
                 label="经纪人"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -106,7 +106,6 @@
                     :remote-method="getAssignors"
                     :loading="loading1"
                     @change="changeAssignors(scope.row.assignor,scope.$index,0)"
-                    @blur="assignors=[]"
                   >
                     <el-option
                       v-for="item in assignors"
@@ -154,7 +153,6 @@
                     :loading="loading1"
                     :remote-method="getLevel(3)"
                     @change="changeLevel3(scope.row.level3,scope.$index,0,0)"
-                    @blur="level3s=[]"
                   >
                     <el-option
                       v-for="item in level3s"
@@ -169,7 +167,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="130"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -182,7 +180,6 @@
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(2)"
                     @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,0)"
-                    @blur="shopkeepers=[]"
                   >
                     <el-option
                       v-for="item in shopkeepers"
@@ -210,7 +207,6 @@
                     placeholder="请输入内容"
                     :remote-method="getLevel(4)"
                     @change="changeLevel3(scope.row.level4,scope.$index,0,1)"
-                    @blur="level4s=[]"
                   >
                     <el-option
                       v-for="item in level4s"
@@ -225,7 +221,7 @@
               <!-- 区经，可输入，可下拉   changeAmaldar-->
               <el-table-column
                 label="区经"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -238,7 +234,6 @@
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(1)"
                     @change="changeAmaldar(scope.row.amaldar,scope.$index,0)"
-                    @blur="amaldars=[]"
                   >
                     <el-option
                       v-for="item in amaldars"
@@ -253,7 +248,7 @@
               <!-- 区总，可输入，可下拉 changeManager-->
               <el-table-column
                 label="区总"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -266,7 +261,6 @@
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(0)"
                     @change="changeManager(scope.row.manager,scope.$index,0)"
-                    @blur="managers=[]"
                   >
                     <el-option
                       v-for="item in managers"
@@ -366,7 +360,7 @@
 
               <el-table-column
                 label="经纪人"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -379,7 +373,6 @@
                     :remote-method="getAssignors"
                     :loading="loading1"
                     @change="changeAssignors(scope.row.assignor,scope.$index,1)"
-                    @blur="assignors=[]"
                   >
                     <el-option
                       v-for="item in assignors"
@@ -426,7 +419,6 @@
                     :loading="loading1"
                     :remote-method="getLevel(3)"
                     @change="changeLevel3(scope.row.level3,scope.$index,1,0)"
-                    @blur="level3s=[]"
                   >
                     <el-option
                       v-for="item in level3s"
@@ -441,7 +433,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="130"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -454,7 +446,6 @@
                     :loading="loading1"
                     :remote-method="getShopInfo(2)"
                     @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,1)"
-                    @blur="shopkeepers=[]"
                   >
                     <el-option
                       v-for="item in shopkeepers"
@@ -482,7 +473,6 @@
                     :loading="loading1"
                     :remote-method="getLevel(4)"
                     @change="changeLevel3(scope.row.level4,scope.$index,1,1)"
-                    @blur="level4s=[]"
                   >
                     <el-option
                       v-for="item in level4s"
@@ -497,7 +487,7 @@
               <!-- 区经，可输入，可下拉 -->
               <el-table-column
                 label="区经"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -510,7 +500,6 @@
                     :loading="loading1"
                     :remote-method="getShopInfo(1)"
                     @change="changeAmaldar(scope.row.amaldar,scope.$index,1)"
-                    @blur="amaldars=[]"
                   >
                     <el-option
                       v-for="item in amaldars"
@@ -525,7 +514,7 @@
               <!-- 区总，可输入，可下拉 -->
               <el-table-column
                 label="区总"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -538,7 +527,6 @@
                     :loading="loading1"
                     :remote-method="getShopInfo(0)"
                     @change="changeManager(scope.row.manager,scope.$index,1)"
-                    @blur="managers=[]"
                   >
                     <el-option
                       v-for="item in managers"
@@ -1681,7 +1669,7 @@ export default {
 //业绩详情弹框改变样式
 .dialog1 {
   /deep/ .el-dialog.base-dialog {
-    width: 820px !important;
+    width: 1000px !important;
     margin: 13vh auto 0 !important;
     overflow: hidden;
 
