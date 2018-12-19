@@ -427,7 +427,6 @@
         }
         this.loadingList = true;
         let param = Object.assign({}, this.propForm)
-        debugger
         param.pageNum = this.pageNum
         param.pageSize = this.pageSize
         if (param.timeRange) {
