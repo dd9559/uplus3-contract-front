@@ -1826,11 +1826,18 @@ export default {
       padding: 0 !important;
     }
     /deep/ .el-dialog__header {
+      padding: 0 !important;
       .el-dialog__headerbtn {
         right: 0;
         top: 0;
-        display: none;
+        display: none !important;
+        padding: 0 !important;
       }
+    }
+    .el-dialog__headerbtn {
+      right: 0;
+      top: 0;
+      display: none !important;
     }
   }
   input::-webkit-input-placeholder {
@@ -1858,5 +1865,8 @@ export default {
 }
 /deep/ .el-dialog.base-dialog .ach-body {
   padding: 0 20px !important;
+}
+/deep/ .el-dialog__header {
+  padding: 0 !important;
 }
 </style>
