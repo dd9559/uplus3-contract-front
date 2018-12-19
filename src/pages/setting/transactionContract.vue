@@ -36,7 +36,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="modal-footer">
-                <el-button @click="submitForm" class="confirmBtn">确 定</el-button>
+                <el-button @click="submitForm" class="confirmBtn" v-dbClick>确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -127,9 +127,12 @@ export default {
         this.contractForm.isNecessary = this.contractForm.isNecessary.toString();
         delete this.contractForm.isDel;
       } else if (opera === 2) {
-        this.$ajax
-          .post("/api/flowmanage/deleteConAttach", { id: row.id })
-          .then(res => {
+        this.$confirm('是否删除此条合同资料', '删除合同资料', {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          this.$ajax.post("/api/flowmanage/deleteConAttach", { id: row.id }).then(res => {
             res = res.data;
             if (res.status === 200) {
               this.$message(res.message);
@@ -138,6 +141,9 @@ export default {
           }).catch(error => {
               this.$message({message:error})
           })
+        }).catch(error => {
+          this.$message({message:"取消删除"})
+        })
       }
     },
     // 提交表单

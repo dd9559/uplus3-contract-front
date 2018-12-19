@@ -126,7 +126,7 @@
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span @click="msgOpera(scope.row,'cont')">{{scope.row.contCode}}</span></li>
+              <li>合同编号:<span @click="toLink(scope.row,'cont')">{{scope.row.contCode}}</span></li>
               <li>房源编号:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
               <li>客源编号:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
             </ul>
@@ -175,8 +175,10 @@
         <el-table-column align="center" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
-            <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
-            <el-button type="text" @click="cellOpera(scope.row,'del')" v-else-if="scope.row.caozuo===1">作废</el-button>
+            <template v-if="(scope.row.auditButton&&(power['sign-cw-pay-verify'].state||power['sign-cw-rev-verify'].state))||(scope.row.caozuo===1&&(power['sign-cw-rev-void'].state||power['sign-cw-pay-void'].state))">
+              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton&&(power['sign-cw-pay-verify'].state||power['sign-cw-rev-verify'].state)">审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="scope.row.caozuo===1&&(power['sign-cw-rev-void'].state||power['sign-cw-pay-void'].state)">作废</el-button>
+            </template>
             <span v-else>--</span>
           </template>
         </el-table-column>
@@ -266,10 +268,72 @@
           show:false,
           content:[]
         },
+        //权限配置
+        power: {
+          'sign-cw-rev-query': {
+            state: false,
+            name: '查询'
+          },
+          'sign-cw-rev-export': {
+            state: false,
+            name: '导出'
+          },
+          'sign-cw-rev-void': {
+            state: false,
+            name: '作废'
+          },
+          'sign-cw-rev-verify': {
+            state: false,
+            name: '审核'
+          },
+          'sign-cw-rev-contract': {
+            state: false,
+            name: '合同详情'
+          },
+          'sign-cw-rev-house': {
+            state: false,
+            name: '房源详情'
+          },
+          'sign-cw-rev-cust': {
+            state: false,
+            name: '客源详情'
+          }
+        }
       }
     },
     created() {
       this.activeView = parseInt(this.$route.query.type)
+      if(this.activeView===2){
+        this.power=Object.assign({},{
+          'sign-cw-pay-query': {
+            state: false,
+            name: '查询'
+          },
+          'sign-cw-pay-export': {
+            state: false,
+            name: '导出'
+          },
+          'sign-cw-pay-void': {
+            state: false,
+            name: '作废'
+          },
+          'sign-cw-pay-verify': {
+            state: false,
+            name: '审核'
+          },
+          'sign-cw-pay-contract': {
+            state: false,
+            name: '合同详情'
+          },
+          'sign-cw-pay-house': {
+            state: false,
+            name: '房源详情'
+          },
+          'sign-cw-pay-cust': {
+            state: false,
+            name: '客源详情'
+          }})
+      }
 
       this.getData()
       this.remoteMethod()
@@ -330,26 +394,32 @@
         this.handleNodeClick(data)
       },
       getData: function () {
-        let param = JSON.parse(JSON.stringify(this.searchForm))
-        if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
-          param.startTime = param.timeRange[0]
-          param.endTime = param.timeRange[1]
-        }
-        delete param.timeRange
-        param.pageNum = this.currentPage
-        param.pageSize = this.pageSize
-        let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
-        this.$ajax.get(`/api${url}`,param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.list = res.data.page.list
-            this.total = res.data.page.total
+        let powerMsg=this.power[this.activeView===1?'sign-cw-rev-query':'sign-cw-pay-query']
+        if(powerMsg.state){
+          let param = JSON.parse(JSON.stringify(this.searchForm))
+          if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
+            param.startTime = param.timeRange[0]
+            param.endTime = param.timeRange[1]
           }
-        }).catch(error => {
-          console.log(error)
-        })
+          delete param.timeRange
+          param.pageNum = this.currentPage
+          param.pageSize = this.pageSize
+          let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
+          this.$ajax.get(`/api${url}`,param).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              this.list = res.data.page.list
+              this.total = res.data.page.total
+            }
+          }).catch(error => {
+            console.log(error)
+          })
+        }else {
+          this.noPower(powerMsg.name)
+        }
       },
       toDetails:function (item) {
+        let powerMsg=this.power[this.activeView===1?'sign-cw-rev-verify':'sign-cw-pay-verify'].state
         let param = {
           path: 'billDetails'
         }
@@ -358,14 +428,14 @@
             tab: '收款信息',
             id:item.id,
             type:item.inAccountType,
-            pageName:'收款详情'
+            power:powerMsg
           }
           this.setPath(this.getPath.concat({name:'收款详情'}))
         } else {
           param.query = {
             tab: '付款信息',
             id:item.id,
-            pageName:'付款详情'
+            power:powerMsg
           }
           this.setPath(this.getPath.concat({name:'付款详情'}))
         }
@@ -384,7 +454,17 @@
        * 合同信息操作
        * @param type
        */
-      msgOpera:function (row,type) {
+      toLink:function (row,type) {
+        let param={
+          contType:row.contTypeId,
+          contId:row.contId,
+          contCode:row.contCode,
+          operaType:type,
+          power:type==='cont'?this.power[this.activeView===1?'sign-cw-rev-contract':'sign-cw-pay-contract']:type==='house'?this.power[this.activeView===1?'sign-cw-rev-house':'sign-cw-pay-house']:type==='customer'?this.power[this.activeView===1?'sign-cw-rev-cust':'sign-cw-pay-cust']:''
+        }
+        this.msgOpera(param)
+      },
+      /*msgOpera:function (row,type) {
         this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'))
         if(type==='cont'){
           this.$router.push({
@@ -396,7 +476,7 @@
             }
           })
         }
-      },
+      },*/
       //作废
       deleteBill:function () {
         this.$ajax.put('/api/payInfo/updateCheckStatus',{payId:this.layer.content[0].id},2).then(res=>{

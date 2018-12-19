@@ -643,7 +643,7 @@
               width="200"
             >
               <template slot-scope="scope">
-                <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatDate}}</p>
+                <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatTime}}</p>
                 <p v-else>-</p>
               </template>
             </el-table-column>
