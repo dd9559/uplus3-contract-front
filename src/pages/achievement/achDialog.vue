@@ -93,7 +93,7 @@
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
               <el-table-column
                 label="经纪人"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -167,7 +167,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="130"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -221,7 +221,7 @@
               <!-- 区经，可输入，可下拉   changeAmaldar-->
               <el-table-column
                 label="区经"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -248,7 +248,7 @@
               <!-- 区总，可输入，可下拉 changeManager-->
               <el-table-column
                 label="区总"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -360,7 +360,7 @@
 
               <el-table-column
                 label="经纪人"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -433,7 +433,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="130"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -487,7 +487,7 @@
               <!-- 区经，可输入，可下拉 -->
               <el-table-column
                 label="区经"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -514,7 +514,7 @@
               <!-- 区总，可输入，可下拉 -->
               <el-table-column
                 label="区总"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -1669,7 +1669,7 @@ export default {
 //业绩详情弹框改变样式
 .dialog1 {
   /deep/ .el-dialog.base-dialog {
-    width: 820px !important;
+    width: 1000px !important;
     margin: 13vh auto 0 !important;
     overflow: hidden;
 
