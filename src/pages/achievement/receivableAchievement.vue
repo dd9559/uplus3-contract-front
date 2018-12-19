@@ -326,7 +326,18 @@ export default {
       currentPage: 1,
       ajaxParam: {},
       total: 0,
-      loading: true
+      loading: true,
+      //权限配置
+      power: {
+        'sign-cw-debt-query': {
+          state: false,
+          name: '查询'
+        },
+        'sign-cw-debt-contract': {
+          state: false,
+          name: '合同详情'
+        }
+      }
     };
   },
   created() {
@@ -411,21 +422,26 @@ export default {
       };
     },
     getData(param) {
-      // 实收列表
-      let _that = this;
-      this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
-        let data = res.data;
-        if (res.status === 200) {
-          _that.receivableList = data.data.list;
-          if (data.data.list[0]) {
-            _that.countData = data.data.list[0].contractCount;
-          } else {
-            _that.countData = [0, 0, 0, 0];
-          }
-          _that.total = data.data.total;
-          this.loading = false;
+      if(this.power['sign-cw-debt-query'].state){
+             // 实收列表
+              let _that = this;
+              this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
+                let data = res.data;
+                if (res.status === 200) {
+                  _that.receivableList = data.data.list;
+                  if (data.data.list[0]) {
+                    _that.countData = data.data.list[0].contractCount;
+                  } else {
+                    _that.countData = [0, 0, 0, 0];
+                  }
+                  _that.total = data.data.total;
+                }
+              });
+        }else {
+          this.noPower(this.power['sign-cw-debt-query'].name)
+          this.countData = [0, 0, 0, 0];
         }
-      });
+        this.loading = false;
     },
     //分页
     handleSizeChange(val) {
