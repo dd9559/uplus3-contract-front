@@ -271,7 +271,6 @@
           </div>
         </div>
         <div>
-          <!-- <el-button round>预览</el-button> -->
           <el-button type="success" round @click="isSave(1)">提交审核</el-button>
           <el-button type="primary" round @click="isSave(0)">保存</el-button>
         </div>
