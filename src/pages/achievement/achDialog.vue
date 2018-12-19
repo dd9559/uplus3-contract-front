@@ -106,6 +106,7 @@
                     :remote-method="getAssignors"
                     :loading="loading1"
                     @change="changeAssignors(scope.row.assignor,scope.$index,0)"
+                    @blur="assignors=[]"
                   >
                     <el-option
                       v-for="item in assignors"
@@ -153,6 +154,7 @@
                     :loading="loading1"
                     :remote-method="getLevel(3)"
                     @change="changeLevel3(scope.row.level3,scope.$index,0,0)"
+                    @blur="level3s=[]"
                   >
                     <el-option
                       v-for="item in level3s"
@@ -180,6 +182,7 @@
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(2)"
                     @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,0)"
+                    @blur="shopkeepers=[]"
                   >
                     <el-option
                       v-for="item in shopkeepers"
@@ -207,6 +210,7 @@
                     placeholder="请输入内容"
                     :remote-method="getLevel(4)"
                     @change="changeLevel3(scope.row.level4,scope.$index,0,1)"
+                    @blur="level4s=[]"
                   >
                     <el-option
                       v-for="item in level4s"
@@ -234,6 +238,7 @@
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(1)"
                     @change="changeAmaldar(scope.row.amaldar,scope.$index,0)"
+                    @blur="amaldars=[]"
                   >
                     <el-option
                       v-for="item in amaldars"
@@ -261,6 +266,7 @@
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(0)"
                     @change="changeManager(scope.row.manager,scope.$index,0)"
+                    @blur="managers=[]"
                   >
                     <el-option
                       v-for="item in managers"
@@ -373,6 +379,7 @@
                     :remote-method="getAssignors"
                     :loading="loading1"
                     @change="changeAssignors(scope.row.assignor,scope.$index,1)"
+                    @blur="assignors=[]"
                   >
                     <el-option
                       v-for="item in assignors"
@@ -419,6 +426,7 @@
                     :loading="loading1"
                     :remote-method="getLevel(3)"
                     @change="changeLevel3(scope.row.level3,scope.$index,1,0)"
+                    @blur="level3s=[]"
                   >
                     <el-option
                       v-for="item in level3s"
@@ -446,6 +454,7 @@
                     :loading="loading1"
                     :remote-method="getShopInfo(2)"
                     @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,1)"
+                    @blur="shopkeepers=[]"
                   >
                     <el-option
                       v-for="item in shopkeepers"
@@ -473,6 +482,7 @@
                     :loading="loading1"
                     :remote-method="getLevel(4)"
                     @change="changeLevel3(scope.row.level4,scope.$index,1,1)"
+                    @blur="level4s=[]"
                   >
                     <el-option
                       v-for="item in level4s"
@@ -500,6 +510,7 @@
                     :loading="loading1"
                     :remote-method="getShopInfo(1)"
                     @change="changeAmaldar(scope.row.amaldar,scope.$index,1)"
+                    @blur="amaldars=[]"
                   >
                     <el-option
                       v-for="item in amaldars"
@@ -527,6 +538,7 @@
                     :loading="loading1"
                     :remote-method="getShopInfo(0)"
                     @change="changeManager(scope.row.manager,scope.$index,1)"
+                    @blur="managers=[]"
                   >
                     <el-option
                       v-for="item in managers"
@@ -573,14 +585,17 @@
           class="ach-footer"
           v-if="dialogType==0"
         >
-          <p>备注：
+          <p class="text-layout">备注：
             <el-input
               type="textarea"
               :rows="2"
               placeholder="请输入内容"
               class="f_l"
               v-model="remark"
+              resize="none"
+              maxlength=200
             ></el-input>
+            <span class="textLength">{{remark.length}}/200</span>
           </p>
           <div class="footer-btn-layout f_r">
             <el-button
@@ -1783,16 +1798,28 @@ export default {
       p {
         margin-top: 30px;
       }
-      .el-textarea {
-        position: absolute;
-        left: 70px;
-        top: 0;
-        padding-bottom: 80px;
-        width: 60%;
+      .text-layout{
+        position: relative;
+        .el-textarea {
+            position: absolute;
+            left: 70px;
+            top: 0;
+            padding-bottom: 80px;
+            width: 60%;
+          }
+          textarea {
+            width: 400px !important;
+            height: 90px;
+          }
+          .textLength {
+            position: absolute;
+            right: 352px;
+            top: 70px;
+            color: #6c7986;
+            text-align: right;
+          }
       }
-      textarea {
-        width: 400px !important;
-      }
+  
       .footer-btn-layout {
         height: 38px;
         text-align: right;

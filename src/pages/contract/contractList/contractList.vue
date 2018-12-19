@@ -244,8 +244,8 @@
         </el-table-column>
         <el-table-column align="left" label="收佣状态" width="100">
           <template slot-scope="scope">
-            <!-- {{scope.row.receivedCommission}}/{{scope.row.receivableCommission}} -->
-            <span v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</span>
+            <!-- <div class="btn" @click="runningWater(scope.row)">流水</div> -->
+            <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
             <span v-else>-</span>
           </template>
         </el-table-column>
