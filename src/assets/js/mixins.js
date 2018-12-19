@@ -28,13 +28,8 @@ const MIXINS = {
   created(){
     for (let item in this.power){
       if(this.getUser){
-        //权限为空表示所有权限都有
-        if(this.getUser.privileges.length===0){
+        if(this.getUser.privileges.indexOf(item)>-1){
           this.power[item].state=true
-        }else {
-          if(this.getUser.privileges.indexOf(item)>-1){
-            this.power[item].state=true
-          }
         }
       }
     }
@@ -204,22 +199,6 @@ const MIXINS = {
         }else{
             // 其他文件 下载
           this.fileSign([].concat(arr[i].path),'download')
-            /*this.$ajax.get("/api/load/generateAccessURL",{
-              url:arr[i].path
-            }).then(res=>{
-              res = res.data;
-              if(res.status === 200){
-                var a = document.createElement('a');
-                a.download = undefined;
-                a.href = res.data.url;
-                // a.href = 'http://192.168.1.51:5500/%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6.txt';
-                // a.href = 'data:text/plain;charset=utf-8,' + res.data.url;
-                a.click();
-                // window.location = res.data.url;
-              }
-            }).catch(err=>{
-              console.log(err)
-            })*/
         }
     },
     // 判断图片类别

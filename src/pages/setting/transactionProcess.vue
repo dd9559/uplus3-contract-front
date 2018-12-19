@@ -24,7 +24,7 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="submitForm" class="confirmBtn">确定</el-button>
+            <el-button @click="submitForm" class="confirmBtn" v-dbClick>确定</el-button>
           </div>
         </el-dialog>
         <!-- 交易流程管理 弹出框 -->
@@ -58,7 +58,7 @@
           </div>
           <div slot="footer" class="dialog-footer">
               <el-button @click="addBtn" class="addBtn">添加</el-button>
-              <el-button class="confirmBtn" @click="confirmSteps('flow')">确定</el-button>
+              <el-button class="confirmBtn" @click="confirmSteps('flow')" v-dbClick>确定</el-button>
           </div>
         </el-dialog>
         <!-- 添加流程步骤 弹出框 -->
@@ -191,7 +191,15 @@
             cityId: this.cityId
           }
           const msg = "删除成功"
-          this.processPost(param,msg,type)
+          this.$confirm('是否删除此条交易流程', '删除交易流程', {
+            distinguishCancelAndClose: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+          }).then(() => {
+            this.processPost(param,msg,type)
+          }).catch(error => {
+            this.$message({message:"取消删除"})
+          })
         }
       },
       // 提交表单
@@ -247,13 +255,13 @@
               })
             })
             this.StepsOption.forEach(item => {
-              item.stepsList.forEach(e => {
-                this.AllSteps.push(e)
-              })
+              if(item.stepsList) {
+                item.stepsList.forEach(e => {
+                  this.AllSteps.push(e)
+                })
+              }
             })
           }
-        }).catch(error => {
-            this.$message({message:error})
         })
       },
       Operation(index,type) {
@@ -285,7 +293,7 @@
           item.tempList = []
           item.stepsSelect = false
         })
-        this.StepsOption = this.StepsOption.filter(item => item.stepsList.length)
+        // this.StepsOption = this.StepsOption.filter(item => item.stepsList.length)
         this.manageData.forEach(i => {
           this.StepsOption.forEach(v => {
             if(i.stepsTypeName === v.typeName) {
