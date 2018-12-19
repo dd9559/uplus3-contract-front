@@ -86,7 +86,12 @@
               <template>
                 <el-table :data="ownerData" border header-row-class-name="theader-bg">
                   <el-table-column prop="name" label="业主姓名"></el-table-column>
-                  <el-table-column prop="mobile" label="电话"></el-table-column>
+                  <el-table-column label="电话">
+                    <template slot-scope="scope">
+                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                    </template>
+                  </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
                   <el-table-column label="产权比" v-if="contType!='1'">
                     <template slot-scope="scope">
@@ -121,7 +126,7 @@
                   <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                      <i class="iconfont tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -441,7 +446,7 @@
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-
+    <!-- 打印成交报告 -->
     <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px">
       <div class="printContent">
         <div class="printHeader">
@@ -750,17 +755,23 @@ export default {
     },
     // 分成弹窗
     fencheng() {
-      this.dialogType = 3;
-      this.shows = true;
-      this.code2 = this.$route.query.code;
-      this.achObj={
-        contractId:this.contractDetail.id,//合同id
-        houseCode: this.contractDetail.houseinfoCode, //房源编号
-        receivableComm: this.contractDetail.receivableCommission, //合同应收佣金
-        signDate: this.contractDetail.signDate, //合同签约时间
-        contractType: this.contractDetail.contType.value, //合同类型
-        customerCode: this.contractDetail.guestinfoCode, //客源编号
-        comm:this.contractDetail.distributableAchievement //可分配业绩
+      if(this.contractDetail.distributableAchievement>0){
+        this.dialogType = 3;
+        this.shows = true;
+        this.code2 = this.$route.query.code;
+        this.achObj={
+          contractId:this.contractDetail.id,//合同id
+          houseCode: this.contractDetail.houseinfoCode, //房源编号
+          receivableComm: this.contractDetail.receivableCommission, //合同应收佣金
+          signDate: this.contractDetail.signDate, //合同签约时间
+          contractType: this.contractDetail.contType.value, //合同类型
+          customerCode: this.contractDetail.guestinfoCode, //客源编号
+          comm:this.contractDetail.distributableAchievement //可分配业绩
+        }
+      }else{
+        this.$message({
+          message:'无可分配业绩,无法分成'
+        })
       }
     },
     // 合同编辑
@@ -1251,7 +1262,7 @@ export default {
           }
         }
         i {
-          font-size: 16px;
+          font-size: 20px;
           padding-left: 5px;
           color: #54d384;
           cursor: pointer;
@@ -1396,11 +1407,13 @@ export default {
     .icon {
       text-align: center;
       font-size: 50px;
-      padding-bottom: 20px;
+      padding-bottom: 15px;
+      padding-top: 25px;
       color: #54d384;
     }
     .text {
       text-align: center;
+      padding-bottom: 30px;
       p {
         line-height: 30px;
       }
