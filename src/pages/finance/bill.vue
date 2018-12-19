@@ -367,6 +367,14 @@
       }
     },
     created() {
+      console.log(this.getUser)
+      for (let item in this.power){
+        if(this.getUser){
+          if(this.getUser.privileges.indexOf(item)>-1){
+            this.power[item].state=true
+          }
+        }
+      }
       this.getData()
       this.getDictionary()
       this.getMoneyTypes()
@@ -406,6 +414,7 @@
         this.handleNodeClick(data)
       },
       getData: function () {
+        debugger
         if(this.power['sign-cw-debt-query'].state){
           let param = JSON.parse(JSON.stringify(this.searchForm))
           if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {

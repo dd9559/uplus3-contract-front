@@ -205,7 +205,7 @@
         }
       }
     },
-    created() {
+    mounted() {
       this.getData()
       this.remoteMethod()
       this.getDictionary()
@@ -252,6 +252,7 @@
       },
       getData: function () {
         // let param={}
+        console.log(this.power)
         if(this.power['sign-cw-rec-query'].state){
           let param=Object.assign({},this.searchForm)
           if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){

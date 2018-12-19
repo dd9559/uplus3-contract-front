@@ -27,12 +27,12 @@ const MIXINS = {
   },
   created(){
     for (let item in this.power){
-      // debugger
-      if(this.getUser){
+      this.power[item].state=true
+      /*if(this.getUser){
         if(this.getUser.privileges.indexOf(item)>-1){
           this.power[item].state=true
         }
-      }
+      }*/
     }
   },
   methods: {
