@@ -335,11 +335,12 @@
           }})
       }
       for (let item in this.power){
-        if(this.getUser){
+        this.power[item].state=true
+        /*if(this.getUser){
           if(this.getUser.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }
+        }*/
       }
 
       this.getData()
@@ -413,11 +414,12 @@
         })
       }
       for (let item in this.power){
-        if(this.getUser){
+        this.power[item].state=true
+        /*if(this.getUser){
           if(this.getUser.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }
+        }*/
       }
 
       this.getData()

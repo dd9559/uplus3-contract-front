@@ -816,7 +816,26 @@ export default {
           key:2,
           value:"已驳回"
         }
-      ]
+      ],
+        //权限配置
+      power: {
+        'sign-cw-debt-query': {
+          state: false,
+          name: '查询'
+        },
+        'sign-cw-debt-contract': {
+          state: false,
+          name: '合同详情'
+        },
+        'sign-cw-debt-house': {
+          state: false,
+          name: '房源详情'
+        },
+        'sign-cw-debt-cust': {
+          state: false,
+          name: '客源详情'
+        }
+      }
     };
   },
   created() {
@@ -852,6 +871,7 @@ export default {
       this.propForm.department=''
       this.EmployeList=[]
       this.propForm.dealAgentId=''
+      this.propForm.dealAgentStoreId='';
       this.clearSelect()
     },
      depHandleClick(data) {
@@ -861,25 +881,31 @@ export default {
       this.handleNodeClick(data)
     },
     getData(ajaxParam) {
-      let _that=this;
-      this.$ajax
-        .get("/api/achievement/selectAchievementList", ajaxParam)
-        .then(res => {
-          console.log(res);
-          let data = res.data;
-          if (res.status === 200) {
-            // debugger;
-             _that.selectAchList = data.data.list;
-             _that.total = data.data.total;
-            if(data.data.list[0]){
-                 _that.countData = data.data.list[0].contractCount;
-            }else {
-            _that.countData = [0, 0, 0, 0];
-          }       
-           
-          }
-         this.loading=false;
-      });
+      if(this.power['sign-cw-debt-query'].state){
+              let _that=this;
+                 this.$ajax
+                   .get("/api/achievement/selectAchievementList", ajaxParam)
+                   .then(res => {
+                     console.log(res);
+                     let data = res.data;
+                     if (res.status === 200) {
+                       // debugger;
+                        _that.selectAchList = data.data.list;
+                        _that.total = data.data.total;
+                       if(data.data.list[0]){
+                            _that.countData = data.data.list[0].contractCount;
+                       }else {
+                       _that.countData = [0, 0, 0, 0];
+                     }       
+
+                     }
+                  
+                 });
+         }else {
+          this.noPower(this.power['sign-cw-debt-query'].name)
+          this.countData = [0, 0, 0, 0];
+        }
+      this.loading=false;
     },
     closeDialog() {
       this.dialogVisible = false;

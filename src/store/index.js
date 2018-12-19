@@ -15,8 +15,13 @@ const store = new Vuex.Store({
       state.path=payload
     },
     setUser(state,payload){
-      localStorage.setItem('userMsg',JSON.stringify(payload))
+      sessionStorage.setItem('userMsg',JSON.stringify(payload))
       state.user=payload
+    }
+  },
+  actions:{
+    asyncUser({commit},payload){
+      commit('setUser',payload)
     }
   },
   getters:{
