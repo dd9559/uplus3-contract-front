@@ -150,7 +150,7 @@
       <el-table :data="tableData.list" class="paper-table mt-20" v-loading="loadingList">
         <el-table-column fixed align="center" label="序号" min-width="70">
           <template slot-scope="scope">
-            <p class="tc">{{scope.$index}}</p>
+            <p class="tc">{{scope.$index + 1}}</p>
           </template>
         </el-table-column>
         <el-table-column fixed label="合同编号" min-width="124">
@@ -234,14 +234,14 @@
           <template slot-scope="scope">
             <!-- 已开票 -->
             <template v-if="scope.row.state.value===2">
-              <el-button type="text" @click="btnOpera(scope.row,1)">核销</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)">回收</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,3)">作废</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-bill-delete'].state">核销</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-void'].state">作废</el-button>
             </template>
             <!-- 已作废 -->
             <template v-else-if="scope.row.state.value===4">
-              <el-button type="text" @click="btnOpera(scope.row,4)">开票</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)">回收</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,4)" v-if="power['sign-cw-bill-invoice'].state">开票</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收</el-button>
             </template>
             <!-- 已回收 和 已核销 -->
             <template v-else>--</template>
@@ -350,6 +350,45 @@
         },
         activeRow:{},
         paymentTime:'',
+        // 权限
+        power:{
+            'sign-cw-bill-query':{
+                name:'查询',
+                state:false
+            },
+            'sign-cw-bill-delete':{
+                name:'核销',
+                state:false
+            },
+            'sign-cw-bill-trash':{
+                name:'回收',
+                state:false
+            },
+            'sign-cw-bill-void':{
+                name:'作废',
+                state:false
+            },
+            'sign-cw-bill-invoice':{
+                name:'开票',
+                state:false
+            },
+            'sign-cw-bill-print':{
+                name:'打印',
+                state:false
+            },
+            'sign-cw-bill-contract':{
+                name:'合同详情',
+                state:false
+            },
+            'sign-cw-bill-detail':{
+                name:'票据详情',
+                state:false
+            },
+            'sign-cw-bill-revdetail':{
+                name:'收款详情',
+                state:false
+            },
+        }
       }
     },
     computed: {
@@ -382,8 +421,13 @@
       },
       // 列表数据
       getData: function () {
+        if(!this.power['sign-cw-bill-query'].state){
+            this.noPower(this.power['sign-cw-bill-query'].name);
+            return false
+        }
         this.loadingList = true;
         let param = Object.assign({}, this.propForm)
+        debugger
         param.pageNum = this.pageNum
         param.pageSize = this.pageSize
         if (param.timeRange) {
@@ -404,29 +448,52 @@
       btnOpera: function (row,type) {
         this.activeRow = Object.assign({},row)
         if(type===4){
+          if(!this.power['sign-cw-bill-invoice'].state){
+              this.noPower(this.power['sign-cw-bill-invoice'].name);
+              return false
+          }
+          if(!this.power['sign-cw-bill-print'].state){
+              this.noPower(this.power['sign-cw-bill-print'].name);
+              return false
+          }
           this.$refs.layerInvoice.show(row.proceedsId,true);
           return
-        }else {
-          this.layer.show = true
         }
         switch (type) {
           case 1:
+            if(!this.power['sign-cw-bill-delete'].state){
+                this.noPower(this.power['sign-cw-bill-delete'].name);
+                return false
+            }
             this.layer.title = '票据核销'
             this.layer.msg = '确认要核销该票据吗?'
+            this.layer.show = true;
             break
           case 2:
+            if(!this.power['sign-cw-bill-trash'].state){
+                this.noPower(this.power['sign-cw-bill-trash'].name);
+                return false
+            }
             this.layer.title = '票据回收'
             this.layer.msg = '确认要收回该票据吗?'
+            this.layer.show = true;
             break
           case 3:
+            if(!this.power['sign-cw-bill-void'].state){
+                this.noPower(this.power['sign-cw-bill-void'].name);
+                return false
+            }
             this.layer.title = '票据作废';
             this.layer.reason ='';
+            this.layer.show = true;
             this.getPaperDetails(row.id)
             break
         }
       },
       getPaperDetails: function(id) {
-        this.$ajax.get(`/api/bills/${id}`).then(res => {
+        this.$ajax.get(`/api/bills/details`,{
+            id
+        }).then(res => {
           res = res.data
           if (res.status === 200) {
             this.paymentTime = res.data.paymentTime
@@ -443,6 +510,10 @@
       // 编号操作
       cellOpera(type,row) {
         if (type === 'contract') {
+          if(!this.power['sign-cw-bill-contract'].state){
+              this.noPower(this.power['sign-cw-bill-contract'].name);
+              return false
+          }
           this.$router.push({
               path: "/contractDetails",
               query: {
@@ -452,8 +523,20 @@
               }
           });
         } else if (type === 'paper') {
+          if(!this.power['sign-cw-bill-detail'].state){
+              this.noPower(this.power['sign-cw-bill-detail'].name);
+              return false
+          }
+          if(!this.power['sign-cw-bill-print'].state){
+              this.noPower(this.power['sign-cw-bill-print'].name);
+              return false
+          }
           this.$refs.layerInvoice.show(row.id,false,row.state.value===4||row.state.value===5||row.state.value===3);
         } else {
+          if(!this.power['sign-cw-bill-revdetail'].state){
+              this.noPower(this.power['sign-cw-bill-revdetail'].name);
+              return false
+          }
           this.$router.push({
             path:'billDetails',
             query:{
