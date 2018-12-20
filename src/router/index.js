@@ -174,10 +174,10 @@ export default new Router({
       {
         path: "newIntention",
         component: newIntention,
-        meta: {
-          root: true,
-          list: ['合同', '新增合同']
-        }
+        // meta: {
+        //   root: true,
+        //   list: ['合同', '新增合同']
+        // }
       },
       // {
       //   path: "editIntention",
@@ -188,7 +188,7 @@ export default new Router({
         component: detailIntention,
         meta: {
           root: true,
-          list: ['合同', '合同详情']
+          list: ['合同', '合同列表', '合同详情']
         }
       },
       {
