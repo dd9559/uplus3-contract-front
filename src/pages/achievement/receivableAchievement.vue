@@ -362,9 +362,10 @@ export default {
       }
     },   
      clearDep:function () {
-      this.propForm.department=''
-      this.EmployeList=[]
-      this.propForm.dealAgentId=''
+      this.propForm.department='';
+      this.EmployeList=[];
+      this.propForm.dealAgentId='';
+      this.propForm.dealAgentStoreId='';
       this.clearSelect()
     },
      depHandleClick(data) {

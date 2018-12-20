@@ -680,7 +680,7 @@
              custom-class="dialog2In"
             :close-on-click-modal="false"
           >
-            <h1 style="font-size:16px;">选择相关人员</h1>
+            <h1 style="font-size:16px;" slot="title">选择相关人员</h1>
             <div class="mansList">
               <el-table
                 :data="mansList"
@@ -1617,11 +1617,10 @@ export default {
 <style lang="less" scoped>
 // 相关人员弹框
 /deep/ .dialog2In {
-  width: 400px !important;
-  height: 400px !important;
+  width: 420px !important;
   background-color: #fff;
-  margin-top: 30vh !important;
-  overflow: auto;
+  margin-top: 20vh !important;
+  padding-bottom: 30px;
   .is-checked {
     color: #478de3 !important;
   }
@@ -1630,6 +1629,10 @@ export default {
   }
   /deep/ .el-dialog__body {
     padding: 0 !important;
+    overflow-y: auto;
+    min-height:200px;
+    max-height: 400px;
+    width: 420px !important;
   }
   h1 {
     height: 53px;

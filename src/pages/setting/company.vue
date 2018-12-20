@@ -418,7 +418,7 @@
       this.initFormList()
       this.getCityList()
       this.getDictionary()
-      this.getStoreList()
+      this.getStoreList(1)
     },
     methods: {
       // 初始化表单 数组集合
@@ -513,6 +513,7 @@
       handleClose(done) {
         this.creditCodeShow = false
         this.icRegisterShow = false
+        this.getStoreList(this.searchForm.cityId=this.searchForm.cityId==="武汉"?1:this.searchForm.cityId)
         done()
       },
       addCompany() {
@@ -521,6 +522,7 @@
         this.initFormList()
         this.directSaleSelect = false
         this.directSaleOut = false
+        this.storeList = []
       },
       //切换到直营属性时,自动带出证件信息
       selectDirectInfo() {
