@@ -126,7 +126,13 @@
         mmaiAddress:'',
         jjianAddress:'',
         mbanAddress:'',
-        id:''
+        id:'',
+        power: {
+              'sign-set-ht-query': {
+                  state: false,
+                  name: '查询'
+              },
+        }
       }
     },
     created() {
@@ -181,15 +187,20 @@
         let param = {
           cityId:this.selectCity=='武汉'?1:this.selectCity
         }
-        this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.list = res.data
-            this.cityName=res.data[0].cityName
-          }
-        }).catch(error => {
-          console.log(error)
-        })
+        if(this.power['sign-set-ht-query'].state){
+              this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
+              res = res.data
+              if (res.status === 200) {
+                this.list = res.data
+                this.cityName=res.data[0].cityName
+              }
+            }).catch(error => {
+              console.log(error)
+            })
+        }else{
+          this.noPower(this.power['sign-set-ht-query'].name)
+        }
+        
       },
       trim(str){  
                  return str.replace(/(^\s*)|(\s*$)/g, "")
