@@ -78,7 +78,7 @@
             </div>
             <div class="btnbox">
                 <el-button @click="close">取 消</el-button>
-                <el-button type="primary"  @click="auditApply()" v-dbClick>提交审核</el-button>  
+                <el-button type="primary"  @click="auditApply()" v-loading.fullscreen.lock="fullscreenLoading">提交审核</el-button>  
             </div> 
             <!-- 图片放大 -->
             <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -108,6 +108,7 @@ export default {
     data() {
         return {
             clientHei: document.documentElement.clientHeight, //窗体高度
+            fullscreenLoading:false,//创建按钮防抖
              // 弹框里用到的
             dialogImageUrl: '',
             dialogVisible: false,
@@ -227,7 +228,7 @@ export default {
         }
         else if(this.auditForm.textarea !== ""){
             
-                
+            this.fullscreenLoading=true   
             let param = {
                 id: this.contId,
                 settlRemark: this.auditForm.textarea,
@@ -236,14 +237,16 @@ export default {
             this.$ajax         
             .postJSON("/api/settlement/applySettlement", param)
             .then(res => {
+                this.fullscreenLoading=false
                 if (res.data.status === 200) {
                 this.$message('已申请');
-                setTimeout(() => {
+                setTimeout(() => {                
                     this.$emit('closeSettle')
                 }, 1500); 
                 
                 }
             }).catch(error => {
+                this.fullscreenLoading=false
                 this.$message({
                     message: error
                 })

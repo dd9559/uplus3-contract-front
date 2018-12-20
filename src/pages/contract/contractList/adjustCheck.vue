@@ -23,7 +23,7 @@
           <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> -->
-          <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="adjustForm.depName" placeholder="请选择">
+          <el-select :clearable="true" filterable remote ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="adjustForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
@@ -132,7 +132,7 @@
         </el-table-column>             
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope" v-if="scope.row.checkState === 0">
-            <el-button type="text" class="curPointer" @click="auditApply(scope.row)" v-dbClick>审核</el-button>
+            <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -226,8 +226,8 @@
         </div>  
       </div>
       <div class="btnbox">
-        <el-button class="refuse" @click="refuseFn()" v-dbClick>驳 回</el-button>
-        <el-button type="primary"  @click="receptFn()" class="recept" v-dbClick>通 过</el-button>  
+        <el-button class="refuse" @click="refuseFn()" v-loading.fullscreen.lock="fullscreenLoading">驳 回</el-button>
+        <el-button type="primary"  @click="receptFn()" class="recept" v-loading.fullscreen.lock="fullscreenLoading">通 过</el-button>  
       </div> 
       <!-- 图片放大 -->
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -370,6 +370,7 @@
     data(){
       return{   
         clientHei: document.documentElement.clientHeight, //窗体高度
+        fullscreenLoading:false,//创建按钮防抖
         loading:false,
         loading2:false,
         loadingTable:false,
@@ -675,24 +676,31 @@
 
       // 驳回操作
       refuseFn() {
+        
         let param = {
           checkId: this.myCheckId,
           remark: this.auditForm.textarea
         }
         if(this.auditForm.textarea !== ""){
+          this.fullscreenLoading=true
           this.$ajax.get("/api/commission/updateReject", param)
           .then(res => {
-
+            this.fullscreenLoading=false
             if (res.data.status === 200) {
+              
               this.$message('已驳回');
               let _this = this
               setTimeout(() => {
+                
                 _this.dialogVisible = false
                 // 数据刷新
                 this.queryFn();
+                
               }, 2000);
+              
             }
           }).catch(error => {
+              this.fullscreenLoading=false
               this.$message({
                 message: error
               })
@@ -705,14 +713,16 @@
 
       // 通过操作
       receptFn() {
+        this.fullscreenLoading=true
         let param = {
           checkId: this.myCheckId,
           remark: this.auditForm.textarea
         }
         this.$ajax.get("/api/commission/update", param)
         .then(res => {
-
+          this.fullscreenLoading=false
           if (res.data.status === 200) {
+            
             console.log(res)
             this.$message('已通过');
             let _this = this
@@ -721,8 +731,10 @@
               // 数据刷新
               this.queryFn();
             }, 2000);
+            
           }
         }).catch(error => {
+            this.fullscreenLoading=false
             this.$message({
               message: error
             })
@@ -753,6 +765,7 @@
         // this.getEmploye(data.depId)
         this.adjustForm.depId=data.depId
         this.adjustForm.depName=data.name
+        this.adjustForm.empId = ''
 
         this.handleNodeClick(data)
       },

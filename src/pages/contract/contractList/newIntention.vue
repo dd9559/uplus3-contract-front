@@ -100,14 +100,14 @@
                                         </el-select>
                                     </el-form-item> -->
                                     <el-form-item prop="guestInfo.GuestStoreName">
-                                      <el-select :clearable="true" ref="tree" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.guestInfo.GuestStoreName" placeholder="请选择">
+                                      <el-select :clearable="true" filterable remote ref="tree" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.guestInfo.GuestStoreName" placeholder="请选择">
                                         <el-option class="drop-tree" value="">
                                           <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                                         </el-option>
                                       </el-select>
                                     </el-form-item>
                                     <el-form-item prop="guestInfo.EmpName" class="small-input">
-                                      <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" v-model="contractForm.guestInfo.EmpName" @change="changeAgent" placeholder="请选择">
+                                      <el-select :clearable="true" remote :remote-method="getEmployee" v-loadmore="moreEmploye" class="margin-left" v-model="contractForm.guestInfo.EmpName" @change="changeAgent" placeholder="请选择">
                                         <el-option
                                           v-for="item in EmployeList"
                                           :key="item.empId"
@@ -157,8 +157,8 @@
             <span>确定保存合同？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogSure = false">取 消</el-button>
-                <el-button v-if="type===1" type="primary" @click="onSubmit1()" v-dbClick>确 定</el-button>
-                <el-button v-if="this.$route.query.operateType==2" type="primary" @click="onSubmit2()" v-dbClick>确 定</el-button>
+                <el-button v-if="type===1" type="primary" @click="onSubmit1()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
+                <el-button v-if="this.$route.query.operateType==2" type="primary" @click="onSubmit2()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
             </span>
         </el-dialog>
           
@@ -223,6 +223,7 @@ export default {
     };
 
     return {
+      fullscreenLoading:false,//创建按钮防抖
       isShowDialog: false,
       dialogType: "",
       loading: false,
@@ -352,6 +353,8 @@ export default {
       // this.getEmploye(data.depId)
       this.contractForm.guestInfo.GuestStoreCode=data.depId
       this.contractForm.guestInfo.GuestStoreName=data.name
+      this.contractForm.guestInfo.EmpCode = ''
+      this.contractForm.guestInfo.EmpName = ''
 
       this.handleNodeClick(data)
     },
@@ -361,6 +364,7 @@ export default {
       this.contractForm.guestInfo.GuestStoreName=''
       // this.EmployeList=[]
       this.contractForm.guestInfo.EmpCode=''
+      this.contractForm.guestInfo.EmpName = ''
       this.clearSelect()
     },
 
@@ -465,7 +469,7 @@ export default {
             this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
           }
-          // this.getEmployee()
+          this.getEmployee()
         })
         .catch(error => {
           this.$message({
@@ -532,7 +536,7 @@ export default {
                 ].identifyCode;
               }
             }
-            // this.getEmployee()
+            this.getEmployee()
           }
         })
         .catch(error => {
@@ -567,33 +571,33 @@ export default {
     // },
 
     //获取经纪人
-    // getEmployee() {
+    getEmployee() {
       
-    //   let id = this.contractForm.guestInfo.GuestStoreCode
-    //   if(id) {
-    //     let param = {
-    //       depId: id
+      let id = this.contractForm.guestInfo.GuestStoreCode
+      if(id) {
+        let param = {
+          depId: id
           
-    //     };
-    //     this.$ajax
-    //       .get("/api/organize/employees", param)
-    //       .then(res => {
-    //         if (res.data.status === 200) {
-    //           this.loading = false;
+        };
+        this.$ajax
+          .get("/api/organize/employees", param)
+          .then(res => {
+            if (res.data.status === 200) {
+              this.loading = false;
 
-    //           if (res.data.data.length > 0) {
-    //             this.option3 = res.data.data;
-    //           }
-    //         }
-    //       })
-    //       .catch(error => {
-    //         this.$message({
-    //           message: error
-    //         });
-    //       });
-    //   }
+              if (res.data.data.length > 0) {
+                this.EmployeList = res.data.data;
+              }
+            }
+          })
+          .catch(error => {
+            this.$message({
+              message: error
+            });
+          });
+      }
       
-    // },
+    },
 
     changeAgent(val) {
 
@@ -675,7 +679,8 @@ export default {
 
     // 新增意向金接口（post）
     onSubmit1() {
-      
+        this.fullscreenLoading=true
+
         if (this.type === 1) {
           this.contractForm.contPersons[0].name = this.contractForm.ownname;
           this.contractForm.contPersons[0].mobile = this.contractForm.ownmobile;
@@ -697,9 +702,11 @@ export default {
         this.$ajax
           .postJSON("/api/contract/addContract", param)
           .then(res => {
+            this.fullscreenLoading=false
             let tips = res.data.message;
 
             if (res.data.status === 200) {
+              
               this.$message({
                 type: "success",
                 message: "已保存!"
@@ -710,11 +717,14 @@ export default {
                 //     id: this.id
                 // }
               });
+              
             } else {
+              this.fullscreenLoading=false
               this.$message.error(tips);
             }
           })
           .catch(error => {
+            this.fullscreenLoading=false
             this.$message({
               message: error
             });
@@ -722,6 +732,8 @@ export default {
     },
     // 编辑意向金接口
     onSubmit2() {    
+        this.fullscreenLoading=true
+
         let param = {
           igdCont: this.contractForm,
           type: this.type
@@ -790,9 +802,11 @@ export default {
         this.$ajax
           .postJSON("/api/contract/updateContract", param)
           .then(res => {
+            this.fullscreenLoading=false
             let tips = res.data.message;
 
             if (res.data.status === 200) {
+              
               this.$message({
                 type: "success",
                 message: "已保存!"
@@ -804,10 +818,12 @@ export default {
                 // }
               });
             } else {
+              this.fullscreenLoading=false
               this.$message.error(tips);
             }
           })
           .catch(error => {
+            this.fullscreenLoading=false
             this.$message({
               message: error
             });

@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="fr">                  
                                     <el-button type="primary" plain round class="btn1" @click="onPreview()">预 览</el-button>
-                                    <el-button type="primary" round class="mr30 btn2" @click="onEdit(detailData.contType)" v-dbClick>编 辑</el-button>                  
+                                    <el-button type="primary" round class="mr30 btn2" @click="onEdit(detailData.contType)">编 辑</el-button>                  
                                 </div>
                             </div>
                         </div>
