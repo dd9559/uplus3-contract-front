@@ -1219,8 +1219,8 @@ export default {
     },
     getShop_(id) {
       if(id){
-        this.contractForm.houseInfo.ShopOwnerName='';
-        this.contractForm.houseInfo.ShopOwnerMobile='';
+        this.contractForm.guestInfo.ShopOwnerName='';
+        this.contractForm.guestInfo.ShopOwnerMobile='';
         this.options_.forEach(element => {
           if(element.id===id){
             this.contractForm.guestInfo.GuestStoreName=element.name
