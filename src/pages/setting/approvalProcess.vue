@@ -57,7 +57,7 @@
                     </el-table-column>
                     <el-table-column align="center" label="分支节点" prop="name">
                         <template slot-scope="scope">
-                            <p v-for="item in scope.row.branch" :key="item.sort">{{item.name?item.name:'--'}}</p>
+                            <p v-for="item in scope.row.branch" :key="item.sort">{{item.name?item.name:'无需审核'}}</p>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="操作">
@@ -145,7 +145,7 @@
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="isSave">保存</el-button>
+                <el-button @click="isSave" v-dbClick>保存</el-button>
             </div>
         </el-dialog>
     </div>

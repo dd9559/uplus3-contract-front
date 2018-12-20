@@ -6,33 +6,18 @@
             <el-form  class="header" ref="propForm" size="small">
                 <div class="content">
                     <el-form-item label="部门">
-                         <!-- <el-select v-model="department" filterable placeholder="请选择"  @change="selUser">
-                            <el-option
-                            v-for="(item) in departs"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.id"
-                           >
-                            </el-option>
-                        </el-select> -->
-                        <el-select style="width:160px" :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
+                        <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
                             <el-option class="drop-tree" value="">
                             <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                             </el-option>
                         </el-select>
                         <el-select v-model="depUser" :clearable="true" v-loadmore="moreEmploye" filterable placeholder="请选择">
-                            <!-- <el-option v-for="(item,index) in users" 
-                            :key="index"
-                            ref="user" 
-                            :label="item.name"
-                            :value="item.empId"></el-option> -->
                             <el-option
                                 v-for="item in EmployeList"
                                 :key="item.empId"
                                 :label="item.name"
                                 :value="item.empId">
                             </el-option>
-                            
                         </el-select>
                     </el-form-item>
                     <el-form-item label="日期">
@@ -102,6 +87,12 @@
                 total:0,
                 users:[],
                 depUser:'',
+                 power: {
+                    'sign-set-log-query': {
+                        state: false,
+                        name: '查询'
+                    },
+                 }
             }
         },
         created() {
@@ -128,16 +119,6 @@
                     // this.EmployeList=[]
                     this.clearSelect()
             },
-            // selUser(){
-            //     this.depUser=''
-            //     this.$ajax.get('/api/organize/employees',{depId:this.department}).then((res)=>{
-            //     console.log(res);
-            //     if(res.status==200){
-            //         this.users=res.data.data
-            //         console.log(this.users);
-            //     }
-            // })
-            // },
             handleSizeChange (val) {
             this.pageSize = val
             console.log(this.pageSize,'pageSize');
@@ -148,7 +129,8 @@
             this.getLogList()
             },
             getLogList() {
-                let param = {
+                if(this.power['sign-set-log-query'].state){
+                    let param = {
                     pageSize: this.pageSize,
                     pageNum: this.pageNum,
                     deptId:this.department,
@@ -156,18 +138,21 @@
                     keyword:this.keyWord,
                     startTime:this.searchTime[0],
                     endTime:this.searchTime[1],
-                }
-                // console.log(param.keyword,'keyword');
-                console.log(this.searchTime[0],'searchTime');
-                this.$ajax.get('/api/operation/getList',param).then(res => {
-                    res = res.data
-                    if(res.status === 200) {
-                        this.total = res.data.total
-                        this.tableData = res.data.list
                     }
-                }).catch(error => {
-                    console.log(error);
-                })
+                    console.log(this.searchTime[0],'searchTime');
+                    this.$ajax.get('/api/operation/getList',param).then(res => {
+                        res = res.data
+                        if(res.status === 200) {
+                            this.total = res.data.total
+                            this.tableData = res.data.list
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                    })
+                }else{
+                     this.noPower(this.power['sign-set-log-query'].name)
+                }
+                
             },
             // 重置
             resetFormFn() {

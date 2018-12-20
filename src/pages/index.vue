@@ -25,7 +25,7 @@
             <el-menu-item :index="grade.path" v-for="grade in item.child" :key="grade.name">{{grade.name}}</el-menu-item>
           </el-submenu>
         </el-menu>
-        <p class="slider-bar-control" @click="test"></p>
+        <p class="slider-bar-control" @click="collapse=!collapse"></p>
         <!--<ul>
           <li v-for="item in views">
             <span>{{item.name}}</span>
@@ -63,7 +63,132 @@
     data() {
       return {
         activeIndex: '',
-        views:this.$tool.routers,
+        views:[
+          {
+            id: 1,
+            name: '合同',
+            path: '1',
+            icon: 'icon-hetong',
+            child: [
+              {
+                name: '合同列表',
+                path: 'contractList'
+              },
+              {
+                name: '调佣审核',
+                path: 'adjustCheck'
+              },
+              {
+                name: '结算审核',
+                path: 'settleCheck'
+              },
+              {
+                name: '分账记录',
+                path: 'routingRecord'
+              },
+            ]
+          },
+          {
+            id: 2,
+            name: '财务',
+            path: '2',
+            icon: 'icon-caiwu',
+            child: [
+              {
+                name: '收付款单',
+                path: 'Bill'
+              },
+              {
+                name: '收款审核',
+                path: 'moneyCheck?type=1'
+              },
+              {
+                name: '付款审核',
+                path: 'moneyCheck?type=2'
+              },
+              {
+                name: '应收实收',
+                path: 'actualHarvest'
+              },
+              {
+                name: '票据管理',
+                path: 'paperSet'
+              }
+            ]
+          },
+          {
+            id: 3,
+            name: '业绩',
+            path: '3',
+            icon: 'icon-yeji',
+            child: [
+              {
+                name: '应收业绩',
+                path: 'actualAchievement'
+              },
+              {
+                name: '实收业绩',
+                path: 'receivableAchievement'
+              },
+              // {
+              //   name:'门店实收',
+              //   path:'storeReceive'
+              // }
+            ]
+          },
+          {
+            id: 4,
+            name: '签后',
+            path: '4',
+            icon: 'icon-qianhou',
+            child: [
+              {
+                name: '后期接收',
+                path: 'postReceive'
+              },
+              {
+                name: '后期管理',
+                path: 'postManage'
+              },
+              {
+                name: '后期监控',
+                path: 'postMonitor'
+              }
+            ]
+          },
+          {
+            id: 5,
+            name: '设置',
+            path: 'setting',
+            icon: 'icon-shezhi',
+            child: [
+              {
+                name: '公司设置',
+                path: 'company'
+              },
+              {
+                name: '合同模板设置',
+                path: 'contractTemplate'
+              },
+              {
+                name: '后期流程设置',
+                path: 'postProcess'
+              },
+              {
+                name: '款类设置',
+                path: 'moneyType'
+              },
+              {
+                name: '操作日志',
+                path: 'operationLog'
+              },
+              {
+                name: '审核流程',
+                path: 'approvalProcess'
+              }
+            ]
+          }
+        ],
         Index:[],
         back:false,
         collapse:true
@@ -105,7 +230,6 @@
 
     },*/
     created(){
-      console.log(this.$store.state.user)
       this.Index=this.$store.state.path
       // debugger
       this.activeIndex = this.Index[1].path.split('/')[1]
@@ -116,9 +240,6 @@
       next()
     },
     methods: {
-      test:function () {
-        this.collapse=!this.collapse
-      },
       logout:function () {
         this.$ajax.post('/api/logout').then(res=>{
           this.$router.push({

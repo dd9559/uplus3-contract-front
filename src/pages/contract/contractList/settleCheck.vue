@@ -97,7 +97,8 @@
 
         <el-table-column label="实际结算" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.amount}}</p>
+            <p v-if="scope.row.contType.label !== '租赁'">{{scope.row.amount}}元</p>
+            <p v-if="scope.row.contType.label === '租赁'">{{scope.row.amount}}元/季度</p>
           </template>
         </el-table-column>
 

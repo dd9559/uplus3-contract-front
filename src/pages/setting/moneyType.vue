@@ -28,7 +28,7 @@
         <div class="commission gap">
             <p class="title">
                 <span>{{this.bigName}}</span>
-                 <el-button type="primary"  class='paper-btn' round size="medium"  @click='operation(null,1)'>新增</el-button> 
+                 <el-button type="primary" class='paper-btn' round size="medium"  v-if="power['sign-set-kl-add'].state" @click='operation(null,1)'>新增</el-button> 
             </p>
             <el-table :data="moneyTypes" v-if="isMoney">
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
@@ -68,7 +68,7 @@
                     <template slot-scope="scope">
                         <div v-if="bigName =='代收代付'">--</div>
                         <div v-else>
-                            <el-button type="text" size="medium" @click='operation(scope.row,2)'>编辑</el-button>
+                            <el-button type="text" size="medium" v-if="power['sign-set-kl-edit'].state"  @click='operation(scope.row,2)'>编辑</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -109,8 +109,9 @@
 
 <script>
   import {FILTER} from "@/assets/js/filter";
+  import {MIXINS} from "@/assets/js/mixins";
     export default {
-        mixins: [FILTER],
+        mixins: [FILTER,MIXINS],
         data() {
             return {
                 tableData: [],
@@ -130,6 +131,21 @@
                     name:'',
                     status:'',
                     remark:''
+                },//权限配置
+                power: {
+                    'sign-set-kl-add': {
+                        state: false,
+                        name: '新增'
+                    },
+                    'sign-set-kl-edit': {
+                        state: false,
+                        name: '编辑'
+                    },
+                    'sign-set-kl-query': {
+                        state: false,
+                        name: '查询'
+                    },
+                    
                 }
             }
         },
@@ -144,7 +160,8 @@
         methods: {
             // 初始化数据
             initList(){
-                this.$ajax.get('api/setting/moneyType/list',{id:this.bigId},).then((res)=>{
+                 if(this.power['sign-set-kl-query'].state){
+                    this.$ajax.get('api/setting/moneyType/list',{id:this.bigId},).then((res)=>{
                     if(res.status==200){
                         // debugger
                         if(this.bigId==''){
@@ -161,7 +178,9 @@
                         console.log(this.value2,'value2');
                         this.bigId=this.bigId==''?18:this.bigId
                     }
-                })
+                })}else{
+                         this.noPower(this.power['sign-set-kl-query'].name)
+                }
             },
             tableRowClassName({row, rowIndex}){
                 row.index = rowIndex;
@@ -257,7 +276,9 @@
             //     })
             // },
             statusOp(param,message){
-                 this.$ajax.get('/api/setting/moneyType/update',param)
+                console.log(this.power['sign-set-kl-edit'],'edit')
+                if(this.power['sign-set-kl-edit'].state){
+                    this.$ajax.get('/api/setting/moneyType/update',param)
                    .then((res)=>{
                         if (res.status === 200) {
                             this.$message({
@@ -272,7 +293,10 @@
                         type: 'error',
                         message: error
                         })
-                })
+                  })
+                }else{
+                    this.noPower(this.power['sign-set-kl-edit'].name)
+                }
             },
             //表格第一行加样式
             tableStyle({row, rowIndex}){

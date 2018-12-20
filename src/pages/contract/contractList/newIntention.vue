@@ -157,7 +157,8 @@
             <span>确定保存合同？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogSure = false">取 消</el-button>
-                <el-button type="primary" @click="onSubmit()" v-dbClick>确 定</el-button>
+                <el-button v-if="type===1" type="primary" @click="onSubmit1()" v-dbClick>确 定</el-button>
+                <el-button v-if="this.$route.query.operateType==2" type="primary" @click="onSubmit2()" v-dbClick>确 定</el-button>
             </span>
         </el-dialog>
           
@@ -673,7 +674,7 @@ export default {
     },
 
     // 新增意向金接口（post）
-    onSubmit() {
+    onSubmit1() {
       
         if (this.type === 1) {
           this.contractForm.contPersons[0].name = this.contractForm.ownname;
@@ -681,11 +682,46 @@ export default {
           this.contractForm.contPersons[1].name = this.contractForm.custname;
           this.contractForm.contPersons[1].mobile = this.contractForm.custmobile;
           this.contractForm.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
-        }
-
+        }     
+        let param = {
+          igdCont: this.contractForm,
+          type: this.type
+        };
        
+        delete param.igdCont.ownname;
+        delete param.igdCont.ownmobile;
+        delete param.igdCont.custname;
+        delete param.igdCont.custmobile;
+        delete param.igdCont.custIdentifyCode;
 
-           
+        this.$ajax
+          .postJSON("/api/contract/addContract", param)
+          .then(res => {
+            let tips = res.data.message;
+
+            if (res.data.status === 200) {
+              this.$message({
+                type: "success",
+                message: "已保存!"
+              });
+              this.$router.push({
+                path: "/contractList"
+                // query:{
+                //     id: this.id
+                // }
+              });
+            } else {
+              this.$message.error(tips);
+            }
+          })
+          .catch(error => {
+            this.$message({
+              message: error
+            });
+          });     
+    },
+    // 编辑意向金接口
+    onSubmit2() {    
         let param = {
           igdCont: this.contractForm,
           type: this.type
@@ -752,7 +788,7 @@ export default {
         delete param.igdCont.custIdentifyCode;
 
         this.$ajax
-          .postJSON("/api/contract/editIgdCont", param)
+          .postJSON("/api/contract/updateContract", param)
           .then(res => {
             let tips = res.data.message;
 
@@ -775,12 +811,12 @@ export default {
             this.$message({
               message: error
             });
-          });
-            
-       
-      
-    }
+          });     
+    },
+
   },
+
+
   created() {
     this.remoteMethod()
     // this.getShopList();
