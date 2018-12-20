@@ -186,10 +186,10 @@ export default new Router({
       {
         path: "detailIntention",
         component: detailIntention,
-        meta: {
-          root: true,
-          list: ['合同', '合同列表', '合同详情']
-        }
+        // meta: {
+        //   root: true,
+        //   list: ['合同', '合同列表', '合同详情']
+        // }
       },
       {
         path: "adjustCheck",
