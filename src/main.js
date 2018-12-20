@@ -79,6 +79,21 @@ Vue.directive("dbClick", {
 router.beforeEach((to,from,next)=>{
   let pathList = localStorage.getItem('router')
   store.commit('setPath',pathList?JSON.parse(pathList):[])
+
+  // let userMsg = localStorage.getItem('userMsg')
+  console.log(store.state.user)
+  if(!store.state.user){
+    // debugger
+    api.get('/api/me').then(res=>{
+      res=res.data
+      if(res.status===200){
+        store.dispatch('asyncUser',res.data)
+      }
+    })
+  }else {
+    // store.commit('setUser',JSON.parse(userMsg))
+  }
+
   if(to.matched.some(record=>record.meta.root)){
     if(to.path==='/moneyCheck'){
       to.meta.list=parseInt(to.query.type)===1?['财务','收款审核']:['财务','付款审核']

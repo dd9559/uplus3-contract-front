@@ -44,6 +44,7 @@
             <i class="iconfont icon-fanhui"></i>
             <span>返回</span>
           </p>
+          <span @click="logout" style="position: absolute;top:50%;left:50%;transform:translate(-50%,-50%);cursor: pointer">退出登录</span>
         </div>
         <div class="page-view-content">
           <router-view class="router-view"></router-view>
@@ -104,6 +105,7 @@
 
     },*/
     created(){
+      console.log(this.$store.state.user)
       this.Index=this.$store.state.path
       // debugger
       this.activeIndex = this.Index[1].path.split('/')[1]
@@ -116,6 +118,13 @@
     methods: {
       test:function () {
         this.collapse=!this.collapse
+      },
+      logout:function () {
+        this.$ajax.post('/api/logout').then(res=>{
+          this.$router.push({
+            path:'login'
+          })
+        })
       },
       handleSelect(key, keyPath) {
         /*this.Index = []

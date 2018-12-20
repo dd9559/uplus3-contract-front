@@ -9,7 +9,7 @@
         </li>
       </ul>
       <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
-        <el-button class="btn-info" round size="small" type="primary" @click="showDialog" v-if="billMsg.auditButton">审核</el-button>
+        <el-button class="btn-info" round size="small" type="primary" @click="showDialog" v-if="billMsg.auditButton&&btnCheck">审核</el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -218,7 +218,7 @@
         <li><span>支付方式</span>（若通过审核，则支付方式必填）</li>
         <li>
           <el-radio v-model="payRadio" label="1">线上支付（联动优势）</el-radio>
-          <el-radio v-model="payRadio" label="2">线下支付（线下财物打款）</el-radio>
+          <el-radio v-model="payRadio" label="2">线下支付（线下财务打款）</el-radio>
         </li>
         <li class="color-light">
           * 当支付方式为“线上支付”时，系统会对接第三方系统进行自动支付
@@ -228,8 +228,8 @@
         </li>
       </ul>
       <span slot="footer" class="dialog-footer">
-    <el-button round @click="checkBill(2)">拒 绝</el-button>
-    <el-button round type="primary" @click="checkBill(1)">同 意</el-button>
+    <el-button round @click="checkBill(2)" v-loading.fullscreen.lock="fullscreenLoading">拒 绝</el-button>
+    <el-button round type="primary" @click="checkBill(1)" v-loading.fullscreen.lock="fullscreenLoading">同 意</el-button>
   </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -273,16 +273,19 @@
         amount:{},
         payRadio:0,
         checkBoxShow:false,//是否只展示审核信息
+        fullscreenLoading:false,//防抖
         //分页
         currentPage:1,
         pageSize:10,
-        total:0
+        total:0,
+        btnCheck:false,//是否有审核权限
       }
     },
     created() {
       // debugger
       this.activeItem = this.$route.query.tab
       this.billId = this.$route.query.id
+      this.btnCheck = this.$route.query.power==='true'?true:false
       this.tabs.unshift(this.activeItem)
       this.getData()
       if(this.$route.query.type){
@@ -390,9 +393,11 @@
           result: type,
           remark: this.layer.reasion
         }
+        this.fullscreenLoading=true
         this.$ajax.postJSON('/api/machine/audit', param).then(res => {
           res = res.data
           if (res.status === 200) {
+            this.fullscreenLoading=false
             this.getData()
             if(this.radioMask){
               this.secondCheck()
@@ -404,6 +409,7 @@
             }
           }
         }).catch(error=>{
+          this.fullscreenLoading=false
           this.$message({
             message:error
           })

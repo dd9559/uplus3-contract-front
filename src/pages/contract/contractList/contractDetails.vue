@@ -86,7 +86,12 @@
               <template>
                 <el-table :data="ownerData" border header-row-class-name="theader-bg">
                   <el-table-column prop="name" label="业主姓名"></el-table-column>
-                  <el-table-column prop="mobile" label="电话"></el-table-column>
+                  <el-table-column label="电话">
+                    <template slot-scope="scope">
+                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                    </template>
+                  </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
                   <el-table-column label="产权比" v-if="contType!='1'">
                     <template slot-scope="scope">
@@ -121,7 +126,7 @@
                   <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                      <i class="iconfont tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -217,16 +222,15 @@
             <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
           </div>
           <div v-if="contractDetail.contChangeState.value!=2">
-            <el-button round class="search_btn" @click="goPreview">预览</el-button>
-            <el-button round type="danger" class="search_btn" @click="goChangeCancel(2)" v-if="contractDetail.contState.value===3">解约</el-button>
-            <el-button round type="danger" @click="invalid" class="search_btn" v-if="contractDetail.contState.value!=3&&contractDetail.contState.value!=0">无效</el-button>
-            <el-button round type="primary" class="search_btn" @click="goChangeCancel(1)" v-if="contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1">变更</el-button>
-            <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2">编辑</el-button>
-            <el-button round type="primary" class="search_btn" @click="isSubmitAudit=true" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value<0">提交审核</el-button>
+            <el-button round class="search_btn" v-if="power['sign-ht-xq-view'].state" @click="goPreview">预览</el-button>
+            <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3" @click="goChangeCancel(2)">解约</el-button>
+            <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">无效</el-button>
+            <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1" @click="goChangeCancel(1)">变更</el-button>
+            <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
+            <el-button round type="primary" class="search_btn" v-if="contractDetail.contState.value===1&&contractDetail.toExamineState.value<0" @click="isSubmitAudit=true">提交审核</el-button>
           </div>
           <div v-else>
-            <el-button round class="search_btn" @click="goPreview">预览</el-button>
-            <!-- <el-button round type="primary" class="search_btn" @click="goEdit" v-if="contractDetail.contState.value<2">编辑</el-button> -->
+            <el-button round class="search_btn" v-if="power['sign-ht-xq-view'].state" @click="goPreview">预览</el-button>
           </div>
         </div>
       </el-tab-pane>
@@ -375,9 +379,9 @@
     </el-tabs>
     <div class="functionTable" v-if="contractDetail.contChangeState.value!=2">
       
-      <el-button round class="search_btn" v-if="name==='first'" @click="printDemo">打印成交报告</el-button>  <!-- @click="printDemo" -->
+      <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='first'" @click="printDemo">打印成交报告</el-button>  <!-- @click="printDemo" -->
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
-      <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'&&contractDetail.contState.value===3">分成</el-button>
+      <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3">分成</el-button>
       <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
       <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'&&contractDetail.contState.value!=1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
@@ -441,7 +445,7 @@
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-
+    <!-- 打印成交报告 -->
     <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px">
       <div class="printContent">
         <div class="printHeader">
@@ -697,7 +701,46 @@ export default {
       //提审确认
       isSubmitAudit:false,
       //审核记录
-      checkData:[]
+      checkData:[],
+      //权限
+      power: {
+        'sign-ht-xq-print': {
+          state: false,
+          name: '打印成交报告'
+        },
+        'sign-ht-xq-view': {
+          state: false,
+          name: '预览'
+        },
+        'sign-ht-xq-edit': {
+          state: false,
+          name: '编辑'
+        },
+        'sign-ht-xq-void': {
+          state: false,
+          name: '无效'
+        },
+        'sign-ht-xq-cancel': {
+          state: false,
+          name: '解约'
+        },
+        'sign-ht-xq-modify': {
+          state: false,
+          name: '变更'
+        },
+        'sign-ht-xq-yj': {
+          state: false,
+          name: '业绩分成'
+        },
+        'sign-ht-xq-upmain': {
+          state: false,
+          name: '上传合同主体'
+        },
+        'sign-ht-xq-updata': {
+          state: false,
+          name: '上传资料'
+        },
+      }
     };
   },
   created() {
@@ -750,17 +793,23 @@ export default {
     },
     // 分成弹窗
     fencheng() {
-      this.dialogType = 3;
-      this.shows = true;
-      this.code2 = this.$route.query.code;
-      this.achObj={
-        contractId:this.contractDetail.id,//合同id
-        houseCode: this.contractDetail.houseinfoCode, //房源编号
-        receivableComm: this.contractDetail.receivableCommission, //合同应收佣金
-        signDate: this.contractDetail.signDate, //合同签约时间
-        contractType: this.contractDetail.contType.value, //合同类型
-        customerCode: this.contractDetail.guestinfoCode, //客源编号
-        comm:this.contractDetail.distributableAchievement //可分配业绩
+      if(this.contractDetail.distributableAchievement>0){
+        this.dialogType = 3;
+        this.shows = true;
+        this.code2 = this.$route.query.code;
+        this.achObj={
+          contractId:this.contractDetail.id,//合同id
+          houseCode: this.contractDetail.houseinfoCode, //房源编号
+          receivableComm: this.contractDetail.receivableCommission, //合同应收佣金
+          signDate: this.contractDetail.signDate, //合同签约时间
+          contractType: this.contractDetail.contType.value, //合同类型
+          customerCode: this.contractDetail.guestinfoCode, //客源编号
+          comm:this.contractDetail.distributableAchievement //可分配业绩
+        }
+      }else{
+        this.$message({
+          message:'无可分配业绩,无法分成'
+        })
       }
     },
     // 合同编辑
@@ -835,6 +884,8 @@ export default {
           this.contractDetail = res.data;
           this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
+          this.ownerData=[];
+          this.clientrData=[];
           for (var i = 0; i < this.contractDetail.contPersons.length; i++) {
             if (this.contractDetail.contPersons[i].personType.value === 1) {
               this.ownerData.push(this.contractDetail.contPersons[i]);
@@ -1251,7 +1302,7 @@ export default {
           }
         }
         i {
-          font-size: 16px;
+          font-size: 20px;
           padding-left: 5px;
           color: #54d384;
           cursor: pointer;
@@ -1396,11 +1447,13 @@ export default {
     .icon {
       text-align: center;
       font-size: 50px;
-      padding-bottom: 20px;
+      padding-bottom: 15px;
+      padding-top: 25px;
       color: #54d384;
     }
     .text {
       text-align: center;
+      padding-bottom: 30px;
       p {
         line-height: 30px;
       }

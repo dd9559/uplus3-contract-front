@@ -38,22 +38,23 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select 
-          :clearable="true" 
-          ref="tree" 
-          size="small" 
-          filterable remote 
-          :loading="Loading" 
-          :remote-method="remoteMethod" 
-          @visible-change="initDepList" 
-          @clear="clearDep" 
-          v-model="searchForm.depName" 
-          placeholder="请选择">
+          <el-select
+            :clearable="true"
+            ref="tree"
+            size="small"
+            filterable remote
+            :loading="Loading"
+            :remote-method="remoteMethod"
+            @visible-change="initDepList"
+            @clear="clearDep"
+            v-model="searchForm.depName"
+            placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
+                     v-model="searchForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -119,7 +120,8 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
+          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword"
+                    placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -135,7 +137,7 @@
               付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
             </li>
             <li>
-              账户余额：<span>{{tableTotal.ProceedsSum-tableTotal.payMentSum|zeroFormatter}}</span>元
+              账户余额：<span>{{tableTotal.balance|zeroFormatter}}</span>元
             </li>
           </ul>
         </div>
@@ -144,17 +146,19 @@
         </p>
       </div>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
-        <el-table-column align="center" min-width="160" label="收付ID" prop="payCode" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="160" label="收付ID" prop="payCode"
+                         :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span @click="msgOpera(scope.row,'cont')">{{scope.row.contCode}}</span></li>
+              <li>合同编号:<span @click="toLink(scope.row,'cont')">{{scope.row.contCode}}</span></li>
               <li>房源编号:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
               <li>客源编号:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="center" min-width="160" label="物业地址" prop="address" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="160" label="物业地址" prop="address"
+                         :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="收付方式" prop="method" :formatter="nullFormatter"></el-table-column>
@@ -194,17 +198,20 @@
         </el-table-column>
         <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
-            <template v-if="scope.row.type===1">
-              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(scope.row.payStatus==='已通过'||scope.row.payStatus==='已到账')&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">开票</el-button>
-              <template v-else-if="scope.row.caozuo===1">
-                <el-button type="text" @click="btnOpera(scope.row,1)">修改</el-button>
-                <el-button type="text" @click="btnOpera(scope.row,2)">作废</el-button>
+            <template v-if="scope.row.type===1&&((power['sign-cw-debt-invoice'].state&&(scope.row.payStatus==='已通过'||scope.row.payStatus==='已到账')&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)||(scope.row.caozuo===1&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state))))">
+              <el-button type="text" @click="btnOpera(scope.row,3)"
+                         v-if="power['sign-cw-debt-invoice'].state&&(scope.row.payStatus==='已通过'||scope.row.payStatus==='已到账')&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">
+                开票
+              </el-button>
+              <template v-if="scope.row.caozuo===1&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state)">
+                <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-debt-edit'].state">修改</el-button>
+                <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-debt-void'].state">作废</el-button>
               </template>
-              <span v-else>--</span>
+              <!--<span v-else>&#45;&#45;</span>-->
             </template>
-            <template v-else-if="scope.row.type===2&&scope.row.caozuo===1">
-              <el-button type="text" @click="btnOpera(scope.row,1)">修改</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)">作废</el-button>
+            <template v-else-if="scope.row.type===2&&scope.row.caozuo===1&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state)">
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-debt-edit'].state">修改</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-debt-void'].state">作废</el-button>
             </template>
             <template v-else>
               --
@@ -234,13 +241,16 @@
       <div class="delete-dialog" v-if="layer.content.length>0">
         <p>是否作废该{{layer.content[0].type===1?'收款单':'付款单'}}</p>
         <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="other">
-          <el-table-column align="center" min-width="120" label="收付编号" prop="payCode" :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" :label="layer.content[0].type===1?'收款金额':'付款金额'" prop="cityName" :formatter="nullFormatter">
+          <el-table-column align="center" min-width="120" label="收付编号" prop="payCode"
+                           :formatter="nullFormatter"></el-table-column>
+          <el-table-column align="center" :label="layer.content[0].type===1?'收款金额':'付款金额'" prop="cityName"
+                           :formatter="nullFormatter">
             <template slot-scope="scope">
               <span>{{scope.row.amount}}元</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" :label="layer.content[0].type===1?'付款方':'收款方'" prop="cityName" :formatter="nullFormatter">
+          <el-table-column align="center" :label="layer.content[0].type===1?'付款方':'收款方'" prop="cityName"
+                           :formatter="nullFormatter">
             <template slot-scope="scope">
               <span>{{scope.row.type===1?scope.row.outObjType.label:scope.row.inObjType.label}}-{{scope.row.type===1?scope.row.outObjName:scope.row.inObjName}}</span>
             </template>
@@ -262,18 +272,18 @@
   import LayerInvoice from '@/components/LayerInvoice'
 
   export default {
-    mixins: [FILTER,MIXINS],
-    components:{
+    mixins: [MIXINS, FILTER],
+    components: {
       LayerPaperInfo,
       LayerInvoice
     },
     data() {
       return {
-        activeView:'',
+        activeView: '',
         searchForm: {
           contType: '',
           timeType: '',
-          depName:'',
+          depName: '',
           depId: '',
           empId: '',
           billStatus: '',
@@ -282,9 +292,9 @@
           moneyType: '',
           payMethod: '',
           keyword: '',
-          timeRange:'',
+          timeRange: '',
         },
-        tableTotal:{},
+        tableTotal: {},
         list: [],
         dictionary: {
           '10': '',
@@ -294,30 +304,82 @@
           '24': '',
           '25': '',
           '507': '',
-          '542':''
+          '542': ''
         },
-        drop_MoneyType:[],
+        drop_MoneyType: [],
         //分页
-        total:0,
-        currentPage:1,
-        pageSize:10,
+        total: 0,
+        currentPage: 1,
+        pageSize: 10,
         //开票
         paperShow: false,
         paperInfoData: {},//票据对象
-        moneyTypes:[],//临时存放勾选的款类
-        activeType:0,//当前预览项
+        moneyTypes: [],//临时存放勾选的款类
+        activeType: 0,//当前预览项
         //作废
-        layer:{
-          show:false,
-          content:[]
+        layer: {
+          show: false,
+          content: []
         },
+        //权限配置
+        power: {
+          'sign-cw-debt-query': {
+            state: false,
+            name: '查询'
+          },
+          'sign-cw-debt-export': {
+            state: false,
+            name: '导出'
+          },
+          'sign-cw-debt-invoice': {
+            state: false,
+            name: '开票'
+          },
+          'sign-cw-debt-edit': {
+            state: false,
+            name: '修改'
+          },
+          'sign-cw-debt-void': {
+            state: false,
+            name: '作废'
+          },
+          'sign-cw-debt-rev-verify': {
+            state: false,
+            name: '收款审核'
+          },
+          'sign-cw-debt-pay-verify': {
+            state: false,
+            name: '付款审核'
+          },
+          'sign-cw-debt-contract': {
+            state: false,
+            name: '合同详情'
+          },
+          'sign-cw-debt-house': {
+            state: false,
+            name: '房源详情'
+          },
+          'sign-cw-debt-cust': {
+            state: false,
+            name: '客源详情'
+          }
+        }
       }
     },
     created() {
+      console.log(this.getUser)
+      for (let item in this.power){
+        if(this.getUser){
+          if(this.getUser.privileges.indexOf(item)>-1){
+            this.power[item].state=true
+          }
+        }
+      }
       this.getData()
       this.getDictionary()
       this.getMoneyTypes()
       this.remoteMethod()
+      // this.getAdmin()
     },
     methods: {
       reset: function () {
@@ -331,101 +393,107 @@
         this.currentPage = val
         this.getData()
       },
-      initDepList:function (val) {
-        if(!val){
+      initDepList: function (val) {
+        if (!val) {
           this.remoteMethod()
         }
       },
-      clearDep:function () {
-        this.searchForm.depId=''
-        this.searchForm.depName=''
+      clearDep: function () {
+        this.searchForm.depId = ''
+        this.searchForm.depName = ''
         // this.EmployeList=[]
-        this.searchForm.empId=''
+        this.searchForm.empId = ''
         this.clearSelect()
       },
       depHandleClick(data) {
         // this.getEmploye(data.depId)
-        this.searchForm.depId=data.depId
-        this.searchForm.depName=data.name
+        this.searchForm.depId = data.depId
+        this.searchForm.depName = data.name
+        this.searchForm.empId = ''
 
         this.handleNodeClick(data)
       },
       getData: function () {
-        let param = JSON.parse(JSON.stringify(this.searchForm))
-        if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
-          param.startTime = param.timeRange[0]
-          param.endTime = param.timeRange[1]
-        }
-        delete param.timeRange
-        param.pageNum = this.currentPage
-        param.pageSize = this.pageSize
-        this.$ajax.get('/api/payInfo/selectPayInfoList',param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.list = res.data.page.list
-            this.total = res.data.page.total
-            this.tableTotal = Object.assign({},res.data.payMentDataList,res.data.paymentDataList)
+        debugger
+        if(this.power['sign-cw-debt-query'].state){
+          let param = JSON.parse(JSON.stringify(this.searchForm))
+          if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {
+            param.startTime = param.timeRange[0]
+            param.endTime = param.timeRange[1]
           }
-        }).catch(error => {
-          console.log(error)
-        })
+          delete param.timeRange
+          param.pageNum = this.currentPage
+          param.pageSize = this.pageSize
+          this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              this.list = res.data.page.list
+              this.total = res.data.page.total
+              this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+            }
+          }).catch(error => {
+            console.log(error)
+          })
+        }else {
+          this.noPower(this.power['sign-cw-debt-query'].name)
+        }
       },
       /**
        * 跳转详情页
        * @param row
        */
-      toDetails:function (row) {
-        if(row.payStatus==='未付款'){
-          this.btnOpera(row,1)
-        }else {
-          this.setPath(this.getPath.concat({name:row.type===1?'收款详情':'付款详情'}))
+      toDetails: function (row) {
+        if (row.payStatus === '未付款') {
+          this.btnOpera(row, 1)
+        } else {
+          this.setPath(this.getPath.concat({name: row.type === 1 ? '收款详情' : '付款详情'}))
           this.$router.push({
-            path:'billDetails',
-            query:{
-              id:row.id,
-              tab:row.type===1?'收款信息':'付款信息',
-              pageName:row.type===1?'收款详情':'付款详情'
+            path: 'billDetails',
+            query: {
+              id: row.id,
+              tab: row.type === 1 ? '收款信息' : '付款信息',
+              power: this.power[row.type===1?'sign-cw-debt-rev-verify':'sign-cw-debt-pay-verify'].state
             }
           })
         }
       },
-      btnOpera:function (row,type) {
-        if(type===1){
-          this.setPath(this.getPath.concat({name:row.type===1?'编辑收款':'编辑付款'}))
+      btnOpera: function (row, type) {
+        if (type === 1) {
+          this.setPath(this.getPath.concat({name: row.type === 1 ? '编辑收款' : '编辑付款'}))
           this.$router.push({
-            path:row.type===1?'receiptBill':'payBill',
-            query:{
-              edit:row.type,
-              id:row.id,
-              type:row.type===1?row.inAccountType:'-1',
-              contId:row.contId
+            path: row.type === 1 ? 'receiptBill' : 'payBill',
+            query: {
+              edit: row.type,
+              id: row.id,
+              type: row.type === 1 ? row.inAccountType : '-1',
+              contId: row.contId
             }
           })
-        }else if(type===2) {
-          this.layer.show=true
-          this.layer.content=[].concat(row)
-        }else if(type===3){
-          this.$refs.layerInvoice.show(row.id,true)
+        } else if (type === 2) {
+          this.layer.show = true
+          this.layer.content = [].concat(row)
+        } else if (type === 3) {
+          this.$refs.layerInvoice.show(row.id, true)
         }
       },
       //作废
-      deleteBill:function () {
-        this.$ajax.put('/api/payInfo/updateCheckStatus',{payId:this.layer.content[0].id},2).then(res=>{
-          res=res.data
-          if(res.status===200){
+      deleteBill: function () {
+        this.$ajax.put('/api/payInfo/updateCheckStatus', {payId: this.layer.content[0].id}, 2).then(res => {
+          res = res.data
+          if (res.status === 200) {
             this.getData()
-            this.layer.show=false
+            this.layer.show = false
             this.$message({
-              message:'作废成功'
+              message: '作废成功'
             })
           }
-        }).catch(error=>{
+        }).catch(error => {
           this.$message({
-            message:error
+            message: error
           })
         })
       },
-      emitPaperSetFn:function (payload) {
+      emitPaperSetFn: function (payload) {
         this.getData()
         // this.$refs.layerInvoice.propCloseFn()
       },
@@ -433,46 +501,56 @@
        * 合同信息操作
        * @param type
        */
-      msgOpera:function (row,type) {
-        if(type==='cont'){
+      toLink:function (row,type) {
+        let param={
+          contType:row.contTypeId,
+          contId:row.contId,
+          contCode:row.contCode,
+          operaType:type,
+          power:type==='cont'?this.power['sign-cw-debt-contract']:type==='house'?this.power['sign-cw-debt-house']:type==='customer'?this.power['sign-cw-debt-cust']:''
+        }
+        this.msgOpera(param)
+      },
+      /*msgOpera: function (row, type) {
+        if (type === 'cont'&&this.power['sign-cw-debt-contract'].state) {
           // this.setPath(this.getPath.concat({name:'合同详情'}))
-          this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'))
+          this.setPath(this.$tool.getRouter(['合同', '合同列表', '合同详情'], 'contractList'))
           this.$router.push({
-            path:row.contTypeId===this.$tool.contType['4']||row.contTypeId===this.$tool.contType['5']?'detailIntention':'contractDetails',
-            query:{
-              contType:row.contTypeId,
-              id:row.contId,
-              code:row.contCode,
-              pageName:'合同详情'
+            path: row.contTypeId === this.$tool.contType['4'] || row.contTypeId === this.$tool.contType['5'] ? 'detailIntention' : 'contractDetails',
+            query: {
+              contType: row.contTypeId,
+              id: row.contId,
+              code: row.contCode,
+              pageName: '合同详情'
             }
           })
         }
-      },
+      },*/
       // 获取收付款类
-      getMoneyTypes:function () {
-        this.$ajax.get('/api/payInfo/selectSmallMoneyType').then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.drop_MoneyType=res.data
+      getMoneyTypes: function () {
+        this.$ajax.get('/api/payInfo/selectSmallMoneyType').then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.drop_MoneyType = res.data
           }
         })
       },
     },
-    filters:{
-      zeroFormatter:function (val) {
-        if(!val){
+    filters: {
+      zeroFormatter: function (val) {
+        if (!val) {
           return 0
-        }else {
-          return val.toFixed(2)
+        } else {
+          return val
         }
       },
-      billState:function (val) {
-        if(!val){
+      billState: function (val) {
+        if (!val) {
           return '--'
-        }else{
-          if(val.type===2){
+        } else {
+          if (val.type === 2) {
             return '--'
-          }else {
+          } else {
             return val.billStatus.label
           }
         }
@@ -484,95 +562,100 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
   @import "~@/assets/less/lsx.less";
-  .margin-left-10{
-    margin-left:10px;
+
+  .margin-left-10 {
+    margin-left: 10px;
   }
-  .checkbox-info{
+
+  .checkbox-info {
     display: inline-block;
     width: 16px;
     height: 16px;
     border: 1px solid @border-e6;
-    &.active{
+    &.active {
       position: relative;
       color: @color-blue;
-      &:after{
+      &:after {
         content: '\e65d';
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%,-50%);
+        transform: translate(-50%, -50%);
       }
     }
   }
-  .layer-paper{
-    .center{
+
+  .layer-paper {
+    .center {
       text-align: center;
     }
-    .paper-btn-blue{
+    .paper-btn-blue {
       color: @color-white;
     }
-    .paper-btn-float{
+    .paper-btn-float {
       position: absolute;
       right: 0;
       bottom: 20px;
     }
   }
-  .paper-edit-box{
+
+  .paper-edit-box {
     margin: 0 40px;
     padding: 20px 0 80px;
     border-bottom: 1px solid @border-D8;
     position: relative;
-    >ul{
-      &:first-of-type{
-        >li{
+    > ul {
+      &:first-of-type {
+        > li {
           margin-bottom: 20px;
           display: flex;
           align-items: center;
-          >label{
+          > label {
             margin-right: 10px;
           }
-          &:first-of-type,&:nth-of-type(2){
-            >p{
-              &:first-of-type{
+          &:first-of-type, &:nth-of-type(2) {
+            > p {
+              &:first-of-type {
                 width: 200px;
               }
             }
           }
-          &:last-of-type{
+          &:last-of-type {
             margin-bottom: 0px;
           }
         }
       }
     }
-    .type-list{
+    .type-list {
       display: flex;
-      >p{
+      > p {
         min-width: 140px;
         margin-right: 20px;
         display: inherit;
         align-items: center;
-        >label.checkbox-info{
+        > label.checkbox-info {
           margin-right: 10px;
         }
       }
-      .input-group{
+      .input-group {
         margin-bottom: 0;
         margin-right: 20px;
       }
     }
   }
-  .paper-watch-tab{
-    >p{
+
+  .paper-watch-tab {
+    > p {
       color: @color-blue;
       text-align: center;
       font-weight: bold;
       margin: 32px;
     }
-    >ul{
+    > ul {
       display: flex;
       justify-content: center;
       margin-bottom: 26px;
-      >li{
+      > li {
         border-top: 2px solid @color-blue;
         border-bottom: 2px solid @color-blue;
         min-width: 100px;
@@ -580,17 +663,17 @@
         display: inherit;
         align-items: center;
         justify-content: center;
-        &:first-of-type{
+        &:first-of-type {
           border-left: 2px solid @color-blue;
           border-top-left-radius: 18px;
           border-bottom-left-radius: 18px;
         }
-        &:last-of-type{
+        &:last-of-type {
           border-right: 2px solid @color-blue;
           border-top-right-radius: 18px;
           border-bottom-right-radius: 18px;
         }
-        &.active{
+        &.active {
           background-color: @color-blue;
           color: @color-white;
         }
@@ -598,11 +681,11 @@
     }
   }
 
-  .contract-msglist{
-    >li{
+  .contract-msglist {
+    > li {
       text-align: left;
-      >span{
-        &:first-of-type{
+      > span {
+        &:first-of-type {
           color: @color-blue;
           margin-right: 10px;
           cursor: pointer;
@@ -610,8 +693,9 @@
       }
     }
   }
-  .delete-dialog{
-    >p{
+
+  .delete-dialog {
+    > p {
       text-align: center;
       margin-bottom: @margin-10;
       font-size: @size-16;
@@ -645,34 +729,35 @@
       }
     }
   }
-  .view-context{
+
+  .view-context {
     background-color: @color-white;
     padding: 0 @margin-10 @margin-10;
-    /deep/ .theader-bg{
-      >th{
+    /deep/ .theader-bg {
+      > th {
         background-color: @bg-th;
       }
     }
-    .table-tool{
+    .table-tool {
       position: relative;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: @margin-base 0;
-      .tool-left{
+      .tool-left {
         display: inherit;
         align-items: center;
-        >h4{
-          >i{
+        > h4 {
+          > i {
             margin-right: 8px;
           }
         }
-        >ul{
+        > ul {
           display: flex;
           margin-left: 20px;
-          >li{
+          > li {
             color: @color-6c;
-            >span{
+            > span {
               color: @color-red;
             }
           }
@@ -687,3 +772,4 @@
     }
   }
 </style>
+

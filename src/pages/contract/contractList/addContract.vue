@@ -271,7 +271,6 @@
           </div>
         </div>
         <div>
-          <!-- <el-button round>预览</el-button> -->
           <el-button type="success" round @click="isSave(1)">提交审核</el-button>
           <el-button type="primary" round @click="isSave(0)">保存</el-button>
         </div>
@@ -830,28 +829,56 @@ export default {
       this.fullscreenLoading=true;
       this.addContract()
     },
-    /* 新增/编辑合同 */
-    addContract() {
-      //debugger
-      this.contractForm.contPersons=[]
+    // 新增合同
+    addContract(){
+      this.contractForm.contPersons=[];
       this.ownerList.forEach(element => {
-        delete element.edit
-        // console.log("22");
+        delete element.edit;
         this.contractForm.contPersons.push(element);
       });
       this.guestList.forEach(element => {
-        delete element.edit
-        // console.log("11");
+        delete element.edit;
         this.contractForm.contPersons.push(element);
       });
-      /* 新增/编辑租赁合同 */
-      if (this.contractForm.type === 1) {
-        let param = {
+      if (this.contractForm.type === 1) {//租赁合同
+        var param = {
           leaseCont: this.contractForm,
           type: this.type,
           haveExamine:this.haveExamine
         };
-        if(this.type===2){
+      }else if(this.contractForm.type === 2 || this.contractForm.type === 3){//买卖代办合同
+        var param = {
+          saleCont: this.contractForm,
+          type: this.type,
+          haveExamine:this.haveExamine
+        };
+      }
+      if(this.type===1){//新增
+        if(this.haveExamine===1){//新增并提审
+          var url = '/api/contract/addContractAudit';
+        }else{
+          var url = '/api/contract/addContract';
+        }
+        this.$ajax.postJSON(url, param).then(res => {
+          res = res.data;
+          this.fullscreenLoading=false;
+          if (res.status === 200) {
+            this.dialogSave=false
+            this.$message({
+              message: "操作成功",
+              type: "success"
+            });
+            this.$router.push('/contractList');
+          }
+        }).catch(error => {
+          this.fullscreenLoading=false;
+          console.log(error)
+          this.$message({
+            message:error
+          })
+        })
+      }else if(this.type===2){//编辑
+        if(this.contractForm.type===1){
           delete param.leaseCont.contChangeState;
           delete param.leaseCont.contState;
           delete param.leaseCont.contType;
@@ -863,10 +890,23 @@ export default {
           delete param.leaseCont.pids;
           delete param.leaseCont.pmobiles;
           delete param.leaseCont.pnames;
+        }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
+          delete param.saleCont.contChangeState;
+          delete param.saleCont.contState;
+          delete param.saleCont.contType;
+          delete param.saleCont.laterStageState;
+          delete param.saleCont.toExamineState;
+          delete param.saleCont.previewImg;
+          delete param.saleCont.subscriptionTerm;
+          delete param.saleCont.updateTime;
           delete param.saleCont.distributableAchievement;
         }
-        //console.log(param);
-        this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {
+        if(this.haveExamine===1){//编辑并提审
+          var url = '/api/contract/updateContractAudit';
+        }else{
+          var url = '/api/contract/updateContract';
+        }
+        this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           this.fullscreenLoading=false;
           if (res.status === 200) {
@@ -885,45 +925,98 @@ export default {
           })
         })
       }
-      /* 新增/编辑买卖合同 */
-      if (this.contractForm.type === 2 || this.contractForm.type === 3) {
-        let param = {
-          saleCont: this.contractForm,
-          type: this.type,
-          haveExamine:this.haveExamine
-        };
-        if(this.type===2){
-          delete param.saleCont.contChangeState;
-          delete param.saleCont.contState;
-          delete param.saleCont.contType;
-          delete param.saleCont.laterStageState;
-          delete param.saleCont.toExamineState;
-          delete param.saleCont.previewImg;
-          delete param.saleCont.subscriptionTerm;
-          delete param.saleCont.updateTime;
-          delete param.saleCont.distributableAchievement;
-          param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");  
-        }
-
-        this.$ajax.postJSON("/api/contract/editSaleCont", param).then(res => {
-          res = res.data;
-          this.fullscreenLoading=false;
-          if (res.status === 200) {
-            this.dialogSave=false
-            this.$message({
-              message: "操作成功",
-              type: "success"
-            });
-            this.$router.push('/contractList');
-          }
-        }).catch(error => {
-          this.fullscreenLoading=false;
-          this.$message({
-            message:'数据异常'
-          })
-        })
-      }
     },
+    /* 新增/编辑合同 */
+    // addContract1() {
+    //   this.contractForm.contPersons=[]
+    //   this.ownerList.forEach(element => {
+    //     delete element.edit
+    //     this.contractForm.contPersons.push(element);
+    //   });
+    //   this.guestList.forEach(element => {
+    //     delete element.edit
+    //     this.contractForm.contPersons.push(element);
+    //   });
+
+    //   /* 新增/编辑租赁合同 */
+    //   if (this.contractForm.type === 1) {
+    //     let param = {
+    //       leaseCont: this.contractForm,
+    //       type: this.type,
+    //       haveExamine:this.haveExamine
+    //     };
+    //     if(this.type===2){
+    //       delete param.leaseCont.contChangeState;
+    //       delete param.leaseCont.contState;
+    //       delete param.leaseCont.contType;
+    //       delete param.leaseCont.laterStageState;
+    //       delete param.leaseCont.toExamineState;
+    //       delete param.leaseCont.previewImg;
+    //       delete param.leaseCont.updateTimes;
+    //       delete param.leaseCont.propertyRightRatios;
+    //       delete param.leaseCont.pids;
+    //       delete param.leaseCont.pmobiles;
+    //       delete param.leaseCont.pnames;
+    //       delete param.saleCont.distributableAchievement;
+    //     }
+    //     this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {
+    //       res = res.data;
+    //       this.fullscreenLoading=false;
+    //       if (res.status === 200) {
+    //         this.dialogSave=false
+    //         this.$message({
+    //           message: "操作成功",
+    //           type: "success"
+    //         });
+    //         this.$router.push('/contractList');
+    //       }
+    //     }).catch(error => {
+    //       this.fullscreenLoading=false;
+    //       console.log(error)
+    //       this.$message({
+    //         message:error
+    //       })
+    //     })
+    //   }
+    //   /* 新增/编辑买卖合同 */
+    //   if (this.contractForm.type === 2 || this.contractForm.type === 3) {
+    //     let param = {
+    //       saleCont: this.contractForm,
+    //       type: this.type,
+    //       haveExamine:this.haveExamine
+    //     };
+    //     if(this.type===2){
+    //       delete param.saleCont.contChangeState;
+    //       delete param.saleCont.contState;
+    //       delete param.saleCont.contType;
+    //       delete param.saleCont.laterStageState;
+    //       delete param.saleCont.toExamineState;
+    //       delete param.saleCont.previewImg;
+    //       delete param.saleCont.subscriptionTerm;
+    //       delete param.saleCont.updateTime;
+    //       delete param.saleCont.distributableAchievement;
+    //       param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");  
+    //     }
+
+    //     this.$ajax.postJSON("/api/contract/editSaleCont", param).then(res => {
+    //       res = res.data;
+    //       this.fullscreenLoading=false;
+    //       if (res.status === 200) {
+    //         this.dialogSave=false
+    //         this.$message({
+    //           message: "操作成功",
+    //           type: "success"
+    //         });
+    //         this.$router.push('/contractList');
+    //       }
+    //     }).catch(error => {
+    //       this.fullscreenLoading=false;
+    //       this.$message({
+    //         message:'数据异常'
+    //       })
+    //     })
+    //   }
+    // },
     //获取所在城市的交易类型
     getTransFlow() {
       this.$ajax.get("/api/contract/getTransFlowListByCity").then(res => {
@@ -1066,12 +1159,19 @@ export default {
     getShop(id) {
       console.log(id);
       if(id){
+        this.contractForm.houseInfo.ShopOwnerName='';
+        this.contractForm.houseInfo.ShopOwnerMobile='';
+        this.options.forEach(element => {
+          if(element.id===id){
+            this.contractForm.houseInfo.HouseStoreName=element.name;
+          }
+        });
         let param1 = {
           depId: id,
           type:1
         };
         this.$ajax.get('/api/organize/dep/manager', param1).then(res=>{
-          res=res.data  
+          res=res.data;  
           if(res.status===200){
             if(res.data){
               this.contractForm.houseInfo.ShopOwnerName=res.data.name;
@@ -1080,40 +1180,100 @@ export default {
               let param2 = {
                 depId: id,
                 type:2
-              }
-              // this.$message({
-              //   message:'该门店没有店长'
-              // })
+              };
+              this.$ajax.get('/api/organize/dep/manager', param2).then(res=>{
+                res=res.data;
+                if(res.status===200){
+                  if(res.data){
+                    this.contractForm.houseInfo.ShopOwnerName=res.data.name;
+                    this.contractForm.houseInfo.ShopOwnerMobile=res.data.mobile;
+                  }else{
+                    let param3 = {
+                      depId: id,
+                      type:3
+                    };
+                    this.$ajax.get('/api/organize/dep/manager', param3).then(res=>{
+                      res=res.data;
+                      if(res.status===200){
+                        if(res.data){
+                          this.contractForm.houseInfo.ShopOwnerName=res.data.name;
+                          this.contractForm.houseInfo.ShopOwnerMobile=res.data.mobile;
+                        }else{
+                          this.$message({
+                            message:'该门店没有店长'
+                          })
+                        }
+                      }
+                    })
+                  }
+                }
+              })
             }
           }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
         })
       }
     },
     getShop_(id) {
-      // debugger
-      // console.log(id);
-      // this.options.forEach(element => {
-      //   if(element.id===id){
-      //     this.contractForm.guestInfo.GuestStoreName=element.name
-      //   }
-      // });
       if(id){
-        let param = {
+        this.contractForm.houseInfo.ShopOwnerName='';
+        this.contractForm.houseInfo.ShopOwnerMobile='';
+        this.options_.forEach(element => {
+          if(element.id===id){
+            this.contractForm.guestInfo.GuestStoreName=element.name
+          }
+        });
+        let param1 = {
           depId: id,
           type:1
         };
-        this.$ajax.get('/api/organize/dep/manager', param).then(res=>{
-          res=res.data
+        this.$ajax.get('/api/organize/dep/manager', param1).then(res=>{
+          res=res.data;  
           if(res.status===200){
             if(res.data){
               this.contractForm.guestInfo.ShopOwnerName=res.data.name;
               this.contractForm.guestInfo.ShopOwnerMobile=res.data.mobile;
             }else{
-              this.$message({
-                message:'该门店没有店长'
+              let param2 = {
+                depId: id,
+                type:2
+              };
+              this.$ajax.get('/api/organize/dep/manager', param2).then(res=>{
+                res=res.data;
+                if(res.status===200){
+                  if(res.data){
+                    this.contractForm.guestInfo.ShopOwnerName=res.data.name;
+                    this.contractForm.guestInfo.ShopOwnerMobile=res.data.mobile;
+                  }else{
+                    let param3 = {
+                      depId: id,
+                      type:3
+                    };
+                    this.$ajax.get('/api/organize/dep/manager', param3).then(res=>{
+                      res=res.data;
+                      if(res.status===200){
+                        if(res.data){
+                          this.contractForm.guestInfo.ShopOwnerName=res.data.name;
+                          this.contractForm.guestInfo.ShopOwnerMobile=res.data.mobile;
+                        }else{
+                          this.$message({
+                            message:'该门店没有店长'
+                          })
+                        }
+                      }
+                    })
+                  }
+                }
               })
             }
           }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
         })
       }
     },
@@ -1363,6 +1523,7 @@ export default {
       padding: 2px 0;
       background: @color-blue;
       border-radius: 2px;
+      cursor: pointer;
     }
     .select_{
       display: inline-block;

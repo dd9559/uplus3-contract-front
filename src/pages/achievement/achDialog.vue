@@ -93,7 +93,7 @@
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
               <el-table-column
                 label="经纪人"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -167,7 +167,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="130"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -221,7 +221,7 @@
               <!-- 区经，可输入，可下拉   changeAmaldar-->
               <el-table-column
                 label="区经"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -248,7 +248,7 @@
               <!-- 区总，可输入，可下拉 changeManager-->
               <el-table-column
                 label="区总"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -360,7 +360,7 @@
 
               <el-table-column
                 label="经纪人"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -433,7 +433,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="130"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -487,7 +487,7 @@
               <!-- 区经，可输入，可下拉 -->
               <el-table-column
                 label="区经"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -514,7 +514,7 @@
               <!-- 区总，可输入，可下拉 -->
               <el-table-column
                 label="区总"
-                width="150"
+                width="140"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -573,14 +573,17 @@
           class="ach-footer"
           v-if="dialogType==0"
         >
-          <p>备注：
+          <p class="text-layout">备注：
             <el-input
               type="textarea"
               :rows="2"
               placeholder="请输入内容"
               class="f_l"
               v-model="remark"
+              resize="none"
+              maxlength=200
             ></el-input>
+            <span class="textLength">{{remark.length}}/200</span>
           </p>
           <div class="footer-btn-layout f_r">
             <el-button
@@ -677,7 +680,7 @@
              custom-class="dialog2In"
             :close-on-click-modal="false"
           >
-            <h1 style="font-size:16px;">选择相关人员</h1>
+            <h1 style="font-size:16px;" slot="title">选择相关人员</h1>
             <div class="mansList">
               <el-table
                 :data="mansList"
@@ -1614,11 +1617,10 @@ export default {
 <style lang="less" scoped>
 // 相关人员弹框
 /deep/ .dialog2In {
-  width: 400px !important;
-  height: 400px !important;
+  width: 420px !important;
   background-color: #fff;
-  margin-top: 30vh !important;
-  overflow: auto;
+  margin-top: 20vh !important;
+  padding-bottom: 30px;
   .is-checked {
     color: #478de3 !important;
   }
@@ -1627,6 +1629,10 @@ export default {
   }
   /deep/ .el-dialog__body {
     padding: 0 !important;
+    overflow-y: auto;
+    min-height:200px;
+    max-height: 400px;
+    width: 420px !important;
   }
   h1 {
     height: 53px;
@@ -1666,7 +1672,7 @@ export default {
 //业绩详情弹框改变样式
 .dialog1 {
   /deep/ .el-dialog.base-dialog {
-    width: 820px !important;
+    width: 1000px !important;
     margin: 13vh auto 0 !important;
     overflow: hidden;
 
@@ -1783,16 +1789,28 @@ export default {
       p {
         margin-top: 30px;
       }
-      .el-textarea {
-        position: absolute;
-        left: 70px;
-        top: 0;
-        padding-bottom: 80px;
-        width: 60%;
+      .text-layout{
+        position: relative;
+        .el-textarea {
+            position: absolute;
+            left: 70px;
+            top: 0;
+            padding-bottom: 80px;
+            width: 60%;
+          }
+          textarea {
+            width: 400px !important;
+            height: 90px;
+          }
+          .textLength {
+            position: absolute;
+            right: 352px;
+            top: 70px;
+            color: #6c7986;
+            text-align: right;
+          }
       }
-      textarea {
-        width: 400px !important;
-      }
+  
       .footer-btn-layout {
         height: 38px;
         text-align: right;
@@ -1826,11 +1844,18 @@ export default {
       padding: 0 !important;
     }
     /deep/ .el-dialog__header {
+      padding: 0 !important;
       .el-dialog__headerbtn {
         right: 0;
         top: 0;
-        display: none;
+        display: none !important;
+        padding: 0 !important;
       }
+    }
+    .el-dialog__headerbtn {
+      right: 0;
+      top: 0;
+      display: none !important;
     }
   }
   input::-webkit-input-placeholder {
@@ -1858,5 +1883,8 @@ export default {
 }
 /deep/ .el-dialog.base-dialog .ach-body {
   padding: 0 20px !important;
+}
+/deep/ .el-dialog__header {
+  padding: 0 !important;
 }
 </style>

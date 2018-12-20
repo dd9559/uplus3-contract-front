@@ -14,42 +14,24 @@
         size="small"
       >
         <!-- 部门 -->
-        <el-form-item
-          label="部门"
-          class="mr"
-        >
-          <el-select
-            v-model="propForm.department"
-            class="w200"
-            filterable
-            @change="selUser"
-            :clearable="true"
-          >
-            <el-option
-              v-for="(item,index) in departs"
-              :key="index"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+        <el-form-item label="部门" style="margin-right:0px;">
+              <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
+                <el-option class="drop-tree" value="">
+                  <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+                </el-option>
+              </el-select>
+       </el-form-item>
 
         <el-form-item>
-          <el-select
-            v-model="propForm.departmentDetail"
-            class="w100"
-            filterable
-            :clearable="true"
-          >
-            <el-option
-              v-for="(item,index) in users"
-              :key="index"
-              ref="user"
-              :label="item.name"
-              :value="item.empId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+             <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="propForm.dealAgentId" placeholder="请选择">
+               <el-option
+                 v-for="item in EmployeList"
+                 :key="item.empId"
+                 :label="item.name"
+                 :value="item.empId">
+               </el-option>
+             </el-select>
+       </el-form-item>
 
         <el-form-item
           label="合同类型"
@@ -97,7 +79,7 @@
             :clearable="true"
           >
             <el-option
-              v-for="item in dictionary['54']"
+              v-for="item in achStatuArr"
               :key="item.value"
               :label="item.value"
               :value="item.key"
@@ -464,7 +446,7 @@
     <!-- 表单列表弹出框（业绩详情） -->
     <el-dialog
       :visible.sync="dialogVisible"
-       width="820px"
+       width="1000px"
       :close-on-click-modal="false"
       custom-class="base-dialog"
     >
@@ -661,7 +643,7 @@
               width="200"
             >
               <template slot-scope="scope">
-                <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatDate}}</p>
+                <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatTime}}</p>
                 <p v-else>-</p>
               </template>
             </el-table-column>
@@ -782,6 +764,8 @@ export default {
       // 筛选条件
       propForm: {
         department: "", //部门
+        dealAgentStoreId:null,
+        dealAgentId:null,
         departmentDetail: "", //部门详情（员工）
         contractType: "", //合同类型
         divideType: "", //分成类型
@@ -797,7 +781,6 @@ export default {
         //数据字典
         "10": "", //合同类型
         "21": "", //分成状态
-        "54": "" //业绩状态
       },
       beginData: false,
       currentPage: 1,
@@ -815,7 +798,44 @@ export default {
       statuIndex:null,
       statuContId:null,
       statuType:null,
-      statuAid:null
+      statuAid:null,
+      achStatuArr:[
+        {
+          key:-1,
+          value:"待提审"
+        },
+        {
+          key:0,
+          value:"审核中"
+        },
+        {
+          key:1,
+          value:"已通过"
+        },
+        {
+          key:2,
+          value:"已驳回"
+        }
+      ],
+        //权限配置
+      power: {
+        'sign-cw-debt-query': {
+          state: false,
+          name: '查询'
+        },
+        'sign-cw-debt-contract': {
+          state: false,
+          name: '合同详情'
+        },
+        'sign-cw-debt-house': {
+          state: false,
+          name: '房源详情'
+        },
+        'sign-cw-debt-cust': {
+          state: false,
+          name: '客源详情'
+        }
+      }
     };
   },
   created() {
@@ -824,15 +844,10 @@ export default {
         pageSize: this.pageSize
     } 
     this.getData(this.ajaxParam);
-    // 获取部门列表
-    this.$ajax.get("/api/access/deps").then(res => {
-      if (res.status == 200) {
-        console.log(res.data.data);
-        this.departs = res.data.data;
-      }
-    });
     // 字典初始化
     this.getDictionary();
+     //部门初始化
+    this.remoteMethod();
   
   },
   components: {
@@ -846,40 +861,51 @@ export default {
         }
   },
   methods: {
-    selUser() {
-      this.propForm.departmentDetail = "";
-      this.users=[];
-      if(this.propForm.department){
-          this.$ajax
-           .get("/api/organize/employees", { depId: this.propForm.department })
-           .then(res => {
-             console.log(res);
-             if (res.status == 200) {
-               this.users = res.data.data;
-             }
-           });
+   //获取当前部门
+    initDepList:function (val) {
+      if(!val){
+        this.remoteMethod()
       }
+    },   
+     clearDep:function () {
+      this.propForm.department=''
+      this.EmployeList=[]
+      this.propForm.dealAgentId=''
+      this.propForm.dealAgentStoreId='';
+      this.clearSelect()
+    },
+     depHandleClick(data) {
+      this.propForm.dealAgentStoreId=data.depId
+      this.propForm.department=data.name
+      this.propForm.dealAgentId=''
+      this.handleNodeClick(data)
     },
     getData(ajaxParam) {
-      let _that=this;
-      this.$ajax
-        .get("/api/achievement/selectAchievementList", ajaxParam)
-        .then(res => {
-          console.log(res);
-          let data = res.data;
-          if (res.status === 200) {
-            // debugger;
-             _that.selectAchList = data.data.list;
-             _that.total = data.data.total;
-            if(data.data.list[0]){
-                 _that.countData = data.data.list[0].contractCount;
-            }else {
-            _that.countData = [0, 0, 0, 0];
-          }       
-           
-          }
-         this.loading=false;
-      });
+      if(this.power['sign-cw-debt-query'].state){
+              let _that=this;
+                 this.$ajax
+                   .get("/api/achievement/selectAchievementList", ajaxParam)
+                   .then(res => {
+                     console.log(res);
+                     let data = res.data;
+                     if (res.status === 200) {
+                       // debugger;
+                        _that.selectAchList = data.data.list;
+                        _that.total = data.data.total;
+                       if(data.data.list[0]){
+                            _that.countData = data.data.list[0].contractCount;
+                       }else {
+                       _that.countData = [0, 0, 0, 0];
+                     }       
+
+                     }
+                  
+                 });
+         }else {
+          this.noPower(this.power['sign-cw-debt-query'].name)
+          this.countData = [0, 0, 0, 0];
+        }
+      this.loading=false;
     },
     closeDialog() {
       this.dialogVisible = false;
@@ -987,8 +1013,8 @@ export default {
     console.log(this.propForm.dateMo)
     if(this.propForm.dateMo){
       this.ajaxParam = {
-        dealAgentStoreId: this.propForm.department, //部门
-        dealAgentId: this.propForm.departmentDetail, //员工
+        dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
+        dealAgentId: this.propForm.dealAgentId, //员工
         contractType: this.propForm.contractType, //合同类型
         distributionType: this.propForm.divideType, //分成类型
         achievementStatus: this.propForm.achType, //业绩类型
@@ -1000,8 +1026,8 @@ export default {
       };
     }else{
        this.ajaxParam = {
-        dealAgentStoreId: this.propForm.department, //部门
-        dealAgentId: this.propForm.departmentDetail, //员工
+        dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
+        dealAgentId: this.propForm.dealAgentId, //员工
         contractType: this.propForm.contractType, //合同类型
         distributionType: this.propForm.divideType, //分成类型
         achievementStatus: this.propForm.achType, //业绩类型
@@ -1260,6 +1286,12 @@ export default {
     max-width: 1000px !important;
     margin: 13vh auto 0 !important;
     overflow: auto;
+
+    .el-dialog__headerbtn {
+      right: 0;
+      top: 0;
+      display: none !important;
+    }
     b {
       position: absolute;
       right: 30px;
@@ -1358,12 +1390,15 @@ export default {
       padding-bottom: 30px;
     }
   }
-  .el-dialog__body{
-    padding: 0!important;
+  .el-dialog__body {
+    padding: 0 !important;
   }
 }
 
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
+}
+/deep/ .el-dialog.base-dialog .el-dialog__header {
+  padding: 0 !important;
 }
 </style>
