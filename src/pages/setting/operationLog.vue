@@ -6,7 +6,7 @@
             <el-form  class="header" ref="propForm" size="small">
                 <div class="content">
                     <el-form-item label="部门">
-                        <el-select style="width:160px" :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
+                        <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
                             <el-option class="drop-tree" value="">
                             <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                             </el-option>
