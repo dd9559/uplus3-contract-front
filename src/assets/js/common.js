@@ -26,6 +26,24 @@ let TOOL = {
         value: 4
       }
     ],
+    dateType_money:[
+      {
+        label: '选择时间',
+        value: 1
+      },
+      {
+        label: '收款时间',
+        value: 2
+      },
+      {
+        label: '付款时间',
+        value: 3
+      },
+      {
+        label: '入账时间',
+        value: 4
+      }
+    ]
   },
   // 操作状态
   OPERATION: {
@@ -187,7 +205,7 @@ let TOOL = {
         }
         // debugger
         if (type === '[object Number]') {
-          if (val <= 0) {
+          if (val <= 0&&typeInfo !== 'negativeNum') {
             res.msg = '请输入大于0的数字'
             reject(res)
             return

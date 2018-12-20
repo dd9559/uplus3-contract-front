@@ -225,10 +225,11 @@
   import {MIXINS} from "@/assets/js/mixins";
 
   const rule={
-    outObj:{
-      name:'付款方'
+    outObjId:{
+      name:'付款方',
+      type:'negativeNum'
     },
-    inObj:{
+    inObjId:{
       name:'收款人',
     },
     moneyType:{
