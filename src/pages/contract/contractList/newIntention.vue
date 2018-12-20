@@ -151,7 +151,7 @@
             
         </div>
         <!-- 房客源弹框 -->
-        <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
+        <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :choseHcode="choseHcode" :choseGcode="choseGcode"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
         <!-- 确定保存合同弹框 -->
         <el-dialog title="提示" :visible.sync="dialogSure" class="myconfirm" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
             <span>确定保存合同？</span>
@@ -223,6 +223,8 @@ export default {
     };
 
     return {
+      choseHcode:0,//选择的房源编号
+      choseGcode:0,//选择的客源编号
       fullscreenLoading:false,//创建按钮防抖
       isShowDialog: false,
       dialogType: "",
@@ -657,9 +659,11 @@ export default {
         if (value.dialogType === "house") {
           this.isShowDialog = false;
           this.getHousedetail(value.selectCode);
+          this.choseHcode=value.selectCode;
         } else if (value.dialogType === "guest") {
           this.isShowDialog = false;
           this.getGuestDetail(value.selectCode);
+          this.choseGcode=value.selectCode;
         }
       } else {
         this.isShowDialog = false;
