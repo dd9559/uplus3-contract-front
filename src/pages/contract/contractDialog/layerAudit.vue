@@ -111,7 +111,7 @@
       </div>
       <div class="btnbox">
         <el-button @click="close">取 消</el-button>
-        <el-button type="primary" @click="auditApply()" v-dbClick>保 存</el-button>  
+        <el-button type="primary" @click="auditApply()" v-loading.fullscreen.lock="fullscreenLoading">保 存</el-button>  
       </div> 
       <!-- 图片放大 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -145,7 +145,7 @@ export default {
     data() {
         return {
           clientHei: document.documentElement.clientHeight, //窗体高度
-
+          fullscreenLoading:false,//创建按钮防抖
           auditForm: {
               textarea: '', //备注
               
@@ -304,25 +304,30 @@ export default {
             }
             
             else{
+              this.fullscreenLoading=true
               this.$ajax         
                 .postJSON("/api/commission/waitUpdate", param)
                 .then(res => {
+                  this.fullscreenLoading=false
                           
                     if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {                             
                       this.$message('没有金额记录调整并且申请成功');
                         setTimeout(() => {
+                        
                         this.$emit('closeCentCommission')
                       }, 1500); 
                     }
                     else if (res.data.status === 200) {
                       this.$message('已申请');
                       setTimeout(() => {
+                        
                         this.$emit('closeCentCommission')
                       }, 1500); 
                       
                     }
 
                 }).catch(error => {
+                  this.fullscreenLoading=false
                     this.$message({
                       message: error
                     })
