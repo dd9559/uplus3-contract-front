@@ -235,9 +235,9 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="合同主体" name="second">
-        <div class="contractSubject">
+        <div class="contractSubject" v-if="contractDetail.contState.value>1">
           <ul class="ulData">
-            <li v-if="contractDetail.contState.value!=1&&contractDetail.contChangeState.value!=2">
+            <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2">
               <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
                 <i class="iconfont icon-shangchuan"></i>
                 <p>点击上传</p>
@@ -483,15 +483,15 @@
         <div class="printMsg">
           <div class="contTitle">房源信息</div>
           <div class="printItem">
-            <p><span class="printTag">房源编号：</span><span class="printCode">{{contractDetail.houseinfoCode}}</span></p>
-              <p class="p_width">
-                <span class="printTag">物业地址：</span>
-                <span class="text">{{contractDetail.propertyAddr}}</span>
-                <!-- <span class="printTxt">{{contractDetail.houseInfo.EstateName}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.BuildingName}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.Unit}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.RoomNo}}</span> -->
-              </p>
+            <p style="width:245px"><span class="printTag">房源编号：</span><span class="printCode">{{contractDetail.houseinfoCode}}</span></p>
+            <p class="p_width">
+              <span class="printTag">物业地址：</span>
+              <span class="text">{{contractDetail.propertyAddr}}</span>
+              <!-- <span class="printTxt">{{contractDetail.houseInfo.EstateName}}</span>
+              <span class="printTxt">{{contractDetail.houseInfo.BuildingName}}</span>
+              <span class="printTxt">{{contractDetail.houseInfo.Unit}}</span>
+              <span class="printTxt">{{contractDetail.houseInfo.RoomNo}}</span> -->
+            </p>
           </div>
           <div class="printItem">
             <p><span class="printTag">建筑面积：</span><span class="printTxt">{{contractDetail.houseInfo.Square}} m²</span></p>
@@ -766,7 +766,7 @@ export default {
       console.log(tab.name);
       this.name=tab.name;
       if(tab.name==="second"){
-        if(this.contractDetail.contState.value===1){
+        if(this.contractDetail.contState.value<2){
           this.$message({
             message:'合同未签章,不允许上传'
           })

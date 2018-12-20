@@ -15,7 +15,7 @@
       >
         <!-- 部门 -->
         <el-form-item label="部门" style="margin-right:0px;">
-              <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
+              <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
                 <el-option class="drop-tree" value="">
                   <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                 </el-option>
@@ -556,6 +556,7 @@
                 房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
                 客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
             <el-table-column
+                          
               label="角色类型"
               width="100"
             >

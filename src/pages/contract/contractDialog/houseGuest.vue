@@ -262,6 +262,14 @@ export default {
     contractType: {
       type: String,
       default: "" //求租  求购
+    },
+    choseHcode: {//选中的房源编号
+      type: Number,
+      default: 0
+    },
+    choseGcode: {//选中的客源编号
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -320,9 +328,11 @@ export default {
     if (this.dialogType === "house") {
       this.title = "选择房源";
       this.getHouseList();
+      this.selectCode=this.choseHcode;
     } else if (this.dialogType === "guest") {
       this.title = "选择客源";
       this.getGuestList();
+      this.selectCode=this.choseGcode;
     }
   },
   methods: {
@@ -521,7 +531,13 @@ export default {
     },
     getContractType: function() {
       return this.contractType;
-    }
+    },
+    getChoseHcode: function() {
+      return this.choseHcode;
+    },
+    getChoseGcode: function() {
+      return this.choseGcode;
+    },
   }
 };
 </script>
