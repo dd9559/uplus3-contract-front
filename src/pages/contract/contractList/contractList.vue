@@ -35,7 +35,7 @@
             </el-option>
           </el-select> -->
 
-          <el-select style="width:160px" :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
+          <el-select style="width:160px" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
@@ -267,10 +267,10 @@
             <div style="text-align:center">
               <el-button type="text" size="medium" v-if="power['sign-ht-info-upload'].state&&scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-verify'].state&&scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> 
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> 
               <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2" @click="toLayerAudit(scope.row)">调佣</el-button>
               <span v-if="scope.row.contType.value<4">
-                <el-button type="text" size="medium" v-if="power['sign-ht-info-sverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)" @click="goSave(scope.row)">提审</el-button>
+                <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)" @click="goSave(scope.row)">提审</el-button>
               </span>
             </div>
           </template>
@@ -404,7 +404,7 @@ export default {
           state: false,
           name: '预览'
         },
-        'sign-ht-info-sverify': {
+        'sign-ht-view-toverify': {
           state: false,
           name: '提审'
         },
@@ -900,17 +900,15 @@ export default {
   margin-left: 0;
 }
 .contract-list {
-  margin-top: 20px;
   background-color: #fff;
   padding: 0 10px;
   border-radius: 2px;
   box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   > p {
-    // padding-left: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    padding: 8px 0;
     .title {
       font-size: 14px;
       color: @color-blank;
