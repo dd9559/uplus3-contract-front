@@ -42,7 +42,6 @@
             :clearable="true"
             ref="tree"
             size="small"
-            filterable remote
             :loading="Loading"
             :remote-method="remoteMethod"
             @visible-change="initDepList"
@@ -367,14 +366,6 @@
       }
     },
     mounted() {
-      /*console.log(this.getUser)
-      for (let item in this.power){
-        if(this.getUser){
-          if(this.getUser.privileges.indexOf(item)>-1){
-            this.power[item].state=true
-          }
-        }
-      }*/
       this.$nextTick(()=>{
         this.getData()
         this.getDictionary()
