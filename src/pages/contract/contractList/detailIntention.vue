@@ -297,7 +297,8 @@ export default {
 
         //预览事件
         onPreview() {
-            this.$router.push({
+            this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+            this.$router.replace({
                 path:'/contractPreview',
                 query:{
                     id: this.$route.query.id
@@ -307,7 +308,8 @@ export default {
 
         //编辑事件
         onEdit(e) {
-            this.$router.push({
+            this.setPath(this.$tool.getRouter(['合同','合同列表','编辑合同'],'contractList'));
+            this.$router.replace({
                 path:'/newIntention',
                 query:{
                     contType: e.value,

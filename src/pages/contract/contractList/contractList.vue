@@ -690,7 +690,7 @@ export default {
     },
     //字典查询
     getDictionaries() {
-      this.$ajas.get("/api/dictionary/batchQuery", param).then(res => {});
+      this.$ajas.get("/api/dictionary/batchQuery", param).then(res => {}); 
     },
     //变更解约弹窗
     goChangeCancel(item) {

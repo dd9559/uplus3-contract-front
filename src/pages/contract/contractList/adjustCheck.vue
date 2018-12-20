@@ -743,7 +743,8 @@
 
       //跳转合同详情页
       goContractDetail(value){
-        console.log(value)
+        // console.log(value)
+        this.setPath(this.$tool.getRouter(['合同','调佣审核','合同详情'],'contractList'));
         this.$router.push({
           path:'/contractDetails',
           query:{
