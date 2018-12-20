@@ -22,11 +22,11 @@
             </div>
             <div class="input-group">
                 <label>流程类型</label>
-                <el-select size="small" v-model="searchForm.type" @change="changeFlowType" :clearable="true">
+                <el-select size="small" v-model="searchForm.type" @change="changeFlowTypeOne" :clearable="true">
                     <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
                 <el-select size="small" v-model="searchForm.branchCondition" :clearable="true" class="branch-condition">
-                    <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-option v-for="item in homeConditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
         </div>
@@ -96,7 +96,7 @@
                 </div>
                 <div class="aduit-input must">
                     <label>流程类型:</label>
-                    <el-select size="small" v-model="aduitForm.type" @change="changeFlowType" :disabled="editDisabled">
+                    <el-select size="small" v-model="aduitForm.type" @change="changeFlowTypeTwo" :disabled="editDisabled">
                         <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
@@ -225,6 +225,7 @@
                 pageSize: 5,
                 pageNum: 1,
                 total: 0,
+                homeConditionList: [],
                 conditionList: [],
                 depsList: [],
                 roleList: [],
@@ -274,7 +275,7 @@
                 })
             },
             getDeps() {
-                this.$ajax.get('/api/access/deps').then(res => {
+                this.$ajax.get('/api/organize/deps').then(res => {
                     res = res.data
                     if(res.status === 200) {
                         this.depsList = res.data
@@ -300,6 +301,7 @@
                     this.$tool.clearForm(this.aduitForm)
                     this.isAudit = ""
                     this.editDisabled = false
+                    this.conditionList = []
                 } else {
                     let {...currentRow} = row
                     this.currentFlowId = currentRow.id
@@ -361,8 +363,33 @@
                         break
                 }
             },
-            changeFlowType(val) {
+            setHomeConditionList(val) {
+                switch(val) {
+                    case 0:
+                        this.homeConditionList = this.dictionary['586']
+                        break
+                    case 1:
+                        this.homeConditionList = this.dictionary['597']
+                        break
+                    case 2:
+                        this.homeConditionList = this.dictionary['603']
+                        break
+                    case 3:
+                        this.homeConditionList = this.dictionary['580']
+                        break
+                    case 4:
+                        this.homeConditionList = this.dictionary['599']
+                        break
+                    case 5:
+                        this.homeConditionList = this.dictionary['601']
+                        break
+                }
+            },
+            changeFlowTypeOne(val) {
                 this.searchForm.branchCondition = ""
+                this.setHomeConditionList(val)
+            },
+            changeFlowTypeTwo(val) {
                 this.aduitForm.branchCondition = ""
                 this.setConditionList(val)
             },
