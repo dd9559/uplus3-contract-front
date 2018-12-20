@@ -561,7 +561,6 @@
                     style="color:#478de3;text-decoration:underline;"
                     @click="deleteClient(scope.$index,clientArr,scope.row.id)"
                   >删除</a>
-                  <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
                 </template>
               </el-table-column>
             </el-table>
