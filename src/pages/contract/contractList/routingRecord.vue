@@ -7,7 +7,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
-          <el-select v-model="searchForm.contractType" placeholder="请选择合同类型" :clearable="true" style="width:150px">
+          <el-select v-model="searchForm.contractType" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
@@ -18,7 +18,7 @@
             </el-option>
           </el-select> -->
 
-          <el-select style="width:160px" :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+          <el-select style="width:160px" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
@@ -70,12 +70,12 @@
         </el-table-column>
         <el-table-column align="left" label="业绩分成比例">
           <template slot-scope="scope">
-            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.ratio}}</p>
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id" v-if="item.ratio">{{item.ratio}}%</p>
           </template>
         </el-table-column>
         <el-table-column align="left" label="特许服务费比例">
           <template slot-scope="scope">
-            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id">{{item.platformRatio}}</p>
+            <p v-for="item in scope.row.settlementFroms[0]" :key="item.storefront4Id" v-if="item.storefront4Id">{{item.platformRatio}}%</p>
           </template>
         </el-table-column>
         <el-table-column align="left" label="特许服务费（元）">
@@ -259,13 +259,13 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 .routing-list {
-  margin-top: 20px;
+  // margin-top: 20px;
   background-color: #fff;
-  padding: 10px;
+  padding: 0 10px 10px 10px;
   border-radius: 2px;
   box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   >p{
-    padding: 10px 0 20px 0;
+    padding: 10px 0 10px 0;
     .title{
       padding-left: 10px;
       i{

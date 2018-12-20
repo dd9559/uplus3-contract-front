@@ -34,12 +34,12 @@
             </el-table-column>
             <el-table-column align="center" label="收款方" v-if="activeItem==='付款信息'">
               <template slot-scope="scope">
-                <span>{{billMsg.inObjType|getLabel}}-{{billMsg.inObjName}}</span>
+                <span>{{billMsg.inObjType|getLabel}}{{billMsg.inObjName?`-${billMsg.inObjName}`:''}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="付款方" v-else>
               <template slot-scope="scope">
-                <span>{{billMsg.outObjType|getLabel}}-{{billMsg.outObj}}</span>
+                <span>{{billMsg.outObjType|getLabel}}{{billMsg.outObj?`-${billMsg.outObj}`:''}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="付款时间" v-if="activeItem==='付款信息'">
@@ -285,7 +285,7 @@
       // debugger
       this.activeItem = this.$route.query.tab
       this.billId = this.$route.query.id
-      this.btnCheck = this.$route.query.power==='true'?true:false
+      this.btnCheck = this.$route.query.power.toString()==='true'?true:false
       this.tabs.unshift(this.activeItem)
       this.getData()
       if(this.$route.query.type){

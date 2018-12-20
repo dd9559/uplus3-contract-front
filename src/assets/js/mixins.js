@@ -35,6 +35,16 @@ const MIXINS = {
       }*/
     }
   },
+  watch:{
+    getUser:function (val,old) {
+      for (let item in this.power){
+        this.power[item].state=true
+        /*if(val.privileges.indexOf(item)>-1){
+          this.power[item].state=true
+        }*/
+      }
+    }
+  },
   methods: {
     noPower:function (msg) {
       this.$message({

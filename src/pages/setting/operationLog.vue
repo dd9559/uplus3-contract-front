@@ -46,15 +46,15 @@
                         {{scope.row.createTime | formatTime}}
                     </template>
                 </el-table-column>
-                <el-table-column label="操作人">
+                <el-table-column width='180' label="操作人">
                     <template slot-scope="scope">
                         <span>{{ scope.row.createByDepName }}{{ scope.row.createByName }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="功能模块" width="130" prop="objectType.label"></el-table-column>
                 <el-table-column label="子类型" width="130" prop="type.label"></el-table-column>
-                <el-table-column label="操作内容" width="500" prop="content"></el-table-column>
-                <el-table-column label="IP地址" prop="ip" ></el-table-column>
+                <el-table-column label="操作内容"  prop="content"></el-table-column>
+                <el-table-column label="IP地址" prop="ip" width="230" ></el-table-column>
             </el-table>
         </div>
         <el-pagination

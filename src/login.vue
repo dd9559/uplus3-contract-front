@@ -16,8 +16,14 @@
     methods:{
       login:function () {
         this.$ajax.post('/api/verify',{empCode:this.userId}).then(res=>{
-          this.$router.push({
-            path:'contractList'
+          this.$ajax.get('/api/me').then(res=>{
+            res=res.data
+            if(res.status===200){
+              this.$store.dispatch('asyncUser',res.data)
+              this.$router.push({
+                path:'contractList'
+              })
+            }
           })
         })
       }

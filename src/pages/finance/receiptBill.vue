@@ -15,7 +15,7 @@
       </div>
       <div class="input-group">
         <label class="form-label no-width f14">收款人:</label>
-        <el-select :clearable="true" ref="tree" size="small" filterable remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
+        <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
           <el-option class="drop-tree" value="">
             <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
           </el-option>
@@ -225,10 +225,11 @@
   import {MIXINS} from "@/assets/js/mixins";
 
   const rule={
-    outObj:{
-      name:'付款方'
+    outObjId:{
+      name:'付款方',
+      type:'negativeNum'
     },
-    inObj:{
+    inObjId:{
       name:'收款人',
     },
     moneyType:{
