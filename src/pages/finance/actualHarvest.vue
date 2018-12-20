@@ -206,10 +206,12 @@
       }
     },
     mounted() {
-      this.getData()
-      this.remoteMethod()
-      this.getDictionary()
-      this.getMoneyTypes()
+      this.$nextTick(()=>{
+        this.getData()
+        this.remoteMethod()
+        this.getDictionary()
+        this.getMoneyTypes()
+      })
     },
     methods: {
       reset:function () {

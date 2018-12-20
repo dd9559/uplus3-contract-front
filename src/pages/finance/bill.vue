@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
         <div class="input-group">
           <label>合同类型:</label>
@@ -366,19 +366,21 @@
         }
       }
     },
-    created() {
-      console.log(this.getUser)
+    mounted() {
+      /*console.log(this.getUser)
       for (let item in this.power){
         if(this.getUser){
           if(this.getUser.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
         }
-      }
-      this.getData()
-      this.getDictionary()
-      this.getMoneyTypes()
-      this.remoteMethod()
+      }*/
+      this.$nextTick(()=>{
+        this.getData()
+        this.getDictionary()
+        this.getMoneyTypes()
+        this.remoteMethod()
+      })
       // this.getAdmin()
     },
     methods: {
@@ -413,9 +415,8 @@
 
         this.handleNodeClick(data)
       },
-      getData: function () {
-        debugger
-        if(this.power['sign-cw-debt-query'].state){
+      getData: function (type='init') {
+        if(this.power['sign-cw-debt-query'].state||type==='init'){
           let param = JSON.parse(JSON.stringify(this.searchForm))
           if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {
             param.startTime = param.timeRange[0]

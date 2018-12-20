@@ -285,7 +285,7 @@
       // debugger
       this.activeItem = this.$route.query.tab
       this.billId = this.$route.query.id
-      this.btnCheck = this.$route.query.power==='true'?true:false
+      this.btnCheck = this.$route.query.power.toString()==='true'?true:false
       this.tabs.unshift(this.activeItem)
       this.getData()
       if(this.$route.query.type){

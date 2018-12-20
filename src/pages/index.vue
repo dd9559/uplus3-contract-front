@@ -105,7 +105,6 @@
 
     },*/
     created(){
-      console.log(this.$store.state.user)
       this.Index=this.$store.state.path
       // debugger
       this.activeIndex = this.Index[1].path.split('/')[1]
