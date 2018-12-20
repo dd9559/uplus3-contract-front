@@ -278,7 +278,7 @@
     </el-form>
 
     <!-- 房源客源弹窗 -->
-    <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
+    <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
     </houseGuest>
     <!-- 保存合同确认框 -->
     <el-dialog title="提示" :visible.sync="dialogSave" width="460px">
@@ -415,7 +415,9 @@ export default {
       //人员信息下标
       peopleIndex:'',
       dialogDel:false,
-      delType:''
+      delType:'',
+      choseHcode:0,//选择的房源编号
+      choseGcode:0,//选择的客源编号
     };
   },
   created() {
@@ -1134,9 +1136,11 @@ export default {
         if (value.dialogType === "house") {
           this.isShowDialog = false;
           this.getHousedetail(value.selectCode);
+          this.choseHcode=value.selectCode;
         } else if (value.dialogType === "guest") {
           this.isShowDialog = false;
           this.getGuestDetail(value.selectCode);
+          this.choseGcode=value.selectCode;
         }
       } else {
         this.isShowDialog = false;

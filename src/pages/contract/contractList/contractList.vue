@@ -265,13 +265,13 @@
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
             <div style="text-align:center">
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-upload'].state&&scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> 
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2" @click="toLayerAudit(scope.row)">调佣</el-button>
-              <span v-if="scope.row.contType.value<4">
-                <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)" @click="goSave(scope.row)">提审</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-upload'].state&&scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
+              <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4">
+                <el-button type="text" size="medium" @click="goSave(scope.row)">提审</el-button>
               </span>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2" @click="toLayerAudit(scope.row)">调佣</el-button>
             </div>
           </template>
         </el-table-column>
@@ -774,7 +774,8 @@ export default {
             message:'已结算完成，无需发起结算'
           })
         }else{
-          let param = {
+          if(item.isCanChangeCommission===1){
+            let param = {
             id: item.id         
           }
           this.$ajax.get("/api/settlement/getSettlById", param).then(res => {
@@ -785,10 +786,15 @@ export default {
               this.settleId=item.id;
             }
           }).catch(error => {
-            this.$message({
-              message: error
+              this.$message({
+                message: error
+              })
             })
-          })
+          }else{
+            this.$message({
+              message:"存在未审核的调佣,无法发起结算"
+            })
+          }
         }
       }else{
         this.noPower('结算')
