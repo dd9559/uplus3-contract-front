@@ -1631,6 +1631,7 @@ export default {
     padding: 0 !important;
     overflow-y: auto;
     min-height:200px;
+    max-height: 400px;
     width: 420px !important;
   }
   h1 {
