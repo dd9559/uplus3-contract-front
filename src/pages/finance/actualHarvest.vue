@@ -95,7 +95,7 @@
         <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span class="span-cursor" @click="toLink(scope.row)">{{scope.row.code}}</span></li>
+              <li>合同编号:<span class="span-cursor" @click="toLink(scope.row,'cont')">{{scope.row.code}}</span></li>
               <li>房源编号:<span class="span-cursor">{{scope.row.houseinfoCode}}</span><span>{{scope.row.showOwnerName}}</span></li>
               <li>客源编号:<span class="span-cursor">{{scope.row.guestinfoCode}}</span><span>{{scope.row.showCustName}}</span></li>
             </ul>
@@ -179,10 +179,33 @@
         //分页
         pageSize:10,
         currentPage:1,
-        total:0
+        total:0,
+        //权限配置
+        power: {
+          'sign-cw-rec-query': {
+            state: false,
+            name: '查询'
+          },
+          'sign-cw-rec-export': {
+            state: false,
+            name: '导出'
+          },
+          'sign-cw-rec-contract': {
+            state: false,
+            name: '合同详情'
+          },
+          'sign-cw-rec-house': {
+            state: false,
+            name: '房源详情'
+          },
+          'sign-cw-rec-cust': {
+            state: false,
+            name: '客源详情'
+          }
+        }
       }
     },
-    created() {
+    mounted() {
       this.getData()
       this.remoteMethod()
       this.getDictionary()
@@ -214,42 +237,49 @@
       depHandleClick(data) {
         this.searchForm.dealAgentStoreId=data.depId
         this.searchForm.dealAgentStoreName=data.name
+        this.searchForm.dealAgentId=''
         this.handleNodeClick(data)
       },
-      toLink:function (row) {
+      toLink:function (row,type) {
         let param={
           contType:row.contType.value,
           contId:row.id,
           contCode:row.code,
-          operaType:'cont'
+          operaType:'cont',
+          power:type==='cont'?this.power['sign-cw-rec-contract']:type==='house'?this.power['sign-cw-rec-house']:type==='customer'?this.power['sign-cw-rec-cust']:''
         }
         this.msgOpera(param)
       },
       getData: function () {
         // let param={}
-        let param=Object.assign({},this.searchForm)
-        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
-          param.beginDate = param.signTime[0]
-          param.endDate = param.signTime[1]
-        }
-        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
-          param.beginProDate = param.collectionTime[0]
-          param.endProDate = param.collectionTime[1]
-        }
-        delete param.signTime
-        delete param.collectionTime
-        delete param.moneyType
-        param.pageNum=this.currentPage
-        param.pageSize=this.pageSize
-        this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.list = res.data.list
-            this.total = res.data.count
+        console.log(this.power)
+        if(this.power['sign-cw-rec-query'].state){
+          let param=Object.assign({},this.searchForm)
+          if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
+            param.beginDate = param.signTime[0]
+            param.endDate = param.signTime[1]
           }
-        }).catch(error => {
-          console.log(error)
-        })
+          if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
+            param.beginProDate = param.collectionTime[0]
+            param.endProDate = param.collectionTime[1]
+          }
+          delete param.signTime
+          delete param.collectionTime
+          delete param.moneyType
+          param.pageNum=this.currentPage
+          param.pageSize=this.pageSize
+          this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              this.list = res.data.list
+              this.total = res.data.count
+            }
+          }).catch(error => {
+            console.log(error)
+          })
+        }else {
+          this.noPower(this.power['sign-cw-rec-query'].name)
+        }
       },
       // 获取收付款类
       getMoneyTypes:function () {

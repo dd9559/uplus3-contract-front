@@ -5,7 +5,7 @@
       <span class="sanjiao"></span>
       <div class="title">
         <span>步骤类型</span>
-        <el-button type="primary" @click="addStepsType">添加步骤类型</el-button>
+        <el-button type="primary" @click="addStepsType" v-if="power['sign-set-hq-tadd'].state">添加步骤类型</el-button>
       </div>
       <el-table :data="listData" @cell-click="cellClick" border>
         <el-table-column
@@ -18,8 +18,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作" min-width="90">
           <template slot-scope="scope">
-            <el-button @click="rowOperation(scope.row,'edit',1)" type="text" size="small">编辑</el-button>
-            <el-button @click="rowOperation(scope.row,'delete','stepsType')" type="text" size="small">删除</el-button>
+            <el-button @click="rowOperation(scope.row,'edit',1)" type="text" size="small" v-if="power['sign-set-hq-tedit'].state">编辑</el-button>
+            <el-button @click="rowOperation(scope.row,'delete','stepsType')" type="text" size="small" v-if="power['sign-set-hq-tdelete'].state">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -28,7 +28,7 @@
     <div class="tradeSteps gap">
       <div class="title">
         <span>交易步骤</span>
-        <el-button type="primary" @click="addTradeSteps">添加交易步骤</el-button>
+        <el-button type="primary" @click="addTradeSteps" v-if="power['sign-set-hq-sadd'].state">添加交易步骤</el-button>
       </div>
       <el-table :data="listData_other" border>
         <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
@@ -54,8 +54,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="rowOperation(scope.row,'edit',2)">编辑</el-button>
-            <el-button type="text" size="medium" @click="rowOperation(scope.row,'delete','stepBusiness')">删除</el-button>
+            <el-button type="text" size="medium" @click="rowOperation(scope.row,'edit',2)" v-if="power['sign-set-hq-sedit'].state">编辑</el-button>
+            <el-button type="text" size="medium" @click="rowOperation(scope.row,'delete','stepBusiness')" v-if="power['sign-set-hq-sdelete'].state">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -74,7 +74,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="submitForm" class="confirmBtn">确 定</el-button>
+        <el-button @click="submitForm" class="confirmBtn" v-dbClick>确 定</el-button>
       </div>
     </el-dialog>
     <!-- 添加和编辑交易步骤 -->
@@ -134,7 +134,7 @@
         </template>
       </div>
       <div slot="footer" class="modal-footer">
-        <el-button @click="confirmForm" class="confirmBtn">确 定</el-button>
+        <el-button @click="confirmForm" class="confirmBtn" v-dbClick>确 定</el-button>
       </div>
     </el-dialog> 
   </div>
@@ -224,7 +224,41 @@
         roleList: [],
         tempRoleList: [],
         inputMax: 30,
-        allRows: []
+        allRows: [],
+        power: {
+          'sign-set-hq-query': {
+            state: false,
+            name: '查询'
+          },
+          'sign-set-hq-data': {
+            state: false,
+            name: '数据列表'
+          },
+          'sign-set-hq-tadd': {
+            state: false,
+            name: '添加步骤类型'
+          },
+          'sign-set-hq-tedit': {
+            state: false,
+            name: '步骤类型编辑'
+          },
+          'sign-set-hq-tdelete': {
+            state: false,
+            name: '步骤类型删除'
+          },
+          'sign-set-hq-sadd': {
+            state: false,
+            name: '添加交易步骤'
+          },
+          'sign-set-hq-sedit': {
+            state: false,
+            name: '交易步骤编辑'
+          },
+          'sign-set-hq-sdelete': {
+            state: false,
+            name: '交易步骤删除'
+          }
+        }
       }
     },
     created() {
@@ -249,16 +283,20 @@
       },
       //获取步骤类型列表
       getData: function () {
-        this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: this.cityId}).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.listData = res.data
-            this.listData_other = this.listData.length !== 0 ? this.listData[0].stepsList : []
-            this.currentRow = this.listData[0]
-            }
-          }).catch(error => {
-              this.$message({message:error})
-          })
+        if(this.power['sign-set-hq-query'].state) {
+          this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: this.cityId}).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              this.listData = res.data
+              this.listData_other = this.listData.length !== 0 ? this.listData[0].stepsList : []
+              this.currentRow = this.listData[0]
+              }
+            }).catch(error => {
+                this.$message({message:error})
+            })
+        } else {
+          this.noPower(this.power['sign-set-hq-query'].name)
+        }
       },
       //单击步骤类型列表行单元格获取交易步骤
       cellClick(row, column, cell, event) {

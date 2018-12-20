@@ -114,7 +114,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作" min-width="70">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
+                        <el-button v-if="power['sign-qh-rev-receive'].state" class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -154,9 +154,8 @@
                                 </el-table-column>
                                 <el-table-column :formatter="nullFormatterData" prop="specifiedDay" align="center" label="计划天数">
                                 </el-table-column>
-                                <el-table-column :formatter="nullFormatterData" prop="a4" align="center" min-width="185" label="分配角色">
+                                <!-- <el-table-column :formatter="nullFormatterData" prop="a4" align="center" min-width="185" label="分配角色">
                                     <template slot-scope="scope">
-                                        <!-- @change="roleChangeFn(scope.$index,$event)"  -->
                                         <el-select v-model="scope.row.roleId" placeholder="分配角色" filterable :loading="loading3" :disabled="roleDisabledFn(scope.row)" @change="roleChangeFn(scope.$index,$event)" size="small" class="w185">
                                             <el-option v-for="item in dealTableRule" :key="'fp'+item.key + scope.$index" :label="item.value" :value="item.key"></el-option>
                                         </el-select>
@@ -164,9 +163,49 @@
                                 </el-table-column>
                                 <el-table-column :formatter="nullFormatterData" align="center" min-width="185" label="责任人">
                                     <template slot-scope="scope">
-                                        <!-- @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)" -->
                                         <el-select v-model="scope.row.personLiableCode" :disabled="roleDisabledFn(scope.row)" v-loadmore="loadMoreFn" placeholder="选择责任人" @focus="roleRemoteFn(scope.$index,scope.row.roleId)" filterable remote :remote-method="roleRemoteMethodFn" :loading="loading4" @change="roleRemoteChangeFn($event,scope.$index)" size="small" class="w185">
                                             <el-option v-for="item in empRulesList(scope.row.rules)" :key="'zrr'+item.empId + scope.$index" :label="item.name" :value="item.empId"></el-option>
+                                        </el-select>
+                                    </template>
+                                </el-table-column> -->
+                                <el-table-column align="center" min-width="185" label="分配角色">
+                                    <template slot-scope="scope">
+                                        <!-- @change="roleChangeFn(scope.$index,$event)"  -->
+                                        <el-select 
+                                        v-model="scope.row.roleId" 
+                                        placeholder="分配角色" 
+                                        filterable 
+                                        :loading="loading3"
+                                        :disabled="roleDisabledFn(scope.row)"
+                                        @change="roleChangeFn(scope.$index,$event)"
+                                        size="small" 
+                                        class="w185">
+                                            <el-option 
+                                            v-for="item in dealTableRule" 
+                                            :key="'fp'+item.key + scope.$index" 
+                                            :label="item.value" 
+                                            :value="item.key"></el-option>
+                                        </el-select>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column align="center" min-width="185" label="责任人">
+                                    <template slot-scope="scope">
+                                        <el-select 
+                                        v-model="scope.row.personLiableCode" 
+                                        :value="scope.row.value"
+                                        :disabled="roleDisabledFn(scope.row)"
+                                        @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)"
+                                        placeholder="选择责任人" 
+                                        filterable
+                                        :loading="loading4"
+                                        @change="roleRemoteChangeFn($event,scope.$index)"
+                                        size="small" 
+                                        class="w185">
+                                            <el-option 
+                                            v-for="item in scope.row.rules" 
+                                            :key="'zrr'+item.empId + scope.$index" 
+                                            :label="item.name" 
+                                            :value="item.empId"></el-option>
                                         </el-select>
                                     </template>
                                 </el-table-column>
@@ -210,8 +249,8 @@
                 </div>
             </LayerScrollAuto>
             <span slot="footer">
-                <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn" round>保存</el-button>
-                <el-button class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
+                <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn" round>保存</el-button>
+                <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
                 <el-button class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button>
             </span>
         </el-dialog>
@@ -312,6 +351,21 @@
                 dealTableRule: [],
                 // 合同资料库
                 ContractDatabase: [],
+                // 权限
+                power:{
+                    'sign-qh-rev-query':{
+                        name:'查询',
+                        state:false
+                    },
+                    'sign-qh-rev-receive':{
+                        name:{
+                            saveStepFlow:'保存合同后期和修改责任人',
+                            clickReceive:'点解接收和已接收按钮',
+                            addStepFlow:'接收合同后期',
+                        },
+                        state:false
+                    },
+                }
             }
         },
         computed: {
@@ -403,6 +457,10 @@
             },
             // 接收
             receiveFn(e) {
+                if(!this.power['sign-qh-rev-receive'].state){
+                    this.noPower(this.power['sign-qh-rev-receive'].name.clickReceive);
+                    return false
+                }
                 this.receive = {
                     show: true,
                     tit: '接收',
@@ -436,12 +494,11 @@
                     if (res.status === 200) {
                         let arr = [...res.data];
                         arr.map(e => {
-                            e.rules = {};
-                            e.rules.list = [{
+                            e.rules = [{
+                                name: e.personLiableName,
                                 empId: e.personLiableCode,
-                                name: e.personLiableName
                             }]
-                            //    e.roleBool = true;
+                               e.roleBool = true;
                         })
                         this.dealTable = arr;
                         this.loadingdealTable = false;
@@ -489,21 +546,22 @@
                 return this.recursiveFn(n, arr)
             },
             // 分配角色改变时候 数据联动
-            roleChangeFn(i, e) {
+            roleChangeFn(i,e) {
                 this.loading4 = true;
-                this.$ajax.get('/api/organize/employees', {
-                    cityId: this.cityId,
-                    roleId: e
-                }).then(res => {
+                this.$ajax.get('/api/employee/postsigning/duty',{
+                    roleId:e,
+                    empId:this.receive.e.dealAgentId,
+                    depId:this.receive.e.dealagentStoreId,
+                }).then(res=>{
                     res = res.data;
-                    if (res.status === 200) {
+                    if(res.status === 200){
                         this.dealTable[i].personLiableCode = "";
                         this.dealTable[i].rules = [...res.data];
                         this.dealTable[i].personLiableName = '';
-                        // this.dealTable[i].roleBool = false;
+                        this.dealTable[i].roleBool = false;
                     }
                     this.loading4 = false;
-                }).catch(err => {
+                }).catch(err=>{
                     this.errMeFn(err);
                     this.loading4 = false;
                 })
@@ -514,18 +572,23 @@
                 this.$set(this.dealTable, i, arr)
             },
             // 展示下拉列表的时候执行
-            roleRemoteFn(i, e) {
-                this.employees = {
-                    keyword: '',
-                    roleId: e,
-                    index: i
-                };
-                // && this.dealTable[i].roleBool
-                if (!!e) {
-                    if (!this.dealTable[i].rules.pageNum) {
-                        this.dealTable[i].rules.pageNum = 1;
-                    }
-                    this.getEmployeesFn();
+            roleRemoteFn(i,e,bool){
+                if(bool && !!e && this.dealTable[i].roleBool){
+                    this.loading4 = true;
+                    this.$ajax.get('/api/employee/postsigning/duty',{
+                        roleId:e,
+                        empId:this.receive.e.dealAgentId,
+                        depId:this.receive.e.dealagentStoreId,
+                    }).then(res=>{
+                        res = res.data;
+                        if(res.status === 200){
+                            this.dealTable[i].rules = [...res.data];
+                        }
+                        this.loading4 = false;
+                    }).catch(err=>{
+                        this.errMeFn(err);
+                        this.loading4 = false;
+                    })
                 }
             },
             roleRemoteMethodFn(query) {
@@ -578,10 +641,14 @@
             },
             // 保存
             saveBtnFn() {
+                if(!this.power['sign-qh-rev-receive'].state){
+                    this.noPower(this.power['sign-qh-rev-receive'].name.saveStepFlow);
+                    return false
+                }
                 let arr = [...this.dealTable];
                 arr.map(e => {
                     e.contractCode = this.receive.e.id;
-                    e.rules.list.map(i => {
+                    e.rules.map(i => {
                         if (i.empId === e.personLiableCode) {
                             e.personLiableName = i.name
                         }
@@ -604,11 +671,15 @@
             },
             // 接收
             receiveBtnFn() {
+                if(!this.power['sign-qh-rev-receive'].state){
+                    this.noPower(this.power['sign-qh-rev-receive'].name.addStepFlow);
+                    return false
+                }
                 let arr = [...this.dealTable];
                 let bool = true;
                 arr.map(e => {
                     e.contractCode = this.receive.e.id;
-                    e.rules.list.map(i => {
+                    e.rules.map(i => {
                         if (i.empId === e.personLiableCode) {
                             e.personLiableName = i.name
                         }
@@ -763,6 +834,10 @@
             },
             // 获取数据
             getListData() {
+                if(!this.power['sign-qh-rev-query'].state){
+                    this.noPower(this.power['sign-qh-rev-query'].name);
+                    return false
+                }
                 this.loadingList = true;
                 let signDateSta = '';
                 let signDateEnd = '';

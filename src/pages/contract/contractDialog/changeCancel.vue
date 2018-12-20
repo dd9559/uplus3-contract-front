@@ -267,7 +267,7 @@ export default {
 				res=res.data;
 				if(res.status===200){
 					this.$message({
-						message:'上传成功'
+						message:'操作成功'
 					});
 					this.close();
 				}
@@ -302,7 +302,7 @@ export default {
 				//上传合变更协议
 				if(this.textarea.length>0){
 					if(this.uploadList.length>0){
-						var url = "/api/contract/contChange";
+						var url = "/api/contract/change";
 						var param = {
 							id:this.contId,
 							reason:this.textarea,
@@ -324,7 +324,7 @@ export default {
 				//上传解除协议
 				if(this.textarea.length>0){
 					if(this.uploadList.length>0){
-						var url = "/api/contract/contChange";
+						var url = "/api/contract/cancel";
 						var param = {
 							id:this.contId,
 							reason:this.textarea,
