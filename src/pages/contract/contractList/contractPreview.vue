@@ -385,7 +385,7 @@ export default {
           this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
           this.auditId=res.data.auditId;
-          if(res.data.cityId===1&&res.data.contType.value===2||res.data.contType.value===3){  //||res.data.contType.value===3
+          if(res.data.cityId===1&&(res.data.contType.value===2||res.data.contType.value===3)){  //||res.data.contType.value===3
             this.isShowType=true;
             //买卖
             this.business=res.data.imgAddress.business;
@@ -409,7 +409,16 @@ export default {
     },
     //拼接地址
     setSrc(value,count){
-      this.src = value.substr(0,value.lastIndexOf('.'))+count+value.substr(value.lastIndexOf('.'));
+      let src = value.substr(0,value.lastIndexOf('.'))+count+value.substr(value.lastIndexOf('.'));
+      let param = {
+        url:src
+      }
+      this.$ajax.get("/api/load/generateAccessURL",param).then(res=>{
+        res = res.data
+        if(res.status ===200){
+          this.src = res.data.url;
+        }
+      })
     },
     //编辑
     toEdit(){
