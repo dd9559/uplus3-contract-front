@@ -163,7 +163,7 @@
                         <!-- 其他 -->
                         <div class="classify" v-if="otherList.length>0">
                             <div class="ht-title">其他</div>
-                            <div class="small-col" v-for="(item,index) in buyerList" :key="index">
+                            <div class="small-col" v-for="(item,index) in otherList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li>
@@ -324,19 +324,24 @@ export default {
         addSubject(data){
             console.log(data);
             let arr = data.param;
-            let fileType = this.$tool.get_suffix(arr[0].name);
-            arr[0].fileType = fileType;
             let num = Number(data.btnId.substring(data.btnId.length-1));
             let typeId = data.btnId.substring(0,data.btnId.length-1)
             // console.log(typeId);
             // console.log(num);
             // console.log(this.sellerList[num].value);
+            arr.forEach(element => {
+                let fileType = this.$tool.get_suffix(element.name);
+                element.fileType = fileType;
+            });
             if(typeId==='seller'){
-                this.sellerList[num].value.push(arr[0]);
+                // this.sellerList[num].value.push(arr[0]);
+                this.sellerList[num].value=this.sellerList[num].value.concat(arr);
             }else if(typeId==='buyer'){
-                this.buyerList[num].value.push(arr[0]);
+                // this.buyerList[num].value.push(arr[0]);
+                this.buyerList[num].value=this.buyerList[num].value.concat(arr);
             }else if(typeId==='other'){
-                this.otherList[num].value.push(arr[0]);
+                // this.otherList[num].value.push(arr[0]);
+                this.otherList[num].value=this.otherList[num].value.concat(arr);
             }
         },
 
@@ -522,9 +527,11 @@ export default {
         uploadSubject(data) {
             let arr = data.param;
             console.log(data)
-            let fileType = this.$tool.get_suffix(arr[0].name);
-            arr[0].fileType = fileType;
-            this.uploadList.push(arr[0])
+            arr.forEach(element => {
+                let fileType = this.$tool.get_suffix(element.name);
+                element.fileType = fileType;
+            });
+			this.uploadList=this.uploadList.concat(arr);
         },
 
         //合同主体的删除

@@ -188,7 +188,7 @@
     width: 140px;
   }
   .w200{
-    width: 200px;
+    width: 200px !important;
   }
 
   .w240 {

@@ -131,15 +131,14 @@
             getLogList() {
                 if(this.power['sign-set-log-query'].state){
                     let param = {
-                    pageSize: this.pageSize,
-                    pageNum: this.pageNum,
-                    deptId:this.department,
-                    empId:this.depUser,
-                    keyword:this.keyWord,
-                    startTime:this.searchTime[0],
-                    endTime:this.searchTime[1],
+                        pageSize: this.pageSize,
+                        pageNum: this.pageNum,
+                        deptId:this.department,
+                        empId:this.depUser,
+                        keyword:this.keyWord,
+                        startTime:this.searchTime[0],
+                        endTime:this.searchTime[1],
                     }
-                    console.log(this.searchTime[0],'searchTime');
                     this.$ajax.get('/api/operation/getList',param).then(res => {
                         res = res.data
                         if(res.status === 200) {
@@ -164,7 +163,6 @@
             },
             // 查询
             queryFn(){
-                console.log('查询')
                 this.getLogList()
             },
         },
