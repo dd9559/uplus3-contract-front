@@ -227,10 +227,15 @@ export default {
 		},
 		//获取文件路径数组
 		uploadSubject(data){
-      let arr = data.param;
-      let fileType = this.$tool.get_suffix(arr[0].name);
-      arr[0].fileType = fileType;
-			this.uploadList.push(arr[0])
+			let arr = data.param;
+			arr.forEach(element => {
+        let fileType = this.$tool.get_suffix(element.name);
+        element.fileType = fileType;
+      });
+			this.uploadList=this.uploadList.concat(arr);
+      // let fileType = this.$tool.get_suffix(arr[0].name);
+      // arr[0].fileType = fileType;
+			// this.uploadList.push(arr[0])
 		},
 		moveIn(value){
 			this.isDelete=value
@@ -279,9 +284,9 @@ export default {
 		},
 		//保存上传文件
 		saveFile(){
-			this.uploadList.forEach(element => {
-				delete element.fileType
-			});
+			// this.uploadList.forEach(element => {
+			// 	delete element.fileType
+			// });
 			console.log(this.uploadList);
 			if(this.dialogType==="upload"){
 				//上传合同主体

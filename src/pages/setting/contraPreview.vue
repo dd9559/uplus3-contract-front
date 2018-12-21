@@ -148,7 +148,6 @@ export default{
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                                console.log(this.divWidth, dropbtn.style.top);
                             }else{
                                this.sigtureShow2=false
                            }
@@ -169,7 +168,6 @@ export default{
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                             console.log(dropbtn.style.left, dropbtn.style.top);
                            }else{
                                this.sigtureShow=false
                            }
@@ -224,12 +222,10 @@ export default{
                             var t = ev.clientY-disY;
                             This.signPosition.x=(l/622).toFixed(2)
                             This.signPosition.y=(t/802).toFixed(2)
-                            console.log(This.signPosition,'sign');
                             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-100 : l
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
                             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-150 : t
-                            console.log(l,t);
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
@@ -307,7 +303,6 @@ export default{
                         this.modalDialog=false
                     }
                 }
-                console.log(this.tableDate,'tabledate');
             },
             del(type){
                 if(type==1){
@@ -325,7 +320,6 @@ export default{
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                             console.log(dropbtn.style.left, dropbtn.style.top);
                            }else{
                                this.sigtureShow=false
                     }
@@ -343,7 +337,6 @@ export default{
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                                console.log(dropbtn.style.left, dropbtn.style.top);
                             }else{
                                this.sigtureShow2=false
                            }
@@ -359,7 +352,6 @@ export default{
                     if(this.count>=this.total){
                         this.count=this.total
                     }
-                    console.log(this.signPosition,'this.signPosition');
                     if(this.count==this.signPosition.pageIndex){
                             if(this.showSed){
                                 this.sigtureShow=false
@@ -370,7 +362,6 @@ export default{
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                             console.log(dropbtn.style.left, dropbtn.style.top);
                            }else{
                                this.sigtureShow=false
                     }
@@ -388,7 +379,6 @@ export default{
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                                console.log(dropbtn.style.left, dropbtn.style.top);
                             }else{
                                this.sigtureShow2=false
                     }
@@ -419,7 +409,6 @@ export default{
                           a[newsrc]=newsrc2
                           a['timeout']=this.timeout
                           this.qmnewsrcArr.push(a)
-                          console.log(this.qmnewsrcArr,'arr');
                           obj.src=newsrc2
                           }
                      })
@@ -435,7 +424,6 @@ export default{
                   cityId:this.cityId,
                   type:this.type
               }
-              console.log(param,'param');
               this.$ajax.get('/api/setting/contractTemplate/checkTemplate',param).then(res=>{
               if(res.status==200){
                   this.loading=false
@@ -455,7 +443,6 @@ export default{
                       arr.push(obj)
                   }
                   this.tableDate=arr
-                  console.log(this.tableDate,'tabledate');
                   if(this.tableDate.length!==0 && this.show==1 && this.flag==1){
                       this.modalDialog=true
                     }
@@ -473,7 +460,6 @@ export default{
                     let htImg2=document.getElementById('ht2')
                     var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                     var newsrc2=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
-                    console.log(this.newsrc,this.newsrc2);
                     this.autograph(htImg,newsrc)
                     this.autograph(htImg2,newsrc2)
                     

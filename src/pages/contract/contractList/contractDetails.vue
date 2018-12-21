@@ -89,7 +89,7 @@
                   <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -126,7 +126,7 @@
                   <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -345,6 +345,10 @@
             <el-table-column prop="visitTime" label="回访时间">
             </el-table-column>
             <el-table-column prop="visitPeople" label="回访人">
+              <template slot-scope="scope">
+                <p>{{scope.row.visitDep}}</p>
+                <p>{{scope.row.visitPeople}}</p>
+              </template>
             </el-table-column>
             <el-table-column label="回访电话">
               <template slot-scope="scope">
@@ -637,19 +641,22 @@ export default {
       recordData: [
         {
           visitTime: "2018/11/11",
-          visitPeople: "万科四季花城-夏雨天",
+          visitPeople: "夏雨天",
+          visitDep:'万科四季花城',
           visitMobile: "18571606238",
           remakes: "萨瓦迪卡哈哈哈"
         },
         {
           visitTime: "2018/11/11",
-          visitPeople: "万科四季花城-夏雨天",
+          visitPeople: "夏雨天",
+          visitDep:'万科四季花城',
           visitMobile: "18571606238",
           remakes: "萨瓦迪卡哈哈哈"
         },
         {
           visitTime: "2018/11/11",
-          visitPeople: "万科四季花城-夏雨天",
+          visitPeople: "夏雨天",
+          visitDep:'万科四季花城',
           visitMobile: "18571606238",
           remakes: "萨瓦迪卡哈哈哈"
         }
@@ -778,7 +785,23 @@ export default {
     //打电话
     call(value) {
       this.dialogVisible = true;
-      this.callNumber = value;
+      this.callNumber = value.mobile;
+      console.log(value);
+      // let param = {
+      //   id:value.pid,
+      //   contractCode:this.contCode
+      // };
+      // this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+      //   res=res.data;
+      //   if(res.status===200){
+      //     this.callNumber=res.data.virtualNum;
+      //     this.dialogVisible = true;
+      //   }
+      // }).catch(error=>{
+      //   this.$message({
+      //     message:error
+      //   })
+      // })
     },
     //合同预览
     goPreview() {
@@ -961,9 +984,11 @@ export default {
     //合同主体获取文件路径数组
     uploadSubject(data) {
       let arr = data.param;
-      let fileType = this.$tool.get_suffix(arr[0].name);
-      arr[0].fileType = fileType;
-			this.uploadList.push(arr[0])
+      arr.forEach(element => {
+        let fileType = this.$tool.get_suffix(element.name);
+        element.fileType = fileType;
+      });
+			this.uploadList=this.uploadList.concat(arr);
     },
     //合同主体的删除
     ZTdelectData(index){
@@ -1078,19 +1103,21 @@ export default {
     addSubject(data){
       console.log(data);
       let arr = data.param;
-      let fileType = this.$tool.get_suffix(arr[0].name);
-      arr[0].fileType = fileType;
       let num = Number(data.btnId.substring(data.btnId.length-1));
-      let typeId = data.btnId.substring(0,data.btnId.length-1)
-      // console.log(typeId);
-      // console.log(num);
-      // console.log(this.sellerList[num].value);
+      let typeId = data.btnId.substring(0,data.btnId.length-1);
+      arr.forEach(element => {
+        let fileType = this.$tool.get_suffix(element.name);
+        element.fileType = fileType;
+      });
       if(typeId==='seller'){
-        this.sellerList[num].value.push(arr[0]);
+        // this.sellerList[num].value.push(arr[0]);
+        this.sellerList[num].value=this.sellerList[num].value.concat(arr);
       }else if(typeId==='buyer'){
-        this.buyerList[num].value.push(arr[0]);
+        // this.buyerList[num].value.push(arr[0]);
+        this.buyerList[num].value=this.buyerList[num].value.concat(arr);
       }else if(typeId==='other'){
-        this.otherList[num].value.push(arr[0]);
+        // this.otherList[num].value.push(arr[0]);
+        this.otherList[num].value=this.otherList[num].value.concat(arr);
       }
     },
     //显示删除按钮
