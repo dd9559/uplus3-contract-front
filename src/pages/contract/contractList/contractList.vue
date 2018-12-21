@@ -298,11 +298,8 @@
       </span>
     </el-dialog>
     <!-- 打印 -->
-    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
-    <!-- <a :href="pdfUrl">hah</a> -->
+    <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint> -->
     <!-- <button @click="dayin">打印</button> -->
-    <!-- <iframe ref="iframe" src="http://jjw-test.oss-cn-shenzhen.aliyuncs.com/template/20181215/3DSnUcPqx2mbnewri2KBvc.pdf?Expires=1545107200&OSSAccessKeyId=LTAI699jkFRmo7TI&Signature=ICkjPOr4BjK%2BEOmGypBb8yVyRtw%3D" frameborder="0"></iframe> -->
-
   </div>
 </template>
            
@@ -821,11 +818,12 @@ export default {
     },
 
     dayin(){
-      debugger
-      this.$refs.iframe.contentWindow.print();
+
+      // this.$refs.easyPrint.print();
     },
     //打印空白合同
     printCont(command){
+      debugger
       // console.log(command)
       this.haveUrl=false;
       if(command===1){
