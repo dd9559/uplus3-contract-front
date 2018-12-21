@@ -38,7 +38,8 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select
+          <select-tree :data="DepList" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <!--<el-select
             class="w200"
             :clearable="true"
             ref="tree"
@@ -52,7 +53,7 @@
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
-          </el-select>
+          </el-select>-->
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="searchForm.empId" placeholder="请选择">
             <el-option
@@ -252,7 +253,7 @@
           <el-table-column align="center" :label="layer.content[0].type===1?'付款方':'收款方'" prop="cityName"
                            :formatter="nullFormatter">
             <template slot-scope="scope">
-              <span>{{scope.row.type===1?scope.row.outObjType.label:scope.row.inObjType.label}}-{{scope.row.type===1?scope.row.outObjName:scope.row.inObjName}}</span>
+              <span>{{scope.row.type===1?scope.row.outObjType.label:scope.row.inObjType.label}}{{scope.row.type===1?scope.row.outObjName?`-${scope.row.outObjName}`:'':scope.row.inObjName?`-${scope.row.inObjName}`:''}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -390,6 +391,10 @@
       initDepList: function (val) {
         if (!val) {
           this.remoteMethod()
+        }else {
+          this.$nextTick(()=>{
+            console.log(this.$refs.tree.$refs.scrollbar.$refs.wrap.scrollTop)
+          })
         }
       },
       clearDep: function () {
@@ -409,6 +414,9 @@
       },
       getData: function (type='init') {
         if(this.power['sign-cw-debt-query'].state||type==='init'){
+          if(type==='search'){
+            this.currentPage=1
+          }
           let param = JSON.parse(JSON.stringify(this.searchForm))
           if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {
             param.startTime = param.timeRange[0]

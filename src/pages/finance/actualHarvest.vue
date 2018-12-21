@@ -1,7 +1,7 @@
 <template>
   <div class="view">
     <!--<preview></preview>-->
-    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
         <div class="input-group">
           <label>收付款类:</label>
@@ -122,7 +122,7 @@
         </el-table-column>
         <el-table-column align="center" min-width="160" label="签约时间" prop="operation time">
           <template slot-scope="scope">
-            {{scope.row.signDate}}
+            {{scope.row.signDate|formatDate}}
           </template>
         </el-table-column>
         <el-table-column align="center" min-width="160" label="收款时间" prop="operation time">
@@ -252,9 +252,11 @@
         }
         this.msgOpera(param)
       },
-      getData: function () {
+      getData: function (type='init') {
         // let param={}
-        console.log(this.power)
+        if(type==='search'){
+          this.currentPage=1
+        }
         if(this.power['sign-cw-rec-query'].state){
           let param=Object.assign({},this.searchForm)
           if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
