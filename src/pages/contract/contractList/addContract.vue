@@ -585,7 +585,9 @@ export default {
                 let element = this.ownerList[i]
                 isOk = false;
                 if (element.name) {
-                  if (element.mobile.length === 11) {
+                  if(element.name.replace(/\s/g,"")){
+                    element.name=element.name.replace(/\s/g,"");
+                    if (element.mobile.length === 11) {
                     let reg = /^1[0-9]{10}$/;
                     if (reg.test(element.mobile)) {
                       if (element.relation) {
@@ -636,6 +638,12 @@ export default {
                     });
                     break
                   }
+                  }else{
+                    this.$message({
+                      message: "业主姓名不能为空"
+                    });
+                    break
+                  }
                 } else {
                   this.$message({
                     message: "业主姓名不能为空"
@@ -655,7 +663,9 @@ export default {
                         let element = this.guestList[i];
                         isOk_ = false;
                         if (element.name) {
-                          if (element.mobile.length === 11) {
+                          if(element.name.replace(/\s/g,"")){
+                            element.name=element.name.replace(/\s/g,"");
+                            if (element.mobile.length === 11) {
                             let reg = /^1[0-9]{10}$/;
                             if (reg.test(element.mobile)) {
                               if (element.relation) {
@@ -698,6 +708,12 @@ export default {
                           } else {
                             this.$message({
                               message: "客户电话号码不正确"
+                            });
+                            break
+                          }
+                          }else{
+                            this.$message({
+                              message: "客户姓名不能为空"
                             });
                             break
                           }

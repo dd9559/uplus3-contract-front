@@ -422,8 +422,9 @@ export default {
     },
     //编辑
     toEdit(){
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
       if(this.contType>3){
-        this.$router.push({
+        this.$router.replace({
           path: "/newIntention",
           query: {
             id: this.id,
@@ -432,7 +433,7 @@ export default {
           }
         });
       }else{
-        this.$router.push({
+        this.$router.replace({
           path: "/addContract",
           query: {
             id: this.id,

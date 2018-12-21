@@ -294,9 +294,10 @@
             },
             // 重置
             resetFormFn() {
+                this.propForm.department='';
                 this.$refs.propForm.resetFields();
-                this.pageNum=1;
-                this.getListData();
+                // this.pageNum=1;
+                // this.getListData();
             },
             // 查询
             queryFn() {
