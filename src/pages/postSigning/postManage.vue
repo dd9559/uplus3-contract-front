@@ -1342,19 +1342,19 @@
                 if(bool === 1){
                     switch (type) {
                         case STEPSINPUT.img:
-                            return ['.png','.jpg','.jpeg'];
+                            return ['png','jpg','jpeg'];
                             break;
                         case STEPSINPUT.mp4:
-                            return ['.mp4','.avi'];
+                            return ['mp4','avi'];
                             break;
                         case STEPSINPUT.excel:
-                            return ['.xlsx'];
+                            return ['xlsx'];
                             break;
                         case STEPSINPUT.word:
-                            return ['.doc','.docx'];
+                            return ['doc','docx'];
                             break;
                         case STEPSINPUT.pdf:
-                            return ['.pdf'];
+                            return ['pdf'];
                             break;
                         default:
                             return []
