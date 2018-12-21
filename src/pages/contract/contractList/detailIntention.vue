@@ -589,7 +589,8 @@ export default {
           
             if (res.data.status === 200) {
                 this.detailData = res.data.data
-                this.contState = res.data.data.contState
+                this.contState = res.data.data.contState.value
+                console.log(this.contState)
                 var contperson = this.detailData.contPersons
                 if (contperson.length > 0) {
                     for (let i=0; i < contperson.length; i++){
@@ -603,7 +604,7 @@ export default {
                 if(res.data.data.isHaveData ==1){ //判断有无上传过资料库，有的话返回上传过的信息
                     this.getContData()
                 }
-                 if(res.data.data.contState.value===3){
+                 if(this.contState===3){
                     this.getContractBody();//获取合同主体
                 }
             }

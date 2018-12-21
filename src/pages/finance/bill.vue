@@ -39,6 +39,7 @@
         <div class="input-group">
           <label>部门:</label>
           <el-select
+            class="w200"
             :clearable="true"
             ref="tree"
             size="small"

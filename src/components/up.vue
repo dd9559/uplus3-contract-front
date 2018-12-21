@@ -26,14 +26,15 @@
       },
       more:{
         type:Boolean,
-        default:false
+        default:true
       }
     },
     data(){
       return{
         filePath:[],//表单提交传给后台的文件路径
         uploader:null,
-        fileType:['.png', '.jpg', '.jpeg', '.gif', '.bmp']
+        fileType:['.png', '.jpg', '.jpeg', '.gif', '.bmp'],
+        currentNum:0,//执行上传的次数
       }
     },
     mounted() {
@@ -50,12 +51,14 @@
           url: 'http://oss.aliyuncs.com',
 
           filters: {
+            mime_types:that.rules.length>0?[{extensions:that.rules.join(',')}]:[],
             prevent_duplicates : true //不允许选取重复文件
           },
           init:{
             FilesAdded: function(up, files) {
               // 选择文件后执行
-              let fileType=get_suffix(files[0].name).toLowerCase();
+              that.up()
+              /*let fileType=get_suffix(files[0].name).toLowerCase();
               if(that.rules.length>0){
                 if(that.rules.indexOf(fileType)>-1){
                   that.up()
@@ -67,35 +70,48 @@
                 }
               }else {
                 that.up()
-              }
+              }*/
             },
             BeforeUpload: function(up, file) {
               // 点击上传前执行
+              set_upload_param(up,Object.assign({},result),file.name);
             },
             UploadProgress: function(up, file) {
               // 上传操作进行中
             },
             FileUploaded: function(up, file, info) {
-
               // 响应
               if(info.status===200||info.status===203){
-                that.$message({
+                /*that.$message({
                   message:'选择文件成功'
-                })
+                })*/
+                that.currentNum++
                 // console.log(file)
-                that.filePath=[].concat({
-                  path:`${result.host}/${result.key}${get_suffix(file.name)}`,
+                that.filePath=that.filePath.concat({
+                  path:`${result.host}/${result.key}${file.name}`,
                   name:file.name
                 })
-                that.$emit('getUrl',{param:that.filePath,btnId:that.getId})
-                that.uploader.splice(0,up.files.length)
+                if(that.currentNum===up.files.length){
+                  // 向父组件传递监听函数，并初始化上传配置
+                  that.$emit('getUrl',{param:that.filePath,btnId:that.getId})
+                  that.uploader.splice(0,up.files.length)
+                  that.currentNum=0
+                  that.filePath=[]
+                }
               }
             },
             Error: function(up, err) {
-              that.uploader.splice(0,up.files.length)
-              that.$message({
-                message:`上传失败，请稍后重试`
-              })
+              // debugger
+              if(err.code===-601){
+                that.$message({
+                  message:`只允许上传${that.rules.join('、')}格式的文件`
+                })
+              }else {
+                that.$message({
+                  message:`上传失败，请稍后重试`
+                })
+              }
+              // that.uploader.splice(0,up.files.length)
               // ...
             }
           }
@@ -124,7 +140,7 @@
           }*/
           this.getUrl(path,maxSize).then(res=>{
             result=JSON.parse(JSON.stringify(res))
-            set_upload_param(this.uploader,res,this.uploader.files[0].name);
+            set_upload_param(this.uploader,Object.assign({},res),'');
           })
         }
       },

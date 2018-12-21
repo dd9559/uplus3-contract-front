@@ -141,15 +141,8 @@
 
           <el-table-column prop="receiptsCommission" label="应收佣金(元)" width="100"></el-table-column>
           <el-table-column prop="receiptsAchievement" label="可分配业绩(元)" width="120">
-            <!-- <template slot-scope="scope">
-                                          <p>3000/5000</p>
-            </template>-->
           </el-table-column>
-          <el-table-column prop="amount" label="合同实收(元)" width="130">
-            <!-- <template slot-scope="scope">
-                                          <p>280000</p>
-            </template>-->
-          </el-table-column>
+          <el-table-column prop="amount" label="合同实收(元)" width="130"></el-table-column>
 
           <!-- level4 assignor -->
           <el-table-column label="分成人" width="190">
