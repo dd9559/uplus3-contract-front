@@ -148,7 +148,7 @@
                 <div class="in-block">
                     <el-form-item 
                     label="合同来源部门"
-                    prop="department" 
+                    prop="departmentS" 
                     class="mr">
                         <el-select 
                         ref="tree" 
@@ -974,9 +974,10 @@
             },
             // 重置
             resetFormFn() {
+                this.propForm.department='';
                 this.$refs.propForm.resetFields()
-                this.pageNum = 1;
-                this.getDataList();
+                // this.pageNum = 1;
+                // this.getDataList();
             },
             // 查询
             queryFn() {

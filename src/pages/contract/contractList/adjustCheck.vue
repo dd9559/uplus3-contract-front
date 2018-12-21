@@ -433,6 +433,17 @@
        
         tableData:[],
 
+        power: {
+          'sign-ht-maid-query': {
+            state: false,
+            name: '查询'
+          },
+          'sign-ht-maid-vdetail': {
+            state: false,
+            name: '调佣详情'
+          }
+        }
+
         
 
         
@@ -587,66 +598,79 @@
 
       // 查询
       queryFn() {
-        this.loadingTable = true;
-        let startTime = '';
-        let endTime = '';
-        
-        if(this.adjustForm.signDate.length === 2){
-            startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
-            endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
-        }
-          let param = {
-            pageNum: this.pageNum,                 
-            pageSize: this.pageSize,          
-            deptId: this.adjustForm.depId,              
-            empId: this.adjustForm.empId,               
-            startTime,    
-            endTime,      
-            contractType: this.adjustForm.tradeType,           
-            checkState: this.adjustForm.checkState,                              
-            keyword: this.adjustForm.keyWord             
+        console.log(this.power)
+        if(this.power['sign-ht-maid-query'].state){
+
+          this.loadingTable = true;
+          let startTime = '';
+          let endTime = '';
+          
+          if(this.adjustForm.signDate.length === 2){
+              startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
+              endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
           }
-          //调整佣金审核列表
-          this.$ajax         
-          .get("/api/commission/updateList", param)
-          .then(res => {
-            let data = res.data;
-            if (res.data.status === 200) {
-              this.tableData = data.data  
-                        
+            let param = {
+              pageNum: this.pageNum,                 
+              pageSize: this.pageSize,          
+              deptId: this.adjustForm.depId,              
+              empId: this.adjustForm.empId,               
+              startTime,    
+              endTime,      
+              contractType: this.adjustForm.tradeType,           
+              checkState: this.adjustForm.checkState,                              
+              keyword: this.adjustForm.keyWord             
             }
-            this.loadingTable = false;
-      
-          }).catch(error => {
-            this.$message({
-              message: error
+            //调整佣金审核列表
+            this.$ajax         
+            .get("/api/commission/updateList", param)
+            .then(res => {
+              let data = res.data;
+              if (res.data.status === 200) {
+                this.tableData = data.data  
+                          
+              }
+              this.loadingTable = false;
+        
+            }).catch(error => {
+              this.$message({
+                message: error
+              })
             })
-          })
+        }else{
+          this.noPower(this.power['sign-ht-maid-query'].name)
+        }
+        
       },
 
       // 双击详情事件
       toDetail(e) {
-        this.dialogVisible2 = true
-        let param = {
-          checkId: e.checkId,
-          contractCode: e.contractCode
-        }
-        this.$ajax.get("/api/commission/toCheck", param)
-        .then(res => {
-          let data = res.data;
-          if (res.data.status === 200) {
-            console.log(data.data)
-            this.layerAudit = data.data;
-            this.myCheckId = data.data.checkId;
-            this.uploadList = data.data.voucher;
-            this.checkInfo = data.data.list
-            console.log()
+        if(this.power['sign-ht-maid-vdetail'].state){
+
+          this.dialogVisible2 = true
+          let param = {
+            checkId: e.checkId,
+            contractCode: e.contractCode
           }
-        }).catch(error => {
-            this.$message({
-              message: error
-            })
-        });
+          this.$ajax.get("/api/commission/toCheck", param)
+          .then(res => {
+            let data = res.data;
+            if (res.data.status === 200) {
+              console.log(data.data)
+              this.layerAudit = data.data;
+              this.myCheckId = data.data.checkId;
+              this.uploadList = data.data.voucher;
+              this.checkInfo = data.data.list
+              console.log()
+            }
+          }).catch(error => {
+              this.$message({
+                message: error
+              })
+          });
+        }else{
+          this.noPower(this.power['sign-ht-maid-vdetail'].name)
+        }
+        
       },
 
       // 点击审核事件
