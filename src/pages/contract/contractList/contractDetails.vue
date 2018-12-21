@@ -89,7 +89,7 @@
                   <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -126,7 +126,7 @@
                   <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -345,6 +345,10 @@
             <el-table-column prop="visitTime" label="回访时间">
             </el-table-column>
             <el-table-column prop="visitPeople" label="回访人">
+              <template slot-scope="scope">
+                <p>{{scope.row.visitDep}}</p>
+                <p>{{scope.row.visitPeople}}</p>
+              </template>
             </el-table-column>
             <el-table-column label="回访电话">
               <template slot-scope="scope">
@@ -637,19 +641,22 @@ export default {
       recordData: [
         {
           visitTime: "2018/11/11",
-          visitPeople: "万科四季花城-夏雨天",
+          visitPeople: "夏雨天",
+          visitDep:'万科四季花城',
           visitMobile: "18571606238",
           remakes: "萨瓦迪卡哈哈哈"
         },
         {
           visitTime: "2018/11/11",
-          visitPeople: "万科四季花城-夏雨天",
+          visitPeople: "夏雨天",
+          visitDep:'万科四季花城',
           visitMobile: "18571606238",
           remakes: "萨瓦迪卡哈哈哈"
         },
         {
           visitTime: "2018/11/11",
-          visitPeople: "万科四季花城-夏雨天",
+          visitPeople: "夏雨天",
+          visitDep:'万科四季花城',
           visitMobile: "18571606238",
           remakes: "萨瓦迪卡哈哈哈"
         }
@@ -778,7 +785,23 @@ export default {
     //打电话
     call(value) {
       this.dialogVisible = true;
-      this.callNumber = value;
+      this.callNumber = value.mobile;
+      console.log(value);
+      // let param = {
+      //   id:value.pid,
+      //   contractCode:this.contCode
+      // };
+      // this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+      //   res=res.data;
+      //   if(res.status===200){
+      //     this.callNumber=res.data.virtualNum;
+      //     this.dialogVisible = true;
+      //   }
+      // }).catch(error=>{
+      //   this.$message({
+      //     message:error
+      //   })
+      // })
     },
     //合同预览
     goPreview() {
