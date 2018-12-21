@@ -961,9 +961,11 @@ export default {
     //合同主体获取文件路径数组
     uploadSubject(data) {
       let arr = data.param;
-      let fileType = this.$tool.get_suffix(arr[0].name);
-      arr[0].fileType = fileType;
-			this.uploadList.push(arr[0])
+      arr.forEach(element => {
+        let fileType = this.$tool.get_suffix(element.name);
+        element.fileType = fileType;
+      });
+			this.uploadList=this.uploadList.concat(arr);
     },
     //合同主体的删除
     ZTdelectData(index){
@@ -1078,19 +1080,21 @@ export default {
     addSubject(data){
       console.log(data);
       let arr = data.param;
-      let fileType = this.$tool.get_suffix(arr[0].name);
-      arr[0].fileType = fileType;
       let num = Number(data.btnId.substring(data.btnId.length-1));
-      let typeId = data.btnId.substring(0,data.btnId.length-1)
-      // console.log(typeId);
-      // console.log(num);
-      // console.log(this.sellerList[num].value);
+      let typeId = data.btnId.substring(0,data.btnId.length-1);
+      arr.forEach(element => {
+        let fileType = this.$tool.get_suffix(element.name);
+        element.fileType = fileType;
+      });
       if(typeId==='seller'){
-        this.sellerList[num].value.push(arr[0]);
+        // this.sellerList[num].value.push(arr[0]);
+        this.sellerList[num].value=this.sellerList[num].value.concat(arr);
       }else if(typeId==='buyer'){
-        this.buyerList[num].value.push(arr[0]);
+        // this.buyerList[num].value.push(arr[0]);
+        this.buyerList[num].value=this.buyerList[num].value.concat(arr);
       }else if(typeId==='other'){
-        this.otherList[num].value.push(arr[0]);
+        // this.otherList[num].value.push(arr[0]);
+        this.otherList[num].value=this.otherList[num].value.concat(arr);
       }
     },
     //显示删除按钮
