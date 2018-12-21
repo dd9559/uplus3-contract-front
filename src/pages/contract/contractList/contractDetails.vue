@@ -814,7 +814,8 @@ export default {
     },
     // 合同编辑
     goEdit() {
-      this.$router.push({
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+      this.$router.replaceq({
         path: "/addContract",
         query: {
           id: this.contractDetail.id,
