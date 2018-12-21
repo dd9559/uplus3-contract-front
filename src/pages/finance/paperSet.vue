@@ -545,7 +545,8 @@
             path:'billDetails',
             query:{
               id:row.proceedsId,
-              tab:'收款信息'
+              tab:'收款信息',
+              power:true
             }
           })
         }

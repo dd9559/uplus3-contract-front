@@ -52,11 +52,11 @@
           <div class="fr fb"><span class="mr-10">开票人：</span>{{comCreate}}</div>
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
         </div>
-        <img class="pr-img" v-if="comImgSrc!==''" :src="comImgSrc">
+        <div class="pr-img"><img v-if="comImgSrc!==''" :src="comImgSrc"></div>
       </div>
       <div class="paper-tips">
         <p>温馨提示：</p>
-        <p>1、服务费凭此收换正式发票；</p>
+        <p>1、服务费凭此收据换正式发票；</p>
         <p>2、手动填写修改此收据无效。</p>
       </div>
     </div>
@@ -72,7 +72,7 @@
       </ul>
       <div class="paper-small-tit">收款项目明细</div>
       <div class="paper-table">
-                <table class="paper-table-main">
+          <table class="paper-table-main">
             <thead>
                 <tr>
                     <th class="paper-table-w">摘要</th>
@@ -116,7 +116,9 @@
           <div class="fr fb"><span class="mr-10">开票人：</span>{{comCreate}}</div>
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
         </div>
-        <img class="pr-img2" v-if="comImgSrc!==''" :src="comImgSrc">
+          <div class="pr-img2">
+            <img v-if="comImgSrc!==''" :src="comImgSrc">
+          </div>
       </div>
     </div>
   </div>
@@ -316,25 +318,28 @@
     border: 1px solid #E8EAF6;
     margin: 20px 0;
     padding: 0 48px 10px 24px;
+    &:first-child{
+      margin-top: 0;
+    }
   }
 
   .paper-tit {
     font-size: 24px;
-    padding-top: 24px;
+    padding-top: 22px;
     text-align: center;
     font-weight: bold;
   }
 
   .paper-number {
     color: #666;
-    padding-top: 14px;
+    padding-top: 12px;
     // text-align: center;
     font-weight: 400;
   }
 
   .paper-ul {
     // display: flex;
-    padding-top: 22px;
+    padding-top: 20px;
     border-bottom: 1px solid #E5E5E5;
     overflow: hidden;
   }
@@ -396,6 +401,7 @@
       width: 31%;
   }
   .paper-table-main {
+      font-size: 14px;
       width: 100%;
       text-align: center;
       border-collapse: collapse;
@@ -431,7 +437,7 @@
 
   .paper-ov3 {
     overflow: hidden;
-    padding: 85px 0 55px;
+    padding: 80px 0 50px;
   }
 
   .paper-tips {
@@ -456,6 +462,13 @@
     height: 130px;
     left: 146px;
     bottom: -36px;
+    line-height: 130px;
+    text-align: center;
+    >img{
+      vertical-align:middle;
+      max-width: 130px;
+      max-height: 130px;
+    }
   }
 
   .pr-img2 {
@@ -464,5 +477,12 @@
     height: 130px;
     left: 146px;
     bottom: 19px;
+    line-height: 130px;
+    text-align: center;
+    >img{
+      vertical-align:middle;
+      max-width: 130px;
+      max-height: 130px;
+    }
   }
 </style>
