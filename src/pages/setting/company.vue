@@ -12,7 +12,7 @@
         </el-form-item>
         <el-form-item label="门店选择">
           <el-select v-model="searchForm.storeId" filterable :clearable="true">
-            <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="合作方式">
@@ -119,7 +119,7 @@
                 <!-- <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
                   <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select> -->
-                <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input>
+                <el-input v-model="companyForm.cooperationMode" size="mini"></el-input>
               </el-form-item>
             </div>
             <div class="item">
@@ -215,7 +215,7 @@
               <div class="upload">
                 <span class="point">上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgcontract" class="up" :rules="['.png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li><fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
                   <li v-show="companyForm.contractSign!==''"><div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{contractName}}</p><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
@@ -225,7 +225,7 @@
               <div class="upload">
                 <span class="point">上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgfinance" class="up" :rules="['.png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li><fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
                   <li v-show="companyForm.financialSign!==''"><div @click="getPicture(2)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{financialName}}</p><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
@@ -364,6 +364,7 @@
           keyword: ""
         },
         cityList: [],
+        homeStoreList: [],
         storeList: [],
         searchTime: [],
         tableData: [], //公司设置列表
@@ -464,46 +465,60 @@
         })
       },
       getStoreList(val) {
-        let param = {
-          cityId: val,
-          keyWord: ""
-        }
-        this.$ajax.get('/api/setting/company/queryAllStore', param).then(res => {
+        this.$ajax.get('/api/setting/company/queryAllStore', {cityId: val}).then(res => {
           res = res.data
           if(res.status === 200) {
-            this.storeList = res.data
+            if(this.companyFormTitle) {
+              this.storeList = res.data
+            } else {
+              this.homeStoreList = res.data
+            }
           }
         }).catch(error => {
           this.$message({message:error})
         })
-        this.cityList.find(item => {
-          if(val === item.id) {
-            this.companyForm.cityName = item.name
-          }
-        })
-        this.searchForm.storeId = ""
-        this.companyForm.storeId = ""
+        if(this.companyFormTitle) {
+          this.cityList.find(item => {
+            if(val === item.id) {
+              this.companyForm.cityName = item.name
+              this.companyForm.storeId = ""
+            }
+          })
+          this.companyForm.cooperationMode = ""
+          this.companyForm.name = ""
+          this.cooModeChange(2)
+          this.companyForm.contractSign = ""
+          this.companyForm.financialSign = ""
+        } else {
+          this.searchForm.storeId = ""
+        }
       },
       storeSelect(val) {
         this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
           res = res.data
-          if(res.status === 200) {
+          if(res.status === 200 && !res.message) {
             this.storeList.find(item => {
               if(item.id === val) {
                 this.companyForm.storeName = item.name
-                this.companyForm.cooperationMode = item.cooperationMode.label
-                this.cooModeChange(item.cooperationMode.value)
+                this.companyForm.cooperationMode = ""
+                this.cooModeChange(2)
+                if(item.cooperationMode) {
+                  this.companyForm.cooperationMode = item.cooperationMode.label
+                  this.cooModeChange(item.cooperationMode.value)
+                }
               }
             })
+          } else {
+            this.noticeShow = true
+            setTimeout(() => {
+              this.noticeShow = false
+            }, 2000)
+            this.companyForm.storeId = ""
+            this.cooModeChange(2)
+            this.companyForm.cooperationMode = ""
           }
         }).catch(error => {
-          this.noticeShow = true
-          setTimeout(() => {
-            this.noticeShow = false
-          }, 2000)
-          this.companyForm.storeId = ""
-          this.cooModeChange(2)
-          this.companyForm.cooperationMode = ""
+          console.log(error);
         })
         this.companyForm.name = ""
         this.companyForm.contractSign = ""
@@ -513,7 +528,7 @@
       handleClose(done) {
         this.creditCodeShow = false
         this.icRegisterShow = false
-        this.getStoreList(this.searchForm.cityId=this.searchForm.cityId==="武汉"?1:this.searchForm.cityId)
+        this.companyFormTitle = ""
         done()
       },
       addCompany() {
@@ -702,6 +717,7 @@
       },
       //点击查看和编辑
       viewEditCompany(row, type) {
+        this.getStoreList(row.cityId)
         if(type === 'init') {
           this.dialogViewVisible = true
         } else {
