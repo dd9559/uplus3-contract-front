@@ -35,44 +35,46 @@
                 </ul>
                 <el-button round size="small" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
             </div>
-            <div v-show="FooterShow">
+            <div class="paper-top" v-show="FooterShow">
                 <div class="paper-watch-tab" v-if="paperType">
-                <p>票据预览</p>
-                <ul v-if="moneyTypes.length>1">
-                    <li v-for="(item,index) in moneyTypes" :key="index" :class="[index===activeType?'active':'']" @click="activeType=index">{{item.typeName}}</li>
-                </ul>
-            </div>
-                <LayerPaperInfo
-                :number="paperInfoData.contCode"
-                :name="paperInfoData.payerName"
-                :collectionTime="paperInfoData.paymentTime"
-                :invoiceTime="paperInfoData.createTime"
-                :paper="paperInfoData.billCode"
-                :project="paperInfoData.type"
-                :hide="paperInfoData.hide"
-                :address="paperInfoData.address"
-                :money="paperInfoData.amount"
-                :moneyZh="paperInfoData.amountZh"
-                :create="paperInfoData.createByName"
-                :rules="paperInfoData.remark"
-                :imgSrc="imgUrl"
-                :time="paperInfoData.printDate"
-                :num="paperInfoData.printTimes"
-                :payerType="paperInfoData.payerType"></LayerPaperInfo>
+                    <p>票据预览</p>
+                    <ul v-if="moneyTypes.length>1">
+                        <li v-for="(item,index) in moneyTypes" :key="index" :class="[index===activeType?'active':'']" @click="activeType=index">{{item.typeName}}</li>
+                    </ul>
+                </div>
+                <vue-easy-print tableShow ref="easyPrint">
+                    <LayerPaperInfo
+                    :number="paperInfoData.contCode"
+                    :name="paperInfoData.payerName"
+                    :collectionTime="paperInfoData.paymentTime"
+                    :invoiceTime="paperInfoData.createTime"
+                    :paper="paperInfoData.billCode"
+                    :project="paperInfoData.type"
+                    :hide="paperInfoData.hide"
+                    :address="paperInfoData.address"
+                    :money="paperInfoData.amount"
+                    :moneyZh="paperInfoData.amountZh"
+                    :create="paperInfoData.createByName"
+                    :rules="paperInfoData.remark"
+                    :imgSrc="imgUrl"
+                    :time="paperInfoData.printDate"
+                    :num="paperInfoData.printTimes"
+                    :payerType="paperInfoData.payerType"></LayerPaperInfo>
+                </vue-easy-print>
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
-            <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint>
+            <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint> -->
         </div>
         <p slot="footer" v-show="FooterShow">
             <el-button round size="small" class="paper-btn" @click="propCloseFn">取消</el-button>
-            <el-button round size="small" class="paper-btn paper-btn-blue" @click="printPaperFn" v-if="!stateBoll">打印</el-button>
+            <el-button round size="small" class="paper-btn paper-btn-blue" @click="printPaper" v-if="!stateBoll">打印</el-button>
         </p>
     </el-dialog>
 </template>
 
 <script>
     import LayerPaperInfo from '@/components/LayerPaperInfo';
-    import PdfPrint from '@/components/PdfPrint';
+    import vueEasyPrint from "vue-easy-print";
     import { MIXINS } from "@/assets/js/mixins";
     import { Loading } from 'element-ui';
 
@@ -91,7 +93,6 @@
                 paperInfoData: {}, //票据对象
                 moneyTypes: [], //临时存放勾选的款类
                 activeType: 0, //当前预览项
-                pdfUrl:'',
                 imgUrl:'',
                 stateBoll:false,
                 layerLoading:'',
@@ -134,7 +135,7 @@
                         this.layerLoading.close();
                         this.paperShow = true;
                         this.FooterShow = true;
-                        this.printPaper();
+                        // this.printPaper();
                     }
                 }).catch(err=>{
                     this.$message.error(err);
@@ -175,15 +176,16 @@
                 this.paperInfoData = Object.assign({}, this.paperInfoData, obj,{
                     createTime:this.$tool.dateFormat(new Date())
                 })
-                this.printPaper();
+                // this.printPaper();
             },
             // 票据详情 打印
             printPaper() {
+                this.layerLoading = Loading.service({});
                 let obj = {}
                 if (!this.paperType) {
                     obj = {
                         code: this.paperInfoData.billCode,
-                        isPrint:false
+                        isPrint:true
                     }
                 } else {
                     let type = this.moneyTypes[this.activeType]
@@ -193,10 +195,15 @@
                         payDetailsId: type.payDetailsId,
                         isHiddenAddress: type.addressHidden,
                         billType: type.project,
-                        isPrint:false
+                        isPrint:true
                     }
                 }
-        
+                if(!this.paperInfoData.signImg){
+                    this.layerLoading.close();
+                    this.$message.error('请先设置财务专用电子签章');
+                    return false
+                }
+                
                 this.$ajax.post('/api/bills/print', obj).then(res => {
                     res = res.data
                     if(res.status === 200){
@@ -206,8 +213,10 @@
                         }).then(res=>{
                             res = res.data
                             if(res.status ===200){
-                                this.pdfUrl = res.data.url;
+                                // this.pdfUrl = res.data.url;
                                 // this.$refs.pdfPrint.print();
+                                this.$emit("emitPaperSet");
+                                this.$refs.easyPrint.print();
                             }
                             this.layerLoading.close();
                         }).catch(err=>{
@@ -221,6 +230,8 @@
                 })
             },
             printPaperFn(){
+                // this.$refs.easyPrint.print();
+                // return false
                 if(!this.paperInfoData.signImg){
                     this.$message.error('请先设置财务专用电子签章');
                     return false
@@ -234,7 +245,7 @@
                     this.layerLoading.close();
                     if(res.status === 200){
                         this.$emit("emitPaperSet");
-                        this.$refs.pdfPrint.print();
+                        // this.$refs.pdfPrint.print();
                     }
                 }).catch(err=>{
                     this.$message.error(err)
@@ -285,7 +296,7 @@
         },
         components: {
             LayerPaperInfo,
-            PdfPrint
+            vueEasyPrint
         },
         mounted() {
             // 枚举类型数据获取
@@ -368,6 +379,10 @@
             text-align: right;
             padding: 30px 20px 0 0;
         }
+    }
+    .paper-top{
+        padding-top: 20px;
+        border-top: 1px solid @border-D8;
     }
 
     // 开票预览
@@ -477,13 +492,12 @@
 
     .paper-watch-tab {
         font-size: 24px;
-        border-top: 1px solid @border-D8;
 
         >p {
             color: @color-blue;
             text-align: center;
             font-weight: bold;
-            margin: 32px;
+            margin: 12px 32px 32px;
         }
 
         >ul {

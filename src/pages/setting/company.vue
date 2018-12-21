@@ -215,7 +215,7 @@
               <div class="upload">
                 <span class="point">上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li><fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp><p class="text">点击上传</p></li>
                   <li v-show="companyForm.contractSign!==''"><div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{contractName}}</p><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
@@ -225,7 +225,7 @@
               <div class="upload">
                 <span class="point">上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload"><i>+</i></fileUp><p class="text">点击上传</p></li>
+                  <li><fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp><p class="text">点击上传</p></li>
                   <li v-show="companyForm.financialSign!==''"><div @click="getPicture(2)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{financialName}}</p><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
                 </ul>
               </div>
