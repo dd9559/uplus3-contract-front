@@ -448,7 +448,7 @@
     </el-dialog>
 
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
-    <achDialog :shows="shows" @close="shows=false,code2=''" :achObj="achObj" :dialogType="dialogType" :contractCode="code2"></achDialog>
+    <achDialog :shows="shows" @close="closeAch" :achObj="achObj" :dialogType="dialogType" :contractCode="code2"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
@@ -839,6 +839,11 @@ export default {
           message:'无可分配业绩,无法分成'
         })
       }
+    },
+    closeAch(){
+      this.shows=false;
+      this.code2='';
+      this.getAchievement();
     },
     // 合同编辑
     goEdit() {
