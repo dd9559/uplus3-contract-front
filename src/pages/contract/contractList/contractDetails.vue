@@ -344,7 +344,7 @@
           <el-table :data="recordData" border style="width: 100%" header-row-class-name="theader-bg">
             <el-table-column prop="visitTime" label="回访时间">
             </el-table-column>
-            <el-table-column prop="visitPeople" label="回访人">
+            <el-table-column label="回访人">
               <template slot-scope="scope">
                 <p>{{scope.row.visitDep}}</p>
                 <p>{{scope.row.visitPeople}}</p>
@@ -358,7 +358,11 @@
             <el-table-column prop="record" label="录音">
               <!-- <audio src="www.baidu.com"></audio> -->
             </el-table-column>
-            <el-table-column prop="remakes" label="备注" width="320"></el-table-column>
+            <el-table-column prop="remakes" label="备注" width="320">
+              <template slot-scope="scope">
+
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
@@ -450,7 +454,7 @@
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     <!-- 打印成交报告 -->
-    <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px">
+    <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint">
       <div class="printContent">
         <div class="printHeader">
           <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
@@ -512,7 +516,7 @@
             <p><span class="printTag">店 长：</span><span class="printTxt">{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
             <p><span class="printTag">手 机：</span><span class="printTxt">{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
           </div>
-          <div class="printItem printItem_" style="width:900px;margin-top:5px">
+          <div class="printItem printItem_" style="width:840px;margin-top:5px">
             <el-table :data="ownerData" border header-row-class-name="theader-bg" style="width:100%">
               <el-table-column prop="name" label="业主姓名" width="200"></el-table-column>
               <el-table-column prop="mobile" label="电话" min-width="200"></el-table-column>
@@ -522,7 +526,7 @@
                   {{scope.row.propertyRightRatio+'%'}}
                 </template>
               </el-table-column> -->
-              <el-table-column prop="identifyCode" min-width="299" label="身份证号"></el-table-column>
+              <el-table-column prop="identifyCode" min-width="239" label="身份证号"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -540,7 +544,7 @@
               <p><span class="printTag">店 长：</span><span class="printTxt">{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
               <p><span class="printTag">手 机：</span><span class="printTxt">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
           </div>
-          <div class="printItem printItem_" style="width:900px;margin-top:5px">
+          <div class="printItem printItem_" style="width:840px;margin-top:5px">
             <el-table :data="clientrData" border header-row-class-name="theader-bg">
               <el-table-column prop="name" label="客户姓名" width="200"></el-table-column>
               <el-table-column label="电话" min-width="200">
@@ -555,7 +559,7 @@
                   {{scope.row.propertyRightRatio+'%'}}
                 </template>
               </el-table-column> -->
-              <el-table-column prop="identifyCode" min-width="299" label="身份证号"></el-table-column>
+              <el-table-column prop="identifyCode" min-width="239" label="身份证号"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -767,8 +771,9 @@ export default {
   },
   methods: {
     printDemo(){
-      this.$refs.easyPrint.print()
+      this.$refs.easyPrint.print();
     },
+
     handleClick(tab, event) {
       console.log(tab.name);
       this.name=tab.name;
@@ -1246,6 +1251,12 @@ export default {
   }
 };
 </script>
+ <style media="print">
+  @page {
+   size: auto;
+   margin: 0mm;
+  }
+ </style>
 <style scoped lang="less">
 @import "~@/assets/common.less";
 
@@ -1561,7 +1572,7 @@ export default {
   // width: 1000px;
   font-size: 16px;
   box-sizing: border-box;
-  padding: 0 10px;
+  padding: 40px 40px;
   p{
     display: inline-block;
     width: 240px;
@@ -1615,7 +1626,7 @@ export default {
       color: @color-233;
       padding: 10px;
       box-sizing: border-box;
-      width: 800px;
+      width: 750px;
       height: 200px;
       border: 1px solid #ebeef5;
       border-radius: 4px;
