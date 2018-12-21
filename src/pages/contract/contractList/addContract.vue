@@ -1077,7 +1077,6 @@ export default {
         res = res.data;
         if (res.status === 200) {
           let houseMsg = res.data;
-          console.log(houseMsg);
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           if(houseMsg.TradeInt===2){
             this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
