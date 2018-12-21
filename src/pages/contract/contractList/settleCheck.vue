@@ -449,6 +449,17 @@
         pageSize: 50,
         count: 0,
 
+        power: {
+          'sign-ht-js-query': {
+            state: false,
+            name: '查询'
+          },
+          'sign-ht-js-vdetail': {
+            state: false,
+            name: '结算详情'
+          }
+        }
+
         
       }
     },
@@ -591,70 +602,82 @@
       
       // 查询
       queryFn() {
-        this.loadingTable = true;
-        let beginDate;
-        let endDate;
-        
-        if(this.adjustForm.signDate.length === 2){
-            beginDate = TOOL.dateFormat(this.adjustForm.signDate[0]);
-            endDate = TOOL.dateFormat(this.adjustForm.signDate[1]);
-        }else if(this.adjustForm.signDate.length === 0){
-            beginDate = null
-            endDate = null
-        }
-        let param = {
-          contResultVo: {
-            beginDate,
-            endDate,
-            examineState: this.adjustForm.examineState,    //this.examineState
-            contractType: this.adjustForm.contType,    //this.adjustForm.contType.key,
-            dealAgentStoreId: this.adjustForm.depId,    //this.Form.getDepName.id,
-            dealAgentId: this.adjustForm.empId,    //this.Form.getAgentName.empId,
-            keyword: this.adjustForm.keyWord
-            
-          },
-          pageNum: this.pageNum,
-          pageSize: this.pageSize
+        console.log(this.power)
+        if(this.power['sign-ht-js-query'].state){
+
+          this.loadingTable = true;
+          let beginDate;
+          let endDate;
           
+          if(this.adjustForm.signDate.length === 2){
+              beginDate = TOOL.dateFormat(this.adjustForm.signDate[0]);
+              endDate = TOOL.dateFormat(this.adjustForm.signDate[1]);
+          }else if(this.adjustForm.signDate.length === 0){
+              beginDate = null
+              endDate = null
+          }
+          let param = {
+            contResultVo: {
+              beginDate,
+              endDate,
+              examineState: this.adjustForm.examineState,    //this.examineState
+              contractType: this.adjustForm.contType,    //this.adjustForm.contType.key,
+              dealAgentStoreId: this.adjustForm.depId,    //this.Form.getDepName.id,
+              dealAgentId: this.adjustForm.empId,    //this.Form.getAgentName.empId,
+              keyword: this.adjustForm.keyWord
+              
+            },
+            pageNum: this.pageNum,
+            pageSize: this.pageSize
+            
+          }
+            // 结算审核列表
+            this.$ajax         
+            .postJSON("/api/contract/contResultList", param)
+            .then(res => {
+              let data = res.data;
+              if (res.data.status === 200) {
+                this.tableData = data.data              
+              }
+              this.loadingTable = false;
+        
+            }).catch(error => {
+                this.$message({
+                  message: error
+                })
+            })
+        }else{
+          this.noPower(this.power['sign-ht-js-query'].name)
         }
-          // 结算审核列表
-          this.$ajax         
-          .postJSON("/api/contract/contResultList", param)
-          .then(res => {
-            let data = res.data;
-            if (res.data.status === 200) {
-              this.tableData = data.data              
-            }
-            this.loadingTable = false;
-      
-          }).catch(error => {
-              this.$message({
-                message: error
-              })
-          })
+        
       },
 
       // 双击详情事件
       toDetail(e){
-        this.dialogVisible2 = true
-        let param = {
-          id: e.id,
+        if(this.power['sign-ht-js-vdetail'].state){
+            this.dialogVisible2 = true
+            let param = {
+              id: e.id,
+            }
+            this.$ajax.get("/api/settlement/applyExamineById", param)
+            .then(res => {
+              if (res.data.status === 200) {        
+                
+                this.layerAudit = res.data.data.contractResult;
+                this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
+                this.myCheckId = res.data.data.contractResult.id; //结算id
+                this.uploadList = res.data.data.contractResult.vouchers;
+                this.checkInfo = res.data.data.examineDetails
+              }
+            }).catch(error => {
+                this.$message({
+                message: error
+                })
+            });
+        }else{
+          this.noPower(this.power['sign-ht-js-vdetail'].name)
         }
-        this.$ajax.get("/api/settlement/applyExamineById", param)
-        .then(res => {
-          if (res.data.status === 200) {        
-             
-            this.layerAudit = res.data.data.contractResult;
-            this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
-            this.myCheckId = res.data.data.contractResult.id; //结算id
-            this.uploadList = res.data.data.contractResult.vouchers;
-            this.checkInfo = res.data.data.examineDetails
-          }
-        }).catch(error => {
-            this.$message({
-             message: error
-            })
-        });
+       
       },
 
       // 点击审核事件

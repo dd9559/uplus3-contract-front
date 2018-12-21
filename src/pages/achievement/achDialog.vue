@@ -1531,7 +1531,6 @@ export default {
           if (
             addhouseArr[i].assignorId == resultArr[j].assignorId &&
             addhouseArr[i].roleType == resultArr[j].roleType &&
-            addhouseArr[i].id &&
             addhouseArr[i].id == resultArr[j].id
           ) {
             flag = false;
@@ -1541,6 +1540,7 @@ export default {
           resultArr.push(addhouseArr[i]);
         } else {
           this.$message.error("请勿重复添加");
+          return false;
         }
       }
       if (this.type == 1) {
@@ -1629,7 +1629,7 @@ export default {
   /deep/ .el-dialog__body {
     padding: 0 !important;
     overflow-y: auto;
-    min-height:200px;
+    min-height: 200px;
     max-height: 400px;
     width: 420px !important;
   }
@@ -1788,28 +1788,28 @@ export default {
       p {
         margin-top: 30px;
       }
-      .text-layout{
+      .text-layout {
         position: relative;
         .el-textarea {
-            position: absolute;
-            left: 70px;
-            top: 0;
-            padding-bottom: 80px;
-            width: 60%;
-          }
-          textarea {
-            width: 400px !important;
-            height: 90px;
-          }
-          .textLength {
-            position: absolute;
-            right: 352px;
-            top: 70px;
-            color: #6c7986;
-            text-align: right;
-          }
+          position: absolute;
+          left: 70px;
+          top: 0;
+          padding-bottom: 80px;
+          width: 60%;
+        }
+        textarea {
+          width: 400px !important;
+          height: 90px;
+        }
+        .textLength {
+          position: absolute;
+          right: 532px;
+          top: 70px;
+          color: #6c7986;
+          text-align: right;
+        }
       }
-  
+
       .footer-btn-layout {
         height: 38px;
         text-align: right;

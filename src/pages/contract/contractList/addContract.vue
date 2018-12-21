@@ -586,6 +586,7 @@ export default {
                 isOk = false;
                 if (element.name) {
                   if(element.name.replace(/\s/g,"")){
+                    element.name=element.name.replace(/\s/g,"");
                     if (element.mobile.length === 11) {
                     let reg = /^1[0-9]{10}$/;
                     if (reg.test(element.mobile)) {
@@ -639,7 +640,7 @@ export default {
                   }
                   }else{
                     this.$message({
-                      message: "业主姓名不能为空格"
+                      message: "业主姓名不能为空"
                     });
                     break
                   }
@@ -663,6 +664,7 @@ export default {
                         isOk_ = false;
                         if (element.name) {
                           if(element.name.replace(/\s/g,"")){
+                            element.name=element.name.replace(/\s/g,"");
                             if (element.mobile.length === 11) {
                             let reg = /^1[0-9]{10}$/;
                             if (reg.test(element.mobile)) {
@@ -711,7 +713,7 @@ export default {
                           }
                           }else{
                             this.$message({
-                              message: "客户姓名不能为空格"
+                              message: "客户姓名不能为空"
                             });
                             break
                           }
