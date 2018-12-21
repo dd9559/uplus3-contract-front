@@ -69,7 +69,7 @@
       </el-dialog>
     </div>
 </template>
-           
+
 <script>
 import {TOOL} from "@/assets/js/common"
 export default{
@@ -135,7 +135,7 @@ export default{
                       this.loading=false
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
-                            this.showSed=true 
+                            this.showSed=true
                             this.divWidth=this.divWidth
                             this.sigtureShow=false
                             this.imgSrc=res.data.data.businessImg.url
@@ -204,7 +204,7 @@ export default{
                     this.sigtureShow=!this.sigtureShow
                 }
                  this.sigtureShow2=!this.sigtureShow2
-            
+
                  this.tuozhuai()
             },
             tuozhuai(){
@@ -213,7 +213,7 @@ export default{
                     }else{
                     var oDiv=document.getElementsByClassName('signature')[0]
                     }
-                    var This =this 
+                    var This =this
                         oDiv.onmousedown = function(ev){
                             var disX = ev.clientX -oDiv.offsetLeft;
                             var disY = ev.clientY - oDiv.offsetTop;
@@ -358,7 +358,7 @@ export default{
                             }else{
                                 this.sigtureShow=true
                             }
-                            
+
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
@@ -462,7 +462,7 @@ export default{
                     var newsrc2=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
                     this.autograph(htImg,newsrc)
                     this.autograph(htImg2,newsrc2)
-                    
+
                  }else{
                   this.imgSrc=res.data.data.img.url  //一个的
                   this.total=res.data.data.img.count
@@ -488,7 +488,7 @@ export default{
             })
             }
         }
-        
+
 }
 </script>
 <style lang='less' scoped>
@@ -524,7 +524,7 @@ export default{
         }
         .signature{
             position: absolute;
-            background-image: url('../../assets/img/seal.png');
+            background-image: url('~@/assets/img/seal.png');
             background-size: 130px;
             width: 130px;
             left: 0;
@@ -557,7 +557,7 @@ export default{
                 text-align: center;
             }
         }
-        
+
     }
 }
 .expand{
@@ -570,7 +570,7 @@ export default{
     }
     /deep/ .el-dialog__body{
         border-top: solid 1px rgba(237,236,240,1);
-        padding-top:21px; 
+        padding-top:21px;
         .ex-body{
             p:first-child{
                 color:rgba(109,149,189,1);
@@ -582,7 +582,7 @@ export default{
             }
         }
     }
-}    
+}
 .paper-btn{
     width:100px;
     height:36px;
@@ -606,5 +606,5 @@ export default{
 //     background-color: #F5F5F5;
 //     color:#ACA899;
 //     border: 1px solid #DDD;
-// }     
+// }
 </style>
