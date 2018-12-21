@@ -64,34 +64,37 @@
         <div class="in-block">
             <el-form-item 
             label="部门"
-            prop="depId" 
+            prop="depIdS" 
             class="mr">
                 <el-select 
-                v-model="propForm.depId" 
-                :remote-method="regionMethodFn"
-                :loading="loading"
-                @change="regionChangeFn"
-                @clear="regionClearFn"
-                clearable
-                remote 
+                ref="tree" 
+                size="small" 
+                :loading="Loading" 
+                :remote-method="remoteMethod" 
+                v-model="propForm.depIdS" 
+                @clear="clearDep"
+                @visible-change="initDepList" 
+                clearable 
                 filterable
-                class="w200">
+                remote 
+                placeholder="请选择">
                     <el-option 
-                    v-for="item in rules.depId" 
-                    :key="'depId'+item.id"
-                    :label="item.name" 
-                    :value="item.id"></el-option>
+                    class="drop-tree" 
+                    value="">
+                        <el-tree 
+                        :data="DepList" 
+                        :props="defaultProps" 
+                        @node-click="depHandleClick"></el-tree> 
+                    </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item prop="empId">
                 <el-select 
                 v-model="propForm.empId" 
-                :loading="loading2"
                 clearable
-                filterable
                 class="w100">
                     <el-option 
-                    v-for="item in rules.empId" 
+                    v-for="item in EmployeList" 
                     :key="'empId'+item.empId" 
                     :label="item.name"
                     :value="item.empId"></el-option>
@@ -165,7 +168,7 @@
         </el-table-column>
         <el-table-column fixed label="收款ID" min-width="135">
           <template slot-scope="scope">
-            <span class="blue" @click="cellOpera('bill',scope.row)">{{scope.row.proceedsId}}</span>
+            <span class="blue" @click="cellOpera('bill',scope.row)">{{scope.row.proceedsCode}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed prop="address" label="物业地址" min-width="124">
@@ -403,7 +406,7 @@
       // 枚举类型数据获取
       this.getDictionary();
       // 部门搜索
-      this.regionMethodFn('');
+      this.remoteMethod();
       // 获取列表
       this.getData();
     },
@@ -413,6 +416,7 @@
           return this.$tool.dateFormat(val);
       },
       reset: function () {
+        this.$refs.propForm.resetFields();
         this.$tool.clearForm(this.propForm)
       },
       // 错误提示
@@ -590,64 +594,24 @@
         // this.$refs.layerInvoice.propCloseFn();
         this.getData();
       },
-      // 部门下拉搜索
-      regionMethodFn(e){
-          this.loading = true;
-          this.$ajax.get("/api/access/deps",{
-              keyword:e
-          }).then(res=>{
-              res = res.data
-              if(res.status === 200){
-                  if(e==='' || !e){
-                      this.rules.depId = [{
-                          name: "全部",
-                          id: ""
-                      },...res.data]
-                  }else{
-                      this.rules.depId = res.data
-                  }
-                  this.loading = false;
-              }
-          }).catch(err=>{
-              this.errMeFn(err);
-          })
+      // 部门第二版 选择部门
+      depHandleClick(data){
+          this.propForm.depId=data.depId
+          this.propForm.depIdS=data.name
+          this.handleNodeClick(data);
       },
-      // 清除部门搜索
-      regionClearFn(){
-          this.regionMethodFn('');
+      // 部门第二版 删除
+      clearDep(){
+          this.propForm.depId='';
+          this.propForm.empId='';
+          this.clearSelect();
+          this.remoteMethod();
       },
-      // 部门筛选回调
-      regionChangeFn(e) {
-          if( e !=="" || !!e){
-              this.loading2 = true;
-              this.$ajax.get("/api/organize/employees",{
-              cityId:this.cityId,
-              depId:e,
-              }).then(res=>{
-                  res = res.data
-                  if(res.status === 200){
-                      this.propForm.empId = '';
-                      let arr = [];
-                      if(res.data.length > 0){
-                              arr = [{
-                              name: "全部",
-                              empId: ""
-                          },...res.data]
-                      }
-                      this.rules.empId = arr;
-                      this.loading2 = false;
-                  }
-              }).catch(err=>{
-                  this.errMeFn(err);
-              })
-          }else{
-              this.propForm.empId = '';
-              this.rules.empId = [{
-                                  name: "全部",
-                                  empId: ""
-                              }]
+      // 部门第二版 下拉隐藏时 刷新数据清除上一次数据
+      initDepList(val){
+          if(!val){
+              this.remoteMethod()
           }
-          
       },
     },
     components: {
