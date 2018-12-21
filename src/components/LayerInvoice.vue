@@ -35,13 +35,14 @@
                 </ul>
                 <el-button round size="small" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
             </div>
-            <div class="paper-top" v-show="FooterShow">
+            <div v-show="FooterShow">
                 <div class="paper-watch-tab" v-if="paperType">
                     <p>票据预览</p>
                     <ul v-if="moneyTypes.length>1">
                         <li v-for="(item,index) in moneyTypes" :key="index" :class="[index===activeType?'active':'']" @click="activeType=index">{{item.typeName}}</li>
                     </ul>
                 </div>
+                <div class="paper-top" v-if="!paperType"></div>
                 <vue-easy-print tableShow ref="easyPrint">
                     <LayerPaperInfo
                     :number="paperInfoData.contCode"
@@ -382,7 +383,7 @@
     }
     .paper-top{
         padding-top: 20px;
-        border-top: 1px solid @border-D8;
+        
     }
 
     // 开票预览
@@ -492,12 +493,13 @@
 
     .paper-watch-tab {
         font-size: 24px;
+        border-top: 1px solid @border-D8;
 
         >p {
             color: @color-blue;
             text-align: center;
             font-weight: bold;
-            margin: 12px 32px 32px;
+            margin:32px;
         }
 
         >ul {
