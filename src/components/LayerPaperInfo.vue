@@ -1,6 +1,7 @@
 <template>
   <div class="paper-info">
-    <div class="paper-border">
+    <div class="paper-info-child">
+      <div class="paper-border">
       <div class="paper-tit">专用收款收据</div>
       <div class="paper-number">合同编号：{{comNumber}}<span class="red">{{comText}}</span></div>
       <ul class="paper-ul">
@@ -121,6 +122,7 @@
           </div>
       </div>
     </div>
+    </div>
   </div>
 </template>
 
@@ -147,7 +149,7 @@
       },
       invoiceTime: {//开票日期
         type: String,
-        default: '--'
+        default: ''
       },
       paper: {//票据编号
         type: String,
@@ -216,7 +218,11 @@
         return this.defaultFn(this.collectionTime);
       },
       comInvoiceTime() {
-        return this.defaultFn(this.invoiceTime);
+        let t = `${this.invoiceTime}`;
+        if(!!t){
+          t = t.replace(/-/g, "/");
+        }
+        return this.defaultFn(t);
       },
       comPaper() {
         return this.defaultFn(this.paper);
@@ -266,8 +272,43 @@
     }
   }
 </script>
-
 <style lang="less" scoped>
+  @media print{
+    /deep/.red{
+      display: none;
+    }
+    /deep/.paper-info-child{
+      margin:5mm 5mm 0;
+      font-size: 12px;
+      // height: 290mm;
+      // overflow: hidden;
+    }
+    /deep/.paper-info-child .paper-ul{
+        padding-top: 16px;
+      }
+    /deep/.paper-info-child .paper-small-tit{
+      padding-top: 18px;
+    }
+    /deep/.paper-info-child .paper-number{
+      padding-top: 10px;
+    }
+    /deep/.paper-info-child .paper-tit{
+      font-size: 18px;
+    }
+    /deep/.paper-info-child .paper-table-main{
+      font-size: 12px;
+    }
+    /deep/.paper-info-child .paper-ov{
+      padding-top: 16px;
+    }
+    /deep/.paper-info-child .paper-border{
+      margin-bottom: 0;
+    }
+    @page {
+      size: auto;
+      margin: 0mm;
+    }
+  }
   .red{
     color: #FF3E3E;
     font-weight: normal;
@@ -312,6 +353,7 @@
     width: 780px;
     margin: auto;
     color: #333;
+    overflow: hidden;
   }
 
   .paper-border {
@@ -332,7 +374,7 @@
 
   .paper-number {
     color: #666;
-    padding-top: 12px;
+    padding-top: 14px;
     // text-align: center;
     font-weight: 400;
   }
@@ -358,7 +400,7 @@
   }
   .paper-small-tit {
     font-weight: bold;
-    padding-top: 24px;
+    padding-top: 22px;
   }
 
   .paper-table {
