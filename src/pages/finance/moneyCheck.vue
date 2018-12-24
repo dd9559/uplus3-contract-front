@@ -349,6 +349,7 @@
       this.getMoneyTypes()
     },
     beforeRouteUpdate(to, from, next) {
+      this.list = []
       this.activeView = parseInt(to.query.type)
       this.$tool.clearForm(this.searchForm)   //初始化筛选查询
       if(this.activeView===2){
@@ -476,7 +477,6 @@
           this.currentPage=1
         }
         let powerMsg=this.power[this.activeView===1?'sign-cw-rev-query':'sign-cw-pay-query']
-        this.list = []
         if(powerMsg.state){
           let param = JSON.parse(JSON.stringify(this.searchForm))
           if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
@@ -561,7 +561,8 @@
       },*/
       //作废
       deleteBill:function () {
-        this.$ajax.put('/api/payInfo/updateCheckStatus',{payId:this.layer.content[0].id},2).then(res=>{
+        let src = this.activeView===1?'/payInfo/updateProceedsIsDel':'/payInfo/updatePaymentIsDel'
+        this.$ajax.put(`/api${src}`,{payId:this.layer.content[0].id},2).then(res=>{
           res=res.data
           if(res.status===200){
             this.getData()
