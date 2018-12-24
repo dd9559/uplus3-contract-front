@@ -903,11 +903,10 @@ export default {
           delete param.leaseCont.laterStageState;
           delete param.leaseCont.toExamineState;
           delete param.leaseCont.previewImg;
-          delete param.leaseCont.updateTimes;
-          delete param.leaseCont.propertyRightRatios;
-          delete param.leaseCont.pids;
-          delete param.leaseCont.pmobiles;
-          delete param.leaseCont.pnames;
+          delete param.saleCont.subscriptionTerm;
+          delete param.leaseCont.updateTime;
+          delete param.saleCont.distributableAchievement;
+          delete param.saleCont.achievementState;
         }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
           delete param.saleCont.contChangeState;
           delete param.saleCont.contState;
@@ -918,6 +917,7 @@ export default {
           delete param.saleCont.subscriptionTerm;
           delete param.saleCont.updateTime;
           delete param.saleCont.distributableAchievement;
+          delete param.saleCont.achievementState;
         }
         if(this.haveExamine===1){//编辑并提审
           var url = '/api/contract/updateContractAudit';

@@ -224,7 +224,7 @@
           <div v-if="contractDetail.contChangeState.value!=2">
             <el-button round class="search_btn" v-if="power['sign-ht-xq-view'].state" @click="goPreview">预览</el-button>
             <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3" @click="goChangeCancel(2)">解约</el-button>
-            <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">无效</el-button>
+            <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">撤单</el-button>
             <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1" @click="goChangeCancel(1)">变更</el-button>
             <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
             <el-button round type="primary" class="search_btn" v-if="contractDetail.toExamineState.value<0" @click="isSubmitAudit=true">提交审核</el-button>
@@ -337,33 +337,47 @@
       </el-tab-pane>
       <el-tab-pane label="回访录音" name="fourth">
         <div class="type">
-          <span :class="{'active':isActive===1}" @click="changeType(1)">客源</span>
-          <span :class="{'active':isActive===2}" @click="changeType(2)">房源</span>
+          <span :class="{'active':isActive===1}" @click="changeType(1)">房源</span>
+          <span :class="{'active':isActive===2}" @click="changeType(2)">客源</span>
         </div>
         <div class="record">
           <el-table :data="recordData" border style="width: 100%" header-row-class-name="theader-bg">
-            <el-table-column prop="visitTime" label="回访时间">
+            <el-table-column label="回访时间">
+              <template slot-scope="scope">
+                {{scope.row.startTime|formatTime}}
+              </template>
             </el-table-column>
             <el-table-column label="回访人">
               <template slot-scope="scope">
-                <p>{{scope.row.visitDep}}</p>
-                <p>{{scope.row.visitPeople}}</p>
+                <p>{{scope.row.storeName}}</p>
+                <p>{{scope.row.callerName}}</p>
               </template>
             </el-table-column>
             <el-table-column label="回访电话">
               <template slot-scope="scope">
-                {{scope.row.visitMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
+                {{scope.row.calledMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
               </template>
             </el-table-column>
-            <el-table-column prop="record" label="录音">
-              <!-- <audio src="www.baidu.com"></audio> -->
-            </el-table-column>
-            <el-table-column prop="remakes" label="备注" width="320">
+            <el-table-column prop="recording" label="录音">
               <template slot-scope="scope">
-
+                
+              </template>
+            </el-table-column>
+            <el-table-column label="备注" width="320">
+              <template slot-scope="scope">
+                <el-popover trigger="hover" placement="top" v-if="scope.row.remarks">
+                  <div style="width:160px">
+                    {{scope.row.remarks}}
+                  </div>
+                  <div slot="reference" class="name-wrapper">
+                    {{scope.row.remarks}}
+                  </div>
+                </el-popover>
+                <p v-else class="iconfont icon-tubiao_shiyong-14 addRemarks" @click="showRemark(scope.row)"> 添加备注</p>
               </template>
             </el-table-column>
           </el-table>
+          <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
         </div>
       </el-tab-pane>
       <el-tab-pane label="审核记录" name="fifth">
@@ -421,21 +435,34 @@
       </span>
     </el-dialog> -->
 
-    <!-- 合同无效弹窗 -->
-    <el-dialog title="合同无效" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+    <!-- 合同撤单弹窗 -->
+    <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
-        <p>合同无效原因</p>
+        <p>合同撤单原因</p>
         <div class="reason">
-          <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100"></el-input>
+          <el-input type="textarea" :rows="5" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100"></el-input>
           <span>{{invalidReason.length}}/100</span>
-          <p v-if="contractDetail.toExamineState.value>-1&&contractDetail.contState.value!=2"><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
-          <p v-if="contractDetail.contState.value===2"><span>注：</span>您的合同已签章，是否确认要做无效？无效后，合同需要重新提审！</p>
-          <p v-if="contractDetail.toExamineState.value<0"><span>注：</span>您的合同是否确认要做无效？无效后，合同需要重新提审！</p>
+          <p v-if="contractDetail.toExamineState.value>-1&&contractDetail.contState.value!=2"><span>注：</span>您的合同正在审核中，是否确认要做撤单？撤单后，合同需要重新提审！</p>
+          <p v-if="contractDetail.contState.value===2"><span>注：</span>您的合同已签章，是否确认要做撤单？撤单后，合同需要重新提审！</p>
+          <p v-if="contractDetail.toExamineState.value<0"><span>注：</span>您的合同是否确认要做撤单？撤单后，合同需要重新提审！</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogInvalid = false">取消</el-button>
         <el-button round type="primary" @click="setInvalid">保存</el-button>
+      </span>
+    </el-dialog>
+    <!-- 回访录音添加备注弹窗 -->
+    <el-dialog title="添加备注" :visible.sync="showRemarks" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="top">
+        <div class="reason">
+          <el-input type="textarea" :rows="5" placeholder="请填写备注，最多100字 " v-model="recordRemarks" resize='none' style="width:720px" maxlength="100"></el-input>
+          <span>{{recordRemarks.length}}/100</span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button round @click="showRemarks = false">取消</el-button>
+        <el-button round type="primary" @click="addRemark">保存</el-button>
       </span>
     </el-dialog>
     <!-- 提审弹窗 -->
@@ -519,7 +546,11 @@
           <div class="printItem printItem_" style="width:840px;margin-top:5px">
             <el-table :data="ownerData" border header-row-class-name="theader-bg" style="width:100%">
               <el-table-column prop="name" label="业主姓名" width="200"></el-table-column>
-              <el-table-column prop="mobile" label="电话" min-width="200"></el-table-column>
+              <el-table-column label="电话" min-width="200">
+                <template slot-scope="scope">
+                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
+                </template>
+              </el-table-column>
               <el-table-column prop="relation" label="关系" width="200"></el-table-column>
               <!-- <el-table-column label="产权比" v-if="contType!='1'" width="149">
                 <template slot-scope="scope">
@@ -549,8 +580,7 @@
               <el-table-column prop="name" label="客户姓名" width="200"></el-table-column>
               <el-table-column label="电话" min-width="200">
                 <template slot-scope="scope">
-                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                  <i class="iconfont tubiao_shiyong-16" @click="call(scope.row.mobile)"></i>
+                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
                 </template>
               </el-table-column>
               <el-table-column prop="relation" label="关系" width="200"></el-table-column>
@@ -619,7 +649,7 @@ export default {
     return {
       dialogVisible: false,
       dialogSupervise: false,
-      //合同无效弹窗内容
+      //合同撤单弹窗内容
       dialogInvalid: false,
       invalidReason: "",
       activeName: "first",
@@ -642,29 +672,7 @@ export default {
       //客户信息
       clientrData: [],
       //录音
-      recordData: [
-        {
-          visitTime: "2018/11/11",
-          visitPeople: "夏雨天",
-          visitDep:'万科四季花城',
-          visitMobile: "18571606238",
-          remakes: "萨瓦迪卡哈哈哈"
-        },
-        {
-          visitTime: "2018/11/11",
-          visitPeople: "夏雨天",
-          visitDep:'万科四季花城',
-          visitMobile: "18571606238",
-          remakes: "萨瓦迪卡哈哈哈"
-        },
-        {
-          visitTime: "2018/11/11",
-          visitPeople: "夏雨天",
-          visitDep:'万科四季花城',
-          visitMobile: "18571606238",
-          remakes: "萨瓦迪卡哈哈哈"
-        }
-      ],
+      recordData: [],
       callNumber: "",
       //合同类型
       contType: 2,
@@ -713,6 +721,12 @@ export default {
       isSubmitAudit:false,
       //审核记录
       checkData:[],
+      currentPage: 1,
+      pageSize: 10,
+      total:0,
+      showRemarks:false,
+      remarkId:'',
+      recordRemarks:'',
       //权限
       power: {
         'sign-ht-xq-print': {
@@ -729,7 +743,7 @@ export default {
         },
         'sign-ht-xq-void': {
           state: false,
-          name: '无效'
+          name: '撤单'
         },
         'sign-ht-xq-cancel': {
           state: false,
@@ -768,6 +782,7 @@ export default {
     this.getAchievement();//业绩分成
     this.getContDataType();//获取合同集料库类型
     this.getExtendParams();//获取扩展参数
+    this.getRecordList();//电话录音
   },
   methods: {
     printDemo(){
@@ -789,24 +804,25 @@ export default {
     },
     //打电话
     call(value) {
-      this.dialogVisible = true;
-      this.callNumber = value.mobile;
+      // this.dialogVisible = true;
+      // this.callNumber = value.mobile;
       console.log(value);
-      // let param = {
-      //   id:value.pid,
-      //   contractCode:this.contCode
-      // };
-      // this.$ajax.get('/api/record/virtualNum',param).then(res=>{
-      //   res=res.data;
-      //   if(res.status===200){
-      //     this.callNumber=res.data.virtualNum;
-      //     this.dialogVisible = true;
-      //   }
-      // }).catch(error=>{
-      //   this.$message({
-      //     message:error
-      //   })
-      // })
+      let param = {
+        id:value.pid,
+        contractCode:this.contCode,
+        sourceType:value.personType.value===1?0:1
+      };
+      this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.callNumber=res.data.virtualNum;
+          this.dialogVisible = true;
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error
+        })
+      })
     },
     //合同预览
     goPreview() {
@@ -906,6 +922,66 @@ export default {
     //房源客源切换
     changeType(value) {
       this.isActive = value;
+      this.currentPage=1;
+      // console.log(type)
+      this.getRecordList();
+    },
+    //查询录音
+    getRecordList(){
+      let param = {
+        sourceType: this.isActive===1?0:1,
+        contractCode: this.contCode,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }
+      this.$ajax.get('/api/record/list', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          if(res.data.list.length>0){
+            this.recordData=res.data.list;
+          }
+          this.total=res.data.total;
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error
+        })
+      })
+    },
+    //翻页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.getRecordList();
+    },
+    //添加备注弹窗
+    showRemark(item){
+      this.showRemarks=true;
+      console.log(item)
+      this.remarkId = item.id;
+    },
+    //添加备注
+    addRemark(){
+      if(this.recordRemarks.length){
+        let param = {
+          remarks:this.recordRemarks,
+          id:this.remarkId
+        }
+        this.$ajax.put('/api/record/update',param, 2).then(res=>{
+          res=res.data;
+          if(res.status===200){
+            this.showRemarks=false;
+            this.$message({
+              message:'添加成功'
+            });
+            this.getRecordList();
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
+        })
+      }
     },
     //合同详情
     getContractDetail() {
@@ -1195,7 +1271,7 @@ export default {
         this.otherList[index].value.splice(index_,1);
       }
     },
-    //合同无效弹窗
+    //合同撤单弹窗
     invalid(){
       this.dialogInvalid=true;
     },
@@ -1217,7 +1293,7 @@ export default {
         })
       }else{
         this.$message({
-          message:'请填写无效原因'
+          message:'请填写撤单原因'
         })
       }
     },
@@ -1543,6 +1619,24 @@ export default {
   .record {
     width: 950px;
     padding-top: 20px;
+    .name-wrapper {
+      display: flex;
+      display: -webkit-box;
+      /*!autoprefixer: off */
+      -webkit-box-orient: vertical;
+      /* autoprefixer: on */
+      -webkit-line-clamp: 1;
+      overflow: hidden;
+      text-overflow:ellipsis;
+    }
+    .addRemarks{
+      font-size: 14px;
+      color: @color-blue;
+      cursor: pointer;
+      display: inline-block;
+      width: 299px;
+      text-align: center;
+    }
   }
   .top {
     display: flex;
