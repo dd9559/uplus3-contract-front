@@ -2,7 +2,7 @@
     <div id="layersettle">
 
         <!-- 结算审核弹框 -->
-        <el-dialog title="发起结算" :visible="getSettleDialog" width="820px" class="layer-audit" @close='close' :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
+        <el-dialog title="发起结算" :visible="getSettleDialog" width="820px" class="layer-audit" @close='closeDireact' :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
             <div class="audit-box"  :style="{ height: clientHeight() }">
                 <div class="audit-col">
                     <div class="col-li col-li2">
@@ -167,12 +167,14 @@ export default {
 
         //获取文件路径后缀名
         uploadSubject(data) {
-            let arr = data.param;
-            console.log(data)
-            let fileType = this.$tool.get_suffix(arr[0].name);
-            arr[0].fileType = fileType;
-            this.uploadList.push(arr[0])
-        }, 
+          let arr = data.param;
+          console.log(data)
+          arr.forEach(element => {
+                let fileType = this.$tool.get_suffix(element.name);
+                element.fileType = fileType;
+            });
+			    this.uploadList=this.uploadList.concat(arr);
+       }, 
 
         //合同主体的删除
         ZTdelectData(index){
@@ -195,6 +197,29 @@ export default {
       },
 
       close(){
+        //   this.$emit('closeSettle')
+          let param = {
+              id: this.contId,
+              direction: 2
+          }
+          this.$ajax         
+            .postJSON("/api/settlement/applySettlement", param)
+            .then(res => {
+                if (res.data.status === 200) {
+                this.$message('已取消');
+                setTimeout(() => {                
+                    this.$emit('closeSettle')
+                }, 1500); 
+                
+                }
+            }).catch(error => {
+                this.$message({
+                    message: error
+                })
+            })
+      },
+
+      closeDireact(){
           this.$emit('closeSettle')
       },
 
@@ -232,7 +257,8 @@ export default {
             let param = {
                 id: this.contId,
                 settlRemark: this.auditForm.textarea,
-                voucher: this.uploadList
+                voucher: this.uploadList,
+                direction: 1
             }
             this.$ajax         
             .postJSON("/api/settlement/applySettlement", param)

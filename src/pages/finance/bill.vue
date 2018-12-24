@@ -38,8 +38,8 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
-          <!--<el-select
+          <!--<select-tree :data="DepList" @checkCell="depHandleClick" @clear="clearDep"></select-tree>-->
+          <el-select
             class="w200"
             :clearable="true"
             ref="tree"
@@ -53,7 +53,7 @@
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
-          </el-select>-->
+          </el-select>
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="searchForm.empId" placeholder="请选择">
             <el-option
@@ -260,7 +260,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
     <el-button size="small" class="btn-info" round @click="layer.show = false">返 回</el-button>
-    <el-button size="small" class="btn-info" round type="primary" @click="deleteBill">确 定</el-button>
+    <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -479,8 +479,11 @@
       },
       //作废
       deleteBill: function () {
-        this.$ajax.put('/api/payInfo/updateCheckStatus', {payId: this.layer.content[0].id}, 2).then(res => {
+        let src = this.activeView===1?'/payInfo/updateProceedsIsDel':'/payInfo/updatePaymentIsDel'
+        this.setLoading(true)
+        this.$ajax.put(`/api${src}`, {payId: this.layer.content[0].id}, 2).then(res => {
           res = res.data
+          this.setLoading(false)
           if (res.status === 200) {
             this.getData()
             this.layer.show = false
@@ -489,6 +492,7 @@
             })
           }
         }).catch(error => {
+          this.setLoading(false)
           this.$message({
             message: error
           })

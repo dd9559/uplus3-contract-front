@@ -245,13 +245,15 @@ const MIXINS = {
       console.log('test')
     },
     ...mapMutations([
-      'setPath'
+      'setPath',
+      'setLoading'
     ])
   },
   computed:{
     ...mapGetters([
       'getPath',
-      'getUser'
+      'getUser',
+      'getLoading'
     ])
   }
 }
