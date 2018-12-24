@@ -221,9 +221,11 @@ export default {
       uploadSubject(data) {
           let arr = data.param;
           console.log(data)
-          let fileType = this.$tool.get_suffix(arr[0].name);
-          arr[0].fileType = fileType;
-          this.uploadList.push(arr[0])
+          arr.forEach(element => {
+                let fileType = this.$tool.get_suffix(element.name);
+                element.fileType = fileType;
+            });
+			    this.uploadList=this.uploadList.concat(arr);
       }, 
 
       //合同主体的删除

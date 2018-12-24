@@ -779,7 +779,7 @@
             resetFormFn() {
                 this.propForm.region='';
                 this.pageNum = 1;
-                // this.$refs.propForm.resetFields();
+                this.$refs.propForm.resetFields();
                 // this.getListData();
             },
             // 查询
