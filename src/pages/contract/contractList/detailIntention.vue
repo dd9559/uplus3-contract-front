@@ -365,6 +365,7 @@ export default {
                     item.title=element.name;
                     item.isrequire=element.isNecessary;
                     this.buyerList.push(item);
+                    // console.log(item)
                     
                 }else if(element.type==="2"){
                     let item={};
