@@ -524,7 +524,7 @@ export default{
         }
         .signature{
             position: absolute;
-            background-image: url('~@/assets/img/seal.png');
+            background-image: url('/static/img/seal.png');
             background-size: 130px;
             width: 130px;
             left: 0;

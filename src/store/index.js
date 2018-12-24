@@ -7,7 +7,8 @@ const store = new Vuex.Store({
   state: {
     path:[],
     slider:[],
-    user:null
+    user:null,
+    fullscreenLoading:false
   },
   mutations: {
     setPath (state,payload) {
@@ -17,6 +18,9 @@ const store = new Vuex.Store({
     setUser(state,payload){
       sessionStorage.setItem('userMsg',JSON.stringify(payload))
       state.user=payload
+    },
+    setLoading(state,payload){
+      state.fullscreenLoading=payload
     }
   },
   actions:{
@@ -30,6 +34,9 @@ const store = new Vuex.Store({
     },
     getUser:state=>{
       return state.user
+    },
+    getLoading:state=>{
+      return state.fullscreenLoading
     }
   }
 })

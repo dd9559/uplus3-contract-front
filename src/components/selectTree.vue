@@ -1,12 +1,13 @@
 <template>
   <el-popover
+    @show="show"
     ref="popover"
     placement="bottom"
-    v-model="visible">
+    trigger="focus">
     <div class="select-tree">
       <el-tree accordion :data="dataList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
     </div>
-    <el-input size="small" class="w200" slot="reference" :clearable="true" readOnly placeholder="请选择" v-model="inputVal" @click="opera('init')" @clear="opera('clear')"></el-input>
+    <el-input size="small" class="w200" ref="btn" slot="reference" :clearable="true" readOnly placeholder="请选择" v-model="inputVal" @focus="opera('init')" @clear="opera('clear')"></el-input>
   </el-popover>
 </template>
 
@@ -34,24 +35,36 @@
       return {
         inputVal:'',
         visible:false,
-        clearOper:true,
+        clearOper:false,
+        boxBlur:true,
       }
     },
     methods:{
       depHandleClick:function (data) {
+        if(data.subs.length===0){
+          // debugger
+          this.$refs.popover.showPopper=false
+        }
         this.inputVal=data.name
-        this.visible = false;
         this.$emit('checkCell',data)
       },
       opera:function (type) {
-        // debugger
+        console.log('test')
         if(type==='init'){
-          this.visible=(true&&this.clearOper)
-        }else {
+          // this.visible=true
+          this.clearOper=false
+        }else if(type==='clear') {
           this.inputVal=''
-          this.clearOper = false
-          this.visible=false
+          this.clearOper = true
           this.$emit('clear')
+        }else {
+          this.visible=false
+        }
+      },
+      show:function () {
+        debugger
+        if(this.clearOper){
+          this.$refs.popover.showPopper=false
         }
       }
     },

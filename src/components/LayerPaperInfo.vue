@@ -42,11 +42,11 @@
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
-        <div class="fr ml-20"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
-        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
+        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
+        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="pr">
         <div class="paper-ov2">
@@ -103,11 +103,12 @@
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">客户身份：</span>{{comPayerType}}</div>
-        <div class="fr ml-20"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
-        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
+        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
+        
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
+        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
@@ -164,7 +165,7 @@
         default: '--'
       },
       money: {//交款方式（金额）
-        type: Number,
+        type: String,
         default: 0
       },
       moneyZh: {//人民币大写
@@ -303,6 +304,9 @@
     }
     /deep/.paper-info-child .paper-border{
       margin-bottom: 0;
+    }
+    /deep/.paper-info-child .paper-dashed{
+      padding-top: 20px;
     }
     @page {
       size: auto;
