@@ -393,11 +393,20 @@
         console.log(promiseArr)
 
         Promise.all(promiseArr).then(res=>{
-          if(param.smallAmount>this.amount.balance){
-            this.$message({
-              message:'输入金额不能大于可支配金额'
-            })
-            return
+          if(this.showAmount){
+            if(parseFloat(param.smallAmount)>this.amount.balance||parseFloat(param.smallAmount)>this.amount.contractBalance){
+              this.$message({
+                message:'输入金额不能大于可支配金额'
+              })
+              return
+            }
+          }else {
+            if(parseFloat(param.smallAmount)>this.amount.balance){
+              this.$message({
+                message:'输入金额不能大于可支配金额'
+              })
+              return
+            }
           }
           if(this.files.length===0){
             this.$message({
