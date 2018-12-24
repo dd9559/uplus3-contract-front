@@ -44,7 +44,10 @@
             <i class="iconfont icon-fanhui"></i>
             <span>返回</span>
           </p>
-          <span @click="logout" style="position: absolute;top:50%;left:50%;transform:translate(-50%,-50%);cursor: pointer">退出登录</span>
+          <p style="position: absolute;top:50%;left:50%;transform:translate(-50%,-50%);cursor: pointer">
+            <span @click="logout(1)">退出登录</span>
+            <span @click="logout(2)">登录</span>
+          </p>
         </div>
         <div class="page-view-content">
           <router-view class="router-view"></router-view>
@@ -240,12 +243,19 @@
       next()
     },
     methods: {
-      logout:function () {
-        this.$ajax.post('/api/logout').then(res=>{
+      logout:function (type) {
+        if(type===1){
+          this.$ajax.post('/api/logout').then(res=>{
+            this.$router.push({
+              path:'login'
+            })
+          })
+        }else {
+          this.logout(1)
           this.$router.push({
             path:'login'
           })
-        })
+        }
       },
       handleSelect(key, keyPath) {
         /*this.Index = []

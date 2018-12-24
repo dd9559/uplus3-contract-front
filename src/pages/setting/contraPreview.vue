@@ -69,7 +69,7 @@
       </el-dialog>
     </div>
 </template>
-           
+
 <script>
 import {TOOL} from "@/assets/js/common"
 export default{
@@ -135,7 +135,7 @@ export default{
                       this.loading=false
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
-                            this.showSed=true 
+                            this.showSed=true
                             this.divWidth=this.divWidth
                             this.sigtureShow=false
                             this.imgSrc=res.data.data.businessImg.url
@@ -148,7 +148,6 @@ export default{
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                                console.log(this.divWidth, dropbtn.style.top);
                             }else{
                                this.sigtureShow2=false
                            }
@@ -169,7 +168,6 @@ export default{
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                             console.log(dropbtn.style.left, dropbtn.style.top);
                            }else{
                                this.sigtureShow=false
                            }
@@ -206,7 +204,7 @@ export default{
                     this.sigtureShow=!this.sigtureShow
                 }
                  this.sigtureShow2=!this.sigtureShow2
-            
+
                  this.tuozhuai()
             },
             tuozhuai(){
@@ -215,7 +213,7 @@ export default{
                     }else{
                     var oDiv=document.getElementsByClassName('signature')[0]
                     }
-                    var This =this 
+                    var This =this
                         oDiv.onmousedown = function(ev){
                             var disX = ev.clientX -oDiv.offsetLeft;
                             var disY = ev.clientY - oDiv.offsetTop;
@@ -224,12 +222,10 @@ export default{
                             var t = ev.clientY-disY;
                             This.signPosition.x=(l/622).toFixed(2)
                             This.signPosition.y=(t/802).toFixed(2)
-                            console.log(This.signPosition,'sign');
                             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-100 : l
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
                             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-150 : t
-                            console.log(l,t);
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
@@ -307,7 +303,6 @@ export default{
                         this.modalDialog=false
                     }
                 }
-                console.log(this.tableDate,'tabledate');
             },
             del(type){
                 if(type==1){
@@ -325,7 +320,6 @@ export default{
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                             console.log(dropbtn.style.left, dropbtn.style.top);
                            }else{
                                this.sigtureShow=false
                     }
@@ -343,7 +337,6 @@ export default{
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                                console.log(dropbtn.style.left, dropbtn.style.top);
                             }else{
                                this.sigtureShow2=false
                            }
@@ -359,18 +352,16 @@ export default{
                     if(this.count>=this.total){
                         this.count=this.total
                     }
-                    console.log(this.signPosition,'this.signPosition');
                     if(this.count==this.signPosition.pageIndex){
                             if(this.showSed){
                                 this.sigtureShow=false
                             }else{
                                 this.sigtureShow=true
                             }
-                            
+
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                             console.log(dropbtn.style.left, dropbtn.style.top);
                            }else{
                                this.sigtureShow=false
                     }
@@ -388,7 +379,6 @@ export default{
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                                console.log(dropbtn.style.left, dropbtn.style.top);
                             }else{
                                this.sigtureShow2=false
                     }
@@ -419,7 +409,6 @@ export default{
                           a[newsrc]=newsrc2
                           a['timeout']=this.timeout
                           this.qmnewsrcArr.push(a)
-                          console.log(this.qmnewsrcArr,'arr');
                           obj.src=newsrc2
                           }
                      })
@@ -435,7 +424,6 @@ export default{
                   cityId:this.cityId,
                   type:this.type
               }
-              console.log(param,'param');
               this.$ajax.get('/api/setting/contractTemplate/checkTemplate',param).then(res=>{
               if(res.status==200){
                   this.loading=false
@@ -455,7 +443,6 @@ export default{
                       arr.push(obj)
                   }
                   this.tableDate=arr
-                  console.log(this.tableDate,'tabledate');
                   if(this.tableDate.length!==0 && this.show==1 && this.flag==1){
                       this.modalDialog=true
                     }
@@ -473,10 +460,9 @@ export default{
                     let htImg2=document.getElementById('ht2')
                     var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                     var newsrc2=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
-                    console.log(this.newsrc,this.newsrc2);
                     this.autograph(htImg,newsrc)
                     this.autograph(htImg2,newsrc2)
-                    
+
                  }else{
                   this.imgSrc=res.data.data.img.url  //一个的
                   this.total=res.data.data.img.count
@@ -502,7 +488,7 @@ export default{
             })
             }
         }
-        
+
 }
 </script>
 <style lang='less' scoped>
@@ -538,7 +524,7 @@ export default{
         }
         .signature{
             position: absolute;
-            background-image: url('../../assets/img/seal.png');
+            background-image: url('~@/assets/img/seal.png');
             background-size: 130px;
             width: 130px;
             left: 0;
@@ -571,7 +557,7 @@ export default{
                 text-align: center;
             }
         }
-        
+
     }
 }
 .expand{
@@ -584,7 +570,7 @@ export default{
     }
     /deep/ .el-dialog__body{
         border-top: solid 1px rgba(237,236,240,1);
-        padding-top:21px; 
+        padding-top:21px;
         .ex-body{
             p:first-child{
                 color:rgba(109,149,189,1);
@@ -596,7 +582,7 @@ export default{
             }
         }
     }
-}    
+}
 .paper-btn{
     width:100px;
     height:36px;
@@ -620,5 +606,5 @@ export default{
 //     background-color: #F5F5F5;
 //     color:#ACA899;
 //     border: 1px solid #DDD;
-// }     
+// }
 </style>

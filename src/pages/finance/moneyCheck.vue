@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
         <div class="input-group">
           <label>合同类型:</label>
@@ -211,7 +211,7 @@
           </el-table-column>
           <el-table-column align="center" :label="activeView===1?'付款方':'收款方'" prop="cityName" :formatter="nullFormatter">
             <template slot-scope="scope">
-              <span>{{scope.row.type===1?scope.row.outObjType.label:scope.row.inObjType.label}}-{{scope.row.type===1?scope.row.outObjName:scope.row.inObjName}}</span>
+              <span>{{scope.row.type===1?scope.row.outObjType.label:scope.row.inObjType.label}}{{scope.row.type===1?scope.row.outObjName?`-${scope.row.outObjName}`:'':scope.row.inObjName?`-${scope.row.inObjName}`:''}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -471,7 +471,10 @@
         this.searchForm.empId=''
         this.handleNodeClick(data)
       },
-      getData: function () {
+      getData: function (type='init') {
+        if(type==='search'){
+          this.currentPage=1
+        }
         let powerMsg=this.power[this.activeView===1?'sign-cw-rev-query':'sign-cw-pay-query']
         this.list = []
         if(powerMsg.state){

@@ -136,6 +136,9 @@
   .paper-btn-blue {
     background-color: @color-blue;
     border-color: @color-blue;
+    &:hover{
+        background-color: #68A0E6;
+    }
   }
 
 </style>

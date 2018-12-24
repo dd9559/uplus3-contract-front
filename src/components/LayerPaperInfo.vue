@@ -1,6 +1,7 @@
 <template>
   <div class="paper-info">
-    <div class="paper-border">
+    <div class="paper-info-child">
+      <div class="paper-border">
       <div class="paper-tit">专用收款收据</div>
       <div class="paper-number">合同编号：{{comNumber}}<span class="red">{{comText}}</span></div>
       <ul class="paper-ul">
@@ -41,22 +42,22 @@
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
-        <div class="fr ml-20"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
-        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
+        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
+        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="pr">
         <div class="paper-ov2">
           <div class="fr fb"><span class="mr-10">开票人：</span>{{comCreate}}</div>
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
         </div>
-        <img class="pr-img" v-if="comImgSrc!==''" :src="comImgSrc">
+        <div class="pr-img"><img v-if="comImgSrc!==''" :src="comImgSrc"></div>
       </div>
       <div class="paper-tips">
         <p>温馨提示：</p>
-        <p>1、服务费凭此收换正式发票；</p>
+        <p>1、服务费凭此收据换正式发票；</p>
         <p>2、手动填写修改此收据无效。</p>
       </div>
     </div>
@@ -72,7 +73,7 @@
       </ul>
       <div class="paper-small-tit">收款项目明细</div>
       <div class="paper-table">
-                <table class="paper-table-main">
+          <table class="paper-table-main">
             <thead>
                 <tr>
                     <th class="paper-table-w">摘要</th>
@@ -102,11 +103,12 @@
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">客户身份：</span>{{comPayerType}}</div>
-        <div class="fr ml-20"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
-        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
+        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
+        
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
+        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
@@ -116,8 +118,11 @@
           <div class="fr fb"><span class="mr-10">开票人：</span>{{comCreate}}</div>
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
         </div>
-        <img class="pr-img2" v-if="comImgSrc!==''" :src="comImgSrc">
+          <div class="pr-img2">
+            <img v-if="comImgSrc!==''" :src="comImgSrc">
+          </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -145,7 +150,7 @@
       },
       invoiceTime: {//开票日期
         type: String,
-        default: '--'
+        default: ''
       },
       paper: {//票据编号
         type: String,
@@ -160,7 +165,7 @@
         default: '--'
       },
       money: {//交款方式（金额）
-        type: Number,
+        type: String,
         default: 0
       },
       moneyZh: {//人民币大写
@@ -214,7 +219,11 @@
         return this.defaultFn(this.collectionTime);
       },
       comInvoiceTime() {
-        return this.defaultFn(this.invoiceTime);
+        let t = `${this.invoiceTime}`;
+        if(!!t){
+          t = t.replace(/-/g, "/");
+        }
+        return this.defaultFn(t);
       },
       comPaper() {
         return this.defaultFn(this.paper);
@@ -264,8 +273,43 @@
     }
   }
 </script>
-
 <style lang="less" scoped>
+  @media print{
+    /deep/.red{
+      display: none;
+    }
+    /deep/.paper-info-child{
+      margin:5mm 5mm 0;
+      font-size: 12px;
+      // height: 290mm;
+      // overflow: hidden;
+    }
+    /deep/.paper-info-child .paper-ul{
+        padding-top: 16px;
+      }
+    /deep/.paper-info-child .paper-small-tit{
+      padding-top: 18px;
+    }
+    /deep/.paper-info-child .paper-number{
+      padding-top: 10px;
+    }
+    /deep/.paper-info-child .paper-tit{
+      font-size: 18px;
+    }
+    /deep/.paper-info-child .paper-table-main{
+      font-size: 12px;
+    }
+    /deep/.paper-info-child .paper-ov{
+      padding-top: 16px;
+    }
+    /deep/.paper-info-child .paper-border{
+      margin-bottom: 0;
+    }
+    @page {
+      size: auto;
+      margin: 0mm;
+    }
+  }
   .red{
     color: #FF3E3E;
     font-weight: normal;
@@ -310,17 +354,21 @@
     width: 780px;
     margin: auto;
     color: #333;
+    overflow: hidden;
   }
 
   .paper-border {
     border: 1px solid #E8EAF6;
     margin: 20px 0;
     padding: 0 48px 10px 24px;
+    &:first-child{
+      margin-top: 0;
+    }
   }
 
   .paper-tit {
     font-size: 24px;
-    padding-top: 24px;
+    padding-top: 22px;
     text-align: center;
     font-weight: bold;
   }
@@ -334,7 +382,7 @@
 
   .paper-ul {
     // display: flex;
-    padding-top: 22px;
+    padding-top: 20px;
     border-bottom: 1px solid #E5E5E5;
     overflow: hidden;
   }
@@ -353,7 +401,7 @@
   }
   .paper-small-tit {
     font-weight: bold;
-    padding-top: 24px;
+    padding-top: 22px;
   }
 
   .paper-table {
@@ -396,6 +444,7 @@
       width: 31%;
   }
   .paper-table-main {
+      font-size: 14px;
       width: 100%;
       text-align: center;
       border-collapse: collapse;
@@ -431,7 +480,7 @@
 
   .paper-ov3 {
     overflow: hidden;
-    padding: 85px 0 55px;
+    padding: 80px 0 50px;
   }
 
   .paper-tips {
@@ -456,6 +505,13 @@
     height: 130px;
     left: 146px;
     bottom: -36px;
+    line-height: 130px;
+    text-align: center;
+    >img{
+      vertical-align:middle;
+      max-width: 130px;
+      max-height: 130px;
+    }
   }
 
   .pr-img2 {
@@ -464,5 +520,12 @@
     height: 130px;
     left: 146px;
     bottom: 19px;
+    line-height: 130px;
+    text-align: center;
+    >img{
+      vertical-align:middle;
+      max-width: 130px;
+      max-height: 130px;
+    }
   }
 </style>

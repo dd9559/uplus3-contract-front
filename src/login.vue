@@ -10,12 +10,25 @@
     name: "login",
     data(){
       return{
-        userId:''
+        userId:'',
+        code:''
+      }
+    },
+    created(){
+      this.code=this.$route.query.empcode?parseInt(this.$route.query.empcode):''
+      if(this.code){
+        this.login('info')
       }
     },
     methods:{
-      login:function () {
-        this.$ajax.post('/api/verify',{empCode:this.userId}).then(res=>{
+      login:function (type) {
+        let param={}
+        if(type==='info'){
+          param.empCode = this.code
+        }else {
+          param.empCode=this.userId
+        }
+        this.$ajax.post('/api/verify',param).then(res=>{
           this.$ajax.get('/api/me').then(res=>{
             res=res.data
             if(res.status===200){
