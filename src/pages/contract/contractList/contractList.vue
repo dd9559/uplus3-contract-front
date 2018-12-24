@@ -82,7 +82,7 @@
         </el-form-item>
         <el-form-item label="业绩状态">
           <el-select v-model="contractForm.achievementState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['54']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in achStatuArr" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -375,6 +375,25 @@ export default {
       blankPdf5:'',
       pdfUrl:'',
       haveUrl:false,
+      //收佣状态
+      achStatuArr:[
+        {
+          key:-1,
+          value:"待提审"
+        },
+        {
+          key:0,
+          value:"审核中"
+        },
+        {
+          key:1,
+          value:"已通过"
+        },
+        {
+          key:2,
+          value:"已驳回"
+        }
+      ],
       //权限配置
       power: {
         'sign-qh-cont-bill': {
