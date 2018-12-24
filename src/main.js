@@ -12,6 +12,7 @@ import ScreeningTop from '@/components/ScreeningTop';
 import fileUp from '@/components/up'
 import uploadCell from '@/components/uploadCell'
 import preview from '@/components/preview'
+import selectTree from '@/components/selectTree'
 import {api} from '@/assets/js/ajax'
 import {TOOL} from "@/assets/js/common"
 
@@ -31,6 +32,7 @@ Vue.component("ScreeningTop",ScreeningTop);
 Vue.component("fileUp",fileUp)
 Vue.component("uploadCell",uploadCell)
 Vue.component("preview",preview)
+Vue.component("selectTree",selectTree)
 
 Vue.directive('focus', {
   inserted: function (el) {

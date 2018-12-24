@@ -376,7 +376,7 @@
        * 审核
        */
       checkBill: function (type) {
-        if(this.radioMask&&!this.payRadio){
+        if(this.radioMask&&!this.payRadio&&type===1){
           this.$message({
             message:'请选择支付方式'
           })
@@ -399,7 +399,7 @@
           if (res.status === 200) {
             this.fullscreenLoading=false
             this.getData()
-            if(this.radioMask){
+            if(this.radioMask&&type===1){
               this.secondCheck()
             }else {
               this.$message({
