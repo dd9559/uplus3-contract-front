@@ -128,9 +128,9 @@ const MIXINS = {
       this.clearSelect()
       this.dep.id=data.depId
       this.dep.name=data.name
-      /*if(data.subs.length===0){
+      if(data.subs.length===0){
         this.$refs.tree.blur()
-      }*/
+      }
     },
     //员工滚动加载更多
     moreEmploye:function () {

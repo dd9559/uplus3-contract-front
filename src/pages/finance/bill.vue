@@ -392,9 +392,7 @@
         if (!val) {
           this.remoteMethod()
         }else {
-          this.$nextTick(()=>{
-            console.log(this.$refs.tree.$refs.scrollbar.$refs.wrap.scrollTop)
-          })
+
         }
       },
       clearDep: function () {
