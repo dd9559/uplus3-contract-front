@@ -903,10 +903,10 @@ export default {
           delete param.leaseCont.laterStageState;
           delete param.leaseCont.toExamineState;
           delete param.leaseCont.previewImg;
-          delete param.saleCont.subscriptionTerm;
+          delete param.leaseCont.subscriptionTerm;
           delete param.leaseCont.updateTime;
-          delete param.saleCont.distributableAchievement;
-          delete param.saleCont.achievementState;
+          delete param.leaseCont.distributableAchievement;
+          delete param.leaseCont.achievementState;
         }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
           delete param.saleCont.contChangeState;
           delete param.saleCont.contState;
