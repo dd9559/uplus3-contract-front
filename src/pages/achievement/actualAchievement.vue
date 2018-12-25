@@ -129,19 +129,19 @@
           <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
           <ul>
             <li>
-              <span>总分成：<b class="orange">{{countData[3]}}元</b>，</span>
+              <span>总分成：<b class="orange">{{countData[3] ?countData[3] :'0'}}元</b>，</span>
             </li>
             <li>
               <span>分类分成：</span>
             </li>
             <li>
-              <span>出售：<b class="orange">{{countData[1]}}元</b>，</span>
+              <span>出售：<b class="orange">{{countData[1] ?countData[1] :'0'}}元</b>，</span>
             </li>
             <li>
-              <span>代办：<b class="orange">{{countData[2]}}元</b>，</span>
+              <span>代办：<b class="orange">{{countData[2] ?countData[2] :'0'}}元</b>，</span>
             </li>
             <li>
-              <span>出租：<b class="orange">{{countData[0]}}元</b></span>
+              <span>出租：<b class="orange">{{countData[0] ?countData[0] :'0'}}元</b></span>
             </li>
           </ul>
         </div>
@@ -379,10 +379,10 @@
                   v-if="scope.row.achievementState==-1"
                   class="check-btn"
                 >
-                  <span
+                  <!-- <span
                     @click.stop="tishen(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                  >提审</span>
+                  >提审</span> -->
                   <span
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
@@ -457,6 +457,7 @@
       <div class="ach-header">
         <h1 class="f14">业绩详情</h1>
         <p class="f14">可分配业绩：<span class="orange">{{comm}}元</span></p>
+        <p style="margin-top:20px;">可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费</p>
       </div>
       <div class="ach-body">
         <h1 class="f14">房源方分成</h1>
@@ -901,9 +902,10 @@ export default {
                        _that.countData = [0, 0, 0, 0];
                      }       
 
-                     }
-                  
-                 });
+                     }            
+                 }).catch(error => {
+                     this.$message({message:error})
+                  });
          }else {
           this.noPower(this.power['sign-cw-debt-query'].name)
           this.countData = [0, 0, 0, 0];
@@ -995,7 +997,7 @@ export default {
       this.code = row.code;
       let param = { contCode: row.code, entrance: 3,aId:row.aId };
       this.$ajax
-        .get("/api/achievement/selectAchievementByCode", param)
+        .get("/api/achievement/getAchDetails", param)
         .then(res => {
           let data = res.data;
           if (res.status === 200) {
@@ -1302,7 +1304,7 @@ export default {
       font-size: 30px;
     }
     .ach-header {
-      min-height: 80px;
+      min-height: 100px;
       min-width: 100%;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;
