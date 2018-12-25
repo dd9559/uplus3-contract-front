@@ -40,7 +40,7 @@
                             <div>
                             {{scope.row.remark}}
                             </div>
-                            <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remark.length<16}">
+                            <div slot="reference" class="name-wrapper three-row" :class="{'isFlex':scope.row.remark.length<16}">
                             {{scope.row.remark}}
                             </div>
                         </el-popover>
@@ -175,7 +175,6 @@
                         this.moneyTypes.forEach(item=>{
                             this.value2=item.status==0?true:false
                         })
-                        console.log(this.value2,'value2');
                         this.bigId=this.bigId==''?18:this.bigId
                     }
                 })}else{
@@ -204,7 +203,6 @@
                 }
             },
             leftChange(row){
-                console.log(row,'row');
                 let param={
                     id:row.id,
                     status:row.status,
@@ -226,17 +224,23 @@
             },
             submitForm(){
                 // this.addForm.status=this.addForm.status?1:0
-                if(this.trim(this.addForm.name)=='' || this.trim(this.addForm.name).length>10){
+                if(this.trim(this.addForm.name)==''){
                     this.$message({
                         type: 'error',
-                        message: '小类名称不能为空,且长度必须在10位以内!'
+                        message: '小类名称不能为空'
+                    })
+                    return
+                }
+                if(this.trim(this.addForm.name).length>10){
+                    this.$message({
+                        type: 'error',
+                        message: '小类名称长度必须在10位以内!'
                     })
                     return
                 }
                 if(this.title==`新增【${this.bigName}】小类`){
                     this.addForm.name=this.trim(this.addForm.name)
                     this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
-                        console.log(res,'res');
                     if(res.status==200){
                         this.$message({
                         type: 'success',
@@ -320,7 +324,6 @@
                      paperBtn[0].disabled=false
                      paperBtn[0].classList.remove('grey')
                 }
-                console.log(sjx[0]);
                 sjx[0].style.top=top+'px'
                 this.$refs.onetable.$el.classList.remove('onetable')
                 // this.moneyTypes=row.moneyTypes
