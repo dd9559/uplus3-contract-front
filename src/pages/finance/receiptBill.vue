@@ -15,11 +15,12 @@
       </div>
       <div class="input-group">
         <label class="form-label no-width f14">收款人:</label>
-        <el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
+        <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')"></select-tree>
+        <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
           <el-option class="drop-tree" value="">
             <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
           </el-option>
-        </el-select>
+        </el-select>-->
         <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
           <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
           <el-option
@@ -409,15 +410,15 @@
         this.clearSelect()
         this.dep.id=data.depId
         this.dep.name=data.name
-        if(data.subs.length===0){
+        /*if(data.subs.length===0){
           this.$refs.tree.blur()
-        }
+        }*/
       },
       /**
        * 修改款单，获取初始数据
        */
       getDetails: function (param) {
-        this.$ajax.get('/api/payInfo/selectPayInfoDetail', param).then(res => {
+        this.$ajax.get('/api/payInfo/selectRevDetail', param).then(res => {
           res = res.data
           if (res.status === 200) {
             let obj = {
@@ -457,7 +458,11 @@
        * 获取所有款类
        */
       getMoneyType: function () {
-        this.$ajax.get('/api/payInfo/selectMoneyType').then(res => {
+        let param={}
+        if(this.$route.query.edit){
+          param.payId=this.$route.query.id
+        }
+        this.$ajax.get('/api/payInfo/selectMoneyType',param).then(res => {
           res = res.data
           if (res.status === 200) {
             // this.moneyType = this.moneyType.concat(res.data)

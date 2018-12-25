@@ -33,6 +33,10 @@
             label: 'name'
           }
         }
+      },
+      init:{
+        type:String,
+        default:''
       }
     },
     data(){
@@ -42,6 +46,11 @@
         visible:false,
         clearVal:false,
         iconUp:true,
+      }
+    },
+    watch:{
+      init:function (val) {
+        this.inputVal=val
       }
     },
     mounted(){

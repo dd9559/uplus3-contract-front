@@ -38,11 +38,12 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
-          </el-select>
+          </el-select>-->
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
@@ -352,6 +353,7 @@
       this.list = []
       this.activeView = parseInt(to.query.type)
       this.$tool.clearForm(this.searchForm)   //初始化筛选查询
+      this.clearDep()
       if(this.activeView===2){
         this.power=Object.assign({},{
           'sign-cw-pay-query': {
