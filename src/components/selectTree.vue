@@ -7,10 +7,10 @@
       <div class="select-tree">
         <el-tree accordion :data="dataList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
       </div>
-      <p class="tree-box" slot="reference" @click="opera('init')">
-        <el-input size="small" class="w200" ref="btn" readOnly placeholder="请选择" v-model="inputVal">
+      <p class="tree-box" slot="reference" @click="opera('init')" @mouseenter="test" @mouseleave="clearVal=false">
+        <el-input size="small" class="w200" :clearable="clearVal" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear="opera('clear')">
         </el-input>
-        <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" @click.stop="opera('clear')" v-if="iconClose"></i></span>
+        <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i></span>
       </p>
     </el-popover>
 </template>
@@ -40,13 +40,22 @@
         inputVal:'',
         clearOper:false,
         visible:false,
-        iconClose:true,
+        clearVal:false,
         iconUp:true,
       }
     },
+    mounted(){
+      /*this.$nextTick(()=>{
+        this.getInput.onMouseenter=function () {
+          console.log('test')
+        }
+      })*/
+    },
     methods:{
       test:function () {
-        debugger
+        if(this.inputVal.length>0){
+          this.clearVal=true
+        }
       },
       depHandleClick:function (data) {
         this.$refs.btn.focus()
@@ -83,6 +92,9 @@
     computed:{
       dataList:function () {
         return this.data
+      },
+      getInput:function () {
+        return this.$refs.reference
       }
     },
   }
