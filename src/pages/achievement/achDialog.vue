@@ -1690,7 +1690,6 @@ export default {
         this.code = val;
         if (this.dialogType == 0) {  // 审核
           this.codeBaseInfo(this.code, 1,null,"getExamineInfo");
-          // 反审核
         } 
         else if (this.dialogType == 1) {//编辑
           this.addArr = [];
@@ -1714,7 +1713,7 @@ export default {
           let param = {
             contCode: this.contractCode
           };
-          this.$ajax.get("/api/achievement/getFirstInput", param).then(res => {
+          this.$ajax.get("/api/achievement/getContDetailsAgents", param).then(res => {
             let data = res.data;
             if (data.status === 200) {
               if (data.data.customerAgents) {
