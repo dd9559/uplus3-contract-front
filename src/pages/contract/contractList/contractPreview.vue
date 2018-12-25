@@ -34,7 +34,7 @@
     <!-- 合同撤单弹窗 -->
     <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
-        <p>合同撤单原因</p>
+        <p class="form-label">合同撤单原因</p>
         <div class="reason">
           <el-input type="textarea" :rows="5" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100">
           </el-input>
