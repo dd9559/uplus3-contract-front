@@ -342,7 +342,8 @@
           payId: this.billId,
           type: this.activeItem === '收款信息' ? 1 : 2
         }
-        this.$ajax.get('/api/payInfo/selectPayInfoDetail', param).then(res => {
+        let src=param.type===1?'/payInfo/selectRevDetail':'/payInfo/selectPayDetail'
+        this.$ajax.get(`/api${src}`, param).then(res => {
           res = res.data
           if (res.status === 200) {
             this.billMsg = Object.assign({}, res.data)

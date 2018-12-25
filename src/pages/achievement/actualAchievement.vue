@@ -494,6 +494,7 @@
               width="100"
             >
             </el-table-column>
+
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
             <el-table-column
               label="在职状况"
@@ -582,6 +583,7 @@
               width="100"
             >
             </el-table-column>
+
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
             <el-table-column
               label="在职状况"
@@ -643,6 +645,7 @@
               label="时间"
               width="200"
             >
+            
               <template slot-scope="scope">
                 <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatTime}}</p>
                 <p v-else>-</p>
@@ -695,8 +698,7 @@
               <template slot-scope="scope">
                 {{scope.row.remark?scope.row.remark:'-'}}
               </template>
-            </el-table-column>
-
+            </el-table-column>   
           </el-table>
         </div>
       </div>
@@ -975,7 +977,7 @@ export default {
            status:-1
          }    
         this.$ajax         
-          .postJSON("/api/achievement/applyStatusArraign", param)
+          .postJSON("/api/achievement/withdrawStatusArraign", param)
            .then(res => {
           if (res.data.status == 200) {
                this.$message({ message: "操作成功", type: "success" });

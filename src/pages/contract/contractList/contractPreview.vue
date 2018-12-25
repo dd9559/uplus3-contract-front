@@ -10,7 +10,7 @@
       </div>
       <div class="btn" v-if="contType<4">
         <el-button type="primary" round style="width:100px" v-if="power['sign-ht-view-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编 辑</el-button>
-        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-view-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">无 效</el-button>
+        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-view-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤 单</el-button>
         <el-button round type="primary" style="width:100px" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" style="width:100px" v-if="power['sign-ht-view-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  style="width:100px" v-if="power['sign-ht-view-cancel'].state&&contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
@@ -31,17 +31,17 @@
         <el-button class="paging iconfont icon-tubiao_shiyong-22" @click="add"></el-button>
       </div>
     </div>
-    <!-- 合同无效弹窗 -->
-    <el-dialog title="合同无效" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+    <!-- 合同撤单弹窗 -->
+    <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
-        <p>合同无效原因</p>
+        <p class="form-label">合同撤单原因</p>
         <div class="reason">
-          <el-input type="textarea" :rows="5" placeholder="请填写合同无效原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100">
+          <el-input type="textarea" :rows="5" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100">
           </el-input>
           <span>{{invalidReason.length}}/100</span>
-          <p v-if="examineState>-1&&contState!=2"><span>注：</span>您的合同正在审核中，是否确认要做无效？无效后，合同需要重新提审！</p>
-          <p v-if="contState===2"><span>注：</span>您的合同已签章，是否确认要做无效？无效后，合同需要重新提审！</p>
-          <p v-if="examineState<0"><span>注：</span>您的合同是否确认要做无效？无效后，合同需要重新提审！</p>
+          <p v-if="examineState>-1&&contState!=2"><span>注：</span>您的合同正在审核中，是否确认要做撤单？撤单后，合同需要重新提审！</p>
+          <p v-if="contState===2"><span>注：</span>您的合同已签章，是否确认要做撤单？撤单后，合同需要重新提审！</p>
+          <p v-if="examineState<0"><span>注：</span>您的合同是否确认要做撤单？撤单后，合同需要重新提审！</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -156,7 +156,7 @@ export default {
         },
         'sign-ht-view-void': {
           state: false,
-          name: '无效'
+          name: '撤单'
         },
         'sign-ht-view-toverify': {
           state: false,
@@ -245,46 +245,28 @@ export default {
     signature(value){
       if(value===3){
         let param = {
-          id:this.guestStoreId
+          id:this.id,
+          type:value
         }
-        //检测门店是否设置了签章
-        this.$ajax.get('/api/contract/checkCompanySign',param).then(res=>{
+        this.fullscreenLoading=true;
+        //签章
+        this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
-            let param = {
-              id:this.id,
-              type:value
-            }
-            this.fullscreenLoading=true;
-            //签章
-            this.$ajax.post('/api/contract/signture', param).then(res=>{
-              res=res.data;
-              if(res.status===200){
-                let pdfUrl=res.data;
-                // debugger
-                this.getUrl(pdfUrl);
-                this.haveUrl=true;
-                setTimeout(()=>{
-                  this.dayin();
-                  this.fullscreenLoading=false;
-                },2000);
-                this.getContImg()
-              }
-            }).catch(error =>{
+            let pdfUrl=res.data;
+            // debugger
+            this.getUrl(pdfUrl);
+            this.haveUrl=true;
+            setTimeout(()=>{
+              this.dayin();
               this.fullscreenLoading=false;
-              this.$message({
-                message:error
-              })
-            })
-          }else{
-            this.$message({
-              message:'门店没有设置签章'
-            });
+            },2000);
+            this.getContImg()
           }
-        }).catch(error => {
-          this.haveUrl=true;
+        }).catch(error =>{
+          this.fullscreenLoading=false;
           this.$message({
-            message:'门店没有设置签章'
+            message:error
           })
         })
       }else{
@@ -490,7 +472,7 @@ export default {
       this.canceldialogType = "";
       this.changeCancelId = "";
     },
-    //无效
+    //撤单
     setInvalid(){
       if(this.invalidReason.length>0){
         let param = {
@@ -513,7 +495,7 @@ export default {
         })
       }else{
         this.$message({
-          message:'请填写无效原因'
+          message:'请填写撤单原因'
         })
       }
     },

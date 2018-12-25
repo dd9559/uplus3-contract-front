@@ -42,7 +42,23 @@
             >
               <el-button
                 type="primary"
-                @click="houseRelativeMans"
+                v-if="dialogType==0"
+                @click="houseRelativeMans(null)" 
+              >相关人员</el-button>
+              <el-button
+                type="primary"
+                v-else-if="dialogType==1"
+                @click="houseRelativeMans('getEmployeesByEdit')" 
+              >相关人员</el-button>
+             <el-button
+                type="primary"
+                v-else-if="dialogType==2"
+                @click="houseRelativeMans('getBackExamineEmployees')" 
+              >相关人员</el-button>
+              <el-button
+                type="primary"
+                v-else-if="dialogType==3"
+                @click="houseRelativeMans('getFirstInput')" 
               >相关人员</el-button>
               <el-button
                 type="primary"
@@ -105,12 +121,13 @@
                     placeholder="请输入内容"
                     :remote-method="getAssignors"
                     :loading="loading1"
+                    v-loadmore="moreAssignors"
                     @change="changeAssignors(scope.row.assignor,scope.$index,0)"
                   >
                     <el-option
                       v-for="item in assignors"
                       :key="item.empId"
-                      :label="item.name"
+                      :label="item.name+'-'+item.depName"
                       :value="item.empId"
                     ></el-option>
                   </el-select>
@@ -311,7 +328,23 @@
             >
               <el-button
                 type="primary"
-                @click="clientRelativeMans"
+                v-if="dialogType==0"
+                @click="clientRelativeMans(null)" 
+              >相关人员</el-button>
+              <el-button
+                type="primary"
+                v-else-if="dialogType==1"
+                @click="clientRelativeMans('getEmployeesByEdit')" 
+              >相关人员</el-button>
+             <el-button
+                type="primary"
+                v-else-if="dialogType==2"
+                @click="clientRelativeMans('getBackExamineEmployees')" 
+              >相关人员</el-button>
+              <el-button
+                type="primary"
+                v-else-if="dialogType==3"
+                @click="clientRelativeMans('getFirstInput')" 
               >相关人员</el-button>
               <el-button
                 type="primary"
@@ -372,12 +405,13 @@
                     placeholder="请输入内容"
                     :remote-method="getAssignors"
                     :loading="loading1"
+                    v-loadmore="moreAssignors"
                     @change="changeAssignors(scope.row.assignor,scope.$index,1)"
                   >
                     <el-option
                       v-for="item in assignors"
                       :key="item.empId"
-                      :label="item.name"
+                      :label="item.name+'-'+item.depName"
                       :value="item.empId"
                     ></el-option>
                   </el-select>
@@ -611,14 +645,14 @@
             <el-button
               type="primary"
               round
-              @click="keepAch(2,2)"
+              @click="keepAch(2,2,'editSave')"
               class="color-white"
               v-dbClick
             >保存</el-button>
             <el-button
               type="primary"
               round
-              @click="keepAch(2,1)"
+              @click="keepAch(2,1,'editSave')"
               class="color-blue"
               v-dbClick
             >保存并提审</el-button>
@@ -641,7 +675,7 @@
             <el-button
               type="primary"
               round
-              @click="keepAch(1)"
+              @click="keepAch(1,null,'examineSave')"
               class="color-blue"
               style="margin-top:20px;"
               v-dbClick
@@ -774,7 +808,13 @@ export default {
       amaldars:[],   //模糊搜索区经
       managers:[],    //模糊搜索区总
       loading1: false,
-      radioFlag:3
+      radioFlag:3,
+      assignorIndex:null,
+      assignorStr:null,
+      assignorTotal:null,
+      shopIndex:null,
+      shopStr:null,
+      shopTotal:null
     };
   },
   created() {},
@@ -812,20 +852,51 @@ export default {
     },
     // 获取经纪人
     getAssignors(queryString) {
-      if (queryString !== "") {
-        this.loading1 = true;
-        let list = [{}];
-        let param = {
-          keyword: queryString
-        };
-        this.$ajax.get("/api/organize/employees", param).then(res => {
-          console.log(res.status);
-          if (res.status === 200) {
-            console.log(res.data.data);
-            this.loading1 = false;
-            this.assignors = res.data.data;
-          }
-        });
+          if (queryString !== "") {
+             this.loading1 = true;
+             this.assignorStr=queryString;
+             let list = [{}];
+             let param = {
+               keyword: queryString,
+               pageNum:1,
+               pageSize:100    
+             };
+             this.$ajax.get("/api/organize/employees/pages", param).then(res => {
+               console.log(res.status);
+               if (res.status === 200) {
+                 console.log(res.data.data);
+                 this.loading1 = false;
+                 this.assignors = res.data.data.list;
+                 this.assignorTotal= res.data.data.total;
+                 this.assignorIndex=1;
+               }
+             });
+           }
+    },
+    // 经纪人下拉加载下一页
+    getMoreAssignors(queryString,page){
+          if (queryString !== "") {
+             let list = [{}];
+             let param = {
+               keyword: queryString,
+               pageNum:page,
+               pageSize:100    
+             };
+             this.$ajax.get("/api/organize/employees/pages", param).then(res => {
+               console.log(res.status);
+               if (res.status === 200) {
+                 console.log(res.data.data);
+                 this.assignors= this.assignors.concat(res.data.data.list)
+               }
+             });
+           }
+    },
+    moreAssignors(){
+      if(this.assignors.length>= this.assignorTotal){
+        return
+      }else {
+         this.assignorIndex++;
+         this.getMoreAssignors(this.assignorStr,this.assignorIndex);
       }
     },
     // 改变经纪人
@@ -944,23 +1015,48 @@ export default {
       return (queryString) => {
        if (queryString !== "") {
          this.loading1 = true;
+         this.shopStr=queryString;
          let list = [{}];
          let param = {
-           // "roleId": roleId,
-           "keyword": queryString
+           "keyword": queryString,
+            pageNum:1,
+            pageSize:100  
          };
-         this.$ajax.get("/api/organize/employees", param).then(res => {
+         this.$ajax.get("/api/organize/employees/pages", param).then(res => {
           if(roleId==2){
-             this.shopkeepers = res.data.data;
+             this.shopkeepers = res.data.data.list;
           }else if(roleId==1){
-             this.amaldars = res.data.data;
+             this.amaldars = res.data.data.list;
           }else if(roleId==0){
-             this.managers = res.data.data;
+             this.managers = res.data.data.list;
           }
           this.loading1 = false;
          });
        } 
       };
+    },
+    getMoreShopInfo(queryString,page,roleId){
+       if (queryString !== "") {
+         let list = [{}];
+         let param = {
+           "keyword": queryString,
+            pageNum:page,
+            pageSize:100  
+         };
+         this.$ajax.get("/api/organize/employees/pages", param).then(res => {
+          if(roleId==2){
+             this.shopkeepers = res.data.data.list;
+          }else if(roleId==1){
+             this.amaldars = res.data.data.list;
+          }else if(roleId==0){
+             this.managers = res.data.data.list;
+          }
+         });
+       } 
+    },
+    moreShopInfos(roleId){
+      this.shopIndex++;
+      this.getMoreShopInfo( this.shopStr,this.shopIndex,roleId);
     },
     // 改变店长
     changeShopkeeper(val, index, type1){
@@ -1006,11 +1102,11 @@ export default {
 
     },   
     //获取房源客源相关人员
-    getMans(type) {
+    getMans(type,fieldStr) {
       let param = {
         contCode: this.contractCode
       };
-      this.$ajax.get("/api/achievement/employees", param).then(res => {
+      this.$ajax.get("/api/achievement/"+fieldStr, param).then(res => {
         this.showTips = true;
         let data = res.data;
         if (data.status === 200) {
@@ -1023,16 +1119,16 @@ export default {
       });
     },
     // 房源选择相关人
-    houseRelativeMans() {
+    houseRelativeMans(fieldStr) {
       this.type = 1;
       this.mansList = [];
-      this.getMans(this.type);
+      this.getMans(this.type,fieldStr);
     },
     // 客源选择相关人
-    clientRelativeMans() {
+    clientRelativeMans(fieldStr) {
       this.mansList = [];
       this.type = 2;
-      this.getMans(this.type);
+      this.getMans(this.type,fieldStr);
     },
     // 添加房源经纪人
     addMansHouse() {
@@ -1122,7 +1218,7 @@ export default {
 
       for (var i = 0; i < this.clientArr.length; i++) {
         let cRoleType = this.clientArr[i].roleType;
-        if (arr.indexOf(cRoleType) == -1&&this.houseArr[i].roleType!="") {
+        if (arr.indexOf(cRoleType) == -1&&this.clientArr[i].roleType!="") {
           arr.push(cRoleType);
         } else if(cRoleType){
           roleFlag = false;
@@ -1270,7 +1366,7 @@ export default {
       }
     },
     // 反审核，编辑的保存
-    keepAch(type, status) {
+    keepAch(type, status,editStr) {
       //resultArr表示房源客源加在一起之后组成的数组
       let resultArr = this.houseArr.concat(this.clientArr);
       let arr = [],
@@ -1354,7 +1450,7 @@ export default {
           };
         }
 
-        this.$ajax.postJSON("/api/achievement/examineSave", param).then(res => {
+        this.$ajax.postJSON("/api/achievement/"+editStr, param).then(res => {
           if (res.data.status == 200) {
             let sendObj = {
               agendIds: this.agendIds
@@ -1490,10 +1586,10 @@ export default {
       this.addArr.push(val);
     },
     // 审核，反审核，编辑点进去的房源，客源
-    codeBaseInfo(contCode, entrance, aId) {
+    codeBaseInfo(contCode, entrance, aId,infoType) {
       let param = { contCode: contCode, entrance: entrance, aId: this.aId };
       this.$ajax
-        .get("/api/achievement/selectAchievementByCode", param)
+        .get("/api/achievement/"+infoType, param)
         .then(res => {
           if (res.status === 200) {
             this.houseArr = res.data.data.houseAgents;
@@ -1570,16 +1666,20 @@ export default {
       this.remark = "";
       if (val) {
         this.code = val;
-        // 审核编辑
-        if (this.dialogType == 0 || this.dialogType == 1) {
-          this.codeBaseInfo(this.code, 1);
+        if (this.dialogType == 0) {  // 审核
+          this.codeBaseInfo(this.code, 1,null,"");
           // 反审核
-        } else if (this.dialogType == 2) {
+        } 
+        else if (this.dialogType == 1) {//编辑
           this.addArr = [];
-          this.codeBaseInfo(this.code, 2);
-          // 业绩录入分成
-        } else if (this.dialogType == 3) {
-          this.comm = this.achObj.comm; //合同详情传过来的可分配业绩
+          this.codeBaseInfo(this.code, 1,null,"getEditInfo");
+        }
+        
+        else if (this.dialogType == 2) {//反审核
+          this.addArr = [];
+          this.codeBaseInfo(this.code, 2,null,"getBackExamineInfo");      
+        } else if (this.dialogType == 3) {  // 业绩录入分成
+          this.comm = this.achObj.comm;     //合同详情传过来的可分配业绩
           // 角色类型
           this.$ajax.get("/api/role/types").then(res => {
             console.log(res.status);
@@ -1592,7 +1692,7 @@ export default {
           let param = {
             contCode: this.contractCode
           };
-          this.$ajax.get("/api/achievement/employees", param).then(res => {
+          this.$ajax.get("/api/achievement/getFirstInput", param).then(res => {
             let data = res.data;
             if (data.status === 200) {
               if (data.data.customerAgents) {

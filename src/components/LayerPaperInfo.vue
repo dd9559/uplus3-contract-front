@@ -305,6 +305,9 @@
     /deep/.paper-info-child .paper-border{
       margin-bottom: 0;
     }
+    /deep/.paper-info-child .paper-dashed{
+      padding-top: 20px;
+    }
     @page {
       size: auto;
       margin: 0mm;
