@@ -341,8 +341,7 @@ export default {
     };
     this.getData(this.ajaxParam);
     // 字典初始化
-    this.getDictionary();
-     
+    this.getDictionary();  
     //部门初始化
     this.remoteMethod();
   },
@@ -416,7 +415,7 @@ export default {
       };
     },
     getData(param) {
-      if(this.power['sign-cw-debt-query'].state){
+      // if(this.power['sign-cw-debt-query'].state){
              // 实收列表
               let _that = this;
               this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
@@ -431,10 +430,10 @@ export default {
                   _that.total = data.data.total;
                 }
               });
-        }else {
-          this.noPower(this.power['sign-cw-debt-query'].name)
-          this.countData = [0, 0, 0, 0];
-        }
+        // }else {
+        //   this.noPower(this.power['sign-cw-debt-query'].name)
+        //   this.countData = [0, 0, 0, 0];
+        // }
         this.loading = false;
     },
     //分页
