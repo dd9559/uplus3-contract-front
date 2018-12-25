@@ -214,7 +214,7 @@
        * 修改款单，获取初始数据
        */
       getDetails: function (param) {
-        this.$ajax.get('/api/payInfo/selectPayInfoDetail', param).then(res => {
+        this.$ajax.get('/api/payInfo/selectPayDetail', param).then(res => {
           res = res.data
           if (res.status === 200) {
             let obj = {
@@ -269,7 +269,11 @@
        * 获取所有款类
        */
       getMoneyType:function () {
-        this.$ajax.get('/api/payInfo/selectMoneyType').then(res=>{
+        let param={}
+        if(this.$route.query.edit){
+          param.payId=this.$route.query.id
+        }
+        this.$ajax.get('/api/payInfo/selectMoneyType',param).then(res=>{
           res=res.data
           if(res.status===200){
             // this.moneyType = res.data
