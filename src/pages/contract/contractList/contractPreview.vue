@@ -245,46 +245,28 @@ export default {
     signature(value){
       if(value===3){
         let param = {
-          id:this.guestStoreId
+          id:this.id,
+          type:value
         }
-        //检测门店是否设置了签章
-        this.$ajax.get('/api/contract/checkCompanySign',param).then(res=>{
+        this.fullscreenLoading=true;
+        //签章
+        this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
-            let param = {
-              id:this.id,
-              type:value
-            }
-            this.fullscreenLoading=true;
-            //签章
-            this.$ajax.post('/api/contract/signture', param).then(res=>{
-              res=res.data;
-              if(res.status===200){
-                let pdfUrl=res.data;
-                // debugger
-                this.getUrl(pdfUrl);
-                this.haveUrl=true;
-                setTimeout(()=>{
-                  this.dayin();
-                  this.fullscreenLoading=false;
-                },2000);
-                this.getContImg()
-              }
-            }).catch(error =>{
+            let pdfUrl=res.data;
+            // debugger
+            this.getUrl(pdfUrl);
+            this.haveUrl=true;
+            setTimeout(()=>{
+              this.dayin();
               this.fullscreenLoading=false;
-              this.$message({
-                message:error
-              })
-            })
-          }else{
-            this.$message({
-              message:'门店没有设置签章'
-            });
+            },2000);
+            this.getContImg()
           }
-        }).catch(error => {
-          this.haveUrl=true;
+        }).catch(error =>{
+          this.fullscreenLoading=false;
           this.$message({
-            message:'门店没有设置签章'
+            message:error
           })
         })
       }else{

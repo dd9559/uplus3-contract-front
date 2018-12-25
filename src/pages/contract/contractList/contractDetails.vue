@@ -854,7 +854,7 @@ export default {
     },
     // 分成弹窗
     fencheng() {
-      if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2){
+      if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2||this.contractDetail.achievementState.value===-2){
         if(this.contractDetail.distributableAchievement>0){
           this.dialogType = 3;
           this.shows = true;
