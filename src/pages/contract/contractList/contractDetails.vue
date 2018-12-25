@@ -358,9 +358,23 @@
                 {{scope.row.calledMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
               </template>
             </el-table-column>
-            <el-table-column prop="recording" label="录音">
+            <el-table-column prop="recording" label="录音" width="200">
               <template slot-scope="scope">
-                
+                <div class="recordPlay" v-if="scope.row.recording">
+                  <span class="playBtn" @click="playStop(scope.$index)">
+                    <i class="iconfont icon-tubiao_shiyong-17" :class="{'icon-tubiao_shiyong-19':(recordKey===scope.$index)&&isPlay}"></i> 
+                  </span>
+                  <span class="duration">
+                    <span>{{scope.row.talkTime|SecondFormat}}</span>
+                    <el-progress :percentage="recordKey===scope.$index?playTime:0" :show-text="false"></el-progress>
+                    <!-- <span class="totalTime" v-else>
+                      <span class="playTime"></span>
+                    </span> -->
+                  </span>
+                </div>
+                <span v-else>--</span>
+                <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio>
+                <!-- ../../../../static/录音-001.MP3 -->
               </template>
             </el-table-column>
             <el-table-column label="备注" width="320">
@@ -438,7 +452,7 @@
     <!-- 合同撤单弹窗 -->
     <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
-        <p>合同撤单原因</p>
+        <p class="form-label">合同撤单原因</p>
         <div class="reason">
           <el-input type="textarea" :rows="5" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100"></el-input>
           <span>{{invalidReason.length}}/100</span>
@@ -727,6 +741,9 @@ export default {
       showRemarks:false,
       remarkId:'',
       recordRemarks:'',
+      playTime:0,
+      recordKey:'',
+      isPlay:false,
       //权限
       power: {
         'sign-ht-xq-print': {
@@ -837,22 +854,28 @@ export default {
     },
     // 分成弹窗
     fencheng() {
-      if(this.contractDetail.distributableAchievement>0){
-        this.dialogType = 3;
-        this.shows = true;
-        this.code2 = this.$route.query.code;
-        this.achObj={
-          contractId:this.contractDetail.id,//合同id
-          houseCode: this.contractDetail.houseinfoCode, //房源编号
-          receivableComm: this.contractDetail.receivableCommission, //合同应收佣金
-          signDate: this.contractDetail.signDate, //合同签约时间
-          contractType: this.contractDetail.contType.value, //合同类型
-          customerCode: this.contractDetail.guestinfoCode, //客源编号
-          comm:this.contractDetail.distributableAchievement //可分配业绩
+      if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2){
+        if(this.contractDetail.distributableAchievement>0){
+          this.dialogType = 3;
+          this.shows = true;
+          this.code2 = this.$route.query.code;
+          this.achObj={
+            contractId:this.contractDetail.id,//合同id
+            houseCode: this.contractDetail.houseinfoCode, //房源编号
+            receivableComm: this.contractDetail.receivableCommission, //合同应收佣金
+            signDate: this.contractDetail.signDate, //合同签约时间
+            contractType: this.contractDetail.contType.value, //合同类型
+            customerCode: this.contractDetail.guestinfoCode, //客源编号
+            comm:this.contractDetail.distributableAchievement //可分配业绩
+          }
+        }else{
+          this.$message({
+            message:'无可分配业绩,无法分成'
+          })
         }
       }else{
         this.$message({
-          message:'无可分配业绩,无法分成'
+          message:`当前业绩状态为${this.contractDetail.achievementState.label},无法分成`
         })
       }
     },
@@ -982,6 +1005,47 @@ export default {
           })
         })
       }
+    },
+    //播放录音
+    playStop(index){
+      // debugger
+      console.log(index);
+      let id = 'audio'+index;
+      this.recordKey=index;
+      let myAudios = document.getElementsByTagName('audio');
+      // console.log(myAudios.length);
+      let myAudio = document.getElementById(id);
+      if (myAudio.paused){
+        for(var i=0;i<myAudios.length;i++){
+          myAudios[i].pause();
+          // debugger
+          if(myAudios[i]!=myAudio){
+            if(myAudios[i].paused){
+              this.playTime=0
+            }
+            myAudios[i].load();
+          }
+        }
+        myAudio.play();
+        this.isPlay=true;
+      }else{
+        myAudio.pause();
+        this.isPlay=false;
+      }
+      var that=this
+      myAudio.ontimeupdate = function (e) {
+        // console.info('播放时间发生改变：'+myAudio.currentTime);
+        let playTime_=(myAudio.currentTime/myAudio.duration)*100;
+        if(playTime_){
+          that.playTime=playTime_
+        }
+        // that.playTime=(myAudio.currentTime/myAudio.duration)*100?(myAudio.currentTime/myAudio.duration)*100;
+      };
+      myAudio.onended=function(e){
+        that.playTime=0;
+        that.isPlay=false;
+      }
+
     },
     //合同详情
     getContractDetail() {
@@ -1290,6 +1354,10 @@ export default {
               message:'操作成功'
             })
           }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
         })
       }else{
         this.$message({
@@ -1328,6 +1396,13 @@ export default {
       } else {
         return TOOL.toChineseNumber(val);
       }
+    },
+    //秒转时分秒
+    SecondFormat: function(result){
+      var h = Math.floor(result / 3600) < 10 ? '0'+Math.floor(result / 3600) : Math.floor(result / 3600);
+      var m = Math.floor((result / 60 % 60)) < 10 ? '0' + Math.floor((result / 60 % 60)) : Math.floor((result / 60 % 60));
+      var s = Math.floor((result % 60)) < 10 ? '0' + Math.floor((result % 60)) : Math.floor((result % 60));
+      return result = h + ":" + m + ":" + s;
     }
   }
 };
@@ -1636,6 +1711,36 @@ export default {
       display: inline-block;
       width: 299px;
       text-align: center;
+    }
+    .recordPlay{
+      .playBtn{
+        cursor: pointer;
+        >i{
+          font-size: 28px;
+          color: #9BB3CB;
+        }
+      }
+      .duration{
+        display: inline-block;
+        width: 140px;
+        .totalTime{
+          display: inline-block;
+          width: 140px;
+          height: 6px;
+          background: #E8EAF6;
+          position: relative;
+          border-radius: 3px;
+          .playTime{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 8px;
+            border-radius: 4px;
+            background: @color-blue;
+          }
+        }
+      }
     }
   }
   .top {
