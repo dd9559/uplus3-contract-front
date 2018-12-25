@@ -38,8 +38,8 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <!--<select-tree :data="DepList" @checkCell="depHandleClick" @clear="clearDep"></select-tree>-->
-          <el-select
+          <select-tree :data="DepList" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <!--<el-select
             class="w200"
             :clearable="true"
             ref="tree"
@@ -53,7 +53,7 @@
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
-          </el-select>
+          </el-select>-->
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="searchForm.empId" placeholder="请选择">
             <el-option
@@ -392,9 +392,7 @@
         if (!val) {
           this.remoteMethod()
         }else {
-          this.$nextTick(()=>{
-            console.log(this.$refs.tree.$refs.scrollbar.$refs.wrap.scrollTop)
-          })
+
         }
       },
       clearDep: function () {
