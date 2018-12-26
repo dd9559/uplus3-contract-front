@@ -139,7 +139,7 @@
         </el-table-column>
               
         <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope" v-if="scope.row.examineState.value=== 0">
+          <template slot-scope="scope" v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === userMsg.empId">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
         </el-table-column>
@@ -380,6 +380,7 @@
         loading2:false,
         loadingTable:false,
         settleMarks: '',
+        userMsg:{},
         // settleMarks:'',
          adjustForm:{
           signDate: '', //发起日期
