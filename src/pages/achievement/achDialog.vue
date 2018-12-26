@@ -110,7 +110,7 @@
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
               <el-table-column
                 label="经纪人"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -397,7 +397,7 @@
 
               <el-table-column
                 label="经纪人"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -914,7 +914,7 @@ export default {
         this.$ajax.get("/api/organize/employee/agent/" + val).then(res => {
           let data = res.data.data;
           if (type == 0) {
-            this.houseArr[index].assignor = data.assignor+"-"+data.level4;
+            this.houseArr[index].assignor = data.assignor;
             this.houseArr[index].isJob = data.isJob;
             this.houseArr[index].level3 = data.level3; //门店
             this.houseArr[index].shopkeeper = data.shopkeeper; //店长
@@ -1067,18 +1067,30 @@ export default {
     },
     // 下拉加载更多店长
     moreShopInfos(){
+     if(this.shopkeepers.length>= this.shopTotal){
+        return
+      }else {
       this.shopIndex++;
       this.getMoreShopInfo( this.shopStr,this.shopIndex,2);
+      }
     },
     // 下拉加载更多区经
     moreAmaldars(){
-      this.shopIndex++;
-      this.getMoreShopInfo( this.shopStr,this.shopIndex,1);
+      if(this.amaldars.length>= this.shopTotal){
+        return
+      }else {
+        this.shopIndex++;
+        this.getMoreShopInfo( this.shopStr,this.shopIndex,1);
+      }
     },
    // 下拉加载更多区总
     moreManagers(){
-      this.shopIndex++;
-      this.getMoreShopInfo( this.shopStr,this.shopIndex,0);
+      if(this.managers.length>= this.shopTotal){
+        return
+      }else {
+        this.shopIndex++;
+        this.getMoreShopInfo( this.shopStr,this.shopIndex,0);
+      }
     },
     // 改变店长
     changeShopkeeper(val, index, type1){
@@ -1672,6 +1684,7 @@ export default {
       if(type==0){
         if(event.target.checked){ 
              this.houseArr[index].place = -1;
+             
         }
       }else{
          if(event.target.checked){ 
@@ -1680,7 +1693,6 @@ export default {
       }       
     }
   },
-
   watch: {
     contractCode(val) {
       // 字典初始化

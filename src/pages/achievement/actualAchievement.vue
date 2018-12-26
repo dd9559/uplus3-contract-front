@@ -379,14 +379,15 @@
                   v-if="scope.row.achievementState==-1"
                   class="check-btn"
                 >
-                  <!-- <span
-                    @click.stop="tishen(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                  >提审</span> -->
                   <span
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-edit'].state"
                   >编辑</span>
+                  <span
+                    style="cursor:pointer;"
+                    v-else
+                  >-</span>
                 </div>
                 <div
                   v-if="scope.row.achievementState==1"
@@ -394,8 +395,13 @@
                 >
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
-                    style="cursor:pointer;"
+                    style="cursor:pointer;"   
+                    v-if="power['sign-yj-rev-fs'].state"
                   >反审核</span>
+                 <span
+                    style="cursor:pointer;"
+                    v-else
+                  >-</span>
                 </div>
                 <div
                   v-if="scope.row.achievementState==2"
@@ -404,7 +410,12 @@
                   <span
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-edit'].state"
                   >编辑</span>
+                  <span
+                    style="cursor:pointer;"
+                    v-else
+                  >-</span>
                 </div>
 
                 <div
@@ -414,7 +425,12 @@
                   <span
                     @click.stop="chehui(scope.row,scope.$index)"
                     style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-retreat'].state"
                   >撤回</span>
+                 <span
+                    style="cursor:pointer;"
+                    v-else
+                  >-</span>
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
@@ -823,21 +839,25 @@ export default {
       ],
         //权限配置
       power: {
-        'sign-cw-debt-query': {
+        'sign-yj-rev-query': {
           state: false,
           name: '查询'
         },
-        'sign-cw-debt-contract': {
+        'sign-yj-rev-edit': {
           state: false,
-          name: '合同详情'
+          name: '编辑'
         },
-        'sign-cw-debt-house': {
+       'sign-yj-rev-addemp': {
           state: false,
-          name: '房源详情'
+          name: '录入分成'
         },
-        'sign-cw-debt-cust': {
+       'sign-yj-rev-retreat': {
           state: false,
-          name: '客源详情'
+          name: '撤回'
+        },
+      'sign-yj-rev-fs': {
+          state: false,
+          name: '反审核'
         }
       }
     };
@@ -871,21 +891,21 @@ export default {
         this.remoteMethod()
       }
     },   
-     clearDep:function () {
+    clearDep:function () {
       this.propForm.department=''
       this.EmployeList=[]
       this.propForm.dealAgentId=''
       this.propForm.dealAgentStoreId='';
       this.clearSelect()
     },
-     depHandleClick(data) {
+    depHandleClick(data) {           
       this.propForm.dealAgentStoreId=data.depId
       this.propForm.department=data.name
       this.propForm.dealAgentId=''
       this.handleNodeClick(data)
     },
     getData(ajaxParam) {
-      if(this.power['sign-cw-debt-query'].state){
+      if(this.power['sign-yj-rev-query'].state){
               let _that=this;
                  this.$ajax
                    .get("/api/achievement/selectAchievementList", ajaxParam)
@@ -907,7 +927,7 @@ export default {
                      this.$message({message:error})
                   });
          }else {
-          this.noPower(this.power['sign-cw-debt-query'].name)
+          this.noPower(this.power['sign-yj-rev-query'].name)
           this.countData = [0, 0, 0, 0];
         }
       this.loading=false;
@@ -1082,16 +1102,16 @@ export default {
       this.shows = true;
     },
     editAch(value,index) {
-      this.beginData = true;
-      this.code2 =  value.code; 
-      this.aId =  value.aId; 
-      this.contractId =  value.id; 
-      this.dialogType = 1; 
-      this.achIndex=index  
-      this.achObj={
-        contractId:value.id,//合同id
-      }
-      this.shows = true;
+        this.beginData = true;
+        this.code2 =  value.code; 
+        this.aId =  value.aId; 
+        this.contractId =  value.id; 
+        this.dialogType = 1; 
+        this.achIndex=index  
+        this.achObj={
+          contractId:value.id,//合同id
+        }
+        this.shows = true;
     },
     againCheck(value,index) {
       this.beginData = true;

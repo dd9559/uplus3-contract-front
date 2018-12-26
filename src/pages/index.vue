@@ -140,7 +140,7 @@
                 code: 'sign-yj-rev-query'
               },
               {
-                name: '实收业绩',
+                name: '结算业绩',
                 path: 'receivableAchievement',
                 code: 'sign-yj-rec-query'
               },

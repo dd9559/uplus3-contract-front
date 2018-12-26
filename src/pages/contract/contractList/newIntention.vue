@@ -89,33 +89,19 @@
                                         <el-button type="text" v-if="this.$route.query.operateType==2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
                                 </el-form-item>
                                 <el-form-item label="成交经纪人：" required>
-                                    <!-- <el-form-item prop="guestInfo.GuestStoreName">
-                                        <el-select v-model="contractForm.guestInfo.GuestStoreName" clearable filterable remote placeholder="请选择门店" @change="getShop_" :remote-method="getShopList" :loading="loading">
+                                    <el-form-item>
+                                        <!-- <el-select v-model="contractForm.guestInfo.GuestStoreName" placeholder="请选择门店">
                                             <el-option v-for="item in option2" :key="item.id" :label="item.name" :value="item.id + ',' + item.name"></el-option>
-                                        </el-select>
+                                        </el-select> -->
+                                        <el-input v-model="contractForm.guestInfo.GuestStoreName" placeholder="请选择门店" :disabled=true></el-input>
                                     </el-form-item>
-                                    <el-form-item prop="guestInfo.EmpName" class="small-input">
-                                        <el-select v-model="contractForm.guestInfo.EmpName" clearable filterable remote placeholder="请选择经纪人" ref="select2" :remote-method="getEmployee" @change="changeAgent" @clear="clearEmpName">
+                                    <el-form-item class="small-input">
+                                        <!-- <el-select v-model="contractForm.guestInfo.EmpName" placeholder="请选择经纪人">
                                             <el-option v-for="item in option3" :key="item.empId" :label="item.name" :value="item.empId + ',' + item.name"></el-option>
-                                        </el-select>
-                                    </el-form-item> -->
-                                    <el-form-item prop="guestInfo.GuestStoreName">
-                                      <el-select :clearable="true" filterable remote ref="tree" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.guestInfo.GuestStoreName" placeholder="请选择">
-                                        <el-option class="drop-tree" value="">
-                                          <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
-                                        </el-option>
-                                      </el-select>
+                                        </el-select> -->
+                                         <el-input v-model="contractForm.guestInfo.EmpName" placeholder="请选择经纪人" :disabled=true></el-input>
                                     </el-form-item>
-                                    <el-form-item prop="guestInfo.EmpName" class="small-input">
-                                      <el-select :clearable="true" remote :remote-method="getEmployee" v-loadmore="moreEmploye" class="margin-left" v-model="contractForm.guestInfo.EmpName" @change="changeAgent" placeholder="请选择">
-                                        <el-option
-                                          v-for="item in EmployeList"
-                                          :key="item.empId"
-                                          :label="item.name"
-                                          :value="item.empId + ',' + item.name">
-                                        </el-option>
-                                      </el-select>
-                                    </el-form-item> 
+                                    
                                 </el-form-item>
                             </el-form-item>
                             <el-form-item label="客户信息：" class="disb" required>
@@ -320,10 +306,10 @@ export default {
         guestinfoCode: [
           { required: true, message: "请选择客源编号", trigger: "click" }
         ],
-        guestInfo: {
-          GuestStoreName: [{ required: true, message: "请选择门店" }],
-          EmpName: [{ required: true, message: "请选择经纪人" }]
-        },
+        // guestInfo: {
+        //   GuestStoreName: [{ required: true, message: "请选择门店" }],
+        //   EmpName: [{ required: true, message: "请选择经纪人" }]
+        // },
         custIdentifyCode: [{ validator: idCard}]
         // contPersons:{
         //     // name: '',
@@ -351,30 +337,30 @@ export default {
   },
 
   methods: {
-    depHandleClick(data) {
-      // this.getEmploye(data.depId)
-      this.contractForm.guestInfo.GuestStoreCode=data.depId
-      this.contractForm.guestInfo.GuestStoreName=data.name
-      this.contractForm.guestInfo.EmpCode = ''
-      this.contractForm.guestInfo.EmpName = ''
+    // depHandleClick(data) {
+    //   // this.getEmploye(data.depId)
+    //   this.contractForm.guestInfo.GuestStoreCode=data.depId
+    //   this.contractForm.guestInfo.GuestStoreName=data.name
+    //   this.contractForm.guestInfo.EmpCode = ''
+    //   this.contractForm.guestInfo.EmpName = ''
 
-      this.handleNodeClick(data)
-    },
+    //   this.handleNodeClick(data)
+    // },
 
-    clearDep:function () {
-      this.contractForm.guestInfo.GuestStoreCode=''
-      this.contractForm.guestInfo.GuestStoreName=''
-      // this.EmployeList=[]
-      this.contractForm.guestInfo.EmpCode=''
-      this.contractForm.guestInfo.EmpName = ''
-      this.clearSelect()
-    },
+    // clearDep:function () {
+    //   this.contractForm.guestInfo.GuestStoreCode=''
+    //   this.contractForm.guestInfo.GuestStoreName=''
+    //   // this.EmployeList=[]
+    //   this.contractForm.guestInfo.EmpCode=''
+    //   this.contractForm.guestInfo.EmpName = ''
+    //   this.clearSelect()
+    // },
 
-    initDepList:function (val) {
-      if(!val){
-        this.remoteMethod()
-      }
-    },
+    // initDepList:function (val) {
+    //   if(!val){
+    //     this.remoteMethod()
+    //   }
+    // },
 
 
     cutText(val) {
@@ -471,7 +457,7 @@ export default {
             this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
           }
-          this.getEmployee()
+          // this.getEmployee()
         })
         .catch(error => {
           this.$message({
@@ -538,7 +524,7 @@ export default {
                 ].identifyCode;
               }
             }
-            this.getEmployee()
+            // this.getEmployee()
           }
         })
         .catch(error => {
@@ -573,42 +559,42 @@ export default {
     // },
 
     //获取经纪人
-    getEmployee() {
+    // getEmployee() {
       
-      let id = this.contractForm.guestInfo.GuestStoreCode
-      if(id) {
-        let param = {
-          depId: id
+    //   let id = this.contractForm.guestInfo.GuestStoreCode
+    //   if(id) {
+    //     let param = {
+    //       depId: id
           
-        };
-        this.$ajax
-          .get("/api/organize/employees", param)
-          .then(res => {
-            if (res.data.status === 200) {
-              this.loading = false;
+    //     };
+    //     this.$ajax
+    //       .get("/api/organize/employees", param)
+    //       .then(res => {
+    //         if (res.data.status === 200) {
+    //           this.loading = false;
 
-              if (res.data.data.length > 0) {
-                this.EmployeList = res.data.data;
-              }
-            }
-          })
-          .catch(error => {
-            this.$message({
-              message: error
-            });
-          });
-      }
+    //           if (res.data.data.length > 0) {
+    //             this.option3 = res.data.data;
+    //           }
+    //         }
+    //       })
+    //       .catch(error => {
+    //         this.$message({
+    //           message: error
+    //         });
+    //       });
+    //   }
       
-    },
+    // },
 
-    changeAgent(val) {
+    // changeAgent(val) {
 
-      let id = val.split(",")[0]
-      let name = val.split(",")[1]
-      this.$set(this.contractForm.guestInfo, "EmpCode", id);
-      this.$set(this.contractForm.guestInfo,'EmpName',name)
-      console.log(this.contractForm.guestInfo);
-    },
+    //   let id = val.split(",")[0]
+    //   let name = val.split(",")[1]
+    //   this.$set(this.contractForm.guestInfo, "EmpCode", id);
+    //   this.$set(this.contractForm.guestInfo,'EmpName',name)
+    //   console.log(this.contractForm.guestInfo);
+    // },
 
     // clearEmpName() {
     //   this.contractForm.guestInfo.EmpName = "";
@@ -840,7 +826,7 @@ export default {
 
 
   created() {
-    this.remoteMethod()
+    // this.remoteMethod()
     // this.getShopList();
     this.contractForm.type = this.$route.query.contType //区分合同类型
    

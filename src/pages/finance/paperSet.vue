@@ -290,8 +290,8 @@
       </div>
       <div v-else class="txt">{{layer.msg}}</div>
       <p slot="footer" :class="[layer.title!=='票据作废'?'center':'']">
-        <el-button round  size="medium" class="paper-btn" @click="layer.show=false">取消</el-button>
-        <el-button round  size="medium" class="paper-btn paper-btn-blue" @click="submitForm">确定</el-button>
+        <el-button round size="medium" class="paper-btn" @click="layer.show=false">取消</el-button>
+        <el-button round size="medium" class="paper-btn paper-btn-blue" type="primary" @click="submitForm">确定</el-button>
       </p>
     </el-dialog>
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>

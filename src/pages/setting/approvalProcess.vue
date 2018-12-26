@@ -34,7 +34,7 @@
         <div class="aduit-list">
             <p>
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-                <el-button @click="operation('添加',1)">添加</el-button>
+                <el-button @click="operation('添加',1)" v-if="power['sign-set-verify'].state">添加</el-button>
             </p>
             <div class="table">
                 <el-table :data="tableData" style="width: 100%">
@@ -62,7 +62,7 @@
                     </el-table-column>
                     <el-table-column align="center" label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" size="medium" @click="operation('编辑',2,scope.row)">编辑</el-button>
+                            <el-button type="text" size="medium" @click="operation('编辑',2,scope.row)" v-if="power['sign-set-verify'].state">编辑</el-button>
                             <!-- <el-button type="text" size="medium" @click="delFlow(scope.row)">删除</el-button> -->
                         </template>
                     </el-table-column>
@@ -82,29 +82,33 @@
         <!-- 添加 编辑 弹窗 -->
         <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
             <div class="aduit-content">
-                <div class="aduit-input must">
-                    <label>选择城市:</label>
-                    <el-select size="small" v-model="aduitForm.cityId" :disabled="editDisabled">
-                        <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
-                    </el-select>
+                <div class="row">
+                    <div class="aduit-input must">
+                        <label>选择城市:</label>
+                        <el-select size="small" v-model="aduitForm.cityId" :disabled="editDisabled">
+                            <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
+                        </el-select>
+                    </div>
+                    <div class="aduit-input must">
+                        <label>运营模式:</label>
+                        <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
+                            <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
+                    </div>
                 </div>
-                <div class="aduit-input must">
-                    <label>运营模式:</label>
-                    <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
-                        <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                    </el-select>
-                </div>
-                <div class="aduit-input must">
+                <div class="row">
+                   <div class="aduit-input must">
                     <label>流程类型:</label>
-                    <el-select size="small" v-model="aduitForm.type" @change="changeFlowTypeTwo" :disabled="editDisabled">
-                        <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                    </el-select>
-                </div>
-                <div class="aduit-input must">
-                    <label>分支条件:</label>
-                    <el-select size="small" v-model="aduitForm.branchCondition" :disabled="editDisabled">
-                        <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                    </el-select>
+                        <el-select size="small" v-model="aduitForm.type" @change="changeFlowTypeTwo" :disabled="editDisabled">
+                            <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
+                    </div>
+                    <div class="aduit-input must">
+                        <label>分支条件:</label>
+                        <el-select size="small" v-model="aduitForm.branchCondition" :disabled="editDisabled">
+                            <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
+                    </div> 
                 </div>
                 <div class="aduit-input must">
                     <label>流程名称:</label>
@@ -124,7 +128,7 @@
                             <el-select size="small" class="people-type" v-model="item.type" @change="getTypeOption(item.type,index)">
                                 <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
-                            <el-select v-if="item.type===2||item.type===1" size="small" class="other" v-model="item.userId" filterable @change="selectUser(item.type,index)">
+                            <el-select size="small" class="other" v-model="item.userId" @change="selectUser(item.type,index)">
                                 <el-option
                                 v-for="option in (item.type===1?depsList:roleList)"
                                 :key="item.type===1?option.id:option.key"
@@ -135,6 +139,14 @@
                             <div class="row-icon">
                                 <span class="button" @click="addRow"><i class="icon el-icon-plus"></i></span>
                                 <span class="button" @click="removeRow(index)"><i class="icon el-icon-minus"></i></span>
+                            </div>
+                            <div class="default">
+                                <span>选择默认审核人:</span>
+                                <div class="multiple">
+                                    <el-radio-group>
+                                        <el-radio>123</el-radio>
+                                    </el-radio-group>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -232,7 +244,13 @@
                 editDisabled: false,
                 currentFlowId: "",
                 tempAudit: "",
-                tempNodeList: []
+                tempNodeList: [],
+                power: {
+                    'sign-set-verify': {
+                    state: false,
+                    name: '操作'
+                    }
+                }
             }
         },
         created() {
@@ -256,15 +274,19 @@
                     pageNum: this.pageNum
                 }
                 param = Object.assign({},this.searchForm,param)
-                this.$ajax.get('/api/auditflow/selectFlowList',param).then(res => {
-                    res = res.data
-                    if(res.status === 200) {
-                        this.tableData = res.data.data
-                        this.total = res.data.total
-                    }
-                }).catch(error => {
-                    this.$message({message:error})
-                })
+                if(this.power['sign-set-verify'].state) {
+                    this.$ajax.get('/api/auditflow/selectFlowList',param).then(res => {
+                        res = res.data
+                        if(res.status === 200) {
+                            this.tableData = res.data.data
+                            this.total = res.data.total
+                        }
+                    }).catch(error => {
+                        this.$message({message:error})
+                    })
+                } else {
+                    this.noPower(this.power['sign-set-verify'].name)
+                }
             },
             getCityList() {
                 this.$ajax.get('/api/organize/cities').then(res => {
@@ -585,6 +607,10 @@
   }
 }
 .aduit-content {
+    .row {
+        display: flex;
+        justify-content: space-between;
+    }
     .aduit-input {
         display: flex;
         margin-bottom: @margin-10;
@@ -621,10 +647,12 @@
             }
         }
         ul {
+            padding-left: 70px;
             li {
-                display: flex;
+                padding: 10px;
+                position: relative;
                 margin-bottom: 9px;
-                padding-left: 70px;
+                border: 1px solid #dcdfe6;
                 /deep/ .el-input {
                     margin-right: 7px;
                     &:first-child {
@@ -644,7 +672,8 @@
                 .row-icon {
                     width: 65px;
                     position: absolute;
-                    right: 20px;
+                    right: 8px;
+                    top: 10px;
                     display: flex;
                     justify-content: space-between;
                     .button {
@@ -661,6 +690,28 @@
                             color: #fff;
                             font-weight: bold;
                         }
+                    }
+                }
+                .default {
+                    display: flex;
+                    margin-top: 10px;
+                    >span {
+                        width: 130px;
+                    }
+                    .multiple {
+                        border: 1px solid #dcdfe6;
+                        width: 100%;
+                        padding-top: 10px;
+                        .el-radio-group {
+                            display: inherit;
+                            .el-radio {
+                                margin-bottom: 10px;
+                                width: 25%;
+                                margin-left: 0;
+                                text-align: center;
+                            }
+                        }
+                        
                     }
                 }
                 &:first-child {
