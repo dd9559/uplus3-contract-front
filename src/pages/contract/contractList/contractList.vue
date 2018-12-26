@@ -138,9 +138,9 @@
                 <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i>
               </div>
               <ul class="contract-msglist">
-                <li>合同编号：<span>{{scope.row.code}}</span></li>
-                <li>房源编号：<span>{{scope.row.houseinfoCode}} {{scope.row.showOwnerName}}</span></li>
-                <li>客源编号：<span>{{scope.row.guestinfoCode}} {{scope.row.showCustName}}</span></li>
+                <li>合同：<span>{{scope.row.code}}</span></li>
+                <li>房源：<span>{{scope.row.houseinfoCode}} {{scope.row.showOwnerName}}</span></li>
+                <li>客源：<span>{{scope.row.guestinfoCode}} {{scope.row.showCustName}}</span></li>
               </ul>
             </div>
           </template>
@@ -242,7 +242,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="收佣状态" width="100">
+        <el-table-column align="left" label="实收/应收" width="100">
           <template slot-scope="scope">
             <!-- <div class="btn" @click="runningWater(scope.row)">流水</div> -->
             <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
@@ -375,7 +375,7 @@ export default {
       blankPdf5:'',
       pdfUrl:'',
       haveUrl:false,
-      //收佣状态
+      //业绩状态
       achStatuArr:[
         {
           key:-1,

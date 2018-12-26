@@ -38,8 +38,8 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <!--<select-tree :data="DepList" @checkCell="depHandleClick" @clear="clearDep"></select-tree>-->
-          <el-select
+          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <!--<el-select
             class="w200"
             :clearable="true"
             ref="tree"
@@ -53,7 +53,7 @@
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
-          </el-select>
+          </el-select>-->
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="searchForm.empId" placeholder="请选择">
             <el-option
@@ -344,23 +344,23 @@
             state: false,
             name: '作废'
           },
-          'sign-cw-debt-rev-verify': {
+          'sign-cw-debt-rev': {
             state: false,
             name: '收款审核'
           },
-          'sign-cw-debt-pay-verify': {
+          'sign-cw-debt-pay': {
             state: false,
             name: '付款审核'
           },
-          'sign-cw-debt-contract': {
+          'sign-com-htdetail': {
             state: false,
             name: '合同详情'
           },
-          'sign-cw-debt-house': {
+          'sign-com-house': {
             state: false,
             name: '房源详情'
           },
-          'sign-cw-debt-cust': {
+          'sign-com-cust': {
             state: false,
             name: '客源详情'
           }
@@ -392,9 +392,7 @@
         if (!val) {
           this.remoteMethod()
         }else {
-          this.$nextTick(()=>{
-            console.log(this.$refs.tree.$refs.scrollbar.$refs.wrap.scrollTop)
-          })
+
         }
       },
       clearDep: function () {
@@ -453,7 +451,7 @@
             query: {
               id: row.id,
               tab: row.type === 1 ? '收款信息' : '付款信息',
-              power: this.power[row.type===1?'sign-cw-debt-rev-verify':'sign-cw-debt-pay-verify'].state
+              power: this.power[row.type===1?'sign-cw-debt-rev':'sign-cw-debt-pay'].state
             }
           })
         }
@@ -512,7 +510,7 @@
           contId:row.contId,
           contCode:row.contCode,
           operaType:type,
-          power:type==='cont'?this.power['sign-cw-debt-contract']:type==='house'?this.power['sign-cw-debt-house']:type==='customer'?this.power['sign-cw-debt-cust']:''
+          power:type==='cont'?this.power['sign-com-htdetail']:type==='house'?this.power['sign-com-house']:type==='customer'?this.power['sign-com-cust']:''
         }
         this.msgOpera(param)
       },

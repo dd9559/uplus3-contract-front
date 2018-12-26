@@ -23,12 +23,9 @@
           <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> -->
-          <el-select :clearable="true" filterable remote ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="adjustForm.depName" placeholder="请选择">
-            <el-option class="drop-tree" value="">
-              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
-            </el-option>
-          </el-select>
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="adjustForm.empId" placeholder="请选择">
+          <select-tree :data="DepList" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
+                     v-model="adjustForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -36,6 +33,7 @@
               :value="item.empId">
             </el-option>
           </el-select>
+
         </el-form-item>
 
         <el-form-item label="审核状态">
@@ -132,7 +130,7 @@
         </el-table-column>             
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope" v-if="scope.row.checkState === 0">
-            <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
+            <el-button type="text" class="curPointer" @click="auditApply(scope.row)"  v-if="scope.row.checkId === userMsg.empId">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -374,6 +372,7 @@
         loading:false,
         loading2:false,
         loadingTable:false,
+        userMsg:{},
 
         // 分页
         pageNum: 1,
@@ -803,9 +802,13 @@
         this.clearSelect()
       },
 
-      initDepList:function (val) {
-        if(!val){
+      initDepList: function (val) {
+        if (!val) {
           this.remoteMethod()
+        }else {
+          this.$nextTick(()=>{
+            console.log(this.$refs.tree.$refs.scrollbar.$refs.wrap.scrollTop)
+          })
         }
       },
     

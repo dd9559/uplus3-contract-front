@@ -38,11 +38,12 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
+          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
-          </el-select>
+          </el-select>-->
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
@@ -175,8 +176,8 @@
         <el-table-column align="center" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
-            <template v-if="(scope.row.auditButton&&power[activeView===1?'sign-cw-rev-verify':'sign-cw-pay-verify'].state)||(scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state)">
-              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton&&power[activeView===1?'sign-cw-rev-verify':'sign-cw-pay-verify'].state">审核</el-button>
+            <template v-if="(scope.row.auditButton)||(scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state)">
+              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
               <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state">作废</el-button>
             </template>
             <span v-else>--</span>
@@ -282,30 +283,7 @@
             state: false,
             name: '作废'
           },
-          'sign-cw-rev-verify': {
-            state: false,
-            name: '审核'
-          },
-          'sign-cw-rev-contract': {
-            state: false,
-            name: '合同详情'
-          },
-          'sign-cw-rev-house': {
-            state: false,
-            name: '房源详情'
-          },
-          'sign-cw-rev-cust': {
-            state: false,
-            name: '客源详情'
-          }
-        }
-      }
-    },
-    created() {
-      this.activeView = parseInt(this.$route.query.type)
-      if(this.activeView===2){
-        this.power=Object.assign({},{
-          'sign-cw-pay-query': {
+          'sign-cw-pay-query':{
             state: false,
             name: '查询'
           },
@@ -317,23 +295,24 @@
             state: false,
             name: '作废'
           },
-          'sign-cw-pay-verify': {
-            state: false,
-            name: '审核'
-          },
-          'sign-cw-pay-contract': {
+          'sign-com-htdetail': {
             state: false,
             name: '合同详情'
           },
-          'sign-cw-pay-house': {
+          'sign-com-house': {
             state: false,
             name: '房源详情'
           },
-          'sign-cw-pay-cust': {
+          'sign-com-cust': {
             state: false,
             name: '客源详情'
-          }})
+          }
+        }
       }
+    },
+    created() {
+      this.activeView = parseInt(this.$route.query.type)
+
       for (let item in this.power){
         this.power[item].state=true
         /*if(this.getUser){
@@ -352,68 +331,8 @@
       this.list = []
       this.activeView = parseInt(to.query.type)
       this.$tool.clearForm(this.searchForm)   //初始化筛选查询
-      if(this.activeView===2){
-        this.power=Object.assign({},{
-          'sign-cw-pay-query': {
-            state: false,
-            name: '查询'
-          },
-          'sign-cw-pay-export': {
-            state: false,
-            name: '导出'
-          },
-          'sign-cw-pay-void': {
-            state: false,
-            name: '作废'
-          },
-          'sign-cw-pay-verify': {
-            state: false,
-            name: '审核'
-          },
-          'sign-cw-pay-contract': {
-            state: false,
-            name: '合同详情'
-          },
-          'sign-cw-pay-house': {
-            state: false,
-            name: '房源详情'
-          },
-          'sign-cw-pay-cust': {
-            state: false,
-            name: '客源详情'
-          }})
-      }else{
-        this.power=Object.assign({},{
-          'sign-cw-rev-query': {
-            state: false,
-            name: '查询'
-          },
-          'sign-cw-rev-export': {
-            state: false,
-            name: '导出'
-          },
-          'sign-cw-rev-void': {
-            state: false,
-            name: '作废'
-          },
-          'sign-cw-rev-verify': {
-            state: false,
-            name: '审核'
-          },
-          'sign-cw-rev-contract': {
-            state: false,
-            name: '合同详情'
-          },
-          'sign-cw-rev-house': {
-            state: false,
-            name: '房源详情'
-          },
-          'sign-cw-rev-cust': {
-            state: false,
-            name: '客源详情'
-          }
-        })
-      }
+      this.clearDep()
+
       for (let item in this.power){
         this.power[item].state=true
         /*if(this.getUser){
@@ -501,7 +420,7 @@
         }
       },
       toDetails:function (item) {
-        let powerMsg=this.power[this.activeView===1?'sign-cw-rev-verify':'sign-cw-pay-verify'].state
+        let powerMsg=true
         let param = {
           path: 'billDetails'
         }
@@ -542,7 +461,7 @@
           contId:row.contId,
           contCode:row.contCode,
           operaType:type,
-          power:type==='cont'?this.power[this.activeView===1?'sign-cw-rev-contract':'sign-cw-pay-contract']:type==='house'?this.power[this.activeView===1?'sign-cw-rev-house':'sign-cw-pay-house']:type==='customer'?this.power[this.activeView===1?'sign-cw-rev-cust':'sign-cw-pay-cust']:''
+          power:type==='cont'?this.power['sign-com-htdetail']:type==='house'?this.power['sign-com-house']:type==='customer'?this.power['sign-com-cust']:''
         }
         this.msgOpera(param)
       },

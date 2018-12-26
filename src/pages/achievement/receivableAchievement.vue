@@ -70,7 +70,7 @@
             <li>
               <span>
                 总分成：
-                <b class="orange">{{countData[3]}}元</b>，
+                <b class="orange">{{countData[3] ?countData[3] :'0'}}元</b>，
               </span>
             </li>
             <li>
@@ -79,19 +79,19 @@
             <li>
               <span>
                 出售：
-                <b class="orange">{{countData[1]}}元</b>，
+                <b class="orange">{{countData[1] ?countData[1] :'0'}}元</b>，
               </span>
             </li>
             <li>
               <span>
                 代办：
-                <b class="orange">{{countData[2]}}元</b>，
+                <b class="orange">{{countData[2] ?countData[2] :'0'}}元</b>，
               </span>
             </li>
             <li>
               <span>
                 出租：
-                <b class="orange">{{countData[0]}}元</b>
+                <b class="orange">{{countData[0] ?countData[0] :'0'}}元</b>
               </span>
             </li>
           </ul>
@@ -341,8 +341,7 @@ export default {
     };
     this.getData(this.ajaxParam);
     // 字典初始化
-    this.getDictionary();
-     
+    this.getDictionary();  
     //部门初始化
     this.remoteMethod();
   },
@@ -430,7 +429,9 @@ export default {
                   }
                   _that.total = data.data.total;
                 }
-              });
+              }).catch(error => {
+                     this.$message({message:error})
+              });;
         }else {
           this.noPower(this.power['sign-cw-debt-query'].name)
           this.countData = [0, 0, 0, 0];
