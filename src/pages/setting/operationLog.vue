@@ -31,7 +31,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="关键字">
-                        <el-input v-model="keyWord" placeholder="操作内容/模块"></el-input>
+                        <el-input  v-model="keyWord" placeholder="操作内容/模块"></el-input>
                     </el-form-item>
                 </div>
             </el-form>
