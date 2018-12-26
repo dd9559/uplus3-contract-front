@@ -145,7 +145,7 @@
         </el-table-column>
         <el-table-column align="center" :label="activeView===1?'收款人':'付款人'" min-width="140">
           <template slot-scope="scope">
-            <span>{{scope.row.store}}</span>
+            <span>{{scope.row.type===1?scope.row.inObjStore:scope.row.store}}</span>
             <p>{{scope.row.type===1?scope.row.inObjName:scope.row.createByName}}</p>
           </template>
         </el-table-column>
@@ -219,7 +219,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
     <el-button size="small" class="btn-info" round @click="layer.show = false">返 回</el-button>
-    <el-button size="small" class="btn-info" round type="primary" @click="deleteBill">确 定</el-button>
+    <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -481,9 +481,11 @@
       //作废
       deleteBill:function () {
         let src = this.activeView===1?'/payInfo/updateProceedsIsDel':'/payInfo/updatePaymentIsDel'
+        this.setLoading(true)
         this.$ajax.put(`/api${src}`,{payId:this.layer.content[0].id},2).then(res=>{
           res=res.data
           if(res.status===200){
+            this.setLoading(false)
             this.getData()
             this.layer.show=false
             this.$message({
@@ -491,6 +493,7 @@
             })
           }
         }).catch(error=>{
+          this.setLoading(false)
           this.$message({
             message:error
           })
