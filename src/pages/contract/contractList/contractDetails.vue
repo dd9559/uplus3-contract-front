@@ -239,7 +239,7 @@
             <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">撤单</el-button>
             <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1" @click="goChangeCancel(1)">变更</el-button>
             <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
-            <el-button round type="primary" class="search_btn" v-if="contractDetail.toExamineState.value<0" @click="isSubmitAudit=true">提交审核</el-button>
+            <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0" @click="isSubmitAudit=true">提交审核</el-button>
           </div>
           <div v-else>
             <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
@@ -389,14 +389,17 @@
             </el-table-column>
             <el-table-column label="备注" width="320">
               <template slot-scope="scope">
-                <el-popover trigger="hover" placement="top" v-if="scope.row.remarks">
-                  <div style="width:160px">
-                    {{scope.row.remarks}}
-                  </div>
-                  <div slot="reference" class="name-wrapper">
-                    {{scope.row.remarks}}
-                  </div>
-                </el-popover>
+                <div v-if="scope.row.remarks">
+                  <el-popover trigger="hover" placement="top" v-if="power['sign-ht-xq-ly-vmemo'].state">
+                    <div style="width:300px">
+                      {{scope.row.remarks}}
+                    </div>
+                    <div slot="reference" class="name-wrapper">
+                      {{scope.row.remarks}}
+                    </div>
+                  </el-popover>
+                  <div v-else class="noPower"><i class="iconfont icon-tubiao_shiyong-12"></i> 无权限浏览</div>
+                </div>
                 <p v-else class="iconfont icon-tubiao_shiyong-14 addRemarks" @click="showRemark(scope.row)"> 添加备注</p>
               </template>
             </el-table-column>
@@ -429,7 +432,7 @@
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'&&contractDetail.contState.value===3">分成</el-button>
       <el-button type="primary" round class="search_btn" @click="uploading" v-if="power['sign-ht-xq-data-add'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
-      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value!=1">上传</el-button>  <!-- 合同主体上传 -->
+      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
     
     <!-- 拨号弹出框 -->
@@ -779,6 +782,10 @@ export default {
         'sign-ht-xq-modify': {
           state: false,
           name: '变更'
+        },
+        'sign-ht-view-toverify': {
+          state: false,
+          name: '提交审核'
         },
         'sign-ht-xq-yj': {
           state: false,
@@ -1738,6 +1745,10 @@ export default {
       -webkit-line-clamp: 1;
       overflow: hidden;
       text-overflow:ellipsis;
+    }
+    .noPower{
+      width:300px;
+      text-align:center
     }
     .addRemarks{
       font-size: 14px;

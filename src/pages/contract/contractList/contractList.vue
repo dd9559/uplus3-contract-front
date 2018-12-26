@@ -266,7 +266,7 @@
           <template slot-scope="scope">
             <div style="text-align:center">
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&scope.row.contState.value>1" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
               <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4">
                 <el-button type="text" size="medium" @click="goSave(scope.row)">提审</el-button>
