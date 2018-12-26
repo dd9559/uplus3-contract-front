@@ -17,7 +17,7 @@
           @select="handleSelect"
           text-color="#333333"
           active-text-color="#478DE3">
-          <el-submenu :index="item.path" v-for="item in views" :key="item.id">
+          <el-submenu :index="item.path" v-for="item in views" :key="item.id" v-if="item.child.length>0">
             <template slot="title">
               <i class="iconfont" :class="item.icon"></i>
               <span>{{item.name}}</span>
@@ -59,7 +59,7 @@
 
 <script>
   import index from "../router";
-  import { mapMutations } from 'vuex'
+  import { mapMutations,mapGetters } from 'vuex'
 
   export default {
     name: "index",
@@ -75,19 +75,23 @@
             child: [
               {
                 name: '合同列表',
-                path: 'contractList'
+                path: 'contractList',
+                code: 'sign-ht-info-query'
               },
               {
                 name: '调佣审核',
-                path: 'adjustCheck'
+                path: 'adjustCheck',
+                code: 'sign-ht-maid-query'
               },
               {
                 name: '结算审核',
-                path: 'settleCheck'
+                path: 'settleCheck',
+                code: 'sign-ht-js-query'
               },
               {
                 name: '分账记录',
-                path: 'routingRecord'
+                path: 'routingRecord',
+                code: 'sign-ht-fz-query'
               },
             ]
           },
@@ -99,23 +103,28 @@
             child: [
               {
                 name: '收付款单',
-                path: 'Bill'
+                path: 'Bill',
+                code: 'sign-cw-debt-query'
               },
               {
                 name: '收款审核',
-                path: 'moneyCheck?type=1'
+                path: 'moneyCheck?type=1',
+                code: 'sign-cw-rev-query'
               },
               {
                 name: '付款审核',
-                path: 'moneyCheck?type=2'
+                path: 'moneyCheck?type=2',
+                code: 'sign-cw-pay-query'
               },
               {
                 name: '应收实收',
-                path: 'actualHarvest'
+                path: 'actualHarvest',
+                code: 'sign-cw-rec-query'
               },
               {
                 name: '票据管理',
-                path: 'paperSet'
+                path: 'paperSet',
+                code: 'sign-cw-bill-query'
               }
             ]
           },
@@ -127,11 +136,13 @@
             child: [
               {
                 name: '应收业绩',
-                path: 'actualAchievement'
+                path: 'actualAchievement',
+                code: 'sign-yj-rev-query'
               },
               {
-                name: '实收业绩',
-                path: 'receivableAchievement'
+                name: '结算业绩',
+                path: 'receivableAchievement',
+                code: 'sign-yj-rec-query'
               },
               // {
               //   name:'门店实收',
@@ -147,15 +158,18 @@
             child: [
               {
                 name: '后期接收',
-                path: 'postReceive'
+                path: 'postReceive',
+                code: 'sign-qh-rev-query'
               },
               {
                 name: '后期管理',
-                path: 'postManage'
+                path: 'postManage',
+                code: 'sign-qh-mgr-query'
               },
               {
                 name: '后期监控',
-                path: 'postMonitor'
+                path: 'postMonitor',
+                code: 'sign-qh-cont-query'
               }
             ]
           },
@@ -167,27 +181,33 @@
             child: [
               {
                 name: '公司设置',
-                path: 'company'
+                path: 'company',
+                code: 'sign-set-gs'
               },
               {
                 name: '合同模板设置',
-                path: 'contractTemplate'
+                path: 'contractTemplate',
+                code: 'sign-set-ht-query'
               },
               {
                 name: '后期流程设置',
-                path: 'postProcess'
+                path: 'postProcess',
+                code: 'sign-set-hq'
               },
               {
                 name: '款类设置',
-                path: 'moneyType'
+                path: 'moneyType',
+                code: 'sign-set-kl-query'
               },
               {
                 name: '操作日志',
-                path: 'operationLog'
+                path: 'operationLog',
+                code: 'sign-set-log-query'
               },
               {
                 name: '审核流程',
-                path: 'approvalProcess'
+                path: 'approvalProcess',
+                code: 'sign-set-verify'
               }
             ]
           }
@@ -234,8 +254,22 @@
     },*/
     created(){
       this.Index=this.$store.state.path
-      // debugger
       this.activeIndex = this.Index[1].path.split('/')[1]
+      this.$nextTick(()=>{
+        let arr=this.$store.state.user.privileges
+        console.log(this.$store.state.user.privileges)
+        this.views.forEach((item,index)=>{
+          let sliders=[]
+          if(item.name!=='财务'){
+            item.child.forEach(tip=>{
+              if(arr.indexOf(tip.code)>-1){
+                sliders.push(tip)
+              }
+            })
+            item.child=sliders
+          }
+        })
+      })
     },
     beforeRouteUpdate(to,from,next){
       this.Index=this.$store.state.path
@@ -283,6 +317,11 @@
         'setPath'
       ])
     },
+    ...mapGetters([
+      'getPath',
+      'getUser',
+      'getLoading'
+    ])
   }
 </script>
 

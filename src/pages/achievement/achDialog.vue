@@ -24,10 +24,11 @@
             v-if="dialogType==3"
             style="fontSize:20px;"
           >业绩分成</h1>
-          <p>
+          <p style="font-weight:bold;">
             可分配业绩：
             <span class="orange">{{comm}}元</span>
           </p>
+          <p style="margin-top:20px;">可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费</p>
         </div>
 
         <!-- 房源列表 -->
@@ -43,7 +44,7 @@
               <el-button
                 type="primary"
                 v-if="dialogType==0"
-                @click="houseRelativeMans(null)" 
+                @click="houseRelativeMans('getExamineEmployees')" 
               >相关人员</el-button>
               <el-button
                 type="primary"
@@ -196,6 +197,7 @@
                     :loading="loading1"
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(2)"
+                    v-loadmore="moreShopInfos"
                     @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,0)"
                   >
                     <el-option
@@ -250,6 +252,7 @@
                     :loading="loading1"
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(1)"
+                    v-loadmore="moreAmaldars"
                     @change="changeAmaldar(scope.row.amaldar,scope.$index,0)"
                   >
                     <el-option
@@ -277,6 +280,7 @@
                     :loading="loading1"
                     placeholder="请输入内容"
                     :remote-method="getShopInfo(0)"
+                    v-loadmore="moreManagers"
                     @change="changeManager(scope.row.manager,scope.$index,0)"
                   >
                     <el-option
@@ -329,7 +333,7 @@
               <el-button
                 type="primary"
                 v-if="dialogType==0"
-                @click="clientRelativeMans(null)" 
+                @click="clientRelativeMans('getExamineEmployees')" 
               >相关人员</el-button>
               <el-button
                 type="primary"
@@ -533,6 +537,7 @@
                     placeholder="请输入内容"
                     :loading="loading1"
                     :remote-method="getShopInfo(1)"
+                    v-loadmore="moreAmaldars"
                     @change="changeAmaldar(scope.row.amaldar,scope.$index,1)"
                   >
                     <el-option
@@ -560,6 +565,7 @@
                     placeholder="请输入内容"
                     :loading="loading1"
                     :remote-method="getShopInfo(0)"
+                     v-loadmore="moreManagers"
                     @change="changeManager(scope.row.manager,scope.$index,1)"
                   >
                     <el-option
@@ -642,13 +648,13 @@
           v-if="dialogType==1"
         >
           <div class="footer-btn-layout f_r">
-            <el-button
+            <!-- <el-button
               type="primary"
               round
               @click="keepAch(2,2,'editSave')"
               class="color-white"
               v-dbClick
-            >保存</el-button>
+            >保存</el-button> -->
             <el-button
               type="primary"
               round
@@ -689,13 +695,13 @@
           v-if="dialogType==3&&!backAId"
         >
           <div class="footer-btn-layout f_r">
-            <el-button
+            <!-- <el-button
               type="primary"
               round
               @click=" keepAchDivide(2)"
               class="color-white"
               v-dbClick
-            >保存</el-button>
+            >保存</el-button> -->
             <el-button
               type="primary"
               round
@@ -812,9 +818,12 @@ export default {
       assignorIndex:null,
       assignorStr:null,
       assignorTotal:null,
-      shopIndex:null,
+      shopIndex:1,
       shopStr:null,
-      shopTotal:null
+      shopTotal:null,
+      // amaldarIndex:1,
+      // amaldarStr:null,
+      // amaldarTotal:null
     };
   },
   created() {},
@@ -1031,6 +1040,8 @@ export default {
              this.managers = res.data.data.list;
           }
           this.loading1 = false;
+          this.shopTotal= res.data.data.total;
+          this.shopIndex=1;
          });
        } 
       };
@@ -1045,18 +1056,41 @@ export default {
          };
          this.$ajax.get("/api/organize/employees/pages", param).then(res => {
           if(roleId==2){
-             this.shopkeepers = res.data.data.list;
+             this.shopkeepers = this.shopkeepers.concat(res.data.data.list);
           }else if(roleId==1){
-             this.amaldars = res.data.data.list;
+             this.amaldars = this.amaldars.concat(res.data.data.list);
           }else if(roleId==0){
-             this.managers = res.data.data.list;
+             this.managers = this.managers.concat(res.data.data.list);
           }
          });
        } 
     },
-    moreShopInfos(roleId){
+    // 下拉加载更多店长
+    moreShopInfos(){
+     if(this.shopkeepers.length>= this.shopTotal){
+        return
+      }else {
       this.shopIndex++;
-      this.getMoreShopInfo( this.shopStr,this.shopIndex,roleId);
+      this.getMoreShopInfo( this.shopStr,this.shopIndex,2);
+      }
+    },
+    // 下拉加载更多区经
+    moreAmaldars(){
+      if(this.amaldars.length>= this.shopTotal){
+        return
+      }else {
+        this.shopIndex++;
+        this.getMoreShopInfo( this.shopStr,this.shopIndex,1);
+      }
+    },
+   // 下拉加载更多区总
+    moreManagers(){
+      if(this.managers.length>= this.shopTotal){
+        return
+      }else {
+        this.shopIndex++;
+        this.getMoreShopInfo( this.shopStr,this.shopIndex,0);
+      }
     },
     // 改变店长
     changeShopkeeper(val, index, type1){
@@ -1650,6 +1684,7 @@ export default {
       if(type==0){
         if(event.target.checked){ 
              this.houseArr[index].place = -1;
+             
         }
       }else{
          if(event.target.checked){ 
@@ -1658,7 +1693,6 @@ export default {
       }       
     }
   },
-
   watch: {
     contractCode(val) {
       // 字典初始化
@@ -1667,8 +1701,7 @@ export default {
       if (val) {
         this.code = val;
         if (this.dialogType == 0) {  // 审核
-          this.codeBaseInfo(this.code, 1,null,"");
-          // 反审核
+          this.codeBaseInfo(this.code, 1,null,"getExamineInfo");
         } 
         else if (this.dialogType == 1) {//编辑
           this.addArr = [];
@@ -1692,7 +1725,7 @@ export default {
           let param = {
             contCode: this.contractCode
           };
-          this.$ajax.get("/api/achievement/getFirstInput", param).then(res => {
+          this.$ajax.get("/api/achievement/getContDetailsAgents", param).then(res => {
             let data = res.data;
             if (data.status === 200) {
               if (data.data.customerAgents) {
@@ -1785,7 +1818,7 @@ export default {
       font-size: 30px;
     }
     .ach-header {
-      min-height: 80px;
+      min-height: 100px;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;
       overflow: hidden;

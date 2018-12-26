@@ -6,11 +6,12 @@
             <el-form  class="header" ref="propForm" size="small">
                 <div class="content">
                     <el-form-item label="部门">
-                        <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
+                         <select-tree :data="DepList" :init="departmentName"  @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+                        <!-- <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
                             <el-option class="drop-tree" value="">
                             <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                             </el-option>
-                        </el-select>
+                        </el-select> -->
                         <el-select v-model="depUser" :clearable="true" v-loadmore="moreEmploye" filterable placeholder="请选择">
                             <el-option
                                 v-for="item in EmployeList"
@@ -151,7 +152,6 @@
                 }else{
                      this.noPower(this.power['sign-set-log-query'].name)
                 }
-                
             },
             // 重置
             resetFormFn() {
@@ -192,10 +192,17 @@
     }
     .content {
         display: flex;
+        font-weight: normal;
         flex-wrap: wrap;
         > .el-form-item {
             display: flex;
             margin-right: 30px;
+            &:nth-child(1) /deep/ .el-form-item__content{
+                display: flex;
+                span{
+                    margin-right: 5px;
+                }
+            }
         }
     }
 }
@@ -218,6 +225,9 @@
 }
 /deep/ .el-pagination{
     text-align: center
+}
+.el-select-dropdown__item.selected {
+    font-weight: normal;
 }
 .mr-8{
     margin-right: 8px;

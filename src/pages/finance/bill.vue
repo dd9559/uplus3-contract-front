@@ -38,7 +38,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
           <!--<el-select
             class="w200"
             :clearable="true"
@@ -170,7 +170,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款人" min-width="140">
           <template slot-scope="scope">
-            <span>{{scope.row.store}}</span>
+            <span>{{scope.row.type===1?scope.row.inObjStore:scope.row.store}}</span>
             <p>{{scope.row.type===1?scope.row.inObjName:scope.row.createByName}}</p>
           </template>
         </el-table-column>
@@ -344,23 +344,23 @@
             state: false,
             name: '作废'
           },
-          'sign-cw-debt-rev-verify': {
+          'sign-cw-debt-rev': {
             state: false,
             name: '收款审核'
           },
-          'sign-cw-debt-pay-verify': {
+          'sign-cw-debt-pay': {
             state: false,
             name: '付款审核'
           },
-          'sign-cw-debt-contract': {
+          'sign-com-htdetail': {
             state: false,
             name: '合同详情'
           },
-          'sign-cw-debt-house': {
+          'sign-com-house': {
             state: false,
             name: '房源详情'
           },
-          'sign-cw-debt-cust': {
+          'sign-com-cust': {
             state: false,
             name: '客源详情'
           }
@@ -451,7 +451,7 @@
             query: {
               id: row.id,
               tab: row.type === 1 ? '收款信息' : '付款信息',
-              power: this.power[row.type===1?'sign-cw-debt-rev-verify':'sign-cw-debt-pay-verify'].state
+              power: this.power[row.type===1?'sign-cw-debt-rev':'sign-cw-debt-pay'].state
             }
           })
         }
@@ -481,8 +481,8 @@
         this.setLoading(true)
         this.$ajax.put(`/api${src}`, {payId: this.layer.content[0].id}, 2).then(res => {
           res = res.data
-          this.setLoading(false)
           if (res.status === 200) {
+            this.setLoading(false)
             this.getData()
             this.layer.show = false
             this.$message({
@@ -510,7 +510,7 @@
           contId:row.contId,
           contCode:row.contCode,
           operaType:type,
-          power:type==='cont'?this.power['sign-cw-debt-contract']:type==='house'?this.power['sign-cw-debt-house']:type==='customer'?this.power['sign-cw-debt-cust']:''
+          power:type==='cont'?this.power['sign-com-htdetail']:type==='house'?this.power['sign-com-house']:type==='customer'?this.power['sign-com-cust']:''
         }
         this.msgOpera(param)
       },

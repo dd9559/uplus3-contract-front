@@ -139,7 +139,7 @@
         </el-table-column>
               
         <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope" v-if="scope.row.examineState.value=== 0">
+          <template slot-scope="scope" v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === userMsg.empId">
             <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
           </template>
         </el-table-column>
@@ -187,7 +187,11 @@
         <div class="audit-col">
           <el-table :data="layerAudit.settlementFroms" border style="width: 100%" class="table">
             <el-table-column prop="level4" label="合作门店"></el-table-column>
-            <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
+            <el-table-column label="业绩分成比例">
+              <template slot-scope="scope">
+                  <p>{{scope.row.ratio}}%</p>
+              </template>
+            </el-table-column>
             <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
             <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
           </el-table> 
@@ -271,7 +275,11 @@
         <div class="audit-col">
           <el-table :data="layerAudit.settlementFroms" border style="width: 100%" class="table">
             <el-table-column prop="level4" label="合作门店"></el-table-column>
-            <el-table-column prop="ratio" label="业绩分成比例"></el-table-column>
+            <el-table-column label="业绩分成比例">
+              <template slot-scope="scope">
+                  <p>{{scope.row.ratio}}%</p>
+              </template>
+            </el-table-column>
             <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
             <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
           </el-table> 
@@ -372,6 +380,7 @@
         loading2:false,
         loadingTable:false,
         settleMarks: '',
+        userMsg:{},
         // settleMarks:'',
          adjustForm:{
           signDate: '', //发起日期

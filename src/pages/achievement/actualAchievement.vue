@@ -15,11 +15,12 @@
       >
         <!-- 部门 -->
         <el-form-item label="部门" style="margin-right:0px;">
-              <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
+              <!-- <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
                 <el-option class="drop-tree" value="">
                   <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                 </el-option>
-              </el-select>
+              </el-select> -->
+             <select-tree :data="DepList" :init="propForm.department" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
        </el-form-item>
 
         <el-form-item>
@@ -129,19 +130,19 @@
           <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
           <ul>
             <li>
-              <span>总分成：<b class="orange">{{countData[3]}}元</b>，</span>
+              <span>总分成：<b class="orange">{{countData[3] ?countData[3] :'0'}}元</b>，</span>
             </li>
             <li>
               <span>分类分成：</span>
             </li>
             <li>
-              <span>出售：<b class="orange">{{countData[1]}}元</b>，</span>
+              <span>出售：<b class="orange">{{countData[1] ?countData[1] :'0'}}元</b>，</span>
             </li>
             <li>
-              <span>代办：<b class="orange">{{countData[2]}}元</b>，</span>
+              <span>代办：<b class="orange">{{countData[2] ?countData[2] :'0'}}元</b>，</span>
             </li>
             <li>
-              <span>出租：<b class="orange">{{countData[0]}}元</b></span>
+              <span>出租：<b class="orange">{{countData[0] ?countData[0] :'0'}}元</b></span>
             </li>
           </ul>
         </div>
@@ -380,13 +381,14 @@
                   class="check-btn"
                 >
                   <span
-                    @click.stop="tishen(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                  >提审</span>
-                  <span
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-edit'].state"
                   >编辑</span>
+                  <span
+                    style="cursor:pointer;"
+                    v-else
+                  >-</span>
                 </div>
                 <div
                   v-if="scope.row.achievementState==1"
@@ -394,8 +396,13 @@
                 >
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
-                    style="cursor:pointer;"
+                    style="cursor:pointer;"   
+                    v-if="power['sign-yj-rev-fs'].state"
                   >反审核</span>
+                 <span
+                    style="cursor:pointer;"
+                    v-else
+                  >-</span>
                 </div>
                 <div
                   v-if="scope.row.achievementState==2"
@@ -404,7 +411,12 @@
                   <span
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-edit'].state"
                   >编辑</span>
+                  <span
+                    style="cursor:pointer;"
+                    v-else
+                  >-</span>
                 </div>
 
                 <div
@@ -414,7 +426,12 @@
                   <span
                     @click.stop="chehui(scope.row,scope.$index)"
                     style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-retreat'].state"
                   >撤回</span>
+                 <span
+                    style="cursor:pointer;"
+                    v-else
+                  >-</span>
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
@@ -457,6 +474,7 @@
       <div class="ach-header">
         <h1 class="f14">业绩详情</h1>
         <p class="f14">可分配业绩：<span class="orange">{{comm}}元</span></p>
+        <p style="margin-top:20px;">可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费</p>
       </div>
       <div class="ach-body">
         <h1 class="f14">房源方分成</h1>
@@ -822,21 +840,25 @@ export default {
       ],
         //权限配置
       power: {
-        'sign-cw-debt-query': {
+        'sign-yj-rev-query': {
           state: false,
           name: '查询'
         },
-        'sign-cw-debt-contract': {
+        'sign-yj-rev-edit': {
           state: false,
-          name: '合同详情'
+          name: '编辑'
         },
-        'sign-cw-debt-house': {
+       'sign-yj-rev-addemp': {
           state: false,
-          name: '房源详情'
+          name: '录入分成'
         },
-        'sign-cw-debt-cust': {
+       'sign-yj-rev-retreat': {
           state: false,
-          name: '客源详情'
+          name: '撤回'
+        },
+      'sign-yj-rev-fs': {
+          state: false,
+          name: '反审核'
         }
       }
     };
@@ -870,21 +892,21 @@ export default {
         this.remoteMethod()
       }
     },   
-     clearDep:function () {
+    clearDep:function () {
       this.propForm.department=''
       this.EmployeList=[]
       this.propForm.dealAgentId=''
       this.propForm.dealAgentStoreId='';
       this.clearSelect()
     },
-     depHandleClick(data) {
+    depHandleClick(data) {           
       this.propForm.dealAgentStoreId=data.depId
       this.propForm.department=data.name
       this.propForm.dealAgentId=''
       this.handleNodeClick(data)
     },
     getData(ajaxParam) {
-      if(this.power['sign-cw-debt-query'].state){
+      if(this.power['sign-yj-rev-query'].state){
               let _that=this;
                  this.$ajax
                    .get("/api/achievement/selectAchievementList", ajaxParam)
@@ -901,11 +923,12 @@ export default {
                        _that.countData = [0, 0, 0, 0];
                      }       
 
-                     }
-                  
-                 });
+                     }            
+                 }).catch(error => {
+                     this.$message({message:error})
+                  });
          }else {
-          this.noPower(this.power['sign-cw-debt-query'].name)
+          this.noPower(this.power['sign-yj-rev-query'].name)
           this.countData = [0, 0, 0, 0];
         }
       this.loading=false;
@@ -995,7 +1018,7 @@ export default {
       this.code = row.code;
       let param = { contCode: row.code, entrance: 3,aId:row.aId };
       this.$ajax
-        .get("/api/achievement/selectAchievementByCode", param)
+        .get("/api/achievement/getAchDetails", param)
         .then(res => {
           let data = res.data;
           if (res.status === 200) {
@@ -1080,16 +1103,16 @@ export default {
       this.shows = true;
     },
     editAch(value,index) {
-      this.beginData = true;
-      this.code2 =  value.code; 
-      this.aId =  value.aId; 
-      this.contractId =  value.id; 
-      this.dialogType = 1; 
-      this.achIndex=index  
-      this.achObj={
-        contractId:value.id,//合同id
-      }
-      this.shows = true;
+        this.beginData = true;
+        this.code2 =  value.code; 
+        this.aId =  value.aId; 
+        this.contractId =  value.id; 
+        this.dialogType = 1; 
+        this.achIndex=index  
+        this.achObj={
+          contractId:value.id,//合同id
+        }
+        this.shows = true;
     },
     againCheck(value,index) {
       this.beginData = true;
@@ -1302,7 +1325,7 @@ export default {
       font-size: 30px;
     }
     .ach-header {
-      min-height: 80px;
+      min-height: 100px;
       min-width: 100%;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;

@@ -77,7 +77,7 @@
                                     </ul>
                                 </div>
                                 <div class="fr">                  
-                                    <el-button type="primary" plain round class="btn1" @click="onPreview()">预 览</el-button>
+                                    <el-button type="primary" plain round class="btn1" @click="onPreview()" v-if="power['sign-ht-xq-view'].state">预 览</el-button>
                                     <el-button type="primary" round class="mr30 btn2" @click="onEdit(detailData.contType)">编 辑</el-button>                  
                                 </div>
                             </div>
@@ -270,7 +270,15 @@ export default {
             //主体合同
             uploadList: [],
 
-            isDelete:''
+            isDelete:'',
+
+            //权限
+            power: {
+                'sign-ht-xq-view': {
+                    state: false,
+                    name: '预览'
+                },
+            }
         }
     },
     

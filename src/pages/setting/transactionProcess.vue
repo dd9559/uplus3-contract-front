@@ -1,7 +1,7 @@
 <template>
     <div class="data-list">
         <div class="table_head">
-            <el-button type="primary" @click="addProcess('添加交易流程')">添加</el-button>
+            <el-button type="primary" @click="addProcess('添加交易流程')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
         <el-table :data="listData" style="width: 100%" class="list1">
           <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
@@ -9,9 +9,9 @@
           <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-              <el-button @click="rowOperation(scope.row,'init')" type="text" size="small">交易流程管理</el-button>
-              <el-button @click="rowOperation(scope.row,'edit')" type="text" size="small">编辑</el-button>
-              <el-button @click="rowOperation(scope.row,'delete')" type="text" size="small">删除</el-button>
+              <el-button @click="rowOperation(scope.row,'init')" type="text" size="small" v-if="power['sign-set-hq'].state">交易流程管理</el-button>
+              <el-button @click="rowOperation(scope.row,'edit')" type="text" size="small" v-if="power['sign-set-hq'].state">编辑</el-button>
+              <el-button @click="rowOperation(scope.row,'delete')" type="text" size="small" v-if="power['sign-set-hq'].state">删除</el-button>
             </template>
           </el-table-column> 
         </el-table>
@@ -30,21 +30,22 @@
         <!-- 交易流程管理 弹出框 -->
         <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
           <span class="flow-name">({{flowName}})</span>
-          <div class="manage-title">
-            <label>结算百分比 : </label>
-            <el-input v-model="settlePercent"  @keyup.native="getInt" size="small"></el-input>%
-          </div>
           <div class="manage-list">
             <el-table :data="manageData" max-height="400">
-              <el-table-column align="center" type="index" label="序号"></el-table-column>
+              <el-table-column align="center" type="index" label="序号" width="45"></el-table-column>
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
               <el-table-column align="center" label="步骤名称" prop="stepsName"></el-table-column>
               <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
               <el-table-column align="center" label="是否可以结算">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.isSettle" @change="isSettleChange(scope.$index,$event)" size="small">
+                  <el-select v-model="scope.row.isSettle" size="small" @change="isSettleChange(scope.$index,$event)">
                     <el-option v-for="item in isSettleOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="结算百分比(%)">
+                <template slot-scope="scope">
+                  <el-input size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)" :disabled="scope.row.isSettle?false:true"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="操作">
@@ -88,8 +89,9 @@
            
 <script>
   import { FILTER } from "@/assets/js/filter"
+  import {MIXINS} from "@/assets/js/mixins";
   export default {
-    mixins: [FILTER],
+    mixins: [FILTER,MIXINS],
     props: ["cityId"],
     data() {
       return {
@@ -106,8 +108,6 @@
         //流程管理列表
         manageData: [],
         tempManage: [],
-        settlePercent: "",
-        tempSetPercent: "",
         isSettleOption: [
           {
             value: 0,
@@ -124,7 +124,13 @@
         currentFlowId: 0,
         AllSteps: [],
         inputMax: 30,
-        flowName: ""
+        flowName: "",
+        power: {
+          'sign-set-hq': {
+            state: false,
+            name: '操作'
+          }
+        }
       };
     },
     created() {
@@ -137,14 +143,18 @@
         let param = {
           cityId: this.cityId
         };
-        this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
-          res = res.data;
-          if (res.status === 200) {
-            this.listData = res.data;
-          }
-        }).catch(error => {
-            this.$message({message:error})
-        })
+        if(this.power['sign-set-hq'].state) {
+          this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
+            res = res.data;
+            if (res.status === 200) {
+              this.listData = res.data;
+            }
+          }).catch(error => {
+              this.$message({message:error})
+          })
+        } else {
+          this.noPower(this.power['sign-set-hq'].name)
+        }
       },
       addProcess(title) {
         this.dialogProcessVisible = true
@@ -161,8 +171,6 @@
           this.addForm.name = row.name
         } else if(type === 'init') {
           this.dialogManageVisible = true
-          this.settlePercent = row.settlePercent ? row.settlePercent : ""
-          this.tempSetPercent = row.settlePercent ? row.settlePercent : ""
           this.currentFlowId = row.id
           let param = {
             flowId: row.id
@@ -179,6 +187,7 @@
                   i.sort = ++index
                 }
               })
+              i.settlePercent = i.settlePercent === 0 ? "" : Number(i.settlePercent)
             })
             this.tempManage = JSON.parse(JSON.stringify(this.manageData))
           }).catch(error => {
@@ -282,10 +291,15 @@
         }
       },
       isSettleChange(index,bool) {
-        for(var i = 0; i < this.manageData.length; i++) {
-          this.manageData[i].isSettle = 0
+        if(!this.manageData[index].isSettle) {
+          this.manageData[index].settlePercent = ""
         }
-        this.manageData[index].isSettle = bool
+        // for(var i = 0; i < this.manageData.length; i++) {
+        //   this.manageData[i].isSettle = 0
+        //   this.manageData[i].settlePercent = ""
+        // }
+        // this.manageData[index].isSettle = bool
+        // this.manageData[this.manageData.length - 1].isSettle = bool
       },
       addBtn() {
         this.ProcessStepVisible = true
@@ -293,7 +307,6 @@
           item.tempList = []
           item.stepsSelect = false
         })
-        // this.StepsOption = this.StepsOption.filter(item => item.stepsList.length)
         this.manageData.forEach(i => {
           this.StepsOption.forEach(v => {
             if(i.stepsTypeName === v.typeName) {
@@ -383,7 +396,7 @@
                 return false
             } else {
                 for (let i = 0; i < a.length; i++) {
-                    if (a[i].id !== b[i].id || a[i].isSettle !== b[i].isSettle) {
+                    if (a[i].id !== b[i].id || a[i].isSettle !== b[i].isSettle || a[i].settlePercent !== b[i].settlePercent) {
                         return false
                     }
                 }
@@ -398,46 +411,42 @@
               arr.push({
                 transStepsId: item.transStepsId,
                 sort: item.sort,
-                isSettle: item.isSettle
+                isSettle: item.isSettle,
+                settlePercent: item.settlePercent?Number(item.settlePercent):0
               })
             } else {
               arr.push({
                 transStepsId: item.transStepsId,
                 sort: item.sort,
                 isSettle: item.isSettle,
-                id: item.id ? item.id : null
+                id: item.id ? item.id : null,
+                settlePercent: item.settlePercent?Number(item.settlePercent):0
               })
             }
           })
+          var num = 0
+          for(var i = 0; i < arr.length; i++) {
+            if(arr[i].settlePercent) {
+              num += Number(arr[i].settlePercent)
+            }
+          }
           let param = {
             transFlowId: this.currentFlowId,
             transStepsList: arr
           }
-          let obj = {
-            id: this.currentFlowId,
-            cityId: this.cityId,
-            settlePercent: +this.settlePercent > 100 ? "100" : this.settlePercent
-          }
           if(arr.length !== 0) {
+            if(num != 100) {
+              this.$message({message:"所有步骤结算百分比之和必须等于100"})
+              return false
+            }
             if(this.flowCount === 0) {
               const url = "/api/flowmanage/insertFLowSteps"
               this.flowManagePost(url,param)
             } else if (this.flowCount !== 0 && !flag) {
               const url = "/api/flowmanage/updateFLowSteps"
               this.flowManagePost(url,param)
-            } else if (flag && this.tempSetPercent == this.settlePercent) {
+            } else if (flag) {
               this.$message("没有做任何修改")
-            }
-            if(this.tempSetPercent != this.settlePercent) {
-              this.$ajax.postJSON('/api/flowmanage/insertFLow',obj).then(res => {
-                res = res.data
-                if(res.status === 200) {
-                  this.dialogManageVisible = false
-                  this.getData()
-                }
-              }).catch(error => {
-                  this.$message({message:error})
-              })
             }
           } else {
             this.$message("没有绑定任何交易步骤")
@@ -484,11 +493,8 @@
         })
       },
       //获取整数
-      getInt:function (param,int=1) {
-        this.settlePercent = this.settlePercent.replace(/[^\.\d]/g,'')
-        if(int){
-          this.settlePercent =this.settlePercent.replace('.','')
-        }
+      getInt:function (index) {
+        this.manageData[index].settlePercent = this.manageData[index].settlePercent.replace(/[^\.\d]/g,'')
       }
     },
     computed: {
@@ -550,21 +556,12 @@
       top: 20px;
       color: #303133;
     }
-    .manage-title {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      .el-input {
-        width: 90px;
-        margin-left: 5px;
-      }
-    }
     .manage-list {
       .el-table {
         border: 1px solid rgba(237,236,240,1);
       }
       /deep/ .el-input {
-        width: 94px;
+        width: 80px;
         .el-input__icon { line-height: 0; }
       }
     }
