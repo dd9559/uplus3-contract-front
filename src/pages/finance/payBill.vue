@@ -423,8 +423,8 @@
               delete param.contId
               this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
                 res = res.data
-                this.fullscreenLoading=false
                 if (res.status === 200) {
+                  this.fullscreenLoading=false
                   this.$router.replace({
                     path: 'payResult',
                     query:{

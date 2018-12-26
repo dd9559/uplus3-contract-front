@@ -82,7 +82,7 @@
         </el-form-item>
         <el-form-item label="业绩状态">
           <el-select v-model="contractForm.achievementState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in achStatuArr" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['54']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -266,7 +266,7 @@
           <template slot-scope="scope">
             <div style="text-align:center">
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-upload'].state&&scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&scope.row.contState.value>1&&scope.row.contChangeState.value!=2" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
               <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4">
                 <el-button type="text" size="medium" @click="goSave(scope.row)">提审</el-button>
@@ -396,7 +396,7 @@ export default {
       ],
       //权限配置
       power: {
-        'sign-qh-cont-bill': {
+        'sign-ht-info-debts': {
           state: false,
           name: '流水'
         },
@@ -424,17 +424,13 @@ export default {
           state: false,
           name: '提审'
         },
-        'sign-ht-info-upload': {
+        'sign-ht-xq-main-add': {
           state: false,
           name: '上传'
         },
         'sign-ht-info-adjust': {
           state: false,
           name: '调佣'
-        },
-        'sign-ht-info-verify': {
-          state: false,
-          name: '审核'
         },
         'sign-ht-info-end': {
           state: false,
@@ -444,7 +440,7 @@ export default {
           state: false,
           name: '收佣状态'
         },
-        'sign-ht-info-prog': {
+        'sign-com-hqstep': {
           state: false,
           name: '后期进度'
         },
@@ -452,15 +448,15 @@ export default {
           state: false,
           name: '已拒绝' //后期状态
         },
-        'sign-cw-debt-contract': {
+        'sign-com-htdetail': {
           state: false,
           name: '合同详情'
         },
-        'sign-cw-debt-house': {
+        'sign-com-house': {
           state: false,
           name: '房源详情'
         },
-        'sign-cw-debt-cust': {
+        'sign-com-cust': {
           state: false,
           name: '客源详情'
         }
@@ -529,7 +525,7 @@ export default {
     },
     //流水
     runningWater(item) {
-      if(this.power['sign-qh-cont-bill'].state){
+      if(this.power['sign-ht-info-debts'].state){
         this.water = true;
         this.contCode=item.code;
         this.waterContId=item.id;
@@ -573,7 +569,7 @@ export default {
     },
     //合同详情页
     toDetail(value) {
-      // if(this.power['sign-cw-debt-contract'].state){
+      if(this.power['sign-com-htdetail'].state){
         this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
           this.$router.push({
@@ -593,9 +589,9 @@ export default {
             }
           });
         }
-      // }else{
-      //   this.noPower('合同详情查看')
-      // }
+      }else{
+        this.noPower('合同详情查看')
+      }
     },
     uploadData(value) {
       if(this.power['sign-ht-info-reject'].state){
@@ -614,7 +610,6 @@ export default {
       
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.currentPage = val;
       this.getContractList();
     },
@@ -785,7 +780,8 @@ export default {
     //发起结算弹窗
     closeAccount(item){
       if(this.power['sign-ht-info-end'].state){
-        if(item.resultState.value===2){
+        if(item.contChangeState.value!==2){
+          if(item.resultState.value===2){
           this.$message({
             message:'已结算完成，无需发起结算'
           })
@@ -812,6 +808,11 @@ export default {
             })
           }
         }
+        }else{
+          this.$message({
+            message:'合同已解约，无法发起结算'
+          })
+        }
       }else{
         this.noPower('结算')
       }
@@ -824,7 +825,7 @@ export default {
     },
     //后期流程查看
     showStepInstance(item){
-      if(this.power['sign-ht-info-prog'].state){
+      if(this.power['sign-com-hqstep'].state){
         let value = {
           id:item.id,
           transFlowName:item.stepInstanceName,

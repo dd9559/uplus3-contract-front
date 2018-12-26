@@ -4,7 +4,7 @@
 		<el-dialog :title="title" :visible="getCancelDialog" width="740px" class="layer-changecancel mt80" @close='close' :closeOnClickModal="$tool.closeOnClickModal">
 			<div class="audit-box" v-if="getDialogType==='changeEdit'">
 				<div class="textareabox">
-					<p>合同变更原因</p>
+					<p class="form-label">合同变更原因</p>
 					<div class="reason">
 						<el-input type="textarea" :rows="5" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
 						</el-input>
@@ -13,7 +13,7 @@
 				</div>
 				<!-- 上传附件 -->
 				<div class="uploadfile">
-					<div class="uploadtitle">上传变更协议<span><b>注：</b>协议支持所有格式</span></div>
+					<div class="uploadtitle form-label">上传变更协议<span><b>注：</b>协议支持所有格式</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li>
@@ -24,7 +24,7 @@
 							</li>
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-									<div class="namePath">
+									<div class="namePath" @click="previewPhoto(uploadList,index)">
 										<upload-cell :type="item.fileType"></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
@@ -71,7 +71,7 @@
 			<!-- 合同解约（编辑） -->
 			<div class="audit-box" v-if="getDialogType==='cancelEdit'">
 				<div class="textareabox">
-					<p>合同解除原因</p>
+					<p class="form-label">合同解除原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
 						<el-input type="textarea" :rows="5" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
@@ -81,7 +81,7 @@
 				</div>
 				<!-- 上传附件 -->
 				<div class="uploadfile">
-					<div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持所有格式</span></div>
+					<div class="uploadtitle form-label">上传解除协议<span><b>注：</b>协议支持所有格式</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li>
@@ -92,7 +92,7 @@
 							</li>
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-									<div class="namePath">
+									<div class="namePath" @click="previewPhoto(uploadList,index)">
 										<upload-cell :type="item.fileType"></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
