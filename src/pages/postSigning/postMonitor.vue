@@ -60,7 +60,7 @@
                     <el-form-item label="部门" 
                     prop="departmentS"
                     class="mr">
-                        <el-select 
+                        <!-- <el-select 
                         ref="tree" 
                         size="small" 
                         :loading="Loading" 
@@ -80,7 +80,8 @@
                                 :props="defaultProps" 
                                 @node-click="depHandleClick"></el-tree> 
                             </el-option>
-                        </el-select>
+                        </el-select> -->
+                        <select-tree :data="DepList" :init="propForm.departmentS" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
                     </el-form-item>
                     <el-form-item prop="departmentMo">
                         <el-select 
