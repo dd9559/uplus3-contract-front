@@ -23,12 +23,9 @@
           <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> --> 
-          <el-select :clearable="true" filterable remote ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="adjustForm.depName" placeholder="请选择">
-            <el-option class="drop-tree" value="">
-              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
-            </el-option>
-          </el-select>
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="adjustForm.empId" placeholder="请选择">
+          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" class="fl"></select-tree>
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
+                     v-model="adjustForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -846,6 +843,9 @@
 @import "~@/assets/common.less";
 
 #settlecheck{
+  .fl{
+    float: left;
+  }
   .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{
     margin-bottom: 10px;
   }
