@@ -322,13 +322,9 @@ export default {
       loading: true,
       //权限配置
       power: {
-        'sign-cw-debt-query': {
+        'sign-yj-rec-query': {
           state: false,
           name: '查询'
-        },
-        'sign-cw-debt-contract': {
-          state: false,
-          name: '合同详情'
         }
       }
     };
@@ -415,7 +411,7 @@ export default {
       };
     },
     getData(param) {
-      if(this.power['sign-cw-debt-query'].state){
+      if(this.power['sign-yj-rec-query'].state){
              // 实收列表
               let _that = this;
               this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
@@ -433,7 +429,7 @@ export default {
                      this.$message({message:error})
               });;
         }else {
-          this.noPower(this.power['sign-cw-debt-query'].name)
+          this.noPower(this.power['sign-yj-rec-query'].name)
           this.countData = [0, 0, 0, 0];
         }
         this.loading = false;
