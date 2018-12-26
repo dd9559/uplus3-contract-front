@@ -87,7 +87,7 @@
                 <el-tab-pane label="合同主体" name="second" v-if="this.contState === 2 || this.contState === 3">
                     <div class="contractSubject">
                         <ul class="ulData">
-                            <li>
+                            <li v-if="power['sign-ht-xq-main-add'].state">
                                 <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
                                     <i class="iconfont icon-shangchuan"></i>
                                     <p>点击上传</p>
@@ -100,7 +100,7 @@
                                         <p>{{item.name}}</p>
                                     </div>
                                 </el-tooltip>
-                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="power['sign-ht-xq-main-add'].state&&isDelete===item.index+item.path"></i>
                             </li>
                         </ul>
                     </div>
@@ -114,7 +114,7 @@
                             <div class="small-col" v-for="(item,index) in sellerList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
-                                    <li>
+                                    <li v-if="power['sign-ht-xq-data-add'].state">
                                         <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
@@ -127,7 +127,7 @@
                                                 <p>{{item_.name}}</p>                                              
                                             </div>
                                         </el-tooltip>
-                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="isDelete===item.title+item_.path"></i>
+                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
                                     </li>
                                 </ul>
                             </div>                           
@@ -139,7 +139,7 @@
                             <div class="small-col" v-for="(item,index) in buyerList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
-                                    <li>
+                                    <li v-if="power['sign-ht-xq-data-add'].state">
                                         <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
@@ -153,7 +153,7 @@
                                                     <p>{{item_.name}}</p>   
                                                 </div>
                                             </el-tooltip>
-                                            <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>                                          
+                                            <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>                                          
                                         </li>
                                     
                                 </ul>
@@ -166,7 +166,7 @@
                             <div class="small-col" v-for="(item,index) in otherList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
-                                    <li>
+                                    <li v-if="power['sign-ht-xq-data-add'].state">
                                         <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
@@ -179,7 +179,7 @@
                                                 <p>{{item_.name}}</p>    
                                             </div>                                         
                                         </el-tooltip>
-                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="isDelete===item.title+item_.path"></i>
+                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
                                     </li>
                                 </ul>
                             </div>                           
@@ -194,8 +194,8 @@
             <!-- 上传按钮 -->
             <div class="functionTable">
                 
-                <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && (this.contState === 2 || this.contState === 3)">上传</el-button>  <!-- 合同主体上传 --> 
-                <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">上传</el-button>  <!-- 资料库上传 -->
+                <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && (this.contState === 2 || this.contState === 3) && power['sign-ht-xq-main-add'].state">上传</el-button>  <!-- 合同主体上传 --> 
+                <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third' && power['sign-ht-xq-data-add'].state">上传</el-button>  <!-- 资料库上传 -->
                 
             </div>
             
@@ -277,6 +277,14 @@ export default {
                 'sign-ht-xq-view': {
                     state: false,
                     name: '预览'
+                },
+                'sign-ht-xq-main-add': {
+                    state: false,
+                    name: '编辑合同主体'
+                },
+                'sign-ht-xq-data-add': {
+                    state: false,
+                    name: '编辑资料库'
                 },
             }
         }
