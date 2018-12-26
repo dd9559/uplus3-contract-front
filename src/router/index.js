@@ -144,7 +144,7 @@ export default new Router({
         component: receivableAchievement,
         meta: {
           root: true,
-          list: ['业绩', '实收业绩']
+          list: ['业绩', '结算业绩']
         }
       },
       {

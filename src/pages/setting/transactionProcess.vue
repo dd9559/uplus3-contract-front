@@ -1,7 +1,7 @@
 <template>
     <div class="data-list">
         <div class="table_head">
-            <el-button type="primary" @click="addProcess('添加交易流程')">添加</el-button>
+            <el-button type="primary" @click="addProcess('添加交易流程')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
         <el-table :data="listData" style="width: 100%" class="list1">
           <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
@@ -9,9 +9,9 @@
           <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-              <el-button @click="rowOperation(scope.row,'init')" type="text" size="small">交易流程管理</el-button>
-              <el-button @click="rowOperation(scope.row,'edit')" type="text" size="small">编辑</el-button>
-              <el-button @click="rowOperation(scope.row,'delete')" type="text" size="small">删除</el-button>
+              <el-button @click="rowOperation(scope.row,'init')" type="text" size="small" v-if="power['sign-set-hq'].state">交易流程管理</el-button>
+              <el-button @click="rowOperation(scope.row,'edit')" type="text" size="small" v-if="power['sign-set-hq'].state">编辑</el-button>
+              <el-button @click="rowOperation(scope.row,'delete')" type="text" size="small" v-if="power['sign-set-hq'].state">删除</el-button>
             </template>
           </el-table-column> 
         </el-table>
@@ -89,8 +89,9 @@
            
 <script>
   import { FILTER } from "@/assets/js/filter"
+  import {MIXINS} from "@/assets/js/mixins";
   export default {
-    mixins: [FILTER],
+    mixins: [FILTER,MIXINS],
     props: ["cityId"],
     data() {
       return {
@@ -123,7 +124,13 @@
         currentFlowId: 0,
         AllSteps: [],
         inputMax: 30,
-        flowName: ""
+        flowName: "",
+        power: {
+          'sign-set-hq': {
+            state: false,
+            name: '操作'
+          }
+        }
       };
     },
     created() {
@@ -136,14 +143,18 @@
         let param = {
           cityId: this.cityId
         };
-        this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
-          res = res.data;
-          if (res.status === 200) {
-            this.listData = res.data;
-          }
-        }).catch(error => {
-            this.$message({message:error})
-        })
+        if(this.power['sign-set-hq'].state) {
+          this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
+            res = res.data;
+            if (res.status === 200) {
+              this.listData = res.data;
+            }
+          }).catch(error => {
+              this.$message({message:error})
+          })
+        } else {
+          this.noPower(this.power['sign-set-hq'].name)
+        }
       },
       addProcess(title) {
         this.dialogProcessVisible = true
