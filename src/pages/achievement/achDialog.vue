@@ -914,7 +914,7 @@ export default {
         this.$ajax.get("/api/organize/employee/agent/" + val).then(res => {
           let data = res.data.data;
           if (type == 0) {
-            this.houseArr[index].assignor = data.assignor+"-"+data.level4;
+            this.houseArr[index].assignor = data.assignor;
             this.houseArr[index].isJob = data.isJob;
             this.houseArr[index].level3 = data.level3; //门店
             this.houseArr[index].shopkeeper = data.shopkeeper; //店长
@@ -1672,6 +1672,7 @@ export default {
       if(type==0){
         if(event.target.checked){ 
              this.houseArr[index].place = -1;
+             
         }
       }else{
          if(event.target.checked){ 
@@ -1680,7 +1681,6 @@ export default {
       }       
     }
   },
-
   watch: {
     contractCode(val) {
       // 字典初始化

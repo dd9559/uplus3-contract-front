@@ -823,9 +823,25 @@ export default {
       ],
         //权限配置
       power: {
-        'sign-cw-debt-query': {
+        'sign-yj-rev-query': {
           state: false,
           name: '查询'
+        },
+        'sign-yj-rev-edit': {
+          state: false,
+          name: '编辑'
+        },
+       'sign-yj-rev-addemp': {
+          state: false,
+          name: '录入分成'
+        },
+       'sign-yj-rev-retreat': {
+          state: false,
+          name: '撤回'
+        },
+      'sign-yj-rev-fs': {
+          state: false,
+          name: '反审核'
         },
         'sign-cw-debt-contract': {
           state: false,
@@ -885,7 +901,7 @@ export default {
       this.handleNodeClick(data)
     },
     getData(ajaxParam) {
-      if(this.power['sign-cw-debt-query'].state){
+      if(this.power['sign-yj-rev-query'].state){
               let _that=this;
                  this.$ajax
                    .get("/api/achievement/selectAchievementList", ajaxParam)
@@ -907,7 +923,7 @@ export default {
                      this.$message({message:error})
                   });
          }else {
-          this.noPower(this.power['sign-cw-debt-query'].name)
+          this.noPower(this.power['sign-yj-rev-query'].name)
           this.countData = [0, 0, 0, 0];
         }
       this.loading=false;
