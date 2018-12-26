@@ -42,7 +42,7 @@
     <div class="company-list">
       <p>
         <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-        <el-button @click="addCompany" icon="el-icon-plus" v-if="power['sign-set-gs-add'].state">公司信息</el-button>
+        <el-button @click="addCompany" icon="el-icon-plus" v-if="power['sign-set-gs'].state">公司信息</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="center" label="城市" prop="cityName" width="90">
@@ -75,8 +75,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs-view'].state">查看</el-button>
-            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs-edit'].state">编辑</el-button>
+            <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium">查看</el-button>
+            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -394,21 +394,9 @@
         imgList: [],
         //权限配置
         power: {
-          'sign-set-gs-query': {
-            state: false,
-            name: '查询'
-          },
-          'sign-set-gs-add': {
+          'sign-set-gs': {
             state: false,
             name: '添加公司信息'
-          },
-          'sign-set-gs-view': {
-            state: false,
-            name: '查看'
-          },
-          'sign-set-gs-edit': {
-            state: false,
-            name: '编辑'
           }
         }
       }
@@ -432,27 +420,23 @@
        * 获取公司设置列表
        */
       getCompanyList: function () {
-        if(this.power['sign-set-gs-query'].state) {
-          let param = {
-            pageSize: this.pageSize,
-            pageNum: this.pageNum,
-            startTime: this.searchTime == null ? "" : this.searchTime[0],
-            endTime: this.searchTime == null ? "" : this.searchTime[1]
+        let param = {
+          pageSize: this.pageSize,
+          pageNum: this.pageNum,
+          startTime: this.searchTime == null ? "" : this.searchTime[0],
+          endTime: this.searchTime == null ? "" : this.searchTime[1]
+        }
+        param = Object.assign({},this.searchForm,param)
+        param.cityId = param.cityId === "武汉" ? 1 : param.cityId
+        this.$ajax.get('/api/setting/company/list', param).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.tableData = res.data.list
+            this.count = res.data.total
           }
-          param = Object.assign({},this.searchForm,param)
-          param.cityId = param.cityId === "武汉" ? 1 : param.cityId
-          this.$ajax.get('/api/setting/company/list', param).then(res => {
-            res = res.data
-            if(res.status === 200) {
-              this.tableData = res.data.list
-              this.count = res.data.total
-            }
-          }).catch(error => {
-              this.$message({message:error})
-          })
-        } else {
-          this.noPower(this.power['sign-set-gs-query'].name)
-        } 
+        }).catch(error => {
+            this.$message({message:error})
+        })
       },
       getCityList() {
         this.$ajax.get('/api/organize/cities').then(res => {
@@ -683,17 +667,21 @@
             param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
             
             if(this.companyFormTitle === "添加企业信息") {
-              this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
-                res = res.data
-                if(res.status === 200) {
-                  this.AddEditVisible = false
-                  this.directSaleSelect = false
-                  this.$message(res.message)
-                  this.getCompanyList()
-                }
-              }).catch(error => {
-                  this.$message({message:error})
-              })
+              if(this.power['sign-set-gs'].state) {
+                this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
+                  res = res.data
+                  if(res.status === 200) {
+                    this.AddEditVisible = false
+                    this.directSaleSelect = false
+                    this.$message(res.message)
+                    this.getCompanyList()
+                  }
+                }).catch(error => {
+                    this.$message({message:error})
+                })
+              } else {
+                this.noPower(this.power['sign-set-gs'].name)
+              }
             } else {
               let obj = {
                 delIds: this.delIds
