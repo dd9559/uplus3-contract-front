@@ -665,15 +665,20 @@ export default {
     },
     //合同审核
     goCheck(item) {
-      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
-      this.$router.push({
-        path:'/contractPreview',
-        query:{
-          code:item.code,
-          id:item.id,
-          operationType:2
-        }
-      })
+      if(this.power['sign-ht-info-view'].state){
+        this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+        this.$router.push({
+          path:'/contractPreview',
+          query:{
+            code:item.code,
+            id:item.id,
+            operationType:2
+          }
+        })
+      }else{
+        this.noPower('合同预览')
+      }
+      
     },
     //调佣弹窗
     //Z171231001

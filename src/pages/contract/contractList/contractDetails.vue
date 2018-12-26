@@ -423,8 +423,8 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <div class="functionTable" v-if="contractDetail.contChangeState.value!=2">
-    <!-- <div class="functionTable"> -->
+    <!-- <div class="functionTable" v-if="contractDetail.contChangeState.value!=2"> -->
+    <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='first'" @click="printDemo">打印成交报告</el-button>  <!-- @click="printDemo" -->
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'&&contractDetail.contState.value===3">分成</el-button>
@@ -1338,11 +1338,17 @@ export default {
         }
       }
       if(isOk){
+        if(this.contractDetail.laterStageState.value===4||this.contractDetail.laterStageState.value===1){
+          var code = 1;
+        }else{
+          var code = 2;
+        }
         let param = {
           datas: arr_,
-          contId: this.id
+          contId: this.id,
+          operation:code
         }
-        console.log(param)
+        // console.log(param)
         this.$ajax.postJSON('/api/contract/uploadContData', param).then(res=>{
           res=res.data;
           if(res.status===200){
