@@ -170,7 +170,7 @@
         </el-table-column>
         <el-table-column align="center" label="收款人" min-width="140">
           <template slot-scope="scope">
-            <span>{{scope.row.store}}</span>
+            <span>{{scope.row.type===1?scope.row.inObjStore:scope.row.store}}</span>
             <p>{{scope.row.type===1?scope.row.inObjName:scope.row.createByName}}</p>
           </template>
         </el-table-column>
@@ -481,8 +481,8 @@
         this.setLoading(true)
         this.$ajax.put(`/api${src}`, {payId: this.layer.content[0].id}, 2).then(res => {
           res = res.data
-          this.setLoading(false)
           if (res.status === 200) {
+            this.setLoading(false)
             this.getData()
             this.layer.show = false
             this.$message({
