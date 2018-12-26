@@ -7,7 +7,7 @@
       <div class="select-tree">
         <el-tree accordion :data="dataList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
       </div>
-      <p class="tree-box" slot="reference" @click="opera('init')" @mouseenter="test" @mouseleave="clearVal=false">
+      <p class="tree-box" slot="reference" @click="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
         <el-input size="small" class="w200" :clearable="clearVal" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear="opera('clear')">
         </el-input>
         <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i></span>
@@ -41,7 +41,7 @@
     },
     data(){
       return {
-        inputVal:'',
+        inputVal:this.init,
         clearOper:false,
         visible:false,
         clearVal:false,
@@ -53,16 +53,9 @@
         this.inputVal=val
       }
     },
-    mounted(){
-      /*this.$nextTick(()=>{
-        this.getInput.onMouseenter=function () {
-          console.log('test')
-        }
-      })*/
-    },
     methods:{
-      test:function () {
-        if(this.inputVal.length>0){
+      showClear:function () {
+        if(this.inputVal.length>0&&this.dataList.length>0){
           this.clearVal=true
         }
       },
@@ -84,9 +77,12 @@
           this.$refs.popover.showPopper=true
           this.iconUp=!this.iconUp
         }else if(type==='clear') {
-          this.inputVal=''
           this.visible=false
           this.$refs.popover.showPopper=false
+          /*if(this.init.length>0){
+          }else {
+            this.inputVal=''
+          }*/
           this.$emit('clear')
         }
       },
@@ -102,9 +98,6 @@
       dataList:function () {
         return this.data
       },
-      getInput:function () {
-        return this.$refs.reference
-      }
     },
   }
 </script>

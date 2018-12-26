@@ -140,7 +140,7 @@
                 code: 'sign-yj-rev-query'
               },
               {
-                name: '实收业绩',
+                name: '结算业绩',
                 path: 'receivableAchievement',
                 code: 'sign-yj-rec-query'
               },
@@ -254,18 +254,22 @@
     },*/
     created(){
       this.Index=this.$store.state.path
-      // debugger
       this.activeIndex = this.Index[1].path.split('/')[1]
-      let arr=['sign-ht-info-query','sign-cw-debt-query']
-      /*this.views.forEach((item,index)=>{
-        let sliders=[]
-        item.child.forEach(tip=>{
-          if(arr.indexOf(tip.code)>-1){
-            sliders.push(tip)
+      this.$nextTick(()=>{
+        let arr=this.$store.state.user.privileges
+        console.log(this.$store.state.user.privileges)
+        this.views.forEach((item,index)=>{
+          let sliders=[]
+          if(item.name!=='财务'){
+            item.child.forEach(tip=>{
+              if(arr.indexOf(tip.code)>-1){
+                sliders.push(tip)
+              }
+            })
+            item.child=sliders
           }
         })
-        item.child=sliders
-      })*/
+      })
     },
     beforeRouteUpdate(to,from,next){
       this.Index=this.$store.state.path

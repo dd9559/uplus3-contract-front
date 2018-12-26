@@ -349,7 +349,6 @@
       this.getMoneyType()
       this.getDictionary()
       this.remoteMethod()
-      this.getAcount()
       this.getDropdown()
       // this.getReceiptman()
       this.getAdmin()
@@ -357,6 +356,8 @@
       let inAccount = this.$route.query.type
       if (type) {
         this.getDetails({type: type, payId: this.$route.query.id})
+      }else {
+        this.getAcount(this.getUser.user&&this.getUser.user.empId)
       }
       if(inAccount){
         this.activeType=parseInt(inAccount)===4?2:1
@@ -399,11 +400,22 @@
           this.form.inObjId=''
           this.form.inObj=''
           this.employePage=1
+          /*if(this.DepList.length===0){
+            let val=this.getUser.user
+            this.dep.id=val.depId
+            this.dep.name=val.depName
+            this.getEmploye(val.depId)
+            this.form.inObjId=val.empId
+            this.form.inObj=val.name
+          }*/
         }else {
           this.form.inObj=''
           /*this.employePage=1
           this.EmployeList=[]*/
         }
+        //初始收账账户数据
+        this.activeAdmin=''
+        this.account=[]
       },
       handleNodeClick(data) {
         this.getEmploye(data.depId)
@@ -451,6 +463,7 @@
               }
             }
             this.form = Object.assign({}, this.form, obj)
+            this.getAcount(this.form.inObjId)
           }
         })
       },
@@ -621,8 +634,8 @@
         if (type==='edit') {
             this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
               res=res.data
-              this.fullscreenLoading=false
               if(res.status===200){
+                this.fullscreenLoading=false
                 this.$router.replace({
                   path: 'receiptResult',
                   query:{
@@ -725,11 +738,15 @@
       /**
        * 获取收款账户
        */
-      getAcount: function () {
-        this.$ajax.get('/api/payInfo/selectProceedsAccount').then(res => {
+      getAcount: function (empId) {
+        let param={
+          contId:this.form.contId,
+          empId:empId
+        }
+        this.$ajax.get('/api/payInfo/selectProceedsAccount',param).then(res => {
           res = res.data
           if (res.status === 200) {
-            this.account = res.data
+            this.account = [].concat(res.data)
           }
         })
       },
@@ -747,6 +764,8 @@
               obj.outObj = tip.custName
             } else {
               obj.inObj = tip.name
+              this.activeAdmin=''
+              this.getAcount(this.form.inObjId)
             }
             return
           }
@@ -837,7 +856,7 @@
           this.form.inObjId=val.empId
           this.form.inObj=val.name
         }
-      },
+      }
     }
   }
 </script>
