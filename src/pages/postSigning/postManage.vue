@@ -376,18 +376,19 @@
                                 <template v-if="scope.row.stepState.value === OPERATION.start">
                                     <el-button class="blue" type="text" @click="operationFn(scope.row.id)">查看</el-button>
                                 </template>
-                                <template v-else-if="scope.row.stepState.value === OPERATION.backlog">
+                                <template v-else-if="scope.row.stepState.value === OPERATION.backlog && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-down'].state" @click="downFn(scope)">下</el-button>
                                 </template>
-                                <template v-else-if="scope.row.stepState.value === OPERATION.sure">
+                                <template v-else-if="scope.row.stepState.value === OPERATION.sure && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" type="text" @click="sureFn(scope.row.id)">确认</el-button>
                                 </template>
-                                <template v-else-if="scope.row.stepState.value === OPERATION.not">
+                                <template v-else-if="scope.row.stepState.value === OPERATION.not && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" v-if="isUpBtnFn(scope.$index) && power['sign-qh-mgr-jd-up'].state" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-down'].state" class="blue" type="text" @click="downFn(scope)">下</el-button>
                                 </template>
-                                <template v-else-if="scope.row.stepState.value === OPERATION.amend">
+                                <template v-else-if="scope.row.stepState.value === OPERATION.amend && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" type="text" @click="amendFn(scope.row.id)">修改</el-button>
                                 </template>
+                                <template v-else>--</template>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -758,7 +759,7 @@
                     process:'',
                     timeout:'',
                     bank:'',
-                    range:1,
+                    range:'',
                     termination:'',
                     lateState:'',
                     commission:'',
@@ -801,7 +802,10 @@
                         label: "全部",
                         value: ""
                     }],
-                    range:[],
+                    range:[{
+                            value: "全部",
+                            key: ""
+                        }],
                     termination:[{
                         value: "全部",
                         key: ""
@@ -1458,15 +1462,18 @@
             // 图片上传
             imgBtnFn(e){
                 // console.log(e)
+                // debugger
                 let index = e.btnId.slice(6);
                 let arr = e.param[e.param.length - 1];
-                this.stepsFrom.list[index].val.push(arr)
+                this.stepsFrom.list[index].val.push(arr);
+                this.$refs['stepsFrom'].validate((bool)=>{});
             },
             // 删除
             clearFn(i,n){
                 let arr = [...this.stepsFrom.list];
                 arr[i].val.splice(n,1)
                 this.stepsFrom.list = arr;
+                this.$refs['stepsFrom'].validate((bool)=>{});
             },
             // 调整步骤确定
             adjustBtnFn(){
@@ -1722,7 +1729,10 @@
                             key: ""
                         },...newData[6]];
                 // 数据范围
-                this.rules.range = [...newData[48]];
+                this.rules.range = [{
+                            value: "全部",
+                            key: ""
+                        },...newData[48]];
            },
            cityId(){
                // 交易流程
