@@ -53,11 +53,11 @@
             <span class="contCode" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="合同类型" prop="contType.label" width="100">
+        <el-table-column align="left" label="合同类型" prop="contType.label" width="80">
         </el-table-column>
         <el-table-column align="left" label="成交总价" prop="totalPrice" width="150">
         </el-table-column>
-        <el-table-column align="left" label="成交经纪人" prop="dealAgentName" width="200">
+        <el-table-column align="left" label="成交经纪人" prop="dealAgentName" width="150">
           <template slot-scope="scope">
             <p>{{scope.row.dealStoreName}}</p>
             <p>{{scope.row.dealAgentName}}</p>

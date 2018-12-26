@@ -17,11 +17,12 @@
 
         <!-- 部门 -->
         <el-form-item label="部门" style="margin-right:0px;">
-              <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
+              <!-- <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
                 <el-option class="drop-tree" value="">
                   <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                 </el-option>
-              </el-select>
+              </el-select> -->
+             <select-tree :data="DepList" :init="propForm.department" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
        </el-form-item>
 
         <el-form-item>
@@ -342,7 +343,31 @@ export default {
     this.remoteMethod();
   },
   components: {},
-  methods: {
+  methods: {   
+    getData(param) {
+      if(this.power['sign-yj-rec-query'].state){
+             // 实收列表
+              let _that = this;
+              this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
+                let data = res.data;
+                if (res.status === 200) {
+                  _that.receivableList = data.data.list;
+                  if (data.data.list[0]) {
+                    _that.countData = data.data.list[0].contractCount;
+                  } else {
+                    _that.countData = [0, 0, 0, 0];
+                  }
+                  _that.total = data.data.total;
+                }
+              }).catch(error => {
+                     this.$message({message:error})
+              });;
+        }else {
+          this.noPower(this.power['sign-yj-rec-query'].name)
+          this.countData = [0, 0, 0, 0];
+        }
+        this.loading = false;
+    },
        //获取当前部门
     initDepList:function (val) {
       if(!val){
@@ -409,30 +434,6 @@ export default {
         dateMo: "",
         search: ""
       };
-    },
-    getData(param) {
-      if(this.power['sign-yj-rec-query'].state){
-             // 实收列表
-              let _that = this;
-              this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
-                let data = res.data;
-                if (res.status === 200) {
-                  _that.receivableList = data.data.list;
-                  if (data.data.list[0]) {
-                    _that.countData = data.data.list[0].contractCount;
-                  } else {
-                    _that.countData = [0, 0, 0, 0];
-                  }
-                  _that.total = data.data.total;
-                }
-              }).catch(error => {
-                     this.$message({message:error})
-              });;
-        }else {
-          this.noPower(this.power['sign-yj-rec-query'].name)
-          this.countData = [0, 0, 0, 0];
-        }
-        this.loading = false;
     },
     //分页
     handleSizeChange(val) {

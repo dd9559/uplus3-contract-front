@@ -1518,6 +1518,10 @@ export default {
         flag = true,
         sum = 0,
         sumFlag = false;
+      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
+        this.$message.error("分成人不满足最低人数要求");
+        return false;
+      }
       for (var i = 0; i < this.houseArr.length; i++) {
         let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {

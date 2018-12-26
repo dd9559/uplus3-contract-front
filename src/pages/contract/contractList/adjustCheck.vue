@@ -23,7 +23,7 @@
           <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> -->
-          <select-tree :data="DepList" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" class="fl"></select-tree>
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="adjustForm.empId" placeholder="请选择">
             <el-option
@@ -806,9 +806,7 @@
         if (!val) {
           this.remoteMethod()
         }else {
-          this.$nextTick(()=>{
-            console.log(this.$refs.tree.$refs.scrollbar.$refs.wrap.scrollTop)
-          })
+
         }
       },
     
@@ -842,7 +840,9 @@
 @import "~@/assets/common.less";
 
 #adjustcheck{
-  
+  .fl{
+    float: left;
+  }
 
   .mt20{
     margin-bottom: 20px;
