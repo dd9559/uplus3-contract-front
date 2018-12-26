@@ -114,7 +114,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作" min-width="70">
                     <template slot-scope="scope">
-                        <el-button v-if="power['sign-qh-rev-receive'].state" class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
+                        <el-button v-if="power['sign-qh-rev-opp'].state" class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -249,9 +249,9 @@
                 </div>
             </LayerScrollAuto>
             <span slot="footer">
-                <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn" round>保存</el-button>
+                <el-button v-if="power['sign-qh-rev-save'].state" class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn" round>保存</el-button>
                 <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
-                <el-button class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button>
+                <el-button v-if="power['sign-qh-rev-reject'].state" class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button>
             </span>
         </el-dialog>
     </div>
@@ -358,12 +358,24 @@
                         state:false
                     },
                     'sign-qh-rev-receive':{
-                        name:{
-                            saveStepFlow:'保存合同后期和修改责任人',
-                            clickReceive:'点解接收和已接收按钮',
-                            addStepFlow:'接收合同后期',
-                        },
+                        name:'接收合同后期',
                         state:false
+                    },
+                    'sign-qh-rev-reject':{
+                        name:'拒绝接收',
+                        state:false,
+                    },
+                    'sign-qh-rev-save':{
+                        name:'保存合同后期和修改责任人',
+                        state:false,
+                    },
+                    'sign-qh-rev-opp':{
+                        name:'接收',
+                        state:false,
+                    },
+                    'sign-com-htdetail':{
+                        name:'合同详情',
+                        state:false,
                     },
                 }
             }
@@ -457,8 +469,8 @@
             },
             // 接收
             receiveFn(e) {
-                if(!this.power['sign-qh-rev-receive'].state){
-                    this.noPower(this.power['sign-qh-rev-receive'].name.clickReceive);
+                if(!this.power['sign-qh-rev-opp'].state){
+                    this.noPower(this.power['sign-qh-rev-opp'].name);
                     return false
                 }
                 this.receive = {
@@ -641,8 +653,8 @@
             },
             // 保存
             saveBtnFn() {
-                if(!this.power['sign-qh-rev-receive'].state){
-                    this.noPower(this.power['sign-qh-rev-receive'].name.saveStepFlow);
+                if(!this.power['sign-qh-rev-save'].state){
+                    this.noPower(this.power['sign-qh-rev-save'].name);
                     return false
                 }
                 let arr = [...this.dealTable];
@@ -672,7 +684,7 @@
             // 接收
             receiveBtnFn() {
                 if(!this.power['sign-qh-rev-receive'].state){
-                    this.noPower(this.power['sign-qh-rev-receive'].name.addStepFlow);
+                    this.noPower(this.power['sign-qh-rev-receive'].name);
                     return false
                 }
                 let arr = [...this.dealTable];
@@ -720,6 +732,10 @@
             // 拒绝后期 弹层事件
             propCloseFn(bool) {
                 if (bool) {
+                    if(!this.power['sign-qh-rev-reject'].state){
+                        this.noPower(this.power['sign-qh-rev-reject'].name);
+                        return false
+                    }
                     if (this.invalidInput.length < 1) {
                         this.errMeFn('输入不能为空');
                     } else {
@@ -766,12 +782,16 @@
             },
             // 合同编号
             contractFn(value) {
+                if(!this.power['sign-com-htdetail'].state){
+                    this.noPower(this.power['sign-com-htdetail'].name);
+                    return false
+                }
                 this.$router.push({
                     path: "/contractDetails",
                     query: {
                         id: value.id, //合同id
                         code: value.code, //合同编号
-                        contType: value.tradeType.value //合同类型
+                        contType: this.power['sign-com-htdetail'].state?1:0 //合同类型
                     }
                 });
             },

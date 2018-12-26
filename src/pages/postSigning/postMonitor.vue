@@ -156,7 +156,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)" v-if="power['sign-qh-cont-bill'].state">流水</el-button>
+                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)" v-if="power['sign-com-liushui'].state">流水</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -263,9 +263,13 @@
                         name:'查询',
                         state:false
                     },
-                    'sign-qh-cont-bill':{
+                    'sign-com-liushui':{
                         name:'流水',
                         state:false
+                    },
+                    'sign-com-htdetail':{
+                        name:'合同详情',
+                        state:false,
                     },
                 }
             }
@@ -306,12 +310,16 @@
             },
             // 合同编号弹层
             contractFn(value){
+                if(!this.power['sign-com-htdetail'].state){
+                    this.noPower(this.power['sign-com-htdetail'].name);
+                    return false
+                }
                 this.$router.push({
                     path: "/contractDetails",
                     query: {
                         id: value.id,//合同id
                         code: value.code,//合同编号
-                        contType: value.tradeType.value//合同类型
+                        contType: this.power['sign-com-htdetail'].state?1:0//合同类型
                     }
                 });
             },
@@ -321,8 +329,8 @@
             },
             // 操作
             operationFn(code){
-                if(!this.power['sign-qh-cont-bill'].state){
-                    this.noPower(this.power['sign-qh-cont-bill'].name);
+                if(!this.power['sign-com-liushui'].state){
+                    this.noPower(this.power['sign-com-liushui'].name);
                     return false
                 }
                 this.contCode = code;
