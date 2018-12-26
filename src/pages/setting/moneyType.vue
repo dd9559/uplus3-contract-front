@@ -480,7 +480,6 @@
     min-width: 80px;
     max-height: 65px;
     display: -webkit-box;
-    -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
     text-overflow:ellipsis;
