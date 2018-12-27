@@ -166,7 +166,7 @@
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
             <div class="btn" @click="gathering(scope.row.id)">收款</div>
-            <div class="btn" @click="payment(scope.row.id)">付款</div>
+            <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
         <el-table-column align="left" label="成交经纪人" width="150 ">
@@ -582,13 +582,15 @@ export default {
       }
     },
     //付款
-    payment(id) {
+    payment(item) {
       if(this.power['sign-ht-info-pay'].state){
         this.setPath(this.$tool.getRouter(['合同','合同列表','创建付款'],'contractList'));
         this.$router.push({
           path:'/payBill',
           query:{
-            contId:id
+            contId:item.id,
+            code:item.code,
+            address:item.propertyAddr
           }
         })
       }else{
