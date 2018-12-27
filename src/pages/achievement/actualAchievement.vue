@@ -684,6 +684,15 @@
             >
             </el-table-column>
 
+
+           <!-- 节点名称（新增）-->
+            <el-table-column
+              prop="updateByName"
+              label="节点名称"
+              width="130"
+            >
+            </el-table-column>
+
             <!-- result审核结果(0未审核 1通过 2驳回)(薪资组审核) -->
             <el-table-column
               prop="done"
@@ -1309,7 +1318,7 @@ export default {
 
   //业绩详情弹框改变样式
   /deep/ .el-dialog.base-dialog {
-    max-width: 1000px !important;
+    // max-width: 1000px;
     margin: 13vh auto 0 !important;
     overflow: auto;
 
