@@ -101,7 +101,7 @@
                 <template slot-scope="scope">
                   <el-input
                     v-model.number="scope.row.ratio"
-                    placeholder="请输入数字"
+                    placeholder="请输入"
                     @change="filterHouseNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
@@ -389,7 +389,7 @@
                 <template slot-scope="scope">
                   <el-input
                     v-model="scope.row.ratio"
-                    placeholder="请输入数字"
+                    placeholder="请输入"
                     @change="filterClientNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
