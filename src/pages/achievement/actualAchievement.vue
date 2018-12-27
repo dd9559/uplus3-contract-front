@@ -164,13 +164,13 @@
             width="300"
           >
             <template slot-scope="scope">
-              <p>合同编号：<span
+              <p>合同：<span
                   class="blue"
                   @click="skipContDel(scope.row)"
                   style="cursor:pointer;"
                 >{{scope.row.code}}</span></p>
-              <p>房源编号：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
-              <p>客源编号：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
+              <p>房源：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
+              <p>客源：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
             </template>
           </el-table-column>
 
