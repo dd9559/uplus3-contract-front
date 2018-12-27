@@ -159,7 +159,7 @@
 
           <el-table-column prop="agentPayFee" label="刷卡手续费（元）" width="130"></el-table-column>
 
-          <el-table-column prop="agentPlatformFee" label="特许服务费（元）" width="130"></el-table-column>
+          <el-table-column prop="agentPlatformFee" label="特许服务费（元）"></el-table-column>
 
         </el-table>
       </div>

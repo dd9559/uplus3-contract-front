@@ -372,7 +372,6 @@
           </el-table-columfn>
           <el-table-column
             label="操作"
-            width="100"
           >
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
