@@ -784,7 +784,7 @@ export default {
           delete param.igdCont.contPersons[1].uId;
           delete param.igdCont.contPersons[1].updateTime;
 
-          delete param.igdCont.contPersons[1].achievementState;
+          delete param.igdCont.achievementState;
         }
         delete param.igdCont.ownname;
         delete param.igdCont.ownmobile;
