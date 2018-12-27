@@ -52,12 +52,21 @@
             return 'icon-shipin1'
             break
           case '.txt':
+            return 'icon-wendang'
+            break
           case '.pdf':
+            return 'icon-pdf'
+            break
+          case '.xls':
           case '.xlsx':
+            return 'icon-excel'
+            break
           case '.docx':
           case '.doc':
+            return 'icon-word'
+            break
           case '.ppt':
-            return 'icon-wendang'
+            return 'icon-ppt'
             break
           case '.zip':
           case '.rar':
@@ -96,5 +105,20 @@
 
   .icon-qita1 {
     color: @color-other;
+  }
+
+  .icon-pdf{
+    color: #fe8f68;
+  }
+
+  .icon-word{
+    color: #74aef6;
+  }
+
+  .icon-excel{
+    color: #82ce78;
+  }
+  .icon-ppt{
+    color: #ff7c7c;
   }
 </style>
