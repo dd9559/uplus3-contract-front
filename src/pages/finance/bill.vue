@@ -102,7 +102,7 @@
           <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
               v-for="item in drop_MoneyType"
-              :key="item.key"
+              :key="item.id"
               :label="item.name"
               :value="item.key">
             </el-option>
@@ -126,7 +126,7 @@
         </div>
       </div>
     </ScreeningTop>
-    <div class="view-context">
+    <div class="view-context" ref="box">
       <div class="table-tool">
         <div class="tool-left">
           <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
@@ -146,7 +146,7 @@
           <el-button class="btn-info" round type="primary" size="small">导出</el-button>
         </p>
       </div>
-      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+      <el-table ref="table" border :data="list" class="info-scrollbar" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="160" label="收付ID" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -220,6 +220,48 @@
           </template>
         </el-table-column>
       </el-table>
+      <!--<el-pagination
+        v-if="list.length>0"
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>-->
+      <scrollBar :table="tableBox" v-if="tableBox">
+        <el-pagination
+          v-if="list.length>0"
+          class="pagination-info"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          layout="total, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </scrollBar>
+      <!--<div class="row-scroll" :style="{width:tableBody+'px',left:scrollLeft+'px'}">
+        <div class="row-scroll-box" @scroll="test">
+          <p :style="{width:scrollWidth+'px'}"></p>
+        </div>
+        <el-pagination
+          v-if="list.length>0"
+          class="pagination-info"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          layout="total, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </div>-->
+    </div>
+    <!--<div class="row-scroll">
+      <div class="row-scroll-box" @scroll="test">
+        <p :style="{width:scrollWidth+'px'}"></p>
+      </div>
       <el-pagination
         v-if="list.length>0"
         class="pagination-info"
@@ -230,7 +272,7 @@
         layout="total, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
-    </div>
+    </div>-->
     <!-- 票据编号弹层 -->
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <!--作废-->
@@ -271,15 +313,21 @@
   import {MIXINS} from "@/assets/js/mixins";
   import LayerPaperInfo from '@/components/LayerPaperInfo';
   import LayerInvoice from '@/components/LayerInvoice'
+  import scrollBar from '@/components/scrollBar'
 
   export default {
     mixins: [MIXINS, FILTER],
     components: {
       LayerPaperInfo,
-      LayerInvoice
+      LayerInvoice,
+      scrollBar
     },
     data() {
       return {
+        tableBody:0,
+        scrollWidth:0,
+        scrollLeft:0,
+        tableBox:null,
         activeView: '',
         searchForm: {
           contType: '',
@@ -373,10 +421,34 @@
         this.getDictionary()
         this.getMoneyTypes()
         this.remoteMethod()
+        console.log(this.$refs.table.$refs.rightFixedBodyWrapper.clientWidth)
+        this.tableBox=this.$refs.table
+        this.scrollWidth=this.$refs.table.$refs.rightFixedBodyWrapper.clientWidth
+        // debugger
+        this.tableBody=this.$refs.table.$refs.bodyWrapper.clientWidth-17
+        this.scrollLeft=this.$refs.table.$el.offsetLeft+65
+        /*window.onresize=function () {
+          this.tableBody=this.$refs.table.$refs.bodyWrapper.clientWidth
+        }.bind(this)*/
       })
       // this.getAdmin()
     },
+    /*watch:{
+      getCollapse:function (val) {
+        this.tableBody=this.$refs.table.$refs.bodyWrapper.clientWidth
+        if(!val){
+          this.scrollLeft=this.$refs.table.$el.offsetLeft+161
+        }else {
+          this.scrollLeft=this.$refs.table.$el.offsetLeft+65
+        }
+      }
+    },*/
     methods: {
+      /*test:function (e) {
+        this.scrollWidth=this.$refs.table.$refs.rightFixedBodyWrapper.clientWidth
+        console.log(this.$refs.table.$el.offsetLeft)
+        this.$refs.table.$refs.bodyWrapper.scrollTo(e.target.scrollLeft,0)
+      },*/
       reset: function () {
         this.$tool.clearForm(this.searchForm)
       },
@@ -565,6 +637,23 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
   @import "~@/assets/less/lsx.less";
+
+  .row-scroll{
+    position: fixed;
+    /*left: 0;
+    right: 0;*/
+    bottom: 0;
+    z-index: 999;
+    background-color: @bg-white;
+    padding: 0 1px;
+    &-box{
+      width: 100%;
+      overflow-x: auto;
+      >p{
+        height: 1px;
+      }
+    }
+  }
 
   .margin-left-10 {
     margin-left: 10px;
