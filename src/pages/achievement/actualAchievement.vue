@@ -473,7 +473,7 @@
       ></b>
       <div class="ach-header">
         <h1 class="f14">业绩详情</h1>
-        <p class="f14">可分配业绩：<span class="orange">{{comm}}元</span></p>
+        <p class="f14" style="font-weight:bold;">可分配业绩：<span class="orange">{{comm}}元</span></p>
         <p style="margin-top:20px;">可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费</p>
       </div>
       <div class="ach-body">
@@ -501,7 +501,7 @@
             <el-table-column
               prop="ratio"
               label="分成比例(%)"
-              width="100"
+              width="95"
             >
             </el-table-column>
 
@@ -516,7 +516,7 @@
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
             <el-table-column
               label="在职状况"
-              width="80"
+              width="75"
             >
               <template slot-scope="scope">
                 <div v-if="scope.row.isJob">
@@ -536,14 +536,14 @@
             <el-table-column
               prop="level4"
               label="单组"
-              width="200"
+              width="135"
             >
             </el-table-column>
             <!-- level3 -->
             <el-table-column
               prop="level3"
               label="门店"
-              width="200"
+              width="135"
             >
             </el-table-column>
 
@@ -590,7 +590,7 @@
             <el-table-column
               prop="ratio"
               label="分成比例(%)"
-              width="100"
+              width="95"
             >
             </el-table-column>
 
@@ -605,7 +605,7 @@
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
             <el-table-column
               label="在职状况"
-              width="80"
+              width="75"
             >
               <template slot-scope="scope">
                 <div v-if="scope.row.isJob">
@@ -625,14 +625,14 @@
             <el-table-column
               prop="level4"
               label="单组"
-              width="200"
+              width="135"
             >
             </el-table-column>
             <!-- level3 -->
             <el-table-column
               prop="level3"
               label="门店"
-              width="200"
+              width="135"
             >
             </el-table-column>
 
