@@ -258,7 +258,7 @@
       this.$nextTick(()=>{
         let arr=this.$store.state.user.privileges
         console.log(this.$store.state.user.privileges)
-        /*this.views.forEach((item,index)=>{
+        this.views.forEach((item,index)=>{
           let sliders=[]
           if(item.name!=='财务'){
             item.child.forEach(tip=>{
@@ -268,7 +268,7 @@
             })
             item.child=sliders
           }
-        })*/
+        })
       })
     },
     beforeRouteUpdate(to,from,next){
