@@ -65,7 +65,10 @@
             <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
           <el-form-item label="物业地址：" :class="{'form-label':type===1}" style="width:605px;text-align:right">
-            <span class="propertyAddress" v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}}</span>
+            <span class="propertyAddress" v-if="contractForm.houseinfoCode">
+              <!-- {{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}} -->
+              {{type===1?contractForm.houseInfo.EstateName:contractForm.propertyAddr}}
+            </span>
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
           <br>
