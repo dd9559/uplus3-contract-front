@@ -76,7 +76,7 @@
               <!-- 角色类型 不可输入-->
               <el-table-column
                 label="角色类型"
-                width="160"
+                width="145"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -96,7 +96,7 @@
               <!-- 分成比例保留小数点后一位有效数字 可输入,不可下拉-->
               <el-table-column
                 label="分成比例(%)"
-                width="100"
+                width="95"
               >
                 <template slot-scope="scope">
                   <el-input
@@ -110,7 +110,7 @@
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
               <el-table-column
                 label="经纪人"
-                width="150"
+                width="120"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -138,7 +138,7 @@
               <!-- 在职状况  可下拉,不可输入    0待入职,1在职,2离职 (通过枚举id=20查询)-->
               <el-table-column
                 label="在职状况"
-                width="110"
+                width="120"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -364,7 +364,7 @@
             >
               <el-table-column
                 label="角色类型"
-                width="160"
+                width="145"
               >
                 <template slot-scope="scope">
                   <!-- filterable -->
@@ -384,7 +384,7 @@
 
               <el-table-column
                 label="分成比例(%)"
-                width="100"
+                width="95"
               >
                 <template slot-scope="scope">
                   <el-input
@@ -397,7 +397,7 @@
 
               <el-table-column
                 label="经纪人"
-                width="150"
+                width="120"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -424,7 +424,7 @@
 
               <el-table-column
                 label="在职状况"
-                width="110"
+                width="120"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -1664,8 +1664,8 @@ export default {
         for (var j = 0; j < resultArr.length; j++) {
           if (
             addhouseArr[i].assignorId == resultArr[j].assignorId &&
-            addhouseArr[i].roleType == resultArr[j].roleType &&
-            addhouseArr[i].id == resultArr[j].id
+            addhouseArr[i].roleType == resultArr[j].roleType 
+            // addhouseArr[i].id == resultArr[j].id
           ) {
             flag = false;
           }
@@ -1673,7 +1673,7 @@ export default {
         if (flag) {
           resultArr.push(addhouseArr[i]);
         } else {
-          this.$message.error("请勿重复添加");
+          this.$message.error("请勿重复添加同一个人");
           return false;
         }
       }
@@ -1849,7 +1849,13 @@ export default {
         box-shadow: 0;
         padding: 0;
         padding-left: 5px;
+        padding-right: 25px;
         // padding-left: 10px;
+      }
+      /deep/ .el-icon-circle-close{
+        position: absolute;
+        left: -5px;
+        top: 0;
       }
       .house-divide {
         width: 100%;

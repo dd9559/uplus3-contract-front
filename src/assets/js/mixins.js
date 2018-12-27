@@ -27,8 +27,8 @@ const MIXINS = {
   },
   created(){
     for (let item in this.power){
-      // this.power[item].state=true
-      let path=this.$route.path
+      this.power[item].state=true
+      /*let path=this.$route.path
       if(path==='/Bill'||path==='/actualHarvest'){
         this.power[item].state=true
       }else {
@@ -37,21 +37,21 @@ const MIXINS = {
             this.power[item].state=true
           }
         }
-      }
+      }*/
     }
   },
   watch:{
     getUser:function (val) {
       for (let item in this.power){
-        // this.power[item].state=true
-        let path=this.$route.path
+        this.power[item].state=true
+        /*let path=this.$route.path
         if(path==='/Bill'||path==='/actualHarvest'){
           this.power[item].state=true
         }else {
           if(val.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }
+        }*/
       }
     }
   },
@@ -186,9 +186,10 @@ const MIXINS = {
             var a = document.createElement('a');
             a.download = undefined;
             a.href = res.data[0];
+            a.innerText='test'
             document.body.appendChild(a)
             a.click();
-            document.body.removeChild(a)
+            // document.body.removeChild(a)
           }else {
             this.previewFiles=res.data
             this.preview=true
@@ -263,7 +264,8 @@ const MIXINS = {
     ...mapGetters([
       'getPath',
       'getUser',
-      'getLoading'
+      'getLoading',
+      'getCollapse'
     ])
   }
 }

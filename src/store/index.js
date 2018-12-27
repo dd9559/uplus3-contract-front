@@ -7,6 +7,7 @@ const store = new Vuex.Store({
   state: {
     path:[],
     slider:[],
+    collapse: true,//侧边栏是否收起
     user:null,
     fullscreenLoading:false
   },
@@ -21,6 +22,9 @@ const store = new Vuex.Store({
     },
     setLoading(state,payload){
       state.fullscreenLoading=payload
+    },
+    setCollapse(state,payload){
+      state.collapse=payload
     }
   },
   actions:{
@@ -37,6 +41,9 @@ const store = new Vuex.Store({
     },
     getLoading:state=>{
       return state.fullscreenLoading
+    },
+    getCollapse:state=>{
+      return state.collapse
     }
   }
 })

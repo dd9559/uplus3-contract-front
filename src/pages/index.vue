@@ -25,7 +25,7 @@
             <el-menu-item :index="grade.path" v-for="grade in item.child" :key="grade.name">{{grade.name}}</el-menu-item>
           </el-submenu>
         </el-menu>
-        <p class="slider-bar-control" @click="collapse=!collapse"></p>
+        <p class="slider-bar-control" @click="toCollapse"></p>
         <!--<ul>
           <li v-for="item in views">
             <span>{{item.name}}</span>
@@ -258,7 +258,7 @@
       this.$nextTick(()=>{
         let arr=this.$store.state.user.privileges
         console.log(this.$store.state.user.privileges)
-        this.views.forEach((item,index)=>{
+        /*this.views.forEach((item,index)=>{
           let sliders=[]
           if(item.name!=='财务'){
             item.child.forEach(tip=>{
@@ -268,7 +268,7 @@
             })
             item.child=sliders
           }
-        })
+        })*/
       })
     },
     beforeRouteUpdate(to,from,next){
@@ -302,6 +302,10 @@
           this.setPath(this.Index)
         })*/
       },
+      toCollapse:function () {
+        this.collapse=!this.collapse
+        this.setCollapse(this.collapse)
+      },
       toLink:function (item,index) {
         if(index<2){
           this.$router.push({
@@ -314,7 +318,8 @@
         this.$router.go(-1)
       },
       ...mapMutations([
-        'setPath'
+        'setPath',
+        'setCollapse'
       ])
     },
     ...mapGetters([
@@ -447,6 +452,15 @@
                   color: @color-blue;
                   cursor: pointer;
                 }
+              }
+            }
+            &.info-scrollbar{
+              margin-bottom: 54px;
+              .el-table__body-wrapper{
+                margin-bottom: -17px;
+              }
+              .el-table__fixed-right{
+                padding-bottom: 17px;
               }
             }
           }
