@@ -48,7 +48,7 @@
             <i class="yuan">元</i>
             <!-- <el-input v-model="contractForm.commissionPayment" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
-          <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right">
+          <el-form-item label="交易流程：" class="form-label" style="width:320px;text-align:right">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true">
               <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
@@ -121,11 +121,14 @@
             <input type="text" v-model="contractForm.houseInfo.stagesArrears" :disabled="type===2?true:false" @input="cutNumber('stagesArrears')" placeholder="请输入内容" class="dealPrice" :class="{'forbid':type===2}">
             <i class="yuan">元</i>
           </el-form-item>
+          <el-form-item>
+            <span class="chineseNum" v-if="contractForm.type===2||contractForm.type===3">{{contractForm.houseInfo.stagesArrears|moneyFormat}}</span>
+          </el-form-item>
           <br v-if="contractForm.type===2||contractForm.type===3">
           <el-form-item label="产权地址：" v-if="contractForm.type===2||contractForm.type===3" style="width:520px;text-align:right">
             <el-input v-model="contractForm.houseInfo.propertyRightAddr" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:416px"></el-input>
           </el-form-item>
-          <el-form-item label="房产证号：" v-if="contractForm.type===2||contractForm.type===3" :class="{'form-label':type===1}">
+          <el-form-item label="房产证号：" v-if="contractForm.type===2||contractForm.type===3" :class="{'form-label':type===1}" style="width:289px;text-align:right">
             <el-input v-model="contractForm.propertyCard" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:200px"></el-input>
           </el-form-item>
           <br>
@@ -1160,6 +1163,7 @@ export default {
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
           this.guestList=[];
+          this.contractForm.guestInfo.paymentMethod=1
           let element = {
             name: guestMsg.OwnerInfo.CustName,
             mobile: guestMsg.OwnerInfo.CustMobile,
@@ -1598,6 +1602,11 @@ export default {
   }
 }
 .houseMsg {
+  .chineseNum {
+    padding-left: 10px;
+    color: @color-orange;
+    font-size: 14px;
+  }
   border-bottom: 1px solid @border-ED;
   > p {
     padding: 20px 0 10px 20px;
