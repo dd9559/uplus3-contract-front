@@ -1962,7 +1962,7 @@ export default {
         }
         .textLength {
           position: absolute;
-          right: 532px;
+          right: 815px;
           top: 70px;
           color: #6c7986;
           text-align: right;
