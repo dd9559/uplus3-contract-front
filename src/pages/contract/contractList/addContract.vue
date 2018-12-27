@@ -274,7 +274,8 @@
           </div>
         </div>
         <div>
-          <el-button type="success" round @click="isSave(1)">提交审核</el-button>
+          <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button>
+          <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===2" round @click="isSave(1)">提交审核</el-button>
           <el-button type="primary" round @click="isSave(0)">保存</el-button>
         </div>
       </div>
@@ -423,6 +424,17 @@ export default {
       delType:'',
       choseHcode:0,//选择的房源编号
       choseGcode:0,//选择的客源编号
+      //权限配置
+      power: {
+        'sign-ht-info-toverify': {
+          state: false,
+          name: '提交审核'//编辑+提审
+        },
+        'sign-ht-info-sverify': {
+          state: false,
+          name: '提交审核'//新增+提审
+        },
+      }
     };
   },
   created() {

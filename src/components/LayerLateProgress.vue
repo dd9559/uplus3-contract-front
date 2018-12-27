@@ -14,14 +14,21 @@
                         </li>
                     </ul>
                     <el-table border v-loading="loading" :data="tableProgress" :formatter="nullFormatter" class="paper-table mt-20">
-                        <el-table-column label="步骤类型" align="center">
+                        <el-table-column label="步骤类型" align="center" min-width="120px">
                             <template slot-scope="scope">
                                 <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionStepsType)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="步骤名称" align="center">
+                        <el-table-column label="步骤名称" align="center" min-width="120px">
                             <template slot-scope="scope">
                                 <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionSteps)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column 
+                        label="结算百分比" 
+                        align="center">
+                            <template slot-scope="scope">
+                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{percentageFn(scope.row.settlePercent)}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="操作人" align="center">
@@ -57,6 +64,7 @@
                         <el-table-column label="操作" min-width="120px" align="center">
                             <template slot-scope="scope">
                                 <el-button v-if="operationBoolFn(scope.row)" @click="operationFn(scope.row.id)" class="blue" type="text">查看</el-button>
+                                <template v-else>--</template>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -178,6 +186,14 @@
             }
         },
         methods: {
+            // 百分比转换
+            percentageFn(val){
+                if(val>= 0){
+                    return `${val}%`
+                }else{
+                    return '--'
+                }
+            },
             operationBoolFn(row){
                 if(!row.stepState){
                     return false

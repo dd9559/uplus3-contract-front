@@ -92,7 +92,7 @@
           <el-button class="btn-info" round size="small" type="primary">导出</el-button>
         </p>
       </div>
-      <el-table ref="dataList" class="info-scrollbar" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
+      <el-table ref="dataList" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
@@ -137,7 +137,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <scrollBar :table="tableBox" v-if="tableBox">
+      <scrollBar :table="tableBox" v-if="tableBox" @noScroll="noScroll">
         <el-pagination
           v-if="list.length>0"
           class="pagination-info"
@@ -163,6 +163,7 @@
     data() {
       return {
         tableBox:null,
+        showScroll:false,
         dictionary:{
           '10': '',
           '55': ''
@@ -216,9 +217,16 @@
         this.getDictionary()
         this.getMoneyTypes()
         this.tableBox=this.$refs.dataList
+        console.log(this.tableBox.$refs.bodyWrapper.childNodes[0].clientWidth,this.tableBox.$refs.bodyWrapper.clientWidth)
+        if(this.tableBox.$refs.bodyWrapper.childNodes[0].clientWidth>this.tableBox.$refs.bodyWrapper.clientWidth){
+          this.showScroll=true
+        }
       })
     },
     methods: {
+      noScroll:function (payload) {
+        this.showScroll=payload.state
+      },
       reset:function () {
         this.$tool.clearForm(this.searchForm)
       },
