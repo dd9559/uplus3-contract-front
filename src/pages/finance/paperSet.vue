@@ -66,7 +66,7 @@
             label="部门"
             prop="depIdS" 
             class="mr">
-                <el-select 
+                <!-- <el-select 
                 ref="tree" 
                 size="small" 
                 :loading="Loading" 
@@ -86,7 +86,8 @@
                         :props="defaultProps" 
                         @node-click="depHandleClick"></el-tree> 
                     </el-option>
-                </el-select>
+                </el-select> -->
+                <select-tree :data="DepList" :init="propForm.depIdS" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
             </el-form-item>
             <el-form-item prop="empId">
                 <el-select 
@@ -379,7 +380,7 @@
                 name:'打印',
                 state:false
             },
-            'sign-cw-bill-contract':{
+            'sign-com-htdetail':{
                 name:'合同详情',
                 state:false
             },
@@ -387,7 +388,7 @@
                 name:'票据详情',
                 state:false
             },
-            'sign-cw-bill-revdetail':{
+            'sign-com-revdetail':{
                 name:'收款详情',
                 state:false
             },
@@ -514,8 +515,8 @@
       // 编号操作
       cellOpera(type,row) {
         if (type === 'contract') {
-          if(!this.power['sign-cw-bill-contract'].state){
-              this.noPower(this.power['sign-cw-bill-contract'].name);
+          if(!this.power['sign-com-htdetail'].state){
+              this.noPower(this.power['sign-com-htdetail'].name);
               return false
           }
           this.$router.push({
@@ -537,8 +538,8 @@
           }
           this.$refs.layerInvoice.show(row.id,false,row.state.value===4||row.state.value===5||row.state.value===3);
         } else {
-          if(!this.power['sign-cw-bill-revdetail'].state){
-              this.noPower(this.power['sign-cw-bill-revdetail'].name);
+          if(!this.power['sign-com-revdetail'].state){
+              this.noPower(this.power['sign-com-revdetail'].name);
               return false
           }
           this.$router.push({

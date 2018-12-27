@@ -146,7 +146,10 @@
           <div class="title">三方合作</div>
           <div class="content">
             <div class="one_">
-              <p><span class="tag">扣合作费：</span><span class="text">{{contractDetail.otherCooperationCost}}元</span></p>
+              <p>
+                <span class="tag">扣合作费：</span>
+                <span class="text">{{contractDetail.otherCooperationCost}}元</span>
+              </p>
               <p>
                 <span class="tag">类型：</span>
                 <span class="text" v-for="item in dictionary['517']" :key="item.key" v-if='item.key===contractDetail.otherCooperationInfo.type'>{{item.value}}</span>
@@ -154,9 +157,18 @@
               </p>
             </div>
             <div class="one_">
-              <p><span class="tag">合作方姓名：</span><span class="text">{{contractDetail.otherCooperationInfo.name}}</span></p>
-              <p><span class="tag">联系方式：</span><span class="text">{{contractDetail.otherCooperationInfo.mobile}}</span></p>
-              <p><span class="tag">身份证号：</span><span class="text">{{contractDetail.otherCooperationInfo.identifyCode}}</span></p>
+              <p>
+                <span class="tag">合作方姓名：</span>
+                <span class="text">{{contractDetail.otherCooperationInfo.name?contractDetail.otherCooperationInfo.name:'--'}}</span>
+              </p>
+              <p>
+                <span class="tag">联系方式：</span>
+                <span class="text">{{contractDetail.otherCooperationInfo.mobile?contractDetail.otherCooperationInfo.mobile:'--'}}</span>
+              </p>
+              <p>
+                <span class="tag">身份证号：</span>
+                <span class="text">{{contractDetail.otherCooperationInfo.identifyCode?contractDetail.otherCooperationInfo.identifyCode:'--'}}</span>
+              </p>
             </div>
             <div class="remark">
               <span>备注：</span>
@@ -222,22 +234,23 @@
             <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
           </div>
           <div v-if="contractDetail.contChangeState.value!=2">
-            <el-button round class="search_btn" v-if="power['sign-ht-xq-view'].state" @click="goPreview">预览</el-button>
+            <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
             <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3" @click="goChangeCancel(2)">解约</el-button>
             <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">撤单</el-button>
             <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1" @click="goChangeCancel(1)">变更</el-button>
-            <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
-            <el-button round type="primary" class="search_btn" v-if="contractDetail.toExamineState.value<0" @click="isSubmitAudit=true">提交审核</el-button>
+            <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
+            <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0" @click="isSubmitAudit=true">提交审核</el-button>
           </div>
           <div v-else>
-            <el-button round class="search_btn" v-if="power['sign-ht-xq-view'].state" @click="goPreview">预览</el-button>
+            <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
           </div>
         </div>
       </el-tab-pane>
       <el-tab-pane label="合同主体" name="second">
         <div class="contractSubject" v-if="contractDetail.contState.value>1">
           <ul class="ulData">
-            <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2">
+            <!-- <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2"> -->
+            <li v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
               <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
                 <i class="iconfont icon-shangchuan"></i>
                 <p>点击上传</p>
@@ -253,20 +266,17 @@
               <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
             </li>
           </ul>
-          <!-- <file-up class="uploadSubject" @getUrl="uploadSubject">
-            <i class="iconfont icon-shangchuan"></i>
-            <p>点击上传</p>
-          </file-up> -->
         </div>
       </el-tab-pane>
       <el-tab-pane label="资料库" name="third">
-        <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData">
+        <!-- <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData"> -->
+        <div class="dataBank" v-if="power['sign-ht-xq-data-add'].state||contractDetail.isHaveData">
           <div class="classify" v-if="sellerList.length>0">
             <p class="title">卖方</p>
-            <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="contractDetail.contChangeState.value!=2||item.value.length>0">
+            <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
-                <li v-if="contractDetail.contChangeState.value!=2">
+                <li v-if="power['sign-ht-xq-data-add'].state">
                   <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
                     <i class="iconfont icon-shangchuan"></i>
                     <p>点击上传</p>
@@ -279,17 +289,17 @@
                       <p>{{item_.name}}</p>
                     </div>
                   </el-tooltip>
-                  <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="isDelete===item.title+item_.path"></i>
+                  <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
             </div>
           </div>
           <div class="classify" v-if="buyerList.length>0">
             <p class="title">买方</p>
-            <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="contractDetail.contChangeState.value!=2||item.value.length>0">
+            <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
-                <li v-if="contractDetail.contChangeState.value!=2">
+                <li v-if="power['sign-ht-xq-data-add'].state">
                   <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
                     <i class="iconfont icon-shangchuan"></i>
                     <p>点击上传</p>
@@ -302,17 +312,17 @@
                       <p>{{item_.name}}</p>
                     </div>
                   </el-tooltip>
-                  <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>
+                  <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
             </div>
           </div>
           <div class="classify" v-if="otherList.length>0">
             <p class="title">其他</p>
-            <div class="one_" v-for="(item,index) in otherList" :key="index">
+            <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
               <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
-                <li v-if="contractDetail.contChangeState.value!=2">
+                <li v-if="power['sign-ht-xq-data-add'].state">
                   <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
                     <i class="iconfont icon-shangchuan"></i>
                     <p>点击上传</p>
@@ -325,7 +335,7 @@
                       <p>{{item_.name}}</p>
                     </div>
                   </el-tooltip>
-                  <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="isDelete===item.title+item_.path"></i>
+                  <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
                 </li>
               </ul>
             </div>
@@ -379,14 +389,17 @@
             </el-table-column>
             <el-table-column label="备注" width="320">
               <template slot-scope="scope">
-                <el-popover trigger="hover" placement="top" v-if="scope.row.remarks">
-                  <div style="width:160px">
-                    {{scope.row.remarks}}
-                  </div>
-                  <div slot="reference" class="name-wrapper">
-                    {{scope.row.remarks}}
-                  </div>
-                </el-popover>
+                <div v-if="scope.row.remarks">
+                  <el-popover trigger="hover" placement="top" v-if="power['sign-ht-xq-ly-vmemo'].state">
+                    <div style="width:300px">
+                      {{scope.row.remarks}}
+                    </div>
+                    <div slot="reference" class="name-wrapper">
+                      {{scope.row.remarks}}
+                    </div>
+                  </el-popover>
+                  <div v-else class="noPower"><i class="iconfont icon-tubiao_shiyong-12"></i> 无权限浏览</div>
+                </div>
                 <p v-else class="iconfont icon-tubiao_shiyong-14 addRemarks" @click="showRemark(scope.row)"> 添加备注</p>
               </template>
             </el-table-column>
@@ -413,13 +426,13 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <div class="functionTable" v-if="contractDetail.contChangeState.value!=2">
-      
+    <!-- <div class="functionTable" v-if="contractDetail.contChangeState.value!=2"> -->
+    <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='first'" @click="printDemo">打印成交报告</el-button>  <!-- @click="printDemo" -->
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
-      <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3">分成</el-button>
-      <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
-      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second'&&contractDetail.contState.value!=1">上传</el-button>  <!-- 合同主体上传 -->
+      <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'&&contractDetail.contState.value===3">分成</el-button>
+      <el-button type="primary" round class="search_btn" @click="uploading" v-if="power['sign-ht-xq-data-add'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
+      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
     
     <!-- 拨号弹出框 -->
@@ -750,11 +763,11 @@ export default {
           state: false,
           name: '打印成交报告'
         },
-        'sign-ht-xq-view': {
+        'sign-ht-info-view': {
           state: false,
           name: '预览'
         },
-        'sign-ht-xq-edit': {
+        'sign-ht-info-edit': {
           state: false,
           name: '编辑'
         },
@@ -770,17 +783,37 @@ export default {
           state: false,
           name: '变更'
         },
+        'sign-ht-view-toverify': {
+          state: false,
+          name: '提交审核'
+        },
         'sign-ht-xq-yj': {
           state: false,
           name: '业绩分成'
         },
-        'sign-ht-xq-upmain': {
+        'sign-ht-xq-main-add': {
           state: false,
-          name: '上传合同主体'
+          name: '编辑合同主体'
         },
-        'sign-ht-xq-updata': {
+        'sign-ht-xq-data-add': {
           state: false,
-          name: '上传资料'
+          name: '编辑资料库'
+        },
+        'sign-ht-xq-ly-wmemo': {
+          state: false,
+          name: '添加录音备注'
+        },
+        'sign-ht-xq-ly-call': {
+          state: false,
+          name: '拨打电话'
+        },
+        'sign-ht-xq-ly-play': {
+          state: false,
+          name: '听取录音'
+        },
+        'sign-ht-xq-ly-vmemo': {
+          state: false,
+          name: '查看备注'
         },
       }
     };
@@ -854,7 +887,7 @@ export default {
     },
     // 分成弹窗
     fencheng() {
-      if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2||this.contractDetail.achievementState.value===-2){
+      // if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2||this.contractDetail.achievementState.value===-2){
         if(this.contractDetail.distributableAchievement>0){
           this.dialogType = 3;
           this.shows = true;
@@ -873,11 +906,11 @@ export default {
             message:'无可分配业绩,无法分成'
           })
         }
-      }else{
-        this.$message({
-          message:`当前业绩状态为${this.contractDetail.achievementState.label},无法分成`
-        })
-      }
+      // }else{
+      //   this.$message({
+      //     message:`当前业绩状态为${this.contractDetail.achievementState.label},无法分成`
+      //   })
+      // }
     },
     closeAch(){
       this.shows=false;
@@ -979,9 +1012,12 @@ export default {
     },
     //添加备注弹窗
     showRemark(item){
-      this.showRemarks=true;
-      console.log(item)
-      this.remarkId = item.id;
+      if(this.power['sign-ht-xq-ly-wmemo'].state){
+        this.showRemarks=true;
+        this.remarkId = item.id;
+      }else{
+        this.noPower('添加备注')
+      }
     },
     //添加备注
     addRemark(){
@@ -1309,11 +1345,17 @@ export default {
         }
       }
       if(isOk){
+        if(this.contractDetail.laterStageState.value===4||this.contractDetail.laterStageState.value===1){
+          var code = 1;
+        }else{
+          var code = 2;
+        }
         let param = {
           datas: arr_,
-          contId: this.id
+          contId: this.id,
+          operation:code
         }
-        console.log(param)
+        // console.log(param)
         this.$ajax.postJSON('/api/contract/uploadContData', param).then(res=>{
           res=res.data;
           if(res.status===200){
@@ -1703,6 +1745,10 @@ export default {
       -webkit-line-clamp: 1;
       overflow: hidden;
       text-overflow:ellipsis;
+    }
+    .noPower{
+      width:300px;
+      text-align:center
     }
     .addRemarks{
       font-size: 14px;

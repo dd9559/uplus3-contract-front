@@ -48,7 +48,7 @@
             <i class="yuan">元</i>
             <!-- <el-input v-model="contractForm.commissionPayment" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
-          <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right">
+          <el-form-item label="交易流程：" class="form-label" style="width:320px;text-align:right">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true">
               <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
@@ -65,7 +65,10 @@
             <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
           <el-form-item label="物业地址：" :class="{'form-label':type===1}" style="width:605px;text-align:right">
-            <span class="propertyAddress" v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}}</span>
+            <span class="propertyAddress" v-if="contractForm.houseinfoCode">
+              <!-- {{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}} -->
+              {{type===1?contractForm.houseInfo.EstateName:contractForm.propertyAddr}}
+            </span>
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
           <br>
@@ -79,15 +82,14 @@
             <input type="text" v-model="contractForm.houseInfo.SquareUse" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
             <i class="yuan">㎡</i>
           </el-form-item>
-          <el-form-item label="房源方门店：" class="form-label" style="width:320px;text-align:right">
-            <!-- <el-select v-model="contractForm.houseInfo.HouseStoreCode" :multiple='false' clearable filterable remote reserve-keyword @change="getShop" placeholder="部门" :remote-method="remoteMethod" :loading="loading">
+          <el-form-item label="房源方门店：" class="form-label" style="width:305px;text-align:right">
+            <!-- <el-select v-model="contractForm.houseInfo.HouseStoreCode" filterable placeholder="请选择" :clearable="true" @change="getShop" @clear="allClear('owner')">
               <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select> -->
-            <el-select v-model="contractForm.houseInfo.HouseStoreCode" filterable placeholder="请选择" :clearable="true" @change="getShop" @clear="allClear('owner')">
-              <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </el-select>
+            
+            <span class="propertyAddress shopName" v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.HouseStoreName}}</span>
+            <span class="propertyAddress color_ shopName" v-else>门店</span>
           </el-form-item>
           <el-form-item label="店长：">
             {{contractForm.houseInfo.ShopOwnerName}} {{contractForm.houseInfo.ShopOwnerMobile}}
@@ -122,11 +124,14 @@
             <input type="text" v-model="contractForm.houseInfo.stagesArrears" :disabled="type===2?true:false" @input="cutNumber('stagesArrears')" placeholder="请输入内容" class="dealPrice" :class="{'forbid':type===2}">
             <i class="yuan">元</i>
           </el-form-item>
+          <el-form-item>
+            <span class="chineseNum" v-if="contractForm.type===2||contractForm.type===3">{{contractForm.houseInfo.stagesArrears|moneyFormat}}</span>
+          </el-form-item>
           <br v-if="contractForm.type===2||contractForm.type===3">
           <el-form-item label="产权地址：" v-if="contractForm.type===2||contractForm.type===3" style="width:520px;text-align:right">
             <el-input v-model="contractForm.houseInfo.propertyRightAddr" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:416px"></el-input>
           </el-form-item>
-          <el-form-item label="房产证号：" v-if="contractForm.type===2||contractForm.type===3" :class="{'form-label':type===1}">
+          <el-form-item label="房产证号：" v-if="contractForm.type===2||contractForm.type===3" :class="{'form-label':type===1}" style="width:289px;text-align:right">
             <el-input v-model="contractForm.propertyCard" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:200px"></el-input>
           </el-form-item>
           <br>
@@ -135,7 +140,7 @@
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'owner')" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyMobile(item.mobile)">
+                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyMobile(item.mobile)" @keyup="cleanAll(item,index,'owner')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -169,14 +174,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="客源方门店：" class="form-label">
-            <!-- <el-select v-model="contractForm.guestInfo.GuestStoreCode" :multiple='false' clearable filterable remote reserve-keyword @change="getShop_" placeholder="部门" :remote-method="remoteMethod_" :loading="loading">
-              <el-option v-for="item in options_" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </el-select> -->
-            <el-select v-model="contractForm.guestInfo.GuestStoreCode" filterable placeholder="请选择" :clearable="true" @change="getShop_" @clear="allClear('guest')">
+            <!-- <el-select v-model="contractForm.guestInfo.GuestStoreCode" filterable placeholder="请选择" :clearable="true" @change="getShop_" @clear="allClear('guest')">
               <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
-            </el-select>
+            </el-select> -->
+            <span class="propertyAddress shopName" v-if="contractForm.guestinfoCode">{{contractForm.guestInfo.GuestStoreName}}</span>
+            <span class="propertyAddress color_ shopName" v-else>门店</span>
           </el-form-item>
           <el-form-item label="店长：">
             {{contractForm.guestInfo.ShopOwnerName}}{{contractForm.guestInfo.ShopOwnerMobile}}
@@ -187,7 +190,7 @@
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'guest')"  class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"  @input="verifyMobile(item.mobile)">
+                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"  @input="verifyMobile(item.mobile)" @keyup="cleanAll(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -369,6 +372,7 @@ export default {
           propertyRightRatio: ""
         }
       ],
+      ownerList_:[],
       //客户信息
       guestList: [
         {
@@ -380,6 +384,7 @@ export default {
           propertyRightRatio: ""
         }
       ],
+      guestList_:[],
       dialogType: "",
       isShowDialog: false,
       dialogSave: false,
@@ -421,7 +426,6 @@ export default {
     };
   },
   created() {
-    console.log(this.$tool.repeatCell(['1','2']))
     this.contractForm.type = Number(this.$route.query.type);
     if (this.$route.query.operateType) {
       this.type = parseInt(this.$route.query.operateType);
@@ -430,12 +434,6 @@ export default {
         this.getContractDetail();
       }
     }
-    // if(this.contractForm.type!=1){
-    //   rule.propertyCard={
-    //     name:'房产证号'
-    //   }
-    // }
-    console.log(rule)
     this.getDictionary();//字典
     this.getTransFlow();//交易类型
     this.getRelation();//人员关系
@@ -495,12 +493,31 @@ export default {
     delPeopleMsg(){
       if(this.delType==="owner"){
         this.ownerList.splice(this.peopleIndex, 1);
+        this.ownerList_.splice(this.peopleIndex, 1);
         this.dialogDel=false;
       }else if(this.delType==="guest"){
         this.guestList.splice(this.peopleIndex, 1);
+        this.guestList_.splice(this.peopleIndex, 1);
         this.dialogDel=false;
       }
     },
+    //清除加密号码
+    cleanAll(item,index,type){
+      if(item.isEncryption){
+        if(type==="owner"){
+          if(this.ownerList[index].mobile.length<11){
+            this.ownerList[index].mobile='';
+            this.ownerList[index].isEncryption=false;
+          }
+        }else if(type==="guest"){
+          if(this.guestList[index].mobile.length<11){
+            this.guestList[index].mobile='';
+            this.guestList[index].isEncryption=false;
+          }
+        }
+      }
+    },
+    //第三方
     toCooperation() {
       this.cooperation = !this.cooperation;
       if (this.contractForm.isHaveCooperation) {
@@ -521,10 +538,8 @@ export default {
           res.data.forEach(element => {
             if(element.isRequired){
               let name_ = element.name;
-              //console.log(name_);
               this.parameterRule[name_]={name:element.name};
               if(this.type===1){
-                // this.contractForm.extendParams[name_]='';
                 this.$set(this.contractForm.extendParams,name_,'')
               }
             }
@@ -581,8 +596,15 @@ export default {
 
               let isOk;
               // this.ownerList.forEach(element => {
-              for(var i=0;i<this.ownerList.length;i++){
-                let element = this.ownerList[i]
+              let ownerArr = this.ownerList.map(item=>Object.assign({},item));
+              ownerArr.forEach((element,index) => {
+                if(element.isEncryption){
+                  element.mobile=this.ownerList_[index].mobile
+                }
+              });
+
+              for(var i=0;i<ownerArr.length;i++){
+                let element = ownerArr[i]
                 isOk = false;
                 if (element.name) {
                   if(element.name.replace(/\s/g,"")){
@@ -659,8 +681,15 @@ export default {
                       let guestRightRatio = 0;
                       let isOk_;
                       // this.guestList.forEach(element => {
-                      for(var i=0;i<this.guestList.length;i++){
-                        let element = this.guestList[i];
+                      let guestArr = this.guestList.map(item=>Object.assign({},item));
+                      guestArr.forEach((element,index) => {
+                        if(element.isEncryption){
+                          element.mobile=this.guestList_[index].mobile
+                        }
+                      });
+
+                      for(var i=0;i<guestArr.length;i++){
+                        let element = guestArr[i];
                         isOk_ = false;
                         if (element.name) {
                           if(element.name.replace(/\s/g,"")){
@@ -669,6 +698,11 @@ export default {
                             let reg = /^1[0-9]{10}$/;
                             if (reg.test(element.mobile)) {
                               if (element.relation) {
+                                if(this.type===2){
+                                  if(!element.propertyRightRatio){
+                                    element.propertyRightRatio="0"
+                                  }
+                                }      
                               if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                                 if (element.identifyCode) {
                                   let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
@@ -701,7 +735,7 @@ export default {
                             }
                             }else{
                               this.$message({
-                                message: "业主电话号码不正确"
+                                message: "客户电话号码不正确"
                               });
                               break
                             }
@@ -788,7 +822,6 @@ export default {
                               message:'身份证号码重复'
                             })
                           }
-                          // console.log(this.$tool.repeatCell(IdCardList));
 
                           
                           // 合同扩展参数验证
@@ -850,12 +883,22 @@ export default {
     // 新增合同
     addContract(){
       this.contractForm.contPersons=[];
-      this.ownerList.forEach(element => {
+      let ownerArr = this.ownerList.map(item=>Object.assign({},item));
+      let guestArr = this.guestList.map(item=>Object.assign({},item));
+      ownerArr.forEach((element,index) => {
+        if(element.isEncryption){
+          element.mobile=this.ownerList_[index].mobile
+        }
         delete element.edit;
+        delete element.isEncryption;
         this.contractForm.contPersons.push(element);
       });
-      this.guestList.forEach(element => {
+      guestArr.forEach((element,index) => {
+        if(element.isEncryption){
+          element.mobile=this.guestList_[index].mobile
+        }
         delete element.edit;
+        delete element.isEncryption;
         this.contractForm.contPersons.push(element);
       });
       if (this.contractForm.type === 1) {//租赁合同
@@ -890,7 +933,6 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          console.log(error)
           this.$message({
             message:error
           })
@@ -937,7 +979,6 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          console.log(error)
           this.$message({
             message:error
           })
@@ -1040,7 +1081,6 @@ export default {
       this.$ajax.get("/api/contract/getTransFlowListByCity").then(res => {
         res = res.data;
         if (res.status === 200) {
-          console.log(res.data);
           this.transFlowList = res.data;
         }
       });
@@ -1088,18 +1128,22 @@ export default {
           if(houseMsg.OwnerInfoList.length>0){
             this.ownerList=[];
             houseMsg.OwnerInfoList.forEach(element => {
-              // console.log(element);
               element.type=1;
               element.identifyCode='';
               element.propertyRightRatio='';
               element.name=element.OwnerName;
               element.mobile=element.OwnerMobile;
               element.relation=element.Relation;
+              element.isEncryption=true;
               delete element.OwnerName
               delete element.OwnerMobile
               delete element.Relation
               let obj = Object.assign({}, element);
+              obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
               this.ownerList.push(obj);
+              let obj_ = Object.assign({}, element);
+              // obj_.mobile=obj_.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              this.ownerList_.push(obj_);
             });
           }
           // this.options.push({
@@ -1119,34 +1163,39 @@ export default {
         res = res.data;
         if (res.status === 200) {
           let guestMsg = res.data;
-          console.log(guestMsg);
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
           this.guestList=[];
-          this.guestList.push({
+          this.contractForm.guestInfo.paymentMethod=1
+          let element = {
             name: guestMsg.OwnerInfo.CustName,
             mobile: guestMsg.OwnerInfo.CustMobile,
             type: 2,
             relation: guestMsg.OwnerInfo.CustRelation,
             identifyCode:'',
-            propertyRightRatio:''
-          })
-          // this.guestList[0] = {
+            propertyRightRatio:'',
+            isEncryption:true
+          }
+          let obj = Object.assign({}, element);
+          obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+          this.guestList.push(obj);
+          let obj_ = Object.assign({}, element);
+          // obj_.mobile=obj_.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+          this.guestList_.push(obj_);
+
+          // this.guestList.push({
           //   name: guestMsg.OwnerInfo.CustName,
           //   mobile: guestMsg.OwnerInfo.CustMobile,
           //   type: 2,
-          //   relation: guestMsg.OwnerInfo.CustRelation
-          // };
-          // this.options_.push({
-          //   name: guestMsg.GuestStoreName,
-          //   id: guestMsg.GuestStoreCode
-          // });
+          //   relation: guestMsg.OwnerInfo.CustRelation,
+          //   identifyCode:'',
+          //   propertyRightRatio:''
+          // })
         }
       });
     },
     //关闭房源客源弹窗
     closeHouseGuest(value) {
-      console.log(value);
       if (value) {
         if (value.dialogType === "house") {
           this.isShowDialog = false;
@@ -1176,7 +1225,6 @@ export default {
       });
     },
     getShop(id) {
-      console.log(id);
       if(id){
         this.contractForm.houseInfo.ShopOwnerName='';
         this.contractForm.houseInfo.ShopOwnerMobile='';
@@ -1327,54 +1375,83 @@ export default {
           this.guestList=[];
           for (var i = 0; i < this.contractForm.contPersons.length; i++) {
             if (this.contractForm.contPersons[i].personType.value === 1) {
-              if(this.ownerList.length>0){
-                this.ownerList.push({
-                  name:this.contractForm.contPersons[i].name,
-                  mobile:this.contractForm.contPersons[i].mobile,
-                  relation:this.contractForm.contPersons[i].relation,
-                  propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-                  identifyCode:this.contractForm.contPersons[i].identifyCode,
-                  type:1,
-                  edit:true
-                });
-              }else{
-                this.ownerList.push({
-                  name:this.contractForm.contPersons[i].name,
-                  mobile:this.contractForm.contPersons[i].mobile,
-                  relation:this.contractForm.contPersons[i].relation,
-                  propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-                  identifyCode:this.contractForm.contPersons[i].identifyCode,
-                  type:1,
-                });
+              // if(this.ownerList.length>0){
+              //   this.ownerList.push({
+              //     name:this.contractForm.contPersons[i].name,
+              //     mobile:this.contractForm.contPersons[i].mobile,
+              //     relation:this.contractForm.contPersons[i].relation,
+              //     propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+              //     identifyCode:this.contractForm.contPersons[i].identifyCode,
+              //     type:1,
+              //     edit:true
+              //   });
+              // }else{
+              //   this.ownerList.push({
+              //     name:this.contractForm.contPersons[i].name,
+              //     mobile:this.contractForm.contPersons[i].mobile,
+              //     relation:this.contractForm.contPersons[i].relation,
+              //     propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+              //     identifyCode:this.contractForm.contPersons[i].identifyCode,
+              //     type:1,
+              //   });
+              // }
+              let element = {
+                name:this.contractForm.contPersons[i].name,
+                mobile:this.contractForm.contPersons[i].mobile,
+                relation:this.contractForm.contPersons[i].relation,
+                propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+                identifyCode:this.contractForm.contPersons[i].identifyCode,
+                type:1,
+                edit:false,
+                isEncryption:true
               }
+              let obj = Object.assign({}, element);
+              obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              this.ownerList.push(obj);
+              let obj_ = Object.assign({}, element);
+              this.ownerList_.push(obj_);
             } else if (this.contractForm.contPersons[i].personType.value === 2) {
-              if(this.guestList.length>0){
-                this.guestList.push({
-                  name:this.contractForm.contPersons[i].name,
-                  mobile:this.contractForm.contPersons[i].mobile,
-                  relation:this.contractForm.contPersons[i].relation,
-                  propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-                  identifyCode:this.contractForm.contPersons[i].identifyCode,
-                  type:2,
-                  edit:true
-                });
-              }else{
-                this.guestList.push({
-                  name:this.contractForm.contPersons[i].name,
-                  mobile:this.contractForm.contPersons[i].mobile,
-                  relation:this.contractForm.contPersons[i].relation,
-                  propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-                  identifyCode:this.contractForm.contPersons[i].identifyCode,
-                  type:2
-                });
+              // if(this.guestList.length>0){
+              //   this.guestList.push({
+              //     name:this.contractForm.contPersons[i].name,
+              //     mobile:this.contractForm.contPersons[i].mobile,
+              //     relation:this.contractForm.contPersons[i].relation,
+              //     propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+              //     identifyCode:this.contractForm.contPersons[i].identifyCode,
+              //     type:2,
+              //     edit:true
+              //   });
+              // }else{
+              //   this.guestList.push({
+              //     name:this.contractForm.contPersons[i].name,
+              //     mobile:this.contractForm.contPersons[i].mobile,
+              //     relation:this.contractForm.contPersons[i].relation,
+              //     propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+              //     identifyCode:this.contractForm.contPersons[i].identifyCode,
+              //     type:2
+              //   });
+              // }
+              let element = {
+                name:this.contractForm.contPersons[i].name,
+                mobile:this.contractForm.contPersons[i].mobile,
+                relation:this.contractForm.contPersons[i].relation,
+                propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
+                identifyCode:this.contractForm.contPersons[i].identifyCode,
+                type:2,
+                edit:false,
+                isEncryption:true
               }
+              let obj = Object.assign({}, element);
+              obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              this.guestList.push(obj);
+              let obj_ = Object.assign({}, element);
+              this.guestList_.push(obj_);
             }
           }
         }
       });
     },
     cutNumber(val){
-      // console.log(val)
       if(val==="dealPrice"){
         this.$nextTick(()=>{
           this.contractForm.dealPrice=this.$tool.cutFloat({val:this.contractForm.dealPrice,max:999999999.99})
@@ -1431,6 +1508,19 @@ export default {
     }
       
   },
+  // watch:{
+  //   ownerList:function(){
+  //     let arr = this.ownerList.map(item=>Object.assign({},item))
+  //     this.ownerList.forEach(item=>{
+  //       // item=JSON.parse(JSON.stringify(item))
+  //       debugger
+  //       if(item.isEncryption){
+  //         this.$set(item,'mobile',item.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2"))
+  //       }
+  //     })
+  //     this.ownerList_=[].concat(arr)
+  //   }
+  // },
   filters: {
     moneyFormat: function(val) {
       if (!val) {
@@ -1515,6 +1605,11 @@ export default {
   }
 }
 .houseMsg {
+  .chineseNum {
+    padding-left: 10px;
+    color: @color-orange;
+    font-size: 14px;
+  }
   border-bottom: 1px solid @border-ED;
   > p {
     padding: 20px 0 10px 20px;
@@ -1566,6 +1661,9 @@ export default {
     }
     .color_{
       color: #c0c4cc;
+    }
+    .shopName{
+      min-width: 200px;
     }
     .parameter{
       display: flex;

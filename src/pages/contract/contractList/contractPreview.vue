@@ -9,18 +9,18 @@
         <span :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</span>
       </div>
       <div class="btn" v-if="contType<4">
-        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-view-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编 辑</el-button>
-        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-view-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤 单</el-button>
+        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
         <el-button round type="primary" style="width:100px" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4" @click="isSubmitAudit=true">提交审核</el-button>
-        <el-button round type="primary" style="width:100px" v-if="power['sign-ht-view-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1" @click="goChangeCancel(1)">变更</el-button>
-        <el-button round type="danger"  style="width:100px" v-if="power['sign-ht-view-cancel'].state&&contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
+        <el-button round type="primary" style="width:100px" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1" @click="goChangeCancel(1)">变更</el-button>
+        <el-button round type="danger"  style="width:100px" v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
         <el-button round style="width:100px" v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         <el-button round style="width:100px" v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round style="width:100px" v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
       </div>
       <div class="btn" v-else>
-        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-view-edit'].state" @click="toEdit">编 辑</el-button>
+        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-info-edit'].state" @click="toEdit">编辑</el-button>
       </div>
     </div>
     <div class="content">
@@ -150,11 +150,11 @@ export default {
       //加载等待
       fullscreenLoading:false,
       power: {
-        'sign-ht-view-edit': {
+        'sign-ht-info-edit': {
           state: false,
           name: '编辑'
         },
-        'sign-ht-view-void': {
+        'sign-ht-xq-void': {
           state: false,
           name: '撤单'
         },
@@ -162,11 +162,11 @@ export default {
           state: false,
           name: '提交审核'
         },
-        'sign-ht-view-modify': {
+        'sign-ht-xq-modify': {
           state: false,
           name: '变更'
         },
-        'sign-ht-view-cancel': {
+        'sign-ht-xq-cancel': {
           state: false,
           name: '解约'
         },

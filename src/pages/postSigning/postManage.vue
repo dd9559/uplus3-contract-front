@@ -150,7 +150,7 @@
                     label="合同来源部门"
                     prop="departmentS" 
                     class="mr">
-                        <el-select 
+                        <!-- <el-select 
                         ref="tree" 
                         size="small" 
                         :loading="Loading" 
@@ -170,7 +170,8 @@
                                 :props="defaultProps" 
                                 @node-click="depHandleClick"></el-tree> 
                             </el-option>
-                        </el-select>
+                        </el-select> -->
+                        <select-tree :data="DepList" :init="propForm.departmentS" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
                     </el-form-item>
                     <el-form-item prop="departmentMo">
                         <el-select 
@@ -377,13 +378,13 @@
                                     <el-button class="blue" type="text" @click="operationFn(scope.row.id)">查看</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.backlog && layerShowData.statusLaterStage.label !== STATE.start">
-                                    <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-down'].state" @click="downFn(scope)">下</el-button>
+                                    <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" @click="downFn(scope)">下</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.sure && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" type="text" @click="sureFn(scope.row.id)">确认</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.not && layerShowData.statusLaterStage.label !== STATE.start">
-                                    <el-button class="blue" v-if="isUpBtnFn(scope.$index) && power['sign-qh-mgr-jd-up'].state" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-down'].state" class="blue" type="text" @click="downFn(scope)">下</el-button>
+                                    <el-button class="blue" v-if="isUpBtnFn(scope.$index) && power['sign-qh-mgr-jd-move'].state" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" class="blue" type="text" @click="downFn(scope)">下</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.amend && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" type="text" @click="amendFn(scope.row.id)">修改</el-button>
@@ -880,10 +881,6 @@
                         name:'查询',
                         state:false
                     },
-                    'sign-qh-mgr-data':{
-                        name:'查询步骤列表',
-                        state:false
-                    },
                     'sign-qh-mgr-jd-modify':{
                         name:'更换交易流程',
                         state:false
@@ -892,13 +889,13 @@
                         name:'步骤管理',
                         state:false
                     },
-                    'sign-qh-mgr-jd-up':{
-                        name:'上',
+                    'sign-qh-mgr-jd-move':{
+                        name:'上、下',
                         state:false
                     },
-                    'sign-qh-mgr-jd-down':{
-                        name:'下',
-                        state:false
+                    'sign-com-htdetail':{
+                        name:'合同详情',
+                        state:false,
                     },
                 }
             }
@@ -994,12 +991,16 @@
             // },
             // 合同编号
             contractFn(value){
+                if(!this.power['sign-com-htdetail'].state){
+                    this.noPower(this.power['sign-com-htdetail'].name);
+                    return false
+                }
                 this.$router.push({
                     path: "/contractDetails",
                     query: {
                         id: value.id,//合同id
                         code: value.code,//合同编号
-                        contType: value.tradeType.value//合同类型
+                        contType: this.power['sign-com-htdetail'].state?1:0//合同类型
                     }
                 });
             },
@@ -1076,10 +1077,6 @@
             },
             // 后期进度
             progressFn(row){
-                if(!this.power['sign-qh-mgr-data'].state){
-                    this.noPower(this.power['sign-qh-mgr-data'].name);
-                    return false
-                }
                 this.layerShow = true;
                 this.layerBtn = false;  
                 this.layerShowData = row;
@@ -1203,8 +1200,8 @@
             },
             // 上
             upFn(e){
-                if(!this.power['sign-qh-mgr-jd-up'].state){
-                    this.noPower(this.power['sign-qh-mgr-jd-up'].name);
+                if(!this.power['sign-qh-mgr-jd-move'].state){
+                    this.noPower(this.power['sign-qh-mgr-jd-move'].name);
                     return false
                 }
                 if(!this.loadingProgress){
@@ -1220,8 +1217,8 @@
             },
             // 下
             downFn(e){
-                if(!this.power['sign-qh-mgr-jd-down'].state){
-                    this.noPower(this.power['sign-qh-mgr-jd-down'].name);
+                if(!this.power['sign-qh-mgr-jd-move'].state){
+                    this.noPower(this.power['sign-qh-mgr-jd-move'].name);
                     return false
                 }
                 if(!this.loadingProgress){
@@ -1237,12 +1234,8 @@
                 }
             },
             oderStepFn(upId,downId){
-                if(!this.power['sign-qh-mgr-jd-up'].state){
-                    this.noPower(this.power['sign-qh-mgr-jd-up'].name);
-                    return false
-                }
-                if(!this.power['sign-qh-mgr-jd-down'].state){
-                    this.noPower(this.power['sign-qh-mgr-jd-down'].name);
+                if(!this.power['sign-qh-mgr-jd-move'].state){
+                    this.noPower(this.power['sign-qh-mgr-jd-move'].name);
                     return false
                 }
                 this.$ajax.post('/api/postSigning/oderStep',{
@@ -1672,10 +1665,6 @@
             },
             // 后期进度获取数据
             lateProgressFn(){
-                if(!this.power['sign-qh-mgr-data'].state){
-                    this.noPower(this.power['sign-qh-mgr-data'].name);
-                    return false
-                }
                 this.loadingProgress = true;
                 this.$ajax.get('/api/postSigning/getLastStepList',{
                     id:this.layerShowData.id
