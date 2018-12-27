@@ -130,7 +130,7 @@
         </el-table-column>             
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope" v-if="scope.row.checkState === 0">
-            <el-button type="text" class="curPointer" @click="auditApply(scope.row)"  v-if="scope.row.checkId === userMsg.empId">审核</el-button>
+            <el-button type="text" class="curPointer" @click="auditApply(scope.row)"  v-if="scope.row.checkby === userMsg.empId">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
