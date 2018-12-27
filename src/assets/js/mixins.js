@@ -22,7 +22,8 @@ const MIXINS = {
         name:''
       },
       employePage:1,
-      employeTotal:0
+      employeTotal:0,
+      tableBoxCom:null
     }
   },
   created(){
@@ -267,7 +268,12 @@ const MIXINS = {
       'getLoading',
       'getCollapse'
     ])
-  }
+  },
+  mounted() {
+    if(this.$refs.tableCom){
+      this.tableBoxCom = this.$refs.tableCom
+    }
+  },
 }
 
 export {

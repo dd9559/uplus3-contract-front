@@ -105,10 +105,11 @@
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
             <el-table 
+            ref="tableCom"
             :data="tableData.list"
             v-loading="loadingList" 
             @row-dblclick="tradingStepsFn"
-            class="paper-table mt-20">
+            class="paper-table mt-20 info-scrollbar">
                 <el-table-column label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>
@@ -163,15 +164,17 @@
             </el-table>
         </div>
         <!-- 分页 -->
-        <div class="pagination" v-if="tableData.total">
-            <el-pagination
-                :current-page="tableData.pageNum"
-                :page-size="tableData.pageSize"
-                @current-change="currentChangeFn"
-                layout=" total, prev, pager, next, jumper"
-                :total="tableData.total">
-            </el-pagination>
-        </div>
+        <scrollBar :table="tableBoxCom" v-if="tableBoxCom">
+            <div class="pagination" v-if="tableData.total">
+                <el-pagination
+                    :current-page="tableData.pageNum"
+                    :page-size="tableData.pageSize"
+                    @current-change="currentChangeFn"
+                    layout=" total, prev, pager, next, jumper"
+                    :total="tableData.total">
+                </el-pagination>
+            </div>
+        </scrollBar>
         <!-- 后期进度查看 -->
         <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
         <!-- 流水 -->
