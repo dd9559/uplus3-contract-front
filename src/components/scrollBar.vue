@@ -43,10 +43,22 @@
       this.$nextTick(()=>{
         this.scrollWidth=this.table.$refs.bodyWrapper.childNodes[0].clientWidth
         // debugger
-        this.tableBody=this.table.$refs.bodyWrapper.clientWidth-17
-        this.scrollLeft=this.table.$el.offsetLeft+65
+        this.tableBody=this.table.$refs.bodyWrapper.clientWidth
+        if(!this.getCollapse){
+          this.scrollLeft=this.table.$el.offsetLeft+161
+        }else {
+          this.scrollLeft=this.table.$el.offsetLeft+65
+        }
         window.onresize=function () {
-          this.tableBody=this.table.$refs.bodyWrapper.clientWidth
+          if(this.table.$refs.bodyWrapper){
+            this.tableBody=this.table.$refs.bodyWrapper.clientWidth
+            // console.log(this.scrollWidth,this.tableBody)
+            if(this.scrollWidth>this.tableBody){
+              this.$emit('noScroll',{state:true})
+            }else {
+              this.$emit('noScroll',{state:false})
+            }
+          }
         }.bind(this)
       })
     },
@@ -70,10 +82,10 @@
     },
     methods:{
       scroll:function (e) {
-        this.scrollWidth=this.scrollWidth=this.table.$refs.bodyWrapper.childNodes[0].clientWidth
-        console.log(this.table.$el.offsetLeft)
+        this.scrollWidth=this.scrollWidth=this.table.$refs.bodyWrapper.childNodes[0].clientWidth+17
+        // console.log(this.table.$el.offsetLeft)
         this.table.$refs.bodyWrapper.scrollTo(e.target.scrollLeft,0)
-        console.log(this.table)
+        // console.log(this.table)
       }
     }
   }

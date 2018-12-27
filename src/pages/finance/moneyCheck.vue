@@ -177,7 +177,7 @@
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
             <template v-if="(scope.row.auditButton)||(scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state)">
-              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton&&(scope.row.currentAuditName===$store.state.user.user.name)">审核</el-button>
               <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state">作废</el-button>
             </template>
             <span v-else>--</span>

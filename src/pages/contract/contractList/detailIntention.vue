@@ -607,7 +607,7 @@ export default {
           }
           //根据合同ID查询详细信息 
           this.$ajax         
-          .get("/api/contract/getById", param)
+          .get("/api/contract/detail", param)
           .then(res => {
            
           
