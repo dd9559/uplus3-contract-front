@@ -390,7 +390,6 @@ export default {
         }
       }).catch(error => {
           this.loading_ = false;
-          console.log(error)
         });
     },
     //客源列表
@@ -418,7 +417,6 @@ export default {
         }
       }).catch(error => {
           this.loading_ = false;
-          console.log(error)
         });
     },
     //楼盘名称

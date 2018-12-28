@@ -237,7 +237,8 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
     },
@@ -266,9 +267,16 @@ export default {
         }).catch(error =>{
           this.fullscreenLoading=false;
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
+      }else if(value===4){
+        let param = {
+          id:this.id,
+          type:value
+        }
+        this.$ajax.post('/api/contract/signture', param).then(res=>{})
       }else{
         let param = {
           id:this.id,
@@ -452,7 +460,8 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
     },
@@ -491,7 +500,8 @@ export default {
           }
         }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
       }else{
