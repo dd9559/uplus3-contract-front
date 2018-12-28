@@ -208,8 +208,8 @@
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
             <el-table 
-            ref="tableNumberCom" 
-            :max-height="tableBoxCom"
+            ref="tableCom" 
+            :max-height="tableNumberCom"
             :data="tableData.list" 
             v-loading="loadingList"
             @cell-dblclick="dblclickFn"
