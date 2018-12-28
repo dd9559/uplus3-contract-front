@@ -31,7 +31,7 @@
                         end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
-                    <el-form-item label="关键字">
+                    <el-form-item label="模块">
                         <el-select v-model="selectType" placeholder="请选择">
                             <el-option
                                 v-for="(item) in type"
@@ -41,6 +41,9 @@
                                 >
                             </el-option>
                         </el-select>
+                    </el-form-item>
+                    <el-form-item label="关键字">
+                        <el-input v-model="keyword" placeholder="请输入关键字" size="small"></el-input>
                     </el-form-item>
                 </div>
             </el-form>
@@ -88,7 +91,7 @@
                 Loading:false,
                 departmentName:'',
                 department: [],
-                // keyWord: "",
+                keyword: "",
                 searchTime: '',
                 tableData: [],
                 pageSize: 30,
@@ -152,9 +155,10 @@
                         pageNum: this.pageNum,
                         deptId:this.department,
                         empId:this.depUser,
-                        keyword:this.selectType,
+                        objectType:this.selectType,
                         startTime:this.searchTime!== null?this.searchTime[0]:'',
                         endTime:this.searchTime!==null?this.searchTime[1]:'',
+                        keyword:this.keyword
                     }
                     this.$ajax.get('/api/operation/getList',param).then(res => {
                         res = res.data
@@ -171,6 +175,7 @@
             },
             // 重置
             resetFormFn() {
+                this.keyword=''
                 this.selectType='',
                 this.searchTime='',
                 this.depUser='',
