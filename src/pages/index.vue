@@ -256,8 +256,8 @@
       this.Index=this.$store.state.path
       this.activeIndex = this.Index[1].path.split('/')[1]
       this.$nextTick(()=>{
-        let arr=this.$store.state.user.privileges
-        console.log(this.$store.state.user.privileges)
+        let arr=this.$store.state.user&&this.$store.state.user.privileges
+        // console.log(this.$store.state.user.privileges)
         this.views.forEach((item,index)=>{
           let sliders=[]
           if(item.name!=='财务'){
