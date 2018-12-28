@@ -38,7 +38,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           <!--<el-select
             class="w200"
             :clearable="true"
@@ -122,7 +122,7 @@
         <div class="input-group">
           <label>关键字:</label>
           <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword"
-                    placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
+                    placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -473,6 +473,10 @@
         // this.EmployeList=[]
         this.searchForm.empId = ''
         this.clearSelect()
+      },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.searchForm.depName=payload.depName
       },
       depHandleClick(data) {
         // this.getEmploye(data.depId)

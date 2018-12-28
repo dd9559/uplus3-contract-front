@@ -27,7 +27,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.dealAgentStoreName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <select-tree :data="DepList" :init="searchForm.dealAgentStoreName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.dealAgentStoreName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
@@ -248,6 +248,10 @@
         // this.EmployeList=[]
         this.searchForm.dealAgentId=''
         this.clearSelect()
+      },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.searchForm.dealAgentStoreName=payload.depName
       },
       depHandleClick(data) {
         this.searchForm.dealAgentStoreId=data.depId

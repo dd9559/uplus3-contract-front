@@ -129,14 +129,16 @@ const MIXINS = {
         this.dep.name=''
         this.EmployeList=[]
         this.employePage=1
+        this.remoteMethod()
       }else {
-
+        this.EmployeList=[]
+        this.employePage=1
       }
     },
     //部门树结构选择操作
     handleNodeClick(data) {
       this.getEmploye(data.depId)
-      this.clearSelect()
+      this.clearSelect('emp')
       this.dep.id=data.depId
       this.dep.name=data.name
       /*if(data.subs.length===0){
