@@ -163,7 +163,6 @@
                  if(this.power['sign-set-kl-query'].state){
                     this.$ajax.get('api/setting/moneyType/list',{id:this.bigId},).then((res)=>{
                     if(res.status==200){
-                        // debugger
                         if(this.bigId==''){
                             this.tableData=res.data.data
                             this.moneyTypes=res.data.data[0].moneyTypes
@@ -188,7 +187,6 @@
                 this.addDialog=true
                 if(type==1){
                     this.title=`新增【${this.bigName}】小类`,
-                    console.log(this.title,'title');
                     this.addForm.name=''
                     this.addForm.status=0
                     this.addForm.remark=''
