@@ -1,5 +1,5 @@
 <template>
-  <div class="layout" style="background-color: #f5f5f5">
+  <div class="layout" style="background-color: #f5f5f5" ref="tableComView">
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <!-- 筛选条件 -->
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
@@ -101,7 +101,7 @@
       <!-- 头部 end -->
       <!-- 表格 -->
       <div class="data-list" v-loading="loading">
-        <el-table :data="receivableList" style="width: 100%" @row-dblclick="dialogVisible = true">
+        <el-table :data="receivableList" style="width: 100%" @row-dblclick="dialogVisible = true"  ref="tableCom" :max-height="tableNumberCom">
           <!-- code -->
           <el-table-column label="合同信息" width="150">
             <template slot-scope="scope">
@@ -165,15 +165,17 @@
       </div>
 
       <!-- 分页 -->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total,prev, pager, next , jumper"
-        :total="total"
-        v-if="total!=0"
-      ></el-pagination>
+       <div class="pagination" v-if="total!=0">
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-size="pageSize"
+                layout="total,prev, pager, next , jumper"
+                :total="total"
+              ></el-pagination>
+       </div>
+
     </div>
   </div>
 </template>

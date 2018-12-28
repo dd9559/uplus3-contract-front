@@ -327,11 +327,15 @@
                 // this.moneyTypes=row.moneyTypes
                 this.addForm.parentId=row.id
                 this.bigId=row.id
+                if(this.power['sign-set-kl-query'].state){
                   this.$ajax.get('api/setting/moneyType/list',{id:this.bigId}).then((res)=>{
                     if(res.status==200){
                         this.moneyTypes=res.data.data
                         this.isMoney=true
                     }})
+                }else{
+                      this.noPower(this.power['sign-set-kl-query'].name)
+                }
             }
         }
     }
