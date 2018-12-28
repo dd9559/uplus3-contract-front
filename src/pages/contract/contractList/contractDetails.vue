@@ -383,6 +383,7 @@
                   </span>
                 </div>
                 <span v-else>--</span>
+                <!-- <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio> -->
                 <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio>
                 <!-- ../../../../static/录音-001.MP3 -->
               </template>
@@ -404,7 +405,8 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
+          <el-pagination v-if="recordData.length>0" class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
+          <!-- <button @click="downloadRecord">下载</button> -->
         </div>
       </el-tab-pane>
       <el-tab-pane label="审核记录" name="fifth">
@@ -421,7 +423,19 @@
             </el-table-column>
             <el-table-column prop="operate" label="操作">
             </el-table-column>
-            <el-table-column prop="auditInfo" label="备注" width="320"></el-table-column>
+            <el-table-column label="备注" width="320">
+              <template slot-scope="scope">
+                <el-popover trigger="hover" placement="top" v-if="scope.row.auditInfo!='-'">
+                  <div style="width:300px">
+                    {{scope.row.auditInfo}}
+                  </div>
+                  <div slot="reference" class="name-wrapper">
+                    {{scope.row.auditInfo}}
+                  </div>
+                </el-popover>
+                <span v-else>{{scope.row.auditInfo}}</span>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
@@ -887,7 +901,7 @@ export default {
     },
     // 分成弹窗
     fencheng() {
-      // if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2||this.contractDetail.achievementState.value===-2){
+      if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2||this.contractDetail.achievementState.value===-2){
         if(this.contractDetail.distributableAchievement>0){
           this.dialogType = 3;
           this.shows = true;
@@ -906,11 +920,11 @@ export default {
             message:'无可分配业绩,无法分成'
           })
         }
-      // }else{
-      //   this.$message({
-      //     message:`当前业绩状态为${this.contractDetail.achievementState.label},无法分成`
-      //   })
-      // }
+      }else{
+        this.$message({
+          message:`当前业绩状态为${this.contractDetail.achievementState.label},无法分成`
+        })
+      }
     },
     closeAch(){
       this.shows=false;
@@ -1082,6 +1096,15 @@ export default {
         that.isPlay=false;
       }
 
+    },
+    //下载录音
+    downloadRecord(){
+      let param = {
+        recording:'82c17a1fe080c3043f7581bbcb97ca6a'
+      }
+      this.$ajax.get('/api/record/downloadRecord',param).then(res=>{
+        res=res.data;
+      })
     },
     //合同详情
     getContractDetail() {

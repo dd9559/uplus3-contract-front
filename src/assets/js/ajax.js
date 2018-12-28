@@ -47,6 +47,13 @@ let api = {
       return res
     })
   },
+  // getFile: function(url, param) {
+  //   let header = {}
+  //   header['Content-Type'] = 'video/mpeg'
+  //   return axios.get(url,{params:param}).then(res => {
+  //     return res
+  //   })
+  // },
   delete: function(url, param) {
     return axios
       .delete(url, {
