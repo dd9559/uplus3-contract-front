@@ -27,10 +27,10 @@ let TOOL = {
       }
     ],
     dateType_money:[
-      {
+      /*{
         label: '选择时间',
         value: 1
-      },
+      },*/
       {
         label: '收款时间',
         value: 2

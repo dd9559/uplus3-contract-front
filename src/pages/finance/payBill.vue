@@ -16,7 +16,7 @@
         </div>
         <div class="input-group col">
           <label class="form-label no-width f14">款类</label>
-          <moneyTypePop :data="moneyType" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
+          <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
         </div>
       </li>
       <li>
@@ -26,7 +26,7 @@
         </div>
         <div class="input-group col">
           <label class="form-label no-width f14">付款金额（元）</label>
-          <input type="text" size="small" class="w200 el-input__inner" placeholder="请输入" v-model="form.smallAmount" @input="cutNum">
+          <input type="text" size="small" class="w200 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum">
         </div>
       </li>
       <li>
@@ -124,7 +124,7 @@
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
           <template slot-scope="scope">
-            <span>{{form.smallAmount}}</span>
+            <span>{{form.amount}}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -153,7 +153,7 @@
       </div>
     </section>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" @click="layer.show=true">提交付款申请</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="showLayer">提交付款申请</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -187,7 +187,7 @@
           <el-table-column align="center" label="收款账户 " prop="cardNumber"></el-table-column>
           <el-table-column align="center" label="金额（元）">
             <template slot-scope="scope">
-              <span>{{form.smallAmount}}</span>
+              <span>{{form.amount}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -212,7 +212,7 @@
     moneyType:{
       name:'款类',
     },
-    smallAmount:{
+    amount:{
       name:'付款金额',
       type:'money'
     },
@@ -246,9 +246,10 @@
           inObjType:'',
           moneyType:'',
           moneyTypePid:'',
-          smallAmount:'',
+          amount:'',
         },
         moneyType: [],
+        moneyTypeName: '',
         list:[
           {
             bankName:'',
@@ -313,7 +314,7 @@
       },
       //金额输入
       cutNum:function () {
-        this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+        this.form.amount=this.$tool.cutFloat({val:this.form.amount,max:999999999.99})
       },
       /**
        * 修改款单，获取初始数据
@@ -329,7 +330,7 @@
               inObjType:res.data.inObjType.value,
               moneyType: res.data.moneyType,
               moneyTypePid: res.data.moneyTypePid,
-              smallAmount: res.data.amount,
+              amount: res.data.amount,
               id: res.data.id
             }
             if(res.data.filePath){
@@ -338,9 +339,11 @@
             this.imgList.forEach(item=>{
               this.files.push(`${item.path}?${item.name}`)
             })
+            this.moneyTypeName = res.data.moneyTypeName
             this.showAmount=res.data.outAccountType===4?false:true
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
+            this.layer.content[0]=Object.assign(this.layer.content[0],{moneyType:res.data.moneyTypeName,inObj:`${res.data.inObjType.label}${obj.inObj?('-'+obj.inObj):''}`})
             this.getAmount()
           }
         })
@@ -498,6 +501,43 @@
         })
         this.form = Object.assign({},this.form,obj)
       },
+      showLayer:function () {
+        let param = Object.assign({},this.form)
+        this.list[0].amount = param.amount
+        param.inAccount = [].concat(this.list)
+
+        let promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
+        console.log(promiseArr)
+
+        Promise.all(promiseArr).then(res=>{
+          if(this.showAmount){
+            if(parseFloat(param.amount)>this.amount.balance||parseFloat(param.amount)>this.amount.contractBalance){
+              this.$message({
+                message:'输入金额不能大于可支配金额'
+              })
+              return
+            }
+          }else {
+            if(parseFloat(param.amount)>this.amount.balance){
+              this.$message({
+                message:'输入金额不能大于可支配金额'
+              })
+              return
+            }
+          }
+          if(this.files.length===0){
+            this.$message({
+              message:'付款凭证不能为空'
+            })
+          }else {
+            this.layer.show=true
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
+          })
+        })
+      },
       goCancel:function () {
         this.$confirm('是否取消当前操作',{closeOnClickModal:false}).then(()=>{
           this.$router.go(-1)
@@ -507,7 +547,7 @@
       },
       goResult:function () {
         let param = Object.assign({},this.form)
-        this.list[0].amount = param.smallAmount
+        this.list[0].amount = param.amount
         param.inAccount = [].concat(this.list)
 
         let promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
@@ -515,14 +555,14 @@
 
         Promise.all(promiseArr).then(res=>{
           if(this.showAmount){
-            if(parseFloat(param.smallAmount)>this.amount.balance||parseFloat(param.smallAmount)>this.amount.contractBalance){
+            if(parseFloat(param.amount)>this.amount.balance||parseFloat(param.amount)>this.amount.contractBalance){
               this.$message({
                 message:'输入金额不能大于可支配金额'
               })
               return
             }
           }else {
-            if(parseFloat(param.smallAmount)>this.amount.balance){
+            if(parseFloat(param.amount)>this.amount.balance){
               this.$message({
                 message:'输入金额不能大于可支配金额'
               })

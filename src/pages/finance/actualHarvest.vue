@@ -4,6 +4,10 @@
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
         <div class="input-group">
+          <label>关键字:</label>
+          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
+        </div>
+        <div class="input-group">
           <label>收付款类:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
@@ -78,10 +82,6 @@
               end-placeholder="结束日期">
             </el-date-picker>
           </div>
-        </div>
-        <div class="input-group">
-          <label>关键字:</label>
-          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
         </div>
       </div>
     </ScreeningTop>

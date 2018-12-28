@@ -477,7 +477,7 @@
             // min-height: 100%;
             background-color: @bg-white;
             position: relative;
-            z-index: 1;
+            // z-index: 1;
           }
         }
       }

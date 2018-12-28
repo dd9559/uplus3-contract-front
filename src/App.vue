@@ -194,6 +194,9 @@
   .w240 {
     width: 240px;
   }
+  .w300{
+    width: 300px;
+  }
   .w394{
     width: 394px !important;
   }
@@ -202,6 +205,9 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+  }
+  .margin-bottom-base{
+    margin-bottom: @margin-base;
   }
   .margin-left{
     margin-left: @margin-10;
