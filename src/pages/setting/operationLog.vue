@@ -32,7 +32,15 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="关键字">
-                        <el-input v-model="keyWord" placeholder="操作内容/模块"></el-input>
+                        <el-select v-model="selectType" placeholder="请选择">
+                            <el-option
+                                v-for="(item) in type"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                                >
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </div>
             </el-form>
@@ -80,13 +88,15 @@
                 Loading:false,
                 departmentName:'',
                 department: [],
-                keyWord: "",
+                // keyWord: "",
                 searchTime: '',
                 tableData: [],
                 pageSize: 30,
                 pageNum: 1,
+                selectType:'',
                 total:0,
                 users:[],
+                type:[],
                 depUser:'',
                  power: {
                     'sign-set-log-query': {
@@ -99,6 +109,9 @@
         created() {
             this.remoteMethod()
             this.getLogList()
+            this.$ajax.get('/api/operation/getObjectType').then(res => {
+                this.type=res.data.data
+            })
         },
         methods: {
             searchDep:function (payload) {
@@ -126,7 +139,6 @@
             },
             handleSizeChange (val) {
             this.pageSize = val
-            console.log(this.pageSize,'pageSize');
             this.getLogList()
             },
             handleCurrentChange (val) {
@@ -140,9 +152,9 @@
                         pageNum: this.pageNum,
                         deptId:this.department,
                         empId:this.depUser,
-                        keyword:this.keyWord,
-                        startTime:this.searchTime[0],
-                        endTime:this.searchTime[1],
+                        keyword:this.selectType,
+                        startTime:this.searchTime!== null?this.searchTime[0]:'',
+                        endTime:this.searchTime!==null?this.searchTime[1]:'',
                     }
                     this.$ajax.get('/api/operation/getList',param).then(res => {
                         res = res.data
@@ -159,7 +171,7 @@
             },
             // 重置
             resetFormFn() {
-                this.keyWord='',
+                this.selectType='',
                 this.searchTime='',
                 this.depUser='',
                 this.department=''
