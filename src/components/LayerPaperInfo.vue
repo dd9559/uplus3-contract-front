@@ -165,7 +165,7 @@
         default: '--'
       },
       money: {//交款方式（金额）
-        type: String,
+        type: Number,
         default: 0
       },
       moneyZh: {//人民币大写
