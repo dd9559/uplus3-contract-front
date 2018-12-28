@@ -125,13 +125,20 @@
           </el-dropdown>
         </span>
       </p>
-      <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
+      <el-table ref="dataList" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
         <el-table-column align="left" label="合同信息" width="260" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
                 <!-- 风险单 -->
-                <i class="iconfont icon-tubiao_shiyong-1 risk" v-if="scope.row.isRisk"></i>
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover"
+                  :content="scope.row.remarksExamine"
+                  v-if="scope.row.isRisk">
+                  <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
+                </el-popover>
                 <!-- 代办 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
                 <!-- 低佣 -->
@@ -159,7 +166,7 @@
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
             <div class="btn" @click="gathering(scope.row.id)">收款</div>
-            <div class="btn" @click="payment(scope.row.id)">付款</div>
+            <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
         <el-table-column align="left" label="成交经纪人" width="150 ">
@@ -199,7 +206,12 @@
         <el-table-column align="left" label="审核状态" prop="toExamineState.label" width="120">
           <template slot-scope="scope">
             <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
-              <span v-if="scope.row.contType.value<4">{{scope.row.toExamineState.label}}</span>
+              <span v-if="scope.row.contType.value<4">
+                <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
+                <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
+                <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
+                <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
+              </span>
               <span v-else>-</span>
           </template>
         </el-table-column>
@@ -276,8 +288,18 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+      <!-- 固定滚动条 -->
+      <scrollBar :table="tableBox" v-if="tableBox">
+        <el-pagination
+        v-if="tableData.length>0"
+         class="pagination-info"
+         @current-change="handleCurrentChange"
+         :current-page="currentPage"
+         layout="total, prev, pager, next, jumper"
+         :total="total">
+        </el-pagination>
+      </scrollBar>
+      
     </div>
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterContId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
@@ -298,7 +320,7 @@
       </span>
     </el-dialog>
     <!-- 打印 -->
-    <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint> -->
+    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
     <!-- <button @click="dayin">打印</button> -->
   </div>
 </template>
@@ -327,6 +349,7 @@ export default {
   },
   data() {
     return {
+      tableBox:null,
       contractForm: {},
       keyword: "",
       signDate: [],
@@ -463,6 +486,11 @@ export default {
       }
     };
   },
+  mounted() {
+    this.$nextTick(()=>{
+      this.tableBox=this.$refs.dataList;
+    })
+  },
   created() {
     this.getContractList();//合同列表
     this.getDictionary();//字典
@@ -554,13 +582,15 @@ export default {
       }
     },
     //付款
-    payment(id) {
+    payment(item) {
       if(this.power['sign-ht-info-pay'].state){
         this.setPath(this.$tool.getRouter(['合同','合同列表','创建付款'],'contractList'));
         this.$router.push({
           path:'/payBill',
           query:{
-            contId:id
+            contId:item.id,
+            code:item.code,
+            address:item.propertyAddr
           }
         })
       }else{
@@ -848,17 +878,70 @@ export default {
     },
     //打印空白合同
     printCont(command){
-      debugger
+      // debugger
       // console.log(command)
+      this.pdfUrl='';
       this.haveUrl=false;
       if(command===1){
         if(this.blankPdf1){
           this.getUrl(this.blankPdf1);
-          // this.pdfUrl=''
+          // this.pdfUrl=""
           this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
-          },3000)
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===2){
+        if(this.blankPdf2){
+          this.getUrl(this.blankPdf2);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===3){
+        if(this.blankPdf3){
+          this.getUrl(this.blankPdf3);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===4){
+        if(this.blankPdf4){
+          this.getUrl(this.blankPdf4);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===5){
+        if(this.blankPdf5){
+          this.getUrl(this.blankPdf5);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -986,6 +1069,17 @@ export default {
     font-size: 18px;
     .risk{
       color: @color-warning;
+      position: relative;
+      .remarksExamine{
+        background: #fff;
+        font-size: 14px;
+        color: #606266;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: inline-block;
+        width: 60px;
+      }
     }
     
   }

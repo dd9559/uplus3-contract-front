@@ -22,7 +22,8 @@ const MIXINS = {
         name:''
       },
       employePage:1,
-      employeTotal:0
+      employeTotal:0,
+      tableBoxCom:null
     }
   },
   created(){
@@ -128,14 +129,16 @@ const MIXINS = {
         this.dep.name=''
         this.EmployeList=[]
         this.employePage=1
+        this.remoteMethod()
       }else {
-
+        this.EmployeList=[]
+        this.employePage=1
       }
     },
     //部门树结构选择操作
     handleNodeClick(data) {
       this.getEmploye(data.depId)
-      this.clearSelect()
+      this.clearSelect('emp')
       this.dep.id=data.depId
       this.dep.name=data.name
       /*if(data.subs.length===0){
@@ -186,9 +189,10 @@ const MIXINS = {
             var a = document.createElement('a');
             a.download = undefined;
             a.href = res.data[0];
+            a.innerText='test'
             document.body.appendChild(a)
             a.click();
-            document.body.removeChild(a)
+            // document.body.removeChild(a)
           }else {
             this.previewFiles=res.data
             this.preview=true
@@ -263,9 +267,15 @@ const MIXINS = {
     ...mapGetters([
       'getPath',
       'getUser',
-      'getLoading'
+      'getLoading',
+      'getCollapse'
     ])
-  }
+  },
+  mounted() {
+    if(this.$refs.tableCom){
+      this.tableBoxCom = this.$refs.tableCom
+    }
+  },
 }
 
 export {

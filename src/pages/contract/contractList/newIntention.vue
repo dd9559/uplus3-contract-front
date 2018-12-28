@@ -53,7 +53,8 @@
                                     <el-button type="text" v-if="this.$route.query.operateType==2">{{contractForm.houseinfoCode}}</el-button>
                                 </el-form-item>
                                 <el-form-item label="物业地址：" class="ml30">
-                                    <div>{{contractForm.houseInfo.EstateName + contractForm.houseInfo.BuildingName + contractForm.houseInfo.Unit + contractForm.houseInfo.RoomNo}}</div>
+                                    <div v-if="type===1">{{contractForm.houseInfo.EstateName}}</div>
+                                    <div v-if="this.$route.query.operateType==2">{{contractForm.propertyAddr}}</div>
                                 </el-form-item>
                             </el-form-item>
                             
@@ -783,7 +784,7 @@ export default {
           delete param.igdCont.contPersons[1].uId;
           delete param.igdCont.contPersons[1].updateTime;
 
-          delete param.igdCont.contPersons[1].achievementState;
+          delete param.igdCont.achievementState;
         }
         delete param.igdCont.ownname;
         delete param.igdCont.ownmobile;

@@ -6,12 +6,12 @@
             <el-form  class="header" ref="propForm" size="small">
                 <div class="content">
                     <el-form-item label="部门">
-                         <select-tree :data="DepList" :init="departmentName"  @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+                         <select-tree :data="DepList" :init="departmentName"   @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                         <!-- <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
                             <el-option class="drop-tree" value="">
                             <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                             </el-option>
-                        </el-select> -->
+                        </el-select> -->    
                         <el-select v-model="depUser" :clearable="true" v-loadmore="moreEmploye" filterable placeholder="请选择">
                             <el-option
                                 v-for="item in EmployeList"
@@ -101,6 +101,10 @@
             this.getLogList()
         },
         methods: {
+            searchDep:function (payload) {
+                this.DepList=payload.list
+                this.departmentName=payload.depName
+            },
             depHandleClick(data) {
                 this.depUser=''
                 this.department=data.depId

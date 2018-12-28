@@ -1009,8 +1009,10 @@
     }
     .upload-list {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       margin: @margin-base 0;
+      width: 500px;
+      overflow-x: auto;
       >li{
         border: 1px dashed @color-D6;
         width: 120px;

@@ -208,11 +208,12 @@
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
             <el-table 
+            ref="tableCom"
             :data="tableData.list" 
             v-loading="loadingList"
             @cell-dblclick="dblclickFn"
             :formatter="nullFormatterData"
-            class="paper-table mt-20">
+            class="paper-table mt-20 info-scrollbar">
                 <el-table-column prop="code" label="合同编号" min-width="130">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)" >{{scope.row.code}}</span>
@@ -268,15 +269,17 @@
             </el-table>
         </div>
         <!-- 分页 -->
-        <div class="pagination" v-if="tableData.total">
-            <el-pagination
-                :current-page="tableData.pageNum"
-                :page-size="tableData.pageSize"
-                @current-change="currentChangeFn"
-                layout=" total, prev, pager, next, jumper"
-                :total="tableData.total">
-            </el-pagination>
-        </div>
+        <scrollBar :table="tableBoxCom" v-if="tableBoxCom">
+            <div class="pagination" v-if="tableData.total">
+                <el-pagination
+                    :current-page="tableData.pageNum"
+                    :page-size="tableData.pageSize"
+                    @current-change="currentChangeFn"
+                    layout=" total, prev, pager, next, jumper"
+                    :total="tableData.total">
+                </el-pagination>
+            </div>
+        </scrollBar>
         <!-- 后期进度弹层 -->
         <el-dialog title="后期进度" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layerShow" width="1000px"  class="layer-paper layer-scroll-auto">
             <LayerScrollAuto>
@@ -314,6 +317,7 @@
                     v-loading="loadingProgress"
                     class="paper-table mt-20">
                         <el-table-column 
+                        min-width="120px"
                         label="步骤类型" 
                         align="center">
                             <template slot-scope="scope">
@@ -321,10 +325,18 @@
                             </template>
                         </el-table-column>
                         <el-table-column 
+                        min-width="120px"
                         label="步骤名称" 
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionSteps)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column 
+                        label="结算百分比" 
+                        align="center">
+                            <template slot-scope="scope">
+                            <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{percentageFn(scope.row.settlePercent)}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column 
@@ -385,6 +397,7 @@
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.not && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" v-if="isUpBtnFn(scope.$index) && power['sign-qh-mgr-jd-move'].state" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" class="blue" type="text" @click="downFn(scope)">下</el-button>
+                                    <template v-if="!power['sign-qh-mgr-jd-move'].state">--</template>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.amend && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" type="text" @click="amendFn(scope.row.id)">修改</el-button>
@@ -440,7 +453,7 @@
                         <el-form 
                         ref="stepsFrom"
                         :model="stepsFrom"
-                        v-loading="LookStepLoad"
+                        v-loading.fullscreen.lock="LookStepLoad"
                         label-width="150px">
                             <el-form-item
                                 v-for="(item,index) in stepsFrom.list"
@@ -911,6 +924,14 @@
             }
         },
         methods:{
+            // 百分比转换
+            percentageFn(val){
+                if(val>= 0){
+                    return `${val}%`
+                }else{
+                    return '--'
+                }
+            },
             // 如果按钮都隐藏
             layerBtnShowFn(b,i){
                 if(!i&&!b){
@@ -1006,13 +1027,13 @@
             },
             // 办理
             transactionFn(id){
-                this.stepsData = {
-                    show:true,
-                    tit:'办理'
-                }
-                this.getLookStepFn(id);
+                // this.stepsData = {
+                //     show:true,
+                //     tit:'办理'
+                // }
+                this.getLookStepFn(id,'办理');
             },
-            getLookStepFn(id){
+            getLookStepFn(id,tit){
                 this.LookStepLoad = true;
                 this.$ajax.get('/api/postSigning/lookStep',{
                     id,
@@ -1068,6 +1089,13 @@
                             id:resData.id
                         };
                         this.LookStepLoad = false;
+                        let stepsKey = {
+                            show:true
+                        };
+                        this.stepsData = {
+                            show:true,
+                            tit
+                        }
                         this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
@@ -1109,11 +1137,11 @@
             },
             // 查看
             operationFn(id){
-                this.stepsData = {
-                    show:true,
-                    tit:'查看'
-                }
-                this.getLookStepFn(id);
+                // this.stepsData = {
+                //     show:true,
+                //     tit:'查看'
+                // }
+                this.getLookStepFn(id,'查看');
             },
             // 更换交易流程
             replaceFn(){
@@ -1192,11 +1220,11 @@
             },
             // 确认
             sureFn(id){
-                this.stepsData = {
-                    show:true,
-                    tit:'确认'
-                }
-                this.getLookStepFn(id);
+                // this.stepsData = {
+                //     show:true,
+                //     tit:'确认'
+                // }
+                this.getLookStepFn(id,'确认');
             },
             // 上
             upFn(e){
@@ -1255,11 +1283,11 @@
             },
             // 修改
             amendFn(id){
-                this.stepsData = {
-                    show:true,
-                    tit:'修改'
-                }
-                this.getLookStepFn(id);
+                // this.stepsData = {
+                //     show:true,
+                //     tit:'修改'
+                // }
+                this.getLookStepFn(id,'修改');
             },
             // 选择交易流程 取消
             replaceCloseFn(){

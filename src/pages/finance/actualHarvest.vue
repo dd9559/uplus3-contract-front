@@ -8,7 +8,7 @@
           <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
               v-for="item in drop_MoneyType"
-              :key="item.key"
+              :key="item.id"
               :label="item.name"
               :value="item.key">
             </el-option>
@@ -27,7 +27,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.dealAgentStoreName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <select-tree :data="DepList" :init="searchForm.dealAgentStoreName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.dealAgentStoreName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
@@ -92,7 +92,7 @@
           <el-button class="btn-info" round size="small" type="primary">导出</el-button>
         </p>
       </div>
-      <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
+      <el-table ref="dataList" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
@@ -137,16 +137,18 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-if="list.length>0"
-        class="pagination-info"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
+      <scrollBar :table="tableBox" v-if="tableBox" @noScroll="noScroll">
+        <el-pagination
+          v-if="list.length>0"
+          class="pagination-info"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          layout="total, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </scrollBar>
     </div>
   </div>
 </template>
@@ -160,6 +162,8 @@
     mixins: [MIXINS,FILTER],
     data() {
       return {
+        tableBox:null,
+        showScroll:false,
         dictionary:{
           '10': '',
           '55': ''
@@ -212,9 +216,17 @@
         this.remoteMethod()
         this.getDictionary()
         this.getMoneyTypes()
+        this.tableBox=this.$refs.dataList
+        console.log(this.tableBox.$refs.bodyWrapper.childNodes[0].clientWidth,this.tableBox.$refs.bodyWrapper.clientWidth)
+        if(this.tableBox.$refs.bodyWrapper.childNodes[0].clientWidth>this.tableBox.$refs.bodyWrapper.clientWidth){
+          this.showScroll=true
+        }
       })
     },
     methods: {
+      noScroll:function (payload) {
+        this.showScroll=payload.state
+      },
       reset:function () {
         this.$tool.clearForm(this.searchForm)
       },
@@ -236,6 +248,10 @@
         // this.EmployeList=[]
         this.searchForm.dealAgentId=''
         this.clearSelect()
+      },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.searchForm.dealAgentStoreName=payload.depName
       },
       depHandleClick(data) {
         this.searchForm.dealAgentStoreId=data.depId

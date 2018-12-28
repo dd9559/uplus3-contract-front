@@ -38,7 +38,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
@@ -91,7 +91,7 @@
           <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
               v-for="item in drop_MoneyType"
-              :key="item.key"
+              :key="item.id"
               :label="item.name"
               :value="item.key">
             </el-option>
@@ -110,7 +110,7 @@
         </div>
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w394" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
+          <el-input class="w394" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
         </div>
       </div>
     </ScreeningTop>
@@ -121,7 +121,7 @@
           <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
         </p>
       </div>
-      <el-table ref="dataList" border :data="list" :key="activeView" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+      <el-table class="info-scrollbar" ref="dataList" border :data="list" :key="activeView" style="width: 100%;max-height:500px;" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="150" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -177,23 +177,25 @@
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
             <template v-if="(scope.row.auditButton)||(scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state)">
-              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton&&(scope.row.currentAuditName===$store.state.user.user.name)">审核</el-button>
               <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state">作废</el-button>
             </template>
             <span v-else>--</span>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-if="list.length>0"
-        class="pagination-info"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
+      <scrollBar :table="tableBox" v-if="tableBox">
+        <el-pagination
+          v-if="list.length>0"
+          class="pagination-info"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          layout="total, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </scrollBar>
     </div>
     <!--作废dialog-->
     <el-dialog
@@ -235,6 +237,7 @@
     data() {
       return {
         activeView: '',
+        tableBox: null,
         searchForm: {
           contType: '',
           timeType: '',
@@ -341,10 +344,18 @@
           }
         }*/
       }
+      this.$nextTick(()=>{
+        this.tableBox=this.$refs.dataList
+      })
 
       this.getData()
       this.getDictionary()
       next()
+    },
+    mounted(){
+      this.$nextTick(()=>{
+        this.tableBox=this.$refs.dataList
+      })
     },
     methods: {
       getExcel:function () {
@@ -384,6 +395,10 @@
         // this.EmployeList=[]
         this.searchForm.empId=''
         this.clearSelect()
+      },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.searchForm.depName=payload.depName
       },
       depHandleClick(data) {
         this.searchForm.depId=data.depId

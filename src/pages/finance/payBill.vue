@@ -1,7 +1,49 @@
 <template>
   <div class="view">
     <p class="f14">付款信息</p>
-    <section>
+    <ul class="bill-form">
+      <li>
+        <div class="input-group col">
+          <label class="form-label no-width f14">收款方</label>
+          <el-select size="small" class="w200" v-model="form.inObjType" placeholder="请选择" @change="getOption">
+            <el-option
+              v-for="item in dropdown"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group col">
+          <label class="form-label no-width f14">款类</label>
+          <moneyTypePop :data="moneyType" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
+        </div>
+      </li>
+      <li>
+        <div class="input-group col">
+          <label class="form-label no-width f14">申请人:</label>
+          <p class="text-height" v-if="userMsg">{{userMsg.depName}} - {{userMsg.name}}</p>
+        </div>
+        <div class="input-group col">
+          <label class="form-label no-width f14">付款金额（元）</label>
+          <input type="text" size="small" class="w200 el-input__inner" placeholder="请输入" v-model="form.smallAmount" @input="cutNum">
+        </div>
+      </li>
+      <li>
+        <!--<div class="input-group col">
+          <label class="no-width f14">付款时间:</label>
+          <p class="text-height">2018/1/12</p>
+        </div>-->
+        <div class="input-group col">
+          <label class="no-width f14">可支配金额:</label>
+          <div class="text-height">
+            <p><span>款类大类余额：{{amount.balance}}元</span>;<span v-if="showAmount">合同余额：{{amount.contractBalance}}元</span></p>
+            <!--<p v-if="showAmount"><span>合同余额：{{amount.contractBalance}}元</span></p>-->
+          </div>
+        </div>
+      </li>
+    </ul>
+    <!--<section>
       <div class="input-group">
         <label class="form-label no-width f14">收款方</label>
         <el-select size="small" v-model="form.inObjType" placeholder="请选择" @change="getOption">
@@ -17,34 +59,34 @@
         <label class="form-label no-width f14">申请人:</label>
         <p v-if="userMsg">{{userMsg.depName}} - {{userMsg.name}}</p>
       </div>
-    </section>
-    <div class="input-group">
+    </section>-->
+    <!--<div class="input-group">
       <label class="form-label f14">款类</label>
       <el-table class="collapse-cell" :span-method="collapse" border :data="moneyType" style="width: 100%"
                 header-row-class-name="theader-bg">
         <el-table-column align="center" label="款类（大类）" prop="pName">
-          <!--<template slot-scope="scope">{{s}}</template>-->
+          &lt;!&ndash;<template slot-scope="scope">{{s}}</template>&ndash;&gt;
         </el-table-column>
         <el-table-column min-width="100" align="center" label="款类（小类）">
           <template slot-scope="scope">
             <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row)">{{scope.row.name}}</el-radio>
-            <!--<ul>
+            &lt;!&ndash;<ul>
               <li v-for="item in scope.row.moneyTypes">
                 <el-radio class="money-type-radio" v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}</el-radio>
               </li>
-            </ul>-->
+            </ul>&ndash;&gt;
           </template>
         </el-table-column>
         <el-table-column align="center" label="付款金额（元） ">
           <template slot-scope="scope">
             <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===scope.row.key">
             <span v-else @click="getType(scope.row,'focus')">请输入</span>
-            <!--<ul>
+            &lt;!&ndash;<ul>
               <li v-for="(item,index) in scope.row.moneyTypes">
                 <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum" v-if="form.moneyType===item.key">
                 <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
               </li>
-            </ul>-->
+            </ul>&ndash;&gt;
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额大写">
@@ -61,7 +103,7 @@
           </template>
         </el-table-column>
       </el-table>
-    </div>
+    </div>-->
     <div class="input-group">
       <p><label class="form-label f14">收款账户</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
@@ -87,38 +129,81 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="input-group">
-      <p><label class="f14">备注信息</label></p>
-      <el-input placeholder="请填写备注信息" type="textarea" maxlength="200" v-model="form.remark"></el-input>
-    </div>
-    <div class="input-group">
-      <p><label class="form-label f14">付款凭证</label></p>
-      <ul class="upload-list">
-        <li>
-          <file-up class="upload-context" @getUrl="getFiles">
-            <i class="iconfont icon-shangchuan"></i>
-            <span>点击上传</span>
-          </file-up>
-        </li>
-        <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="previewPhoto(imgList,index)">
-          <upload-cell :type="item.type"></upload-cell>
-          <span>{{item.name}}</span>
-          <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
-        </li>
-      </ul>
-      <p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>
-    </div>
+    <section class="flex-row">
+      <div class="input-group">
+        <p><label class="f14">备注信息</label></p>
+        <el-input placeholder="请填写备注信息" class="info-textarea" type="textarea" rows="5" maxlength="200" v-model="form.remark"></el-input>
+      </div>
+      <div class="input-group">
+        <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
+        <ul class="upload-list">
+          <li>
+            <file-up class="upload-context" @getUrl="getFiles">
+              <i class="iconfont icon-shangchuan"></i>
+              <span>点击上传</span>
+            </file-up>
+          </li>
+          <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="previewPhoto(imgList,index)">
+            <upload-cell :type="item.type"></upload-cell>
+            <span>{{item.name}}</span>
+            <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
+          </li>
+        </ul>
+        <!--<p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>-->
+      </div>
+    </section>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">提交付款申请</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="layer.show=true">提交付款申请</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    <el-dialog
+      title="付款信息确认"
+      :visible.sync="layer.show"
+      :closeOnClickModal="$tool.closeOnClickModal"
+      width="740px">
+      <div class="check-dialog">
+        <p>付款信息</p>
+        <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="layer-table-first">
+          <el-table-column align="center" label="合同编号" prop="code"></el-table-column>
+          <el-table-column align="center" min-width="120" label="物业地址" prop="address"></el-table-column>
+          <el-table-column align="center" min-width="120" label="收款方" prop="inObj"></el-table-column>
+          <el-table-column align="center" min-width="120" label="付款时间">
+            <template slot-scope="scope">
+              <span>-</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" min-width="120" label="发起人">
+            <template slot-scope="scope">
+              <span>{{userMsg.depName}} - {{userMsg.name}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="款类" prop="moneyType"></el-table-column>
+        </el-table>
+        <p>收款账户</p>
+        <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" key="layer-table-second">
+          <el-table-column align="center" label="收款银行" prop="bankName"></el-table-column>
+          <el-table-column align="center" label="户名" prop="userName"></el-table-column>
+          <el-table-column align="center" label="收款账户 " prop="cardNumber"></el-table-column>
+          <el-table-column align="center" label="金额（元）">
+            <template slot-scope="scope">
+              <span>{{form.smallAmount}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+    <el-button size="small" class="btn-info" round @click="layer.show = false">返 回</el-button>
+    <el-button size="small" class="btn-info" round type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import {UPLOAD} from "@/assets/js/uploadMixins";
   import {MIXINS} from "@/assets/js/mixins";
+  import moneyTypePop from '@/components/moneyTypePop'
 
   const rule={
     inObjType:{
@@ -148,6 +233,9 @@
 
   export default {
     mixins: [UPLOAD,MIXINS],
+    components:{
+      moneyTypePop
+    },
     data() {
       return {
         form: {
@@ -170,7 +258,10 @@
           }
         ],
         dropdown:[],
-        amount:null,
+        amount:{
+          balance:0,
+          contractBalance:0
+        },
         files:[],
         imgList:[],
         activeLi:'',
@@ -180,10 +271,24 @@
         },
         showAmount:true,//是否显示合同余额
         fullscreenLoading:false,//创建按钮防抖
+        //弹窗
+        layer:{
+          show:false,
+          content:[
+            {
+              moneyType:'',
+              inObj:'',
+              code:'',
+              address:''
+            }
+          ]
+        }
       }
     },
     created(){
+      let query=this.$route.query
       this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
+      this.layer.content[0]=Object.assign(this.layer.content[0],query)
       this.getDropdown()
       this.getMoneyType()
       this.getAdmin()
@@ -276,8 +381,8 @@
         this.$ajax.get('/api/payInfo/selectMoneyType',param).then(res=>{
           res=res.data
           if(res.status===200){
-            // this.moneyType = res.data
-            res.data.forEach(item=>{
+            this.moneyType = res.data
+            /*res.data.forEach(item=>{
               this.collapseRow.total=this.collapseRow.total+item.moneyTypes.length
               this.collapseRow.row.push(item.moneyTypes.length)
               item.moneyTypes.forEach(cell=>{
@@ -285,8 +390,7 @@
                 cell.pName=item.name
               })
               this.moneyType = this.moneyType.concat(item.moneyTypes)
-            })
-            console.log(this.collapseRow)
+            })*/
             /*res.data.forEach((item,index)=>{
               if(item.name==='代收代付'){
                 this.moneyType.splice(index,1)
@@ -306,6 +410,18 @@
         this.form.moneyTypePid = label.pId
         this.getAmount()
       },
+      getCell:function (label) {
+        this.showAmount=label.pName==='代收代付'?false:true
+        this.form.moneyType=label.key
+        this.form.moneyTypePid = label.pId
+        this.layer.content[0].moneyType=label.name
+        this.getAmount()
+      },
+      clearMoneyType:function () {
+        this.form.moneyType=''
+        this.form.moneyTypePid = ''
+        this.$tool.clearForm(this.amount,true)
+      },
       getAmount:function () {
         let param={
           contId:this.form.contId,
@@ -319,7 +435,7 @@
         this.$ajax.get('/api/payInfo/selectAvailableBalance',param).then(res=>{
           res=res.data
           if(res.status===200){
-            this.amount = res.data
+            this.amount = Object.assign(this.amount,res.data)
           }
         })
       },
@@ -376,6 +492,7 @@
           if(tip.value===item&&!!tip.custId){
             obj.inObjId = tip.custId
             obj.inObj = tip.custName
+            this.layer.content[0].inObj=tip.label
             return
           }
         })
@@ -540,6 +657,37 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .info-textarea{
+    width: 240px;
+  }
+  .bill-form{
+    display: flex;
+    >li{
+      flex: 1;
+      max-width: 300px;
+      .col{
+        >label{
+          display: block;
+        }
+        >input{
+          height: 32px;
+          line-height: 32px;
+        }
+        .text-height{
+          height: 32px;
+          line-height: 32px;
+        }
+      }
+    }
+  }
+  .check-dialog{
+    >p{
+      margin-bottom: @margin-base;
+      &:last-of-type{
+        margin-top: @margin-15;
+      }
+    }
+  }
   /deep/.collapse-cell{
     .el-table__row{
       >td{
@@ -601,16 +749,23 @@
     }
     .upload-list{
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       margin: @margin-base;
+      width: 568px;
+      overflow-x: auto;
       >li{
         border: 1px dashed @color-D6;
-        width: 120px;
-        height: 120px;
+        width: 115px;
+        min-width: 115px;
+        height: 115px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin-right: @margin-10;
+        &:last-of-type{
+          margin-right: 0;
+        }
         >span{
           width: 100px;
           text-align: center;
@@ -644,9 +799,9 @@
             }
           }
         }
-        &:nth-of-type(n+7){
+        /*&:nth-of-type(n+7){
           margin-top: @margin-base;
-        }
+        }*/
       }
     }
     .upload-text{
@@ -668,7 +823,7 @@
     padding: @margin-10;
     > section {
       margin: @margin-10 0px;
-      &:first-of-type {
+      /*&:first-of-type {
         display: flex;
         .input-group{
           display: flex;
@@ -677,6 +832,9 @@
             margin-right: @margin-15;
           }
         }
+      }*/
+      &.flex-row{
+        display: flex;
       }
     }
     >p{
