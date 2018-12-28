@@ -74,8 +74,11 @@
                 <span class="text" v-if="contractDetail.houseInfo.propertyRightStatus===0">无</span>
               </p>
               <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
-              <p><span class="tag">按揭欠款：</span><span class="text">{{contractDetail.houseInfo.stagesArrears}} 元</span></p>
               <p><span class="tag">房产证号：</span><span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span></p>
+              <p style="width:500px">
+                <span class="tag">按揭欠款：</span>
+                <span class="text dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span>
+              </p>
             </div>
             <div class="one_">
               <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
@@ -407,6 +410,7 @@
           </el-table>
           <el-pagination v-if="recordData.length>0" class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
           <!-- <button @click="downloadRecord">下载</button> -->
+          <!-- <audio src="http://192.168.1.6:28081/static/my.MP3" controls></audio> -->
         </div>
       </el-tab-pane>
       <el-tab-pane label="审核记录" name="fifth">
@@ -884,7 +888,8 @@ export default {
         }
       }).catch(error=>{
         this.$message({
-          message:error
+          message:error,
+          type: "error"
         })
       })
     },
@@ -967,7 +972,8 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
     },
@@ -1014,7 +1020,8 @@ export default {
         }
       }).catch(error=>{
         this.$message({
-          message:error
+          message:error,
+          type: "error"
         })
       })
     },
@@ -1051,7 +1058,8 @@ export default {
           }
         }).catch(error=>{
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
       }
@@ -1421,7 +1429,8 @@ export default {
           }
         }).catch(error=>{
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
       }else{

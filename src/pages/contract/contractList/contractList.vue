@@ -3,6 +3,9 @@
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
+        <el-form-item label="关键字">
+          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
+        </el-form-item>
         <el-form-item label="签约日期">
           <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
           </el-date-picker>
@@ -24,9 +27,6 @@
             <el-option v-for="item in housePurpose" :key="item.key" :label="item.value" :value="item.value">
             </el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="关键字">
-          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
         </el-form-item>
         <br>
         <el-form-item label="部门">
@@ -211,6 +211,23 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
+        <!-- <el-table-column align="left" label="当前审核人" width="200">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">
+              <p>{{scope.row.auditName?scope.row.auditName:'-'}}</p>
+            </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="下一步审核人" width="200">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">
+              <p>{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
+            </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column> -->
+
         <el-table-column align="left" label="备注" width="200">
           <template slot-scope="scope">
             <span v-if="scope.row.remarksExamine">
@@ -666,13 +683,14 @@ export default {
             }
           }else{
             this.$message({
-              message:'该类型合同模板未上传,请上传后再创建'
+              message:'该类型合同模板未上传,请上传后再创建',
+              type: "warning"
             })
           }
         }).catch(error => {
             this.$message({
               message: '该类型合同模板未上传,请上传后再创建',
-              type: "error"
+              type: "warning"
             });
           });
       }else{
@@ -809,7 +827,8 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
     },
@@ -835,18 +854,21 @@ export default {
             }
           }).catch(error => {
               this.$message({
-                message: error
+                message: error,
+                type: "warning"
               })
             })
           }else{
             this.$message({
-              message:"存在未审核的调佣,无法发起结算"
+              message:"存在未审核的调佣,无法发起结算",
+              type: "warning"
             })
           }
         }
         }else{
           this.$message({
-            message:'合同已解约，无法发起结算'
+            message:'合同已解约，无法发起结算',
+            type: "warning"
           })
         }
       }else{
