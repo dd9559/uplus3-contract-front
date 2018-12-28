@@ -9,7 +9,8 @@ const store = new Vuex.Store({
     slider:[],
     collapse: true,//侧边栏是否收起
     user:null,
-    fullscreenLoading:false
+    fullscreenLoading:false,
+    bodyScollShow:0
   },
   mutations: {
     setPath (state,payload) {
@@ -25,6 +26,13 @@ const store = new Vuex.Store({
     },
     setCollapse(state,payload){
       state.collapse=payload
+    },
+    bodyScollShowFn(state,payload){
+      if(state.bodyScollShow>999){
+        state.bodyScollShow = 0;
+      }else{
+        state.bodyScollShow++;
+      }
     }
   },
   actions:{
@@ -44,6 +52,9 @@ const store = new Vuex.Store({
     },
     getCollapse:state=>{
       return state.collapse
+    },
+    getBodyScollShow:state=>{
+      return state.bodyScollShow
     }
   }
 })

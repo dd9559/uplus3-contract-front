@@ -131,7 +131,16 @@
                 }).then(res => {
                     res = res.data
                     if (res.status === 200) {
-                        this.paperInfoData = Object.assign({}, res.data)
+                        console.log(res.data)
+                        let hide;
+                        if(res.data.isHiddenAddress){
+                            hide = false;
+                        }else{
+                            hide = true;
+                        }
+                        this.paperInfoData = Object.assign({}, res.data,{
+                            hide
+                        })
                         // this.paperShow = true
                         this.layerLoading.close();
                         this.paperShow = true;
