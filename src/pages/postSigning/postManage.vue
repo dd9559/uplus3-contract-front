@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div ref="tableComView">
         <!-- 筛选 -->
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
@@ -208,12 +208,13 @@
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
             <el-table 
-            ref="tableCom"
+            ref="tableNumberCom" 
+            :max-height="tableBoxCom"
             :data="tableData.list" 
             v-loading="loadingList"
             @cell-dblclick="dblclickFn"
             :formatter="nullFormatterData"
-            class="paper-table mt-20 info-scrollbar">
+            class="paper-table mt-20">
                 <el-table-column prop="code" label="合同编号" min-width="130">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)" >{{scope.row.code}}</span>
@@ -269,7 +270,6 @@
             </el-table>
         </div>
         <!-- 分页 -->
-        <scrollBar :table="tableBoxCom" v-if="tableBoxCom">
             <div class="pagination" v-if="tableData.total">
                 <el-pagination
                     :current-page="tableData.pageNum"
@@ -279,7 +279,6 @@
                     :total="tableData.total">
                 </el-pagination>
             </div>
-        </scrollBar>
         <!-- 后期进度弹层 -->
         <el-dialog title="后期进度" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layerShow" width="1000px"  class="layer-paper layer-scroll-auto">
             <LayerScrollAuto>
@@ -1592,7 +1591,7 @@
                     receiveTimeStar = this.dateFormat(datamo[0]);
                     receiveTimeEnd = this.dateFormat(datamo[1]);
                 }
-                this.$ajax.postJSON('/api/postSigning/getAdminContract',{
+                this.$ajax.get('/api/postSigning/getAdminContract',{
                     pageNum:this.pageNum,
                     pageSize:this.pageSize,
                     statusLaterStage:this.propForm.lateState,
