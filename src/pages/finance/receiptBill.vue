@@ -16,7 +16,7 @@
         </div>
         <div class="input-group col">
           <label class="form-label no-width f14 margin-bottom-base">款类</label>
-          <moneyTypePop :data="moneyType" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
+          <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
         </div>
       </li>
       <li>
@@ -219,7 +219,7 @@
           <div class="message-box flex-box">
             <section>
               <label class="f14 margin-bottom-base">支付方式</label>
-              <el-select size="small" class="w200" v-model="item.proceedsType" placeholder="请选择">
+              <el-select size="small" class="w200" v-model="item.payMethod" placeholder="请选择">
                 <el-option
                   v-for="item in dictionary['534']"
                   :key="item.key"
@@ -232,7 +232,7 @@
               <label class="f14 margin-bottom-base">金额（元）</label>
               <input type="text" class="w200 el-input__inner" placeholder="请输入" v-model="item.amount" @input="cutNum(item,'amount')">
             </section>
-            <section v-if="item.proceedsType===2">
+            <section v-if="item.payMethod===2">
               <label class="f14 margin-bottom-base">收账账户</label>
               <el-select size="small" class="w300" v-model="item.activeAdmin" placeholder="请选择">
                 <el-option
@@ -366,7 +366,7 @@
     }
   }
   const payRule = {
-    proceedsType:{
+    payMethod:{
       name:'支付方式'
     },
     amount:{
@@ -415,10 +415,11 @@
         ],
         activeType: 1,
         moneyType: [],
+        moneyTypeName: '',
         moneyTypeOther: [],
         payList: [
           {
-            proceedsType:'',
+            payMethod:'',
             amount:'',
             activeAdmin:''
           }
@@ -540,7 +541,7 @@
       payListOper:function (index) {
         if(index===0){
           let cell={
-            proceedsType:'',
+            payMethod:'',
             amount:'',
             activeAdmin:''
           }
@@ -567,13 +568,14 @@
               moneyType: res.data.moneyType,
               moneyTypePid: res.data.moneyTypePid,
               amount: res.data.amount,
-              proceedsType: res.data.type,
-              id: res.data.id
+              id: res.data.id,
+              createTime: this.$tool.timeFormat(res.data.createTime)
             }
+            this.moneyTypeName=res.data.moneyTypeName
             this.dep.id=res.data.inObjStoreId
             this.dep.name=res.data.inObjStore
             this.getEmploye(res.data.deptId)
-            if(this.activeType===2){
+            // if(this.activeType===2){
               if(res.data.filePath){
                 this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
               }
@@ -581,10 +583,12 @@
                 this.files.push(`${item.path}?${item.name}`)
               })
               this.cardList = res.data.account //刷卡补充
-              if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
+            let arr = res.data.inAccount.map(item=>Object.assign({},item,{activeAdmin:item.cardNumber}))
+              this.payList = [].concat(arr)
+              /*if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
                 this.activeAdmin = res.data.inAccount[0].cardNumber
-              }
-            }
+              }*/
+            // }
             this.form = Object.assign({}, this.form, obj)
             this.getAcount(this.form.inObjId)
           }
@@ -654,7 +658,7 @@
         arr.push(this.$tool.checkForm(param,rule))
         //支付信息验证
         newPayList.forEach(item=>{
-          if(item.proceedsType!==2){
+          if(item.payMethod!==2){
             delete item.activeAdmin
           }
           payTotal+=parseFloat(item.amount)
@@ -676,6 +680,7 @@
               message:'收款凭证不能为空'
             })
           }else {
+            param.filePath = [].concat(this.files)
             param.outAccount = [].concat(this.cardList)
             param.inAccount = []
             this.payList.forEach(item=>{
@@ -685,7 +690,7 @@
                   userName: '',
                   cardNumber: ''
                 }
-                param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.proceedsType}))
+                param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
               }else {
                 this.account.find(card => {
                   if (card.bankCard === item.activeAdmin) {
@@ -694,7 +699,7 @@
                       userName: card.bankAccountName,
                       cardNumber: card.bankCard
                     }
-                    param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.proceedsType}))
+                    param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
                     return true
                   }
                 })
