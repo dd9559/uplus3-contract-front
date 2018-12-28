@@ -72,7 +72,7 @@
         <li v-if="activeItem==='收款信息'">
           <h4 class="f14">合计金额</h4>
           <p class="total-text">合计：<span>{{billMsg.amount}}</span>元</p>
-          <el-table border :data="billMsg.inAccountType===4?billMsg.inAccount:[{}]" header-row-class-name="theader-bg">
+          <el-table border :data="billMsg.inAccount" header-row-class-name="theader-bg" :span-method="collapseRow" v-if="billMsg.inAccount">
             <el-table-column align="center" label="款类">
               <template slot-scope="scope">
                 <span>{{billMsg.moneyTypeName}}</span>
@@ -84,15 +84,15 @@
                 <span v-else>--</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="支付方式">
-              <template slot-scope="scope">
+            <el-table-column align="center" label="支付方式" prop="payMethod">
+              <!--<template slot-scope="scope">
                 <span>{{billMsg.method}}</span>
-              </template>
+              </template>-->
             </el-table-column>
-            <el-table-column align="center" label="金额（元）">
-              <template slot-scope="scope">
+            <el-table-column align="center" label="金额（元）" prop="amount">
+              <!--<template slot-scope="scope">
                 <span>{{billMsg.amount}}</span>
-              </template>
+              </template>-->
             </el-table-column>
             <el-table-column min-width="200" align="center" label="收款账户">
               <template slot-scope="scope">
@@ -460,7 +460,17 @@
             this.scrollTop()
           }, 50)
         }
-      }
+      },
+      //合并单元格
+      collapseRow: function ({rowIndex, columnIndex}) {
+        if (columnIndex <2||columnIndex>4) {
+          if (rowIndex === 0) {
+            return [this.billMsg&&this.billMsg.inAccount.length, 1]
+          } else {
+            return [0, 0]
+          }
+        }
+      },
     },
     computed: {
       invalidNumber() {
