@@ -35,18 +35,14 @@
             </el-option>
           </el-select> -->
 
-          <el-select style="width:160px" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
+          <!-- <el-select style="width:160px" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
-          </el-select>
+          </el-select> -->
+          <select-tree :data="DepList" :init="contractForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
         </el-form-item>
         <el-form-item>
-          <!-- <el-select v-model="contractForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
-            <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
-            </el-option>
-          </el-select> -->
-
           <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
@@ -780,6 +776,10 @@ export default {
       this.contractForm.depName=data.name
 
       this.handleNodeClick(data)
+    },
+    searchDep:function (payload) {
+      this.DepList=payload.list
+      this.contractForm.depName=payload.depName
     },
     //提审
     goSave(item){
