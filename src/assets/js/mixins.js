@@ -23,7 +23,8 @@ const MIXINS = {
       },
       employePage:1,
       employeTotal:0,
-      tableBoxCom:null
+      tableBoxCom:null,
+      tableNumberCom:null,
     }
   },
   created(){
@@ -54,6 +55,9 @@ const MIXINS = {
           }
         }
       }
+    },
+    getBodyScollShow(){
+        this.comHeightFn();
     }
   },
   methods: {
@@ -258,6 +262,16 @@ const MIXINS = {
     havePower:function (url) {
       console.log('test')
     },
+    //动态高度获取
+    comHeightFn(){
+      if(this.$refs.tableCom&&this.$refs.tableComView){
+        let wh = document.documentElement.clientHeight;
+        let h1 =this.$refs.tableComView.clientHeight + 40;
+        let h2 =this.$refs.tableCom.$el.clientHeight;
+        let th = wh - h1;
+        this.tableNumberCom = h2 + th;
+      }
+    },
     ...mapMutations([
       'setPath',
       'setLoading'
@@ -268,13 +282,13 @@ const MIXINS = {
       'getPath',
       'getUser',
       'getLoading',
-      'getCollapse'
+      'getCollapse',
+      'getBodyScollShow'
     ])
   },
-  mounted() {
-    if(this.$refs.tableCom){
-      this.tableBoxCom = this.$refs.tableCom
-    }
+  updated() {
+      window.onresize = this.comHeightFn;
+      this.comHeightFn();
   },
 }
 

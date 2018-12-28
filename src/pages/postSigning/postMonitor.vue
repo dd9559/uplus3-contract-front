@@ -1,5 +1,5 @@
 <template>
-    <div class="paper-set">
+    <div ref="tableComView" class="paper-set">
         <!-- 筛选 -->
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
@@ -105,11 +105,12 @@
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
             <el-table 
-            ref="tableCom"
+            ref="tableNumberCom" 
+            :max-height="tableBoxCom"
             :data="tableData.list"
             v-loading="loadingList" 
             @row-dblclick="tradingStepsFn"
-            class="paper-table mt-20 info-scrollbar">
+            class="paper-table mt-20">
                 <el-table-column label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>
@@ -164,7 +165,6 @@
             </el-table>
         </div>
         <!-- 分页 -->
-        <scrollBar :table="tableBoxCom" v-if="tableBoxCom">
             <div class="pagination" v-if="tableData.total">
                 <el-pagination
                     :current-page="tableData.pageNum"
@@ -174,7 +174,6 @@
                     :total="tableData.total">
                 </el-pagination>
             </div>
-        </scrollBar>
         <!-- 后期进度查看 -->
         <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
         <!-- 流水 -->
@@ -381,7 +380,7 @@
                     receiveTimeStar = this.dateFormat(time[0]);
                     receiveTimeEnd = this.dateFormat(time[1]);
                 }
-                this.$ajax.postJSON('/api/postSigning/getMonitorContract',{
+                this.$ajax.get('/api/postSigning/getMonitorContract',{
                     pageNum:this.pageNum,
                     pageSize:this.pageSize,
                     dealAgentId:this.propForm.departmentMo,

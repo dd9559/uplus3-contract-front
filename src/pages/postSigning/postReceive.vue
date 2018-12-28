@@ -1,5 +1,5 @@
 <template>
-    <div class="paper-set">
+    <div ref="tableComView" class="paper-set">
         <!-- 筛选 -->
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <!-- 筛选条件 -->
@@ -72,7 +72,7 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
-            <el-table ref="tableCom" :data="tableData.list" v-loading="loadingList" class="paper-table mt-20 info-scrollbar">
+            <el-table ref="tableNumberCom" :max-height="tableBoxCom" :data="tableData.list" v-loading="loadingList" class="paper-table mt-20">
                 <el-table-column :formatter="nullFormatterData" label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>
@@ -109,12 +109,10 @@
             </el-table>
         </div>
         <!-- 分页 -->
-        <scrollBar :table="tableBoxCom" v-if="tableBoxCom">
         <div class="pagination" v-if="tableData.total">
             <el-pagination :current-page="tableData.pageNum" :page-size="tableData.pageSize" @current-change="currentChangeFn" layout=" total, prev, pager, next, jumper" :total="tableData.total">
             </el-pagination>
         </div>
-        </scrollBar>
         <!-- 拒绝弹层 -->
         <el-dialog :title="layer.tit" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layer.show" width="740px" :center="layer.center" class="layer-paper">
             <div class="layer-invalid layer-refused">
@@ -860,7 +858,7 @@
                     }
                 }
 
-                this.$ajax.postJSON('/api/postSigning/getContract', {
+                this.$ajax.get('/api/postSigning/getContract', {
                     keyword: this.propForm.search,
                     signDateSta,
                     signDateEnd,
