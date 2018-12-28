@@ -367,6 +367,7 @@ export default {
           this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
           this.auditId=res.data.auditId;
+          this.isSign=res.data.isRisk;
           if(res.data.cityId===1&&(res.data.contType.value===2||res.data.contType.value===3)){  //||res.data.contType.value===3
             this.isShowType=true;
             //买卖

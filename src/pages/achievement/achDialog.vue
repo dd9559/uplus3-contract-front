@@ -76,7 +76,7 @@
               <!-- 角色类型 不可输入-->
               <el-table-column
                 label="角色类型"
-                width="145"
+                width="125"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -101,7 +101,7 @@
                 <template slot-scope="scope">
                   <el-input
                     v-model.number="scope.row.ratio"
-                    placeholder="请输入数字"
+                    placeholder="请输入"
                     @change="filterHouseNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
@@ -110,7 +110,7 @@
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
               <el-table-column
                 label="经纪人"
-                width="120"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -138,7 +138,7 @@
               <!-- 在职状况  可下拉,不可输入    0待入职,1在职,2离职 (通过枚举id=20查询)-->
               <el-table-column
                 label="在职状况"
-                width="120"
+                width="100"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -158,7 +158,7 @@
               <!-- 门店，可输入，可下拉 -->
               <el-table-column
                 label="门店"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -185,7 +185,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -213,7 +213,7 @@
               <!-- 单组，可输入，可下拉 -->
               <el-table-column
                 label="单组"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -240,7 +240,7 @@
               <!-- 区经，可输入，可下拉   changeAmaldar-->
               <el-table-column
                 label="区经"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -268,7 +268,7 @@
               <!-- 区总，可输入，可下拉 changeManager-->
               <el-table-column
                 label="区总"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -294,13 +294,13 @@
               </el-table-column>
 
               <el-table-column
-                label="门店/公司公共业绩"
-                width="170"
+                label="公共业绩"
+                width="75"
               >
                 <template slot-scope="scope">
                   <el-radio-group v-model="scope.row.place">
-                     <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,0)">门店</el-radio>
-                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)">公司</el-radio>
+                     <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:6px;">门店</el-radio>
+                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:10px;">公司</el-radio>
                   </el-radio-group>
                 </template>
               </el-table-column>
@@ -308,7 +308,7 @@
               <el-table-column
                 prop="manager"
                 label="操作"
-                width="80"
+                width="60"
               >
                 <template slot-scope="scope">
                   <a
@@ -364,7 +364,7 @@
             >
               <el-table-column
                 label="角色类型"
-                width="145"
+                width="125"
               >
                 <template slot-scope="scope">
                   <!-- filterable -->
@@ -389,7 +389,7 @@
                 <template slot-scope="scope">
                   <el-input
                     v-model="scope.row.ratio"
-                    placeholder="请输入数字"
+                    placeholder="请输入"
                     @change="filterClientNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
@@ -397,7 +397,7 @@
 
               <el-table-column
                 label="经纪人"
-                width="120"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -424,7 +424,7 @@
 
               <el-table-column
                 label="在职状况"
-                width="120"
+                width="100"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -444,7 +444,7 @@
               <!-- 门店，可输入，可下拉 -->
               <el-table-column
                 label="门店"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -471,7 +471,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -498,7 +498,7 @@
               <!-- 单组，可输入，可下拉 -->
               <el-table-column
                 label="单组"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -525,7 +525,7 @@
               <!-- 区经，可输入，可下拉 -->
               <el-table-column
                 label="区经"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -553,7 +553,7 @@
               <!-- 区总，可输入，可下拉 -->
               <el-table-column
                 label="区总"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -579,13 +579,13 @@
               </el-table-column>
 
               <el-table-column
-                label="门店/公司公共业绩"
-                width="170"
+                label="公共业绩"
+                width="75"
               >
                 <template slot-scope="scope">
                     <el-radio-group v-model="scope.row.place">
-                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)">门店</el-radio>
-                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)">公司</el-radio>
+                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:6px;">门店</el-radio>
+                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:10px;">公司</el-radio>
                     </el-radio-group>
                 </template>
               </el-table-column>
@@ -593,7 +593,7 @@
               <el-table-column
                 prop="manager"
                 label="操作"
-                width="80"
+                width="60"
               >
                 <template slot-scope="scope">
                   <a
@@ -911,7 +911,10 @@ export default {
     // 改变经纪人
     changeAssignors(val, index, type) {
       if (val) {
-        this.$ajax.get("/api/organize/employee/agent/" + val).then(res => {
+        let param={
+          id:val
+        };
+        this.$ajax.get("/api/organize/employee/agent/details",param).then(res => {
           let data = res.data.data;
           if (type == 0) {
             this.houseArr[index].assignor = data.assignor;
@@ -1729,7 +1732,7 @@ export default {
           let param = {
             contCode: this.contractCode
           };
-          this.$ajax.get("/api/achievement/getContDetailsAgents", param).then(res => {
+          this.$ajax.get("/api/achievement/getContAgents", param).then(res => {
             let data = res.data;
             if (data.status === 200) {
               if (data.data.customerAgents) {
@@ -1807,8 +1810,8 @@ export default {
 }
 //业绩详情弹框改变样式
 .dialog1 {
-  /deep/ .el-dialog.base-dialog {
-    width: 1000px !important;
+  /deep/ .el-dialog.base-dialog{
+    width: 1281px !important;
     margin: 13vh auto 0 !important;
     overflow: hidden;
 
@@ -1844,6 +1847,7 @@ export default {
       // padding: 0 20px;
       box-sizing: border-box;
       overflow-y: auto;
+     
       /deep/ .el-input__inner {
         border: 0;
         box-shadow: 0;
@@ -1851,11 +1855,23 @@ export default {
         padding-left: 5px;
         padding-right: 25px;
         // padding-left: 10px;
+        font-size: 12px!important;
       }
-      /deep/ .el-icon-circle-close{
+      /deep/ .el-icon-circle-close {
         position: absolute;
         left: -5px;
         top: 0;
+      }
+     /deep/  .el-select__caret.is-reverse,.el-icon-arrow-up{
+        position: absolute;
+        left: -5px;
+        top: 0;
+      }
+      //  /deep/  .el-radio{
+      //   margin-left: 10px;
+      // }
+      .el-radio+.el-radio{
+        margin-left: 0;
       }
       .house-divide {
         width: 100%;
@@ -1946,7 +1962,7 @@ export default {
         }
         .textLength {
           position: absolute;
-          right: 532px;
+          right: 815px;
           top: 70px;
           color: #6c7986;
           text-align: right;

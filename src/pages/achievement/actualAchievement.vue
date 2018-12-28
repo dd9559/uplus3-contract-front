@@ -164,13 +164,13 @@
             width="300"
           >
             <template slot-scope="scope">
-              <p>合同编号：<span
+              <p>合同：<span
                   class="blue"
                   @click="skipContDel(scope.row)"
                   style="cursor:pointer;"
                 >{{scope.row.code}}</span></p>
-              <p>房源编号：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
-              <p>客源编号：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
+              <p>房源：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
+              <p>客源：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
             </template>
           </el-table-column>
 
@@ -372,7 +372,6 @@
           </el-table-columfn>
           <el-table-column
             label="操作"
-            width="100"
           >
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
@@ -681,6 +680,15 @@
               prop="auditorDepartment"
               label="职务"
               width="120"
+            >
+            </el-table-column>
+
+
+           <!-- 节点名称（新增）-->
+            <el-table-column
+              prop="updateByName"
+              label="节点名称"
+              width="130"
             >
             </el-table-column>
 
@@ -1309,7 +1317,7 @@ export default {
 
   //业绩详情弹框改变样式
   /deep/ .el-dialog.base-dialog {
-    max-width: 1000px !important;
+    // max-width: 1000px;
     margin: 13vh auto 0 !important;
     overflow: auto;
 

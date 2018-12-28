@@ -131,7 +131,14 @@
             <div class="contract_msg">
               <div class="riskLabel">
                 <!-- 风险单 -->
-                <i class="iconfont icon-tubiao_shiyong-1 risk" v-if="scope.row.isRisk"></i>
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover"
+                  :content="scope.row.remarksExamine"
+                  v-if="scope.row.isRisk">
+                  <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
+                </el-popover>
                 <!-- 代办 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
                 <!-- 低佣 -->
@@ -159,7 +166,7 @@
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
             <div class="btn" @click="gathering(scope.row.id)">收款</div>
-            <div class="btn" @click="payment(scope.row.id)">付款</div>
+            <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
         <el-table-column align="left" label="成交经纪人" width="150 ">
@@ -575,13 +582,15 @@ export default {
       }
     },
     //付款
-    payment(id) {
+    payment(item) {
       if(this.power['sign-ht-info-pay'].state){
         this.setPath(this.$tool.getRouter(['合同','合同列表','创建付款'],'contractList'));
         this.$router.push({
           path:'/payBill',
           query:{
-            contId:id
+            contId:item.id,
+            code:item.code,
+            address:item.propertyAddr
           }
         })
       }else{
@@ -871,6 +880,7 @@ export default {
     printCont(command){
       // debugger
       // console.log(command)
+      this.pdfUrl='';
       this.haveUrl=false;
       if(command===1){
         if(this.blankPdf1){
@@ -879,7 +889,59 @@ export default {
           this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
-          },3000)
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===2){
+        if(this.blankPdf2){
+          this.getUrl(this.blankPdf2);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===3){
+        if(this.blankPdf3){
+          this.getUrl(this.blankPdf3);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===4){
+        if(this.blankPdf4){
+          this.getUrl(this.blankPdf4);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===5){
+        if(this.blankPdf5){
+          this.getUrl(this.blankPdf5);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -1007,6 +1069,17 @@ export default {
     font-size: 18px;
     .risk{
       color: @color-warning;
+      position: relative;
+      .remarksExamine{
+        background: #fff;
+        font-size: 14px;
+        color: #606266;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: inline-block;
+        width: 60px;
+      }
     }
     
   }
