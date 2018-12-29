@@ -300,6 +300,14 @@
         <el-button type="primary" @click="delPeopleMsg">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 创建合同成功提示框 -->
+    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px">
+      <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="toContract">取 消</el-button>
+        <el-button type="primary" @click="toUpload">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
            
@@ -424,6 +432,7 @@ export default {
       delType:'',
       choseHcode:0,//选择的房源编号
       choseGcode:0,//选择的客源编号
+      dialogSuccess:false,
       //权限配置
       power: {
         'sign-ht-info-toverify': {
@@ -1046,6 +1055,13 @@ export default {
           })
         })
       }
+    },
+    //创建成功提示
+    toUpload(){
+
+    },
+    toContract(){
+
     },
     /* 新增/编辑合同 */
     // addContract1() {

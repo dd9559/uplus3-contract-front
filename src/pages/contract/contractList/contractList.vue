@@ -1,5 +1,5 @@
 <template>
-  <div class="view-container">
+  <div class="view-container" ref="tableComView">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
@@ -121,7 +121,7 @@
           </el-dropdown>
         </span>
       </p>
-      <el-table ref="dataList" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border>
+      <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
         <el-table-column align="left" label="合同信息" width="260" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
@@ -310,16 +310,15 @@
         </el-table-column>
       </el-table>
       <!-- 固定滚动条 -->
-      <scrollBar :table="tableBox" v-if="tableBox">
+      <div class="pagination" v-if="tableData.length>0">
         <el-pagination
-        v-if="tableData.length>0"
          class="pagination-info"
          @current-change="handleCurrentChange"
          :current-page="currentPage"
          layout="total, prev, pager, next, jumper"
          :total="total">
         </el-pagination>
-      </scrollBar>
+      </div>
       
     </div>
     <!-- 流水明细弹框 -->
@@ -507,11 +506,11 @@ export default {
       }
     };
   },
-  mounted() {
-    this.$nextTick(()=>{
-      this.tableBox=this.$refs.dataList;
-    })
-  },
+  // mounted() {
+  //   this.$nextTick(()=>{
+  //     this.tableBox=this.$refs.dataList;
+  //   })
+  // },
   created() {
     this.getContractList();//合同列表
     this.getDictionary();//字典
