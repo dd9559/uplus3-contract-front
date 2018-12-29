@@ -286,8 +286,10 @@ const MIXINS = {
       'getBodyScollShow'
     ])
   },
-  updated() {
-      window.onresize = this.comHeightFn;
+  mounted() {
+    window.onresize = this.comHeightFn;
+  },
+  beforeUpdate() {
       this.comHeightFn();
   },
 }

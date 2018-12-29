@@ -159,7 +159,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)" v-if="power['sign-com-liushui'].state">流水</el-button>
+                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)" v-if="power['sign-ht-info-debts'].state">流水</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -266,7 +266,7 @@
                         name:'查询',
                         state:false
                     },
-                    'sign-com-liushui':{
+                    'sign-ht-info-debts':{
                         name:'流水',
                         state:false
                     },
@@ -332,8 +332,8 @@
             },
             // 操作
             operationFn(code){
-                if(!this.power['sign-com-liushui'].state){
-                    this.noPower(this.power['sign-com-liushui'].name);
+                if(!this.power['sign-ht-info-debts'].state){
+                    this.noPower(this.power['sign-ht-info-debts'].name);
                     return false
                 }
                 this.contCode = code;

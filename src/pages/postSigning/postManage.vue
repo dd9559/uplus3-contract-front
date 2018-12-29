@@ -925,7 +925,7 @@
         methods:{
             // 百分比转换
             percentageFn(val){
-                if(val>= 0){
+                if(val > 0){
                     return `${val}%`
                 }else{
                     return '--'

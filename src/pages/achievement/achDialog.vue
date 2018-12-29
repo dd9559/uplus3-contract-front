@@ -27,8 +27,8 @@
           <p style="font-weight:bold;">
             可分配业绩：
             <span class="orange">{{comm}}元</span>
+            <span>（可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费）</span>
           </p>
-          <p style="margin-top:20px;">可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费</p>
         </div>
 
         <!-- 房源列表 -->
@@ -299,8 +299,8 @@
               >
                 <template slot-scope="scope">
                   <el-radio-group v-model="scope.row.place">
-                     <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:6px;">门店</el-radio>
-                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:10px;">公司</el-radio>
+                     <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:6px;font-size:12px">门店</el-radio>
+                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:3px;;font-size:12px">公司</el-radio>
                   </el-radio-group>
                 </template>
               </el-table-column>
@@ -584,8 +584,8 @@
               >
                 <template slot-scope="scope">
                     <el-radio-group v-model="scope.row.place">
-                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:6px;">门店</el-radio>
-                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:10px;">公司</el-radio>
+                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:6px;font-size:5px;">门店</el-radio>
+                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:3px;font-size:5px;">公司</el-radio>
                     </el-radio-group>
                 </template>
               </el-table-column>
@@ -611,6 +611,7 @@
         <div
           class="ach-footer"
           v-if="dialogType==0"
+          style="height:100px;padding-bottom: 30px;width:100%"
         >
           <p class="text-layout">备注：
             <el-input
@@ -646,6 +647,7 @@
         <div
           class="ach-footer"
           v-if="dialogType==1"
+          style="height:70px;padding-bottom: 30px;width:100%"
         >
           <div class="footer-btn-layout f_r">
             <!-- <el-button
@@ -668,6 +670,7 @@
         <div
           class="ach-footer"
           v-if="dialogType==2"
+          style="height:90px;padding-bottom: 20px;width:100%"
         >
           <p class="f_l">审核日期：
             <el-date-picker
@@ -693,6 +696,7 @@
         <div
           class="ach-footer"
           v-if="dialogType==3&&!backAId"
+          style="height:70px;padding-bottom: 30px;width:100%"
         >
           <div class="footer-btn-layout f_r">
             <!-- <el-button
@@ -1303,6 +1307,7 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
+              this.$emit("close");
               this.$message({ message: "操作成功", type: "success" });
               this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
             } 
@@ -1386,6 +1391,7 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
+              this.$emit("close");
               this.$message({ message: "操作成功", type: "success" });
               this.$emit("rejectData", this.achIndex, resultArr);
             } else if (res.data.status != 200) {
@@ -1501,6 +1507,7 @@ export default {
             if (type == 2 && status == 1) {
               this.$emit("saveData", this.achIndex, resultArr, 0);
             }
+            this.$emit("close");
             this.$message({ message: "操作成功", type: "success" });
           }
         }).catch(error => {
@@ -1605,9 +1612,9 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
+              this.$emit("close");
               this.$message({ message: "操作成功", type: "success" });
             }
-            this.$emit("close");
           }).catch(error => {
                this.$message.error({message: error})
           });;
@@ -1637,9 +1644,9 @@ export default {
             this.clientArr = res.data.data.customerAgents;
             this.comm = res.data.data.comm;
             if (res.data.data.examineDate) {
-              console.log("ssssssssss");
               this.examineDate = res.data.data.examineDate;
             }
+            this.shows=true;
           }
         });
       // 角色类型
@@ -1666,7 +1673,7 @@ export default {
         var flag = true;
         for (var j = 0; j < resultArr.length; j++) {
           if (
-            addhouseArr[i].assignorId == resultArr[j].assignorId &&
+            // addhouseArr[i].assignorId == resultArr[j].assignorId &&
             addhouseArr[i].roleType == resultArr[j].roleType 
             // addhouseArr[i].id == resultArr[j].id
           ) {
@@ -1676,7 +1683,7 @@ export default {
         if (flag) {
           resultArr.push(addhouseArr[i]);
         } else {
-          this.$message.error("请勿重复添加同一个人");
+          this.$message.error("请勿重复添加同一角色");
           return false;
         }
       }
@@ -1741,6 +1748,7 @@ export default {
               if (data.data.houseAgents) {
                 this.houseArr = data.data.houseAgents;
               }
+              this.shows=true;
               if (data.data.aId) {
                 this.backAId = data.data.aId;
               }
@@ -1758,7 +1766,7 @@ export default {
 /deep/ .dialog2In {
   width: 420px !important;
   background-color: #fff;
-  margin-top: 20vh !important;
+  margin-top: 13vh !important;
   padding-bottom: 30px;
   .is-checked {
     color: #478de3 !important;
@@ -1812,7 +1820,7 @@ export default {
 .dialog1 {
   /deep/ .el-dialog.base-dialog{
     width: 1281px !important;
-    margin: 13vh auto 0 !important;
+    margin: 10vh auto 0 !important;
     overflow: hidden;
 
     /deep/ .el-input__suffix {
@@ -1825,7 +1833,7 @@ export default {
       font-size: 30px;
     }
     .ach-header {
-      min-height: 100px;
+      min-height: 70px;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;
       overflow: hidden;
@@ -1877,7 +1885,7 @@ export default {
         width: 100%;
         //   background-color: pink;
         .house-left {
-          margin-top: 30px;
+          margin-top: 10px;
           margin-bottom: 30px;
           h1 {
             // font-size: 16px !important;
@@ -1887,7 +1895,7 @@ export default {
         }
 
         .house-right {
-          margin-top: 20px;
+          margin-top: 10px;
           button {
             padding: 0 !important;
             border-radius: 0;
@@ -1908,12 +1916,22 @@ export default {
           }
         }
       }
+
+      //弹框审核信息
+      h1 {
+        // font-size: 16px;
+        color: #233241;
+        margin: 0px !important;
+      }
+    }
       /deep/ .el-table {
         // font-size: 14px !important;
         margin-top: 20px;
+        border-spacing: 0px;
         td,
         th {
-          padding: 24px 0;
+          padding: 0px 0px!important;
+          height: 100%;
         }
         .el-table__header {
           height: 55px;
@@ -1927,25 +1945,23 @@ export default {
             }
           }
         }
+        .el-table__header th .cell{
+          height: 30px;
+          line-height: 30px;
+        }
       }
-      //弹框审核信息
-      h1 {
-        // font-size: 16px;
-        color: #233241;
-        margin: 0px !important;
+      /deep/ .el-radio__label{
+        font-size:10px;
       }
-    }
-
     .ach-footer {
-      min-height: 100px;
+      // min-height: 100px;
       width: 100%;
       background-color: #fff;
       padding-left: 20px;
       box-sizing: border-box;
       position: relative;
-      padding-bottom: 30px;
       p {
-        margin-top: 30px;
+        margin-top: 5px;
       }
       .text-layout {
         position: relative;

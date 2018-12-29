@@ -44,7 +44,7 @@
         <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
         <el-button @click="addCompany" icon="el-icon-plus" v-if="power['sign-set-gs'].state">公司信息</el-button>
       </p>
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="tableData" style="width: 100%" border>
         <el-table-column align="center" label="城市" prop="cityName" width="90">
         </el-table-column>
         <el-table-column align="center" label="门店" prop="storeName">
@@ -420,23 +420,27 @@
        * 获取公司设置列表
        */
       getCompanyList: function () {
-        let param = {
-          pageSize: this.pageSize,
-          pageNum: this.pageNum,
-          startTime: this.searchTime == null ? "" : this.searchTime[0],
-          endTime: this.searchTime == null ? "" : this.searchTime[1]
-        }
-        param = Object.assign({},this.searchForm,param)
-        param.cityId = param.cityId === "武汉" ? 1 : param.cityId
-        this.$ajax.get('/api/setting/company/list', param).then(res => {
-          res = res.data
-          if(res.status === 200) {
-            this.tableData = res.data.list
-            this.count = res.data.total
+        if(this.power['sign-set-gs'].state) {
+          let param = {
+            pageSize: this.pageSize,
+            pageNum: this.pageNum,
+            startTime: this.searchTime == null ? "" : this.searchTime[0],
+            endTime: this.searchTime == null ? "" : this.searchTime[1]
           }
-        }).catch(error => {
-            this.$message({message:error})
-        })
+          param = Object.assign({},this.searchForm,param)
+          param.cityId = param.cityId === "武汉" ? 1 : param.cityId
+          this.$ajax.get('/api/setting/company/list', param).then(res => {
+            res = res.data
+            if(res.status === 200) {
+              this.tableData = res.data.list
+              this.count = res.data.total
+            }
+          }).catch(error => {
+              this.$message({message:error})
+          })
+        } else {
+          this.noPower("查询")
+        }
       },
       getCityList() {
         this.$ajax.get('/api/organize/cities').then(res => {
