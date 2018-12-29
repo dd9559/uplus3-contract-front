@@ -255,20 +255,16 @@
       },
       //获取步骤类型列表
       getData: function () {
-        if(this.power['sign-set-hq'].state) {
-          this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: this.cityId}).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.listData = res.data
-              this.listData_other = this.listData.length !== 0 ? this.listData[0].stepsList : []
-              this.currentRow = this.listData[0]
-              }
-            }).catch(error => {
-                this.$message({message:error})
-            })
-        } else {
-          this.noPower("查询")
-        }
+        this.$ajax.post(`/api/flowmanage/selectTypeStepsList`, {cityId: this.cityId}).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.listData = res.data
+            this.listData_other = this.listData.length !== 0 ? this.listData[0].stepsList : []
+            this.currentRow = this.listData[0]
+            }
+          }).catch(error => {
+              this.$message({message:error})
+          })
       },
       //单击步骤类型列表行单元格获取交易步骤
       cellClick(row, column, cell, event) {

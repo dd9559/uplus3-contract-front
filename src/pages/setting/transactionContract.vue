@@ -93,23 +93,14 @@ export default {
   methods: {
     // 获取合同资料库列表
     getData: function() {
-      if(this.power['sign-set-hq'].state) {
-        let param = {
-          cityId: this.cityId,
-          pageSize: this.pageSize,
-          pageNum: this.pageNum
+      this.$ajax.postJSON("/api/flowmanage/selectConAttachPageList", {cityId: this.cityId}).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.listData = res.data;
         }
-        this.$ajax.postJSON("/api/flowmanage/selectConAttachPageList", param).then(res => {
-          res = res.data;
-          if (res.status === 200) {
-            this.listData = res.data;
-          }
-        }).catch(error => {
-            this.$message({message:error})
-        })
-      } else {
-        this.noPower("查询")
-      }
+      }).catch(error => {
+          this.$message({message:error})
+      })
     },
     // 点击添加
     addCon(title) {
