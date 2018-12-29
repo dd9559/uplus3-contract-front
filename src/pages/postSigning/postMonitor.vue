@@ -159,7 +159,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)" v-if="power['sign-com-bill'].state">流水</el-button>
+                        <el-button class="blue" type="text" @click="operationFn(scope.row)" v-if="power['sign-com-bill'].state">流水</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -177,7 +177,7 @@
         <!-- 后期进度查看 -->
         <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
         <!-- 流水 -->
-        <flowAccount :dialogTableVisible="dialogTableVisible" :contCode="contCode" @closeRunningWater="closeWater"></flowAccount>
+        <flowAccount :dialogTableVisible="dialogTableVisible" :contCode="contCode" @closeRunningWater="closeWater" :contId="waterContId" v-if="dialogTableVisible"></flowAccount>
     </div>
 </template>
 
@@ -258,6 +258,7 @@
                 tableProgress:[],
                 // 流水
                 dialogTableVisible:false,
+                waterContId:'',
                 // code
                 contCode:'',
                 // 权限
@@ -331,12 +332,13 @@
                 this.$refs.lateProgress.show(row);
             },
             // 操作
-            operationFn(code){
+            operationFn(item){
                 if(!this.power['sign-com-bill'].state){
                     this.noPower(this.power['sign-com-bill'].name);
                     return false
                 }
-                this.contCode = code;
+                this.contCode = item.code;
+                this.waterContId = item.id;
                 this.dialogTableVisible = true;
             },
             closeWater(){
