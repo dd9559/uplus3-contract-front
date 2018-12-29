@@ -2,17 +2,20 @@
   <div class="view">
     <p class="f14">付款信息</p>
     <ul class="bill-form">
-      <li>
+      <li :class="[inputPerson?'active':'']">
         <div class="input-group col">
           <label class="form-label no-width f14">收款方</label>
-          <el-select size="small" class="w200" v-model="form.inObjType" placeholder="请选择" @change="getOption">
-            <el-option
-              v-for="item in dropdown"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <div class="flex-box">
+            <el-select size="small" class="w200" v-model="form.inObjType" placeholder="请选择" @change="getOption">
+              <el-option
+                v-for="item in dropdown"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model="form.inObj" v-if="inputPerson">
+          </div>
         </div>
         <div class="input-group col">
           <label class="form-label no-width f14">款类</label>
@@ -238,6 +241,7 @@
     },
     data() {
       return {
+        inputPerson:false,//是否显示第三方输入
         form: {
           contId:'',
           remark:'',
@@ -282,7 +286,8 @@
               code:'',
               address:''
             }
-          ]
+          ],
+          form:{}
         }
       }
     },
@@ -499,6 +504,11 @@
             return
           }
         })
+        if(item===3){
+          this.inputPerson=true
+        }else {
+          this.inputPerson=false
+        }
         this.form = Object.assign({},this.form,obj)
       },
       showLayer:function () {
@@ -531,6 +541,8 @@
             })
           }else {
             this.layer.show=true
+            param.filePath = [].concat(this.files)
+            this.layer.form=Object.assign({},param)
           }
         }).catch(error=>{
           this.$message({
@@ -546,81 +558,46 @@
         })
       },
       goResult:function () {
-        let param = Object.assign({},this.form)
-        this.list[0].amount = param.amount
-        param.inAccount = [].concat(this.list)
-
-        let promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
-        console.log(promiseArr)
-
-        Promise.all(promiseArr).then(res=>{
-          if(this.showAmount){
-            if(parseFloat(param.amount)>this.amount.balance||parseFloat(param.amount)>this.amount.contractBalance){
-              this.$message({
-                message:'输入金额不能大于可支配金额'
+        this.fullscreenLoading=true
+        if(this.$route.query.edit){
+          // delete param.contId
+          this.$ajax.put('/api/payInfo/updatePayMentInfo', this.layer.form).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              this.fullscreenLoading=false
+              this.$router.replace({
+                path: 'payResult',
+                query:{
+                  content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):'',
+                  edit:1
+                }
               })
-              return
             }
-          }else {
-            if(parseFloat(param.amount)>this.amount.balance){
-              this.$message({
-                message:'输入金额不能大于可支配金额'
-              })
-              return
-            }
-          }
-          if(this.files.length===0){
+          }).catch(error=>{
+            this.fullscreenLoading=false
             this.$message({
-              message:'付款凭证不能为空'
+              message:error
             })
-          }else {
-            this.fullscreenLoading=true
-            param.filePath = [].concat(this.files)
-            if(this.$route.query.edit){
-              delete param.contId
-              this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
-                res = res.data
-                if (res.status === 200) {
-                  this.fullscreenLoading=false
-                  this.$router.replace({
-                    path: 'payResult',
-                    query:{
-                      content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):'',
-                      edit:1
-                    }
-                  })
+          })
+        }else {
+          this.$ajax.postJSON('/api/payInfo/savePayment', this.layer.form).then(res => {
+            res = res.data
+            this.fullscreenLoading=false
+            if (res.status === 200) {
+              this.$router.replace({
+                path: 'payResult',
+                query:{
+                  content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):''
                 }
-              }).catch(error=>{
-                this.fullscreenLoading=false
-                this.$message({
-                  message:error
-                })
-              })
-            }else {
-              this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
-                res = res.data
-                this.fullscreenLoading=false
-                if (res.status === 200) {
-                  this.$router.replace({
-                    path: 'payResult',
-                    query:{
-                      content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):''
-                    }
-                  })
-                }
-              }).catch(error=>{
-                this.fullscreenLoading=false
-                this.$message({
-                  message:error
-                })
               })
             }
-          }
-        }).catch(error=>{
-          this.$message({
-            message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
+          }).catch(error=>{
+            this.fullscreenLoading=false
+            this.$message({
+              message:error
+            })
           })
-        })
+        }
         /*this.$tool.checkForm(param,rule).then((res)=>{
           if(param.smallAmount>this.amount.balance){
             this.$message({
@@ -700,11 +677,26 @@
   .info-textarea{
     width: 240px;
   }
+  input[size='small']{
+    height: 32px;
+  }
+  input.person{
+    margin-left: @margin-10;
+  }
+  .flex-box{
+    display: flex;
+  }
   .bill-form{
     display: flex;
     >li{
       flex: 1;
-      max-width: 300px;
+      max-width: 210px;
+      &:last-of-type{
+        max-width: none;
+      }
+      &.active{
+        max-width: 360px;
+      }
       .col{
         >label{
           display: block;

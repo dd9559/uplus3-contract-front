@@ -2,17 +2,20 @@
   <div class="view">
     <p class="f14">收款信息</p>
     <ul class="bill-form">
-      <li>
+      <li :class="[inputPerson?'active':'']">
         <div class="input-group col">
           <label class="form-label no-width f14 margin-bottom-base">付款方</label>
-          <el-select size="small" class="w200" v-model="form.outObjType" placeholder="请选择" @change="getOption(form.outObjType,1)">
-            <el-option
-              v-for="item in dropdown"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <div class="flex-box">
+            <el-select size="small" class="w200" v-model="form.outObjType" placeholder="请选择" @change="getOption(form.outObjType,1)">
+              <el-option
+                v-for="item in dropdown"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model="form.outObj" v-if="inputPerson">
+          </div>
         </div>
         <div class="input-group col">
           <label class="form-label no-width f14 margin-bottom-base">款类</label>
@@ -389,6 +392,7 @@
           id:'',
           name:''
         },
+        inputPerson:false,//是否显示第三方输入框
         form: {
           contId: '',
           remark: '',
@@ -571,6 +575,9 @@
               id: res.data.id,
               createTime: this.$tool.timeFormat(res.data.createTime)
             }
+            if(obj.outObjType===3){
+              this.inputPerson=true
+            }
             this.moneyTypeName=res.data.moneyTypeName
             this.dep.id=res.data.inObjStoreId
             this.dep.name=res.data.inObjStore
@@ -583,7 +590,7 @@
                 this.files.push(`${item.path}?${item.name}`)
               })
               this.cardList = res.data.account //刷卡补充
-            let arr = res.data.inAccount.map(item=>Object.assign({},item,{activeAdmin:item.cardNumber}))
+            let arr = res.data.inAccount.map(item=>Object.assign({},item,{activeAdmin:item.cardNumber,payMethod:item.payMethod.value}))
               this.payList = [].concat(arr)
               /*if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
                 this.activeAdmin = res.data.inAccount[0].cardNumber
@@ -705,7 +712,7 @@
                 })
               }
             })
-            this.getResult(param)
+            this.getResult(param,this.$route.query.edit?'edit':'')
           }
         }).catch(error=>{
           this.$message({
@@ -969,6 +976,11 @@
             if (type === 1) {
               obj.outObjId = tip.custId
               obj.outObj = tip.custName
+              if(item===3){
+                this.inputPerson = true
+              }else {
+                this.inputPerson = false
+              }
             } else {
               obj.inObj = tip.name
               this.activeAdmin=''
@@ -1071,6 +1083,12 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  input[size='small']{
+    height: 32px;
+  }
+  input.person{
+    margin-left: @margin-10;
+  }
   .flex-box{
     display: flex;
     .input-group:first-of-type{
@@ -1085,6 +1103,9 @@
     >li{
       flex: 1;
       max-width: 210px;
+      &.active{
+        max-width: 360px
+      }
       &:nth-of-type(2){
         max-width: 400px;
       }

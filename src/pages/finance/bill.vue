@@ -554,7 +554,9 @@
               edit: row.type,
               id: row.id,
               type: row.type === 1 ? row.inAccountType : '-1',
-              contId: row.contId
+              contId: row.contId,
+              code: row.contCode,
+              address: row.address
             }
           })
         } else if (type === 2) {
