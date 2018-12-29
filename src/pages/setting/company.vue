@@ -420,23 +420,27 @@
        * 获取公司设置列表
        */
       getCompanyList: function () {
-        let param = {
-          pageSize: this.pageSize,
-          pageNum: this.pageNum,
-          startTime: this.searchTime == null ? "" : this.searchTime[0],
-          endTime: this.searchTime == null ? "" : this.searchTime[1]
-        }
-        param = Object.assign({},this.searchForm,param)
-        param.cityId = param.cityId === "武汉" ? 1 : param.cityId
-        this.$ajax.get('/api/setting/company/list', param).then(res => {
-          res = res.data
-          if(res.status === 200) {
-            this.tableData = res.data.list
-            this.count = res.data.total
+        if(this.power['sign-set-gs'].state) {
+          let param = {
+            pageSize: this.pageSize,
+            pageNum: this.pageNum,
+            startTime: this.searchTime == null ? "" : this.searchTime[0],
+            endTime: this.searchTime == null ? "" : this.searchTime[1]
           }
-        }).catch(error => {
-            this.$message({message:error})
-        })
+          param = Object.assign({},this.searchForm,param)
+          param.cityId = param.cityId === "武汉" ? 1 : param.cityId
+          this.$ajax.get('/api/setting/company/list', param).then(res => {
+            res = res.data
+            if(res.status === 200) {
+              this.tableData = res.data.list
+              this.count = res.data.total
+            }
+          }).catch(error => {
+              this.$message({message:error})
+          })
+        } else {
+          this.noPower("查询")
+        }
       },
       getCityList() {
         this.$ajax.get('/api/organize/cities').then(res => {
