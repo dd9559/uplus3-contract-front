@@ -141,7 +141,8 @@
                         }
                         this.bigId=this.bigId==''?18:this.bigId
                     }
-                })}else{
+                })
+                }else{
                          this.noPower(this.power['sign-set-kl-query'].name)
                 }
             },
