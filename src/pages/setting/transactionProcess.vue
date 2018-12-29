@@ -36,16 +36,16 @@
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
               <el-table-column align="center" label="步骤名称" prop="stepsName"></el-table-column>
               <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
-              <el-table-column align="center" label="是否可以结算">
+              <!-- <el-table-column align="center" label="是否可以结算">
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.isSettle" size="small" @change="isSettleChange(scope.$index,$event)">
                     <el-option v-for="item in isSettleOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-select>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column align="center" label="结算百分比(%)">
                 <template slot-scope="scope">
-                  <el-input size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)" :disabled="scope.row.isSettle?false:true"></el-input>
+                  <el-input size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="操作">
@@ -153,7 +153,7 @@
               this.$message({message:error})
           })
         } else {
-          this.noPower(this.power['sign-set-hq'].name)
+          this.noPower("查询")
         }
       },
       addProcess(title) {
@@ -290,17 +290,17 @@
           this.manageData.splice(index, 1)
         }
       },
-      isSettleChange(index,bool) {
-        if(!this.manageData[index].isSettle) {
-          this.manageData[index].settlePercent = ""
-        }
+      // isSettleChange(index,bool) {
+      //   if(!this.manageData[index].isSettle) {
+      //     this.manageData[index].settlePercent = ""
+      //   }
         // for(var i = 0; i < this.manageData.length; i++) {
         //   this.manageData[i].isSettle = 0
         //   this.manageData[i].settlePercent = ""
         // }
         // this.manageData[index].isSettle = bool
         // this.manageData[this.manageData.length - 1].isSettle = bool
-      },
+      // },
       addBtn() {
         this.ProcessStepVisible = true
         this.StepsOption.forEach(item => {
@@ -412,7 +412,7 @@
                 transStepsId: item.transStepsId,
                 sort: item.sort,
                 isSettle: item.isSettle,
-                settlePercent: item.settlePercent?Number(item.settlePercent):0
+                settlePercent: item.settlePercent===""?0:Number(item.settlePercent)
               })
             } else {
               arr.push({
@@ -420,14 +420,14 @@
                 sort: item.sort,
                 isSettle: item.isSettle,
                 id: item.id ? item.id : null,
-                settlePercent: item.settlePercent?Number(item.settlePercent):0
+                settlePercent: item.settlePercent===""?0:Number(item.settlePercent)
               })
             }
           })
           var num = 0
           for(var i = 0; i < arr.length; i++) {
             if(arr[i].settlePercent) {
-              num += Number(arr[i].settlePercent)
+              num = Number(arr[i].settlePercent)
             }
           }
           let param = {
@@ -435,8 +435,8 @@
             transStepsList: arr
           }
           if(arr.length !== 0) {
-            if(num != 100) {
-              this.$message({message:"所有步骤结算百分比之和必须等于100"})
+            if(num > 100) {
+              this.$message({message:"结算百分比不能超过100%"})
               return false
             }
             if(this.flowCount === 0) {
@@ -468,6 +468,7 @@
             if(i === item.name) {
               this.manageData.push({
                 isSettle: 0,
+                settlePercent: "",
                 isSms: 0,
                 overTimeDays: item.overTimeDays,
                 planDays: item.planDays,
@@ -494,7 +495,15 @@
       },
       //获取整数
       getInt:function (index) {
-        this.manageData[index].settlePercent = this.manageData[index].settlePercent.replace(/[^\.\d]/g,'')
+        for(var i = 0; i < this.manageData.length; i++) {
+          if(i === index) {
+            this.manageData[i].settlePercent = this.manageData[index].settlePercent.replace(/[^\.\d]/g,'')
+            this.$set(this.manageData[i],'isSettle',1)       
+          } else {
+            this.manageData[i].settlePercent = ""
+            this.$set(this.manageData[i],'isSettle',0)
+          }
+        }
       }
     },
     computed: {

@@ -69,7 +69,7 @@
                 </el-table>
             </div>
             <el-pagination
-            v-show="tableData.length"
+            v-show="tableData.length>0"
             class="pagination-info"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -124,28 +124,49 @@
                     </div>
                     <ul v-if="isAudit==='1'">
                         <li v-for="(item,index) in nodeList" :key="index">
-                            <el-input size="small" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
-                            <el-select size="small" class="people-type" v-model="item.type" @change="getTypeOption(item.type,index)">
-                                <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                            </el-select>
-                            <el-select size="small" class="other" v-model="item.userId" @change="selectUser(item.type,index)">
-                                <el-option
-                                v-for="option in (item.type===1?depsList:roleList)"
-                                :key="item.type===1?option.id:option.key"
-                                :label="item.type===1?option.name:option.value"
-                                :value="item.type===1?option.id:option.key"
-                                ></el-option>
-                            </el-select>
-                            <div class="row-icon">
-                                <span class="button" @click="addRow"><i class="icon el-icon-plus"></i></span>
-                                <span class="button" @click="removeRow(index)"><i class="icon el-icon-minus"></i></span>
+                            <div class="node-body">
+                               <el-input size="small" class="w152" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                                <el-select size="small" class="w152" v-model="item.type" @change="getTypeOption(item.type,index)">
+                                    <el-option label="请选择审批人类型" value=""></el-option>
+                                    <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                                </el-select>
+                                <div v-if="item.type===0" class="person">
+                                    <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+                                    <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye" size="small"
+                                                v-model="item.personArr" placeholder="请选择" multiple @change="multiSelect(item.type,index)">
+                                        <el-option
+                                        v-for="item in EmployeList"
+                                        :key="item.empId"
+                                        :label="item.name"
+                                        :value="item.empId">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <el-select size="small" v-if="item.type===1" class="other" v-model="item.depArr" filterable multiple @change="multiSelect(item.type,index)">
+                                    <el-option
+                                    v-for="option in depsList"
+                                    :key="option.id"
+                                    :label="option.name"
+                                    :value="option.id"
+                                    ></el-option>
+                                </el-select>
+                                <el-select size="small" v-if="item.type===2" class="other" v-model="item.roleArr" filterable multiple @change="multiSelect(item.type,index)">
+                                    <el-option
+                                    v-for="option in roleList"
+                                    :key="option.key"
+                                    :label="option.value"
+                                    :value="option.key"
+                                    ></el-option>
+                                </el-select>
+                                <div class="row-icon">
+                                    <span class="button" @click="addRow"><i class="icon el-icon-plus"></i></span>
+                                    <span class="button" @click="removeRow(index)"><i class="icon el-icon-minus"></i></span>
+                                </div> 
                             </div>
-                            <div class="default">
+                            <div class="default" v-if="item.choice.length>0">
                                 <span>选择默认审核人:</span>
-                                <div class="multiple">
-                                    <el-radio-group>
-                                        <el-radio>123</el-radio>
-                                    </el-radio-group>
+                                <div class="multiple" ref="curChoice">
+                                    <span v-for="(ele,m) in item.choice" :key="m" @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">{{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i></span>
                                 </div>
                             </div>
                         </li>
@@ -166,34 +187,37 @@
 <script>
     import {FILTER} from "@/assets/js/filter";
     import {MIXINS} from "@/assets/js/mixins";
-    const rule = {
-        cityId: {
-            name: "城市选择"
-        },
-        deptAttr: {
-            name: "运营模式"
-        },
-        name: {
-            name: "流程名称"
-        }
-    }
     let flowType = ["付款审核","收款审核","应收业绩审核","合同审核","调佣审核","结算审核"]
     let arr = [
         {
             name: "提审人",
             type: 0,
             sort: 1,
+            isAudit: "1",
             userId: "",
             userName: "",
-            isAudit: "1"
+            // depName: "",
+            // personArr: [],
+            // depArr: [],
+            // roleArr: [],
+            choice: [],
+            // peopleTime: 1,
+            // depsTime: 1,
+            // rolesTime: 1
         },
         {
             name: "",
             type: "",
             sort: "",
-            userId: "",
-            userName: "",
-            isAudit: "1"
+            isAudit: "1",
+            depName: "",
+            personArr: [],
+            depArr: [],
+            roleArr: [],
+            choice: [],
+            peopleTime: 1,
+            depsTime: 1,
+            rolesTime: 1
         }
     ]
     
@@ -248,7 +272,7 @@
                 power: {
                     'sign-set-verify': {
                     state: false,
-                    name: '操作'
+                    name: '查询'
                     }
                 }
             }
@@ -257,6 +281,7 @@
             this.getCityList()
             this.getDictionary()
             this.getData()
+            this.remoteMethod()
             this.getDeps()
             this.getRoles()
         },
@@ -312,6 +337,12 @@
                     }
                 })
             },
+            clearDep: function () {
+                this.clearSelect()
+            },
+            depHandleClick(data) {
+                this.handleNodeClick(data)
+            },
             operation(title,type,row) {
                 this.aduitDialog = true
                 this.aduitTitle = title
@@ -334,11 +365,37 @@
                     this.aduitForm.branchCondition = +currentRow.branchCondition.split('=')[1]
                     this.isAudit = currentRow.branch[0].isAudit.toString()
                     this.tempAudit = this.isAudit
-                    this.nodeList = JSON.parse(JSON.stringify(row.branch))
-                    this.tempNodeList = JSON.parse(JSON.stringify(row.branch))
                     this.aduitForm.flowDesc = currentRow.flowDesc
                     this.setConditionList(currentRow.type)
                     this.editDisabled = true
+                    //获取节点信息
+                    let editRow = JSON.parse(JSON.stringify(currentRow.branch))
+                    editRow.forEach(item => {
+                        if(item.choice) {
+                         item.choice = JSON.parse(item.choice)   
+                        }
+                    })
+                    let array = []
+                    array.unshift(editRow[0])
+                    for(var i = 1; i < editRow.length; i++) {
+                        array.push({
+                            name: editRow[i].name,
+                            type: editRow[i].type,
+                            sort: editRow[i].sort,
+                            isAudit: editRow[i].isAudit,
+                            depName: "",
+                            personArr: JSON.parse(editRow[i].personArr),
+                            depArr: JSON.parse(editRow[i].depArr),
+                            roleArr: JSON.parse(editRow[i].roleArr),
+                            choice: editRow[i].choice,
+                            lastChoice: (editRow[i].choice.filter(e => e.isDefault===1))[0],
+                            peopleTime: JSON.parse(editRow[i].personArr).length + 1,
+                            depsTime: JSON.parse(editRow[i].depArr).length + 1,
+                            rolesTime: JSON.parse(editRow[i].roleArr).length + 1
+                        })
+                    }
+                    this.nodeList = array
+                    this.tempNodeList = JSON.parse(JSON.stringify(array))
                 }
             },
             // delFlow(row) {
@@ -416,22 +473,152 @@
                 this.setConditionList(val)
             },
             getTypeOption(type,index) {
-                this.$set(this.nodeList[index],'userId',"")
-                this.$set(this.nodeList[index],'userName',"")
+                // this.$set(this.nodeList[index],'userId',"")
+                // this.$set(this.nodeList[index],'userName',"")
             },
-            selectUser(type,index) {
-                if(type === 1) {
-                    this.depsList.find(item => {
-                        if(this.nodeList[index].userId === item.id) {
-                            this.nodeList[index].userName = item.name
+            defaultChoice(index,e,curItem) {
+                let allChoice = this.$refs.curChoice[index-1].children
+                for(var i = 0; i < allChoice.length; i++) {
+                    allChoice[i].classList.remove('cur-select')
+                }
+                allChoice[e].classList.add('cur-select')
+                let curNodeChoice = this.nodeList[index].choice
+                for(var i = 0; i < curNodeChoice.length; i++) {
+                    curNodeChoice[i].isDefault = 0
+                }
+                curNodeChoice[e].isDefault = 1
+                this.nodeList[index].lastChoice = curItem 
+            },
+            delChoice(index,choiceArr,m) {
+                if(choiceArr[m].type === 0) {
+                    for(var i = 0; i < this.nodeList[index].personArr.length; i++) {
+                        if(choiceArr[m].userId === this.nodeList[index].personArr[i]) {
+                            this.nodeList[index].personArr.splice(i,1)
+                            this.$set(this.nodeList[index],'peopleTime',this.nodeList[index].peopleTime - 1)
                         }
+                    }
+                } else if(choiceArr[m].type === 1) {
+                    for(var i = 0; i < this.nodeList[index].depArr.length; i++) {
+                        if(choiceArr[m].userId === this.nodeList[index].depArr[i]) {
+                            this.nodeList[index].depArr.splice(i,1)
+                            this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
+                        }
+                    }
+                } else if(choiceArr[m].type === 2) {
+                    for(var i = 0; i < this.nodeList[index].roleArr.length; i++) {
+                        if(choiceArr[m].userId === this.nodeList[index].roleArr[i]) {
+                            this.nodeList[index].roleArr.splice(i,1)
+                            this.$set(this.nodeList[index],'rolesTime',this.nodeList[index].rolesTime - 1)
+                        }
+                    }
+                }
+                choiceArr.splice(m,1)
+                let arr = choiceArr.filter(item => item.isDefault===1)
+                if(arr.length===0) {
+                    delete this.nodeList[index].lastChoice
+                }
+            },
+            multiSelect(type,index) {
+                function getArrDiff(m, n) {
+                    return m.concat(n).filter(function(v, i, arr) {
+                        return arr.indexOf(v) === arr.lastIndexOf(v)
+                
                     })
+                }
+                if(type === 0) {
+                    if(this.nodeList[index].peopleTime === this.nodeList[index].personArr.length) {
+                        for(var i = 0; i < this.EmployeList.length; i++) {
+                            if(this.nodeList[index].personArr[this.nodeList[index].peopleTime-1] === this.EmployeList[i].empId) {
+                                this.nodeList[index].choice.push({
+                                    type: 0,
+                                    userName: this.EmployeList[i].name,
+                                    userId: this.EmployeList[i].empId,
+                                    isDefault: 0
+                                })
+                                break
+                            }
+                        }
+                        ++this.nodeList[index].peopleTime
+                    } else {
+                        let arr = this.nodeList[index].choice.filter(item => {
+                            return item.type === 0
+                        })
+                        let arr1 = []
+                        arr.forEach(item => {
+                            arr1.push(item.userId)
+                        })
+                        let arr2 = getArrDiff(arr1,this.nodeList[index].personArr)
+                        this.nodeList[index].choice.forEach((item,i) => {
+                            if(item.userId === arr2[0]) {
+                                this.nodeList[index].choice.splice(i,1)
+                                this.$set(this.nodeList[index],'peopleTime',this.nodeList[index].peopleTime - 1)
+                            }
+                        })
+                    }
+                } else if(type === 1) {
+                    if(this.nodeList[index].depsTime === this.nodeList[index].depArr.length) {
+                        for(var i = 0; i < this.depsList.length; i++) {
+                            if(this.nodeList[index].depArr[this.nodeList[index].depsTime-1] === this.depsList[i].id) {
+                                this.nodeList[index].choice.push({
+                                    type: 1,
+                                    userName: this.depsList[i].name,
+                                    userId: this.depsList[i].id,
+                                    isDefault: 0
+                                })
+                                break
+                            }
+                        }
+                        ++this.nodeList[index].depsTime
+                    } else {
+                        let arr = this.nodeList[index].choice.filter(item => {
+                            return item.type === 1
+                        })
+                        let arr1 = []
+                        arr.forEach(item => {
+                            arr1.push(item.userId)
+                        })
+                        let arr2 = getArrDiff(arr1,this.nodeList[index].depArr)
+                        this.nodeList[index].choice.forEach((item,i) => {
+                            if(item.userId === arr2[0]) {
+                                this.nodeList[index].choice.splice(i,1)
+                                this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
+                            }
+                        })
+                    }
                 } else if(type === 2) {
-                    this.roleList.find(item => {
-                        if(this.nodeList[index].userId === item.key) {
-                            this.nodeList[index].userName = item.value
+                    if(this.nodeList[index].rolesTime === this.nodeList[index].roleArr.length) {
+                        for(var i = 0; i < this.roleList.length; i++) {
+                            if(this.nodeList[index].roleArr[this.nodeList[index].rolesTime-1] === this.roleList[i].key) {
+                                this.nodeList[index].choice.push({
+                                    type: 2,
+                                    userName: this.roleList[i].value,
+                                    userId: this.roleList[i].key,
+                                    isDefault: 0
+                                })
+                                break
+                            }
                         }
-                    })
+                        ++this.nodeList[index].rolesTime
+                    } else {
+                        let arr = this.nodeList[index].choice.filter(item => {
+                            return item.type === 2
+                        })
+                        let arr1 = []
+                        arr.forEach(item => {
+                            arr1.push(item.userId)
+                        })
+                        let arr2 = getArrDiff(arr1,this.nodeList[index].roleArr)
+                        this.nodeList[index].choice.forEach((item,i) => {
+                            if(item.userId === arr2[0]) {
+                                this.nodeList[index].choice.splice(i,1)
+                                this.$set(this.nodeList[index],'rolesTime',this.nodeList[index].rolesTime - 1)
+                            }
+                        })
+                    }
+                }
+                let ar = this.nodeList[index].choice.filter(item => item.isDefault===1)
+                if(ar.length===0) {
+                    delete this.nodeList[index].lastChoice
                 }
             },
             addRow() {
@@ -439,9 +626,15 @@
                     name: "",
                     type: "",
                     sort: "",
-                    userId: "",
-                    userName: "",
-                    isAudit: "1"
+                    isAudit: "1",
+                    depName: "",
+                    personArr: [],
+                    depArr: [],
+                    roleArr: [],
+                    choice: [],
+                    peopleTime: 1,
+                    depsTime: 1,
+                    rolesTime: 1
                 }
                 this.nodeList.push(row)
             },
@@ -449,77 +642,121 @@
                 this.nodeList.splice(index,1)
             },
             isSave() {
-                this.$tool.checkForm(this.aduitForm,rule).then(() => {
-                    if(!this.isAudit) {
-                        this.$message({message:"请选择分支节点"})
-                        return false
-                    }
-                    let isOk
-                    if(this.isAudit === '0') {
-                        let arr1 = [{
-                            name: "",
-                            type: "",
-                            sort: 1,
-                            userId: "",
-                            userName: "",
-                            isAudit: "0"
-                        }]
-                        this.nodeList = arr1
-                    } else {
-                        let item = this.nodeList
-                        for(var i = 1; i < item.length; i++) {
-                            isOk = false
-                            if(item[i].name) {
-                                if(item[i].type !== "") {
-                                    // if(item[i].userId!=""&&item[i].type===1 || item[i].userId!=""&&item[i].type===2 || item[i].userId==""&&item[i].type===3) {
-                                    //     isOk = true
-                                    // } else {
-                                    //     this.$message({message:item[i].type===1?"请选择门店":"请选择职务"})
-                                    //     return false
-                                    // }
-                                    if(item[i].type===1) {
-                                        if(item[i].userId!="") {
-                                            isOk = true
-                                        } else {
-                                            this.$message({message:"请选择门店"})
-                                            return false
-                                        }
-                                    } else if(item[i].type===2) {
-                                        if(typeof(item[i].userId)=="number") {
-                                            isOk = true
-                                        } else {
-                                            this.$message({message:"请选择职务"})
-                                            return false
-                                        }
-                                    } else if(item[i].type===3) {
-                                        isOk = true
+                if(this.aduitForm.cityId) {
+                    if(this.aduitForm.deptAttr) {
+                        if(this.aduitForm.type!=="") {
+                            if(this.aduitForm.branchCondition!=="") {
+                                if(this.aduitForm.name) {
+                                    if(!this.isAudit) {
+                                        this.$message({message:"请选择分支节点"})
+                                        return false
                                     }
                                 } else {
-                                    this.$message({message:"审批人类型不能为空"})
+                                    this.$message({message:"流程名称不能为空"})
+                                    return false
                                 }
                             } else {
-                                this.$message({message:"节点名称不能为空"})
+                                this.$message({message:"分支条件不能为空"})
+                                return false
                             }
-                        }
-                    }
-                    let param = {
-                        branch: this.nodeList
-                    }
-                    param = Object.assign({},this.aduitForm,param)
-                    const url = "/api/auditflow/operateFlow"
-                    if(isOk || this.isAudit === '0') {
-                        if(this.aduitTitle === "添加") {
-                            const msg = "添加成功"
-                            this.aduitPost(url,param,msg)
                         } else {
-                            param.id = this.currentFlowId
-                            const msg = "修改成功"
-                            this.aduitPost(url,param,msg)
+                            this.$message({message:"流程类型不能为空"})
+                            return false                                            
+                        }
+                    } else {
+                        this.$message({message:"运营模式不能为空"})
+                        return false
+                    }
+                } else {
+                    this.$message({message:"城市选择不能为空"})
+                    return false
+                }
+                let isOk
+                if(this.isAudit === '0') {
+                    let arr1 = [{
+                        name: "",
+                        type: "",
+                        sort: 1,
+                        userId: "",
+                        userName: "",
+                        isAudit: "0"
+                    }]
+                    this.nodeList = arr1
+                } else {
+                    let item = this.nodeList
+                    for(var i = 1; i < item.length; i++) {
+                        isOk = false
+                        if(item[i].name) {
+                            if(item[i].type !== "") {
+                                if(item[i].choice.length>0) {
+                                    if(item[i].lastChoice) {
+                                        delete item[i].depName
+                                        // delete item[i].personArr
+                                        // delete item[i].depArr
+                                        // delete item[i].roleArr
+                                        delete item[i].peopleTime
+                                        delete item[i].depsTime
+                                        delete item[i].rolesTime
+                                        item[i].type = item[i].lastChoice.type
+                                        item[i].userName = item[i].lastChoice.userName
+                                        item[i].userId = item[i].lastChoice.userId
+                                        delete item[i].lastChoice
+                                        isOk = true
+                                    } else {
+                                        this.$message({message:"每一个分支节点下必须选择一个默认审核人"})
+                                    }
+                                } else {
+                                    this.$message({message:"请设置默认审核人"})
+                                }
+                                // if(item[i].userId!=""&&item[i].type===1 || item[i].userId!=""&&item[i].type===2 || item[i].userId==""&&item[i].type===3) {
+                                //     isOk = true
+                                // } else {
+                                //     this.$message({message:item[i].type===1?"请选择门店":"请选择职务"})
+                                //     return false
+                                // }
+                                // if(item[i].type===1) {
+                                //     if(item[i].userId!="") {
+                                //         isOk = true
+                                //     } else {
+                                //         this.$message({message:"请选择门店"})
+                                //         return false
+                                //     }
+                                // } else if(item[i].type===2) {
+                                //     if(typeof(item[i].userId)=="number") {
+                                //         isOk = true
+                                //     } else {
+                                //         this.$message({message:"请选择职务"})
+                                //         return false
+                                //     }
+                                // } else if(item[i].type===3) {
+                                //     isOk = true
+                                // }
+                            } else {
+                                this.$message({message:"审批人类型不能为空"})
+                            }
+                        } else {
+                            this.$message({message:"节点名称不能为空"})
                         }
                     }
-                }).catch(error => {
-                    this.$message({message:`${error.title}${error.msg}`})
-                })
+                    if(isOk) {
+                       delete this.nodeList[0].personArr 
+                    }
+                }
+                let param = {
+                    branch: this.nodeList
+                }
+                param = Object.assign({},this.aduitForm,param)
+                const url = "/api/auditflow/operateFlow"
+                if(isOk || this.isAudit === '0') {
+                    if(this.aduitTitle === "添加") {
+                        const msg = "添加成功"
+                        this.aduitPost(url,param,msg)
+                    } else {
+                        param.id = this.currentFlowId
+                        const msg = "修改成功"
+                        this.aduitPost(url,param,msg)
+                    }
+                }
             },
             aduitPost(url,param,msg) {
                 this.$ajax.postJSON(url,param).then(res => {
@@ -647,33 +884,45 @@
             }
         }
         ul {
-            padding-left: 70px;
+            padding-right: 80px;
             li {
-                padding: 10px;
-                position: relative;
+                padding: 5px;
                 margin-bottom: 9px;
-                border: 1px solid #dcdfe6;
-                /deep/ .el-input {
-                    margin-right: 7px;
-                    &:first-child {
-                        width: 150px;
+                background-color: #EDEDED;
+                position: relative;
+                .node-body {
+                    display: flex;
+                    /deep/ .el-tag__close {
+                        display: none;
                     }
                 }
-                .people-type {
+                .w152 {
+                    width: 152px;
+                    margin-right: 9px;
+                }
+                .person {
+                    display: flex;
                     /deep/ .el-input {
-                        width: 110px;
+                        width: 150px!important;
                     }
+                    &-right {
+                        margin-left: 9px;
+                    }
+                    /deep/ .el-icon-circle-close {
+                        display: none;
+                    }
+                    
                 }
                 .other {
                     /deep/ .el-input {
-                        width: 279px;
+                        width: 309px;
                     }
                 }
                 .row-icon {
                     width: 65px;
                     position: absolute;
-                    right: 8px;
-                    top: 10px;
+                    right: -70px;
+                    top: 5px;
                     display: flex;
                     justify-content: space-between;
                     .button {
@@ -699,25 +948,48 @@
                         width: 130px;
                     }
                     .multiple {
-                        border: 1px solid #dcdfe6;
+                        background-color: #fff;
                         width: 100%;
-                        padding-top: 10px;
-                        .el-radio-group {
-                            display: inherit;
-                            .el-radio {
-                                margin-bottom: 10px;
-                                width: 25%;
-                                margin-left: 0;
-                                text-align: center;
+                        padding: 10px;
+                        max-height: 90px;
+                        overflow-y: scroll;
+                        >span {
+                            height: 28px;
+                            display: inline-block;
+                            border: 1px solid #E4E4E4;
+                            text-align: center;
+                            line-height: 28px;
+                            background-color: #F7F7F7;
+                            margin-bottom: 10px;
+                            margin-right: 25px!important;
+                            padding: 0 5px;
+                            position: relative;
+                            &:nth-child(4n) {
+                                margin-right: 0;
+                            }
+                            i {
+                                width: 16px;
+                                height: 16px;
+                                line-height: 16px;
+                                background-color: #9B9B9B;
+                                position: absolute;
+                                border-radius: 50%;
+                                font-size: 10px;
+                                color: #fff;
+                                top: -5px;
+                                display: none;
+                                cursor: pointer;
+                            }
+                            &:hover > i {
+                                display: inherit;
                             }
                         }
-                        
                     }
                 }
                 &:first-child {
                     display: none;
                 }
-                &:nth-child(2) {
+                &:nth-child(1) {
                     .row-icon {
                         span:last-child {
                             display: none;
@@ -730,6 +1002,11 @@
             }
         }
     }
+}
+.cur-select {
+    background-color: #F3F7FC!important;
+    color: #478DE3;
+    border-color: #478DE3!important;
 }
 /deep/ .el-table th {
   background:#EEF2FB;
