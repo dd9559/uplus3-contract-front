@@ -236,7 +236,7 @@
           </template>
         </el-table-column> -->
 
-        <el-table-column align="left" label="备注" width="200">
+        <!-- <el-table-column align="left" label="备注" width="200">
           <template slot-scope="scope">
             <span v-if="scope.row.remarksExamine">
               <el-popover trigger="hover" placement="top">
@@ -250,7 +250,7 @@
             </span>
             <span v-else>-</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="left" label="变更/解约" width="100">
           <template slot-scope="scope">
             <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>

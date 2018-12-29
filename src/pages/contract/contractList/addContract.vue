@@ -433,6 +433,8 @@ export default {
       choseHcode:0,//选择的房源编号
       choseGcode:0,//选择的客源编号
       dialogSuccess:false,
+      detailCode:'',
+      detailId:'',
       //权限配置
       power: {
         'sign-ht-info-toverify': {
@@ -993,12 +995,15 @@ export default {
           res = res.data;
           this.fullscreenLoading=false;
           if (res.status === 200) {
-            this.dialogSave=false
+            this.dialogSave=false;
+            this.detailCode=res.data.code;
+            this.detailId=res.data.id;
             this.$message({
               message: "操作成功",
               type: "success"
             });
-            this.$router.push('/contractList');
+            // this.$router.push('/contractList');
+            this.dialogSuccess=true;
           }
         }).catch(error => {
           this.fullscreenLoading=false;
@@ -1040,12 +1045,15 @@ export default {
           res = res.data;
           this.fullscreenLoading=false;
           if (res.status === 200) {
-            this.dialogSave=false
+            this.dialogSave=false;
+            this.detailCode=res.data.code;
+            this.detailId=res.data.id;
             this.$message({
               message: "操作成功",
               type: "success"
             });
-            this.$router.push('/contractList');
+            // this.$router.push('/contractList');
+            this.dialogSuccess=true;
           }
         }).catch(error => {
           this.fullscreenLoading=false;
@@ -1057,11 +1065,21 @@ export default {
       }
     },
     //创建成功提示
-    toUpload(){
-
+    toUpload(value){//上传合同资料库
+      this.dialogSuccess=false;
+      this.$router.push({
+        path: "/contractDetails",
+        query: {
+          type: "dataBank",
+          id: this.detailId,//合同id
+          code: this.detailCode,//合同编号
+          contType: this.contractForm.type//合同类型
+        }
+      });
     },
-    toContract(){
-
+    toContract(){//回到合同列表
+      this.dialogSuccess=false;
+      this.$router.push('/contractList');
     },
     /* 新增/编辑合同 */
     // addContract1() {
