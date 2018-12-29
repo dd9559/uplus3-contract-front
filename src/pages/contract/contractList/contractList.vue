@@ -99,7 +99,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
-          <el-dropdown placement="bottom"><!--  @command="printCont" -->
+          <el-dropdown placement="bottom" @command="printCont"><!--  @command="printCont" -->
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -439,7 +439,7 @@ export default {
       ],
       //权限配置
       power: {
-        'sign-com-liushui': {
+        'sign-com-bill': {
           state: false,
           name: '流水'
         },
@@ -567,7 +567,7 @@ export default {
     },
     //流水
     runningWater(item) {
-      if(this.power['sign-com-liushui'].state){
+      if(this.power['sign-com-bill'].state){
         this.water = true;
         this.contCode=item.code;
         this.waterContId=item.id;
