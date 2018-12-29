@@ -3,7 +3,7 @@
         <div class="table_head">
             <el-button type="primary" @click="addProcess('添加交易流程')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
-        <el-table :data="listData" style="width: 100%" class="list1">
+        <el-table :data="listData" style="width: 100%" class="list1" border>
           <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
           <el-table-column align="left" label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
@@ -31,7 +31,7 @@
         <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
           <span class="flow-name">({{flowName}})</span>
           <div class="manage-list">
-            <el-table :data="manageData" max-height="400">
+            <el-table :data="manageData" max-height="400" border>
               <el-table-column align="center" type="index" label="序号" width="45"></el-table-column>
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
               <el-table-column align="center" label="步骤名称" prop="stepsName"></el-table-column>
