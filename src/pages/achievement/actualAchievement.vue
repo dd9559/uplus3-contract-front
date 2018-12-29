@@ -15,7 +15,7 @@
         size="small"
       >
 
-          <el-form-item
+       <el-form-item
           label="关键字"
           prop="search"
         >
@@ -466,7 +466,8 @@
     </div>
 
     <!-- 表单列表弹出框（业绩详情） -->
-    <el-dialog
+   <div v-loading="loading">
+       <el-dialog
       :visible.sync="dialogVisible"
        width="1000px"
       :close-on-click-modal="false"
@@ -738,6 +739,7 @@
       </div>
       <div class="ach-footer"></div>
     </el-dialog>
+   </div>
 
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog
@@ -1030,6 +1032,7 @@ export default {
     },
     //获取应收列表详情
     enterDetail(row) {
+      this.loading=true;
       //合同边和获取业绩详情
       this.code = row.code;
       let param = { contCode: row.code, entrance: 3,aId:row.aId };
@@ -1042,7 +1045,8 @@ export default {
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;
-                this.dialogVisible = true;
+                this.loading=false;
+                this.dialogVisible = true;             
             }else{
               this.checkArr = [];
             }
@@ -1392,7 +1396,7 @@ export default {
       h1 {
         font-size: 16px;
         color: #233241;
-        margin: 20px 0 0 0px;
+        margin: 13px 0 0 0px;
       }
     }
     /deep/ .el-dialog__header,
