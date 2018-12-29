@@ -748,6 +748,7 @@
       @adoptData="adoptData"
       @rejectData="rejectData"
       @close="shows=false;code2=''"
+      @opens="shows=true"
       :dialogType="dialogType"
       :contractCode="code2"
       :aId="aId"
@@ -1120,7 +1121,7 @@ export default {
       this.achObj={
         contractId:value.id,//合同id
       }
-      // this.shows = true;
+      this.shows = true;
     },
     editAch(value,index) {
         this.beginData = true;
@@ -1132,7 +1133,7 @@ export default {
         this.achObj={
           contractId:value.id,//合同id
         }
-        // this.shows = true;
+        this.shows = true;
     },
     againCheck(value,index) {
       this.beginData = true;
@@ -1144,7 +1145,7 @@ export default {
       this.achObj={
         contractId:value.id,//合同id
       }
-      // this.shows = true;
+      this.shows = true;
     },
     //分页
     handleSizeChange(val) {

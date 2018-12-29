@@ -8,6 +8,7 @@
         custom-class="base-dialog"
         width="61%"
       >
+      <div v-loading="loading">
         <!-- 头部右边关闭按钮 -->
         <b
           class="el-icon-close"
@@ -778,6 +779,7 @@
               >确定</el-button>
           </div>
           </el-dialog>
+         </div>
         </div>
       </el-dialog>
     </div>
@@ -818,6 +820,7 @@ export default {
       amaldars:[],   //模糊搜索区经
       managers:[],    //模糊搜索区总
       loading1: false,
+      loading:false,
       radioFlag:3,
       assignorIndex:null,
       assignorStr:null,
@@ -1646,7 +1649,8 @@ export default {
             if (res.data.data.examineDate) {
               this.examineDate = res.data.data.examineDate;
             }
-            this.shows=true;
+              //  this.$emit("opens");
+              this.loading=false;
           }
         });
       // 角色类型
@@ -1712,6 +1716,7 @@ export default {
       // 字典初始化
       this.getDictionary();
       this.remark = "";
+      this.loading=true;
       if (val) {
         this.code = val;
         if (this.dialogType == 0) {  // 审核
@@ -1748,7 +1753,8 @@ export default {
               if (data.data.houseAgents) {
                 this.houseArr = data.data.houseAgents;
               }
-              this.shows=true;
+              // this.$emit("opens");
+              this.loading=false;
               if (data.data.aId) {
                 this.backAId = data.data.aId;
               }
