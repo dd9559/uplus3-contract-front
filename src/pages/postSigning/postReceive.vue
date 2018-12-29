@@ -137,9 +137,14 @@
                     <el-tabs v-model="activeName" class="contract-tab">
                         <el-tab-pane label="交易流程指派">
                             <el-table :data="dealTable" border v-loading="loadingdealTable" class="paper-table mt-20">
-                                <el-table-column :formatter="nullFormatterData" prop="transactionStepsType" align="center" label="步骤类型">
+                                <el-table-column :formatter="nullFormatterData" min-width="120px" prop="transactionStepsType" align="center" label="步骤类型">
                                 </el-table-column>
-                                <el-table-column :formatter="nullFormatterData" prop="transactionSteps" align="center" label="步骤名称">
+                                <el-table-column :formatter="nullFormatterData" min-width="120px" prop="transactionSteps" align="center" label="步骤名称">
+                                </el-table-column>
+                                <el-table-column align="center" label="结算百分比">
+                                    <template slot-scope="scope">
+                                        <span>{{percentageFn(scope.row.settlePercent)}}</span>
+                                    </template>
                                 </el-table-column>
                                 <el-table-column :formatter="nullFormatterData" prop="specifiedDay" align="center" label="计划天数">
                                 </el-table-column>
@@ -342,10 +347,10 @@
                 ContractDatabase: [],
                 // 权限
                 power:{
-                    'sign-qh-rev-query':{
-                        name:'查询',
-                        state:false
-                    },
+                    // 'sign-qh-rev-query':{
+                    //     name:'查询',
+                    //     state:false
+                    // },
                     'sign-qh-rev-receive':{
                         name:'接收合同后期',
                         state:false
@@ -383,6 +388,14 @@
             }
         },
         methods: {
+            // 百分比转换
+            percentageFn(val){
+                if(val > 0){
+                    return `${val}%`
+                }else{
+                    return '--'
+                }
+            },
             // 图片格式状态判定
             stepsTypeImg(type) {
                 return this.$tool.get_suffix(type)
@@ -844,10 +857,10 @@
             },
             // 获取数据
             getListData() {
-                if(!this.power['sign-qh-rev-query'].state){
-                    this.noPower(this.power['sign-qh-rev-query'].name);
-                    return false
-                }
+                // if(!this.power['sign-qh-rev-query'].state){
+                //     this.noPower(this.power['sign-qh-rev-query'].name);
+                //     return false
+                // }
                 this.loadingList = true;
                 let signDateSta = '';
                 let signDateEnd = '';
