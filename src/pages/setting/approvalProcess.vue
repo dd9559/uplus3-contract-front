@@ -37,7 +37,7 @@
                 <el-button @click="operation('添加',1)" v-if="power['sign-set-verify'].state">添加</el-button>
             </p>
             <div class="table">
-                <el-table :data="tableData" style="width: 100%">
+                <el-table :data="tableData" style="width: 100%" border>
                     <el-table-column align="center" label="流程名称" prop="name"></el-table-column>
                     <el-table-column align="center" label="城市" prop="cityName">
                         <template slot-scope="scope">
@@ -80,7 +80,7 @@
             </el-pagination>
         </div>
         <!-- 添加 编辑 弹窗 -->
-        <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+        <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal" :before-close="handleClose">
             <div class="aduit-content">
                 <div class="row">
                     <div class="aduit-input must">
@@ -163,7 +163,7 @@
                                     <span class="button" @click="removeRow(index)"><i class="icon el-icon-minus"></i></span>
                                 </div> 
                             </div>
-                            <div class="default" v-if="item.choice.length>0">
+                            <div class="default" v-if="item.choice&&item.choice.length>0?true:false">
                                 <span>选择默认审核人:</span>
                                 <div class="multiple" ref="curChoice">
                                     <span v-for="(ele,m) in item.choice" :key="m" @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">{{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i></span>
@@ -291,6 +291,7 @@
                     this.nodeList = JSON.parse(JSON.stringify(arr))
                 } else {
                     this.nodeList = this.tempNodeList
+                    this.nodeList[0].personArr = []
                 }
             },
             getData() {
@@ -342,6 +343,10 @@
             },
             depHandleClick(data) {
                 this.handleNodeClick(data)
+            },
+            handleClose(done) {
+                this.nodeList = []
+                done()
             },
             operation(title,type,row) {
                 this.aduitDialog = true
@@ -989,7 +994,7 @@
                 &:first-child {
                     display: none;
                 }
-                &:nth-child(1) {
+                &:nth-child(2) {
                     .row-icon {
                         span:last-child {
                             display: none;

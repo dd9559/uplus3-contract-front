@@ -1,0 +1,537 @@
+<template>
+  <div class="view-container">
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
+      <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
+        <el-form-item label="关键字">
+          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
+        </el-form-item>
+        <el-form-item label="签约日期">
+          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="合同类型">
+          <el-select v-model="contractForm.contType" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="合同状态">
+          <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="部门">
+          <select-tree :data="DepList" :init="contractForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+        </el-form-item>
+        <el-form-item>
+          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
+            <el-option
+              v-for="item in EmployeList"
+              :key="item.empId"
+              :label="item.name"
+              :value="item.empId">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="审核状态">
+          <el-select v-model="contractForm.toExamineState" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="变更/解约">
+          <el-select v-model="contractForm.contChangeState" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['6']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="收佣状态">
+          <el-select v-model="contractForm.receiveAmountState" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['13']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </ScreeningTop>
+    <!-- 合同列表 -->
+    <div class="contract-list">
+      <p>
+        <span>
+          <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
+          <!-- <span class="text">有效成分汇总 </span>
+          <span class="text">租赁：</span> <span class="data">123165</span>
+          <span class="text">买卖：</span> <span class="data">75454</span>
+          <span class="text">代办：</span> <span class="data">5565</span>
+          <span class="text">意向：</span> <span class="data">0</span>
+          <span class="text">定金：</span> <span class="data">0</span>
+          <span class="text">可分配业绩汇总：</span> <span class="data">564654</span>
+          <span class="text">单数：</span> <span class="data">13</span> -->
+        </span>
+      </p>
+      <el-table ref="dataList" class="info-scrollbar" :data="tableData" style="width: 100%"  @row-dblclick='toDetail'>
+        <el-table-column align="left" label="合同信息" width="250" fixed>
+          <template slot-scope="scope">
+            <div class="contract_msg">
+              <div class="riskLabel">
+                <!-- 风险单 -->
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover"
+                  :content="scope.row.remarksExamine"
+                  v-if="scope.row.isRisk">
+                  <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
+                </el-popover>
+                <!-- 代办 -->
+                <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
+                <!-- 低佣 -->
+                <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i>
+              </div>
+              <ul class="contract-msglist">
+                <li>合同：<span>{{scope.row.code}}</span></li>
+                <li>房源：<span>{{scope.row.houseinfoCode}} {{scope.row.showOwnerName}}</span></li>
+                <li>客源：<span>{{scope.row.guestinfoCode}} {{scope.row.showCustName}}</span></li>
+              </ul>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="合同类型" prop="contType.label" width="100" fixed>
+        </el-table-column>
+        <el-table-column align="left" label="物业地址" prop="propertyAddr" min-width="150" fixed>
+        </el-table-column>
+        <el-table-column align="left" label="成交总价" prop="dealPrice" width="120" fixed>
+          <template slot-scope="scope">
+            <span>{{scope.row.dealPrice}} 元</span>
+            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span> 
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="成交经纪人" width="150 ">
+          <template slot-scope="scope">
+            <p>{{scope.row.dealAgentStoreName}}</p>
+            <p>{{scope.row.dealAgentName}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="签约日期" width="100">
+          <template slot-scope="scope">
+            {{scope.row.signDate.substr(0, 10)}}
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="可分配业绩 (元)" width="110">
+          <template slot-scope="scope">
+            <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
+              <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
+              <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="合同状态" width="100">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">
+              <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
+              <el-popover trigger="hover" placement="top" v-else>
+                <div style="width:160px">
+                  {{scope.row.delReason}}
+                </div>
+                <div slot="reference" class="name-wrapper isFlex">
+                  {{scope.row.contState.label}}
+                </div>
+              </el-popover>
+            </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="审核状态" prop="toExamineState.label" width="120">
+          <template slot-scope="scope">
+            <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
+              <span v-if="scope.row.contType.value<4">
+                <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
+                <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
+                <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
+                <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
+              </span>
+              <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="当前审核人" width="150">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">
+              <p>{{scope.row.auditName?scope.row.auditName:'-'}}</p>
+            </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="下一步审核人" width="150">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">
+              <p>{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
+            </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="变更/解约" width="100">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>
+            <el-button type="text" size="medium" v-else @click="goChangeCancel(scope.row)">{{scope.row.contChangeState.label}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="操作" width="100">
+          <template slot-scope="scope">
+            <div style="text-align:center">
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        v-if="tableData.length>0"
+        class="pagination-info"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
+      
+    </div>
+    <!-- 变更/解约查看 合同主体上传弹窗 -->
+    <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+  </div>
+</template>
+           
+<script>
+import ScreeningTop from "@/components/ScreeningTop";
+import changeCancel from "../contractDialog/changeCancel";
+import { TOOL } from "@/assets/js/common";
+import { MIXINS } from "@/assets/js/mixins";
+
+export default {
+  mixins: [MIXINS],
+  components: {
+    ScreeningTop,
+    changeCancel
+  },
+  data(){
+    return{
+      tableBox:null,
+      contractForm: {},
+      keyword: "",
+      signDate: [],
+      tableData: [],
+      total: 0,
+      currentPage: 1,
+      pageSize: 10,
+      contractCode: "",
+      changeCancel: false,
+      dictionary: {
+        //数据字典
+        "10": "", //合同类型
+        "9": "", //合同状态
+        "51": "", //审核状态
+        "6": "", //变更/解约
+        "14": "", //结算状态
+        "13": "", //收佣状态
+        "54": "", //业绩状态
+        "538": "", //用途
+        "507": ""
+      },
+      //部门选择列表
+      options:[],
+      //经纪人列表
+      brokersList:[],
+      //合同id
+      contId:'',
+      //合同状态
+      contState:99,
+      settleId:'',
+      dialogType:'',
+      isSubmitAudit:false,
+       //权限配置
+      power: {
+        'sign-ht-info-view': {
+          state: false,
+          name: '预览'
+        },
+        'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
+        'sign-com-house': {
+          state: false,
+          name: '房源详情'
+        },
+        'sign-com-cust': {
+          state: false,
+          name: '客源详情'
+        }
+      }
+    }
+  },
+  created() {
+    this.getContractList();//合同列表
+    this.getDictionary();//字典
+    this.remoteMethod();//部门
+    // this.getAdmin();//获取当前登录人信息
+  },
+  methods:{
+    //获取合同列表
+    getContractList() {
+      let param = {
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
+        keyword: this.keyword,
+        isCheckList:1
+      };
+      param = Object.assign({}, param, this.contractForm);
+      if (this.signDate.length > 0) {
+        param.beginDate = this.signDate[0];
+        param.endDate = this.signDate[1];
+      }
+      delete param.depName
+      //console.log(param)
+      this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.tableData = res.data.list;
+          this.total = res.data.count;
+        }
+      });
+    },
+    //翻页
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getContractList();
+    },
+    //重置
+    resetFormFn() {
+      TOOL.clearForm(this.contractForm);
+      this.keyword = "";
+      this.signDate = [];
+    },
+    // 查询
+    queryFn() {
+      this.currentPage=1;
+      this.getContractList();
+    },
+     //字典查询
+    getDictionaries() {
+      this.$ajas.get("/api/dictionary/batchQuery", param).then(res => {}); 
+    },
+    //变更解约弹窗
+    goChangeCancel(item) {
+      console.log(item.contChangeState.value);
+      //debugger
+      if (item.contChangeState.value === 1) {
+        this.changeCancel = true;
+        this.dialogType = "changeLook";
+        this.contId=item.id;
+        console.log(this.contId)
+      } else if (item.contChangeState.value === 2) {
+        this.changeCancel = true;
+        this.dialogType = "cancelLook";
+        this.contId=item.id;
+      }
+    },
+    //关闭变更解约弹窗
+    ChangeCancelDialog() {
+      this.changeCancel = false;
+      this.contId='';
+      this.getContractList();
+    },
+    //合同预览
+    goPreview(item) {
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+      this.$router.push({
+        path: "/contractPreview",
+        query: {
+          id: item.id,
+          code:item.code
+        }
+      });
+    },
+    //合同审核
+    goCheck(item) {
+      if(this.power['sign-ht-info-view'].state){
+        this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+        this.$router.push({
+          path:'/contractPreview',
+          query:{
+            code:item.code,
+            id:item.id,
+            operationType:2
+          }
+        })
+      }else{
+        this.noPower('合同预览')
+      }
+    },
+    //合同详情
+    toDetail(value) {
+      if(!this.power['sign-com-htdetail'].state){
+        this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+        if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
+          this.$router.push({
+            path: "/contractDetails",
+            query: {
+              id: value.id,//合同id
+              code: value.code,//合同编号
+              contType: value.contType.value//合同类型
+            }
+          });
+        }else{
+          this.$router.push({
+            path: "/detailIntention",
+            query: {
+              id: value.id,
+              contType: value.contType.value
+            }
+          });
+        }
+      }else{
+        this.noPower('合同详情查看')
+      }
+    },
+     //获取当前部门
+    initDepList:function (val) {
+      if(!val){
+        this.remoteMethod()
+      }
+    },
+    clearDep:function () {
+      this.contractForm.dealAgentStoreId=''
+      this.contractForm.depName=''
+      // this.EmployeList=[]
+      this.contractForm.dealAgentId=''
+      this.clearSelect()
+    },
+    depHandleClick(data) {
+      // this.getEmploye(data.depId)
+      this.contractForm.dealAgentStoreId=data.depId
+      this.contractForm.depName=data.name
+
+      this.handleNodeClick(data)
+    },
+    searchDep:function (payload) {
+      this.DepList=payload.list
+      this.contractForm.depName=payload.depName
+    },
+  }
+};
+</script>
+<style scoped lang="less">
+@import "~@/assets/common.less";
+/deep/.el-form-item{
+  margin-bottom: 10px;
+}
+/deep/.paper-box {
+  padding-top: 10px !important;
+  margin-bottom: 10px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
+  .paper-set-tit {
+    padding-bottom: 10px;
+  }
+}
+/deep/.margin-left{
+  margin-left: 0;
+}
+.contract-list {
+  background-color: #fff;
+  padding: 0 10px;
+  border-radius: 2px;
+  box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
+  > p {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    .title {
+      font-size: 14px;
+      color: @color-blank;
+      i {
+        padding-right: 8px;
+      }
+    }
+    .text {
+      font-size: 14px;
+      color: @color-6c;
+      padding-left: 10px;
+    }
+    .data {
+      font-size: 14px;
+      color: @color-blue;
+    }
+  }
+  .name-wrapper {
+    min-width: 80px;
+    height: 65px;
+    display: -webkit-box;
+    /*!autoprefixer: off */
+    -webkit-box-orient: vertical;
+    /* autoprefixer: on */
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow:ellipsis;
+  }
+  .isFlex{
+    display: flex;
+    align-items: center;
+  }
+  .shell{
+    width: 100%;
+    height: 100%;
+    display: inline-block; 
+  }
+}
+.contract_msg{
+  display: flex;
+   align-items: center;
+  .riskLabel{
+    width: 20px;
+    padding-right: 20px;
+    color: @color-orange;
+    font-size: 18px;
+    .risk{
+      color: @color-warning;
+      position: relative;
+      .remarksExamine{
+        background: #fff;
+        font-size: 14px;
+        color: #606266;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: inline-block;
+        width: 60px;
+      }
+    }
+    
+  }
+  .contract-msglist {
+    > li {
+      text-align: left;
+    }
+  }
+}
+
+.blue {
+  color: @color-blue;
+}
+.yellow {
+  color: @color-yellow;
+}
+.green {
+  color: @color-green;
+}
+.red {
+  color: @color-warning;
+}
+.btn {
+  color: @color-blue;
+  cursor: pointer;
+}
+/deep/ .el-table th {
+  background: @bg-th;
+}
+</style>

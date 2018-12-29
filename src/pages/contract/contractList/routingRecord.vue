@@ -2,6 +2,9 @@
   <div class="view-container">
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="45">
       <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
+        <el-form-item label="关键字">
+          <el-input v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号" style="width:250px"></el-input>
+        </el-form-item>
         <el-form-item label="分账日期">
           <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
           </el-date-picker>
@@ -13,11 +16,6 @@
           </el-select>
         </el-form-item>
         <el-form-item label="部门">
-          <!-- <el-select v-model="searchForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
-            <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select> -->
-
           <el-select style="width:160px" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
@@ -25,11 +23,6 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <!-- <el-select v-model="searchForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
-            <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
-            </el-option>
-          </el-select> -->
-
           <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.dealAgentId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
@@ -38,9 +31,6 @@
               :value="item.empId">
             </el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="关键字">
-          <el-input v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号" style="width:250px"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
