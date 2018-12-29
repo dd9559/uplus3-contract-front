@@ -1,5 +1,5 @@
 <template>
-  <div class="view">
+  <div class="view" ref="tableComView">
     <!--<preview></preview>-->
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
@@ -92,7 +92,7 @@
           <el-button class="btn-info" round size="small" type="primary">导出</el-button>
         </p>
       </div>
-      <el-table ref="dataList" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
+      <el-table ref="tableCom" :max-height="tableNumberCom" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
@@ -137,18 +137,16 @@
           </template>
         </el-table-column>
       </el-table>
-      <scrollBar :table="tableBox" v-if="tableBox" @noScroll="noScroll">
-        <el-pagination
-          v-if="list.length>0"
-          class="pagination-info"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          layout="total, prev, pager, next, jumper"
-          :total="total">
-        </el-pagination>
-      </scrollBar>
+      <el-pagination
+        v-if="list.length>0"
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -216,11 +214,6 @@
         this.remoteMethod()
         this.getDictionary()
         this.getMoneyTypes()
-        this.tableBox=this.$refs.dataList
-        console.log(this.tableBox.$refs.bodyWrapper.childNodes[0].clientWidth,this.tableBox.$refs.bodyWrapper.clientWidth)
-        if(this.tableBox.$refs.bodyWrapper.childNodes[0].clientWidth>this.tableBox.$refs.bodyWrapper.clientWidth){
-          this.showScroll=true
-        }
       })
     },
     methods: {
