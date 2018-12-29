@@ -6,9 +6,9 @@
                 <span>数据列表</span>
             </p>
             <el-table :data="tableData" ref='onetable'  @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
-                <el-table-column align="center" label="序号" type="index"></el-table-column>
+                <el-table-column align="center" width="100px" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(大类)" prop="name"></el-table-column>
-                <el-table-column align="center" label="是否启用系统收款">
+                <!-- <el-table-column align="center" label="是否启用系统收款">
                     <template slot-scope="scope">
                         <div v-if="scope.row.name=='代收代付'">
                             <el-switch
@@ -22,7 +22,7 @@
                         </div>
                         <div v-else>--</div>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
         </div>
         <div class="commission gap">
@@ -200,14 +200,14 @@
                     this.addForm.parentId=row.parentId
                 }
             },
-            leftChange(row){
-                let param={
-                    id:row.id,
-                    status:row.status,
-                    name:row.name,
-                }
-                 this.statusOp(param,'转换成功')
-            },
+            // leftChange(row){
+            //     let param={
+            //         id:row.id,
+            //         status:row.status,
+            //         name:row.name,
+            //     }
+            //      this.statusOp(param,'转换成功')
+            // },
             smallChange(row){
                 let status2 = row.status===false?1:0
                 let param={

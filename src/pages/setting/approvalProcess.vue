@@ -142,7 +142,7 @@
                                         </el-option>
                                     </el-select>
                                 </div>
-                                <el-select size="small" v-if="item.type===1" class="other" v-model="item.depArr" multiple @change="multiSelect(item.type,index)">
+                                <el-select size="small" v-if="item.type===1" class="other" v-model="item.depArr" filterable multiple @change="multiSelect(item.type,index)">
                                     <el-option
                                     v-for="option in depsList"
                                     :key="option.id"
@@ -150,7 +150,7 @@
                                     :value="option.id"
                                     ></el-option>
                                 </el-select>
-                                <el-select size="small" v-if="item.type===2" class="other" v-model="item.roleArr" multiple @change="multiSelect(item.type,index)">
+                                <el-select size="small" v-if="item.type===2" class="other" v-model="item.roleArr" filterable multiple @change="multiSelect(item.type,index)">
                                     <el-option
                                     v-for="option in roleList"
                                     :key="option.key"
@@ -369,9 +369,11 @@
                     this.setConditionList(currentRow.type)
                     this.editDisabled = true
                     //获取节点信息
-                    let editRow = currentRow.branch
+                    let editRow = JSON.parse(JSON.stringify(currentRow.branch))
                     editRow.forEach(item => {
-                        item.choice = JSON.parse(item.choice)
+                        if(item.choice) {
+                         item.choice = JSON.parse(item.choice)   
+                        }
                     })
                     let array = []
                     array.unshift(editRow[0])
@@ -614,6 +616,10 @@
                         })
                     }
                 }
+                let ar = this.nodeList[index].choice.filter(item => item.isDefault===1)
+                if(ar.length===0) {
+                    delete this.nodeList[index].lastChoice
+                }
             },
             addRow() {
                 let row = {
@@ -736,8 +742,6 @@
                        delete this.nodeList[0].personArr 
                     }
                 }
-                console.log(this.nodeList);
-                return
                 let param = {
                     branch: this.nodeList
                 }

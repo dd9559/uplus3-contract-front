@@ -153,7 +153,7 @@
               this.$message({message:error})
           })
         } else {
-          this.noPower(this.power['sign-set-hq'].name)
+          this.noPower("查询")
         }
       },
       addProcess(title) {
