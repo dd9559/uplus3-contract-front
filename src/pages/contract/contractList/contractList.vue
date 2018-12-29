@@ -143,7 +143,7 @@
                   placement="top-start"
                   width="10"
                   trigger="hover"
-                  content="抵佣"
+                  content="低佣"
                   v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1">
                   <i slot="reference" class="iconfont icon-tubiao_shiyong-3 low"></i>
                 </el-popover>

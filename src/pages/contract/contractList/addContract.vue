@@ -608,7 +608,7 @@ export default {
       //验证合同信息
       this.$tool.checkForm(this.contractForm, rule).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
-            if((Number(this.contractForm.custCommission)+Number(this.contractForm.ownerCommission))<=this.contractForm.dealPrice){
+            if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
               if (this.contractForm.houseInfo.HouseStoreCode) {
                 if(this.contractForm.propertyCard){
                   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
