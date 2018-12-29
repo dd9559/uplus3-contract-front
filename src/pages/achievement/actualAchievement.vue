@@ -2,6 +2,7 @@
   <div
     class="layout"
     style="background-color: #f5f5f5"
+    ref="tableComView"
   >
     <ScreeningTop
       @propQueryFn="queryFn"
@@ -158,6 +159,8 @@
           :data="selectAchList"
           style="width: 100%"
           @row-dblclick="enterDetail"
+          ref="tableCom" 
+          :max-height="tableNumberCom" 
         >
           <el-table-column
             label="合同信息"
@@ -446,16 +449,18 @@
         </el-table>
       </div>
       <!-- 分页 -->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total,prev, pager, next , jumper"
-        :total="total"
-        v-if="total!=0"
-      >
-      </el-pagination>
+      <div class="pagination" v-if="total!=0">
+          <el-pagination
+             @size-change="handleSizeChange"
+             @current-change="handleCurrentChange"
+             :current-page="currentPage"
+             :page-size="pageSize"
+             layout="total,prev, pager, next , jumper"
+             :total="total"
+            >
+           </el-pagination>
+      </div>
+    
 
     </div>
 
@@ -472,8 +477,10 @@
       ></b>
       <div class="ach-header">
         <h1 class="f14">业绩详情</h1>
-        <p class="f14" style="font-weight:bold;">可分配业绩：<span class="orange">{{comm}}元</span></p>
-        <p style="margin-top:20px;">可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费</p>
+        <p class="f14" style="font-weight:bold;">
+          可分配业绩：<span class="orange">{{comm}}元</span>
+          <span>（可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费）</span>
+        </p>
       </div>
       <div class="ach-body">
         <h1 class="f14">房源方分成</h1>
@@ -1333,7 +1340,7 @@ export default {
       font-size: 30px;
     }
     .ach-header {
-      min-height: 100px;
+      min-height: 70px;
       min-width: 100%;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;

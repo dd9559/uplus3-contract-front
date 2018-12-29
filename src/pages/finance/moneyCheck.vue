@@ -3,6 +3,10 @@
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
         <div class="input-group">
+          <label>关键字:</label>
+          <el-input class="w394" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
+        </div>
+        <div class="input-group">
           <label>合同类型:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
             <el-option
@@ -109,8 +113,15 @@
           </el-select>
         </div>
         <div class="input-group">
-          <label>关键字:</label>
-          <el-input class="w394" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
+          <label>收付对象:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.payObjType" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['57']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
         </div>
       </div>
     </ScreeningTop>
@@ -251,6 +262,7 @@
           payMethod: '',
           keyword: '',
           timeRange:'',
+          payObjType:''
         },
         list: [],
         dictionary: {
@@ -260,7 +272,8 @@
           '23': '',
           '24': '',
           '25': '',
-          '507': ''
+          '507': '',
+          '57': ''
         },
         drop_MoneyType:[],
         //分页

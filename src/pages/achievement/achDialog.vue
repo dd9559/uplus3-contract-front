@@ -27,8 +27,8 @@
           <p style="font-weight:bold;">
             可分配业绩：
             <span class="orange">{{comm}}元</span>
+            <span>（可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费）</span>
           </p>
-          <p style="margin-top:20px;">可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费</p>
         </div>
 
         <!-- 房源列表 -->
@@ -300,7 +300,7 @@
                 <template slot-scope="scope">
                   <el-radio-group v-model="scope.row.place">
                      <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:6px;">门店</el-radio>
-                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:10px;">公司</el-radio>
+                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:3px;">公司</el-radio>
                   </el-radio-group>
                 </template>
               </el-table-column>
@@ -1666,7 +1666,7 @@ export default {
         var flag = true;
         for (var j = 0; j < resultArr.length; j++) {
           if (
-            addhouseArr[i].assignorId == resultArr[j].assignorId &&
+            // addhouseArr[i].assignorId == resultArr[j].assignorId &&
             addhouseArr[i].roleType == resultArr[j].roleType 
             // addhouseArr[i].id == resultArr[j].id
           ) {
@@ -1676,7 +1676,7 @@ export default {
         if (flag) {
           resultArr.push(addhouseArr[i]);
         } else {
-          this.$message.error("请勿重复添加同一个人");
+          this.$message.error("请勿重复添加同一角色");
           return false;
         }
       }
@@ -1812,7 +1812,7 @@ export default {
 .dialog1 {
   /deep/ .el-dialog.base-dialog{
     width: 1281px !important;
-    margin: 13vh auto 0 !important;
+    margin: 10vh auto 0 !important;
     overflow: hidden;
 
     /deep/ .el-input__suffix {
@@ -1825,7 +1825,7 @@ export default {
       font-size: 30px;
     }
     .ach-header {
-      min-height: 100px;
+      min-height: 70px;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;
       overflow: hidden;
@@ -1877,7 +1877,7 @@ export default {
         width: 100%;
         //   background-color: pink;
         .house-left {
-          margin-top: 30px;
+          margin-top: 10px;
           margin-bottom: 30px;
           h1 {
             // font-size: 16px !important;
@@ -1887,7 +1887,7 @@ export default {
         }
 
         .house-right {
-          margin-top: 20px;
+          margin-top: 10px;
           button {
             padding: 0 !important;
             border-radius: 0;
@@ -1913,7 +1913,7 @@ export default {
         margin-top: 20px;
         td,
         th {
-          padding: 24px 0;
+          padding: 0px 0;
         }
         .el-table__header {
           height: 55px;
@@ -1926,6 +1926,10 @@ export default {
               line-height: 55px;
             }
           }
+        }
+        .el-table__header th .cell{
+          height: 30px;
+          line-height: 30px;
         }
       }
       //弹框审核信息
@@ -1945,7 +1949,7 @@ export default {
       position: relative;
       padding-bottom: 30px;
       p {
-        margin-top: 30px;
+        margin-top: 5px;
       }
       .text-layout {
         position: relative;

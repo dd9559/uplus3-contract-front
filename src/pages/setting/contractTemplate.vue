@@ -128,7 +128,7 @@
         mbanAddress:'',
         id:'',
         power: {
-              'sign-set-ht-template': {
+              'sign-set-ht-query': {
                   state: false,
                   name: '查询'
               },
@@ -187,7 +187,7 @@
         let param = {
           cityId:this.selectCity=='武汉'?1:this.selectCity
         }
-        if(this.power['sign-set-ht-template'].state){
+        if(this.power['sign-set-ht-query'].state){
               this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
               res = res.data
               if (res.status === 200) {
@@ -198,7 +198,7 @@
               console.log(error)
             })
         }else{
-          this.noPower(this.power['sign-set-ht-template'].name)
+          this.noPower(this.power['sign-set-ht-query'].name)
         }
         
       },
