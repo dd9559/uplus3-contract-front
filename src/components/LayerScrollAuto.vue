@@ -16,7 +16,7 @@ export default {
     mounted() {
         window.onresize = this.comHeightFn;
     },
-    updated() {
+    beforeUpdate() {
         // setTimeout(()=>{
             this.comHeightFn();
         // },100)

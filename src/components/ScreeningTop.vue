@@ -54,7 +54,7 @@ import {mapMutations} from 'vuex'
       },
       ...mapMutations(['bodyScollShowFn'])
     },
-    updated() {
+    beforeUpdate() {
       this.bodyScollShowFn();
     },
   }

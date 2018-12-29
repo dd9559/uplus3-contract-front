@@ -265,6 +265,7 @@ const MIXINS = {
     //动态高度获取
     comHeightFn(){
       if(this.$refs.tableCom&&this.$refs.tableComView){
+        console.log(1)
         let wh = document.documentElement.clientHeight;
         let h1 =this.$refs.tableComView.clientHeight + 40;
         let h2 =this.$refs.tableCom.$el.clientHeight;
@@ -286,9 +287,13 @@ const MIXINS = {
       'getBodyScollShow'
     ])
   },
-  updated() {
-      window.onresize = this.comHeightFn;
+  mounted() {
+    window.onresize = this.comHeightFn;
+  },
+  beforeUpdate() {
+    if(this.$refs.tableCom&&this.$refs.tableComView){
       this.comHeightFn();
+    }
   },
 }
 
