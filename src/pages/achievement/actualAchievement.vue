@@ -165,7 +165,7 @@
         >
           <el-table-column
             label="合同信息"
-            width="300"
+            width="220px"
           >
             <template slot-scope="scope">
               <p>合同：<span
@@ -180,7 +180,7 @@
 
           <el-table-column
             label="业绩状态"
-            width="120"
+            width="90"
           >
             <template slot-scope="scope">
               <p
@@ -204,7 +204,7 @@
 
           <el-table-column
             label="合同类型"
-            width="120"
+            width="90"
           >
             <template slot-scope="scope">
               <p>{{scope.row.contType.label}}</p>
@@ -220,7 +220,7 @@
 
           <el-table-column
             label="成交经纪人"
-            width="200"
+            width="180"
           >
             <template slot-scope="scope">
               <p v-if="scope.row.dealName">{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
@@ -266,7 +266,7 @@
 
           <el-table-column
             label="角色类型"
-            width="160"
+            width="100"
           >
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
@@ -509,7 +509,7 @@
             <el-table-column
               prop="ratio"
               label="分成比例(%)"
-              width="95"
+              width="100"
             >
             </el-table-column>
 
@@ -598,7 +598,7 @@
             <el-table-column
               prop="ratio"
               label="分成比例(%)"
-              width="95"
+              width="100"
             >
             </el-table-column>
 
@@ -668,7 +668,7 @@
             <!-- examineDate -->
             <el-table-column
               label="时间"
-              width="200"
+              width="150"
             >
             
               <template slot-scope="scope">
@@ -1328,7 +1328,7 @@ export default {
     // max-width: 1000px;
     margin: 13vh auto 0 !important;
     overflow: auto;
-
+   padding-bottom: 30px;
     .el-dialog__headerbtn {
       right: 0;
       top: 0;
@@ -1367,10 +1367,10 @@ export default {
       /deep/ .el-table {
         // font-size: 14px !important;
         margin-top: 20px;
-        td,
-        th {
-          padding: 24px 0;
-        }
+        // td,
+        // th {
+        //   padding: 24px 0;
+        // }
         .el-table__header {
           height: 55px;
           th {
@@ -1378,10 +1378,14 @@ export default {
             .cell {
               background-color: #eef2fb;
               // background-color: pink;
-              height: 55px;
-              line-height: 55px;
+              // height: 55px;
+              // line-height: 55px;
             }
           }
+        }
+       .el-table__header th .cell{
+          height: 30px;
+          line-height: 30px;
         }
       }
       //弹框审核信息
