@@ -3,24 +3,21 @@
     <p class="f14">收款信息</p>
     <ul class="bill-form">
       <li>
-        <div class="input-group col">
+        <div class="input-group col" :class="[inputPerson?'active-360':'']">
           <label class="form-label no-width f14 margin-bottom-base">付款方</label>
-          <el-select size="small" class="w200" v-model="form.outObjType" placeholder="请选择" @change="getOption(form.outObjType,1)">
-            <el-option
-              v-for="item in dropdown"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <div class="flex-box">
+            <el-select size="small" class="w200" v-model="form.outObjType" placeholder="请选择" @change="getOption(form.outObjType,1)">
+              <el-option
+                v-for="item in dropdown"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model="form.outObj" v-if="inputPerson">
+          </div>
         </div>
-        <div class="input-group col">
-          <label class="form-label no-width f14 margin-bottom-base">款类</label>
-          <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
-        </div>
-      </li>
-      <li>
-        <div class="input-group col">
+        <div class="input-group col active-400">
           <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
           <div class="flex-box">
             <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')"></select-tree>
@@ -41,16 +38,6 @@
           </div>
         </div>
         <div class="input-group col">
-          <label class="form-label no-width f14 margin-bottom-base">收款金额（元）</label>
-          <input type="text" size="small" class="w200 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum(1)">
-        </div>
-      </li>
-      <li>
-        <!--<div class="input-group col">
-          <label class="no-width f14">付款时间:</label>
-          <p class="text-height">2018/1/12</p>
-        </div>-->
-        <div class="input-group col">
           <label class="form-label no-width f14 margin-bottom-base">收款时间</label>
           <el-date-picker
             size="small"
@@ -59,6 +46,25 @@
             type="datetime"
             placeholder="选择日期时间">
           </el-date-picker>
+        </div>
+      </li>
+      <li>
+        <div class="input-group col">
+          <div class="flex-box tool-tip">
+            <label class="form-label no-width f14 margin-bottom-base">
+              <span>款类</span>
+            </label>
+            <el-tooltip content="当未找到需要的款类时，可联系管理员进行配置" placement="top">
+              <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
+            </el-tooltip>
+          </div>
+          <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
+        </div>
+        <div class="input-group col active-400">
+          <div class="flex-box tool-tip no-max">
+            <label class="form-label no-width f14 margin-bottom-base">收款金额（元）</label><span>{{form.amount|formatChinese}}</span>
+          </div>
+          <input type="text" size="small" class="w400 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum(1)">
         </div>
       </li>
     </ul>
@@ -213,7 +219,12 @@
       </ul>&ndash;&gt;
     </div>-->
     <div class="input-group">
-      <p><label class="form-label f14">支付信息</label></p>
+      <div class="flex-box">
+        <label class="form-label f14">支付信息</label>
+        <el-tooltip content="多种收款方式可通过“添加支付方式”进行录入" placement="top">
+      <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
+      </el-tooltip>
+      </div>
       <ul class="pay-list">
         <li v-for="(item,index) in payList" :key="index">
           <div class="message-box flex-box">
@@ -229,8 +240,11 @@
               </el-select>
             </section>
             <section>
-              <label class="f14 margin-bottom-base">金额（元）</label>
-              <input type="text" class="w200 el-input__inner" placeholder="请输入" v-model="item.amount" @input="cutNum(item,'amount')">
+              <div class="flex-box tool-tip w400 no-max">
+                <label class="f14 margin-bottom-base">金额（元）</label>
+                <span>{{item.amount|formatChinese}}</span>
+              </div>
+              <input type="text" class="w400 el-input__inner" placeholder="请输入" v-model="item.amount" @input="cutNum(item,'amount')">
             </section>
             <section v-if="item.payMethod===2">
               <label class="f14 margin-bottom-base">收账账户</label>
@@ -389,6 +403,7 @@
           id:'',
           name:''
         },
+        inputPerson:false,//是否显示第三方输入框
         form: {
           contId: '',
           remark: '',
@@ -571,6 +586,9 @@
               id: res.data.id,
               createTime: this.$tool.timeFormat(res.data.createTime)
             }
+            if(obj.outObjType===3){
+              this.inputPerson=true
+            }
             this.moneyTypeName=res.data.moneyTypeName
             this.dep.id=res.data.inObjStoreId
             this.dep.name=res.data.inObjStore
@@ -583,7 +601,7 @@
                 this.files.push(`${item.path}?${item.name}`)
               })
               this.cardList = res.data.account //刷卡补充
-            let arr = res.data.inAccount.map(item=>Object.assign({},item,{activeAdmin:item.cardNumber}))
+            let arr = res.data.inAccount.map(item=>Object.assign({},item,{activeAdmin:item.cardNumber,payMethod:item.payMethod.value}))
               this.payList = [].concat(arr)
               /*if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
                 this.activeAdmin = res.data.inAccount[0].cardNumber
@@ -705,7 +723,7 @@
                 })
               }
             })
-            this.getResult(param)
+            this.getResult(param,this.$route.query.edit?'edit':'')
           }
         }).catch(error=>{
           this.$message({
@@ -969,6 +987,11 @@
             if (type === 1) {
               obj.outObjId = tip.custId
               obj.outObj = tip.custName
+              if(item===3){
+                this.inputPerson = true
+              }else {
+                this.inputPerson = false
+              }
             } else {
               obj.inObj = tip.name
               this.activeAdmin=''
@@ -1071,27 +1094,49 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  input[size='small']{
+    height: 32px;
+  }
+  input.person{
+    margin-left: @margin-10;
+  }
   .flex-box{
     display: flex;
     .input-group:first-of-type{
       margin-right: @margin-10;
+    }
+    &.tool-tip{
+      max-width: 200px;
+      justify-content: space-between;
+    }
+    &.no-max{
+      max-width: none;
+    }
+    .tip-message{
+      margin-left: @margin-10;
+      display: flex;
+      align-items: center;
+      >i{
+        margin-right: 4px;
+        font-size: @size-14;
+      }
     }
   }
   .info-textarea{
     width: 240px;
   }
   .bill-form{
-    display: flex;
     >li{
-      flex: 1;
-      max-width: 210px;
-      &:nth-of-type(2){
-        max-width: 400px;
-      }
-      &:last-of-type{
-        padding-left: @margin-10;
-      }
+      display: flex;
       .col{
+        max-width: 210px;
+        margin-right: @margin-10;
+        &.active-360{
+          max-width: 360px;
+        }
+        &.active-400{
+          max-width: 400px;
+        }
         >label{
           display: block;
         }
@@ -1197,7 +1242,7 @@
   .input-group {
     margin: @margin-10 0 0;
     display: block;
-    max-width: 815px;
+    max-width: 960px;
     /*> p {
       > span {
         color: @color-red;
@@ -1277,7 +1322,7 @@
       display: flex;
       flex-wrap: nowrap;
       margin: @margin-base 0;
-      width: 568px;
+      width: 710px;
       overflow-x: auto;
       >li{
         border: 1px dashed @color-D6;

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -36,8 +37,18 @@ const store = new Vuex.Store({
     }
   },
   actions:{
-    asyncUser({commit},payload){
-      commit('setUser',payload)
+    asyncUser({commit}){
+      axios.get('/api/me').then(res => {
+        res=res.data
+        return new Promise((resolve,reject)=>{
+          if(res.status===200){
+            commit('setUser',res.data)
+            resolve(res.data)
+          }else {
+            reject()
+          }
+        })
+      })
     }
   },
   getters:{

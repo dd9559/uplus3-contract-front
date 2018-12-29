@@ -3,7 +3,7 @@
         <div class="table_head">
             <el-button type="primary" @click="addCon('添加合同资料')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
-        <el-table :data="listData" style="width: 100%" class="contract-list">
+        <el-table :data="listData" style="width: 100%" class="contract-list" border>
             <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
             <el-table-column align="left" label="名称" prop="name"></el-table-column>
             <el-table-column align="center" label="信息类型" prop="type">

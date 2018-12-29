@@ -6,6 +6,7 @@
         @closed="handleClose"
         :close-on-click-modal="false"
         custom-class="base-dialog"
+        width="61%"
       >
         <!-- 头部右边关闭按钮 -->
         <b
@@ -308,7 +309,6 @@
               <el-table-column
                 prop="manager"
                 label="操作"
-                width="60"
               >
                 <template slot-scope="scope">
                   <a
@@ -584,8 +584,8 @@
               >
                 <template slot-scope="scope">
                     <el-radio-group v-model="scope.row.place">
-                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:6px;font-size:5px;">门店</el-radio>
-                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:3px;font-size:5px;">公司</el-radio>
+                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:6px;font-size:12px;">门店</el-radio>
+                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:3px;font-size:12px;">公司</el-radio>
                     </el-radio-group>
                 </template>
               </el-table-column>
@@ -629,17 +629,17 @@
             <el-button
               type="primary"
               round
-              @click="passAch"
-              class="color-green"
-              v-dbClick
-            >通过</el-button>
-            <el-button
-              type="primary"
-              round
               @click="rejectAch"
               class="color-red"
               v-dbClick
             >驳回</el-button>
+            <el-button
+              type="primary"
+              round
+              @click="passAch"
+              class="color-green"
+              v-dbClick
+            >通过</el-button>
           </div>
         </div>
 
@@ -723,12 +723,13 @@
              custom-class="dialog2In"
             :close-on-click-modal="false"
           >
-            <h1 style="font-size:16px;" slot="title">选择相关人员</h1>
+            <h1 style="font-size:18px;" slot="title">选择相关人员</h1>
             <div class="mansList">
               <el-table
                 :data="mansList"
                 style="width: 100%"
                 @selection-change="handleSelectionChange"
+                :header-cell-style="{'background-color':'#F7F6Fd'}"
               >
                 <el-table-column
                   type="selection"
@@ -745,20 +746,19 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="门店"
-                  width="120"
-                >
-                  <template slot-scope="scope">
-                    <p>{{scope.row.level3}}</p>
-                  </template>
-                </el-table-column>
-
-                <el-table-column
                   label="角色类型"
                   width="100"
                 >
                   <template slot-scope="scope">
                     <p>{{scope.row.roleName}}</p>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="门店"
+                >
+                  <template slot-scope="scope">
+                    <p>{{scope.row.level3}}</p>
                   </template>
                 </el-table-column>
               </el-table>
@@ -1764,22 +1764,22 @@ export default {
 <style lang="less" scoped>
 // 相关人员弹框
 /deep/ .dialog2In {
-  width: 420px !important;
-  background-color: #fff;
+  width:400px !important;
+  height: 370px;
   margin-top: 13vh !important;
-  padding-bottom: 30px;
   .is-checked {
     color: #478de3 !important;
   }
   /deep/ .el-dialog__header {
     padding: 0 !important;
+    font-size: 12px;
   }
   /deep/ .el-dialog__body {
     padding: 0 !important;
-    overflow-y: auto;
-    min-height: 200px;
-    max-height: 400px;
-    width: 420px !important;
+
+    // min-height: 200px;
+    // max-height: 400px;
+    width:400px !important;
   }
   h1 {
     height: 53px;
@@ -1794,7 +1794,9 @@ export default {
     // }
   }
   .mansList {
-    margin-top: 25px;
+     overflow-y: auto;
+     max-height: 200px;
+     width:400px !important;
   }
   /deep/ tr td:first-of-type,
   th:first-of-type {
@@ -1814,12 +1816,16 @@ export default {
       color: #000;
       border: 1px solid #e8eaf6;
     }
+    margin-bottom: 20px;
+  }
+  .cell{
+    font-size: 12px;
   }
 }
 //业绩详情弹框改变样式
 .dialog1 {
   /deep/ .el-dialog.base-dialog{
-    width: 1281px !important;
+    // max-width: 80%!important;
     margin: 10vh auto 0 !important;
     overflow: hidden;
 
@@ -1897,16 +1903,16 @@ export default {
         .house-right {
           margin-top: 10px;
           button {
-            padding: 0 !important;
+            padding: 0  10px!important;
             border-radius: 0;
           }
           button:first-of-type {
-            width: 90px;
+            // width: 90px;
             height: 36px;
             border-radius: 18px;
           }
           button:nth-of-type(2) {
-            width: 105px;
+            // width: 105px;
             height: 36px;
             border-radius: 18px;
           }
@@ -1951,7 +1957,7 @@ export default {
         }
       }
       /deep/ .el-radio__label{
-        font-size:10px;
+        font-size:12px;
       }
     .ach-footer {
       // min-height: 100px;
