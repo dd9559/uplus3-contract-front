@@ -37,7 +37,7 @@
                 <el-button @click="operation('添加',1)" v-if="power['sign-set-verify'].state">添加</el-button>
             </p>
             <div class="table">
-                <el-table :data="tableData" style="width: 100%">
+                <el-table :data="tableData" style="width: 100%" border>
                     <el-table-column align="center" label="流程名称" prop="name"></el-table-column>
                     <el-table-column align="center" label="城市" prop="cityName">
                         <template slot-scope="scope">
@@ -989,7 +989,7 @@
                 &:first-child {
                     display: none;
                 }
-                &:nth-child(1) {
+                &:nth-child(2) {
                     .row-icon {
                         span:last-child {
                             display: none;
