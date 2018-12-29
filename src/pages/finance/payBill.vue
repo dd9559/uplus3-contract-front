@@ -2,8 +2,8 @@
   <div class="view">
     <p class="f14">付款信息</p>
     <ul class="bill-form">
-      <li :class="[inputPerson?'active':'']">
-        <div class="input-group col">
+      <li>
+        <div class="input-group col" :class="[inputPerson?'active-360':'']">
           <label class="form-label no-width f14">收款方</label>
           <div class="flex-box">
             <el-select size="small" class="w200" v-model="form.inObjType" placeholder="请选择" @change="getOption">
@@ -18,25 +18,28 @@
           </div>
         </div>
         <div class="input-group col">
-          <label class="form-label no-width f14">款类</label>
-          <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
-        </div>
-      </li>
-      <li>
-        <div class="input-group col">
           <label class="form-label no-width f14">申请人:</label>
           <p class="text-height" v-if="userMsg">{{userMsg.depName}} - {{userMsg.name}}</p>
         </div>
-        <div class="input-group col">
-          <label class="form-label no-width f14">付款金额（元）</label>
-          <input type="text" size="small" class="w200 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum">
-        </div>
       </li>
       <li>
-        <!--<div class="input-group col">
-          <label class="no-width f14">付款时间:</label>
-          <p class="text-height">2018/1/12</p>
-        </div>-->
+        <div class="input-group col">
+          <div class="flex-box tool-tip">
+            <label class="form-label no-width f14">
+              <span>款类</span>
+            </label>
+            <el-tooltip content="当未找到需要的款类时，可联系管理员进行配置" placement="top">
+              <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
+            </el-tooltip>
+          </div>
+          <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
+        </div>
+        <div class="input-group col active-400">
+          <div class="flex-box tool-tip no-max">
+            <label class="form-label no-width f14">付款金额（元）</label><span>{{form.amount|formatChinese}}</span>
+          </div>
+          <input type="text" size="small" class="w400 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum">
+        </div>
         <div class="input-group col">
           <label class="no-width f14">可支配金额:</label>
           <div class="text-height">
@@ -685,19 +688,42 @@
   }
   .flex-box{
     display: flex;
+    &.tool-tip{
+      max-width: 200px;
+      justify-content: space-between;
+    }
+    &.no-max{
+      max-width: none;
+    }
+    .tip-message{
+      margin-left: @margin-10;
+      display: flex;
+      align-items: center;
+      >i{
+        margin-right: 4px;
+        font-size: @size-14;
+      }
+    }
   }
   .bill-form{
-    display: flex;
     >li{
-      flex: 1;
-      max-width: 210px;
+      display: flex;
+      /*max-width: 210px;
       &:last-of-type{
         max-width: none;
       }
       &.active{
         max-width: 360px;
-      }
+      }*/
       .col{
+        max-width: 210px;
+        margin-right: @margin-10;
+        &.active-360{
+          max-width: 360px;
+        }
+        &.active-400{
+          max-width: 400px;
+        }
         >label{
           display: block;
         }

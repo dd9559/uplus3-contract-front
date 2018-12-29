@@ -1,10 +1,10 @@
 <template>
-  <div class="view">
+  <div class="view" ref="tableComView">
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w394" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
+          <el-input class="w410" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
         </div>
         <div class="input-group">
           <label>合同类型:</label>
@@ -132,7 +132,7 @@
           <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
         </p>
       </div>
-      <el-table class="info-scrollbar" ref="dataList" border :data="list" :key="activeView" style="width: 100%;max-height:500px;" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+      <el-table class="info-scrollbar" ref="tableCom" :max-height="tableNumberCom" border :data="list" :key="activeView" style="width: 100%;max-height:500px;" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="150" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -195,7 +195,17 @@
           </template>
         </el-table-column>
       </el-table>
-      <scrollBar :table="tableBox" v-if="tableBox">
+      <el-pagination
+        v-if="list.length>0"
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
+      <!--<scrollBar :table="tableBox" v-if="tableBox">
         <el-pagination
           v-if="list.length>0"
           class="pagination-info"
@@ -206,7 +216,7 @@
           layout="total, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
-      </scrollBar>
+      </scrollBar>-->
     </div>
     <!--作废dialog-->
     <el-dialog
@@ -235,6 +245,7 @@
     <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
+    <checkPerson :show="checkPerson" @close="checkPerson=false"></checkPerson>
   </div>
 </template>
 
@@ -242,13 +253,18 @@
   import {FILTER} from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
   import {UPLOAD} from "@/assets/js/uploadMixins";
+  import checkPerson from '@/components/checkPerson'
 
   export default {
     mixins: [FILTER, MIXINS,UPLOAD],
+    components:{
+      checkPerson
+    },
     data() {
       return {
         activeView: '',
         tableBox: null,
+        checkPerson: false,
         searchForm: {
           contType: '',
           timeType: '',
@@ -357,24 +373,24 @@
           }
         }*/
       }
-      this.$nextTick(()=>{
+      /*this.$nextTick(()=>{
         this.tableBox=this.$refs.dataList
-      })
+      })*/
 
       this.getData()
       this.getDictionary()
       next()
     },
     mounted(){
-      this.$nextTick(()=>{
+      /*this.$nextTick(()=>{
         this.tableBox=this.$refs.dataList
-      })
+      })*/
     },
     methods: {
       getExcel:function () {
-        this.$ajax.post('/api/postSigning/getExcel').then(res=>{
+        /*this.$ajax.post('/api/postSigning/getExcel').then(res=>{
           debugger
-        })
+        })*/
       },
       /**
        * 列表横行滚动

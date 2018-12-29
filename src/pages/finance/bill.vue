@@ -1,10 +1,10 @@
 <template>
-  <div class="view">
+  <div class="view" ref="tableComView">
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword"
+          <el-input class="w410" :clearable="true" size="small" v-model="searchForm.keyword"
                     placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
         </div>
         <div class="input-group">
@@ -157,7 +157,7 @@
           <el-button class="btn-info" round type="primary" size="small">导出</el-button>
         </p>
       </div>
-      <el-table ref="table" border :data="list" class="info-scrollbar" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+      <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" class="info-scrollbar" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="160" label="收付ID" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -231,7 +231,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <!--<el-pagination
+      <el-pagination
         v-if="list.length>0"
         class="pagination-info"
         @size-change="handleSizeChange"
@@ -240,8 +240,8 @@
         :page-size="pageSize"
         layout="total, prev, pager, next, jumper"
         :total="total">
-      </el-pagination>-->
-      <scrollBar :table="tableBox" v-if="tableBox">
+      </el-pagination>
+      <!--<scrollBar :table="tableBox" v-if="tableBox">
         <el-pagination
           v-if="list.length>0"
           class="pagination-info"
@@ -252,7 +252,7 @@
           layout="total, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
-      </scrollBar>
+      </scrollBar>-->
       <!--<div class="row-scroll" :style="{width:tableBody+'px',left:scrollLeft+'px'}">
         <div class="row-scroll-box" @scroll="test">
           <p :style="{width:scrollWidth+'px'}"></p>
@@ -434,15 +434,6 @@
         this.getDictionary()
         this.getMoneyTypes()
         this.remoteMethod()
-        console.log(this.$refs.table.$refs.rightFixedBodyWrapper.clientWidth)
-        this.tableBox=this.$refs.table
-        this.scrollWidth=this.$refs.table.$refs.rightFixedBodyWrapper.clientWidth
-        // debugger
-        this.tableBody=this.$refs.table.$refs.bodyWrapper.clientWidth-17
-        this.scrollLeft=this.$refs.table.$el.offsetLeft+65
-        /*window.onresize=function () {
-          this.tableBody=this.$refs.table.$refs.bodyWrapper.clientWidth
-        }.bind(this)*/
       })
       // this.getAdmin()
     },
