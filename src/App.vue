@@ -185,20 +185,26 @@
   }
 
   .w140 {
-    width: 140px;
+    width: 140px !important;
   }
   .w200{
     width: 200px !important;
   }
 
   .w240 {
-    width: 240px;
+    width: 240px !important;
   }
   .w300{
-    width: 300px;
+    width: 300px !important;
   }
   .w394{
     width: 394px !important;
+  }
+  .w400{
+    width: 400px !important;
+  }
+  .w410{
+    width: 410px !important;
   }
   .btn-info{
     min-width: 80px;

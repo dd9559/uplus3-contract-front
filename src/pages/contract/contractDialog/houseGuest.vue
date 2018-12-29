@@ -36,8 +36,8 @@
           <el-form-item>
             <span @click="isAttention">我的关注 <span class="attention" :class="{'attention_':attention>0}" ></span></span>
           </el-form-item>
-          <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
+          <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">
           <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" height="240">
@@ -109,17 +109,8 @@
             </el-form-item>
           </div>
           <div>
-            <el-button
-              round
-              class="search_btn"
-              @click="resetFormFn"
-            >清空</el-button>
-            <el-button
-              type="primary"
-              round
-              class="search_btn"
-              @click="inquireGuest"
-            >查询</el-button>
+            <el-button type="primary" round class="search_btn" @click="inquireGuest">查询</el-button>
+            <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
           </div>
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">

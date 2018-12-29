@@ -6,7 +6,7 @@
       </p>
       <div class="bodycontainer"  ref='bigbox'>
           <div class="ht-list listone"  ref='htlist'>
-          <el-button type="primary paper-btn" @click="showPos" v-show='position'>签章位置</el-button>
+          <el-button type="primary paper-btn" class="qzbtn" @click="showPos" v-show='position'>签章位置</el-button>
           <div class='pagerUp'>
               <el-button ref='delBtn' class="el-icon-caret-top" @click="del(1)"></el-button>
               <div><span>{{count}}</span>/<span>{{total}}</span></div>
@@ -17,7 +17,7 @@
           </div>
       </div>
        <div class="ht-list listone" v-show='showSed' ref='htlist'>
-          <el-button type="primary paper-btn" @click="showPos" v-show='position2'>签章位置</el-button>
+          <el-button type="primary paper-btn" class="qzbtn" @click="showPos" v-show='position2'>签章位置</el-button>
           <div class='pagerUp'>
               <el-button ref='delBtn' class="el-icon-caret-top" @click="del(2)"></el-button>
               <div><span>{{count2}}</span>/<span>{{total2}}</span></div>
@@ -158,6 +158,9 @@ export default{
                             this.autograph(htImg,newsrc)
                             this.autograph(htImg2,newsrc2)
                      }else{
+                           let btn=document.getElementsByClassName('ht-list')[0]
+                           console.log(btn,'btn');
+                           btn.style.margin='0 auto'
                            this.divWidth=this.divWidth
                            this.imgSrc=resadd.img.url
                            this.total=res.data.data.img.count
@@ -453,6 +456,7 @@ export default{
                     // console.log(res.data.data.businessImg.url,'imgsrc');
                     this.imgSrc=res.data.data.businessImg.url
                     this.imgSrc2=res.data.data.residenceImg.url
+                   
                     // console.log(this.imgSrc2,'imgsrc2');
                     this.total=res.data.data.businessImg.count
                     this.total2=res.data.data.residenceImg.count
@@ -467,6 +471,8 @@ export default{
                   this.imgSrc=res.data.data.img.url  //一个的
                   this.total=res.data.data.img.count
                   let htImg=document.getElementById('ht')
+                  let btn=document.getElementsByClassName('ht-list')[0]
+                  btn.style.margin='0 auto'
                   let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
                   bodycontainer.style.display='block'
                   htImg.style.width='622px'
@@ -514,9 +520,9 @@ export default{
         // width: 800px;
         min-height: 500px;
         // background-color: grey;
-        margin: 0 auto;
+        margin: 0 25px;
         position: relative;
-       width:622px;
+        width:622px;
             height:802px;
         // padding: 20px 80px 20px 30px;
         img{
@@ -533,7 +539,7 @@ export default{
         }
         > button{
             position: absolute;
-            right: 0px;
+            right: -100px;
             top: 50px;
         }
         .pagerUp{
@@ -550,7 +556,6 @@ export default{
                 box-sizing: border-box;
                 justify-content: center;
                 align-items: center;
-                // background-color: oldlace
             }
             >div{
                 margin: 10px auto;

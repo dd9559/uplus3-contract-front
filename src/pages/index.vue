@@ -61,6 +61,152 @@
   import index from "../router";
   import { mapMutations,mapGetters } from 'vuex'
 
+  const pathList= [
+    {
+      id: 1,
+      name: '合同',
+      path: '1',
+      icon: 'icon-hetong',
+      child: [
+        {
+          name: '合同列表',
+          path: 'contractList',
+          code: 'sign-ht-info-query'
+        },
+        {
+          name: '调佣审核',
+          path: 'adjustCheck',
+          code: 'sign-ht-maid-query'
+        },
+        {
+          name: '结算审核',
+          path: 'settleCheck',
+          code: 'sign-ht-js-query'
+        },
+        {
+          name: '分账记录',
+          path: 'routingRecord',
+          code: 'sign-ht-fz-query'
+        },
+      ]
+    },
+    {
+      id: 2,
+      name: '财务',
+      path: '2',
+      icon: 'icon-caiwu',
+      child: [
+        {
+          name: '收付款单',
+          path: 'Bill',
+          code: 'sign-cw-debt-query'
+        },
+        {
+          name: '收款审核',
+          path: 'moneyCheck?type=1',
+          code: 'sign-cw-rev-query'
+        },
+        {
+          name: '付款审核',
+          path: 'moneyCheck?type=2',
+          code: 'sign-cw-pay-query'
+        },
+        {
+          name: '应收实收',
+          path: 'actualHarvest',
+          code: 'sign-cw-rec-query'
+        },
+        {
+          name: '票据管理',
+          path: 'paperSet',
+          code: 'sign-cw-bill-query'
+        }
+      ]
+    },
+    {
+      id: 3,
+      name: '业绩',
+      path: '3',
+      icon: 'icon-yeji',
+      child: [
+        {
+          name: '应收业绩',
+          path: 'actualAchievement',
+          code: 'sign-yj-rev-query'
+        },
+        {
+          name: '结算业绩',
+          path: 'receivableAchievement',
+          code: 'sign-yj-rec-query'
+        },
+        // {
+        //   name:'门店实收',
+        //   path:'storeReceive'
+        // }
+      ]
+    },
+    {
+      id: 4,
+      name: '签后',
+      path: '4',
+      icon: 'icon-qianhou',
+      child: [
+        {
+          name: '后期接收',
+          path: 'postReceive',
+          code: 'sign-qh-rev-query'
+        },
+        {
+          name: '后期管理',
+          path: 'postManage',
+          code: 'sign-qh-mgr-query'
+        },
+        {
+          name: '后期监控',
+          path: 'postMonitor',
+          code: 'sign-qh-cont-query'
+        }
+      ]
+    },
+    {
+      id: 5,
+      name: '设置',
+      path: 'setting',
+      icon: 'icon-shezhi',
+      child: [
+        {
+          name: '公司设置',
+          path: 'company',
+          code: 'sign-set-gs'
+        },
+        {
+          name: '合同模板设置',
+          path: 'contractTemplate',
+          code: 'sign-set-ht-query'
+        },
+        {
+          name: '后期流程设置',
+          path: 'postProcess',
+          code: 'sign-set-hq'
+        },
+        {
+          name: '款类设置',
+          path: 'moneyType',
+          code: 'sign-set-kl-query'
+        },
+        {
+          name: '操作日志',
+          path: 'operationLog',
+          code: 'sign-set-log-query'
+        },
+        {
+          name: '审核流程',
+          path: 'approvalProcess',
+          code: 'sign-set-verify'
+        }
+      ]
+    }
+  ]
   export default {
     name: "index",
     data() {
@@ -255,7 +401,27 @@
     created(){
       this.Index=this.$store.state.path
       this.activeIndex = this.Index[1].path.split('/')[1]
-      this.$nextTick(()=>{
+      this.$ajax.get('/api/me').then(res=>{
+        res=res.data
+        if(res.status===200){
+          // debugger
+          let arr=res.data.privileges
+          this.setUser(res.data)
+          // console.log(this.$store.state.user.privileges)
+          this.views.forEach((item,index)=>{
+            let sliders=[]
+            if(item.name!=='财务'){
+              item.child.forEach(tip=>{
+                if(arr.indexOf(tip.code)>-1){
+                  sliders.push(tip)
+                }
+              })
+              item.child=sliders
+            }
+          })
+        }
+      })
+      /*this.$nextTick(()=>{
         let arr=this.$store.state.user&&this.$store.state.user.privileges
         // console.log(this.$store.state.user.privileges)
         this.views.forEach((item,index)=>{
@@ -269,9 +435,32 @@
             item.child=sliders
           }
         })
-      })
+      })*/
     },
     beforeRouteUpdate(to,from,next){
+      if(from.path==='/login'){
+        this.views = pathList.map(item=>Object.assign({},item))
+        this.$ajax.get('/api/me').then(res=>{
+          res=res.data
+          if(res.status===200){
+            let arr=res.data.privileges
+            this.setUser(res.data)
+            // console.log(this.$store.state.user.privileges)
+            this.views.forEach((item,index)=>{
+              let sliders=[]
+              if(item.name!=='财务'){
+                item.child.forEach(tip=>{
+                  if(arr.indexOf(tip.code)>-1){
+                    sliders.push(tip)
+                  }
+                })
+                item.child=sliders
+              }
+            })
+            console.log(this.views)
+          }
+        })
+      }
       this.Index=this.$store.state.path
       this.activeIndex = this.Index[1].path.split('/')[1]
       next()
@@ -319,7 +508,8 @@
       },
       ...mapMutations([
         'setPath',
-        'setCollapse'
+        'setCollapse',
+        'setUser'
       ])
     },
     ...mapGetters([
