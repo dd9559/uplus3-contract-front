@@ -8,6 +8,7 @@
         custom-class="base-dialog"
         width="61%"
       >
+      <div v-loading="loading">
         <!-- 头部右边关闭按钮 -->
         <b
           class="el-icon-close"
@@ -763,8 +764,8 @@
                 </el-table-column>
               </el-table>
             </div>
-
-            <div class="dialog2-btn f_r">
+           
+          <div class="dialog2-btn f_r clearfix">
               <el-button
                 type="primary"
                 round
@@ -776,8 +777,9 @@
                 @click="manSure(type)"
                 v-dbClick
               >确定</el-button>
-            </div>
+          </div>
           </el-dialog>
+         </div>
         </div>
       </el-dialog>
     </div>
@@ -818,6 +820,7 @@ export default {
       amaldars:[],   //模糊搜索区经
       managers:[],    //模糊搜索区总
       loading1: false,
+      loading:false,
       radioFlag:3,
       assignorIndex:null,
       assignorStr:null,
@@ -1646,7 +1649,8 @@ export default {
             if (res.data.data.examineDate) {
               this.examineDate = res.data.data.examineDate;
             }
-            this.shows=true;
+              //  this.$emit("opens");
+              this.loading=false;
           }
         });
       // 角色类型
@@ -1712,6 +1716,7 @@ export default {
       // 字典初始化
       this.getDictionary();
       this.remark = "";
+      this.loading=true;
       if (val) {
         this.code = val;
         if (this.dialogType == 0) {  // 审核
@@ -1748,7 +1753,8 @@ export default {
               if (data.data.houseAgents) {
                 this.houseArr = data.data.houseAgents;
               }
-              this.shows=true;
+              // this.$emit("opens");
+              this.loading=false;
               if (data.data.aId) {
                 this.backAId = data.data.aId;
               }
@@ -1764,8 +1770,9 @@ export default {
 <style lang="less" scoped>
 // 相关人员弹框
 /deep/ .dialog2In {
-  width:400px !important;
-  height: 370px;
+  width:450px !important;
+  max-height:450px;
+  min-height: 255px;
   margin-top: 13vh !important;
   .is-checked {
     color: #478de3 !important;
@@ -1778,8 +1785,8 @@ export default {
     padding: 0 !important;
 
     // min-height: 200px;
-    // max-height: 400px;
-    width:400px !important;
+    // height: 300px;
+    width:450px !important;
   }
   h1 {
     height: 53px;
@@ -1795,8 +1802,9 @@ export default {
   }
   .mansList {
      overflow-y: auto;
-     max-height: 200px;
-     width:400px !important;
+     max-height: 300px;
+     min-height: 100px;
+     width:450px !important;
   }
   /deep/ tr td:first-of-type,
   th:first-of-type {
@@ -1804,15 +1812,20 @@ export default {
   }
 
   .dialog2-btn {
-    margin-top: 40px;
-    margin-right: 20px;
+    height: 100px;
+    padding-top: 20px;
+    padding-right: 30px;
+    box-sizing: border-box;
+    background-color: #fff;
+    width: 100%;
+    text-align: right;
     button {
       width: 100px;
       height: 38px;
       border-radius: 19px;
     }
     button:first-of-type {
-      background-color: #fff;
+      background-color: #f5f5f5;
       color: #000;
       border: 1px solid #e8eaf6;
     }

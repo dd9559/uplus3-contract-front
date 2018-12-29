@@ -122,7 +122,6 @@ export default{
         },
         mounted(){
             this.divWidth=622
-            console.dir(document.getElementsByClassName('listone')[0])
             // console.log(document.getElementsByClassName('listone')[0].offsetWidth);
             this.divHeight=802
             if(this.show==1){
@@ -280,9 +279,6 @@ export default{
                             this.touch=false
                             this.$router.push({
                             path: "/contractTemplate",
-                            // query:{
-                            //     cid:this.cityId
-                            // }
                         });
                     }
                 })
@@ -513,24 +509,17 @@ export default{
         border-bottom: solid 1px rgba(206,225,246,1)
     }
     .ht-list{
-        // display: flex;
-        // flex: 1;
-        // justify-content: center;
-        // width: 700px;
-        // width: 800px;
         min-height: 500px;
-        // background-color: grey;
         margin: 0 25px;
         position: relative;
         width:622px;
             height:802px;
-        // padding: 20px 80px 20px 30px;
         img{
             width: 622px;
         }
         .signature{
             position: absolute;
-            background-image: url('/static/img/seal.png');
+            background-color: rgba(100, 100, 100, 0.5);
             background-size: 130px;
             width: 130px;
             left: 0;
@@ -598,18 +587,10 @@ export default{
     display: flex;
     width:100%;
     .ht-list{
-        // flex: 1;
-        // box-sizing: content-box;
-        // width: 50%;
         img{
             width:622px;
             height:802px;
         }
     }
 }
-// .view-container .ht-list .pagerUp .paper-next{
-//     background-color: #F5F5F5;
-//     color:#ACA899;
-//     border: 1px solid #DDD;
-// }
 </style>
