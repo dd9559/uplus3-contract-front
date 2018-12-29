@@ -121,7 +121,7 @@
           </el-dropdown>
         </span>
       </p>
-      <el-table ref="dataList" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
+      <el-table ref="dataList" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border>
         <el-table-column align="left" label="合同信息" width="260" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
@@ -129,16 +129,24 @@
                 <!-- 风险单 -->
                 <el-popover
                   placement="top-start"
-                  width="200"
+                  width="50"
                   trigger="hover"
-                  :content="scope.row.remarksExamine"
+                  content="风险单"
                   v-if="scope.row.isRisk">
                   <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
                 </el-popover>
                 <!-- 代办 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
                 <!-- 低佣 -->
-                <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i>
+                <!-- <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
+                <el-popover
+                  placement="top-start"
+                  width="10"
+                  trigger="hover"
+                  content="抵佣"
+                  v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1">
+                  <i slot="reference" class="iconfont icon-tubiao_shiyong-3 low"></i>
+                </el-popover>
               </div>
               <ul class="contract-msglist">
                 <li>合同：<span>{{scope.row.code}}</span></li>
@@ -267,7 +275,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="实收/应收" width="100">
+        <el-table-column align="left" label="实收/应收(佣金)" width="120">
           <template slot-scope="scope">
             <!-- <div class="btn" @click="runningWater(scope.row)">流水</div> -->
             <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
@@ -432,7 +440,7 @@ export default {
       ],
       //权限配置
       power: {
-        'sign-ht-info-debts': {
+        'sign-com-liushui': {
           state: false,
           name: '流水'
         },
@@ -555,18 +563,12 @@ export default {
     },
     // 查询
     queryFn() {
-      console.log(this.signDate);
-      // if(this.signDate.length>0){
-      //   this.contractForm.beginDate=this.signDate[0].replace(/-/g,"/");
-      //   this.contractForm.endDate=this.signDate[1].replace(/-/g,"/");
-      // }
-      //console.log(this.contractForm)
       this.currentPage=1;
       this.getContractList();
     },
     //流水
     runningWater(item) {
-      if(this.power['sign-ht-info-debts'].state){
+      if(this.power['sign-com-liushui'].state){
         this.water = true;
         this.contCode=item.code;
         this.waterContId=item.id;

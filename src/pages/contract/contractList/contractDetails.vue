@@ -374,7 +374,7 @@
             <el-table-column prop="recording" label="录音" width="200">
               <template slot-scope="scope">
                 <div class="recordPlay" v-if="scope.row.recording">
-                  <span class="playBtn" @click="playStop(scope.$index)">
+                  <span class="playBtn" @click="playStop(scope.$index,scope.row.recording)">
                     <i class="iconfont icon-tubiao_shiyong-17" :class="{'icon-tubiao_shiyong-19':(recordKey===scope.$index)&&isPlay}"></i> 
                   </span>
                   <span class="duration">
@@ -387,7 +387,7 @@
                 </div>
                 <span v-else>--</span>
                 <!-- <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio> -->
-                <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio>
+                <audio src="http://voicedownload.jjdc.com.cn:8081/api/CallService/DownloadSoundRecording?Url=f9e885accb3bc5ae83a4ea943b2fb381" :id="'audio'+scope.$index"></audio>
                 <!-- ../../../../static/录音-001.MP3 -->
               </template>
             </el-table-column>
@@ -775,6 +775,7 @@ export default {
       playTime:0,
       recordKey:'',
       isPlay:false,
+      recordSrc:'',
       //权限
       power: {
         'sign-ht-xq-print': {
@@ -1042,7 +1043,7 @@ export default {
     },
     //添加备注
     addRemark(){
-      if(this.recordRemarks.length){
+      if(this.recordRemarks.length>0){
         let param = {
           remarks:this.recordRemarks,
           id:this.remarkId
@@ -1062,49 +1063,73 @@ export default {
             type: "error"
           })
         })
+      }else{
+        this.$message({
+            message:"备注不能为空",
+            type: "warning"
+          })
       }
     },
     //播放录音
-    playStop(index){
-      // debugger
-      console.log(index);
-      let id = 'audio'+index;
-      this.recordKey=index;
-      let myAudios = document.getElementsByTagName('audio');
-      // console.log(myAudios.length);
-      let myAudio = document.getElementById(id);
-      if (myAudio.paused){
-        for(var i=0;i<myAudios.length;i++){
-          myAudios[i].pause();
-          // debugger
-          if(myAudios[i]!=myAudio){
-            if(myAudios[i].paused){
-              this.playTime=0
+    playStop(index,recording){
+      if(power['sign-ht-xq-ly-play'].state){
+        let id = 'audio'+index;
+        let myAudios = document.getElementsByTagName('audio');
+        let myAudio = document.getElementById(id);
+        if(index!=this.recordKey){
+          this.playTime=0
+        }
+        this.recordKey=index;
+        // console.log(myAudio.src);
+        // if(!myAudio.src){
+        //   debugger
+        //   let param = {
+        //     recording:recording
+        //   };
+        //   this.$ajax.get('/api/record/downloadRecord',param).then(res=>{
+        //     res=res.data;
+        //     if(res.status===200){
+        //       myAudio.src=res.data;
+        //     }
+        //   })
+        // }
+        if (myAudio.paused){
+          for(var i=0;i<myAudios.length;i++){
+            myAudios[i].pause();
+            // console.log(myAudios[i].id,myAudio.id)
+            // debugger
+            if(myAudios[i].id!=myAudio.id){
+              if(myAudios[i].paused){
+                // this.playTime=0
+                myAudios[i].load();
+              }
             }
-            myAudios[i].load();
           }
+          myAudio.play();
+          this.isPlay=true;
+        }else{
+          myAudio.pause();
+          this.isPlay=false;
         }
-        myAudio.play();
-        this.isPlay=true;
+        var that=this
+        myAudio.ontimeupdate = function (e) {
+          // console.info('播放时间发生改变：'+myAudio.currentTime);
+          let playTime_=(myAudio.currentTime/myAudio.duration)*100;
+          if(playTime_){
+            that.playTime=playTime_
+          }
+          // that.playTime=(myAudio.currentTime/myAudio.duration)*100?(myAudio.currentTime/myAudio.duration)*100;
+        };
+        myAudio.onended=function(e){
+          that.playTime=0;
+          that.isPlay=false;
+        }
       }else{
-        myAudio.pause();
-        this.isPlay=false;
+        this.noPower('听取录音')
       }
-      var that=this
-      myAudio.ontimeupdate = function (e) {
-        // console.info('播放时间发生改变：'+myAudio.currentTime);
-        let playTime_=(myAudio.currentTime/myAudio.duration)*100;
-        if(playTime_){
-          that.playTime=playTime_
-        }
-        // that.playTime=(myAudio.currentTime/myAudio.duration)*100?(myAudio.currentTime/myAudio.duration)*100;
-      };
-      myAudio.onended=function(e){
-        that.playTime=0;
-        that.isPlay=false;
-      }
-
+      
     },
+
     //下载录音
     downloadRecord(){
       let param = {
@@ -1112,6 +1137,9 @@ export default {
       }
       this.$ajax.get('/api/record/downloadRecord',param).then(res=>{
         res=res.data;
+        if(res.status===200){
+
+        }
       })
     },
     //合同详情
