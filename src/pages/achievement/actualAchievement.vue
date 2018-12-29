@@ -14,6 +14,37 @@
         class="prop-form"
         size="small"
       >
+
+          <el-form-item
+          label="关键字"
+          prop="search"
+        >
+          <el-input
+            class="w460"
+            v-model="propForm.search"
+            placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
+            :trigger-on-focus="false"
+            clearable
+          ></el-input>
+        </el-form-item>
+
+       <el-form-item
+          label="签约日期"
+          prop="dateMo"
+          class="mr"
+        >
+          <el-date-picker
+            v-model="propForm.dateMo"
+            class="w330"
+            type="daterange"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        
         <!-- 部门 -->
         <el-form-item label="部门" style="margin-right:0px;">
               <!-- <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
@@ -88,37 +119,6 @@
             ></el-option>
           </el-select>
         </el-form-item>
-
-        <el-form-item
-          label="签约日期"
-          prop="dateMo"
-          class="mr"
-        >
-          <el-date-picker
-            v-model="propForm.dateMo"
-            class="w330"
-            type="daterange"
-            range-separator="至"
-            value-format="yyyy-MM-dd"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          >
-          </el-date-picker>
-        </el-form-item>
-
-        <el-form-item
-          label="关键字"
-          prop="search"
-        >
-          <el-input
-            class="w460"
-            v-model="propForm.search"
-            placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
-            :trigger-on-focus="false"
-            clearable
-          ></el-input>
-        </el-form-item>
-
       </el-form>
     </ScreeningTop>
 
@@ -161,6 +161,7 @@
           @row-dblclick="enterDetail"
           ref="tableCom" 
           :max-height="tableNumberCom" 
+          border
         >
           <el-table-column
             label="合同信息"
@@ -488,6 +489,7 @@
           <el-table
             :data="houseArr"
             style="width: 100%"
+            border
           >
             <!-- roleType 分成人角色类型 :
              房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
@@ -565,7 +567,6 @@
             <el-table-column
               prop="manager"
               label="区总"
-              width="100"
             >
             </el-table-column>
           </el-table>
@@ -576,6 +577,7 @@
           <el-table
             :data="clientArr"
             style="width: 100%"
+            border
           >
             <!-- roleType 分成人角色类型 :
                 房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
@@ -654,7 +656,6 @@
             <el-table-column
               prop="manager"
               label="区总"
-              width="100"
             >
             </el-table-column>
           </el-table>
@@ -663,7 +664,7 @@
         <h1 class="f14">审核信息</h1>
 
         <div class="ach-check-list">
-          <el-table :data="checkArr">
+          <el-table :data="checkArr"   border>
             <!-- examineDate -->
             <el-table-column
               label="时间"
@@ -1041,14 +1042,14 @@ export default {
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;
+                this.dialogVisible = true;
             }else{
               this.checkArr = [];
             }
             
             this.comm = data.data.comm;
           }
-        });
-      this.dialogVisible = true;
+        });     
     },
     queryFn() {
     console.log(this.propForm.dateMo)
@@ -1115,7 +1116,7 @@ export default {
       this.achObj={
         contractId:value.id,//合同id
       }
-      this.shows = true;
+      // this.shows = true;
     },
     editAch(value,index) {
         this.beginData = true;
@@ -1127,7 +1128,7 @@ export default {
         this.achObj={
           contractId:value.id,//合同id
         }
-        this.shows = true;
+        // this.shows = true;
     },
     againCheck(value,index) {
       this.beginData = true;
@@ -1139,7 +1140,7 @@ export default {
       this.achObj={
         contractId:value.id,//合同id
       }
-      this.shows = true;
+      // this.shows = true;
     },
     //分页
     handleSizeChange(val) {
