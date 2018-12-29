@@ -300,19 +300,15 @@
                     pageNum: this.pageNum
                 }
                 param = Object.assign({},this.searchForm,param)
-                if(this.power['sign-set-verify'].state) {
-                    this.$ajax.get('/api/auditflow/selectFlowList',param).then(res => {
-                        res = res.data
-                        if(res.status === 200) {
-                            this.tableData = res.data.data
-                            this.total = res.data.total
-                        }
-                    }).catch(error => {
-                        this.$message({message:error})
-                    })
-                } else {
-                    this.noPower(this.power['sign-set-verify'].name)
-                }
+                this.$ajax.get('/api/auditflow/selectFlowList',param).then(res => {
+                    res = res.data
+                    if(res.status === 200) {
+                        this.tableData = res.data.data
+                        this.total = res.data.total
+                    }
+                }).catch(error => {
+                    this.$message({message:error})
+                })
             },
             getCityList() {
                 this.$ajax.get('/api/organize/cities').then(res => {

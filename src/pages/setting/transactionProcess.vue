@@ -140,21 +140,14 @@
     methods: {
       // 获取交易流程列表
       getData: function() {
-        let param = {
-          cityId: this.cityId
-        };
-        if(this.power['sign-set-hq'].state) {
-          this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
-            res = res.data;
-            if (res.status === 200) {
-              this.listData = res.data;
-            }
-          }).catch(error => {
-              this.$message({message:error})
-          })
-        } else {
-          this.noPower("查询")
-        }
+        this.$ajax.post('/api/flowmanage/selectFlowPageList', {cityId: this.cityId}).then(res => {
+          res = res.data;
+          if (res.status === 200) {
+            this.listData = res.data;
+          }
+        }).catch(error => {
+            this.$message({message:error})
+        })
       },
       addProcess(title) {
         this.dialogProcessVisible = true

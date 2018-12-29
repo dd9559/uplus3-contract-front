@@ -356,10 +356,10 @@
         paymentTime:'',
         // 权限
         power:{
-            'sign-cw-bill-query':{
-                name:'查询',
-                state:false
-            },
+            // 'sign-cw-bill-query':{
+            //     name:'查询',
+            //     state:false
+            // },
             'sign-cw-bill-delete':{
                 name:'核销',
                 state:false
@@ -426,10 +426,10 @@
       },
       // 列表数据
       getData: function () {
-        if(!this.power['sign-cw-bill-query'].state){
-            this.noPower(this.power['sign-cw-bill-query'].name);
-            return false
-        }
+        // if(!this.power['sign-cw-bill-query'].state){
+        //     this.noPower(this.power['sign-cw-bill-query'].name);
+        //     return false
+        // }
         this.loadingList = true;
         let param = Object.assign({}, this.propForm)
         param.pageNum = this.pageNum

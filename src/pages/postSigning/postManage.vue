@@ -188,7 +188,7 @@
                     </el-form-item>
                 </div>
                 <el-form-item 
-                    label="佣金结算状态"
+                    label="收佣状态"
                     prop="commission">
                         <el-select 
                         v-model="propForm.commission" 
@@ -245,12 +245,12 @@
                         {{dateFormat(scope.row.receiveTime)}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="a10" label="收佣状态" min-width="105">
+                <el-table-column prop="a10" label="实收/应收" min-width="105">
                     <template slot-scope="scope">
                         {{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="statusReceiveAmount.label" label="佣金结算状态" min-width="121">
+                <el-table-column prop="statusReceiveAmount.label" label="收佣状态" min-width="121">
                 </el-table-column>
                 <el-table-column prop="stepInstanceName" label="后期进度" min-width="182">
                     <template slot-scope="scope">
@@ -306,7 +306,7 @@
                             <span class="cl-2 mr-30">{{layerShowData.transFlowName}}</span>
                         </li>
                         <li>
-                            <span class="cl-1 mr-10">佣金结算状态：</span>
+                            <span class="cl-1 mr-10">收佣状态：</span>
                             <span class="cl-2">{{layerShowData.statusReceiveAmount.label}}</span>
                         </li>
                     </ul>
@@ -440,7 +440,7 @@
                     </ul>
                 </div>
             </div>
-            <span slot="footer" v-loading="loadingBtn1">
+            <span slot="footer">
                 <el-button class="paper-btn" type size="small" @click="replaceCloseFn" round>返回</el-button>
                 <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="replaceBtnFn" round>确定</el-button>
             </span>
@@ -889,10 +889,10 @@
                 adjustData:[],
                 // 权限
                 power:{
-                    'sign-qh-mgr-query':{
-                        name:'查询',
-                        state:false
-                    },
+                    // 'sign-qh-mgr-query':{
+                    //     name:'查询',
+                    //     state:false
+                    // },
                     'sign-qh-mgr-jd-modify':{
                         name:'更换交易流程',
                         state:false
@@ -1567,10 +1567,10 @@
             },
             // 列表数据
             getDataList(){
-                if(!this.power['sign-qh-mgr-query'].state){
-                    this.noPower(this.power['sign-qh-mgr-query'].name);
-                    return false
-                }
+                // if(!this.power['sign-qh-mgr-query'].state){
+                //     this.noPower(this.power['sign-qh-mgr-query'].name);
+                //     return false
+                // }
                 this.loadingList = true;
                 let handleTimeEnd = '';
                 let handleTimeStar = '';

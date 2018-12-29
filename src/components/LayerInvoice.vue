@@ -131,12 +131,11 @@
                 }).then(res => {
                     res = res.data
                     if (res.status === 200) {
-                        console.log(res.data)
                         let hide;
                         if(res.data.isHiddenAddress){
-                            hide = false;
-                        }else{
                             hide = true;
+                        }else{
+                            hide = false;
                         }
                         this.paperInfoData = Object.assign({}, res.data,{
                             hide
@@ -199,11 +198,15 @@
                     }
                 } else {
                     let type = this.moneyTypes[this.activeType]
+                    let bool = 0;
+                    if(type.addressHidden){
+                        bool = 1;
+                    }
                     obj = {
                         code: type.billCode,
                         payId: this.ID,
                         payDetailsId: type.payDetailsId,
-                        isHiddenAddress: type.addressHidden,
+                        isHiddenAddress: bool,
                         billType: type.project,
                         isPrint:true
                     }

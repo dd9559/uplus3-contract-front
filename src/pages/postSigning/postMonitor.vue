@@ -48,7 +48,7 @@
                             :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="佣金结算状态" prop="paper">
+                <el-form-item label="收佣状态" prop="paper">
                     <el-select v-model="propForm.paper" class="w134">
                         <el-option v-for="item in rules.paper" 
                         :key="'paper'+item.key" 
@@ -150,16 +150,16 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="overtimeDay" label="超时天数">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" label="收佣状态" min-width="100">
+                <el-table-column :formatter="nullFormatterData" label="实收/应收" min-width="100">
                     <template slot-scope="scope">
                         {{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="statusReceiveAmount.label" label="佣金结算状态" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="statusReceiveAmount.label" label="收佣状态" min-width="120">
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)" v-if="power['sign-ht-info-debts'].state">流水</el-button>
+                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)" v-if="power['sign-com-bill'].state">流水</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -262,11 +262,11 @@
                 contCode:'',
                 // 权限
                 power:{
-                    'sign-qh-cont-query':{
-                        name:'查询',
-                        state:false
-                    },
-                    'sign-ht-info-debts':{
+                    // 'sign-qh-cont-query':{
+                    //     name:'查询',
+                    //     state:false
+                    // },
+                    'sign-com-bill':{
                         name:'流水',
                         state:false
                     },
@@ -332,8 +332,8 @@
             },
             // 操作
             operationFn(code){
-                if(!this.power['sign-ht-info-debts'].state){
-                    this.noPower(this.power['sign-ht-info-debts'].name);
+                if(!this.power['sign-com-bill'].state){
+                    this.noPower(this.power['sign-com-bill'].name);
                     return false
                 }
                 this.contCode = code;
@@ -365,10 +365,10 @@
             },
             // 获取列表数据
             getListData(){
-                if(!this.power['sign-qh-cont-query'].state){
-                    this.noPower(this.power['sign-qh-cont-query'].name);
-                    return false
-                }
+                // if(!this.power['sign-qh-cont-query'].state){
+                //     this.noPower(this.power['sign-qh-cont-query'].name);
+                //     return false
+                // }
                 this.loadingList = true;
                 let receiveTimeEnd = '';
                 let receiveTimeStar = '';
