@@ -164,6 +164,14 @@
           <template slot-scope="scope">
             <span>{{scope.row.auditStore}}</span>
             <p>{{scope.row.auditName}}</p>
+            <el-button type="text" v-if="scope.row.auditButton" @click="choseCheckPerson(scope.row)">转交审核人</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="下一步审核人" min-width="140">
+          <template slot-scope="scope">
+            <span>{{scope.row.nextAuditStore}}</span>
+            <p>{{scope.row.nextAuditName}}</p>
+            <el-button type="text" v-if="scope.row.setAudit===1" @click="choseCheckPerson(scope.row)">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -245,7 +253,7 @@
     <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
-    <checkPerson :show="checkPerson" @close="checkPerson=false"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -264,7 +272,12 @@
       return {
         activeView: '',
         tableBox: null,
-        checkPerson: false,
+        checkPerson: {
+          state:false,
+          type:'init',
+          code:'',
+          flowType:0
+        },
         searchForm: {
           contType: '',
           timeType: '',
@@ -399,6 +412,19 @@
         /*this.$ajax.post('/api/postSigning/getExcel').then(res=>{
           debugger
         })*/
+      },
+      // 选择审核人
+      choseCheckPerson:function (row) {
+        this.checkPerson.flowType=this.activeView===1?1:0
+        this.checkPerson.code=row.payCode
+        if(row.auditButton){
+          this.checkPerson.state=true
+          this.checkPerson.type='init'
+        }
+        if(row.setAudit===1){
+          this.checkPerson.state=true
+          this.checkPerson.type='set'
+        }
       },
       /**
        * 列表横行滚动
