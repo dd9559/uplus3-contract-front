@@ -89,7 +89,7 @@
       <div class="table-tool">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button class="btn-info" round size="small" type="primary">导出</el-button>
+          <el-button class="btn-info" round size="small" type="primary" v-if="power['sign-cw-rec-export'].state">导出</el-button>
         </p>
       </div>
       <el-table ref="tableCom" :max-height="tableNumberCom" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
@@ -267,33 +267,29 @@
         if(type==='search'){
           this.currentPage=1
         }
-        if(this.power['sign-cw-rec-query'].state){
-          let param=Object.assign({},this.searchForm)
-          if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
-            param.beginDate = param.signTime[0]
-            param.endDate = param.signTime[1]
-          }
-          if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
-            param.beginProDate = param.collectionTime[0]
-            param.endProDate = param.collectionTime[1]
-          }
-          delete param.signTime
-          delete param.collectionTime
-          delete param.moneyType
-          param.pageNum=this.currentPage
-          param.pageSize=this.pageSize
-          this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.list = res.data.list
-              this.total = res.data.count
-            }
-          }).catch(error => {
-            console.log(error)
-          })
-        }else {
-          this.noPower(this.power['sign-cw-rec-query'].name)
+        let param=Object.assign({},this.searchForm)
+        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
+          param.beginDate = param.signTime[0]
+          param.endDate = param.signTime[1]
         }
+        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
+          param.beginProDate = param.collectionTime[0]
+          param.endProDate = param.collectionTime[1]
+        }
+        delete param.signTime
+        delete param.collectionTime
+        delete param.moneyType
+        param.pageNum=this.currentPage
+        param.pageSize=this.pageSize
+        this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.list = res.data.list
+            this.total = res.data.count
+          }
+        }).catch(error => {
+          console.log(error)
+        })
       },
       // 获取收付款类
       getMoneyTypes:function () {

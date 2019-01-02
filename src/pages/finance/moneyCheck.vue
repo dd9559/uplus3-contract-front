@@ -129,7 +129,7 @@
       <div class="table-tool">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
+          <el-button class="btn-info" round size="small" type="primary" @click="getExcel" v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)">导出</el-button>
         </p>
       </div>
       <el-table class="info-scrollbar" ref="tableCom" :max-height="tableNumberCom" border :data="list" :key="activeView" style="width: 100%;max-height:500px;" header-row-class-name="theader-bg" @row-dblclick="toDetails">
@@ -188,7 +188,7 @@
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
             <template v-if="(scope.row.auditButton)||(scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state)">
-              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton&&(scope.row.currentAuditName===$store.state.user.user.name)">审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
               <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state">作废</el-button>
             </template>
             <span v-else>--</span>
@@ -327,6 +327,14 @@
             state: false,
             name: '作废'
           },
+          'sign-cw-debt-pay': {
+            state: false,
+            name: '付款审核'
+          },
+          'sign-com-htdetail': {
+            state: false,
+            name: '合同详情'
+          },
           'sign-com-htdetail': {
             state: false,
             name: '合同详情'
@@ -439,32 +447,27 @@
         if(type==='search'){
           this.currentPage=1
         }
-        let powerMsg=this.power[this.activeView===1?'sign-cw-rev-query':'sign-cw-pay-query']
-        if(powerMsg.state){
-          let param = JSON.parse(JSON.stringify(this.searchForm))
-          if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
-            param.startTime = param.timeRange[0]
-            param.endTime = param.timeRange[1]
-          }
-          delete param.timeRange
-          param.pageNum = this.currentPage
-          param.pageSize = this.pageSize
-          let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
-          this.$ajax.get(`/api${url}`,param).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.list = res.data.page.list
-              this.total = res.data.page.total
-            }
-          }).catch(error => {
-            console.log(error)
-          })
-        }else {
-          this.noPower(powerMsg.name)
+        let param = JSON.parse(JSON.stringify(this.searchForm))
+        if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
         }
+        delete param.timeRange
+        param.pageNum = this.currentPage
+        param.pageSize = this.pageSize
+        let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
+        this.$ajax.get(`/api${url}`,param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.list = res.data.page.list
+            this.total = res.data.page.total
+          }
+        }).catch(error => {
+          console.log(error)
+        })
       },
       toDetails:function (item) {
-        let powerMsg=true
+        let powerMsg=this.power[this.activeView===1?'sign-cw-debt-rev':'sign-cw-debt-pay'].state
         let param = {
           path: 'billDetails'
         }

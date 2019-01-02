@@ -218,7 +218,7 @@
         <li>合计金额:<span>9000元</span></li>
       </ul>&ndash;&gt;
     </div>-->
-    <div class="input-group">
+    <div class="input-group" v-if="billStatus">
       <div class="flex-box">
         <label class="form-label f14">支付信息</label>
         <el-tooltip content="多种收款方式可通过“添加支付方式”进行录入" placement="top">
@@ -263,7 +263,7 @@
         </li>
       </ul>
     </div>
-    <div class="input-group">
+    <div class="input-group" v-if="billStatus">
       <p><label class="form-label f14">刷卡资料补充</label></p>
       <el-table border :data="cardList" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="刷卡银行">
@@ -310,7 +310,7 @@
         <p><label class="f14">备注信息</label></p>
         <el-input v-model="form.remark" class="info-textarea" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
       </div>
-      <div class="input-group">
+      <div class="input-group" v-if="billStatus">
         <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
         <ul class="upload-list">
           <li>
@@ -329,7 +329,7 @@
       </div>
     </section>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">{{activeType===1?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">{{!billStatus?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -404,6 +404,7 @@
           name:''
         },
         inputPerson:false,//是否显示第三方输入框
+        billStatus:true,//线上或线下
         form: {
           contId: '',
           remark: '',
@@ -675,61 +676,71 @@
         //收款信息验证
         arr.push(this.$tool.checkForm(param,rule))
         //支付信息验证
-        newPayList.forEach(item=>{
-          if(item.payMethod!==2){
-            delete item.activeAdmin
-          }
-          payTotal+=parseFloat(item.amount)
-          arr.push(this.$tool.checkForm(item,payRule))
-        })
-        //刷卡资料验证
-        this.cardList.forEach(item=>{
-          cardTotal+=parseFloat(item.amount)
-          arr.push(this.$tool.checkForm(item,cardRule))
-        })
-        Promise.all(arr).then(res=>{
-          let total = parseFloat(this.form.amount)
-          if(total!==payTotal||total!==cardTotal){
-            this.$message({
-              message:'输入金额要等于收款金额'
-            })
-          }else if(this.files.length===0){
-            this.$message({
-              message:'收款凭证不能为空'
-            })
-          }else {
-            param.filePath = [].concat(this.files)
-            param.outAccount = [].concat(this.cardList)
-            param.inAccount = []
-            this.payList.forEach(item=>{
-              if(item.activeAdmin===''){
-                let obj = {
-                  bankName: '',
-                  userName: '',
-                  cardNumber: ''
-                }
-                param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
-              }else {
-                this.account.find(card => {
-                  if (card.bankCard === item.activeAdmin) {
-                    let obj = {
-                      bankName: card.bankBranchName,
-                      userName: card.bankAccountName,
-                      cardNumber: card.bankCard
-                    }
-                    param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
-                    return true
-                  }
-                })
-              }
-            })
-            this.getResult(param,this.$route.query.edit?'edit':'')
-          }
-        }).catch(error=>{
-          this.$message({
-            message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
+        if(this.billStatus){
+          newPayList.forEach(item=>{
+            if(item.payMethod!==2){
+              delete item.activeAdmin
+            }
+            payTotal+=parseFloat(item.amount)
+            arr.push(this.$tool.checkForm(item,payRule))
           })
-        })
+          //刷卡资料验证
+          this.cardList.forEach(item=>{
+            cardTotal+=parseFloat(item.amount)
+            arr.push(this.$tool.checkForm(item,cardRule))
+          })
+          Promise.all(arr).then(res=>{
+            let total = parseFloat(this.form.amount)
+            if(total!==payTotal||total!==cardTotal){
+              this.$message({
+                message:'输入金额要等于收款金额'
+              })
+            }else if(this.files.length===0){
+              this.$message({
+                message:'收款凭证不能为空'
+              })
+            }else {
+              param.filePath = [].concat(this.files)
+              param.outAccount = [].concat(this.cardList)
+              param.inAccount = []
+              this.payList.forEach(item=>{
+                if(item.activeAdmin===''){
+                  let obj = {
+                    bankName: '',
+                    userName: '',
+                    cardNumber: ''
+                  }
+                  param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
+                }else {
+                  this.account.find(card => {
+                    if (card.bankCard === item.activeAdmin) {
+                      let obj = {
+                        bankName: card.bankBranchName,
+                        userName: card.bankAccountName,
+                        cardNumber: card.bankCard
+                      }
+                      param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
+                      return true
+                    }
+                  })
+                }
+              })
+              this.getResult(param,this.$route.query.edit?'edit':'')
+            }
+          }).catch(error=>{
+            this.$message({
+              message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
+            })
+          })
+        }else {
+          Promise.all(arr).then(res=>{
+            this.getResult(param,this.$route.query.edit?'edit':'')
+          }).catch(error=>{
+            this.$message({
+              message:`${error.title}${error.msg}`
+            })
+          })
+        }
 
         /*param.outAccount=[]
         param.inAccount=[]
@@ -851,7 +862,7 @@
                 this.$router.replace({
                   path: 'receiptResult',
                   query:{
-                    type:this.activeType,
+                    type:this.billStatus?2:1,
                     content:JSON.stringify(res.data),
                     edit:1
                   }
@@ -871,7 +882,7 @@
                 this.$router.replace({
                   path: 'receiptResult',
                   query:{
-                    type:this.activeType,
+                    type:this.billStatus?2:1,
                     content:JSON.stringify(res.data)
                   }
                 })
@@ -964,6 +975,11 @@
         })
       },
       getCell:function (label) {
+        if(label.accountType.value===3){
+          this.billStatus=false
+        }else {
+          this.billStatus=true
+        }
         this.showAmount=label.pName==='代收代付'?false:true
         this.form.moneyType=label.key
         this.form.moneyTypePid = label.pId
