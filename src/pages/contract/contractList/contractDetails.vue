@@ -91,7 +91,7 @@
                   <el-table-column prop="name" label="业主姓名"></el-table-column>
                   <el-table-column label="电话">
                     <template slot-scope="scope">
-                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
+                      {{scope.row.mobile}} 
                       <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)" v-if="power['sign-ht-xq-ly-call'].state"></i>
                     </template>
                   </el-table-column>
@@ -128,7 +128,7 @@
                   <el-table-column prop="name" label="客户姓名"></el-table-column>
                   <el-table-column label="电话">
                     <template slot-scope="scope">
-                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
+                      {{scope.row.mobile}} 
                       <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)" v-if="power['sign-ht-xq-ly-call'].state"></i>
                     </template>
                   </el-table-column>
@@ -1044,30 +1044,38 @@ export default {
     //添加备注
     addRemark(){
       if(this.recordRemarks.length>0){
-        let param = {
-          remarks:this.recordRemarks,
-          id:this.remarkId
-        }
-        this.$ajax.put('/api/record/update',param, 2).then(res=>{
-          res=res.data;
-          if(res.status===200){
-            this.showRemarks=false;
-            this.$message({
-              message:'添加成功'
-            });
-            this.getRecordList();
+        this.recordRemarks=this.recordRemarks.replace(/\s/g,"");
+        if(this.recordRemarks.length>0){
+          let param = {
+            remarks:this.recordRemarks,
+            id:this.remarkId
           }
-        }).catch(error=>{
-          this.$message({
-            message:error,
-            type: "error"
+          this.$ajax.put('/api/record/update',param, 2).then(res=>{
+            res=res.data;
+            if(res.status===200){
+              this.showRemarks=false;
+              this.$message({
+                message:'添加成功'
+              });
+              this.getRecordList();
+            }
+          }).catch(error=>{
+            this.$message({
+              message:error,
+              type: "error"
+            })
           })
-        })
-      }else{
-        this.$message({
+        }else{
+          this.$message({
             message:"备注不能为空",
             type: "warning"
           })
+        }
+      }else{
+        this.$message({
+          message:"备注不能为空",
+          type: "warning"
+        })
       }
     },
     //播放录音
@@ -1442,25 +1450,32 @@ export default {
     },
     setInvalid(){
       if(this.invalidReason.length>0){
-        let param = {
-          id: this.id,
-          reason: this.invalidReason
-        };
-        this.$ajax.post('/api/contract/invalid', param).then(res=>{
-          res=res.data;
-          if(res.status===200){
-            this.getContractDetail();
-            this.dialogInvalid=false;
+        this.invalidReason=this.invalidReason.replace(/\s/g,"");
+        if(this.invalidReason.length>0){
+          let param = {
+            id: this.id,
+            reason: this.invalidReason
+          };
+          this.$ajax.post('/api/contract/invalid', param).then(res=>{
+            res=res.data;
+            if(res.status===200){
+              this.getContractDetail();
+              this.dialogInvalid=false;
+              this.$message({
+                message:'操作成功'
+              })
+            }
+          }).catch(error=>{
             this.$message({
-              message:'操作成功'
+              message:error,
+              type: "error"
             })
-          }
-        }).catch(error=>{
-          this.$message({
-            message:error,
-            type: "error"
           })
-        })
+        }else{
+          this.$message({
+            message:'请填写撤单原因'
+          })
+        }
       }else{
         this.$message({
           message:'请填写撤单原因'
@@ -1616,7 +1631,7 @@ export default {
           color: @color-6c;
         }
         > p {
-          color: @color-D6;
+          color: @color-6c;
           width: 650px;
           height: 100px;
           padding: 10px;

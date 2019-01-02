@@ -614,18 +614,21 @@
           v-if="dialogType==0"
           style="height:100px;padding-bottom: 30px;width:100%"
         >
-          <p class="text-layout">备注：
-            <el-input
-              type="textarea"
-              :rows="2"
-              placeholder="请输入内容"
-              class="f_l"
-              v-model="remark"
-              resize="none"
-              maxlength=200
-            ></el-input>
-            <span class="textLength">{{remark.length}}/200</span>
-          </p>
+          <div class="text-layout-out">
+               <p class="text-layout">
+                 <label>备注：</label>
+                 <el-input
+                   type="textarea"
+                   :rows="2"
+                   placeholder="请输入内容,最多输入200字"
+                   class="f_l"
+                   v-model="remark"
+                   resize="none"
+                   maxlength=200
+                 ></el-input>
+                 <!-- <span class="textLength">{{remark.length}}/200</span> -->
+               </p>
+          </div>
           <div class="footer-btn-layout f_r">
             <el-button
               type="primary"
@@ -724,60 +727,62 @@
              custom-class="dialog2In"
             :close-on-click-modal="false"
           >
-            <h1 style="font-size:18px;" slot="title">选择相关人员</h1>
-            <div class="mansList">
-              <el-table
-                :data="mansList"
-                style="width: 100%"
-                @selection-change="handleSelectionChange"
-                :header-cell-style="{'background-color':'#F7F6Fd'}"
-              >
-                <el-table-column
-                  type="selection"
-                  width="70"
-                ></el-table-column>
+                <div v-loading="loading3">
+                     <h1 style="font-size:18px;" slot="title">选择相关人员</h1>
+                       <div class="mansList">
+                         <el-table
+                           :data="mansList"
+                           style="width: 100%"
+                           @selection-change="handleSelectionChange"
+                           :header-cell-style="{'background-color':'#F7F6Fd'}"
+                         >
+                           <el-table-column
+                             type="selection"
+                             width="70"
+                           ></el-table-column>
 
-                <el-table-column
-                  label="经纪人"
-                  width="100"
-                >
-                  <template slot-scope="scope">
-                    <p>{{scope.row.assignor}}</p>
-                  </template>
-                </el-table-column>
+                           <el-table-column
+                             label="经纪人"
+                             width="100"
+                           >
+                             <template slot-scope="scope">
+                               <p>{{scope.row.assignor}}</p>
+                             </template>
+                           </el-table-column>
 
-                <el-table-column
-                  label="角色类型"
-                  width="100"
-                >
-                  <template slot-scope="scope">
-                    <p>{{scope.row.roleName}}</p>
-                  </template>
-                </el-table-column>
+                           <el-table-column
+                             label="角色类型"
+                             width="100"
+                           >
+                             <template slot-scope="scope">
+                               <p>{{scope.row.roleName}}</p>
+                             </template>
+                           </el-table-column>
 
-                <el-table-column
-                  label="门店"
-                >
-                  <template slot-scope="scope">
-                    <p>{{scope.row.level3}}</p>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-           
-          <div class="dialog2-btn f_r clearfix">
-              <el-button
-                type="primary"
-                round
-                @click="showTips = false"
-              >取消</el-button>
-              <el-button
-                type="primary"
-                round
-                @click="manSure(type)"
-                v-dbClick
-              >确定</el-button>
-          </div>
+                           <el-table-column
+                             label="门店"
+                           >
+                             <template slot-scope="scope">
+                               <p>{{scope.row.level3}}</p>
+                             </template>
+                           </el-table-column>
+                         </el-table>
+                       </div>
+
+                     <div class="dialog2-btn f_r clearfix">
+                         <el-button
+                           type="primary"
+                           round
+                           @click="showTips = false"
+                         >取消</el-button>
+                         <el-button
+                           type="primary"
+                           round
+                           @click="manSure(type)"
+                           v-dbClick
+                         >确定</el-button>
+                     </div>
+                </div>
           </el-dialog>
          </div>
         </div>
@@ -828,6 +833,7 @@ export default {
       shopIndex:1,
       shopStr:null,
       shopTotal:null,
+      loading3:false
       // amaldarIndex:1,
       // amaldarStr:null,
       // amaldarTotal:null
@@ -1147,11 +1153,12 @@ export default {
     },   
     //获取房源客源相关人员
     getMans(type,fieldStr) {
+      this.showTips = true;
+      this.loading3=true;
       let param = {
         contCode: this.contractCode
       };
       this.$ajax.get("/api/achievement/"+fieldStr, param).then(res => {
-        this.showTips = true;
         let data = res.data;
         if (data.status === 200) {
           if (type == 1) {
@@ -1160,6 +1167,7 @@ export default {
             this.mansList = data.data.customerAgents;
           }
         }
+         this.loading3=false;
       });
     },
     // 房源选择相关人
@@ -1298,6 +1306,7 @@ export default {
       // console.log(sumFlag);
 
       if (flag && sumFlag) {
+        this.loading=true;
         let param = {
           id: this.aId,
           remark: this.remark,
@@ -1311,11 +1320,13 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$emit("close");
+              this.loading=false;
               this.$message({ message: "操作成功", type: "success" });
               this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
             } 
           }).catch(error => {
                this.$message.error({message: error})
+               this.loading=false;
           });
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1382,6 +1393,7 @@ export default {
         }
       }
       if (flag && sumFlag && this.remark != "") {
+        this.loading=true;
         let param = {
           id: this.aId,
           remark: this.remark,
@@ -1395,13 +1407,13 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$emit("close");
+              this.loading=false;
               this.$message({ message: "操作成功", type: "success" });
               this.$emit("rejectData", this.achIndex, resultArr);
-            } else if (res.data.status != 200) {
-              this.$message.error(res.data.message);
-            }
+            } 
           }).catch(error => {
                this.$message.error({message: error})
+               this.loading=false;
           });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1475,6 +1487,7 @@ export default {
       if (flag && sumFlag) {
         // this.$emit("close", this.achIndex);
         // this.$message("操作完成");
+        this.loading=true;
         console.log(this.examineDate);
         let param = {};
         if (type == 1) {
@@ -1510,11 +1523,13 @@ export default {
             if (type == 2 && status == 1) {
               this.$emit("saveData", this.achIndex, resultArr, 0);
             }
+            this.loading=true;
             this.$emit("close");
             this.$message({ message: "操作成功", type: "success" });
           }
         }).catch(error => {
                this.$message.error({message: error})
+               this.loading=false;
         });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1582,6 +1597,7 @@ export default {
 
       console.log(sum);
       if (flag && sumFlag) {
+        this.loading=true;
         let param = {};
         if (type == 2) {
           param = {
@@ -1616,10 +1632,12 @@ export default {
             console.log(res.data.status);
             if (res.data.status == 200) {
               this.$emit("close");
+              this.loading=false;
               this.$message({ message: "操作成功", type: "success" });
             }
           }).catch(error => {
                this.$message.error({message: error})
+               this.loading=false;
           });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1770,8 +1788,8 @@ export default {
 <style lang="less" scoped>
 // 相关人员弹框
 /deep/ .dialog2In {
-  width:450px !important;
-  max-height:450px;
+  width: 450px !important;
+  max-height: 450px;
   min-height: 255px;
   margin-top: 13vh !important;
   .is-checked {
@@ -1786,7 +1804,7 @@ export default {
 
     // min-height: 200px;
     // height: 300px;
-    width:450px !important;
+    width: 450px !important;
   }
   h1 {
     height: 53px;
@@ -1801,10 +1819,10 @@ export default {
     // }
   }
   .mansList {
-     overflow-y: auto;
-     max-height: 300px;
-     min-height: 100px;
-     width:450px !important;
+    overflow-y: auto;
+    max-height: 300px;
+    min-height: 100px;
+    width: 450px !important;
   }
   /deep/ tr td:first-of-type,
   th:first-of-type {
@@ -1831,13 +1849,13 @@ export default {
     }
     margin-bottom: 20px;
   }
-  .cell{
+  .cell {
     font-size: 12px;
   }
 }
 //业绩详情弹框改变样式
 .dialog1 {
-  /deep/ .el-dialog.base-dialog{
+  /deep/ .el-dialog.base-dialog {
     // max-width: 80%!important;
     margin: 10vh auto 0 !important;
     overflow: hidden;
@@ -1874,7 +1892,7 @@ export default {
       // padding: 0 20px;
       box-sizing: border-box;
       overflow-y: auto;
-     
+
       /deep/ .el-input__inner {
         border: 0;
         box-shadow: 0;
@@ -1882,14 +1900,15 @@ export default {
         padding-left: 5px;
         padding-right: 25px;
         // padding-left: 10px;
-        font-size: 12px!important;
+        font-size: 12px !important;
       }
       /deep/ .el-icon-circle-close {
         position: absolute;
         left: -5px;
         top: 0;
       }
-     /deep/  .el-select__caret.is-reverse,.el-icon-arrow-up{
+      /deep/ .el-select__caret.is-reverse,
+      .el-icon-arrow-up {
         position: absolute;
         left: -5px;
         top: 0;
@@ -1897,7 +1916,7 @@ export default {
       //  /deep/  .el-radio{
       //   margin-left: 10px;
       // }
-      .el-radio+.el-radio{
+      .el-radio + .el-radio {
         margin-left: 0;
       }
       .house-divide {
@@ -1916,7 +1935,7 @@ export default {
         .house-right {
           margin-top: 10px;
           button {
-            padding: 0  10px!important;
+            padding: 0 10px !important;
             border-radius: 0;
           }
           button:first-of-type {
@@ -1943,35 +1962,35 @@ export default {
         margin: 0px !important;
       }
     }
-      /deep/ .el-table {
-        // font-size: 14px !important;
-        margin-top: 20px;
-        border-spacing: 0px;
-        td,
+    /deep/ .el-table {
+      // font-size: 14px !important;
+      margin-top: 20px;
+      border-spacing: 0px;
+      td,
+      th {
+        padding: 0px 0px !important;
+        height: 100%;
+      }
+      .el-table__header {
+        height: 55px;
         th {
-          padding: 0px 0px!important;
-          height: 100%;
-        }
-        .el-table__header {
-          height: 55px;
-          th {
-            padding: 0;
-            .cell {
-              background-color: #eef2fb;
-              // background-color: pink;
-              height: 55px;
-              line-height: 55px;
-            }
+          padding: 0;
+          .cell {
+            background-color: #eef2fb;
+            // background-color: pink;
+            height: 55px;
+            line-height: 55px;
           }
         }
-        .el-table__header th .cell{
-          height: 30px;
-          line-height: 30px;
-        }
       }
-      /deep/ .el-radio__label{
-        font-size:12px;
+      .el-table__header th .cell {
+        height: 30px;
+        line-height: 30px;
       }
+    }
+    /deep/ .el-radio__label {
+      font-size: 12px;
+    }
     .ach-footer {
       // min-height: 100px;
       width: 100%;
@@ -1981,6 +2000,10 @@ export default {
       position: relative;
       p {
         margin-top: 5px;
+      }
+      .text-layout-out{
+        position: relative;
+        width: 500px;
       }
       .text-layout {
         position: relative;
@@ -1997,8 +2020,8 @@ export default {
         }
         .textLength {
           position: absolute;
-          right: 815px;
-          top: 70px;
+          right: 50px;
+          bottom: -65px;
           color: #6c7986;
           text-align: right;
         }

@@ -99,7 +99,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
-          <el-dropdown placement="bottom" @command="printCont"><!--  @command="printCont" -->
+          <el-dropdown placement="bottom" @command="printCont" v-if="power['sign-ht-info-print'].state"><!--  @command="printCont" -->
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -109,7 +109,7 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-dropdown placement="bottom" @command="toAddcontract">
+          <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-add'].state">
             <el-button round type="primary">
               创建正式合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -304,7 +304,7 @@
               <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4">
                 <el-button type="text" size="medium" @click="goSave(scope.row)">提审</el-button>
               </span>
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2" @click="toLayerAudit(scope.row)">调佣</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
             </div>
           </template>
         </el-table-column>
@@ -659,7 +659,7 @@ export default {
     },
     //新增合同
     toAddcontract(command) {
-      if(this.power['sign-ht-info-add'].state){
+      // if(this.power['sign-ht-info-add'].state){
         let param = {
           type:command
         };
@@ -694,9 +694,9 @@ export default {
               type: "warning"
             });
           });
-      }else{
-        this.noPower('创建合同')
-      }
+      // }else{
+      //   this.noPower('创建合同')
+      // }
     },
     //合同预览
     goPreview(item) {
@@ -729,14 +729,14 @@ export default {
     //调佣弹窗
     //Z171231001
     toLayerAudit(item) {
-      if(item.isCanChangeCommission===1){
+      // if(item.isCanChangeCommission===1){
         this.contractCode = item.code;
         this.tiaoyong = true;
-      }else{
-        this.$alert('已存在未审核的调佣申请，不允许重复提交！', '提示', {
-          confirmButtonText: '确定',
-        });
-      }
+      // }else{
+      //   this.$alert('已存在未审核的调佣申请，不允许重复提交！', '提示', {
+      //     confirmButtonText: '确定',
+      //   });
+      // }
     },
     //关闭调佣弹窗
     closeCommission() {
