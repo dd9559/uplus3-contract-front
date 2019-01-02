@@ -181,7 +181,7 @@
                 <th>业主佣金</th>
                 <th>客户佣金</th>
                 <!-- <th>按揭手续费</th> -->
-                <th>合作费扣除</th>
+                <th v-if="layerAudit.isCooperation === 1">合作费扣除</th>
               </tr>
             </thead>
             <tbody>
@@ -189,13 +189,13 @@
                 <td>原金额</td>
                 <td>{{layerAudit.ownerCommission}}元</td>
                 <td>{{layerAudit.custCommission}}元</td>
-                <td>{{layerAudit.otherCooperationCost}}元</td>
+                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.otherCooperationCost}}元</td>
               </tr>
               <tr>
                 <td>调整为</td>
                 <td>{{layerAudit.newOwnerCommission}}元</td>
                 <td>{{layerAudit.newCustCommission}}元</td>
-                <td>{{layerAudit.newOtherCooperationCost}}元</td>
+                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.newOtherCooperationCost}}元</td>
               </tr>
             </tbody>
           </table>
@@ -267,7 +267,7 @@
                 <th>业主佣金</th>
                 <th>客户佣金</th>
                 <!-- <th>按揭手续费</th> -->
-                <th>合作费扣除</th>
+                <th v-if="layerAudit.isCooperation === 1">合作费扣除</th>
               </tr>
             </thead>
             <tbody>
@@ -275,13 +275,13 @@
                 <td>原金额</td>
                 <td>{{layerAudit.ownerCommission}}元</td>
                 <td>{{layerAudit.custCommission}}元</td>
-                <td>{{layerAudit.otherCooperationCost}}元</td>
+                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.otherCooperationCost}}元</td>
               </tr>
               <tr>
                 <td>调整为</td>
                 <td>{{layerAudit.newOwnerCommission}}元</td>
                 <td>{{layerAudit.newCustCommission}}元</td>
-                <td>{{layerAudit.newOtherCooperationCost}}元</td>
+                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.newOtherCooperationCost}}元</td>
               </tr>
             </tbody>
           </table>
