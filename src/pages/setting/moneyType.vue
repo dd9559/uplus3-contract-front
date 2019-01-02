@@ -129,7 +129,7 @@
         methods: {
             // 初始化数据
             initList(){
-                 if(this.power['sign-set-kl-query'].state){
+                //  if(this.power['sign-set-kl-query'].state){
                     this.$ajax.get('api/setting/moneyType/list',{id:this.bigId},).then((res)=>{
                     if(res.status==200){
                         if(this.bigId==''){
@@ -142,9 +142,9 @@
                         this.bigId=this.bigId==''?18:this.bigId
                     }
                 })
-                }else{
-                         this.noPower(this.power['sign-set-kl-query'].name)
-                }
+                // }else{
+                //          this.noPower(this.power['sign-set-kl-query'].name)
+                // }
             },
             tableRowClassName({row, rowIndex}){
                 row.index = rowIndex;
@@ -214,7 +214,6 @@
                 
             },
             statusOp(param,message){
-                console.log(this.power['sign-set-kl-edit'],'edit')
                 if(this.power['sign-set-kl-edit'].state){
                     this.$ajax.get('/api/setting/moneyType/update',param)
                    .then((res)=>{
@@ -262,15 +261,16 @@
                 this.$refs.onetable.$el.classList.remove('onetable')
                 this.addForm.parentId=row.id
                 this.bigId=row.id
-                if(this.power['sign-set-kl-query'].state){
+                // if(this.power['sign-set-kl-query'].state){
                   this.$ajax.get('api/setting/moneyType/list',{id:this.bigId}).then((res)=>{
                     if(res.status==200){
                         this.moneyTypes=res.data.data
                         this.isMoney=true
                     }})
-                }else{
-                      this.noPower(this.power['sign-set-kl-query'].name)
-                }
+                // }
+                // else{
+                //       this.noPower(this.power['sign-set-kl-query'].name)
+                // }
             }
         }
     }

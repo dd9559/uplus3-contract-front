@@ -466,7 +466,7 @@
     </div>
 
     <!-- 表单列表弹出框（业绩详情） -->
-   <div v-loading="loading">
+   <div v-loading="loading2">
        <el-dialog
       :visible.sync="dialogVisible"
        width="1000px"
@@ -748,6 +748,7 @@
       @adoptData="adoptData"
       @rejectData="rejectData"
       @close="shows=false;code2=''"
+      @opens="shows=true"
       :dialogType="dialogType"
       :contractCode="code2"
       :aId="aId"
@@ -830,7 +831,8 @@ export default {
       achIndex:null,
       ajaxParam:{},
       total:0,
-      loading:true,
+      loading:false,
+      loading2:false,
       achObj:{},
       recallShow:false,
       smallTips:"",
@@ -1032,7 +1034,7 @@ export default {
     },
     //获取应收列表详情
     enterDetail(row) {
-      this.loading=true;
+      this.loading2=true;
       //合同边和获取业绩详情
       this.code = row.code;
       let param = { contCode: row.code, entrance: 3,aId:row.aId };
@@ -1045,7 +1047,7 @@ export default {
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;
-                this.loading=false;
+                this.loading2=false;
                 this.dialogVisible = true;             
             }else{
               this.checkArr = [];
@@ -1120,7 +1122,7 @@ export default {
       this.achObj={
         contractId:value.id,//合同id
       }
-      // this.shows = true;
+      this.shows = true;
     },
     editAch(value,index) {
         this.beginData = true;
@@ -1132,7 +1134,7 @@ export default {
         this.achObj={
           contractId:value.id,//合同id
         }
-        // this.shows = true;
+        this.shows = true;
     },
     againCheck(value,index) {
       this.beginData = true;
@@ -1144,7 +1146,7 @@ export default {
       this.achObj={
         contractId:value.id,//合同id
       }
-      // this.shows = true;
+      this.shows = true;
     },
     //分页
     handleSizeChange(val) {
