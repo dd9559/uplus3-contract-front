@@ -356,12 +356,12 @@ export default {
 
             .col-li2{
                 p:nth-child(2n){
-                width: 250px;
+                width: 190px;
                 }
                 p{
                 float: left;
                 &:first-child{
-                    width: 250px;
+                    width: 240px;
                     color: #6C7986;
                     span{
                     color: #233241;

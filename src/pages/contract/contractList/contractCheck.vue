@@ -154,8 +154,9 @@
         </el-table-column>
         <el-table-column align="left" label="当前审核人" width="150">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
-              <p>{{scope.row.auditName?scope.row.auditName:'-'}}</p>
+            <span v-if="scope.row.auditName">
+              <p>{{scope.row.auditName}}</p>
+              <el-button type="text" v-if="scope.row.auditButton" @click="choseCheckPerson(scope.row)">转交审核人</el-button>
             </span>
             <span v-else>-</span>
           </template>
@@ -195,6 +196,8 @@
     </div>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <!-- 设置/转交审核人 -->
+    <!-- <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson> -->
   </div>
 </template>
            
@@ -203,12 +206,14 @@ import ScreeningTop from "@/components/ScreeningTop";
 import changeCancel from "../contractDialog/changeCancel";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
+import checkPerson from '@/components/checkPerson';
 
 export default {
   mixins: [MIXINS],
   components: {
     ScreeningTop,
-    changeCancel
+    changeCancel,
+    checkPerson
   },
   data(){
     return{
@@ -245,6 +250,12 @@ export default {
       settleId:'',
       dialogType:'',
       isSubmitAudit:false,
+      checkPerson: {
+        state:false,
+        type:'init',
+        code:'',
+        flowType:0
+      },
        //权限配置
       power: {
         'sign-ht-info-view': {
@@ -413,6 +424,19 @@ export default {
     searchDep:function (payload) {
       this.DepList=payload.list
       this.contractForm.depName=payload.depName
+    },
+     // 选择审核人
+    choseCheckPerson:function (row) {
+      this.checkPerson.flowType=this.activeView===1?1:0
+      this.checkPerson.code=row.payCode
+      if(row.auditButton){
+        this.checkPerson.state=true
+        this.checkPerson.type='init'
+      }
+      if(row.setAudit===1){
+        this.checkPerson.state=true
+        this.checkPerson.type='set'
+      }
     },
   }
 };

@@ -38,11 +38,12 @@
                                     <div class="div1"><span>房型：</span>{{detailData.houseInfo.HouseType | nullData}}</div>
                                     <div class="div2"><span>朝向：</span>{{detailData.houseInfo.Orientation | nullData}}</div>
                                     <div class="div3"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
-                                    <div><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
+                                    
                                 </li>
                                 <li>
-                                    <div class="div1"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
-                                    <div><span>产证地址：</span>{{detailData.houseInfo.propertyRightAddr | nullData}}</div>
+                                    <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
+                                    <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>                                 
+                                    <div><span>产权地址：</span>{{detailData.houseInfo.propertyRightAddr | nullData}}</div>
                                 </li>
                             </ul>
                         </ul>
@@ -686,8 +687,12 @@ export default {
 
 <style lang="less">
 #intention{
+
     overflow: hidden;
     background-color: #fff;
+    .el-textarea.is-disabled .el-textarea__inner{
+        color:#233241;
+    }
     .el-tabs__item{
         height: 50px;
         line-height: 50px;

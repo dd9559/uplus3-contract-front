@@ -176,7 +176,7 @@
           <div class="col-li col-li2">
             <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
             <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-            <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>
+            <p>当期实际结算：<span><em>{{layerAudit.actualsettlement}}元</em>（当期实收*结算比例-成本）</span></p>
           </div>
         </div>
 
@@ -264,7 +264,7 @@
           <div class="col-li col-li2">
             <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
             <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-            <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>
+            <p>当期实际结算：<span><em>{{layerAudit.actualsettlement}}元</em>（当期实收*结算比例-成本）</span></p>
           </div>
         </div>
 
@@ -843,6 +843,9 @@
 @import "~@/assets/common.less";
 
 #settlecheck{
+  .el-textarea.is-disabled .el-textarea__inner{
+        color:#233241;
+    }
   .fl{
     float: left;
   }
@@ -1002,15 +1005,19 @@
       }
       .col-li2{
         p:nth-child(2n){
-          width: 250px;
+          width: 190px;
         }
         p{
           float: left;
+          span em{           
+            color: #ff9039;             
+          }
           &:first-child{
-            width: 250px;
+            width: 240px;
             color: #6C7986;
             span{
               color: #233241;
+              
               &.blue{
                 color: #478DE3;
               }
