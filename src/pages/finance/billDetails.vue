@@ -237,6 +237,7 @@
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -244,6 +245,7 @@
   import LayerInvoice from '@/components/LayerInvoice'
   import {FILTER} from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
+  import checkPerson from '@/components/checkPerson'
 
   let timer = null
   let target = 0
@@ -253,10 +255,17 @@
     name: "bill-details",
     mixins: [FILTER,MIXINS],
     components:{
-      LayerInvoice
+      LayerInvoice,
+      checkPerson
     },
     data() {
       return {
+        checkPerson: {
+          state:false,
+          type:'set',
+          code:'',
+          flowType:0
+        },
         tabs: ['审核信息'],
         activeItem: '',
         billId: 0,
@@ -287,6 +296,7 @@
     created() {
       // debugger
       this.activeItem = this.$route.query.tab
+      this.checkPerson.flowType=this.activeItem==='收款信息'?1:0
       this.billId = this.$route.query.id
       this.btnCheck = this.$route.query.power.toString()==='true'?true:false
       this.tabs.unshift(this.activeItem)
@@ -315,6 +325,12 @@
         }else {
           this.$refs.layerInvoice.show(this.billId,true)
         }
+      },
+      personChose:function () {
+        this.checkPerson.state=false
+        this.$confirm.message({
+          message:'下一个节点审核人设置成功'
+        })
       },
       // 判断审核弹窗显示内容
       showDialog: function () {
@@ -353,6 +369,7 @@
             if (res.data.filePath) {
               this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
             }
+            this.checkPerson.code=res.data.payCode
             this.getCheckData()
           }
         })
@@ -414,9 +431,14 @@
           }
         }).catch(error=>{
           this.fullscreenLoading=false
-          this.$message({
-            message:error
-          })
+          debugger
+          if(error==='下一节点审批人不存在'){
+            this.checkPerson.state=true
+          }else {
+            this.$message({
+              message:error
+            })
+          }
         })
       },
       secondCheck:function () {

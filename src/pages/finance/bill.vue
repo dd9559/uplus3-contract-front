@@ -344,7 +344,7 @@
           contType: '',
           timeType: '',
           depName: '',
-          depId: '',
+          deptId: '',
           empId: '',
           billStatus: '',
           proAccount: '',
@@ -472,7 +472,7 @@
         }
       },
       clearDep: function () {
-        this.searchForm.depId = ''
+        this.searchForm.deptId = ''
         this.searchForm.depName = ''
         // this.EmployeList=[]
         this.searchForm.empId = ''
@@ -484,7 +484,7 @@
       },
       depHandleClick(data) {
         // this.getEmploye(data.depId)
-        this.searchForm.depId = data.depId
+        this.searchForm.deptId = data.depId
         this.searchForm.depName = data.name
         this.searchForm.empId = ''
 

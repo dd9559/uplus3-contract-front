@@ -282,7 +282,7 @@
           contType: '',
           timeType: '',
           depName:'',
-          depId: '',
+          deptId: '',
           empId: '',
           billStatus: '',
           proAccount: '',
@@ -344,9 +344,9 @@
             state: false,
             name: '付款审核'
           },
-          'sign-com-htdetail': {
+          'sign-cw-debt-rev': {
             state: false,
-            name: '合同详情'
+            name: '收款审核'
           },
           'sign-com-htdetail': {
             state: false,
@@ -453,7 +453,7 @@
         }
       },
       clearDep:function () {
-        this.searchForm.depId=''
+        this.searchForm.deptId=''
         this.searchForm.depName=''
         // this.EmployeList=[]
         this.searchForm.empId=''
@@ -464,7 +464,7 @@
         this.searchForm.depName=payload.depName
       },
       depHandleClick(data) {
-        this.searchForm.depId=data.depId
+        this.searchForm.deptId=data.depId
         this.searchForm.depName=data.name
         this.searchForm.empId=''
         this.handleNodeClick(data)

@@ -88,12 +88,19 @@
               param.userName=item.name
             }
           })
-          this.$ajax.post('/api/machine/changeAuditorNext',param).then(res=>{
-            res=res.data
-            if(res.status===200){
-              this.$emit('submit',this.choseItem)
-            }
-          })
+          if(param.userId!==''){
+            this.$ajax.post(this.type==='init'?'/api/machine/changeAuditorNow':'/api/machine/changeAuditorNext',param).then(res=>{
+              res=res.data
+              if(res.status===200){
+                this.$emit('submit',this.choseItem)
+              }
+            })
+          }else {
+            this.$confirm.message({
+              message:'请选择审核人'
+            })
+          }
+
         }
       },
       close:function () {
