@@ -466,13 +466,14 @@
     </div>
 
     <!-- 表单列表弹出框（业绩详情） -->
-   <div v-loading="loading2">
-       <el-dialog
+   <div>
+      <el-dialog
       :visible.sync="dialogVisible"
        width="1000px"
       :close-on-click-modal="false"
       custom-class="base-dialog"
     >
+    <div v-loading="loading2">
       <b
         class="el-icon-close"
         @click="closeDialog"
@@ -738,6 +739,8 @@
         </div>
       </div>
       <div class="ach-footer"></div>
+    </div>
+ 
     </el-dialog>
    </div>
 
@@ -1034,6 +1037,7 @@ export default {
     },
     //获取应收列表详情
     enterDetail(row) {
+      this.dialogVisible = true;  
       this.loading2=true;
       //合同边和获取业绩详情
       this.code = row.code;
@@ -1047,8 +1051,7 @@ export default {
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;
-                this.loading2=false;
-                this.dialogVisible = true;             
+                this.loading2=false;            
             }else{
               this.checkArr = [];
             }
@@ -1334,7 +1337,7 @@ export default {
     // max-width: 1000px;
     margin: 13vh auto 0 !important;
     overflow: auto;
-   padding-bottom: 30px;
+    padding-bottom: 30px;
     .el-dialog__headerbtn {
       right: 0;
       top: 0;
@@ -1389,7 +1392,7 @@ export default {
             }
           }
         }
-       .el-table__header th .cell{
+        .el-table__header th .cell {
           height: 30px;
           line-height: 30px;
         }
