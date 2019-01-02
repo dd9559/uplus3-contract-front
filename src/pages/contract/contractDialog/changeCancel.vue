@@ -288,7 +288,10 @@ export default {
 			// this.uploadList.forEach(element => {
 			// 	delete element.fileType
 			// });
-			console.log(this.uploadList);
+			// console.log(this.uploadList);
+			if(this.textarea.length>0){
+				this.textarea=this.textarea.replace(/\s/g,"")
+			}
 			if(this.dialogType==="upload"){
 				//上传合同主体
 				if(this.uploadList.length>0){

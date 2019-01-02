@@ -311,20 +311,25 @@ export default {
     checked(num) {
       //驳回/风险单
       if (num===2 || this.isSign) {
-        if (this.textarea.length) {
-          let param = {
-            // bizId:this.auditNodeResult.bizId,
-            bizCode:this.code,
-            flowType:3,
-            // flowId:this.auditNodeResult.flowId,
-            // sort:this.auditNodeResult.nodeSort,
-            approvalForm:{
-              result: num,
-              isRisk: this.isSign, //风险单
-              remark: this.textarea
-            }
-          };
-          this.toChecked(param);
+        if (this.textarea.length>0) {
+          this.textarea=this.textarea.replace(/\s/g,"");
+          if(this.textarea.length>0){
+            let param = {
+              bizCode:this.code,
+              flowType:3,
+              approvalForm:{
+                result: num,
+                isRisk: this.isSign, //风险单
+                remark: this.textarea
+              }
+            };
+            this.toChecked(param);
+          }else{
+            this.$message({
+              message: '请填写审核原因以及风险单原因',
+              type: 'warning'
+            });
+          }
         }else{
           this.$message({
             message: '请填写审核原因以及风险单原因',
@@ -485,25 +490,32 @@ export default {
     //撤单
     setInvalid(){
       if(this.invalidReason.length>0){
-        let param = {
-          id: this.id,
-          reason: this.invalidReason
-        };
-        this.$ajax.post('/api/contract/invalid', param).then(res=>{
-          res=res.data;
-          if(res.status===200){
-            this.getContImg();
-            this.dialogInvalid=false;
+        this.invalidReason=this.invalidReason.replace(/\s/g,"")
+        if(this.invalidReason.length>0){
+          let param = {
+            id: this.id,
+            reason: this.invalidReason
+          };
+          this.$ajax.post('/api/contract/invalid', param).then(res=>{
+            res=res.data;
+            if(res.status===200){
+              this.getContImg();
+              this.dialogInvalid=false;
+              this.$message({
+                message:'操作成功'
+              })
+            }
+          }).catch(error => {
             this.$message({
-              message:'操作成功'
+              message:error,
+              type: "error"
             })
-          }
-        }).catch(error => {
-          this.$message({
-            message:error,
-            type: "error"
           })
-        })
+        }else{
+          this.$message({
+            message:'请填写撤单原因'
+          })
+        }
       }else{
         this.$message({
           message:'请填写撤单原因'
