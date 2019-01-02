@@ -63,8 +63,7 @@
                 {{scope.row.Price}} {{scope.row.TradeInt===3?'元':'万元'}}
               </template>
             </el-table-column>
-            <el-table-column prop="DecorateType" label="装修" width="60"
-            ></el-table-column>
+            <el-table-column prop="DecorateType" label="装修" width="60"></el-table-column>
             <el-table-column prop="Emp1" label="维护人" ></el-table-column>
           </el-table>
           <el-pagination
@@ -143,6 +142,11 @@
               <template slot-scope="scope">
                 <span v-if="scope.row.PriceMin||scope.row.PriceMax">{{scope.row.PriceMin}}-{{scope.row.PriceMax}}{{scope.row.Trade==='求租'?'元':'万元'}}</span>
                 <span v-else>--</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="维护人" min-width="100" >
+              <template slot-scope="scope">
+                {{scope.row.DeptName+' - '+scope.row.EmpName}}
               </template>
             </el-table-column>
           </el-table>

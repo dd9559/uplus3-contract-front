@@ -147,7 +147,7 @@
                   </el-option>
                 </el-select>
                 <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
-                <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
+                <input v-model="item.encryptionCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.encryptionCode)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -198,7 +198,7 @@
                 </el-select>
                 <!-- <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" @input="cutNumber_(index,'guest')" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"><i slot="suffix">%</i></el-input> -->
                 <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
-                <input v-model="item.identifyCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
+                <input v-model="item.encryptionCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.encryptionCode)">
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -374,7 +374,7 @@ export default {
       ownerList: [
         {
           type: 1,
-          identifyCode: "",
+          encryptionCode: "",
           mobile: "",
           relation: "",
           name: "",
@@ -386,7 +386,7 @@ export default {
       guestList: [
         {
           type: 2,
-          identifyCode: "",
+          encryptionCode: "",
           mobile: "",
           relation: "",
           name: "",
@@ -469,7 +469,7 @@ export default {
         this.ownerList.push({
           edit: true,
           type: 1,
-          identifyCode: "",
+          encryptionCode: "",
           mobile: "",
           relation: "",
           name: "",
@@ -490,7 +490,7 @@ export default {
         this.guestList.push({
           edit: true,
           type: 2,
-          identifyCode: "",
+          encryptionCode: "",
           mobile: "",
           relation: "",
           name: "",
@@ -642,9 +642,9 @@ export default {
                             }
                           }      
                           if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                            if (element.identifyCode) {
+                            if (element.encryptionCode) {
                               let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
-                              if (reg.test(element.identifyCode)) {
+                              if (reg.test(element.encryptionCode)) {
                                 isOk = true;
                                 ownerRightRatio += element.propertyRightRatio - 0;
                               }else{
@@ -735,9 +735,9 @@ export default {
                                     }
                                   }      
                                 if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                                  if (element.identifyCode) {
+                                  if (element.encryptionCode) {
                                     let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
-                                    if (reg.test(element.identifyCode)) {
+                                    if (reg.test(element.encryptionCode)) {
                                       isOk_ = true;
                                       guestRightRatio += element.propertyRightRatio - 0;
                                     }else{
@@ -804,11 +804,11 @@ export default {
                             //验证身份证是否重复
                             let IdCardList = [];
                             this.ownerList.forEach(element => {
-                              IdCardList.push(element.identifyCode);
+                              IdCardList.push(element.encryptionCode);
                               mobileList.push(element.mobile);
                             });
                             this.guestList.forEach(element => {
-                              IdCardList.push(element.identifyCode);
+                              IdCardList.push(element.encryptionCode);
                               mobileList.push(element.mobile);
                             });
                             let mobileList_= Array.from(new Set(mobileList));
@@ -832,10 +832,10 @@ export default {
                                     });
                                   }
                                 };
-                                if(this.contractForm.otherCooperationInfo.identifyCode){
+                                if(this.contractForm.otherCooperationInfo.encryptionCode){
                                   IDcardOk=false;
                                   let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
-                                  if (reg.test(this.contractForm.otherCooperationInfo.identifyCode)) {
+                                  if (reg.test(this.contractForm.otherCooperationInfo.encryptionCode)) {
                                     IDcardOk=true;
                                   }else{
                                     this.$message({
@@ -1225,7 +1225,7 @@ export default {
             this.ownerList=[];
             houseMsg.OwnerInfoList.forEach(element => {
               element.type=1;
-              element.identifyCode='';
+              element.encryptionCode='';
               element.propertyRightRatio='';
               element.name=element.OwnerName;
               element.mobile=element.OwnerMobile;
@@ -1273,7 +1273,7 @@ export default {
             mobile: guestMsg.OwnerInfo.CustMobile,
             type: 2,
             relation: guestMsg.OwnerInfo.CustRelation,
-            identifyCode:'',
+            encryptionCode:'',
             propertyRightRatio:'',
             isEncryption:true
           }
@@ -1509,6 +1509,7 @@ export default {
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
                 identifyCode:this.contractForm.contPersons[i].identifyCode,
+                encryptionCode:this.contractForm.contPersons[i].encryptionCode,
                 type:1,
                 edit:false,
                 isEncryption:true
@@ -1545,6 +1546,7 @@ export default {
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
                 identifyCode:this.contractForm.contPersons[i].identifyCode,
+                encryptionCode:this.contractForm.contPersons[i].encryptionCode,
                 type:2,
                 edit:false,
                 isEncryption:true
