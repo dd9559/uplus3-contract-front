@@ -22,13 +22,14 @@ const MIXINS = {
         name:''
       },
       employePage:1,
-      employeTotal:0
+      employeTotal:0,
+      tableBoxCom:null
     }
   },
   created(){
     for (let item in this.power){
-      this.power[item].state=true
-      /*let path=this.$route.path
+      // this.power[item].state=true
+      let path=this.$route.path
       if(path==='/Bill'||path==='/actualHarvest'){
         this.power[item].state=true
       }else {
@@ -37,21 +38,21 @@ const MIXINS = {
             this.power[item].state=true
           }
         }
-      }*/
+      }
     }
   },
   watch:{
     getUser:function (val) {
       for (let item in this.power){
-        this.power[item].state=true
-        /*let path=this.$route.path
+        // this.power[item].state=true
+        let path=this.$route.path
         if(path==='/Bill'||path==='/actualHarvest'){
           this.power[item].state=true
         }else {
           if(val.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }*/
+        }
       }
     }
   },
@@ -267,7 +268,12 @@ const MIXINS = {
       'getLoading',
       'getCollapse'
     ])
-  }
+  },
+  mounted() {
+    if(this.$refs.tableCom){
+      this.tableBoxCom = this.$refs.tableCom
+    }
+  },
 }
 
 export {

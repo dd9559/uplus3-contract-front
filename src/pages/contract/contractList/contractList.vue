@@ -125,7 +125,7 @@
           </el-dropdown>
         </span>
       </p>
-      <el-table :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
+      <el-table ref="dataList" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
         <el-table-column align="left" label="合同信息" width="260" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
@@ -199,7 +199,12 @@
         <el-table-column align="left" label="审核状态" prop="toExamineState.label" width="120">
           <template slot-scope="scope">
             <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
-              <span v-if="scope.row.contType.value<4">{{scope.row.toExamineState.label}}</span>
+              <span v-if="scope.row.contType.value<4">
+                <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
+                <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
+                <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
+                <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
+              </span>
               <span v-else>-</span>
           </template>
         </el-table-column>
@@ -276,8 +281,18 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+      <!-- 固定滚动条 -->
+      <scrollBar :table="tableBox" v-if="tableBox">
+        <el-pagination
+        v-if="tableData.length>0"
+         class="pagination-info"
+         @current-change="handleCurrentChange"
+         :current-page="currentPage"
+         layout="total, prev, pager, next, jumper"
+         :total="total">
+        </el-pagination>
+      </scrollBar>
+      
     </div>
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterContId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
@@ -298,7 +313,7 @@
       </span>
     </el-dialog>
     <!-- 打印 -->
-    <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint> -->
+    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
     <!-- <button @click="dayin">打印</button> -->
   </div>
 </template>
@@ -327,6 +342,7 @@ export default {
   },
   data() {
     return {
+      tableBox:null,
       contractForm: {},
       keyword: "",
       signDate: [],
@@ -462,6 +478,11 @@ export default {
         }
       }
     };
+  },
+  mounted() {
+    this.$nextTick(()=>{
+      this.tableBox=this.$refs.dataList;
+    })
   },
   created() {
     this.getContractList();//合同列表
@@ -848,13 +869,13 @@ export default {
     },
     //打印空白合同
     printCont(command){
-      debugger
+      // debugger
       // console.log(command)
       this.haveUrl=false;
       if(command===1){
         if(this.blankPdf1){
           this.getUrl(this.blankPdf1);
-          // this.pdfUrl=''
+          // this.pdfUrl=""
           this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();

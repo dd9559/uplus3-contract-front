@@ -103,7 +103,7 @@
       <div class="data-list" v-loading="loading">
         <el-table :data="receivableList" style="width: 100%" @row-dblclick="dialogVisible = true">
           <!-- code -->
-          <el-table-column label="合同信息" width="140">
+          <el-table-column label="合同信息" width="150">
             <template slot-scope="scope">
               <p>
                 <span class="blue" @click="skipContDel(scope.row)">{{scope.row.code}}</span>
@@ -112,7 +112,7 @@
           </el-table-column>
 
           <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
-          <el-table-column label="合同类型" width="80">
+          <el-table-column label="合同类型" width="100">
             <template slot-scope="scope">
               <p>{{scope.row.contType.label}}</p>
             </template>
@@ -122,7 +122,7 @@
           <el-table-column prop="propertyAddr" label="物业地址" width="220"></el-table-column>
 
           <!-- dealStorefront   dealName -->
-          <el-table-column prop="man" label="成交经纪人" width="190">
+          <el-table-column prop="man" label="成交经纪人" width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.dealName">
                 <p>{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
@@ -140,139 +140,27 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="receiptsCommission" label="应收佣金(元)" width="100"></el-table-column>
-          <el-table-column prop="receiptsAchievement" label="可分配业绩(元)" width="120">
-          </el-table-column>
-          <el-table-column prop="amount" label="合同实收(元)" width="130"></el-table-column>
 
-          <!-- level4 assignor -->
-          <el-table-column label="分成人" width="190">
-            <template slot-scope="scope">
-              <div v-if="scope.row.distributionFroms.length==0">
-                <div>--</div>
-              </div>
-              <div v-else>
-                <div v-for="item in scope.row.distributionFroms">
-                  <p>{{item.level4}}-{{item.assignor}}</p>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <!-- roleType -->
-          <el-table-column label="角色类型" width="130">
-            <template slot-scope="scope">
-              <div v-if="scope.row.distributionFroms.length==0">
-                <div>--</div>
-              </div>
-              <div v-else>
-                <div v-for="item in scope.row.distributionFroms">
-                  <div v-if="item.roleType==1">
-                    <p>录入</p>
-                  </div>
-                  <div v-if="item.roleType==2">
-                    <p>维护</p>
-                  </div>
-                  <div v-if="item.roleType==3">
-                    <p>独家</p>
-                  </div>
-                  <div v-if="item.roleType==4">
-                    <p>房勘</p>
-                  </div>
-                  <div v-if="item.roleType==5">
-                    <p>钥匙</p>
-                  </div>
-                  <div v-if="item.roleType==15">
-                    <p>委托</p>
-                  </div>
-                  <div v-if="item.roleType==16">
-                    <p>建盘</p>
-                  </div>
+          <el-table-column prop="actualSettlement" label="结算金额（元）" width="120"></el-table-column>
 
-                  <div v-if="item.roleType==6">
-                    <p>主客方</p>
-                  </div>
-
-                  <div v-if="item.roleType==14">
-                    <p>签约人</p>
-                  </div>
-
-                  <div v-if="item.roleType==11">
-                    <p>A/M</p>
-                  </div>
-                  <div v-if="item.roleType==7">
-                    <p>协议方</p>
-                  </div>
-                  <div v-if="item.roleType==17">
-                    <p>协议方2</p>
-                  </div>
-
-                  <div v-if="item.roleType==8">
-                    <p>金融业绩分成人</p>
-                  </div>
-
-                  <div v-if="item.roleType==9">
-                    <p>其他业绩分成人</p>
-                  </div>
-
-                  <div v-if="item.roleType==12">
-                    <p>意向违约金</p>
-                  </div>
-
-                  <div v-if="item.roleType==13">
-                    <p>公共业绩</p>
-                  </div>
-
-                  <div v-if="item.roleType==10">
-                    <p>推荐人</p>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <!-- ratio -->
-          <el-table-column label="分成比例" width="80">
-            <template slot-scope="scope">
-              <div v-if="scope.row.distributionFroms.length==0">
-                <div>--</div>
-              </div>
-              <div v-else>
-                <p v-for="item in scope.row.distributionFroms">{{item.ratio}}%</p>
-              </div>
-            </template>
+          <el-table-column  label="结算日期" width="100">
+                      <template slot-scope="scope">
+                          <p>{{scope.row.settleTime|formatDate}}</p>
+                      </template>
           </el-table-column>
 
-          <!-- agentReceipts -->
-          <el-table-column label="实收分成金额(元)" width="130">
-            <template slot-scope="scope">
-              <div v-if="scope.row.distributionFroms.length==0">
-                <div>--</div>
-              </div>
-              <div v-else>
-                <p v-for="item in scope.row.distributionFroms">{{item.agentReceipts}}</p>
-              </div>
-            </template>
-          </el-table-column>
+          <el-table-column prop="assignor" label="分成人" width="100"></el-table-column>
+          
+          <el-table-column prop="roleName" label="角色类型" width="100"></el-table-column>
 
-          <!-- agentPlatformFee -->
-          <!-- <el-table-column
-                                 label="特许服务费(元)"
-                                 width="120"
-                                 >
-                                   <template slot-scope="scope">
-                                         <p v-for="item in scope.row.distributionFroms">{{item.agentPlatformFee}}</p>
-                                  </template>
-          </el-table-column>-->
-          <!-- agentPayFee -->
-          <el-table-column label="刷卡手续费(元)" width="120">
-            <template slot-scope="scope">
-              <div v-if="scope.row.distributionFroms.length==0">
-                <div>--</div>
-              </div>
-              <div v-else>
-                <p v-for="item in scope.row.distributionFroms">{{item.agentPayFee}}</p>
-              </div>
-            </template>
-          </el-table-column>
+          <el-table-column prop="ratio" label="分成比例（%）" width="120"></el-table-column>
+
+          <el-table-column prop="agentReceipts" label="实收分成金额（元）" width="140"></el-table-column>
+
+          <el-table-column prop="agentPayFee" label="刷卡手续费（元）" width="130"></el-table-column>
+
+          <el-table-column prop="agentPlatformFee" label="特许服务费（元）" width="130"></el-table-column>
+
         </el-table>
       </div>
 
@@ -351,6 +239,8 @@ export default {
               this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
                 let data = res.data;
                 if (res.status === 200) {
+                  console.log("22222222222")
+                  console.log(data.data.list);
                   _that.receivableList = data.data.list;
                   if (data.data.list[0]) {
                     _that.countData = data.data.list[0].contractCount;
