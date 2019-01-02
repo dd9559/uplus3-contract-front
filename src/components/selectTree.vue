@@ -8,7 +8,7 @@
         <el-tree accordion :data="dataList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
       </div>
       <p class="tree-box" slot="reference" @click="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
-        <el-input size="small" class="w200" :clearable="clearVal" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear="opera('clear')">
+        <el-input size="small" class="w200" :clearable="clearVal" ref="btn" placeholder="请选择" v-model="inputVal" @clear="opera('clear')" @input.native="getDep">
         </el-input>
         <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i></span>
       </p>
@@ -51,6 +51,9 @@
     watch:{
       init:function (val) {
         this.inputVal=val
+        if(this.inputVal===''){
+          this.getDep('',true)
+        }
       }
     },
     methods:{
@@ -70,7 +73,7 @@
       },
       opera:function (type) {
         let e=event||window.event
-        console.log(e.currentTarget)
+        // console.log(e.currentTarget)
         // debugger
         if(type==='init'){
           this.visible=true
@@ -85,6 +88,19 @@
           }*/
           this.$emit('clear')
         }
+      },
+      //部门搜索
+      getDep:function (e,clear=false) {
+        // console.log(e.target.value)
+        if(!clear){
+          this.inputVal=e.target.value
+        }
+        this.$ajax.get('/api/access/deps/tree',{keyword:this.inputVal}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.$emit('search',{list:res.data,depName:this.inputVal})
+          }
+        })
       },
       show:function () {
         /*if(this.clearOper){

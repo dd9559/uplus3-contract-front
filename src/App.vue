@@ -185,23 +185,35 @@
   }
 
   .w140 {
-    width: 140px;
+    width: 140px !important;
   }
   .w200{
     width: 200px !important;
   }
 
   .w240 {
-    width: 240px;
+    width: 240px !important;
+  }
+  .w300{
+    width: 300px !important;
   }
   .w394{
     width: 394px !important;
+  }
+  .w400{
+    width: 400px !important;
+  }
+  .w410{
+    width: 410px !important;
   }
   .btn-info{
     min-width: 80px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+  }
+  .margin-bottom-base{
+    margin-bottom: @margin-base;
   }
   .margin-left{
     margin-left: @margin-10;

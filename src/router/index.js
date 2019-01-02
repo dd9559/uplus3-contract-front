@@ -50,6 +50,7 @@ const contractPreview = () => import("@/pages/contract/contractList/contractPrev
 // const layerSettle = () => import("@/pages/contract/contractDialog/layerSettle");
 // const changeCancel = () => import("@/pages/contract/contractDialog/changeCancel");
 const routingRecord = () => import("@/pages/contract/contractList/routingRecord");
+const contractCheck = () => import("@/pages/contract/contractList/contractCheck");
 
 const Login = () => import("@/login")
 
@@ -312,6 +313,15 @@ export default new Router({
         meta: {
           root: true,
           list: ['合同', '分账记录']
+        }
+      },
+      //合同审核
+      {
+        path: "contractCheck",
+        component: contractCheck,
+        meta: {
+          root: true,
+          list: ['合同', '合同审核']
         }
       },
       {

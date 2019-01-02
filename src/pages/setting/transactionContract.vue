@@ -3,7 +3,7 @@
         <div class="table_head">
             <el-button type="primary" @click="addCon('添加合同资料')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
-        <el-table :data="listData" style="width: 100%" class="contract-list">
+        <el-table :data="listData" style="width: 100%" class="contract-list" border>
             <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
             <el-table-column align="left" label="名称" prop="name"></el-table-column>
             <el-table-column align="center" label="信息类型" prop="type">
@@ -93,21 +93,14 @@ export default {
   methods: {
     // 获取合同资料库列表
     getData: function() {
-      let param = {
-        cityId: this.cityId,
-        pageSize: this.pageSize,
-        pageNum: this.pageNum
-      };
-      this.$ajax
-        .postJSON("/api/flowmanage/selectConAttachPageList", param)
-        .then(res => {
-          res = res.data;
-          if (res.status === 200) {
-            this.listData = res.data;
-          }
-        }).catch(error => {
-            this.$message({message:error})
-        })
+      this.$ajax.postJSON("/api/flowmanage/selectConAttachPageList", {cityId: this.cityId}).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.listData = res.data;
+        }
+      }).catch(error => {
+          this.$message({message:error})
+      })
     },
     // 点击添加
     addCon(title) {
