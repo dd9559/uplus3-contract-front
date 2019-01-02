@@ -107,7 +107,7 @@
           <el-table-column label="合同信息" width="150">
             <template slot-scope="scope">
               <p>
-                <span class="blue" @click="skipContDel(scope.row)">{{scope.row.code}}</span>
+                <span class="blue" @click="skipContDel(scope.row)"  style="cursor:pointer;">{{scope.row.code}}</span>
               </p>
             </template>
           </el-table-column>
@@ -217,6 +217,10 @@ export default {
         'sign-yj-rec-query': {
           state: false,
           name: '查询'
+        },
+        'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
         }
       }
     };
@@ -334,17 +338,21 @@ export default {
     },
     // 跳转合同详情
     skipContDel(value) {
-      this.setPath(
-        this.$tool.getRouter(["业绩", "实收列表", "合同详情"], "contractList")
-      );
-      this.$router.push({
-        path: "/contractDetails",
-        query: {
-          id: value.id,
-          code: value.code,
-          contType: value.contType.value
+         if(this.power['sign-com-htdetail'].state){
+            this.setPath(
+              this.$tool.getRouter(["业绩", "实收列表", "合同详情"], "contractList")
+            );
+            this.$router.push({
+              path: "/contractDetails",
+              query: {
+                id: value.id,
+                code: value.code,
+                contType: value.contType.value
+              }
+            });
+           }else{
+              this.noPower('合同详情查看')
         }
-      });
     }
   }
 };

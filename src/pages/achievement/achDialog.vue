@@ -620,13 +620,13 @@
                  <el-input
                    type="textarea"
                    :rows="2"
-                   placeholder="请输入内容"
+                   placeholder="请输入内容,最多输入200字"
                    class="f_l"
                    v-model="remark"
                    resize="none"
                    maxlength=200
                  ></el-input>
-                 <span class="textLength">{{remark.length}}/200</span>
+                 <!-- <span class="textLength">{{remark.length}}/200</span> -->
                </p>
           </div>
           <div class="footer-btn-layout f_r">
@@ -1410,12 +1410,10 @@ export default {
               this.loading=false;
               this.$message({ message: "操作成功", type: "success" });
               this.$emit("rejectData", this.achIndex, resultArr);
-            } else if (res.data.status != 200) {
-              this.$message.error(res.data.message);
-              this.loading=false;
-            }
+            } 
           }).catch(error => {
                this.$message.error({message: error})
+               this.loading=false;
           });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
