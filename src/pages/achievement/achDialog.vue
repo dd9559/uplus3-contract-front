@@ -1869,7 +1869,7 @@ export default {
       }
     }
     .ach-body {
-      max-height: 500px;
+      max-height: 450px;
       // background-color: pink;
       // padding: 0 20px;
       box-sizing: border-box;
