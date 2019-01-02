@@ -33,9 +33,15 @@
             res=res.data
             if(res.status===200){
               this.$store.dispatch('asyncUser',res.data)
-              this.$router.push({
-                path:'contractList'
-              })
+              if(res.data.privileges.length>0){
+                this.$router.push({
+                  path:'contractList'
+                })
+              }else {
+                this.$confirm.message({
+                  message:'无任何权限'
+                })
+              }
             }
           })
         })
