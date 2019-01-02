@@ -1,5 +1,5 @@
 <template>
-    <div class="paper-set">
+    <div ref="tableComView" class="paper-set">
         <!-- 筛选 -->
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
@@ -48,7 +48,7 @@
                             :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="佣金结算状态" prop="paper">
+                <el-form-item label="收佣状态" prop="paper">
                     <el-select v-model="propForm.paper" class="w134">
                         <el-option v-for="item in rules.paper" 
                         :key="'paper'+item.key" 
@@ -105,11 +105,12 @@
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
             <el-table 
-            ref="tableCom"
+            ref="tableCom" 
+            :max-height="tableNumberCom"
             :data="tableData.list"
             v-loading="loadingList" 
             @row-dblclick="tradingStepsFn"
-            class="paper-table mt-20 info-scrollbar">
+            class="paper-table mt-20">
                 <el-table-column label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>
@@ -149,22 +150,21 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="overtimeDay" label="超时天数">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" label="收佣状态" min-width="100">
+                <el-table-column :formatter="nullFormatterData" label="实收/应收" min-width="100">
                     <template slot-scope="scope">
                         {{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="statusReceiveAmount.label" label="佣金结算状态" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="statusReceiveAmount.label" label="收佣状态" min-width="120">
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作">
                     <template slot-scope="scope">
-                        <el-button class="blue" type="text" @click="operationFn(scope.row.code)" v-if="power['sign-com-liushui'].state">流水</el-button>
+                        <el-button class="blue" type="text" @click="operationFn(scope.row)" v-if="power['sign-com-bill'].state">流水</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
         <!-- 分页 -->
-        <scrollBar :table="tableBoxCom" v-if="tableBoxCom">
             <div class="pagination" v-if="tableData.total">
                 <el-pagination
                     :current-page="tableData.pageNum"
@@ -174,11 +174,10 @@
                     :total="tableData.total">
                 </el-pagination>
             </div>
-        </scrollBar>
         <!-- 后期进度查看 -->
         <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
         <!-- 流水 -->
-        <flowAccount :dialogTableVisible="dialogTableVisible" :contCode="contCode" @closeRunningWater="closeWater"></flowAccount>
+        <flowAccount :dialogTableVisible="dialogTableVisible" :contCode="contCode" @closeRunningWater="closeWater" :contId="waterContId" v-if="dialogTableVisible"></flowAccount>
     </div>
 </template>
 
@@ -259,15 +258,16 @@
                 tableProgress:[],
                 // 流水
                 dialogTableVisible:false,
+                waterContId:'',
                 // code
                 contCode:'',
                 // 权限
                 power:{
-                    'sign-qh-cont-query':{
-                        name:'查询',
-                        state:false
-                    },
-                    'sign-com-liushui':{
+                    // 'sign-qh-cont-query':{
+                    //     name:'查询',
+                    //     state:false
+                    // },
+                    'sign-com-bill':{
                         name:'流水',
                         state:false
                     },
@@ -332,12 +332,13 @@
                 this.$refs.lateProgress.show(row);
             },
             // 操作
-            operationFn(code){
-                if(!this.power['sign-com-liushui'].state){
-                    this.noPower(this.power['sign-com-liushui'].name);
+            operationFn(item){
+                if(!this.power['sign-com-bill'].state){
+                    this.noPower(this.power['sign-com-bill'].name);
                     return false
                 }
-                this.contCode = code;
+                this.contCode = item.code;
+                this.waterContId = item.id;
                 this.dialogTableVisible = true;
             },
             closeWater(){
@@ -366,10 +367,10 @@
             },
             // 获取列表数据
             getListData(){
-                if(!this.power['sign-qh-cont-query'].state){
-                    this.noPower(this.power['sign-qh-cont-query'].name);
-                    return false
-                }
+                // if(!this.power['sign-qh-cont-query'].state){
+                //     this.noPower(this.power['sign-qh-cont-query'].name);
+                //     return false
+                // }
                 this.loadingList = true;
                 let receiveTimeEnd = '';
                 let receiveTimeStar = '';
@@ -381,7 +382,7 @@
                     receiveTimeStar = this.dateFormat(time[0]);
                     receiveTimeEnd = this.dateFormat(time[1]);
                 }
-                this.$ajax.postJSON('/api/postSigning/getMonitorContract',{
+                this.$ajax.get('/api/postSigning/getMonitorContract',{
                     pageNum:this.pageNum,
                     pageSize:this.pageSize,
                     dealAgentId:this.propForm.departmentMo,

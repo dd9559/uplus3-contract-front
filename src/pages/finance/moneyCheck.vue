@@ -1,7 +1,11 @@
 <template>
-  <div class="view">
+  <div class="view" ref="tableComView">
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
+        <div class="input-group">
+          <label>关键字:</label>
+          <el-input class="w410" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
+        </div>
         <div class="input-group">
           <label>合同类型:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
@@ -38,7 +42,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
@@ -109,8 +113,15 @@
           </el-select>
         </div>
         <div class="input-group">
-          <label>关键字:</label>
-          <el-input class="w394" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
+          <label>收付对象:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.payObjType" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['57']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
         </div>
       </div>
     </ScreeningTop>
@@ -118,10 +129,10 @@
       <div class="table-tool">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
+          <el-button class="btn-info" round size="small" type="primary" @click="getExcel" v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)">导出</el-button>
         </p>
       </div>
-      <el-table class="info-scrollbar" ref="dataList" border :data="list" :key="activeView" style="width: 100%;max-height:500px;" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+      <el-table class="info-scrollbar" ref="tableCom" :max-height="tableNumberCom" border :data="list" :key="activeView" style="width: 100%;max-height:500px;" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="150" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -177,14 +188,24 @@
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
             <template v-if="(scope.row.auditButton)||(scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state)">
-              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton&&(scope.row.currentAuditName===$store.state.user.user.name)">审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
               <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="scope.row.caozuo===1&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state">作废</el-button>
             </template>
             <span v-else>--</span>
           </template>
         </el-table-column>
       </el-table>
-      <scrollBar :table="tableBox" v-if="tableBox">
+      <el-pagination
+        v-if="list.length>0"
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
+      <!--<scrollBar :table="tableBox" v-if="tableBox">
         <el-pagination
           v-if="list.length>0"
           class="pagination-info"
@@ -195,7 +216,7 @@
           layout="total, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
-      </scrollBar>
+      </scrollBar>-->
     </div>
     <!--作废dialog-->
     <el-dialog
@@ -224,6 +245,7 @@
     <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
+    <checkPerson :show="checkPerson" @close="checkPerson=false"></checkPerson>
   </div>
 </template>
 
@@ -231,13 +253,18 @@
   import {FILTER} from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
   import {UPLOAD} from "@/assets/js/uploadMixins";
+  import checkPerson from '@/components/checkPerson'
 
   export default {
     mixins: [FILTER, MIXINS,UPLOAD],
+    components:{
+      checkPerson
+    },
     data() {
       return {
         activeView: '',
         tableBox: null,
+        checkPerson: false,
         searchForm: {
           contType: '',
           timeType: '',
@@ -251,6 +278,7 @@
           payMethod: '',
           keyword: '',
           timeRange:'',
+          payObjType:''
         },
         list: [],
         dictionary: {
@@ -260,7 +288,8 @@
           '23': '',
           '24': '',
           '25': '',
-          '507': ''
+          '507': '',
+          '57': ''
         },
         drop_MoneyType:[],
         //分页
@@ -297,6 +326,14 @@
           'sign-cw-pay-void': {
             state: false,
             name: '作废'
+          },
+          'sign-cw-debt-pay': {
+            state: false,
+            name: '付款审核'
+          },
+          'sign-com-htdetail': {
+            state: false,
+            name: '合同详情'
           },
           'sign-com-htdetail': {
             state: false,
@@ -344,24 +381,24 @@
           }
         }*/
       }
-      this.$nextTick(()=>{
+      /*this.$nextTick(()=>{
         this.tableBox=this.$refs.dataList
-      })
+      })*/
 
       this.getData()
       this.getDictionary()
       next()
     },
     mounted(){
-      this.$nextTick(()=>{
+      /*this.$nextTick(()=>{
         this.tableBox=this.$refs.dataList
-      })
+      })*/
     },
     methods: {
       getExcel:function () {
-        this.$ajax.post('/api/postSigning/getExcel').then(res=>{
+        /*this.$ajax.post('/api/postSigning/getExcel').then(res=>{
           debugger
-        })
+        })*/
       },
       /**
        * 列表横行滚动
@@ -396,6 +433,10 @@
         this.searchForm.empId=''
         this.clearSelect()
       },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.searchForm.depName=payload.depName
+      },
       depHandleClick(data) {
         this.searchForm.depId=data.depId
         this.searchForm.depName=data.name
@@ -406,32 +447,27 @@
         if(type==='search'){
           this.currentPage=1
         }
-        let powerMsg=this.power[this.activeView===1?'sign-cw-rev-query':'sign-cw-pay-query']
-        if(powerMsg.state){
-          let param = JSON.parse(JSON.stringify(this.searchForm))
-          if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
-            param.startTime = param.timeRange[0]
-            param.endTime = param.timeRange[1]
-          }
-          delete param.timeRange
-          param.pageNum = this.currentPage
-          param.pageSize = this.pageSize
-          let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
-          this.$ajax.get(`/api${url}`,param).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.list = res.data.page.list
-              this.total = res.data.page.total
-            }
-          }).catch(error => {
-            console.log(error)
-          })
-        }else {
-          this.noPower(powerMsg.name)
+        let param = JSON.parse(JSON.stringify(this.searchForm))
+        if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
         }
+        delete param.timeRange
+        param.pageNum = this.currentPage
+        param.pageSize = this.pageSize
+        let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
+        this.$ajax.get(`/api${url}`,param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.list = res.data.page.list
+            this.total = res.data.page.total
+          }
+        }).catch(error => {
+          console.log(error)
+        })
       },
       toDetails:function (item) {
-        let powerMsg=true
+        let powerMsg=this.power[this.activeView===1?'sign-cw-debt-rev':'sign-cw-debt-pay'].state
         let param = {
           path: 'billDetails'
         }
