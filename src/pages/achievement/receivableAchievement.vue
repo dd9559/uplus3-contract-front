@@ -236,29 +236,24 @@ export default {
   components: {},
   methods: {   
     getData(param) {
-      if(this.power['sign-yj-rec-query'].state){
-             // 实收列表
-              let _that = this;
-              this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
-                let data = res.data;
-                if (res.status === 200) {
-                  console.log("22222222222")
-                  console.log(data.data.list);
-                  _that.receivableList = data.data.list;
-                  if (data.data.list[0]) {
-                    _that.countData = data.data.list[0].contractCount;
-                  } else {
-                    _that.countData = [0, 0, 0, 0];
-                  }
-                  _that.total = data.data.total;
-                }
-              }).catch(error => {
-                     this.$message({message:error})
-              });;
-        }else {
-          this.noPower(this.power['sign-yj-rec-query'].name)
-          this.countData = [0, 0, 0, 0];
-        }
+       // 实收列表
+        let _that = this;
+        this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
+          let data = res.data;
+          if (res.status === 200) {
+            console.log("22222222222")
+            console.log(data.data.list);
+            _that.receivableList = data.data.list;
+            if (data.data.list[0]) {
+              _that.countData = data.data.list[0].contractCount;
+            } else {
+              _that.countData = [0, 0, 0, 0];
+            }
+            _that.total = data.data.total;
+          }
+        }).catch(error => {
+               this.$message({message:error})
+        });;
         this.loading = false;
     },
        //获取当前部门
