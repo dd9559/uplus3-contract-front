@@ -896,6 +896,7 @@ export default {
     this.getDictionary();
      //部门初始化
     this.remoteMethod();
+     this.getAdmin();//获取当前登录人信息
   
   },
   components: {
