@@ -148,6 +148,14 @@
                 <el-button v-if="this.$route.query.operateType==2" type="primary" @click="onSubmit2()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 创建合同成功提示框 -->
+        <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px">
+          <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="toContract">取 消</el-button>
+            <el-button type="primary" @click="toUpload">确 定</el-button>
+          </span>
+        </el-dialog>
           
     </div>
     
@@ -217,10 +225,12 @@ export default {
       dialogType: "",
       loading: false,
       dialogSure: false,
+      dialogSuccess:false,
       type: 1,
       //编辑时的合同id
       id: "",
-
+      //创建合同成功后的id
+      detailId:'',
       contractForm: {
         type: '',
         signDate: "",
@@ -658,37 +668,72 @@ export default {
     },
 
     checkRule(contractForm) {
-      this.$refs[contractForm].validate(valid => {
-        if (valid) {
-            this.dialogSure = true
-            return true           
-          } else {
-            return false;
-          }
-      });
+      if(this.contractForm.ownmobile === this.contractForm.custmobile){
+        this.$message({
+          type: "warning",
+          message: "业主手机号和客户手机号不能重复!"
+        });
+      }else{
+        this.$refs[contractForm].validate(valid => {
+          if (valid) {
+              this.dialogSure = true
+              return true           
+            } else {
+              return false;
+            }
+        });
+      }
+      
     },
 
     // 新增意向金接口（post）
     onSubmit1() {
+      this.dialogSure = false
         this.fullscreenLoading=true
-
-        if (this.type === 1) {
-          this.contractForm.contPersons[0].name = this.contractForm.ownname;
-          this.contractForm.contPersons[0].mobile = this.contractForm.ownmobile;
-          this.contractForm.contPersons[1].name = this.contractForm.custname;
-          this.contractForm.contPersons[1].mobile = this.contractForm.custmobile;
-          this.contractForm.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
-        }     
+        
+        // if (this.type === 1) {
+        //   this.contractForm.contPersons[0].name = this.contractForm.ownname;
+        //   this.contractForm.contPersons[0].mobile = this.contractForm.ownmobile;
+        //   this.contractForm.contPersons[1].name = this.contractForm.custname;
+        //   this.contractForm.contPersons[1].mobile = this.contractForm.custmobile;
+        //   this.contractForm.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
+        // }     
         let param = {
-          igdCont: this.contractForm,
+          igdCont: {
+            type: this.contractForm.type,
+            signDate: this.contractForm.signDate,
+            houseinfoCode: this.contractForm.houseinfoCode,
+            guestinfoCode: this.contractForm.guestinfoCode,
+            subscriptionTerm: this.contractForm.subscriptionTerm,
+            subscriptionPrice: this.contractForm.subscriptionPrice,
+            dealPrice: this.contractForm.dealPrice,
+            remarks: this.contractForm.remarks,
+            houseInfo:this.contractForm.houseInfo,
+            guestInfo:this.contractForm.guestInfo,
+            contPersons: [ 
+              //业主信息
+              {
+                name: this.contractForm.ownname,
+                mobile: this.contractForm.ownmobile,
+                type: 1
+              },
+              //客户信息
+              {
+                name: this.contractForm.custname,
+                mobile: this.contractForm.custmobile,
+                identifyCode: this.contractForm.custIdentifyCode,
+                type: 2,
+               
+              }] 
+          },
           type: this.type
         };
        
-        delete param.igdCont.ownname;
-        delete param.igdCont.ownmobile;
-        delete param.igdCont.custname;
-        delete param.igdCont.custmobile;
-        delete param.igdCont.custIdentifyCode;
+        // delete param.igdCont.ownname;
+        // delete param.igdCont.ownmobile;
+        // delete param.igdCont.custname;
+        // delete param.igdCont.custmobile;
+        // delete param.igdCont.custIdentifyCode;
 
         this.$ajax
           .postJSON("/api/contract/addContract", param)
@@ -697,17 +742,17 @@ export default {
             let tips = res.data.message;
 
             if (res.data.status === 200) {
+              this.detailId=res.data.data.id;
               
               this.$message({
                 type: "success",
                 message: "已保存!"
               });
-              this.$router.push({
-                path: "/contractList"
-                // query:{
-                //     id: this.id
-                // }
-              });
+
+              this.dialogSuccess=true;
+              // this.$router.push({
+              //   path: "/contractList"
+              // });
               
             } else {
               this.fullscreenLoading=false
@@ -719,7 +764,23 @@ export default {
             this.$message({
               message: error
             });
-          });     
+          });           
+    },
+    //创建成功提示
+    toUpload(value){//上传合同资料库
+      this.dialogSuccess=false;
+      this.$router.push({
+        path: "/detailIntention",
+        query: {
+          type: "dataBank",
+          id: this.detailId,
+          contType: this.contractForm.type
+        }
+      });
+    },
+    toContract(){//回到合同列表
+      this.dialogSuccess=false;
+      this.$router.push('/contractList');
     },
     // 编辑意向金接口
     onSubmit2() {    

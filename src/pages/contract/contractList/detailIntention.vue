@@ -668,10 +668,10 @@ export default {
     created() {
         this.getDetail();  //合同详细信息
         this.getContDataType();   //获取资料库里的资料类型
-        
-        console.log(this.buyerList)
-        console.log(this.sellerList)
-        console.log(this.otherList)
+        if (this.$route.query.type === "dataBank") {
+            this.activeName = "third";
+            this.name="third";
+        }
     },
 
     mounted() {
