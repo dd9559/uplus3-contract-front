@@ -370,10 +370,29 @@
                   {{item.ratio/100*scope.row.receiptsCommission | rounding}}
                 </p>
               </div>
-
             </template>
           </el-table-column>
-          </el-table-columfn>
+
+          <!-- <el-table-column
+            label="当前审核人"
+            width="150"
+          >
+            <template slot-scope="scope">
+                <p>当代一店-白熊</p>
+                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row)">转交审核人</p>
+            </template>
+          </el-table-column>
+
+         <el-table-column
+            label="下一步审核人"
+            width="150"
+          >
+            <template slot-scope="scope">
+                <p>当代一店-大大</p>
+                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row)">设置审核人</p>
+            </template>
+          </el-table-column> -->
+
           <el-table-column
             label="操作"
           >
@@ -438,6 +457,7 @@
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
+                    v-if="userMsg&&userMsg.empId"
                   >审核</span>
                 </div>
               </div>
@@ -732,7 +752,14 @@
             <!-- remark -->
             <el-table-column label="备注">
               <template slot-scope="scope">
-                {{scope.row.remark?scope.row.remark:'-'}}
+                   <div v-if="scope.row.remark">
+                      <el-popover trigger="hover" placement="top" :content="scope.row.remark" width="150">
+                          <div style="width:160px" slot="reference" class="name-wrapper">{{scope.row.remark}}</div>
+                      </el-popover>
+                   </div>
+                   <div v-else>
+                       --
+                   </div>           
               </template>
             </el-table-column>   
           </el-table>
@@ -781,6 +808,9 @@
         </span>
       </el-dialog>
     </div>
+
+     <!-- 选择审核人弹框 -->
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 
 </template>
@@ -790,6 +820,7 @@
 import achDialog from "./achDialog";
 import { MIXINS } from "@/assets/js/mixins";
 import ScreeningTop from '@/components/ScreeningTop';
+import checkPerson from '@/components/checkPerson'
 export default {
   mixins: [MIXINS],
   name: "actualAchievement",
@@ -886,8 +917,14 @@ export default {
       'sign-com-htdetail': {
             state: false,
             name: '合同详情'
+       }
       },
-      }
+      checkPerson: {
+          state:false,
+          type:'init',
+          code:'',
+          flowType:0
+      },
     };
   },
   created() {
@@ -895,18 +932,18 @@ export default {
         pageNum: this.currentPage,
         pageSize: this.pageSize
     } 
+    this.getAdmin();//获取当前登录人信息
     this.getData(this.ajaxParam);
     // 字典初始化
     this.getDictionary();
      //部门初始化
     this.remoteMethod();
-     this.getAdmin();//获取当前登录人信息
-  
   },
   components: {
     achDialog,
     MIXINS,
-    ScreeningTop
+    ScreeningTop,
+    checkPerson
   },
   filters: {
         rounding (value) {
@@ -1176,6 +1213,14 @@ export default {
      }else{
        this.noPower('合同详情查看')
      }
+    },
+    choseCheckPerson(val){
+       this.checkPerson.flowType=2;
+       this.checkPerson.code=val.code;
+       console.log(  this.checkPerson.code);
+       this.checkPerson.state=true
+       this.checkPerson.type='set'
+        // this.checkPerson.type='init'
     }
   }
 };
@@ -1424,8 +1469,8 @@ export default {
 }
 /deep/ .el-pagination {
   text-align: center;
-  padding-bottom: 50px;
-  padding-top: 50px;
+  // padding-bottom: 50px;
+  // padding-top: 50px;
 }
 /deep/ tr.el-table__row {
   overflow: scroll !important;
@@ -1459,5 +1504,16 @@ export default {
 }
 /deep/ .el-dialog.base-dialog .el-dialog__header {
   padding: 0 !important;
+}
+
+.name-wrapper {
+      display: flex;
+      display: -webkit-box;
+      /*!autoprefixer: off */
+      -webkit-box-orient: vertical;
+      /* autoprefixer: on */
+      -webkit-line-clamp: 1;
+      overflow: hidden;
+      text-overflow:ellipsis;
 }
 </style>
