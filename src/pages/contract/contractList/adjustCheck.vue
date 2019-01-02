@@ -841,6 +841,9 @@
 @import "~@/assets/common.less";
 
 #adjustcheck{
+  .el-textarea.is-disabled .el-textarea__inner{
+        color:#233241;
+    }
   .fl{
     float: left;
   }

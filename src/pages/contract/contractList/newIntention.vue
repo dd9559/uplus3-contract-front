@@ -58,7 +58,7 @@
                                 </el-form-item>
                             </el-form-item>
                             
-                            <el-form-item label="产证地址：" class="disb">
+                            <el-form-item label="产权地址：" class="disb">
                                 <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength=30></el-input>
                             </el-form-item>
 
@@ -784,6 +784,7 @@ export default {
     },
     // 编辑意向金接口
     onSubmit2() {    
+        this.dialogSure = false
         this.fullscreenLoading=true
 
         let param = {
