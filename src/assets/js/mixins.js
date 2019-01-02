@@ -27,33 +27,18 @@ const MIXINS = {
       tableNumberCom:null,
     }
   },
-  created(){
-    for (let item in this.power){
-      // this.power[item].state=true
-      let path=this.$route.path
-      if(path==='/Bill'||path==='/actualHarvest'){
-        this.power[item].state=true
-      }else {
-        if(this.getUser){
-          if(this.getUser.privileges.indexOf(item)>-1){
-            this.power[item].state=true
-          }
-        }
-      }
-    }
-  },
   watch:{
     getUser:function (val) {
       for (let item in this.power){
         // this.power[item].state=true
         let path=this.$route.path
-        if(path==='/Bill'||path==='/actualHarvest'){
+        /*if(path==='/Bill'||path==='/actualHarvest'){
           this.power[item].state=true
-        }else {
+        }else {*/
           if(val.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }
+        // }
       }
     },
     getBodyScollShow(){
@@ -288,6 +273,20 @@ const MIXINS = {
   },
   mounted() {
     window.onresize = this.comHeightFn;
+
+    for (let item in this.power){
+      // this.power[item].state=true
+      let path=this.$route.path
+      /*if(path==='/Bill'||path==='/actualHarvest'){
+        this.power[item].state=true
+      }else {*/
+      if(this.getUser){
+        if(this.getUser.privileges.indexOf(item)>-1){
+          this.power[item].state=true
+        }
+      }
+      // }
+    }
   },
   beforeUpdate() {
       this.comHeightFn();

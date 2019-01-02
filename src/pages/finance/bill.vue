@@ -154,7 +154,7 @@
           </ul>
         </div>
         <p>
-          <el-button class="btn-info" round type="primary" size="small">导出</el-button>
+          <el-button class="btn-info" round type="primary" size="small" v-if="power['sign-cw-debt-export'].state">导出</el-button>
         </p>
       </div>
       <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" class="info-scrollbar" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
@@ -385,10 +385,10 @@
         },
         //权限配置
         power: {
-          'sign-cw-debt-query': {
+          /*'sign-cw-debt-query': {
             state: false,
             name: '查询'
-          },
+          },*/
           'sign-cw-debt-export': {
             state: false,
             name: '导出'
@@ -491,31 +491,28 @@
         this.handleNodeClick(data)
       },
       getData: function (type='init') {
-        if(this.power['sign-cw-debt-query'].state||type==='init'){
-          if(type==='search'){
-            this.currentPage=1
-          }
-          let param = JSON.parse(JSON.stringify(this.searchForm))
-          if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {
-            param.startTime = param.timeRange[0]
-            param.endTime = param.timeRange[1]
-          }
-          delete param.timeRange
-          param.pageNum = this.currentPage
-          param.pageSize = this.pageSize
-          this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.list = res.data.page.list
-              this.total = res.data.page.total
-              this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
-            }
-          }).catch(error => {
-            console.log(error)
-          })
-        }else {
-          this.noPower(this.power['sign-cw-debt-query'].name)
+        // debugger
+        if(type==='search'){
+          this.currentPage=1
         }
+        let param = JSON.parse(JSON.stringify(this.searchForm))
+        if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+        }
+        delete param.timeRange
+        param.pageNum = this.currentPage
+        param.pageSize = this.pageSize
+        this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.list = res.data.page.list
+            this.total = res.data.page.total
+            this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+          }
+        }).catch(error => {
+          console.log(error)
+        })
       },
       /**
        * 跳转详情页

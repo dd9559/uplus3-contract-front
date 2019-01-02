@@ -466,13 +466,14 @@
     </div>
 
     <!-- 表单列表弹出框（业绩详情） -->
-   <div v-loading="loading">
-       <el-dialog
+   <div>
+      <el-dialog
       :visible.sync="dialogVisible"
        width="1000px"
       :close-on-click-modal="false"
       custom-class="base-dialog"
     >
+    <div v-loading="loading2">
       <b
         class="el-icon-close"
         @click="closeDialog"
@@ -738,6 +739,8 @@
         </div>
       </div>
       <div class="ach-footer"></div>
+    </div>
+ 
     </el-dialog>
    </div>
 
@@ -748,6 +751,7 @@
       @adoptData="adoptData"
       @rejectData="rejectData"
       @close="shows=false;code2=''"
+      @opens="shows=true"
       :dialogType="dialogType"
       :contractCode="code2"
       :aId="aId"
@@ -830,7 +834,8 @@ export default {
       achIndex:null,
       ajaxParam:{},
       total:0,
-      loading:true,
+      loading:false,
+      loading2:false,
       achObj:{},
       recallShow:false,
       smallTips:"",
@@ -1032,7 +1037,8 @@ export default {
     },
     //获取应收列表详情
     enterDetail(row) {
-      this.loading=true;
+      this.dialogVisible = true;  
+      this.loading2=true;
       //合同边和获取业绩详情
       this.code = row.code;
       let param = { contCode: row.code, entrance: 3,aId:row.aId };
@@ -1045,8 +1051,7 @@ export default {
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;
-                this.loading=false;
-                this.dialogVisible = true;             
+                this.loading2=false;            
             }else{
               this.checkArr = [];
             }
@@ -1120,7 +1125,7 @@ export default {
       this.achObj={
         contractId:value.id,//合同id
       }
-      // this.shows = true;
+      this.shows = true;
     },
     editAch(value,index) {
         this.beginData = true;
@@ -1132,7 +1137,7 @@ export default {
         this.achObj={
           contractId:value.id,//合同id
         }
-        // this.shows = true;
+        this.shows = true;
     },
     againCheck(value,index) {
       this.beginData = true;
@@ -1144,7 +1149,7 @@ export default {
       this.achObj={
         contractId:value.id,//合同id
       }
-      // this.shows = true;
+      this.shows = true;
     },
     //分页
     handleSizeChange(val) {
@@ -1332,7 +1337,7 @@ export default {
     // max-width: 1000px;
     margin: 13vh auto 0 !important;
     overflow: auto;
-   padding-bottom: 30px;
+    padding-bottom: 30px;
     .el-dialog__headerbtn {
       right: 0;
       top: 0;
@@ -1387,7 +1392,7 @@ export default {
             }
           }
         }
-       .el-table__header th .cell{
+        .el-table__header th .cell {
           height: 30px;
           line-height: 30px;
         }
