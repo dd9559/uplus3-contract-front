@@ -91,7 +91,7 @@
                   <el-table-column prop="name" label="业主姓名"></el-table-column>
                   <el-table-column label="电话">
                     <template slot-scope="scope">
-                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
+                      {{scope.row.mobile}} 
                       <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)" v-if="power['sign-ht-xq-ly-call'].state"></i>
                     </template>
                   </el-table-column>
@@ -128,7 +128,7 @@
                   <el-table-column prop="name" label="客户姓名"></el-table-column>
                   <el-table-column label="电话">
                     <template slot-scope="scope">
-                      {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
+                      {{scope.row.mobile}} 
                       <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)" v-if="power['sign-ht-xq-ly-call'].state"></i>
                     </template>
                   </el-table-column>
@@ -1616,7 +1616,7 @@ export default {
           color: @color-6c;
         }
         > p {
-          color: @color-D6;
+          color: @color-6c;
           width: 650px;
           height: 100px;
           padding: 10px;
