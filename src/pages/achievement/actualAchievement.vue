@@ -896,6 +896,7 @@ export default {
     this.getDictionary();
      //部门初始化
     this.remoteMethod();
+     this.getAdmin();//获取当前登录人信息
   
   },
   components: {
@@ -929,31 +930,26 @@ export default {
       this.handleNodeClick(data)
     },
     getData(ajaxParam) {
-      if(this.power['sign-yj-rev-query'].state){
-              let _that=this;
-                 this.$ajax
-                   .get("/api/achievement/selectAchievementList", ajaxParam)
-                   .then(res => {
-                     console.log(res);
-                     let data = res.data;
-                     if (res.status === 200) {
-                       // debugger;
-                        _that.selectAchList = data.data.list;
-                        _that.total = data.data.total;
-                       if(data.data.list[0]){
-                            _that.countData = data.data.list[0].contractCount;
-                       }else {
-                       _that.countData = [0, 0, 0, 0];
-                     }       
+     let _that=this;
+        this.$ajax
+          .get("/api/achievement/selectAchievementList", ajaxParam)
+          .then(res => {
+            console.log(res);
+            let data = res.data;
+            if (res.status === 200) {
+              // debugger;
+               _that.selectAchList = data.data.list;
+               _that.total = data.data.total;
+              if(data.data.list[0]){
+                   _that.countData = data.data.list[0].contractCount;
+              }else {
+              _that.countData = [0, 0, 0, 0];
+            }       
 
-                     }            
-                 }).catch(error => {
-                     this.$message({message:error})
-                  });
-         }else {
-          this.noPower(this.power['sign-yj-rev-query'].name)
-          this.countData = [0, 0, 0, 0];
-        }
+            }            
+        }).catch(error => {
+            this.$message({message:error})
+     }); 
       this.loading=false;
     },
     closeDialog() {

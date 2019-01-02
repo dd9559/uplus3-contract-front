@@ -37,7 +37,7 @@
                 <th>业主佣金</th>
                 <th>客户佣金</th>
                 <!-- <th>按揭手续费</th> -->
-                <th>合作费扣除</th>
+                <th v-if="layerAudit.isCooperation === 1">合作费扣除</th>
               </tr>
             </thead>
             <tbody>
@@ -46,7 +46,7 @@
                 <td>{{layerAudit.ownerCommission}}元</td>
                 <td>{{layerAudit.custCommission}}元</td>
                 <!-- <td>另外出<span>;</span>客户<span>;</span>0元</td> -->
-                <td>{{layerAudit.otherCooperationCost}}元</td>
+                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.otherCooperationCost}}元</td>
               </tr>
               <tr>
                 <td>调整为</td>
@@ -76,7 +76,7 @@
                     <div><el-input v-model="auditForm.money3" placeholder="输入金额" class="width70"></el-input>元</div>
                   
                 </td> -->
-                <td>
+                <td v-if="layerAudit.isCooperation === 1">
                   <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70"  type="text" @input="cutNumber('money4')"></el-input>元</div>
                 </td>
               </tr>

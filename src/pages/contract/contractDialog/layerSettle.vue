@@ -25,7 +25,7 @@
                     <div class="col-li col-li2">
                         <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
                         <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-                        <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
+                        <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>
                     </div>
 
                 </div>
@@ -42,7 +42,7 @@
                         <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
                         <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
                     </el-table> 
-                    <div class="zhushi">注：结算中的当期实收分成金额包含扣除的特许服务费，具体请结算通过后在分账记录列表中查看</div>             
+                    <div class="zhushi">注：结算中的当期实收分成金额已扣除了特许服务费、刷卡手续费</div>             
                 </div>
 
                 <!-- 上传附件 -->

@@ -280,10 +280,7 @@
 .view-container {
     display: flex;
     background-color: #F5F5F5 !important;
-    // height: calc(100% - 40px);
     .data-list {
-        // flex: 1;
-        // margin-right: 15px;
         position: relative;
         min-width: 26%;
         margin-right: 1%;
@@ -298,7 +295,6 @@
                 border-width:7px;
                 border-style:solid;
                 border-color:transparent transparent transparent white; /* transparent 设置边框颜色透明 */
-        
         }
         /deep/ .el-table th {
             background:rgba(242,243,248,1);
@@ -346,7 +342,6 @@
             font-size: 14px;
         }
     }
-
     .citySettingContent {
         .tip {
             display: flex;

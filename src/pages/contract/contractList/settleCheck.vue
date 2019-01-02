@@ -1,9 +1,12 @@
 <!-- 结算审核 -->
 <template>
-  <div class="view-container" id="settlecheck">
+  <div class="view-container" id="settlecheck" ref="tableComView">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini">
+        <el-form-item label="关键字">
+          <el-input v-model="adjustForm.keyWord" clearable placeholder="合同编号/房源编号/客源编号"  class="width250"></el-input>
+        </el-form-item>
         <el-form-item label="发起日期">
           <el-date-picker v-model="adjustForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
           </el-date-picker>
@@ -48,16 +51,14 @@
             <el-option label="驳回" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关键字">
-          <el-input v-model="adjustForm.keyWord" clearable placeholder="合同编号/房源编号/客源编号"  class="width250"></el-input>
-        </el-form-item>
+        
       </el-form>
     </ScreeningTop>
 
     <!-- 数据列表 -->
     <div class="contract-list">  
       <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
-      <el-table :data="tableData.list" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail'>
+      <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
         <el-table-column label="合同编号" width="150" fixed>
           <template slot-scope="scope">
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</div>
@@ -94,8 +95,7 @@
 
         <el-table-column label="实际结算" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p v-if="scope.row.contType.label !== '租赁'">{{scope.row.amount}}元</p>
-            <p v-if="scope.row.contType.label === '租赁'">{{scope.row.amount}}元/季度</p>
+            <p>{{scope.row.amount}}元</p>
           </template>
         </el-table-column>
 
@@ -176,7 +176,7 @@
           <div class="col-li col-li2">
             <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
             <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-            <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
+            <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>
           </div>
         </div>
 
@@ -192,7 +192,7 @@
             <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
             <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
           </el-table> 
-          <div class="zhushi">注：结算中的当期实收分成金额包含扣除的特许服务费，具体请结算通过后在分账记录列表中查看</div>           
+          <div class="zhushi">注：结算中的当期实收分成金额已扣除了特许服务费、刷卡手续费</div>           
         </div>
 
         <!-- 上传附件 -->
@@ -264,7 +264,7 @@
           <div class="col-li col-li2">
             <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
             <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-            <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元</span></p>
+            <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>
           </div>
         </div>
 
@@ -280,7 +280,7 @@
             <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
             <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
           </el-table> 
-          <div class="zhushi">注：结算中的当期实收分成金额包含扣除的特许服务费，具体请结算通过后在分账记录列表中查看</div>           
+          <div class="zhushi">注：结算中的当期实收分成金额已扣除了特许服务费、刷卡手续费</div>           
         </div>
 
         <!-- 上传附件 -->
@@ -608,8 +608,8 @@
       
       // 查询
       queryFn() {
-        console.log(this.power)
-        if(this.power['sign-ht-js-query'].state){
+        // console.log(this.power)
+        // if(this.power['sign-ht-js-query'].state){
 
           this.loadingTable = true;
           let beginDate;
@@ -652,9 +652,9 @@
                   message: error
                 })
             })
-        }else{
-          this.noPower(this.power['sign-ht-js-query'].name)
-        }
+        // }else{
+        //   this.noPower(this.power['sign-ht-js-query'].name)
+        // }
         
       },
 

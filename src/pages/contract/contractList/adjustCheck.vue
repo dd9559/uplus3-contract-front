@@ -1,9 +1,12 @@
 <!-- 调佣审核 -->
 <template>
-  <div class="view-container" id="adjustcheck">
+  <div class="view-container" id="adjustcheck" ref="tableComView">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini" ref="adjustCheckForm">
+        <el-form-item label="关键字">
+          <el-input v-model="adjustForm.keyWord" clearable placeholder="合同编号/房源编号/客源编号"  class="width250"></el-input>
+        </el-form-item>
 
         <el-form-item label="发起日期">
           <el-date-picker v-model="adjustForm.signDate" type="daterange" unlink-panels start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
@@ -44,16 +47,14 @@
           </el-select>
         </el-form-item>
         
-        <el-form-item label="关键字">
-          <el-input v-model="adjustForm.keyWord" clearable placeholder="合同编号/房源编号/客源编号"  class="width250"></el-input>
-        </el-form-item>
+        
       </el-form>
     </ScreeningTop>
 
     <!-- 数据列表 -->
     <div class="contract-list">  
       <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
-      <el-table :data="tableData.list" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail'>
+      <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
         <el-table-column label="合同编号" width="150" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
@@ -181,7 +182,7 @@
                 <th>业主佣金</th>
                 <th>客户佣金</th>
                 <!-- <th>按揭手续费</th> -->
-                <th>合作费扣除</th>
+                <th v-if="layerAudit.isCooperation === 1">合作费扣除</th>
               </tr>
             </thead>
             <tbody>
@@ -189,13 +190,13 @@
                 <td>原金额</td>
                 <td>{{layerAudit.ownerCommission}}元</td>
                 <td>{{layerAudit.custCommission}}元</td>
-                <td>{{layerAudit.otherCooperationCost}}元</td>
+                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.otherCooperationCost}}元</td>
               </tr>
               <tr>
                 <td>调整为</td>
                 <td>{{layerAudit.newOwnerCommission}}元</td>
                 <td>{{layerAudit.newCustCommission}}元</td>
-                <td>{{layerAudit.newOtherCooperationCost}}元</td>
+                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.newOtherCooperationCost}}元</td>
               </tr>
             </tbody>
           </table>
@@ -267,7 +268,7 @@
                 <th>业主佣金</th>
                 <th>客户佣金</th>
                 <!-- <th>按揭手续费</th> -->
-                <th>合作费扣除</th>
+                <th v-if="layerAudit.isCooperation === 1">合作费扣除</th>
               </tr>
             </thead>
             <tbody>
@@ -275,13 +276,13 @@
                 <td>原金额</td>
                 <td>{{layerAudit.ownerCommission}}元</td>
                 <td>{{layerAudit.custCommission}}元</td>
-                <td>{{layerAudit.otherCooperationCost}}元</td>
+                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.otherCooperationCost}}元</td>
               </tr>
               <tr>
                 <td>调整为</td>
                 <td>{{layerAudit.newOwnerCommission}}元</td>
                 <td>{{layerAudit.newCustCommission}}元</td>
-                <td>{{layerAudit.newOtherCooperationCost}}元</td>
+                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.newOtherCooperationCost}}元</td>
               </tr>
             </tbody>
           </table>
@@ -597,8 +598,8 @@
 
       // 查询
       queryFn() {
-        console.log(this.power)
-        if(this.power['sign-ht-maid-query'].state){
+        // console.log(this.power)
+        // if(this.power['sign-ht-maid-query'].state){
 
           this.loadingTable = true;
           let startTime = '';
@@ -635,9 +636,9 @@
                 message: error
               })
             })
-        }else{
-          this.noPower(this.power['sign-ht-maid-query'].name)
-        }
+        // }else{
+        //   this.noPower(this.power['sign-ht-maid-query'].name)
+        // }
         
       },
 
