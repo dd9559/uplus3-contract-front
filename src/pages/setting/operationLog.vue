@@ -149,7 +149,7 @@
             this.getLogList()
             },
             getLogList() {
-                if(this.power['sign-set-log-query'].state){
+                // if(this.power['sign-set-log-query'].state){
                     let param = {
                         pageSize: this.pageSize,
                         pageNum: this.pageNum,
@@ -169,9 +169,9 @@
                     }).catch(error => {
                         console.log(error);
                     })
-                }else{
-                     this.noPower(this.power['sign-set-log-query'].name)
-                }
+                // }else{
+                //      this.noPower(this.power['sign-set-log-query'].name)
+                // }
             },
             // 重置
             resetFormFn() {
