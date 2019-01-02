@@ -4,7 +4,7 @@
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w410" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
+          <el-input class="w410" size="small" v-model="searchForm.keyword" :placeholder="activeView===1?'合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收款ID':'合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/付款ID'"></el-input>
         </div>
         <div class="input-group">
           <label>合同类型:</label>
@@ -164,14 +164,14 @@
           <template slot-scope="scope">
             <span>{{scope.row.auditStore}}</span>
             <p>{{scope.row.auditName}}</p>
-            <el-button type="text" v-if="scope.row.auditButton" @click="choseCheckPerson(scope.row)">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="scope.row.auditButton" @click="choseCheckPerson(scope.row)">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
             <span>{{scope.row.nextAuditStore}}</span>
             <p>{{scope.row.nextAuditName}}</p>
-            <el-button type="text" v-if="scope.row.setAudit===1" @click="choseCheckPerson(scope.row)">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="scope.row.setAudit===1" @click="choseCheckPerson(scope.row)">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -253,7 +253,7 @@
     <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -580,6 +580,13 @@
             this.drop_MoneyType=res.data
           }
         })
+      },
+      personChose:function () {
+        this.checkPerson.state=false
+        this.$message({
+          message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
+        })
+        this.getData()
       }
     },
     computed: {
@@ -596,6 +603,12 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .btn-text-info{
+    padding: 0;
+    &.color-red{
+      color: red;
+    }
+  }
   .delete-dialog{
     >p{
       text-align: center;

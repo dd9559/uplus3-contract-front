@@ -38,7 +38,7 @@
                   path:'contractList'
                 })
               }else {
-                this.$confirm.message({
+                this.$message({
                   message:'无任何权限'
                 })
               }

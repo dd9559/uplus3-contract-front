@@ -122,7 +122,7 @@
   .select-tree {
     width: 100%;
     max-height: 300px;
-    overflow: hidden;
+    overflow-y: scroll;
     .select-option{
       display: flex;
       margin-bottom: @margin-10;
@@ -132,11 +132,19 @@
       >span{
         color: @color-grey;
         width: 80px;
+        text-align: right;
+        padding-right: @margin-15;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
       }
       &-cell{
         max-width: 300px;
         >span{
-          margin-right: @margin-10;
+          margin: 0 25px 10px 0;
+          display: inline-block;
+          cursor: pointer;
+          color: @color-324;
           &:hover{
             color: @color-blue;
           }

@@ -96,7 +96,7 @@
               }
             })
           }else {
-            this.$confirm.message({
+            this.$message({
               message:'请选择审核人'
             })
           }

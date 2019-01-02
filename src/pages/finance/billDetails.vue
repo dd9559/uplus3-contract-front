@@ -328,7 +328,7 @@
       },
       personChose:function () {
         this.checkPerson.state=false
-        this.$confirm.message({
+        this.$message({
           message:'下一个节点审核人设置成功'
         })
       },
