@@ -123,6 +123,7 @@
   .view {
     background-color: @bg-white;
     position: relative;
+    height: 100%;
     &-context {
       position: absolute;
       top: 50%;

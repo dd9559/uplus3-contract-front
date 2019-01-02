@@ -23,22 +23,8 @@ const MIXINS = {
       },
       employePage:1,
       employeTotal:0,
-      tableBoxCom:null
-    }
-  },
-  created(){
-    for (let item in this.power){
-      // this.power[item].state=true
-      let path=this.$route.path
-      if(path==='/Bill'||path==='/actualHarvest'){
-        this.power[item].state=true
-      }else {
-        if(this.getUser){
-          if(this.getUser.privileges.indexOf(item)>-1){
-            this.power[item].state=true
-          }
-        }
-      }
+      tableBoxCom:null,
+      tableNumberCom:null,
     }
   },
   watch:{
@@ -46,14 +32,17 @@ const MIXINS = {
       for (let item in this.power){
         // this.power[item].state=true
         let path=this.$route.path
-        if(path==='/Bill'||path==='/actualHarvest'){
+        /*if(path==='/Bill'||path==='/actualHarvest'){
           this.power[item].state=true
-        }else {
+        }else {*/
           if(val.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }
+        // }
       }
+    },
+    getBodyScollShow(){
+        this.comHeightFn();
     }
   },
   methods: {
@@ -129,14 +118,16 @@ const MIXINS = {
         this.dep.name=''
         this.EmployeList=[]
         this.employePage=1
+        this.remoteMethod()
       }else {
-
+        this.EmployeList=[]
+        this.employePage=1
       }
     },
     //部门树结构选择操作
     handleNodeClick(data) {
       this.getEmploye(data.depId)
-      this.clearSelect()
+      this.clearSelect('emp')
       this.dep.id=data.depId
       this.dep.name=data.name
       /*if(data.subs.length===0){
@@ -256,6 +247,16 @@ const MIXINS = {
     havePower:function (url) {
       console.log('test')
     },
+    //动态高度获取
+    comHeightFn(){
+      if(this.$refs.tableCom&&this.$refs.tableComView){
+        let wh = document.documentElement.clientHeight;
+        let h1 =this.$refs.tableComView.clientHeight + 40;
+        let h2 =this.$refs.tableCom.$el.clientHeight;
+        let th = wh - h1;
+        this.tableNumberCom = h2 + th;
+      }
+    },
     ...mapMutations([
       'setPath',
       'setLoading'
@@ -266,13 +267,29 @@ const MIXINS = {
       'getPath',
       'getUser',
       'getLoading',
-      'getCollapse'
+      'getCollapse',
+      'getBodyScollShow'
     ])
   },
   mounted() {
-    if(this.$refs.tableCom){
-      this.tableBoxCom = this.$refs.tableCom
+    window.onresize = this.comHeightFn;
+
+    for (let item in this.power){
+      // this.power[item].state=true
+      let path=this.$route.path
+      /*if(path==='/Bill'||path==='/actualHarvest'){
+        this.power[item].state=true
+      }else {*/
+      if(this.getUser){
+        if(this.getUser.privileges.indexOf(item)>-1){
+          this.power[item].state=true
+        }
+      }
+      // }
     }
+  },
+  beforeUpdate() {
+      this.comHeightFn();
   },
 }
 

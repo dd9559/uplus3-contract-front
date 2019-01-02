@@ -1,7 +1,12 @@
 <template>
-  <div class="view">
+  <div class="view" ref="tableComView">
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
+        <div class="input-group">
+          <label>关键字:</label>
+          <el-input class="w410" :clearable="true" size="small" v-model="searchForm.keyword"
+                    placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
+        </div>
         <div class="input-group">
           <label>合同类型:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
@@ -38,7 +43,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           <!--<el-select
             class="w200"
             :clearable="true"
@@ -120,9 +125,15 @@
           </el-select>
         </div>
         <div class="input-group">
-          <label>关键字:</label>
-          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword"
-                    placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
+          <label>收付对象:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.payObjType" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['57']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
         </div>
       </div>
     </ScreeningTop>
@@ -143,10 +154,10 @@
           </ul>
         </div>
         <p>
-          <el-button class="btn-info" round type="primary" size="small">导出</el-button>
+          <el-button class="btn-info" round type="primary" size="small" v-if="power['sign-cw-debt-export'].state">导出</el-button>
         </p>
       </div>
-      <el-table ref="table" border :data="list" class="info-scrollbar" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
+      <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" class="info-scrollbar" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="160" label="收付ID" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -220,7 +231,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <!--<el-pagination
+      <el-pagination
         v-if="list.length>0"
         class="pagination-info"
         @size-change="handleSizeChange"
@@ -229,8 +240,8 @@
         :page-size="pageSize"
         layout="total, prev, pager, next, jumper"
         :total="total">
-      </el-pagination>-->
-      <scrollBar :table="tableBox" v-if="tableBox">
+      </el-pagination>
+      <!--<scrollBar :table="tableBox" v-if="tableBox">
         <el-pagination
           v-if="list.length>0"
           class="pagination-info"
@@ -241,7 +252,7 @@
           layout="total, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
-      </scrollBar>
+      </scrollBar>-->
       <!--<div class="row-scroll" :style="{width:tableBody+'px',left:scrollLeft+'px'}">
         <div class="row-scroll-box" @scroll="test">
           <p :style="{width:scrollWidth+'px'}"></p>
@@ -342,6 +353,7 @@
           payMethod: '',
           keyword: '',
           timeRange: '',
+          payObjType: ''
         },
         tableTotal: {},
         list: [],
@@ -353,7 +365,8 @@
           '24': '',
           '25': '',
           '507': '',
-          '542': ''
+          '542': '',
+          '57': ''
         },
         drop_MoneyType: [],
         //分页
@@ -372,10 +385,10 @@
         },
         //权限配置
         power: {
-          'sign-cw-debt-query': {
+          /*'sign-cw-debt-query': {
             state: false,
             name: '查询'
-          },
+          },*/
           'sign-cw-debt-export': {
             state: false,
             name: '导出'
@@ -421,15 +434,6 @@
         this.getDictionary()
         this.getMoneyTypes()
         this.remoteMethod()
-        console.log(this.$refs.table.$refs.rightFixedBodyWrapper.clientWidth)
-        this.tableBox=this.$refs.table
-        this.scrollWidth=this.$refs.table.$refs.rightFixedBodyWrapper.clientWidth
-        // debugger
-        this.tableBody=this.$refs.table.$refs.bodyWrapper.clientWidth-17
-        this.scrollLeft=this.$refs.table.$el.offsetLeft+65
-        /*window.onresize=function () {
-          this.tableBody=this.$refs.table.$refs.bodyWrapper.clientWidth
-        }.bind(this)*/
       })
       // this.getAdmin()
     },
@@ -474,6 +478,10 @@
         this.searchForm.empId = ''
         this.clearSelect()
       },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.searchForm.depName=payload.depName
+      },
       depHandleClick(data) {
         // this.getEmploye(data.depId)
         this.searchForm.depId = data.depId
@@ -483,31 +491,28 @@
         this.handleNodeClick(data)
       },
       getData: function (type='init') {
-        if(this.power['sign-cw-debt-query'].state||type==='init'){
-          if(type==='search'){
-            this.currentPage=1
-          }
-          let param = JSON.parse(JSON.stringify(this.searchForm))
-          if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {
-            param.startTime = param.timeRange[0]
-            param.endTime = param.timeRange[1]
-          }
-          delete param.timeRange
-          param.pageNum = this.currentPage
-          param.pageSize = this.pageSize
-          this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.list = res.data.page.list
-              this.total = res.data.page.total
-              this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
-            }
-          }).catch(error => {
-            console.log(error)
-          })
-        }else {
-          this.noPower(this.power['sign-cw-debt-query'].name)
+        // debugger
+        if(type==='search'){
+          this.currentPage=1
         }
+        let param = JSON.parse(JSON.stringify(this.searchForm))
+        if (typeof param.timeRange === 'object' && Object.prototype.toString.call(param.timeRange) === '[object Array]') {
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+        }
+        delete param.timeRange
+        param.pageNum = this.currentPage
+        param.pageSize = this.pageSize
+        this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.list = res.data.page.list
+            this.total = res.data.page.total
+            this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+          }
+        }).catch(error => {
+          console.log(error)
+        })
       },
       /**
        * 跳转详情页
@@ -537,7 +542,9 @@
               edit: row.type,
               id: row.id,
               type: row.type === 1 ? row.inAccountType : '-1',
-              contId: row.contId
+              contId: row.contId,
+              code: row.contCode,
+              address: row.address
             }
           })
         } else if (type === 2) {

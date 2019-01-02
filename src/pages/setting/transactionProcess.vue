@@ -3,7 +3,7 @@
         <div class="table_head">
             <el-button type="primary" @click="addProcess('添加交易流程')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
-        <el-table :data="listData" style="width: 100%" class="list1">
+        <el-table :data="listData" style="width: 100%" class="list1" border>
           <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
           <el-table-column align="left" label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
@@ -31,21 +31,21 @@
         <el-dialog title="交易流程管理" :visible.sync="dialogManageVisible" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
           <span class="flow-name">({{flowName}})</span>
           <div class="manage-list">
-            <el-table :data="manageData" max-height="400">
+            <el-table :data="manageData" max-height="400" border>
               <el-table-column align="center" type="index" label="序号" width="45"></el-table-column>
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
               <el-table-column align="center" label="步骤名称" prop="stepsName"></el-table-column>
               <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
-              <el-table-column align="center" label="是否可以结算">
+              <!-- <el-table-column align="center" label="是否可以结算">
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.isSettle" size="small" @change="isSettleChange(scope.$index,$event)">
                     <el-option v-for="item in isSettleOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-select>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column align="center" label="结算百分比(%)">
                 <template slot-scope="scope">
-                  <el-input size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)" :disabled="scope.row.isSettle?false:true"></el-input>
+                  <el-input size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="操作">
@@ -140,21 +140,14 @@
     methods: {
       // 获取交易流程列表
       getData: function() {
-        let param = {
-          cityId: this.cityId
-        };
-        if(this.power['sign-set-hq'].state) {
-          this.$ajax.post('/api/flowmanage/selectFlowPageList', param).then(res => {
-            res = res.data;
-            if (res.status === 200) {
-              this.listData = res.data;
-            }
-          }).catch(error => {
-              this.$message({message:error})
-          })
-        } else {
-          this.noPower(this.power['sign-set-hq'].name)
-        }
+        this.$ajax.post('/api/flowmanage/selectFlowPageList', {cityId: this.cityId}).then(res => {
+          res = res.data;
+          if (res.status === 200) {
+            this.listData = res.data;
+          }
+        }).catch(error => {
+            this.$message({message:error})
+        })
       },
       addProcess(title) {
         this.dialogProcessVisible = true
@@ -290,17 +283,17 @@
           this.manageData.splice(index, 1)
         }
       },
-      isSettleChange(index,bool) {
-        if(!this.manageData[index].isSettle) {
-          this.manageData[index].settlePercent = ""
-        }
+      // isSettleChange(index,bool) {
+      //   if(!this.manageData[index].isSettle) {
+      //     this.manageData[index].settlePercent = ""
+      //   }
         // for(var i = 0; i < this.manageData.length; i++) {
         //   this.manageData[i].isSettle = 0
         //   this.manageData[i].settlePercent = ""
         // }
         // this.manageData[index].isSettle = bool
         // this.manageData[this.manageData.length - 1].isSettle = bool
-      },
+      // },
       addBtn() {
         this.ProcessStepVisible = true
         this.StepsOption.forEach(item => {
@@ -412,7 +405,7 @@
                 transStepsId: item.transStepsId,
                 sort: item.sort,
                 isSettle: item.isSettle,
-                settlePercent: item.settlePercent?Number(item.settlePercent):0
+                settlePercent: item.settlePercent===""?0:Number(item.settlePercent)
               })
             } else {
               arr.push({
@@ -420,14 +413,14 @@
                 sort: item.sort,
                 isSettle: item.isSettle,
                 id: item.id ? item.id : null,
-                settlePercent: item.settlePercent?Number(item.settlePercent):0
+                settlePercent: item.settlePercent===""?0:Number(item.settlePercent)
               })
             }
           })
           var num = 0
           for(var i = 0; i < arr.length; i++) {
             if(arr[i].settlePercent) {
-              num += Number(arr[i].settlePercent)
+              num = Number(arr[i].settlePercent)
             }
           }
           let param = {
@@ -435,8 +428,8 @@
             transStepsList: arr
           }
           if(arr.length !== 0) {
-            if(num != 100) {
-              this.$message({message:"所有步骤结算百分比之和必须等于100"})
+            if(num > 100) {
+              this.$message({message:"结算百分比不能超过100%"})
               return false
             }
             if(this.flowCount === 0) {
@@ -468,6 +461,7 @@
             if(i === item.name) {
               this.manageData.push({
                 isSettle: 0,
+                settlePercent: "",
                 isSms: 0,
                 overTimeDays: item.overTimeDays,
                 planDays: item.planDays,
@@ -494,7 +488,15 @@
       },
       //获取整数
       getInt:function (index) {
-        this.manageData[index].settlePercent = this.manageData[index].settlePercent.replace(/[^\.\d]/g,'')
+        for(var i = 0; i < this.manageData.length; i++) {
+          if(i === index) {
+            this.manageData[i].settlePercent = this.manageData[index].settlePercent.replace(/[^\.\d]/g,'')
+            this.$set(this.manageData[i],'isSettle',1)       
+          } else {
+            this.manageData[i].settlePercent = ""
+            this.$set(this.manageData[i],'isSettle',0)
+          }
+        }
       }
     },
     computed: {

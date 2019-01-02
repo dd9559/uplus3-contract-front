@@ -1,37 +1,33 @@
 <template>
-    <el-popover
-      @show="show"
-      ref="popover"
-      placement="bottom"
-      v-model="visible">
-      <div class="select-tree">
-        <el-tree accordion :data="dataList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
-      </div>
-      <p class="tree-box" slot="reference" @click="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
-        <el-input size="small" class="w200" :clearable="clearVal" ref="btn" placeholder="请选择" v-model="inputVal" @clear="opera('clear')" @input.native="getDep">
-        </el-input>
-        <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i></span>
-      </p>
-    </el-popover>
+  <el-popover
+    ref="popover"
+    placement="bottom"
+    v-model="visible">
+    <div class="select-tree">
+      <ul>
+        <li class="select-option" v-for="item in dataList">
+          <span>{{item.name}}</span>
+          <div class="select-option-cell">
+            <span v-for="tip in item.moneyTypes" @click="cellClick(tip,item)" :class="[inputVal===tip.name?'active':'']">{{tip.name}}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <p class="tree-box w200" slot="reference" @click="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
+      <el-input size="small" class="w200" :clearable="clearVal" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear="opera('clear')">
+      </el-input>
+      <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i></span>
+    </p>
+  </el-popover>
 </template>
 
 <script>
   export default {
-    name: "select-tree",
     props:{
       data:{
         type:Array,
         default(){
           return []
-        }
-      },
-      defaultProps:{
-        type:Object,
-        default(){
-          return {
-            children: 'subs',
-            label: 'name'
-          }
         }
       },
       init:{
@@ -51,9 +47,6 @@
     watch:{
       init:function (val) {
         this.inputVal=val
-        if(this.inputVal===''){
-          this.getDep('',true)
-        }
       }
     },
     methods:{
@@ -62,18 +55,16 @@
           this.clearVal=true
         }
       },
-      depHandleClick:function (data) {
+      cellClick:function (data,pData) {
+        let param = Object.assign({},data,{pId:pData.id,pName:pData.name})
         this.$refs.btn.focus()
-        if(data.subs.length===0){
-          // debugger
-          this.$refs.popover.showPopper=false
-        }
         this.inputVal=data.name
-        this.$emit('checkCell',data)
+        this.$emit('checkCell',param)
+        this.visible=false
       },
       opera:function (type) {
         let e=event||window.event
-        // console.log(e.currentTarget)
+        console.log(e.currentTarget)
         // debugger
         if(type==='init'){
           this.visible=true
@@ -89,26 +80,6 @@
           this.$emit('clear')
         }
       },
-      //部门搜索
-      getDep:function (e,clear=false) {
-        // console.log(e.target.value)
-        if(!clear){
-          this.inputVal=e.target.value
-        }
-        this.$ajax.get('/api/access/deps/tree',{keyword:this.inputVal}).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.$emit('search',{list:res.data,depName:this.inputVal})
-          }
-        })
-      },
-      show:function () {
-        /*if(this.clearOper){
-          console.log('test')
-          this.$refs.popover.showPopper=false
-          return
-        }*/
-      }
     },
     computed:{
       dataList:function () {
@@ -152,10 +123,28 @@
     width: 100%;
     max-height: 300px;
     overflow: hidden;
-    .el-tree {
-      margin-right: -17px; /*滚动条的宽度17px*/
-      max-height: 300px;
-      overflow-y: scroll;
+    .select-option{
+      display: flex;
+      margin-bottom: @margin-10;
+      &:last-of-type{
+        margin-bottom: 0;
+      }
+      >span{
+        color: @color-grey;
+        width: 80px;
+      }
+      &-cell{
+        max-width: 300px;
+        >span{
+          margin-right: @margin-10;
+          &:hover{
+            color: @color-blue;
+          }
+          &.active{
+            color: @color-blue;
+          }
+        }
+      }
     }
   }
 </style>

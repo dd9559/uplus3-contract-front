@@ -36,8 +36,8 @@
           <el-form-item>
             <span @click="isAttention">我的关注 <span class="attention" :class="{'attention_':attention>0}" ></span></span>
           </el-form-item>
-          <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
+          <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">
           <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" height="240">
@@ -63,8 +63,7 @@
                 {{scope.row.Price}} {{scope.row.TradeInt===3?'元':'万元'}}
               </template>
             </el-table-column>
-            <el-table-column prop="DecorateType" label="装修" width="60"
-            ></el-table-column>
+            <el-table-column prop="DecorateType" label="装修" width="60"></el-table-column>
             <el-table-column prop="Emp1" label="维护人" ></el-table-column>
           </el-table>
           <el-pagination
@@ -109,17 +108,8 @@
             </el-form-item>
           </div>
           <div>
-            <el-button
-              round
-              class="search_btn"
-              @click="resetFormFn"
-            >清空</el-button>
-            <el-button
-              type="primary"
-              round
-              class="search_btn"
-              @click="inquireGuest"
-            >查询</el-button>
+            <el-button type="primary" round class="search_btn" @click="inquireGuest">查询</el-button>
+            <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
           </div>
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">
@@ -152,6 +142,11 @@
               <template slot-scope="scope">
                 <span v-if="scope.row.PriceMin||scope.row.PriceMax">{{scope.row.PriceMin}}-{{scope.row.PriceMax}}{{scope.row.Trade==='求租'?'元':'万元'}}</span>
                 <span v-else>--</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="维护人" min-width="100" >
+              <template slot-scope="scope">
+                {{scope.row.DeptName+' - '+scope.row.EmpName}}
               </template>
             </el-table-column>
           </el-table>
@@ -390,7 +385,6 @@ export default {
         }
       }).catch(error => {
           this.loading_ = false;
-          console.log(error)
         });
     },
     //客源列表
@@ -418,7 +412,6 @@ export default {
         }
       }).catch(error => {
           this.loading_ = false;
-          console.log(error)
         });
     },
     //楼盘名称

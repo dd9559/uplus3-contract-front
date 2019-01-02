@@ -2,6 +2,7 @@
   <div
     class="layout"
     style="background-color: #f5f5f5"
+    ref="tableComView"
   >
     <ScreeningTop
       @propQueryFn="queryFn"
@@ -13,6 +14,37 @@
         class="prop-form"
         size="small"
       >
+
+       <el-form-item
+          label="关键字"
+          prop="search"
+        >
+          <el-input
+            class="w460"
+            v-model="propForm.search"
+            placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
+            :trigger-on-focus="false"
+            clearable
+          ></el-input>
+        </el-form-item>
+
+       <el-form-item
+          label="签约日期"
+          prop="dateMo"
+          class="mr"
+        >
+          <el-date-picker
+            v-model="propForm.dateMo"
+            class="w330"
+            type="daterange"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        
         <!-- 部门 -->
         <el-form-item label="部门" style="margin-right:0px;">
               <!-- <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
@@ -87,37 +119,6 @@
             ></el-option>
           </el-select>
         </el-form-item>
-
-        <el-form-item
-          label="签约日期"
-          prop="dateMo"
-          class="mr"
-        >
-          <el-date-picker
-            v-model="propForm.dateMo"
-            class="w330"
-            type="daterange"
-            range-separator="至"
-            value-format="yyyy-MM-dd"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          >
-          </el-date-picker>
-        </el-form-item>
-
-        <el-form-item
-          label="关键字"
-          prop="search"
-        >
-          <el-input
-            class="w460"
-            v-model="propForm.search"
-            placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
-            :trigger-on-focus="false"
-            clearable
-          ></el-input>
-        </el-form-item>
-
       </el-form>
     </ScreeningTop>
 
@@ -158,25 +159,28 @@
           :data="selectAchList"
           style="width: 100%"
           @row-dblclick="enterDetail"
+          ref="tableCom" 
+          :max-height="tableNumberCom" 
+          border
         >
           <el-table-column
             label="合同信息"
-            width="300"
+            width="220px"
           >
             <template slot-scope="scope">
-              <p>合同编号：<span
+              <p>合同：<span
                   class="blue"
                   @click="skipContDel(scope.row)"
                   style="cursor:pointer;"
                 >{{scope.row.code}}</span></p>
-              <p>房源编号：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
-              <p>客源编号：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
+              <p>房源：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
+              <p>客源：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
             </template>
           </el-table-column>
 
           <el-table-column
             label="业绩状态"
-            width="120"
+            width="90"
           >
             <template slot-scope="scope">
               <p
@@ -200,7 +204,7 @@
 
           <el-table-column
             label="合同类型"
-            width="120"
+            width="90"
           >
             <template slot-scope="scope">
               <p>{{scope.row.contType.label}}</p>
@@ -216,7 +220,7 @@
 
           <el-table-column
             label="成交经纪人"
-            width="200"
+            width="180"
           >
             <template slot-scope="scope">
               <p v-if="scope.row.dealName">{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
@@ -262,7 +266,7 @@
 
           <el-table-column
             label="角色类型"
-            width="160"
+            width="100"
           >
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
@@ -372,7 +376,6 @@
           </el-table-columfn>
           <el-table-column
             label="操作"
-            width="100"
           >
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
@@ -447,34 +450,40 @@
         </el-table>
       </div>
       <!-- 分页 -->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total,prev, pager, next , jumper"
-        :total="total"
-        v-if="total!=0"
-      >
-      </el-pagination>
+      <div class="pagination" v-if="total!=0">
+          <el-pagination
+             @size-change="handleSizeChange"
+             @current-change="handleCurrentChange"
+             :current-page="currentPage"
+             :page-size="pageSize"
+             layout="total,prev, pager, next , jumper"
+             :total="total"
+            >
+           </el-pagination>
+      </div>
+    
 
     </div>
 
     <!-- 表单列表弹出框（业绩详情） -->
-    <el-dialog
+   <div>
+      <el-dialog
       :visible.sync="dialogVisible"
        width="1000px"
       :close-on-click-modal="false"
       custom-class="base-dialog"
     >
+    <div v-loading="loading2">
       <b
         class="el-icon-close"
         @click="closeDialog"
       ></b>
       <div class="ach-header">
         <h1 class="f14">业绩详情</h1>
-        <p class="f14" style="font-weight:bold;">可分配业绩：<span class="orange">{{comm}}元</span></p>
-        <p style="margin-top:20px;">可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费</p>
+        <p class="f14" style="font-weight:bold;">
+          可分配业绩：<span class="orange">{{comm}}元</span>
+          <span>（可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费）</span>
+        </p>
       </div>
       <div class="ach-body">
         <h1 class="f14">房源方分成</h1>
@@ -482,6 +491,7 @@
           <el-table
             :data="houseArr"
             style="width: 100%"
+            border
           >
             <!-- roleType 分成人角色类型 :
              房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
@@ -501,7 +511,7 @@
             <el-table-column
               prop="ratio"
               label="分成比例(%)"
-              width="95"
+              width="100"
             >
             </el-table-column>
 
@@ -559,7 +569,6 @@
             <el-table-column
               prop="manager"
               label="区总"
-              width="100"
             >
             </el-table-column>
           </el-table>
@@ -570,6 +579,7 @@
           <el-table
             :data="clientArr"
             style="width: 100%"
+            border
           >
             <!-- roleType 分成人角色类型 :
                 房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
@@ -590,7 +600,7 @@
             <el-table-column
               prop="ratio"
               label="分成比例(%)"
-              width="95"
+              width="100"
             >
             </el-table-column>
 
@@ -648,7 +658,6 @@
             <el-table-column
               prop="manager"
               label="区总"
-              width="100"
             >
             </el-table-column>
           </el-table>
@@ -657,11 +666,11 @@
         <h1 class="f14">审核信息</h1>
 
         <div class="ach-check-list">
-          <el-table :data="checkArr">
+          <el-table :data="checkArr"   border>
             <!-- examineDate -->
             <el-table-column
               label="时间"
-              width="200"
+              width="150"
             >
             
               <template slot-scope="scope">
@@ -681,6 +690,15 @@
               prop="auditorDepartment"
               label="职务"
               width="120"
+            >
+            </el-table-column>
+
+
+           <!-- 节点名称（新增）-->
+            <el-table-column
+              prop="updateByName"
+              label="节点名称"
+              width="130"
             >
             </el-table-column>
 
@@ -721,7 +739,10 @@
         </div>
       </div>
       <div class="ach-footer"></div>
+    </div>
+ 
     </el-dialog>
+   </div>
 
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog
@@ -730,6 +751,7 @@
       @adoptData="adoptData"
       @rejectData="rejectData"
       @close="shows=false;code2=''"
+      @opens="shows=true"
       :dialogType="dialogType"
       :contractCode="code2"
       :aId="aId"
@@ -812,7 +834,8 @@ export default {
       achIndex:null,
       ajaxParam:{},
       total:0,
-      loading:true,
+      loading:false,
+      loading2:false,
       achObj:{},
       recallShow:false,
       smallTips:"",
@@ -1014,6 +1037,8 @@ export default {
     },
     //获取应收列表详情
     enterDetail(row) {
+      this.dialogVisible = true;  
+      this.loading2=true;
       //合同边和获取业绩详情
       this.code = row.code;
       let param = { contCode: row.code, entrance: 3,aId:row.aId };
@@ -1026,14 +1051,14 @@ export default {
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;
+                this.loading2=false;            
             }else{
               this.checkArr = [];
             }
             
             this.comm = data.data.comm;
           }
-        });
-      this.dialogVisible = true;
+        });     
     },
     queryFn() {
     console.log(this.propForm.dateMo)
@@ -1309,10 +1334,10 @@ export default {
 
   //业绩详情弹框改变样式
   /deep/ .el-dialog.base-dialog {
-    max-width: 1000px !important;
+    // max-width: 1000px;
     margin: 13vh auto 0 !important;
     overflow: auto;
-
+    padding-bottom: 30px;
     .el-dialog__headerbtn {
       right: 0;
       top: 0;
@@ -1325,7 +1350,7 @@ export default {
       font-size: 30px;
     }
     .ach-header {
-      min-height: 100px;
+      min-height: 70px;
       min-width: 100%;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;
@@ -1351,10 +1376,10 @@ export default {
       /deep/ .el-table {
         // font-size: 14px !important;
         margin-top: 20px;
-        td,
-        th {
-          padding: 24px 0;
-        }
+        // td,
+        // th {
+        //   padding: 24px 0;
+        // }
         .el-table__header {
           height: 55px;
           th {
@@ -1362,17 +1387,21 @@ export default {
             .cell {
               background-color: #eef2fb;
               // background-color: pink;
-              height: 55px;
-              line-height: 55px;
+              // height: 55px;
+              // line-height: 55px;
             }
           }
+        }
+        .el-table__header th .cell {
+          height: 30px;
+          line-height: 30px;
         }
       }
       //弹框审核信息
       h1 {
         font-size: 16px;
         color: #233241;
-        margin: 20px 0 0 0px;
+        margin: 13px 0 0 0px;
       }
     }
     /deep/ .el-dialog__header,

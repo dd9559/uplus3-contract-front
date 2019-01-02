@@ -1,5 +1,5 @@
 <template>
-  <div class="paper-set">
+  <div ref="tableComView" class="paper-set">
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
       <!-- <div class="content">
         <div class="input-group">
@@ -151,7 +151,7 @@
       <div class="paper-set-tit">
         <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
       </div>
-      <el-table ref="tableCom" :data="tableData.list" class="paper-table mt-20 info-scrollbar" v-loading="loadingList">
+      <el-table ref="tableCom" :max-height="tableNumberCom" :data="tableData.list" class="paper-table mt-20" v-loading="loadingList">
         <el-table-column fixed align="center" label="序号" min-width="70">
           <template slot-scope="scope">
             <p class="tc">{{scope.$index + 1}}</p>
@@ -254,7 +254,6 @@
       </el-table>
     </div>
     <!-- 分页 -->
-    <scrollBar :table="tableBoxCom" v-if="tableBoxCom">
       <div class="pagination" v-if="tableData.total">
           <el-pagination
               :current-page="tableData.pageNum"
@@ -264,7 +263,6 @@
               :total="tableData.total">
           </el-pagination>
       </div>
-    </scrollBar>
     <!-- 弹层 -->
     <el-dialog :title="layer.title" :visible.sync="layer.show" :width="layer.title==='票据作废'?'740px':'460px'" class="layer-paper">
       <div v-if="layer.title==='票据作废'" class="layer-invalid">
@@ -358,10 +356,10 @@
         paymentTime:'',
         // 权限
         power:{
-            'sign-cw-bill-query':{
-                name:'查询',
-                state:false
-            },
+            // 'sign-cw-bill-query':{
+            //     name:'查询',
+            //     state:false
+            // },
             'sign-cw-bill-delete':{
                 name:'核销',
                 state:false
@@ -428,10 +426,10 @@
       },
       // 列表数据
       getData: function () {
-        if(!this.power['sign-cw-bill-query'].state){
-            this.noPower(this.power['sign-cw-bill-query'].name);
-            return false
-        }
+        // if(!this.power['sign-cw-bill-query'].state){
+        //     this.noPower(this.power['sign-cw-bill-query'].name);
+        //     return false
+        // }
         this.loadingList = true;
         let param = Object.assign({}, this.propForm)
         param.pageNum = this.pageNum

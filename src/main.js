@@ -85,17 +85,18 @@ router.beforeEach((to,from,next)=>{
   store.commit('setPath',pathList?JSON.parse(pathList):[])
 
   // let userMsg = localStorage.getItem('userMsg')
-  if(!store.state.user){
+  /*if(!store.state.user){
     // debugger
-    api.get('/api/me').then(res=>{
+    /!*api.get('/api/me').then(res=>{
       res=res.data
       if(res.status===200){
-        store.dispatch('asyncUser',res.data)
+        store.commit('setUser',res.data)
       }
-    })
+    })*!/
+    store.dispatch('asyncUser')
   }else {
     // store.commit('setUser',JSON.parse(userMsg))
-  }
+  }*/
 
   if(to.matched.some(record=>record.meta.root)){
     if(to.path==='/moneyCheck'){

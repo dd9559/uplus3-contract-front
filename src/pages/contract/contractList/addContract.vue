@@ -147,7 +147,7 @@
                   </el-option>
                 </el-select>
                 <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
-                <input v-model="item.identifyCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
+                <input v-model="item.encryptionCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.encryptionCode)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -198,7 +198,7 @@
                 </el-select>
                 <!-- <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" @input="cutNumber_(index,'guest')" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"><i slot="suffix">%</i></el-input> -->
                 <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
-                <input v-model="item.identifyCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.identifyCode)">
+                <input v-model="item.encryptionCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.encryptionCode)">
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -300,6 +300,14 @@
         <el-button type="primary" @click="delPeopleMsg">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 创建合同成功提示框 -->
+    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px">
+      <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="toContract">取 消</el-button>
+        <el-button type="primary" @click="toUpload">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
            
@@ -366,7 +374,7 @@ export default {
       ownerList: [
         {
           type: 1,
-          identifyCode: "",
+          encryptionCode: "",
           mobile: "",
           relation: "",
           name: "",
@@ -378,7 +386,7 @@ export default {
       guestList: [
         {
           type: 2,
-          identifyCode: "",
+          encryptionCode: "",
           mobile: "",
           relation: "",
           name: "",
@@ -424,6 +432,9 @@ export default {
       delType:'',
       choseHcode:0,//选择的房源编号
       choseGcode:0,//选择的客源编号
+      dialogSuccess:false,
+      detailCode:'',
+      detailId:'',
       //权限配置
       power: {
         'sign-ht-info-toverify': {
@@ -458,7 +469,7 @@ export default {
         this.ownerList.push({
           edit: true,
           type: 1,
-          identifyCode: "",
+          encryptionCode: "",
           mobile: "",
           relation: "",
           name: "",
@@ -479,7 +490,7 @@ export default {
         this.guestList.push({
           edit: true,
           type: 2,
-          identifyCode: "",
+          encryptionCode: "",
           mobile: "",
           relation: "",
           name: "",
@@ -566,7 +577,8 @@ export default {
         let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
         if (!reg.test(value)) {
           this.$message({
-            message:'身份证格式不正确'
+            message:'身份证格式不正确',
+            type: "warning"
           })
         }
       }
@@ -578,7 +590,8 @@ export default {
         let reg = /^1[0-9]{10}$/;
         if (!reg.test(value)) {
           this.$message({
-            message:'手机号格式不正确'
+            message:'手机号格式不正确',
+            type: "warning"
           })
         }
       }
@@ -594,297 +607,343 @@ export default {
       }
       //验证合同信息
       this.$tool.checkForm(this.contractForm, rule).then(() => {
-          if (
-            this.contractForm.custCommission > 0 ||
-            this.contractForm.ownerCommission > 0
-          ) {
-            if (this.contractForm.houseInfo.HouseStoreCode) {
-              if(this.contractForm.propertyCard){
-                this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
-              }
-              if(this.contractForm.propertyCard||this.contractForm.type===1){
-                //业主产权比
-              let ownerRightRatio = 0;
-
-              let isOk;
-              // this.ownerList.forEach(element => {
-              let ownerArr = this.ownerList.map(item=>Object.assign({},item));
-              ownerArr.forEach((element,index) => {
-                if(element.isEncryption){
-                  element.mobile=this.ownerList_[index].mobile
+          if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
+            if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
+              if (this.contractForm.houseInfo.HouseStoreCode) {
+                if(this.contractForm.propertyCard){
+                  this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
                 }
-              });
+                if(this.contractForm.propertyCard||this.contractForm.type===1){
+                  //业主产权比
+                let ownerRightRatio = 0;
 
-              for(var i=0;i<ownerArr.length;i++){
-                let element = ownerArr[i]
-                isOk = false;
-                if (element.name) {
-                  if(element.name.replace(/\s/g,"")){
-                    element.name=element.name.replace(/\s/g,"");
-                    if (element.mobile.length === 11) {
-                    let reg = /^1[0-9]{10}$/;
-                    if (reg.test(element.mobile)) {
-                      if (element.relation) {
-                        if(this.type===2){
-                          if(!element.propertyRightRatio){
-                            element.propertyRightRatio="0"
-                          }
-                        }      
-                        if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                          if (element.identifyCode) {
-                            let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
-                            if (reg.test(element.identifyCode)) {
-                              isOk = true;
-                              ownerRightRatio += element.propertyRightRatio - 0;
-                            }else{
-                              this.$message({
-                                message: "业主身份证号不正确"
-                              });
-                              break
+                let isOk;
+                // this.ownerList.forEach(element => {
+                let ownerArr = this.ownerList.map(item=>Object.assign({},item));
+                ownerArr.forEach((element,index) => {
+                  if(element.isEncryption){
+                    element.mobile=this.ownerList_[index].mobile
+                  }
+                });
+
+                for(var i=0;i<ownerArr.length;i++){
+                  let element = ownerArr[i]
+                  isOk = false;
+                  if (element.name) {
+                    if(element.name.replace(/\s/g,"")){
+                      element.name=element.name.replace(/\s/g,"");
+                      if (element.mobile.length === 11) {
+                      let reg = /^1[0-9]{10}$/;
+                      if (reg.test(element.mobile)) {
+                        if (element.relation) {
+                          if(this.type===2){
+                            if(!element.propertyRightRatio){
+                              element.propertyRightRatio="0"
                             }
-                          } else {
-                            this.$message({
-                              message: "业主身份证号不能为空"
-                            });
-                            break
-                          }
-                        } else {
-                          this.$message({
-                            message: "业主产权比不能为空或负"
-                          });
-                          break
-                        }
-                    } else {
-                      this.$message({
-                        message: "业主关系不能为空"
-                      });
-                      break
-                    }
-                    }else{
-                      this.$message({
-                        message: "业主电话号码不正确"
-                      });
-                      break
-                    }
-                  } else {
-                    this.$message({
-                      message: "业主电话号码不正确"
-                    });
-                    break
-                  }
-                  }else{
-                    this.$message({
-                      message: "业主姓名不能为空"
-                    });
-                    break
-                  }
-                } else {
-                  this.$message({
-                    message: "业主姓名不能为空"
-                  });
-                  break
-                }
-              };
-              if (isOk) {
-                if (ownerRightRatio === 100||this.contractForm.type===1) {
-                  if (this.contractForm.guestInfo.paymentMethod) {
-                    if (this.contractForm.guestInfo.GuestStoreCode) {
-                      //客户产权比
-                      let guestRightRatio = 0;
-                      let isOk_;
-                      // this.guestList.forEach(element => {
-                      let guestArr = this.guestList.map(item=>Object.assign({},item));
-                      guestArr.forEach((element,index) => {
-                        if(element.isEncryption){
-                          element.mobile=this.guestList_[index].mobile
-                        }
-                      });
-
-                      for(var i=0;i<guestArr.length;i++){
-                        let element = guestArr[i];
-                        isOk_ = false;
-                        if (element.name) {
-                          if(element.name.replace(/\s/g,"")){
-                            element.name=element.name.replace(/\s/g,"");
-                            if (element.mobile.length === 11) {
-                            let reg = /^1[0-9]{10}$/;
-                            if (reg.test(element.mobile)) {
-                              if (element.relation) {
-                                if(this.type===2){
-                                  if(!element.propertyRightRatio){
-                                    element.propertyRightRatio="0"
-                                  }
-                                }      
-                              if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                                if (element.identifyCode) {
-                                  let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
-                                  if (reg.test(element.identifyCode)) {
-                                    isOk_ = true;
-                                    guestRightRatio += element.propertyRightRatio - 0;
-                                  }else{
-                                    this.$message({
-                                      message: "客户身份证号不正确"
-                                    });
-                                    break
-                                  }
-                                } else {
-                                  this.$message({
-                                    message: "客户身份证号不能为空"
-                                  });
-                                  break
-                                }
-                              } else {
+                          }      
+                          if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
+                            if (element.encryptionCode) {
+                              let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
+                              if (reg.test(element.encryptionCode)) {
+                                isOk = true;
+                                ownerRightRatio += element.propertyRightRatio - 0;
+                              }else{
                                 this.$message({
-                                  message: "客户产权比不能为空或负"
+                                  message: "业主身份证号不正确",
+                                  type: "warning"
                                 });
                                 break
                               }
                             } else {
                               this.$message({
-                                message: "客户关系不能为空"
-                              });
-                              break
-                            }
-                            }else{
-                              this.$message({
-                                message: "客户电话号码不正确"
+                                message: "业主身份证号不能为空",
+                                type: "warning"
                               });
                               break
                             }
                           } else {
                             this.$message({
-                              message: "客户电话号码不正确"
+                              message: "业主产权比不能为空或负",
+                              type: "warning"
                             });
                             break
                           }
-                          }else{
+                      } else {
+                        this.$message({
+                          message: "业主关系不能为空",
+                          type: "warning"
+                        });
+                        break
+                      }
+                      }else{
+                        this.$message({
+                          message: "业主电话号码不正确",
+                          type: "warning"
+                        });
+                        break
+                      }
+                    } else {
+                      this.$message({
+                        message: "业主电话号码不正确",
+                        type: "warning"
+                      });
+                      break
+                    }
+                    }else{
+                      this.$message({
+                        message: "业主姓名不能为空",
+                        type: "warning"
+                      });
+                      break
+                    }
+                  } else {
+                    this.$message({
+                      message: "业主姓名不能为空",
+                      type: "warning"
+                    });
+                    break
+                  }
+                };
+                if (isOk) {
+                  if (ownerRightRatio === 100||this.contractForm.type===1) {
+                    if (this.contractForm.guestInfo.paymentMethod) {
+                      if (this.contractForm.guestInfo.GuestStoreCode) {
+                        //客户产权比
+                        let guestRightRatio = 0;
+                        let isOk_;
+                        // this.guestList.forEach(element => {
+                        let guestArr = this.guestList.map(item=>Object.assign({},item));
+                        guestArr.forEach((element,index) => {
+                          if(element.isEncryption){
+                            element.mobile=this.guestList_[index].mobile
+                          }
+                        });
+
+                        for(var i=0;i<guestArr.length;i++){
+                          let element = guestArr[i];
+                          isOk_ = false;
+                          if (element.name) {
+                            if(element.name.replace(/\s/g,"")){
+                              element.name=element.name.replace(/\s/g,"");
+                              if (element.mobile.length === 11) {
+                              let reg = /^1[0-9]{10}$/;
+                              if (reg.test(element.mobile)) {
+                                if (element.relation) {
+                                  if(this.type===2){
+                                    if(!element.propertyRightRatio){
+                                      element.propertyRightRatio="0"
+                                    }
+                                  }      
+                                if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
+                                  if (element.encryptionCode) {
+                                    let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
+                                    if (reg.test(element.encryptionCode)) {
+                                      isOk_ = true;
+                                      guestRightRatio += element.propertyRightRatio - 0;
+                                    }else{
+                                      this.$message({
+                                        message: "客户身份证号不正确",
+                                        type: "warning"
+                                      });
+                                      break
+                                    }
+                                  } else {
+                                    this.$message({
+                                      message: "客户身份证号不能为空",
+                                      type: "warning"
+                                    });
+                                    break
+                                  }
+                                } else {
+                                  this.$message({
+                                    message: "客户产权比不能为空或负",
+                                    type: "warning"
+                                  });
+                                  break
+                                }
+                              } else {
+                                this.$message({
+                                  message: "客户关系不能为空",
+                                  type: "warning"
+                                });
+                                break
+                              }
+                              }else{
+                                this.$message({
+                                  message: "客户电话号码不正确",
+                                  type: "warning"
+                                });
+                                break
+                              }
+                            } else {
+                              this.$message({
+                                message: "客户电话号码不正确",
+                                type: "warning"
+                              });
+                              break
+                            }
+                            }else{
+                              this.$message({
+                                message: "客户姓名不能为空",
+                                type: "warning"
+                              });
+                              break
+                            }
+                          } else {
                             this.$message({
-                              message: "客户姓名不能为空"
+                              message: "客户姓名不能为空",
+                              type: "warning"
                             });
                             break
                           }
-                        } else {
-                          this.$message({
-                            message: "客户姓名不能为空"
-                          });
-                          break
-                        }
-                      };
-                      if (isOk_) {
-                        if (guestRightRatio === 100||this.contractForm.type===1) {
-                          //验证身份证是否重复
-                          let IdCardList = [];
-                          this.ownerList.forEach(element => {
-                            IdCardList.push(element.identifyCode);
-                          });
-                          this.guestList.forEach(element => {
-                            IdCardList.push(element.identifyCode)
-                          });
-                          let IdCardList_= Array.from(new Set(IdCardList));
-                          if(IdCardList.length===IdCardList_.length){
-                            //验证扩展参数
-                            if(this.contractForm.isHaveCooperation){
-                              let mobileOk=true;
-                              let IDcardOk=true;
-                              // contractForm.otherCooperationInfo.mobile
-                              if(this.contractForm.otherCooperationInfo.mobile){
-                                mobileOk=false;
-                                let reg = /^1[0-9]{10}$/;
-                                if (reg.test(this.contractForm.otherCooperationInfo.mobile)) {
-                                  mobileOk=true;
-                                }else{
-                                  this.$message({
-                                    message: "三方合作手机号码不正确"
-                                  });
+                        };
+                        if (isOk_) {
+                          if (guestRightRatio === 100||this.contractForm.type===1) {
+                            // 验证手机号是否重复
+                            let mobileList = [];
+                            //验证身份证是否重复
+                            let IdCardList = [];
+                            this.ownerList.forEach(element => {
+                              IdCardList.push(element.encryptionCode);
+                              mobileList.push(element.mobile);
+                            });
+                            this.guestList.forEach(element => {
+                              IdCardList.push(element.encryptionCode);
+                              mobileList.push(element.mobile);
+                            });
+                            let mobileList_= Array.from(new Set(mobileList));
+                            let IdCardList_= Array.from(new Set(IdCardList));
+                            if(mobileList.length===mobileList_.length){
+                              if(IdCardList.length===IdCardList_.length){
+                              //验证扩展参数
+                              if(this.contractForm.isHaveCooperation){
+                                let mobileOk=true;
+                                let IDcardOk=true;
+                                // contractForm.otherCooperationInfo.mobile
+                                if(this.contractForm.otherCooperationInfo.mobile){
+                                  mobileOk=false;
+                                  let reg = /^1[0-9]{10}$/;
+                                  if (reg.test(this.contractForm.otherCooperationInfo.mobile)) {
+                                    mobileOk=true;
+                                  }else{
+                                    this.$message({
+                                      message: "三方合作手机号码不正确",
+                                      type: "warning"
+                                    });
+                                  }
+                                };
+                                if(this.contractForm.otherCooperationInfo.encryptionCode){
+                                  IDcardOk=false;
+                                  let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+                                  if (reg.test(this.contractForm.otherCooperationInfo.encryptionCode)) {
+                                    IDcardOk=true;
+                                  }else{
+                                    this.$message({
+                                      message: "三方合作身份证号不正确",
+                                      type: "warning"
+                                    });
+                                  }
+                                };
+                                if(mobileOk&&IDcardOk){
+                                  // 合同扩展参数验证
+                                  this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                                    this.dialogSave = true;
+                                  }).catch(error => {
+                                      this.$message({
+                                        message: `${error.title}${error.msg}`,
+                                        type: "warning"
+                                      });
+                                    });
                                 }
-                              };
-                              if(this.contractForm.otherCooperationInfo.identifyCode){
-                                IDcardOk=false;
-                                let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
-                                if (reg.test(this.contractForm.otherCooperationInfo.identifyCode)) {
-                                  IDcardOk=true;
-                                }else{
-                                  this.$message({
-                                    message: "三方合作身份证号不正确"
-                                  });
-                                }
-                              };
-                              if(mobileOk&&IDcardOk){
+                              }else{
                                 // 合同扩展参数验证
                                 this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
                                   this.dialogSave = true;
                                 }).catch(error => {
                                     this.$message({
-                                      message: `${error.title}${error.msg}`
+                                      message: `${error.title}${error.msg}`,
+                                      type: "warning"
                                     });
                                   });
                               }
                             }else{
-                              // 合同扩展参数验证
-                              this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
-                                this.dialogSave = true;
-                              }).catch(error => {
-                                  this.$message({
-                                    message: `${error.title}${error.msg}`
-                                  });
-                                });
+                              this.$message({
+                                message:'身份证号码重复',
+                                type: "warning"
+                              })
                             }
-                          }else{
-                            this.$message({
-                              message:'身份证号码重复'
-                            })
-                          }
+                            }else{
+                              this.$message({
+                                message:'手机号码重复',
+                                type: "warning"
+                              })
+                            }
+                            
 
-                          
-                          // 合同扩展参数验证
-                          // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
-                          //   this.dialogSave = true;
-                          // }).catch(error => {
-                          //     this.$message({
-                          //       message: `${error.title}${error.msg}`
-                          //     });
-                          //   });
-                        } else {
-                          this.$message({
-                            message: "客户产权比和必须为100%"
-                          });
+                            
+                            // 合同扩展参数验证
+                            // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                            //   this.dialogSave = true;
+                            // }).catch(error => {
+                            //     this.$message({
+                            //       message: `${error.title}${error.msg}`
+                            //     });
+                            //   });
+                          } else {
+                            this.$message({
+                              message: "客户产权比和必须为100%",
+                              type: "warning"
+                            });
+                          }
                         }
+                      } else {
+                        this.$message({
+                          message: "客源方门店不能为空",
+                          type: "warning"
+                        });
                       }
                     } else {
                       this.$message({
-                        message: "客源方门店不能为空"
+                        message: "付款方式不能为空",
+                        type: "warning"
                       });
                     }
                   } else {
                     this.$message({
-                      message: "付款方式不能为空"
+                      message: "业主产权比和必须为100%",
+                      type: "warning"
                     });
                   }
-                } else {
-                  this.$message({
-                    message: "业主产权比和必须为100%"
-                  });
                 }
-              }
-              }else{
+                }else{
+                  this.$message({
+                    message:'房产证号不能为空',
+                    type: "warning"
+                  })
+                }
+              } else {
                 this.$message({
-                  message:'房产证号不能为空'
-                })
+                  message: "房源方门店不能为空",
+                  type: "warning"
+                });
               }
-            } else {
+            }else{
               this.$message({
-                message: "房源方门店不能为空"
+                message: "总佣金不能大于成交总价",
+                type: "warning"
               });
             }
           } else {
             this.$message({
-              message: "佣金不能为零"
+              message: "佣金不能为零",
+              type: "warning"
             });
           }
         })
         .catch(error => {
           this.$message({
-            message: `${error.title}${error.msg}`
+            message: `${error.title}${error.msg}`,
+            type: "warning"
           });
         });
     },
@@ -936,17 +995,21 @@ export default {
           res = res.data;
           this.fullscreenLoading=false;
           if (res.status === 200) {
-            this.dialogSave=false
+            this.dialogSave=false;
+            this.detailCode=res.data.code;
+            this.detailId=res.data.id;
             this.$message({
               message: "操作成功",
               type: "success"
             });
-            this.$router.push('/contractList');
+            // this.$router.push('/contractList');
+            this.dialogSuccess=true;
           }
         }).catch(error => {
           this.fullscreenLoading=false;
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
       }else if(this.type===2){//编辑
@@ -982,20 +1045,41 @@ export default {
           res = res.data;
           this.fullscreenLoading=false;
           if (res.status === 200) {
-            this.dialogSave=false
+            this.dialogSave=false;
+            this.detailCode=res.data.code;
+            this.detailId=res.data.id;
             this.$message({
               message: "操作成功",
               type: "success"
             });
-            this.$router.push('/contractList');
+            // this.$router.push('/contractList');
+            this.dialogSuccess=true;
           }
         }).catch(error => {
           this.fullscreenLoading=false;
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
       }
+    },
+    //创建成功提示
+    toUpload(value){//上传合同资料库
+      this.dialogSuccess=false;
+      this.$router.push({
+        path: "/contractDetails",
+        query: {
+          type: "dataBank",
+          id: this.detailId,//合同id
+          code: this.detailCode,//合同编号
+          contType: this.contractForm.type//合同类型
+        }
+      });
+    },
+    toContract(){//回到合同列表
+      this.dialogSuccess=false;
+      this.$router.push('/contractList');
     },
     /* 新增/编辑合同 */
     // addContract1() {
@@ -1141,7 +1225,7 @@ export default {
             this.ownerList=[];
             houseMsg.OwnerInfoList.forEach(element => {
               element.type=1;
-              element.identifyCode='';
+              element.encryptionCode='';
               element.propertyRightRatio='';
               element.name=element.OwnerName;
               element.mobile=element.OwnerMobile;
@@ -1163,6 +1247,11 @@ export default {
           //   id: houseMsg.HouseStoreCode
           // });
         }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type: "error"
+        })
       });
     },
     //根据客源id获取客源信息
@@ -1184,7 +1273,7 @@ export default {
             mobile: guestMsg.OwnerInfo.CustMobile,
             type: 2,
             relation: guestMsg.OwnerInfo.CustRelation,
-            identifyCode:'',
+            encryptionCode:'',
             propertyRightRatio:'',
             isEncryption:true
           }
@@ -1204,6 +1293,11 @@ export default {
           //   propertyRightRatio:''
           // })
         }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type: "error"
+        })
       });
     },
     //关闭房源客源弹窗
@@ -1279,7 +1373,8 @@ export default {
                           this.contractForm.houseInfo.ShopOwnerMobile=res.data.mobile;
                         }else{
                           this.$message({
-                            message:'该门店没有店长'
+                            message:'该门店没有店长',
+                            type:'warning'
                           })
                         }
                       }
@@ -1291,7 +1386,8 @@ export default {
           }
         }).catch(error=>{
           this.$message({
-            message:error
+            message:error,
+            type:'error'
           })
         })
       }
@@ -1413,6 +1509,7 @@ export default {
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
                 identifyCode:this.contractForm.contPersons[i].identifyCode,
+                encryptionCode:this.contractForm.contPersons[i].encryptionCode,
                 type:1,
                 edit:false,
                 isEncryption:true
@@ -1449,6 +1546,7 @@ export default {
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
                 identifyCode:this.contractForm.contPersons[i].identifyCode,
+                encryptionCode:this.contractForm.contPersons[i].encryptionCode,
                 type:2,
                 edit:false,
                 isEncryption:true

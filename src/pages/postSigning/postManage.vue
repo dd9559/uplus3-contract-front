@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div ref="tableComView">
         <!-- 筛选 -->
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
@@ -188,7 +188,7 @@
                     </el-form-item>
                 </div>
                 <el-form-item 
-                    label="佣金结算状态"
+                    label="收佣状态"
                     prop="commission">
                         <el-select 
                         v-model="propForm.commission" 
@@ -208,12 +208,13 @@
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
             <el-table 
-            ref="tableCom"
+            ref="tableCom" 
+            :max-height="tableNumberCom"
             :data="tableData.list" 
             v-loading="loadingList"
             @cell-dblclick="dblclickFn"
             :formatter="nullFormatterData"
-            class="paper-table mt-20 info-scrollbar">
+            class="paper-table mt-20">
                 <el-table-column prop="code" label="合同编号" min-width="130">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)" >{{scope.row.code}}</span>
@@ -244,12 +245,12 @@
                         {{dateFormat(scope.row.receiveTime)}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="a10" label="收佣状态" min-width="105">
+                <el-table-column prop="a10" label="实收/应收" min-width="105">
                     <template slot-scope="scope">
                         {{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="statusReceiveAmount.label" label="佣金结算状态" min-width="121">
+                <el-table-column prop="statusReceiveAmount.label" label="收佣状态" min-width="121">
                 </el-table-column>
                 <el-table-column prop="stepInstanceName" label="后期进度" min-width="182">
                     <template slot-scope="scope">
@@ -269,7 +270,6 @@
             </el-table>
         </div>
         <!-- 分页 -->
-        <scrollBar :table="tableBoxCom" v-if="tableBoxCom">
             <div class="pagination" v-if="tableData.total">
                 <el-pagination
                     :current-page="tableData.pageNum"
@@ -279,7 +279,6 @@
                     :total="tableData.total">
                 </el-pagination>
             </div>
-        </scrollBar>
         <!-- 后期进度弹层 -->
         <el-dialog title="后期进度" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layerShow" width="1000px"  class="layer-paper layer-scroll-auto">
             <LayerScrollAuto>
@@ -307,7 +306,7 @@
                             <span class="cl-2 mr-30">{{layerShowData.transFlowName}}</span>
                         </li>
                         <li>
-                            <span class="cl-1 mr-10">佣金结算状态：</span>
+                            <span class="cl-1 mr-10">收佣状态：</span>
                             <span class="cl-2">{{layerShowData.statusReceiveAmount.label}}</span>
                         </li>
                     </ul>
@@ -441,7 +440,7 @@
                     </ul>
                 </div>
             </div>
-            <span slot="footer" v-loading="loadingBtn1">
+            <span slot="footer">
                 <el-button class="paper-btn" type size="small" @click="replaceCloseFn" round>返回</el-button>
                 <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="replaceBtnFn" round>确定</el-button>
             </span>
@@ -890,10 +889,10 @@
                 adjustData:[],
                 // 权限
                 power:{
-                    'sign-qh-mgr-query':{
-                        name:'查询',
-                        state:false
-                    },
+                    // 'sign-qh-mgr-query':{
+                    //     name:'查询',
+                    //     state:false
+                    // },
                     'sign-qh-mgr-jd-modify':{
                         name:'更换交易流程',
                         state:false
@@ -926,7 +925,7 @@
         methods:{
             // 百分比转换
             percentageFn(val){
-                if(val>= 0){
+                if(val > 0){
                     return `${val}%`
                 }else{
                     return '--'
@@ -1568,10 +1567,10 @@
             },
             // 列表数据
             getDataList(){
-                if(!this.power['sign-qh-mgr-query'].state){
-                    this.noPower(this.power['sign-qh-mgr-query'].name);
-                    return false
-                }
+                // if(!this.power['sign-qh-mgr-query'].state){
+                //     this.noPower(this.power['sign-qh-mgr-query'].name);
+                //     return false
+                // }
                 this.loadingList = true;
                 let handleTimeEnd = '';
                 let handleTimeStar = '';
@@ -1592,7 +1591,7 @@
                     receiveTimeStar = this.dateFormat(datamo[0]);
                     receiveTimeEnd = this.dateFormat(datamo[1]);
                 }
-                this.$ajax.postJSON('/api/postSigning/getAdminContract',{
+                this.$ajax.get('/api/postSigning/getAdminContract',{
                     pageNum:this.pageNum,
                     pageSize:this.pageSize,
                     statusLaterStage:this.propForm.lateState,

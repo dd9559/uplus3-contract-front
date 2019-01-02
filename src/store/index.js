@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -9,7 +10,8 @@ const store = new Vuex.Store({
     slider:[],
     collapse: true,//侧边栏是否收起
     user:null,
-    fullscreenLoading:false
+    fullscreenLoading:false,
+    bodyScollShow:0
   },
   mutations: {
     setPath (state,payload) {
@@ -25,11 +27,28 @@ const store = new Vuex.Store({
     },
     setCollapse(state,payload){
       state.collapse=payload
+    },
+    bodyScollShowFn(state,payload){
+      if(state.bodyScollShow>999){
+        state.bodyScollShow = 0;
+      }else{
+        state.bodyScollShow++;
+      }
     }
   },
   actions:{
-    asyncUser({commit},payload){
-      commit('setUser',payload)
+    asyncUser({commit}){
+      axios.get('/api/me').then(res => {
+        res=res.data
+        return new Promise((resolve,reject)=>{
+          if(res.status===200){
+            commit('setUser',res.data)
+            resolve(res.data)
+          }else {
+            reject()
+          }
+        })
+      })
     }
   },
   getters:{
@@ -44,6 +63,9 @@ const store = new Vuex.Store({
     },
     getCollapse:state=>{
       return state.collapse
+    },
+    getBodyScollShow:state=>{
+      return state.bodyScollShow
     }
   }
 })

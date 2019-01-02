@@ -27,10 +27,10 @@ let TOOL = {
       }
     ],
     dateType_money:[
-      {
+      /*{
         label: '选择时间',
         value: 1
-      },
+      },*/
       {
         label: '收款时间',
         value: 2
@@ -165,7 +165,7 @@ let TOOL = {
    * 重置表单对象
    * @param form
    */
-  clearForm: function (form) {
+  clearForm: function (form,num=false) {
     for (let item in form) {
       let type = typeof form[item]
       switch (type) {
@@ -173,7 +173,7 @@ let TOOL = {
           form[item] = ''
           break;
         case 'number':
-          form[item] = ''
+          form[item] = num?0:''
           break;
         case 'boolean':
           form[item] = false

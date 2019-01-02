@@ -74,8 +74,11 @@
                 <span class="text" v-if="contractDetail.houseInfo.propertyRightStatus===0">无</span>
               </p>
               <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
-              <p><span class="tag">按揭欠款：</span><span class="text">{{contractDetail.houseInfo.stagesArrears}} 元</span></p>
               <p><span class="tag">房产证号：</span><span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span></p>
+              <p style="width:500px">
+                <span class="tag">按揭欠款：</span>
+                <span class="text dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span>
+              </p>
             </div>
             <div class="one_">
               <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
@@ -89,7 +92,7 @@
                   <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)"></i>
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)" v-if="power['sign-ht-xq-ly-call'].state"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -126,7 +129,7 @@
                   <el-table-column label="电话">
                     <template slot-scope="scope">
                       {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}} 
-                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)"></i>
+                      <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)" v-if="power['sign-ht-xq-ly-call'].state"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="relation" label="关系"></el-table-column>
@@ -371,7 +374,7 @@
             <el-table-column prop="recording" label="录音" width="200">
               <template slot-scope="scope">
                 <div class="recordPlay" v-if="scope.row.recording">
-                  <span class="playBtn" @click="playStop(scope.$index)">
+                  <span class="playBtn" @click="playStop(scope.$index,scope.row.recording)">
                     <i class="iconfont icon-tubiao_shiyong-17" :class="{'icon-tubiao_shiyong-19':(recordKey===scope.$index)&&isPlay}"></i> 
                   </span>
                   <span class="duration">
@@ -383,7 +386,8 @@
                   </span>
                 </div>
                 <span v-else>--</span>
-                <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio>
+                <!-- <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio> -->
+                <audio src="http://voicedownload.jjdc.com.cn:8081/api/CallService/DownloadSoundRecording?Url=f9e885accb3bc5ae83a4ea943b2fb381" :id="'audio'+scope.$index"></audio>
                 <!-- ../../../../static/录音-001.MP3 -->
               </template>
             </el-table-column>
@@ -404,7 +408,9 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
+          <el-pagination v-if="recordData.length>0" class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
+          <!-- <button @click="downloadRecord">下载</button> -->
+          <!-- <audio src="http://192.168.1.6:28081/static/my.MP3" controls></audio> -->
         </div>
       </el-tab-pane>
       <el-tab-pane label="审核记录" name="fifth">
@@ -421,7 +427,19 @@
             </el-table-column>
             <el-table-column prop="operate" label="操作">
             </el-table-column>
-            <el-table-column prop="auditInfo" label="备注" width="320"></el-table-column>
+            <el-table-column label="备注" width="320">
+              <template slot-scope="scope">
+                <el-popover trigger="hover" placement="top" v-if="scope.row.auditInfo!='-'">
+                  <div style="width:300px">
+                    {{scope.row.auditInfo}}
+                  </div>
+                  <div slot="reference" class="name-wrapper">
+                    {{scope.row.auditInfo}}
+                  </div>
+                </el-popover>
+                <span v-else>{{scope.row.auditInfo}}</span>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </el-tab-pane>
@@ -430,7 +448,7 @@
     <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='first'" @click="printDemo">打印成交报告</el-button>  <!-- @click="printDemo" -->
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
-      <el-button type="primary" round class="search_btn" @click="fencheng" v-if="name==='first'&&contractDetail.contState.value===3">分成</el-button>
+      <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3">分成</el-button>
       <el-button type="primary" round class="search_btn" @click="uploading" v-if="power['sign-ht-xq-data-add'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
       <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
@@ -757,6 +775,7 @@ export default {
       playTime:0,
       recordKey:'',
       isPlay:false,
+      recordSrc:'',
       //权限
       power: {
         'sign-ht-xq-print': {
@@ -870,7 +889,8 @@ export default {
         }
       }).catch(error=>{
         this.$message({
-          message:error
+          message:error,
+          type: "error"
         })
       })
     },
@@ -887,7 +907,7 @@ export default {
     },
     // 分成弹窗
     fencheng() {
-      // if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2||this.contractDetail.achievementState.value===-2){
+      if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2||this.contractDetail.achievementState.value===-2){
         if(this.contractDetail.distributableAchievement>0){
           this.dialogType = 3;
           this.shows = true;
@@ -906,11 +926,11 @@ export default {
             message:'无可分配业绩,无法分成'
           })
         }
-      // }else{
-      //   this.$message({
-      //     message:`当前业绩状态为${this.contractDetail.achievementState.label},无法分成`
-      //   })
-      // }
+      }else{
+        this.$message({
+          message:`当前业绩状态为${this.contractDetail.achievementState.label},无法分成`
+        })
+      }
     },
     closeAch(){
       this.shows=false;
@@ -953,7 +973,8 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
     },
@@ -1000,7 +1021,8 @@ export default {
         }
       }).catch(error=>{
         this.$message({
-          message:error
+          message:error,
+          type: "error"
         })
       })
     },
@@ -1021,7 +1043,7 @@ export default {
     },
     //添加备注
     addRemark(){
-      if(this.recordRemarks.length){
+      if(this.recordRemarks.length>0){
         let param = {
           remarks:this.recordRemarks,
           id:this.remarkId
@@ -1037,51 +1059,88 @@ export default {
           }
         }).catch(error=>{
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
+      }else{
+        this.$message({
+            message:"备注不能为空",
+            type: "warning"
+          })
       }
     },
     //播放录音
-    playStop(index){
-      // debugger
-      console.log(index);
-      let id = 'audio'+index;
-      this.recordKey=index;
-      let myAudios = document.getElementsByTagName('audio');
-      // console.log(myAudios.length);
-      let myAudio = document.getElementById(id);
-      if (myAudio.paused){
-        for(var i=0;i<myAudios.length;i++){
-          myAudios[i].pause();
-          // debugger
-          if(myAudios[i]!=myAudio){
-            if(myAudios[i].paused){
-              this.playTime=0
+    playStop(index,recording){
+      if(power['sign-ht-xq-ly-play'].state){
+        let id = 'audio'+index;
+        let myAudios = document.getElementsByTagName('audio');
+        let myAudio = document.getElementById(id);
+        if(index!=this.recordKey){
+          this.playTime=0
+        }
+        this.recordKey=index;
+        // console.log(myAudio.src);
+        // if(!myAudio.src){
+        //   debugger
+        //   let param = {
+        //     recording:recording
+        //   };
+        //   this.$ajax.get('/api/record/downloadRecord',param).then(res=>{
+        //     res=res.data;
+        //     if(res.status===200){
+        //       myAudio.src=res.data;
+        //     }
+        //   })
+        // }
+        if (myAudio.paused){
+          for(var i=0;i<myAudios.length;i++){
+            myAudios[i].pause();
+            // console.log(myAudios[i].id,myAudio.id)
+            // debugger
+            if(myAudios[i].id!=myAudio.id){
+              if(myAudios[i].paused){
+                // this.playTime=0
+                myAudios[i].load();
+              }
             }
-            myAudios[i].load();
           }
+          myAudio.play();
+          this.isPlay=true;
+        }else{
+          myAudio.pause();
+          this.isPlay=false;
         }
-        myAudio.play();
-        this.isPlay=true;
+        var that=this
+        myAudio.ontimeupdate = function (e) {
+          // console.info('播放时间发生改变：'+myAudio.currentTime);
+          let playTime_=(myAudio.currentTime/myAudio.duration)*100;
+          if(playTime_){
+            that.playTime=playTime_
+          }
+          // that.playTime=(myAudio.currentTime/myAudio.duration)*100?(myAudio.currentTime/myAudio.duration)*100;
+        };
+        myAudio.onended=function(e){
+          that.playTime=0;
+          that.isPlay=false;
+        }
       }else{
-        myAudio.pause();
-        this.isPlay=false;
+        this.noPower('听取录音')
       }
-      var that=this
-      myAudio.ontimeupdate = function (e) {
-        // console.info('播放时间发生改变：'+myAudio.currentTime);
-        let playTime_=(myAudio.currentTime/myAudio.duration)*100;
-        if(playTime_){
-          that.playTime=playTime_
-        }
-        // that.playTime=(myAudio.currentTime/myAudio.duration)*100?(myAudio.currentTime/myAudio.duration)*100;
-      };
-      myAudio.onended=function(e){
-        that.playTime=0;
-        that.isPlay=false;
-      }
+      
+    },
 
+    //下载录音
+    downloadRecord(){
+      let param = {
+        recording:'82c17a1fe080c3043f7581bbcb97ca6a'
+      }
+      this.$ajax.get('/api/record/downloadRecord',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+
+        }
+      })
     },
     //合同详情
     getContractDetail() {
@@ -1398,7 +1457,8 @@ export default {
           }
         }).catch(error=>{
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
       }else{

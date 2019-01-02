@@ -5,23 +5,8 @@
     @propQueryFn="queryFn"
     @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="searchForm" class="form-head" size="small">
-        <el-form-item label="城市">
-          <el-select v-model="searchForm.cityId" filterable @change="getStoreList" :clearable="true">
-            <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" filterable :clearable="true">
-            <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="合作方式">
-          <el-select v-model="searchForm.cooperationMode" :clearable="true">
-            <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="银行账户">
-          <el-input v-model="searchForm.bankCard" :clearable="true" type="number" oninput="if(value.length>19)value=value.slice(0,19)" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+        <el-form-item label="关键字">
+          <el-input v-model="searchForm.keyword" maxlength="50" placeholder="添加人/开户行/开户名" :clearable="true"></el-input>
         </el-form-item>
         <el-form-item label="添加时间">
           <el-date-picker
@@ -33,8 +18,23 @@
           value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="关键字">
-          <el-input v-model="searchForm.keyword" maxlength="50" placeholder="添加人/开户行/开户名" :clearable="true"></el-input>
+        <el-form-item label="城市">
+          <el-select v-model="searchForm.cityId" filterable @change="getStoreList" :clearable="true" class="w140">
+            <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="门店选择">
+          <el-select v-model="searchForm.storeId" filterable :clearable="true" class="w180">
+            <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="合作方式">
+          <el-select v-model="searchForm.cooperationMode" :clearable="true" class="w140">
+            <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="银行账户">
+          <el-input v-model="searchForm.bankCard" :clearable="true" type="number" oninput="if(value.length>19)value=value.slice(0,19)" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -44,7 +44,7 @@
         <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
         <el-button @click="addCompany" icon="el-icon-plus" v-if="power['sign-set-gs'].state">公司信息</el-button>
       </p>
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="tableData" style="width: 100%" border>
         <el-table-column align="center" label="城市" prop="cityName" width="90">
         </el-table-column>
         <el-table-column align="center" label="门店" prop="storeName">
@@ -136,10 +136,10 @@
               </el-form-item>
             </div>
             <div class="item">
-              <el-form-item label="证件号: ">
+              <el-form-item label="证件号: " class="id-card">
                 <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" @blur="idCardChange" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               </el-form-item>
-              <el-form-item label="法人手机号码: ">
+              <el-form-item label="法人手机号码: " class="phone-number">
                 <el-input size="mini" type="number" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" @blur="validPhone"></el-input>
               </el-form-item>
               <el-form-item label="企业证件: ">
@@ -830,16 +830,24 @@
   box-sizing: border-box;
   .el-form-item {
     margin-bottom: @margin-10;
-  }
-  .el-form-item:nth-child(-n+3) {
-    margin-right: 50px;
-    /deep/ .el-input {
-      width: 180px;
+    &:first-child,
+    &:last-child {
+      /deep/ .el-input {
+        width: 180px;
+      }
+    }
+    &:nth-child(5) {
+      margin-left: 40px;
     }
   }
-  .el-form-item:last-child {
+  .w140 {
+    .el-input {
+      width: 140px;
+    }
+  }
+  .w180 {
     /deep/ .el-input {
-      width: 226px;
+      width: 180px;
     }
   }
 }
@@ -908,17 +916,19 @@
             display: flex;
             margin-bottom: 0;
             /deep/ .el-input {
+              width: 200px;
               .el-input__inner {
                 height: 32px!important;
               }
             }
           }
-          &:nth-child(-n+3) {
-            /deep/ .el-input {
-              width: 230px;
-            }
-          }
         }
+      }
+      .id-card {
+        margin-left: 13px;
+      }
+      .phone-number {
+        margin-left: -27px;
       }
       /deep/ .notice {
         width: 342px;

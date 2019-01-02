@@ -237,7 +237,8 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
     },
@@ -266,9 +267,16 @@ export default {
         }).catch(error =>{
           this.fullscreenLoading=false;
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
+      }else if(value===4){
+        let param = {
+          id:this.id,
+          type:value
+        }
+        this.$ajax.post('/api/contract/signture', param).then(res=>{})
       }else{
         let param = {
           id:this.id,
@@ -367,6 +375,7 @@ export default {
           this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
           this.auditId=res.data.auditId;
+          this.isSign=res.data.isRisk;
           if(res.data.cityId===1&&(res.data.contType.value===2||res.data.contType.value===3)){  //||res.data.contType.value===3
             this.isShowType=true;
             //买卖
@@ -451,7 +460,8 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
     },
@@ -490,7 +500,8 @@ export default {
           }
         }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
       }else{

@@ -6,23 +6,8 @@
                 <span>数据列表</span>
             </p>
             <el-table :data="tableData" ref='onetable'  @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
-                <el-table-column align="center" label="序号" type="index"></el-table-column>
+                <el-table-column align="center" width="100px" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(大类)" prop="name"></el-table-column>
-                <el-table-column align="center" label="是否启用系统收款">
-                    <template slot-scope="scope">
-                        <div v-if="scope.row.name=='代收代付'">
-                            <el-switch
-                            v-model="scope.row.status"
-                            :active-value="0"
-                            inactive-value="1"
-                            active-color="rgba(71,141,227,1)"
-                            inactive-color="rgba(141,144,148,1)"
-                            @change="leftChange(scope.row)">
-                            </el-switch>
-                        </div>
-                        <div v-else>--</div>
-                    </template>
-                </el-table-column>
             </el-table>
         </div>
         <div class="commission gap">
@@ -49,21 +34,7 @@
                         <span v-else>-</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="是否启用">
-                    <template slot-scope="scope">
-                        <div v-if="scope.row.status==0?true:scope.row.status==1?true:false">
-                            <el-switch
-                                v-model="scope.row.status"
-                                :active-value="0"
-                                @change='smallChange(scope.row)'
-                                active-color="rgba(71,141,227,1)"
-                                inactive-color="rgba(141,144,148,1)"
-                                >
-                            </el-switch>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column align="center" label="收款账户" prop="accountType.label"></el-table-column>
+                <el-table-column align="center" label="收付配置" prop="accountType.label"></el-table-column>
                 <el-table-column align="center" label="操作" :formatter="nullFormatter">
                     <template slot-scope="scope">
                         <div v-if="bigName =='代收代付'">--</div>
@@ -87,16 +58,11 @@
                      <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
                 </div>
                 <div class="input-group">
-                    <label>是否启用：</label>
+                    <label>收付配置：</label>
                     <div>
-                        <el-switch
-                                v-model="addForm.status"
-                                :active-value="0"
-                                :inactive-value='1'
-                                active-color="rgba(71,141,227,1)"
-                                inactive-color="rgba(141,144,148,1)"
-                                >
-                        </el-switch>
+                        <el-select v-model="addForm.accountType" placeholder="请选择">
+                            <el-option v-for="item in dictionary['58']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
                     </div>
                 </div>
             </el-form>
@@ -118,7 +84,6 @@
                 value2:'',
                 moneyTypes: [],
                 cityName: "",
-                // isSF:true,
                 title:'',
                 isMoney:true,
                 smallId:'',
@@ -126,10 +91,13 @@
                 bigId:'',
                 inputMax:200,
                 bigName:'',
+                dictionary: {
+                '58':'',
+                },
                 addForm:{
                     parentId:'',
                     name:'',
-                    status:'',
+                    accountType:4,
                     remark:''
                 },//权限配置
                 power: {
@@ -150,6 +118,7 @@
             }
         },
         created(){
+            this.getDictionary()
            this.initList()
         },
         computed: {
@@ -160,26 +129,22 @@
         methods: {
             // 初始化数据
             initList(){
-                 if(this.power['sign-set-kl-query'].state){
+                //  if(this.power['sign-set-kl-query'].state){
                     this.$ajax.get('api/setting/moneyType/list',{id:this.bigId},).then((res)=>{
                     if(res.status==200){
-                        // debugger
                         if(this.bigId==''){
                             this.tableData=res.data.data
                             this.moneyTypes=res.data.data[0].moneyTypes
                             this.bigName=res.data.data[0].name
                         }else{
                             this.moneyTypes=res.data.data
-                            console.log(this.moneyTypes);
                         }
-                        this.moneyTypes.forEach(item=>{
-                            this.value2=item.status==0?true:false
-                        })
                         this.bigId=this.bigId==''?18:this.bigId
                     }
-                })}else{
-                         this.noPower(this.power['sign-set-kl-query'].name)
-                }
+                })
+                // }else{
+                //          this.noPower(this.power['sign-set-kl-query'].name)
+                // }
             },
             tableRowClassName({row, rowIndex}){
                 row.index = rowIndex;
@@ -188,42 +153,24 @@
                 this.addDialog=true
                 if(type==1){
                     this.title=`新增【${this.bigName}】小类`,
-                    console.log(this.title,'title');
                     this.addForm.name=''
-                    this.addForm.status=0
+                    this.addForm.accountType=4
                     this.addForm.remark=''
                     this.addForm.parentId=this.bigId
                 }else if(type==2){
+                    console.log(row,'row');
                     this.title=`编辑【${this.bigName}】小类`,
                     this.smallId=row.id
                     this.addForm.name=row.name
-                    this.addForm.status=row.status
+                    this.addForm.accountType=row.accountType.value
                     this.addForm.remark=row.remark
                     this.addForm.parentId=row.parentId
                 }
-            },
-            leftChange(row){
-                let param={
-                    id:row.id,
-                    status:row.status,
-                    name:row.name,
-                }
-                 this.statusOp(param,'转换成功')
-            },
-            smallChange(row){
-                let status2 = row.status===false?1:0
-                let param={
-                    id:row.id,
-                    status:status2,
-                    name:row.name
-                }
-                this.statusOp(param,'转换成功')
             },
             trim(str){  
                  return str.replace(/(^\s*)|(\s*$)/g, "")
             },
             submitForm(){
-                // this.addForm.status=this.addForm.status?1:0
                 if(this.trim(this.addForm.name)==''){
                     this.$message({
                         type: 'error',
@@ -258,7 +205,7 @@
                 }else if(this.title==`编辑【${this.bigName}】小类`){
                     let param={
                         id:this.smallId,
-                        status:this.addForm.status,
+                        accountType:this.addForm.accountType,
                         name:this.trim(this.addForm.name),
                         remark:this.addForm.remark
                     }
@@ -266,21 +213,7 @@
                 }
                 
             },
-             /**
-             * 弹框
-             */
-            // popMsg(msg,callback,row){
-            //     this.$confirm(msg,'提示',{
-            //     confirmButtonText: '确定',
-            //     cancelButtonText: '取消',
-            //     type: 'warning'
-            //     }).then(()=>{
-            //     callback(row)
-            //     }).catch(()=>{
-            //     })
-            // },
             statusOp(param,message){
-                console.log(this.power['sign-set-kl-edit'],'edit')
                 if(this.power['sign-set-kl-edit'].state){
                     this.$ajax.get('/api/setting/moneyType/update',param)
                    .then((res)=>{
@@ -326,14 +259,18 @@
                 }
                 sjx[0].style.top=top+'px'
                 this.$refs.onetable.$el.classList.remove('onetable')
-                // this.moneyTypes=row.moneyTypes
                 this.addForm.parentId=row.id
                 this.bigId=row.id
+                // if(this.power['sign-set-kl-query'].state){
                   this.$ajax.get('api/setting/moneyType/list',{id:this.bigId}).then((res)=>{
                     if(res.status==200){
                         this.moneyTypes=res.data.data
                         this.isMoney=true
                     }})
+                // }
+                // else{
+                //       this.noPower(this.power['sign-set-kl-query'].name)
+                // }
             }
         }
     }
@@ -350,7 +287,6 @@
         position: relative;
         min-width: 26%;
         margin-right: 1%;
-        // padding: 15px 10px 0;
         background-color: #fff;
         box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
         border-radius:4px;
@@ -383,7 +319,6 @@
         }
     }
     .commission {
-        // flex: 2;
         min-width: 72%;
         // padding: 15px 10px 0;
         background:rgba(254,252,247,1);

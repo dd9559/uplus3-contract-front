@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
   export default {
     props: {
       min: {
@@ -51,7 +52,11 @@
       resetFormFn() {
         this.$emit('propResetFormFn')
       },
-    }
+      ...mapMutations(['bodyScollShowFn'])
+    },
+    beforeUpdate() {
+      this.bodyScollShowFn();
+    },
   }
 </script>
 

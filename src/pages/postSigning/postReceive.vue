@@ -1,5 +1,5 @@
 <template>
-    <div class="paper-set">
+    <div ref="tableComView" class="paper-set">
         <!-- 筛选 -->
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <!-- 筛选条件 -->
@@ -72,7 +72,7 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
-            <el-table ref="tableCom" :data="tableData.list" v-loading="loadingList" class="paper-table mt-20 info-scrollbar">
+            <el-table ref="tableCom" :max-height="tableNumberCom" :data="tableData.list" v-loading="loadingList" class="paper-table mt-20">
                 <el-table-column :formatter="nullFormatterData" label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>
@@ -109,12 +109,10 @@
             </el-table>
         </div>
         <!-- 分页 -->
-        <scrollBar :table="tableBoxCom" v-if="tableBoxCom">
         <div class="pagination" v-if="tableData.total">
             <el-pagination :current-page="tableData.pageNum" :page-size="tableData.pageSize" @current-change="currentChangeFn" layout=" total, prev, pager, next, jumper" :total="tableData.total">
             </el-pagination>
         </div>
-        </scrollBar>
         <!-- 拒绝弹层 -->
         <el-dialog :title="layer.tit" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="layer.show" width="740px" :center="layer.center" class="layer-paper">
             <div class="layer-invalid layer-refused">
@@ -139,9 +137,14 @@
                     <el-tabs v-model="activeName" class="contract-tab">
                         <el-tab-pane label="交易流程指派">
                             <el-table :data="dealTable" border v-loading="loadingdealTable" class="paper-table mt-20">
-                                <el-table-column :formatter="nullFormatterData" prop="transactionStepsType" align="center" label="步骤类型">
+                                <el-table-column :formatter="nullFormatterData" min-width="120px" prop="transactionStepsType" align="center" label="步骤类型">
                                 </el-table-column>
-                                <el-table-column :formatter="nullFormatterData" prop="transactionSteps" align="center" label="步骤名称">
+                                <el-table-column :formatter="nullFormatterData" min-width="120px" prop="transactionSteps" align="center" label="步骤名称">
+                                </el-table-column>
+                                <el-table-column align="center" label="结算百分比">
+                                    <template slot-scope="scope">
+                                        <span>{{percentageFn(scope.row.settlePercent)}}</span>
+                                    </template>
                                 </el-table-column>
                                 <el-table-column :formatter="nullFormatterData" prop="specifiedDay" align="center" label="计划天数">
                                 </el-table-column>
@@ -344,10 +347,10 @@
                 ContractDatabase: [],
                 // 权限
                 power:{
-                    'sign-qh-rev-query':{
-                        name:'查询',
-                        state:false
-                    },
+                    // 'sign-qh-rev-query':{
+                    //     name:'查询',
+                    //     state:false
+                    // },
                     'sign-qh-rev-receive':{
                         name:'接收合同后期',
                         state:false
@@ -385,6 +388,14 @@
             }
         },
         methods: {
+            // 百分比转换
+            percentageFn(val){
+                if(val > 0){
+                    return `${val}%`
+                }else{
+                    return '--'
+                }
+            },
             // 图片格式状态判定
             stepsTypeImg(type) {
                 return this.$tool.get_suffix(type)
@@ -846,10 +857,10 @@
             },
             // 获取数据
             getListData() {
-                if(!this.power['sign-qh-rev-query'].state){
-                    this.noPower(this.power['sign-qh-rev-query'].name);
-                    return false
-                }
+                // if(!this.power['sign-qh-rev-query'].state){
+                //     this.noPower(this.power['sign-qh-rev-query'].name);
+                //     return false
+                // }
                 this.loadingList = true;
                 let signDateSta = '';
                 let signDateEnd = '';
@@ -860,7 +871,7 @@
                     }
                 }
 
-                this.$ajax.postJSON('/api/postSigning/getContract', {
+                this.$ajax.get('/api/postSigning/getContract', {
                     keyword: this.propForm.search,
                     signDateSta,
                     signDateEnd,

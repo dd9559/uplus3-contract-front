@@ -3,49 +3,48 @@
     <p class="f14">付款信息</p>
     <ul class="bill-form">
       <li>
-        <div class="input-group col">
+        <div class="input-group col" :class="[inputPerson?'active-360':'']">
           <label class="form-label no-width f14">收款方</label>
-          <el-select size="small" v-model="form.inObjType" placeholder="请选择" @change="getOption">
-            <el-option
-              v-for="item in dropdown"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <div class="flex-box">
+            <el-select size="small" class="w200" v-model="form.inObjType" placeholder="请选择" @change="getOption">
+              <el-option
+                v-for="item in dropdown"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model="form.inObj" v-if="inputPerson">
+          </div>
         </div>
-        <div class="input-group col">
-          <label class="form-label no-width f14">收款方</label>
-          <el-select size="small" v-model="form.inObjType" placeholder="请选择" @change="getOption">
-            <el-option
-              v-for="item in dropdown"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-      </li>
-      <li>
         <div class="input-group col">
           <label class="form-label no-width f14">申请人:</label>
           <p class="text-height" v-if="userMsg">{{userMsg.depName}} - {{userMsg.name}}</p>
         </div>
-        <div class="input-group col">
-          <label class="form-label no-width f14">付款金额（元）</label>
-          <input type="text" size="small" class="w200 el-input__inner" placeholder="请输入" v-model="form.smallAmount" @input="cutNum">
-        </div>
       </li>
       <li>
         <div class="input-group col">
-          <label class="no-width f14">付款时间:</label>
-          <p class="text-height">2018/1/12</p>
+          <div class="flex-box tool-tip">
+            <label class="form-label no-width f14">
+              <span>款类</span>
+            </label>
+            <el-tooltip content="当未找到需要的款类时，可联系管理员进行配置" placement="top">
+              <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
+            </el-tooltip>
+          </div>
+          <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
+        </div>
+        <div class="input-group col active-400">
+          <div class="flex-box tool-tip no-max">
+            <label class="form-label no-width f14">付款金额（元）</label><span>{{form.amount|formatChinese}}</span>
+          </div>
+          <input type="text" size="small" class="w400 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum">
         </div>
         <div class="input-group col">
           <label class="no-width f14">可支配金额:</label>
-          <div class="text-height" v-if="amount" style="margin: 0 10px;">
-            <p><span>款类大类余额：{{amount.balance}}元</span></p>
-            <p v-if="showAmount"><span>合同余额：{{amount.contractBalance}}元</span></p>
+          <div class="text-height">
+            <p><span>款类大类余额：{{amount.balance}}元</span>;<span v-if="showAmount">合同余额：{{amount.contractBalance}}元</span></p>
+            <!--<p v-if="showAmount"><span>合同余额：{{amount.contractBalance}}元</span></p>-->
           </div>
         </div>
       </li>
@@ -131,7 +130,7 @@
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
           <template slot-scope="scope">
-            <span>{{form.smallAmount}}</span>
+            <span>{{form.amount}}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -160,16 +159,57 @@
       </div>
     </section>
     <p>
-      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">提交付款申请</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="showLayer">提交付款申请</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    <el-dialog
+      title="付款信息确认"
+      :visible.sync="layer.show"
+      :closeOnClickModal="$tool.closeOnClickModal"
+      width="740px">
+      <div class="check-dialog">
+        <p>付款信息</p>
+        <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="layer-table-first">
+          <el-table-column align="center" label="合同编号" prop="code"></el-table-column>
+          <el-table-column align="center" min-width="120" label="物业地址" prop="address"></el-table-column>
+          <el-table-column align="center" min-width="120" label="收款方" prop="inObj"></el-table-column>
+          <el-table-column align="center" min-width="120" label="付款时间">
+            <template slot-scope="scope">
+              <span>-</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" min-width="120" label="发起人">
+            <template slot-scope="scope">
+              <span>{{userMsg.depName}} - {{userMsg.name}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="款类" prop="moneyType"></el-table-column>
+        </el-table>
+        <p>收款账户</p>
+        <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" key="layer-table-second">
+          <el-table-column align="center" label="收款银行" prop="bankName"></el-table-column>
+          <el-table-column align="center" label="户名" prop="userName"></el-table-column>
+          <el-table-column align="center" label="收款账户 " prop="cardNumber"></el-table-column>
+          <el-table-column align="center" label="金额（元）">
+            <template slot-scope="scope">
+              <span>{{form.amount}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+    <el-button size="small" class="btn-info" round @click="layer.show = false">返 回</el-button>
+    <el-button size="small" class="btn-info" round type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import {UPLOAD} from "@/assets/js/uploadMixins";
   import {MIXINS} from "@/assets/js/mixins";
+  import moneyTypePop from '@/components/moneyTypePop'
 
   const rule={
     inObjType:{
@@ -178,7 +218,7 @@
     moneyType:{
       name:'款类',
     },
-    smallAmount:{
+    amount:{
       name:'付款金额',
       type:'money'
     },
@@ -199,8 +239,12 @@
 
   export default {
     mixins: [UPLOAD,MIXINS],
+    components:{
+      moneyTypePop
+    },
     data() {
       return {
+        inputPerson:false,//是否显示第三方输入
         form: {
           contId:'',
           remark:'',
@@ -209,9 +253,10 @@
           inObjType:'',
           moneyType:'',
           moneyTypePid:'',
-          smallAmount:'',
+          amount:'',
         },
         moneyType: [],
+        moneyTypeName: '',
         list:[
           {
             bankName:'',
@@ -221,7 +266,10 @@
           }
         ],
         dropdown:[],
-        amount:null,
+        amount:{
+          balance:0,
+          contractBalance:0
+        },
         files:[],
         imgList:[],
         activeLi:'',
@@ -231,10 +279,25 @@
         },
         showAmount:true,//是否显示合同余额
         fullscreenLoading:false,//创建按钮防抖
+        //弹窗
+        layer:{
+          show:false,
+          content:[
+            {
+              moneyType:'',
+              inObj:'',
+              code:'',
+              address:''
+            }
+          ],
+          form:{}
+        }
       }
     },
     created(){
+      let query=this.$route.query
       this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
+      this.layer.content[0]=Object.assign(this.layer.content[0],query)
       this.getDropdown()
       this.getMoneyType()
       this.getAdmin()
@@ -259,7 +322,7 @@
       },
       //金额输入
       cutNum:function () {
-        this.form.smallAmount=this.$tool.cutFloat({val:this.form.smallAmount,max:999999999.99})
+        this.form.amount=this.$tool.cutFloat({val:this.form.amount,max:999999999.99})
       },
       /**
        * 修改款单，获取初始数据
@@ -275,7 +338,7 @@
               inObjType:res.data.inObjType.value,
               moneyType: res.data.moneyType,
               moneyTypePid: res.data.moneyTypePid,
-              smallAmount: res.data.amount,
+              amount: res.data.amount,
               id: res.data.id
             }
             if(res.data.filePath){
@@ -284,9 +347,11 @@
             this.imgList.forEach(item=>{
               this.files.push(`${item.path}?${item.name}`)
             })
+            this.moneyTypeName = res.data.moneyTypeName
             this.showAmount=res.data.outAccountType===4?false:true
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
+            this.layer.content[0]=Object.assign(this.layer.content[0],{moneyType:res.data.moneyTypeName,inObj:`${res.data.inObjType.label}${obj.inObj?('-'+obj.inObj):''}`})
             this.getAmount()
           }
         })
@@ -327,8 +392,8 @@
         this.$ajax.get('/api/payInfo/selectMoneyType',param).then(res=>{
           res=res.data
           if(res.status===200){
-            // this.moneyType = res.data
-            res.data.forEach(item=>{
+            this.moneyType = res.data
+            /*res.data.forEach(item=>{
               this.collapseRow.total=this.collapseRow.total+item.moneyTypes.length
               this.collapseRow.row.push(item.moneyTypes.length)
               item.moneyTypes.forEach(cell=>{
@@ -336,8 +401,7 @@
                 cell.pName=item.name
               })
               this.moneyType = this.moneyType.concat(item.moneyTypes)
-            })
-            console.log(this.collapseRow)
+            })*/
             /*res.data.forEach((item,index)=>{
               if(item.name==='代收代付'){
                 this.moneyType.splice(index,1)
@@ -357,6 +421,18 @@
         this.form.moneyTypePid = label.pId
         this.getAmount()
       },
+      getCell:function (label) {
+        this.showAmount=label.pName==='代收代付'?false:true
+        this.form.moneyType=label.key
+        this.form.moneyTypePid = label.pId
+        this.layer.content[0].moneyType=label.name
+        this.getAmount()
+      },
+      clearMoneyType:function () {
+        this.form.moneyType=''
+        this.form.moneyTypePid = ''
+        this.$tool.clearForm(this.amount,true)
+      },
       getAmount:function () {
         let param={
           contId:this.form.contId,
@@ -370,7 +446,7 @@
         this.$ajax.get('/api/payInfo/selectAvailableBalance',param).then(res=>{
           res=res.data
           if(res.status===200){
-            this.amount = res.data
+            this.amount = Object.assign(this.amount,res.data)
           }
         })
       },
@@ -427,21 +503,20 @@
           if(tip.value===item&&!!tip.custId){
             obj.inObjId = tip.custId
             obj.inObj = tip.custName
+            this.layer.content[0].inObj=tip.label
             return
           }
         })
+        if(item===3){
+          this.inputPerson=true
+        }else {
+          this.inputPerson=false
+        }
         this.form = Object.assign({},this.form,obj)
       },
-      goCancel:function () {
-        this.$confirm('是否取消当前操作',{closeOnClickModal:false}).then(()=>{
-          this.$router.go(-1)
-        }).catch(()=>{
-
-        })
-      },
-      goResult:function () {
+      showLayer:function () {
         let param = Object.assign({},this.form)
-        this.list[0].amount = param.smallAmount
+        this.list[0].amount = param.amount
         param.inAccount = [].concat(this.list)
 
         let promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
@@ -449,14 +524,14 @@
 
         Promise.all(promiseArr).then(res=>{
           if(this.showAmount){
-            if(parseFloat(param.smallAmount)>this.amount.balance||parseFloat(param.smallAmount)>this.amount.contractBalance){
+            if(parseFloat(param.amount)>this.amount.balance||parseFloat(param.amount)>this.amount.contractBalance){
               this.$message({
                 message:'输入金额不能大于可支配金额'
               })
               return
             }
           }else {
-            if(parseFloat(param.smallAmount)>this.amount.balance){
+            if(parseFloat(param.amount)>this.amount.balance){
               this.$message({
                 message:'输入金额不能大于可支配金额'
               })
@@ -468,53 +543,64 @@
               message:'付款凭证不能为空'
             })
           }else {
-            this.fullscreenLoading=true
+            this.layer.show=true
             param.filePath = [].concat(this.files)
-            if(this.$route.query.edit){
-              delete param.contId
-              this.$ajax.put('/api/payInfo/updatePayMentInfo', param).then(res => {
-                res = res.data
-                if (res.status === 200) {
-                  this.fullscreenLoading=false
-                  this.$router.replace({
-                    path: 'payResult',
-                    query:{
-                      content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):'',
-                      edit:1
-                    }
-                  })
-                }
-              }).catch(error=>{
-                this.fullscreenLoading=false
-                this.$message({
-                  message:error
-                })
-              })
-            }else {
-              this.$ajax.postJSON('/api/payInfo/savePayment', param).then(res => {
-                res = res.data
-                this.fullscreenLoading=false
-                if (res.status === 200) {
-                  this.$router.replace({
-                    path: 'payResult',
-                    query:{
-                      content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):''
-                    }
-                  })
-                }
-              }).catch(error=>{
-                this.fullscreenLoading=false
-                this.$message({
-                  message:error
-                })
-              })
-            }
+            this.layer.form=Object.assign({},param)
           }
         }).catch(error=>{
           this.$message({
             message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
           })
         })
+      },
+      goCancel:function () {
+        this.$confirm('是否取消当前操作',{closeOnClickModal:false}).then(()=>{
+          this.$router.go(-1)
+        }).catch(()=>{
+
+        })
+      },
+      goResult:function () {
+        this.fullscreenLoading=true
+        if(this.$route.query.edit){
+          // delete param.contId
+          this.$ajax.put('/api/payInfo/updatePayMentInfo', this.layer.form).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              this.fullscreenLoading=false
+              this.$router.replace({
+                path: 'payResult',
+                query:{
+                  content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):'',
+                  edit:1
+                }
+              })
+            }
+          }).catch(error=>{
+            this.fullscreenLoading=false
+            this.$message({
+              message:error
+            })
+          })
+        }else {
+          this.$ajax.postJSON('/api/payInfo/savePayment', this.layer.form).then(res => {
+            res = res.data
+            this.fullscreenLoading=false
+            if (res.status === 200) {
+              this.$router.replace({
+                path: 'payResult',
+                query:{
+                  content:(res.data.vo&&res.data.time)?JSON.stringify({dep:res.data.vo.deptName,name:res.data.vo.createByName,time:res.data.time}):''
+                }
+              })
+            }
+          }).catch(error=>{
+            this.fullscreenLoading=false
+            this.$message({
+              message:error
+            })
+          })
+        }
         /*this.$tool.checkForm(param,rule).then((res)=>{
           if(param.smallAmount>this.amount.balance){
             this.$message({
@@ -594,11 +680,50 @@
   .info-textarea{
     width: 240px;
   }
-  .bill-form{
+  input[size='small']{
+    height: 32px;
+  }
+  input.person{
+    margin-left: @margin-10;
+  }
+  .flex-box{
     display: flex;
+    &.tool-tip{
+      max-width: 200px;
+      justify-content: space-between;
+    }
+    &.no-max{
+      max-width: none;
+    }
+    .tip-message{
+      margin-left: @margin-10;
+      display: flex;
+      align-items: center;
+      >i{
+        margin-right: 4px;
+        font-size: @size-14;
+      }
+    }
+  }
+  .bill-form{
     >li{
-      flex: 1;
+      display: flex;
+      /*max-width: 210px;
+      &:last-of-type{
+        max-width: none;
+      }
+      &.active{
+        max-width: 360px;
+      }*/
       .col{
+        max-width: 210px;
+        margin-right: @margin-10;
+        &.active-360{
+          max-width: 360px;
+        }
+        &.active-400{
+          max-width: 400px;
+        }
         >label{
           display: block;
         }
@@ -610,6 +735,14 @@
           height: 32px;
           line-height: 32px;
         }
+      }
+    }
+  }
+  .check-dialog{
+    >p{
+      margin-bottom: @margin-base;
+      &:last-of-type{
+        margin-top: @margin-15;
       }
     }
   }
@@ -674,16 +807,23 @@
     }
     .upload-list{
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       margin: @margin-base;
+      width: 568px;
+      overflow-x: auto;
       >li{
         border: 1px dashed @color-D6;
         width: 115px;
+        min-width: 115px;
         height: 115px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin-right: @margin-10;
+        &:last-of-type{
+          margin-right: 0;
+        }
         >span{
           width: 100px;
           text-align: center;
@@ -717,9 +857,9 @@
             }
           }
         }
-        &:nth-of-type(n+7){
+        /*&:nth-of-type(n+7){
           margin-top: @margin-base;
-        }
+        }*/
       }
     }
     .upload-text{

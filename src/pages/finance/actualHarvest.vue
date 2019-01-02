@@ -1,8 +1,12 @@
 <template>
-  <div class="view">
+  <div class="view" ref="tableComView">
     <!--<preview></preview>-->
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <div class="content">
+        <div class="input-group">
+          <label>关键字:</label>
+          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
+        </div>
         <div class="input-group">
           <label>收付款类:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
@@ -27,7 +31,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.dealAgentStoreName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+          <select-tree :data="DepList" :init="searchForm.dealAgentStoreName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.dealAgentStoreName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
@@ -79,20 +83,16 @@
             </el-date-picker>
           </div>
         </div>
-        <div class="input-group">
-          <label>关键字:</label>
-          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
-        </div>
       </div>
     </ScreeningTop>
     <div class="view-context">
       <div class="table-tool">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button class="btn-info" round size="small" type="primary">导出</el-button>
+          <el-button class="btn-info" round size="small" type="primary" v-if="power['sign-cw-rec-export'].state">导出</el-button>
         </p>
       </div>
-      <el-table ref="dataList" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
+      <el-table ref="tableCom" :max-height="tableNumberCom" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
@@ -137,18 +137,16 @@
           </template>
         </el-table-column>
       </el-table>
-      <scrollBar :table="tableBox" v-if="tableBox" @noScroll="noScroll">
-        <el-pagination
-          v-if="list.length>0"
-          class="pagination-info"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          layout="total, prev, pager, next, jumper"
-          :total="total">
-        </el-pagination>
-      </scrollBar>
+      <el-pagination
+        v-if="list.length>0"
+        class="pagination-info"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -216,11 +214,6 @@
         this.remoteMethod()
         this.getDictionary()
         this.getMoneyTypes()
-        this.tableBox=this.$refs.dataList
-        console.log(this.tableBox.$refs.bodyWrapper.childNodes[0].clientWidth,this.tableBox.$refs.bodyWrapper.clientWidth)
-        if(this.tableBox.$refs.bodyWrapper.childNodes[0].clientWidth>this.tableBox.$refs.bodyWrapper.clientWidth){
-          this.showScroll=true
-        }
       })
     },
     methods: {
@@ -249,6 +242,10 @@
         this.searchForm.dealAgentId=''
         this.clearSelect()
       },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.searchForm.dealAgentStoreName=payload.depName
+      },
       depHandleClick(data) {
         this.searchForm.dealAgentStoreId=data.depId
         this.searchForm.dealAgentStoreName=data.name
@@ -270,33 +267,29 @@
         if(type==='search'){
           this.currentPage=1
         }
-        if(this.power['sign-cw-rec-query'].state){
-          let param=Object.assign({},this.searchForm)
-          if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
-            param.beginDate = param.signTime[0]
-            param.endDate = param.signTime[1]
-          }
-          if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
-            param.beginProDate = param.collectionTime[0]
-            param.endProDate = param.collectionTime[1]
-          }
-          delete param.signTime
-          delete param.collectionTime
-          delete param.moneyType
-          param.pageNum=this.currentPage
-          param.pageSize=this.pageSize
-          this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.list = res.data.list
-              this.total = res.data.count
-            }
-          }).catch(error => {
-            console.log(error)
-          })
-        }else {
-          this.noPower(this.power['sign-cw-rec-query'].name)
+        let param=Object.assign({},this.searchForm)
+        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
+          param.beginDate = param.signTime[0]
+          param.endDate = param.signTime[1]
         }
+        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
+          param.beginProDate = param.collectionTime[0]
+          param.endProDate = param.collectionTime[1]
+        }
+        delete param.signTime
+        delete param.collectionTime
+        delete param.moneyType
+        param.pageNum=this.currentPage
+        param.pageSize=this.pageSize
+        this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.list = res.data.list
+            this.total = res.data.count
+          }
+        }).catch(error => {
+          console.log(error)
+        })
       },
       // 获取收付款类
       getMoneyTypes:function () {

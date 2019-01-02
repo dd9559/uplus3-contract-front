@@ -1,8 +1,11 @@
 <template>
-  <div class="view-container">
+  <div class="view-container" ref="tableComView">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
+        <el-form-item label="关键字">
+          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
+        </el-form-item>
         <el-form-item label="签约日期">
           <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
           </el-date-picker>
@@ -25,9 +28,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关键字">
-          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
-        </el-form-item>
         <br>
         <el-form-item label="部门">
           <!-- <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
@@ -35,18 +35,14 @@
             </el-option>
           </el-select> -->
 
-          <el-select style="width:160px" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
+          <!-- <el-select style="width:160px" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="contractForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
-          </el-select>
+          </el-select> -->
+          <select-tree :data="DepList" :init="contractForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
         </el-form-item>
         <el-form-item>
-          <!-- <el-select v-model="contractForm.dealAgentId" placeholder="全部" style="width:100px" :clearable="true">
-            <el-option v-for="item in brokersList" :key="item.empId" :label="item.name" :value="item.empId">
-            </el-option>
-          </el-select> -->
-
           <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
@@ -103,7 +99,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
         <span>
-          <el-dropdown placement="bottom"><!--  @command="printCont" -->
+          <el-dropdown placement="bottom" @command="printCont"><!--  @command="printCont" -->
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -125,17 +121,32 @@
           </el-dropdown>
         </span>
       </p>
-      <el-table ref="dataList" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail'>
+      <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
         <el-table-column align="left" label="合同信息" width="260" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
                 <!-- 风险单 -->
-                <i class="iconfont icon-tubiao_shiyong-1 risk" v-if="scope.row.isRisk"></i>
+                <el-popover
+                  placement="top-start"
+                  width="50"
+                  trigger="hover"
+                  content="风险单"
+                  v-if="scope.row.isRisk">
+                  <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
+                </el-popover>
                 <!-- 代办 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
                 <!-- 低佣 -->
-                <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i>
+                <!-- <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
+                <el-popover
+                  placement="top-start"
+                  width="10"
+                  trigger="hover"
+                  content="低佣"
+                  v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1">
+                  <i slot="reference" class="iconfont icon-tubiao_shiyong-3 low"></i>
+                </el-popover>
               </div>
               <ul class="contract-msglist">
                 <li>合同：<span>{{scope.row.code}}</span></li>
@@ -159,7 +170,7 @@
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
             <div class="btn" @click="gathering(scope.row.id)">收款</div>
-            <div class="btn" @click="payment(scope.row.id)">付款</div>
+            <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
         <el-table-column align="left" label="成交经纪人" width="150 ">
@@ -208,7 +219,24 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="备注" width="200">
+        <!-- <el-table-column align="left" label="当前审核人" width="200">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">
+              <p>{{scope.row.auditName?scope.row.auditName:'-'}}</p>
+            </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="下一步审核人" width="200">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">
+              <p>{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
+            </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column> -->
+
+        <!-- <el-table-column align="left" label="备注" width="200">
           <template slot-scope="scope">
             <span v-if="scope.row.remarksExamine">
               <el-popover trigger="hover" placement="top">
@@ -222,7 +250,7 @@
             </span>
             <span v-else>-</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="left" label="变更/解约" width="100">
           <template slot-scope="scope">
             <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>
@@ -247,7 +275,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="实收/应收" width="100">
+        <el-table-column align="left" label="实收/应收(佣金)" width="120">
           <template slot-scope="scope">
             <!-- <div class="btn" @click="runningWater(scope.row)">流水</div> -->
             <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
@@ -282,16 +310,15 @@
         </el-table-column>
       </el-table>
       <!-- 固定滚动条 -->
-      <scrollBar :table="tableBox" v-if="tableBox">
+      <div class="pagination" v-if="tableData.length>0">
         <el-pagination
-        v-if="tableData.length>0"
          class="pagination-info"
          @current-change="handleCurrentChange"
          :current-page="currentPage"
          layout="total, prev, pager, next, jumper"
          :total="total">
         </el-pagination>
-      </scrollBar>
+      </div>
       
     </div>
     <!-- 流水明细弹框 -->
@@ -412,7 +439,7 @@ export default {
       ],
       //权限配置
       power: {
-        'sign-ht-info-debts': {
+        'sign-com-bill': {
           state: false,
           name: '流水'
         },
@@ -479,11 +506,11 @@ export default {
       }
     };
   },
-  mounted() {
-    this.$nextTick(()=>{
-      this.tableBox=this.$refs.dataList;
-    })
-  },
+  // mounted() {
+  //   this.$nextTick(()=>{
+  //     this.tableBox=this.$refs.dataList;
+  //   })
+  // },
   created() {
     this.getContractList();//合同列表
     this.getDictionary();//字典
@@ -535,18 +562,12 @@ export default {
     },
     // 查询
     queryFn() {
-      console.log(this.signDate);
-      // if(this.signDate.length>0){
-      //   this.contractForm.beginDate=this.signDate[0].replace(/-/g,"/");
-      //   this.contractForm.endDate=this.signDate[1].replace(/-/g,"/");
-      // }
-      //console.log(this.contractForm)
       this.currentPage=1;
       this.getContractList();
     },
     //流水
     runningWater(item) {
-      if(this.power['sign-ht-info-debts'].state){
+      if(this.power['sign-com-bill'].state){
         this.water = true;
         this.contCode=item.code;
         this.waterContId=item.id;
@@ -575,13 +596,15 @@ export default {
       }
     },
     //付款
-    payment(id) {
+    payment(item) {
       if(this.power['sign-ht-info-pay'].state){
         this.setPath(this.$tool.getRouter(['合同','合同列表','创建付款'],'contractList'));
         this.$router.push({
           path:'/payBill',
           query:{
-            contId:id
+            contId:item.id,
+            code:item.code,
+            address:item.propertyAddr
           }
         })
       }else{
@@ -661,12 +684,14 @@ export default {
             }
           }else{
             this.$message({
-              message:'该类型合同模板未上传,请上传后再创建'
+              message:'该类型合同模板未上传,请上传后再创建',
+              type: "warning"
             })
           }
         }).catch(error => {
             this.$message({
-              message: '该类型合同模板未上传,请上传后再创建'
+              message: '该类型合同模板未上传,请上传后再创建',
+              type: "warning"
             });
           });
       }else{
@@ -772,6 +797,10 @@ export default {
 
       this.handleNodeClick(data)
     },
+    searchDep:function (payload) {
+      this.DepList=payload.list
+      this.contractForm.depName=payload.depName
+    },
     //提审
     goSave(item){
       this.isSubmitAudit=true;
@@ -799,7 +828,8 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message:error
+            message:error,
+            type: "error"
           })
         })
     },
@@ -825,18 +855,21 @@ export default {
             }
           }).catch(error => {
               this.$message({
-                message: error
+                message: error,
+                type: "warning"
               })
             })
           }else{
             this.$message({
-              message:"存在未审核的调佣,无法发起结算"
+              message:"存在未审核的调佣,无法发起结算",
+              type: "warning"
             })
           }
         }
         }else{
           this.$message({
-            message:'合同已解约，无法发起结算'
+            message:'合同已解约，无法发起结算',
+            type: "warning"
           })
         }
       }else{
@@ -871,6 +904,7 @@ export default {
     printCont(command){
       // debugger
       // console.log(command)
+      this.pdfUrl='';
       this.haveUrl=false;
       if(command===1){
         if(this.blankPdf1){
@@ -879,7 +913,59 @@ export default {
           this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
-          },3000)
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===2){
+        if(this.blankPdf2){
+          this.getUrl(this.blankPdf2);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===3){
+        if(this.blankPdf3){
+          this.getUrl(this.blankPdf3);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===4){
+        if(this.blankPdf4){
+          this.getUrl(this.blankPdf4);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再打印'
+          })
+        }
+      }else if(command===5){
+        if(this.blankPdf5){
+          this.getUrl(this.blankPdf5);
+          // this.pdfUrl=""
+          this.haveUrl=true;
+          setTimeout(()=>{
+            this.$refs.pdfPrint.print();
+          },1500)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -1007,6 +1093,17 @@ export default {
     font-size: 18px;
     .risk{
       color: @color-warning;
+      position: relative;
+      .remarksExamine{
+        background: #fff;
+        font-size: 14px;
+        color: #606266;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: inline-block;
+        width: 60px;
+      }
     }
     
   }

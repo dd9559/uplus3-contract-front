@@ -6,7 +6,9 @@
         @closed="handleClose"
         :close-on-click-modal="false"
         custom-class="base-dialog"
+        width="61%"
       >
+      <div v-loading="loading">
         <!-- 头部右边关闭按钮 -->
         <b
           class="el-icon-close"
@@ -27,8 +29,8 @@
           <p style="font-weight:bold;">
             可分配业绩：
             <span class="orange">{{comm}}元</span>
+            <span>（可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费）</span>
           </p>
-          <p style="margin-top:20px;">可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费</p>
         </div>
 
         <!-- 房源列表 -->
@@ -76,7 +78,7 @@
               <!-- 角色类型 不可输入-->
               <el-table-column
                 label="角色类型"
-                width="145"
+                width="125"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -101,7 +103,7 @@
                 <template slot-scope="scope">
                   <el-input
                     v-model.number="scope.row.ratio"
-                    placeholder="请输入数字"
+                    placeholder="请输入"
                     @change="filterHouseNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
@@ -110,7 +112,7 @@
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
               <el-table-column
                 label="经纪人"
-                width="120"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -138,7 +140,7 @@
               <!-- 在职状况  可下拉,不可输入    0待入职,1在职,2离职 (通过枚举id=20查询)-->
               <el-table-column
                 label="在职状况"
-                width="120"
+                width="100"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -158,7 +160,7 @@
               <!-- 门店，可输入，可下拉 -->
               <el-table-column
                 label="门店"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -185,7 +187,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -213,7 +215,7 @@
               <!-- 单组，可输入，可下拉 -->
               <el-table-column
                 label="单组"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -240,7 +242,7 @@
               <!-- 区经，可输入，可下拉   changeAmaldar-->
               <el-table-column
                 label="区经"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -268,7 +270,7 @@
               <!-- 区总，可输入，可下拉 changeManager-->
               <el-table-column
                 label="区总"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -294,13 +296,13 @@
               </el-table-column>
 
               <el-table-column
-                label="门店/公司公共业绩"
-                width="170"
+                label="公共业绩"
+                width="75"
               >
                 <template slot-scope="scope">
                   <el-radio-group v-model="scope.row.place">
-                     <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,0)">门店</el-radio>
-                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)">公司</el-radio>
+                     <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:6px;font-size:12px">门店</el-radio>
+                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:3px;;font-size:12px">公司</el-radio>
                   </el-radio-group>
                 </template>
               </el-table-column>
@@ -308,7 +310,6 @@
               <el-table-column
                 prop="manager"
                 label="操作"
-                width="80"
               >
                 <template slot-scope="scope">
                   <a
@@ -364,7 +365,7 @@
             >
               <el-table-column
                 label="角色类型"
-                width="145"
+                width="125"
               >
                 <template slot-scope="scope">
                   <!-- filterable -->
@@ -389,7 +390,7 @@
                 <template slot-scope="scope">
                   <el-input
                     v-model="scope.row.ratio"
-                    placeholder="请输入数字"
+                    placeholder="请输入"
                     @change="filterClientNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
@@ -397,7 +398,7 @@
 
               <el-table-column
                 label="经纪人"
-                width="120"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -424,7 +425,7 @@
 
               <el-table-column
                 label="在职状况"
-                width="120"
+                width="100"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -444,7 +445,7 @@
               <!-- 门店，可输入，可下拉 -->
               <el-table-column
                 label="门店"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -471,7 +472,7 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column
                 label="店长"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -498,7 +499,7 @@
               <!-- 单组，可输入，可下拉 -->
               <el-table-column
                 label="单组"
-                width="200"
+                width="150"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -525,7 +526,7 @@
               <!-- 区经，可输入，可下拉 -->
               <el-table-column
                 label="区经"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -553,7 +554,7 @@
               <!-- 区总，可输入，可下拉 -->
               <el-table-column
                 label="区总"
-                width="140"
+                width="117"
               >
                 <template slot-scope="scope">
                   <el-select
@@ -579,13 +580,13 @@
               </el-table-column>
 
               <el-table-column
-                label="门店/公司公共业绩"
-                width="170"
+                label="公共业绩"
+                width="75"
               >
                 <template slot-scope="scope">
                     <el-radio-group v-model="scope.row.place">
-                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)">门店</el-radio>
-                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)">公司</el-radio>
+                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:6px;font-size:12px;">门店</el-radio>
+                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:3px;font-size:12px;">公司</el-radio>
                     </el-radio-group>
                 </template>
               </el-table-column>
@@ -593,7 +594,7 @@
               <el-table-column
                 prop="manager"
                 label="操作"
-                width="80"
+                width="60"
               >
                 <template slot-scope="scope">
                   <a
@@ -611,6 +612,7 @@
         <div
           class="ach-footer"
           v-if="dialogType==0"
+          style="height:100px;padding-bottom: 30px;width:100%"
         >
           <p class="text-layout">备注：
             <el-input
@@ -628,17 +630,17 @@
             <el-button
               type="primary"
               round
-              @click="passAch"
-              class="color-green"
-              v-dbClick
-            >通过</el-button>
-            <el-button
-              type="primary"
-              round
               @click="rejectAch"
               class="color-red"
               v-dbClick
             >驳回</el-button>
+            <el-button
+              type="primary"
+              round
+              @click="passAch"
+              class="color-green"
+              v-dbClick
+            >通过</el-button>
           </div>
         </div>
 
@@ -646,6 +648,7 @@
         <div
           class="ach-footer"
           v-if="dialogType==1"
+          style="height:70px;padding-bottom: 30px;width:100%"
         >
           <div class="footer-btn-layout f_r">
             <!-- <el-button
@@ -668,6 +671,7 @@
         <div
           class="ach-footer"
           v-if="dialogType==2"
+          style="height:90px;padding-bottom: 20px;width:100%"
         >
           <p class="f_l">审核日期：
             <el-date-picker
@@ -693,6 +697,7 @@
         <div
           class="ach-footer"
           v-if="dialogType==3&&!backAId"
+          style="height:70px;padding-bottom: 30px;width:100%"
         >
           <div class="footer-btn-layout f_r">
             <!-- <el-button
@@ -719,12 +724,13 @@
              custom-class="dialog2In"
             :close-on-click-modal="false"
           >
-            <h1 style="font-size:16px;" slot="title">选择相关人员</h1>
+            <h1 style="font-size:18px;" slot="title">选择相关人员</h1>
             <div class="mansList">
               <el-table
                 :data="mansList"
                 style="width: 100%"
                 @selection-change="handleSelectionChange"
+                :header-cell-style="{'background-color':'#F7F6Fd'}"
               >
                 <el-table-column
                   type="selection"
@@ -741,15 +747,6 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="门店"
-                  width="120"
-                >
-                  <template slot-scope="scope">
-                    <p>{{scope.row.level3}}</p>
-                  </template>
-                </el-table-column>
-
-                <el-table-column
                   label="角色类型"
                   width="100"
                 >
@@ -757,10 +754,18 @@
                     <p>{{scope.row.roleName}}</p>
                   </template>
                 </el-table-column>
+
+                <el-table-column
+                  label="门店"
+                >
+                  <template slot-scope="scope">
+                    <p>{{scope.row.level3}}</p>
+                  </template>
+                </el-table-column>
               </el-table>
             </div>
-
-            <div class="dialog2-btn f_r">
+           
+          <div class="dialog2-btn f_r clearfix">
               <el-button
                 type="primary"
                 round
@@ -772,8 +777,9 @@
                 @click="manSure(type)"
                 v-dbClick
               >确定</el-button>
-            </div>
+          </div>
           </el-dialog>
+         </div>
         </div>
       </el-dialog>
     </div>
@@ -814,6 +820,7 @@ export default {
       amaldars:[],   //模糊搜索区经
       managers:[],    //模糊搜索区总
       loading1: false,
+      loading:false,
       radioFlag:3,
       assignorIndex:null,
       assignorStr:null,
@@ -911,7 +918,10 @@ export default {
     // 改变经纪人
     changeAssignors(val, index, type) {
       if (val) {
-        this.$ajax.get("/api/organize/employee/agent/" + val).then(res => {
+        let param={
+          id:val
+        };
+        this.$ajax.get("/api/organize/employee/agent/details",param).then(res => {
           let data = res.data.data;
           if (type == 0) {
             this.houseArr[index].assignor = data.assignor;
@@ -1300,6 +1310,7 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
+              this.$emit("close");
               this.$message({ message: "操作成功", type: "success" });
               this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
             } 
@@ -1383,6 +1394,7 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
+              this.$emit("close");
               this.$message({ message: "操作成功", type: "success" });
               this.$emit("rejectData", this.achIndex, resultArr);
             } else if (res.data.status != 200) {
@@ -1498,6 +1510,7 @@ export default {
             if (type == 2 && status == 1) {
               this.$emit("saveData", this.achIndex, resultArr, 0);
             }
+            this.$emit("close");
             this.$message({ message: "操作成功", type: "success" });
           }
         }).catch(error => {
@@ -1602,9 +1615,9 @@ export default {
           .then(res => {
             console.log(res.data.status);
             if (res.data.status == 200) {
+              this.$emit("close");
               this.$message({ message: "操作成功", type: "success" });
             }
-            this.$emit("close");
           }).catch(error => {
                this.$message.error({message: error})
           });;
@@ -1634,9 +1647,10 @@ export default {
             this.clientArr = res.data.data.customerAgents;
             this.comm = res.data.data.comm;
             if (res.data.data.examineDate) {
-              console.log("ssssssssss");
               this.examineDate = res.data.data.examineDate;
             }
+              //  this.$emit("opens");
+              this.loading=false;
           }
         });
       // 角色类型
@@ -1663,7 +1677,7 @@ export default {
         var flag = true;
         for (var j = 0; j < resultArr.length; j++) {
           if (
-            addhouseArr[i].assignorId == resultArr[j].assignorId &&
+            // addhouseArr[i].assignorId == resultArr[j].assignorId &&
             addhouseArr[i].roleType == resultArr[j].roleType 
             // addhouseArr[i].id == resultArr[j].id
           ) {
@@ -1673,7 +1687,7 @@ export default {
         if (flag) {
           resultArr.push(addhouseArr[i]);
         } else {
-          this.$message.error("请勿重复添加同一个人");
+          this.$message.error("请勿重复添加同一角色");
           return false;
         }
       }
@@ -1702,6 +1716,7 @@ export default {
       // 字典初始化
       this.getDictionary();
       this.remark = "";
+      this.loading=true;
       if (val) {
         this.code = val;
         if (this.dialogType == 0) {  // 审核
@@ -1729,7 +1744,7 @@ export default {
           let param = {
             contCode: this.contractCode
           };
-          this.$ajax.get("/api/achievement/getContDetailsAgents", param).then(res => {
+          this.$ajax.get("/api/achievement/getContAgents", param).then(res => {
             let data = res.data;
             if (data.status === 200) {
               if (data.data.customerAgents) {
@@ -1738,6 +1753,8 @@ export default {
               if (data.data.houseAgents) {
                 this.houseArr = data.data.houseAgents;
               }
+              // this.$emit("opens");
+              this.loading=false;
               if (data.data.aId) {
                 this.backAId = data.data.aId;
               }
@@ -1753,22 +1770,23 @@ export default {
 <style lang="less" scoped>
 // 相关人员弹框
 /deep/ .dialog2In {
-  width: 420px !important;
-  background-color: #fff;
-  margin-top: 20vh !important;
-  padding-bottom: 30px;
+  width:450px !important;
+  max-height:450px;
+  min-height: 255px;
+  margin-top: 13vh !important;
   .is-checked {
     color: #478de3 !important;
   }
   /deep/ .el-dialog__header {
     padding: 0 !important;
+    font-size: 12px;
   }
   /deep/ .el-dialog__body {
     padding: 0 !important;
-    overflow-y: auto;
-    min-height: 200px;
-    max-height: 400px;
-    width: 420px !important;
+
+    // min-height: 200px;
+    // height: 300px;
+    width:450px !important;
   }
   h1 {
     height: 53px;
@@ -1783,7 +1801,10 @@ export default {
     // }
   }
   .mansList {
-    margin-top: 25px;
+     overflow-y: auto;
+     max-height: 300px;
+     min-height: 100px;
+     width:450px !important;
   }
   /deep/ tr td:first-of-type,
   th:first-of-type {
@@ -1791,25 +1812,34 @@ export default {
   }
 
   .dialog2-btn {
-    margin-top: 40px;
-    margin-right: 20px;
+    height: 100px;
+    padding-top: 20px;
+    padding-right: 30px;
+    box-sizing: border-box;
+    background-color: #fff;
+    width: 100%;
+    text-align: right;
     button {
       width: 100px;
       height: 38px;
       border-radius: 19px;
     }
     button:first-of-type {
-      background-color: #fff;
+      background-color: #f5f5f5;
       color: #000;
       border: 1px solid #e8eaf6;
     }
+    margin-bottom: 20px;
+  }
+  .cell{
+    font-size: 12px;
   }
 }
 //业绩详情弹框改变样式
 .dialog1 {
-  /deep/ .el-dialog.base-dialog {
-    width: 1000px !important;
-    margin: 13vh auto 0 !important;
+  /deep/ .el-dialog.base-dialog{
+    // max-width: 80%!important;
+    margin: 10vh auto 0 !important;
     overflow: hidden;
 
     /deep/ .el-input__suffix {
@@ -1822,7 +1852,7 @@ export default {
       font-size: 30px;
     }
     .ach-header {
-      min-height: 100px;
+      min-height: 70px;
       background-color: #fff;
       border-bottom: 1px solid #edecf0;
       overflow: hidden;
@@ -1839,11 +1869,12 @@ export default {
       }
     }
     .ach-body {
-      max-height: 500px;
+      max-height: 450px;
       // background-color: pink;
       // padding: 0 20px;
       box-sizing: border-box;
       overflow-y: auto;
+     
       /deep/ .el-input__inner {
         border: 0;
         box-shadow: 0;
@@ -1851,17 +1882,29 @@ export default {
         padding-left: 5px;
         padding-right: 25px;
         // padding-left: 10px;
+        font-size: 12px!important;
       }
-      /deep/ .el-icon-circle-close{
+      /deep/ .el-icon-circle-close {
         position: absolute;
         left: -5px;
         top: 0;
+      }
+     /deep/  .el-select__caret.is-reverse,.el-icon-arrow-up{
+        position: absolute;
+        left: -5px;
+        top: 0;
+      }
+      //  /deep/  .el-radio{
+      //   margin-left: 10px;
+      // }
+      .el-radio+.el-radio{
+        margin-left: 0;
       }
       .house-divide {
         width: 100%;
         //   background-color: pink;
         .house-left {
-          margin-top: 30px;
+          margin-top: 10px;
           margin-bottom: 30px;
           h1 {
             // font-size: 16px !important;
@@ -1871,18 +1914,18 @@ export default {
         }
 
         .house-right {
-          margin-top: 20px;
+          margin-top: 10px;
           button {
-            padding: 0 !important;
+            padding: 0  10px!important;
             border-radius: 0;
           }
           button:first-of-type {
-            width: 90px;
+            // width: 90px;
             height: 36px;
             border-radius: 18px;
           }
           button:nth-of-type(2) {
-            width: 105px;
+            // width: 105px;
             height: 36px;
             border-radius: 18px;
           }
@@ -1892,12 +1935,22 @@ export default {
           }
         }
       }
+
+      //弹框审核信息
+      h1 {
+        // font-size: 16px;
+        color: #233241;
+        margin: 0px !important;
+      }
+    }
       /deep/ .el-table {
         // font-size: 14px !important;
         margin-top: 20px;
+        border-spacing: 0px;
         td,
         th {
-          padding: 24px 0;
+          padding: 0px 0px!important;
+          height: 100%;
         }
         .el-table__header {
           height: 55px;
@@ -1911,25 +1964,23 @@ export default {
             }
           }
         }
+        .el-table__header th .cell{
+          height: 30px;
+          line-height: 30px;
+        }
       }
-      //弹框审核信息
-      h1 {
-        // font-size: 16px;
-        color: #233241;
-        margin: 0px !important;
+      /deep/ .el-radio__label{
+        font-size:12px;
       }
-    }
-
     .ach-footer {
-      min-height: 100px;
+      // min-height: 100px;
       width: 100%;
       background-color: #fff;
       padding-left: 20px;
       box-sizing: border-box;
       position: relative;
-      padding-bottom: 30px;
       p {
-        margin-top: 30px;
+        margin-top: 5px;
       }
       .text-layout {
         position: relative;
@@ -1946,7 +1997,7 @@ export default {
         }
         .textLength {
           position: absolute;
-          right: 532px;
+          right: 815px;
           top: 70px;
           color: #6c7986;
           text-align: right;
