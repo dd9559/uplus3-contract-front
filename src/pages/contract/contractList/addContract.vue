@@ -445,6 +445,10 @@ export default {
           state: false,
           name: '提交审核'//新增+提审
         },
+        'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
       }
     };
   },
@@ -471,6 +475,7 @@ export default {
           type: 1,
           encryptionCode: "",
           mobile: "",
+          encryptionMobile:"",
           relation: "",
           name: "",
           propertyRightRatio: ""
@@ -492,6 +497,7 @@ export default {
           type: 2,
           encryptionCode: "",
           mobile: "",
+          encryptionMobile:"",
           relation: "",
           name: "",
           propertyRightRatio: ""
@@ -622,7 +628,9 @@ export default {
                 let ownerArr = this.ownerList.map(item=>Object.assign({},item));
                 ownerArr.forEach((element,index) => {
                   if(element.isEncryption){
-                    element.mobile=this.ownerList_[index].mobile
+                    element.encryptionMobile=this.ownerList_[index].encryptionMobile
+                  }else{
+                    element.encryptionMobile=element.mobile;
                   }
                 });
 
@@ -632,9 +640,9 @@ export default {
                   if (element.name) {
                     if(element.name.replace(/\s/g,"")){
                       element.name=element.name.replace(/\s/g,"");
-                      if (element.mobile.length === 11) {
+                      if (element.encryptionMobile.length === 11) {
                       let reg = /^1[0-9]{10}$/;
-                      if (reg.test(element.mobile)) {
+                      if (reg.test(element.encryptionMobile)) {
                         if (element.relation) {
                           if(this.type===2){
                             if(!element.propertyRightRatio){
@@ -715,19 +723,20 @@ export default {
                         let guestArr = this.guestList.map(item=>Object.assign({},item));
                         guestArr.forEach((element,index) => {
                           if(element.isEncryption){
-                            element.mobile=this.guestList_[index].mobile
+                            element.encryptionMobile=this.guestList_[index].encryptionMobile
+                          }else{
+                            element.encryptionMobile=element.mobile;
                           }
                         });
-
                         for(var i=0;i<guestArr.length;i++){
                           let element = guestArr[i];
                           isOk_ = false;
                           if (element.name) {
                             if(element.name.replace(/\s/g,"")){
                               element.name=element.name.replace(/\s/g,"");
-                              if (element.mobile.length === 11) {
+                              if (element.encryptionMobile.length === 11) {
                               let reg = /^1[0-9]{10}$/;
-                              if (reg.test(element.mobile)) {
+                              if (reg.test(element.encryptionMobile)) {
                                 if (element.relation) {
                                   if(this.type===2){
                                     if(!element.propertyRightRatio){
@@ -803,13 +812,15 @@ export default {
                             let mobileList = [];
                             //验证身份证是否重复
                             let IdCardList = [];
-                            this.ownerList.forEach(element => {
+                            // console.log(guestArr)
+                            // debugger
+                            ownerArr.forEach(element => {
                               IdCardList.push(element.encryptionCode);
-                              mobileList.push(element.mobile);
+                              mobileList.push(element.encryptionMobile);
                             });
                             this.guestList.forEach(element => {
                               IdCardList.push(element.encryptionCode);
-                              mobileList.push(element.mobile);
+                              mobileList.push(element.encryptionMobile);
                             });
                             let mobileList_= Array.from(new Set(mobileList));
                             let IdCardList_= Array.from(new Set(IdCardList));
@@ -958,7 +969,9 @@ export default {
       let guestArr = this.guestList.map(item=>Object.assign({},item));
       ownerArr.forEach((element,index) => {
         if(element.isEncryption){
-          element.mobile=this.ownerList_[index].mobile
+          element.encryptionMobile=this.ownerList_[index].encryptionMobile
+        }else{
+          element.encryptionMobile=element.mobile;
         }
         delete element.edit;
         delete element.isEncryption;
@@ -966,7 +979,9 @@ export default {
       });
       guestArr.forEach((element,index) => {
         if(element.isEncryption){
-          element.mobile=this.guestList_[index].mobile
+          element.encryptionMobile=this.guestList_[index].encryptionMobile
+        }else{
+          element.encryptionMobile=element.mobile;
         }
         delete element.edit;
         delete element.isEncryption;
@@ -1067,15 +1082,22 @@ export default {
     //创建成功提示
     toUpload(value){//上传合同资料库
       this.dialogSuccess=false;
-      this.$router.push({
-        path: "/contractDetails",
-        query: {
-          type: "dataBank",
-          id: this.detailId,//合同id
-          code: this.detailCode,//合同编号
-          contType: this.contractForm.type//合同类型
-        }
-      });
+      if(this.power['sign-com-htdetail'].state){
+        this.$router.push({
+          path: "/contractDetails",
+          query: {
+            type: "dataBank",
+            id: this.detailId,//合同id
+            code: this.detailCode,//合同编号
+            contType: this.contractForm.type//合同类型
+          }
+        });
+      }else{
+        this.$message({
+          message:'没有合同详情权限,无法跳转到资料库'
+        });
+        this.$router.push('/contractList');
+      }
     },
     toContract(){//回到合同列表
       this.dialogSuccess=false;
@@ -1238,7 +1260,7 @@ export default {
               obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
               this.ownerList.push(obj);
               let obj_ = Object.assign({}, element);
-              // obj_.mobile=obj_.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              obj_.encryptionMobile=obj_.mobile;
               this.ownerList_.push(obj_);
             });
           }
@@ -1281,7 +1303,7 @@ export default {
           obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
           this.guestList.push(obj);
           let obj_ = Object.assign({}, element);
-          // obj_.mobile=obj_.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+          obj_.encryptionMobile=obj_.mobile;
           this.guestList_.push(obj_);
 
           // this.guestList.push({
@@ -1506,6 +1528,7 @@ export default {
               let element = {
                 name:this.contractForm.contPersons[i].name,
                 mobile:this.contractForm.contPersons[i].mobile,
+                encryptionMobile:this.contractForm.contPersons[i].encryptionMobile,
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
                 identifyCode:this.contractForm.contPersons[i].identifyCode,
@@ -1515,7 +1538,7 @@ export default {
                 isEncryption:true
               }
               let obj = Object.assign({}, element);
-              obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              // obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
               this.ownerList.push(obj);
               let obj_ = Object.assign({}, element);
               this.ownerList_.push(obj_);
@@ -1543,6 +1566,7 @@ export default {
               let element = {
                 name:this.contractForm.contPersons[i].name,
                 mobile:this.contractForm.contPersons[i].mobile,
+                encryptionMobile:this.contractForm.contPersons[i].encryptionMobile,
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
                 identifyCode:this.contractForm.contPersons[i].identifyCode,
@@ -1552,7 +1576,7 @@ export default {
                 isEncryption:true
               }
               let obj = Object.assign({}, element);
-              obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              // obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
               this.guestList.push(obj);
               let obj_ = Object.assign({}, element);
               this.guestList_.push(obj_);

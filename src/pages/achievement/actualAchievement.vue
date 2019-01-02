@@ -882,7 +882,11 @@ export default {
       'sign-yj-rev-fs': {
           state: false,
           name: '反审核'
-        }
+        } ,
+      'sign-com-htdetail': {
+            state: false,
+            name: '合同详情'
+      },
       }
     };
   },
@@ -1159,15 +1163,19 @@ export default {
       this.getData(this.ajaxParam);
     },
     skipContDel(value) {
-     this.setPath(this.$tool.getRouter(['应收','应收列表','合同详情'],'contractList'))
-      this.$router.push({
-        path: "/contractDetails",
-        query: {
-          id: value.id,
-          code: value.code,
-          contType: value.contType.value
-        }
-      });
+     if(this.power['sign-com-htdetail'].state){
+       this.setPath(this.$tool.getRouter(['应收','应收列表','合同详情'],'contractList'))
+        this.$router.push({
+          path: "/contractDetails",
+          query: {
+            id: value.id,
+            code: value.code,
+            contType: value.contType.value
+          }
+        });
+     }else{
+       this.noPower('合同详情查看')
+     }
     }
   }
 };
