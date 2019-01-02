@@ -250,7 +250,7 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="合同主体" name="second">
-        <div class="contractSubject" v-if="contractDetail.contState.value>1">
+        <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
           <ul class="ulData">
             <!-- <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2"> -->
             <li v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
@@ -273,7 +273,7 @@
       </el-tab-pane>
       <el-tab-pane label="资料库" name="third">
         <!-- <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData"> -->
-        <div class="dataBank" v-if="power['sign-ht-xq-data-add'].state||contractDetail.isHaveData">
+        <div class="dataBank" v-if="power['sign-ht-xq-data-add'].state">
           <div class="classify" v-if="sellerList.length>0">
             <p class="title">卖方</p>
             <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
@@ -386,8 +386,8 @@
                   </span>
                 </div>
                 <span v-else>--</span>
-                <!-- <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio> -->
-                <audio src="http://voicedownload.jjdc.com.cn:8081/api/CallService/DownloadSoundRecording?Url=f9e885accb3bc5ae83a4ea943b2fb381" :id="'audio'+scope.$index"></audio>
+                <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio>
+                <!-- <audio src="http://voicedownload.jjdc.com.cn:8081/api/CallService/DownloadSoundRecording?Url=f9e885accb3bc5ae83a4ea943b2fb381" :id="'audio'+scope.$index"></audio> -->
                 <!-- ../../../../static/录音-001.MP3 -->
               </template>
             </el-table-column>

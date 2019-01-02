@@ -213,8 +213,8 @@
       <!-- 三方合作 -->
       <div class="houseMsg">
         <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':cooperation}"></span></p>
-        <div class="cooperation">
-          <div v-show="cooperation">
+        <div class="cooperation" v-show="cooperation">
+          <div>
             <el-form-item label="扣合作费：" class="width-250">
               <input type="text" v-model="contractForm.otherCooperationCost" @input="cutNumber('otherCooperationCost')" placeholder="请输入内容" class="dealPrice">
               <i class="yuan">元</i>
@@ -285,7 +285,7 @@
     <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
     </houseGuest>
     <!-- 保存合同确认框 -->
-    <el-dialog title="提示" :visible.sync="dialogSave" width="460px">
+    <el-dialog title="提示" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <span>{{hintText}}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogSave = false">取 消</el-button>
@@ -293,7 +293,7 @@
       </span>
     </el-dialog>
     <!-- 删除人员确认框 -->
-    <el-dialog title="提示" :visible.sync="dialogDel" width="460px">
+    <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <span>确定删除当前联系人吗？</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogDel = false">取 消</el-button>
@@ -301,7 +301,7 @@
       </span>
     </el-dialog>
     <!-- 创建合同成功提示框 -->
-    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px">
+    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="toContract">取 消</el-button>
@@ -448,6 +448,10 @@ export default {
         'sign-com-htdetail': {
           state: false,
           name: '合同详情'
+        },
+        'sign-ht-xq-data-add': {
+          state: false,
+          name: '编辑资料库'
         },
       }
     };
@@ -1083,15 +1087,22 @@ export default {
     toUpload(value){//上传合同资料库
       this.dialogSuccess=false;
       if(this.power['sign-com-htdetail'].state){
-        this.$router.push({
-          path: "/contractDetails",
-          query: {
-            type: "dataBank",
-            id: this.detailId,//合同id
-            code: this.detailCode,//合同编号
-            contType: this.contractForm.type//合同类型
-          }
-        });
+        if(this.power['sign-ht-xq-data-add'].state){
+          this.$router.push({
+            path: "/contractDetails",
+            query: {
+              type: "dataBank",
+              id: this.detailId,//合同id
+              code: this.detailCode,//合同编号
+              contType: this.contractForm.type//合同类型
+            }
+          });
+        }else{
+          this.$message({
+            message:'没有资料库权限,无法跳转到资料库'
+          });
+          this.$router.push('/contractList');
+        }
       }else{
         this.$message({
           message:'没有合同详情权限,无法跳转到资料库'
@@ -1746,7 +1757,7 @@ export default {
   }
   border-bottom: 1px solid @border-ED;
   > p {
-    padding: 20px 0 10px 20px;
+    padding: 20px 0 20px 20px;
     font-size: 14px;
     font-weight: bold;
   }
