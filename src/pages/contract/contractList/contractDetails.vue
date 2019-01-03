@@ -640,7 +640,7 @@
             </el-table>
           </div>
         </div>
-        <div class="printMsg">
+        <div class="printMsg" v-if="contractDetail.isHaveCooperation">
           <div class="contTitle">三方合作</div>
           <div class="printItem">
             <p><span class="printTag">扣合作费：</span><span class="printTxt">{{contractDetail.otherCooperationCost}}元</span></p>
