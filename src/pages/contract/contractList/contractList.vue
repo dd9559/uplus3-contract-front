@@ -301,9 +301,9 @@
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
               <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&scope.row.contState.value>1" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
-              <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4">
-                <el-button type="text" size="medium" @click="goSave(scope.row)">提审</el-button>
-              </span>
+              <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
+              <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4" @click="goSave(scope.row)">提审</el-button>
+              <!-- </span> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
             <!-- </div> -->
           </template>
@@ -656,15 +656,20 @@ export default {
     },
     uploadData(value) {
       if(this.power['sign-ht-info-reject'].state){
-        this.$router.push({
-          path: "/contractDetails",
-          query: {
-            type: "dataBank",
-            id: value.id,
-            code:value.code,
-            contType: value.contType.value
-          }
-        });
+        if(this.power['sign-com-htdetail'].state){
+          this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+          this.$router.push({
+            path: "/contractDetails",
+            query: {
+              type: "dataBank",
+              id: value.id,
+              code:value.code,
+              contType: value.contType.value
+            }
+          });
+        }else{
+          this.noPower('合同详情')
+        }
       }else{
         this.noPower('后期状态')
       }
@@ -844,10 +849,18 @@ export default {
           })
         }
       }).catch(error => {
-          this.$message({
-            message:error,
-            type: "error"
-          })
+          if(error.message==='下一节点审批人不存在'){
+            this.checkPerson.flowType=3;
+            this.checkPerson.code=this.submitAuditData.code;
+            this.checkPerson.state=true;
+            this.checkPerson.type="set";
+            this.checkPerson.label=true;
+          }else{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
         })
     },
     //发起结算弹窗
