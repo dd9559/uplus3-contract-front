@@ -533,7 +533,8 @@
               id: row.id,
               tab: row.type === 1 ? '收款信息' : '付款信息',
               power: this.power[row.type===1?'sign-cw-debt-rev':'sign-cw-debt-pay'].state,
-              print: this.power['sign-cw-bill-print'].state
+              print: this.power['sign-cw-bill-print'].state,
+              bill: this.power['sign-cw-debt-invoice'].state
             }
           })
         }

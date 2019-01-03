@@ -177,7 +177,7 @@
               <span>{{scope.row.nextAuditStore}}</span>
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.auditBy!==0&&getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -378,12 +378,12 @@
       this.activeView = parseInt(this.$route.query.type)
 
       for (let item in this.power){
-        this.power[item].state=true
-        /*if(this.getUser){
+        // this.power[item].state=true
+        if(this.getUser){
           if(this.getUser.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }*/
+        }
       }
 
       this.getData()
@@ -398,12 +398,12 @@
       this.clearDep()
 
       for (let item in this.power){
-        this.power[item].state=true
-        /*if(this.getUser){
+        // this.power[item].state=true
+        if(this.getUser){
           if(this.getUser.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }*/
+        }
       }
       /*this.$nextTick(()=>{
         this.tableBox=this.$refs.dataList
