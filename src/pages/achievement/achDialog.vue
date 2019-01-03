@@ -1438,8 +1438,8 @@ export default {
     // 反审核，编辑的保存
     keepAch(type, status,editStr) {
       //  this.checkPerson.flowType=2;
-      //  this.checkPerson.code=val.code;
-      //  console.log(  this.checkPerson.code);
+      // //  this.checkPerson.code=val.code;
+      // //  console.log(  this.checkPerson.code);
       //  this.checkPerson.state=true
       //  this.checkPerson.type='set'
       //resultArr表示房源客源加在一起之后组成的数组
