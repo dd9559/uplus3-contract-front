@@ -154,8 +154,8 @@
         </el-table-column>
         <el-table-column align="left" label="当前审核人" width="150">
           <template slot-scope="scope">
-            <span v-if="scope.row.auditName">
-              <p>{{scope.row.auditName}}</p>
+            <span v-if="scope.row.auditId>0">
+              <p>{{scope.row.auditId}}</p>
               <el-button type="text" v-if="userMsg&&scope.row.auditId===userMsg.empId" @click="choseCheckPerson(scope.row,'int')">转交审核人</el-button>
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
@@ -164,7 +164,7 @@
         </el-table-column>
         <el-table-column align="left" label="下一步审核人" width="150">
           <template slot-scope="scope">
-            <span v-if="scope.row.nextAuditName">
+            <span v-if="scope.row.nextAuditId>0">
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
@@ -199,7 +199,7 @@
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -256,7 +256,8 @@ export default {
         state:false,
         type:'init',
         code:'',
-        flowType:0
+        flowType:0,
+        label:false
       },
        //权限配置
       power: {
@@ -433,6 +434,11 @@ export default {
       this.checkPerson.code=row.code;
       this.checkPerson.state=true;
       this.checkPerson.type=type;
+      if(row.nextAuditId>0){
+        this.checkPerson.label=false;
+      }else{
+        this.checkPerson.label=true;
+      }
     },
   }
 };

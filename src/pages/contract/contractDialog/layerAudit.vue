@@ -303,8 +303,10 @@ export default {
             }
             else if(parseFloat(this.auditForm.money1) < 0 || parseFloat(this.auditForm.money2) < 0 || parseFloat(this.auditForm.money4) < 0){
               this.$message('请输入非负数的金额');
-            }
-            
+            } 
+            else if(this.auditForm.money1 + this.auditForm.money2 > this.layerAudit.dealPrice){
+              this.$message('调整的业主佣金+客户佣金总和不能大于成交总价');
+            }        
             else{
               this.fullscreenLoading=true
               this.$ajax         
@@ -321,11 +323,15 @@ export default {
                     }
                     else if (res.data.status === 200) {
                       this.$message('已申请');
-                      setTimeout(() => {
-                        
+                      setTimeout(() => {                     
                         this.$emit('closeCentCommission')
-                      }, 1500); 
-                      
+                      }, 1500);                     
+                    }
+                    else if (res.data.status === 300) {
+                      this.$message('已申请！当前合同没有下一步审核人，您可以去调佣列表中设置。');
+                      setTimeout(() => {                     
+                        this.$emit('closeCentCommission')
+                      }, 1500);                     
                     }
 
                 }).catch(error => {

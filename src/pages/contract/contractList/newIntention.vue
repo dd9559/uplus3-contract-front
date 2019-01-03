@@ -73,8 +73,11 @@
                                 <el-form-item prop="ownname">
                                     <el-input v-model="contractForm.ownname" @input="cutText('ownname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false" maxlength=5></el-input>
                                 </el-form-item>
-                                <el-form-item prop="ownmobile">
-                                    <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
+                                <el-form-item prop="ownmobile" v-if="type===1">
+                                    <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth"></el-input>
+                                </el-form-item>
+                                <el-form-item v-if="this.$route.query.operateType==2">
+                                    <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth" disabled></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
@@ -109,8 +112,11 @@
                                 <el-form-item prop="custname">
                                     <el-input v-model="contractForm.custname" @input="cutText('custname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false" maxlength=5></el-input>
                                 </el-form-item>
-                                <el-form-item prop="custmobile">
-                                    <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth" :disabled="this.$route.query.operateType==2?true:false"></el-input>
+                                <el-form-item prop="custmobile" v-if="this.type===1">
+                                    <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth"></el-input>
+                                </el-form-item>
+                                <el-form-item v-if="this.$route.query.operateType==2">
+                                    <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth" disabled></el-input>
                                 </el-form-item>
                                 <el-form-item prop="custIdentifyCode" v-if="this.type===1">
                                     <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号"  class="custwidth" maxlength=18></el-input>               
@@ -149,7 +155,7 @@
             </span>
         </el-dialog>
         <!-- 创建合同成功提示框 -->
-        <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px">
+        <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
           <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
           <span slot="footer" class="dialog-footer">
             <el-button @click="toContract">取 消</el-button>
@@ -258,7 +264,7 @@ export default {
           //业主信息
           {
             name: "",
-            mobile: "",
+            encryptionMobile: "",
             // identifyCode: '',
             type: 1
             // relation: ''
@@ -266,8 +272,8 @@ export default {
           //客户信息
           {
             name: "",
-            mobile: "",
-            identifyCode: "",
+            encryptionMobile: "",
+            encryptionCode: "",
             type: 2,
             relation: ""
           }
@@ -714,14 +720,14 @@ export default {
               //业主信息
               {
                 name: this.contractForm.ownname,
-                mobile: this.contractForm.ownmobile,
+                encryptionMobile: this.contractForm.ownmobile,
                 type: 1
               },
               //客户信息
               {
                 name: this.contractForm.custname,
-                mobile: this.contractForm.custmobile,
-                identifyCode: this.contractForm.custIdentifyCode,
+                encryptionMobile: this.contractForm.custmobile,
+                encryptionCode: this.contractForm.custIdentifyCode,
                 type: 2,
                
               }] 
@@ -769,6 +775,7 @@ export default {
     //创建成功提示
     toUpload(value){//上传合同资料库
       this.dialogSuccess=false;
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
       this.$router.push({
         path: "/detailIntention",
         query: {

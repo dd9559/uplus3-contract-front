@@ -12,8 +12,7 @@
                         
                     </div>
                     <div class="col-li">
-                        <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
-                    
+                        <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>                  
                     </div>
                     <div class="col-li col-li2">
                         <p>合同类型：<span>{{layerAudit.contarctType.label}}</span></p>
@@ -25,7 +24,10 @@
                     <div class="col-li col-li2">
                         <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
                         <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-                        <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>
+                        <p>应收佣金：<span>{{layerAudit.receivableComm}}元</span></p>
+                    </div>
+                    <div class="col-li">
+                        <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>                
                     </div>
 
                 </div>
@@ -269,11 +271,16 @@ export default {
             .then(res => {
                 this.fullscreenLoading=false
                 if (res.data.status === 200) {
-                this.$message('已申请');
-                setTimeout(() => {                
-                    this.$emit('closeSettle')
-                }, 1500); 
-                
+                    this.$message('已申请');
+                    setTimeout(() => {                
+                        this.$emit('closeSettle')
+                    }, 1500);              
+                }
+                else if (res.data.status === 300) {
+                    this.$message('已申请！当前合同没有下一步审核人，您可以去结算列表中设置。');
+                    setTimeout(() => {                     
+                        this.$emit('closeSettle')
+                    }, 1500);                     
                 }
             }).catch(error => {
                 this.fullscreenLoading=false
@@ -356,12 +363,12 @@ export default {
 
             .col-li2{
                 p:nth-child(2n){
-                width: 190px;
+                width: 250px;
                 }
                 p{
                 float: left;
                 &:first-child{
-                    width: 240px;
+                    width: 250px;
                     color: #6C7986;
                     span{
                     color: #233241;
