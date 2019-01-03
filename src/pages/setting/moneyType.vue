@@ -244,11 +244,11 @@
             },
             //单击行事件
             rowClick(row, event, column) {
-                this.isMoney=false
+                // this.isMoney=false
                 this.bigName=row.name
-                var index=row.index
-                var top=115+index*34.6
-                var sjx=document.getElementsByClassName('sjx')
+                // var index=row.index
+                // var top=115+index*34.6
+                // var sjx=document.getElementsByClassName('sjx')
                 var paperBtn=document.getElementsByClassName('paper-btn')
                 if(row.name=='代收代付'){
                     paperBtn[0].disabled=true
@@ -257,16 +257,17 @@
                      paperBtn[0].disabled=false
                      paperBtn[0].classList.remove('grey')
                 }
-                sjx[0].style.top=top+'px'
+                // sjx[0].style.top=top+'px'
                 this.$refs.onetable.$el.classList.remove('onetable')
                 this.addForm.parentId=row.id
                 this.bigId=row.id
+                this.initList()
                 // if(this.power['sign-set-kl-query'].state){
-                  this.$ajax.get('api/setting/moneyType/list',{id:this.bigId}).then((res)=>{
-                    if(res.status==200){
-                        this.moneyTypes=res.data.data
-                        this.isMoney=true
-                    }})
+                //   this.$ajax.get('api/setting/moneyType/list',{id:this.bigId}).then((res)=>{
+                //     if(res.status==200){
+                //         this.moneyTypes=res.data.data
+                //         this.isMoney=true
+                //     }})
                 // }
                 // else{
                 //       this.noPower(this.power['sign-set-kl-query'].name)
@@ -290,14 +291,17 @@
         > .sjx{
                 width:0;
                 right:-14px;
-                top: 115px;
+                top: 18.5px;
                 position: absolute;
                 border-width:7px;
                 border-style:solid;
                 border-color:transparent transparent transparent white; /* transparent 设置边框颜色透明 */
         }
-        /deep/ .el-table th {
+        /deep/ .el-table{
+            height: 501px;
+         th {
             background:rgba(242,243,248,1);
+            }
         }
         /deep/ .el-table th, 
         /deep/ .el-table td {

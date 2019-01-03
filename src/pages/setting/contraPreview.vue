@@ -124,7 +124,6 @@ export default{
         },
         mounted(){
             this.divWidth=622
-            // console.log(document.getElementsByClassName('listone')[0].offsetWidth);
             this.divHeight=802
             if(this.show==1){
                this.getImgAdd(this.count)
