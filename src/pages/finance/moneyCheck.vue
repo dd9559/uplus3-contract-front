@@ -259,7 +259,7 @@
     <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -282,7 +282,8 @@
           state:false,
           type:'init',
           code:'',
-          flowType:0
+          flowType:0,
+          label:false
         },
         searchForm: {
           contType: '',
@@ -345,6 +346,10 @@
           'sign-cw-pay-void': {
             state: false,
             name: '作废'
+          },
+          'sign-cw-bill-print':{
+            state: false,
+            name: '打印'
           },
           'sign-cw-debt-pay': {
             state: false,
@@ -425,6 +430,11 @@
         this.checkPerson.code=row.payCode
         this.checkPerson.state=true
         this.checkPerson.type=type
+        if(row.nextAuditId===-1){
+          this.checkPerson.label=true
+        }else {
+          this.checkPerson.label=false
+        }
       },
       /**
        * 列表横行滚动
@@ -502,14 +512,16 @@
             tab: '收款信息',
             id:item.id,
             type:item.inAccountType,
-            power:powerMsg
+            power:powerMsg,
+            print:this.power['sign-cw-bill-print'].state
           }
           this.setPath(this.getPath.concat({name:'收款详情'}))
         } else {
           param.query = {
             tab: '付款信息',
             id:item.id,
-            power:powerMsg
+            power:powerMsg,
+            print:this.power['sign-cw-bill-print'].state
           }
           this.setPath(this.getPath.concat({name:'付款详情'}))
         }

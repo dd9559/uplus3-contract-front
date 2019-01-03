@@ -56,7 +56,7 @@
           state:false,
           type:'set',
           code:'',
-          flowType:0
+          flowType:1
         },
       }
     },
@@ -67,6 +67,17 @@
         if(!item.state){
           this.activeStep=item.index-1
           return true
+        }
+      })
+    },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        if(from.path==='/payBill'&&vm.result.payCode&&vm.result.payCode.length>0){
+          let param={
+            state:true,
+            code:vm.result.payCode
+          }
+          vm.checkPerson=Object.assign(vm.checkPerson,param)
         }
       })
     },
