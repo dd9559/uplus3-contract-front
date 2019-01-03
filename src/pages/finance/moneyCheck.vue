@@ -167,7 +167,7 @@
               <span>{{scope.row.auditStore}}</span>
               <p>{{scope.row.auditName}}</p>
             </template>
-            <el-button class="btn-text-info" type="text" v-if="scope.row.auditButton" @click="choseCheckPerson(scope.row)">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
@@ -177,7 +177,7 @@
               <span>{{scope.row.nextAuditStore}}</span>
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <el-button class="btn-text-info color-red" type="text" v-if="scope.row.setAudit===1" @click="choseCheckPerson(scope.row)">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -259,7 +259,7 @@
     <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -282,7 +282,8 @@
           state:false,
           type:'init',
           code:'',
-          flowType:0
+          flowType:0,
+          label:false
         },
         searchForm: {
           contType: '',
@@ -345,6 +346,10 @@
           'sign-cw-pay-void': {
             state: false,
             name: '作废'
+          },
+          'sign-cw-bill-print':{
+            state: false,
+            name: '打印'
           },
           'sign-cw-debt-pay': {
             state: false,
@@ -420,16 +425,15 @@
         })*/
       },
       // 选择审核人
-      choseCheckPerson:function (row) {
+      choseCheckPerson:function (row,type) {
         this.checkPerson.flowType=this.activeView===1?1:0
         this.checkPerson.code=row.payCode
-        if(row.auditButton){
-          this.checkPerson.state=true
-          this.checkPerson.type='init'
-        }
-        if(row.setAudit===1){
-          this.checkPerson.state=true
-          this.checkPerson.type='set'
+        this.checkPerson.state=true
+        this.checkPerson.type=type
+        if(row.nextAuditId===-1){
+          this.checkPerson.label=true
+        }else {
+          this.checkPerson.label=false
         }
       },
       /**
@@ -508,14 +512,16 @@
             tab: '收款信息',
             id:item.id,
             type:item.inAccountType,
-            power:powerMsg
+            power:powerMsg,
+            print:this.power['sign-cw-bill-print'].state
           }
           this.setPath(this.getPath.concat({name:'收款详情'}))
         } else {
           param.query = {
             tab: '付款信息',
             id:item.id,
-            power:powerMsg
+            power:powerMsg,
+            print:this.power['sign-cw-bill-print'].state
           }
           this.setPath(this.getPath.concat({name:'付款详情'}))
         }

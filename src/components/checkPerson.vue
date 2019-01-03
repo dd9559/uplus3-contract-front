@@ -6,7 +6,7 @@
     @close="close"
     width="740px">
     <div class="dialog-container">
-      <p v-if="type==='set'">下一审核节点无审核人，请先设置下一节点审核人</p>
+      <p v-if="showLabel">下一审核节点无审核人，请先设置下一节点审核人</p>
       <div class="chose-box">
         <span>{{type==='set'?'设置':'转交'}}审核人</span>
         <div class="box-content">
@@ -57,6 +57,10 @@
       },
       flowType:{
         type:Number,
+      },
+      showLabel:{//是否显示文本
+        type:Boolean,
+        default:true
       }
     },
     data(){

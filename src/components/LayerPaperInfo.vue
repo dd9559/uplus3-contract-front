@@ -41,12 +41,15 @@
         </div>
       </div>
       <div class="paper-ov">
-        <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
+        <div class="fl"><span class="fb mr-10">客户身份：</span>{{comPayerType}}</div>
         <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
       <div class="paper-ov">
-        <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
+        <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
         <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
+      </div>
+      <div class="paper-ov">
+        <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
       </div>
       <div class="pr">
         <div class="paper-ov2">
@@ -104,7 +107,6 @@
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">客户身份：</span>{{comPayerType}}</div>
         <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
-        
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
@@ -508,10 +510,13 @@
     height: 130px;
     left: 146px;
     bottom: -36px;
-    line-height: 130px;
-    text-align: center;
+    // line-height: 130px;
+    // text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     >img{
-      vertical-align:middle;
+      // vertical-align:middle;
       max-width: 130px;
       max-height: 130px;
     }
@@ -523,10 +528,13 @@
     height: 130px;
     left: 146px;
     bottom: 19px;
-    line-height: 130px;
-    text-align: center;
+    // line-height: 130px;
+    // text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     >img{
-      vertical-align:middle;
+      // vertical-align:middle;
       max-width: 130px;
       max-height: 130px;
     }

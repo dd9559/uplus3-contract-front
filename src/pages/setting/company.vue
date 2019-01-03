@@ -34,7 +34,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="银行账户">
-          <el-input v-model="searchForm.bankCard" :clearable="true" type="number" oninput="if(value.length>19)value=value.slice(0,19)" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+          <el-input v-model="searchForm.bankCard" :clearable="true" oninput="if(value.length>19)value=value.slice(0,19)" @keyup.native="getInt(1)"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -140,7 +140,7 @@
                 <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" @blur="idCardChange" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: " class="phone-number">
-                <el-input size="mini" type="number" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" @blur="validPhone"></el-input>
+                <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" @keyup.native="getInt(2)" @blur="validPhone"></el-input>
               </el-form-item>
               <el-form-item label="企业证件: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="directSaleSelect">
@@ -187,7 +187,7 @@
               <el-table-column width="270px" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" type="number" oninput="if(value.length>19)value=value.slice(0,19)" v-model="companyBankList[scope.$index].bankCard" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></el-input>
+                    <el-input size="mini" oninput="if(value.length>19)value=value.slice(0,19)" v-model="companyBankList[scope.$index].bankCard" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" @keyup.native="getInt(3,scope.$index)"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -783,6 +783,15 @@
       resetFormFn() {
         this.$tool.clearForm(this.searchForm)
         this.searchTime = []
+      },
+      getInt(num,index) {
+        if(num===1) {
+          this.searchForm.bankCard = this.searchForm.bankCard.replace(/[^\.\d]/g,'')
+        } else if(num===2) {
+          this.companyForm.lepPhone = this.companyForm.lepPhone.replace(/[^\.\d]/g,'')
+        } else if(num===3) {
+          this.companyBankList[index].bankCard = this.companyBankList[index].bankCard.replace(/[^\.\d]/g,'')
+        }
       },
       idCardChange() {
         let val = this.companyForm.lepDocumentCard

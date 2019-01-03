@@ -62,11 +62,15 @@
                 <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
                 <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
                 <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p>
+                <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
               </div>
               <div class="one_">
-                <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
                 <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p>
                 <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p>
+                <p style="width:500px">
+                  <span class="tag">房产证号：</span>
+                  <span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span>
+                </p>
               </div>
               <div class="one_" v-if="contType!='1'">
                 <p>
@@ -75,7 +79,7 @@
                   <span class="text" v-if="contractDetail.houseInfo.propertyRightStatus===0">无</span>
                 </p>
                 <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
-                <p><span class="tag">房产证号：</span><span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span></p>
+                
                 <p style="width:500px">
                   <span class="tag">按揭欠款：</span>
                   <span class="text dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span>
@@ -595,7 +599,7 @@
               <el-table-column prop="name" label="业主姓名" width="200"></el-table-column>
               <el-table-column label="电话" min-width="200">
                 <template slot-scope="scope">
-                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
+                  {{scope.row.mobile}}
                 </template>
               </el-table-column>
               <el-table-column prop="relation" label="关系" width="200"></el-table-column>
@@ -627,7 +631,7 @@
               <el-table-column prop="name" label="客户姓名" width="200"></el-table-column>
               <el-table-column label="电话" min-width="200">
                 <template slot-scope="scope">
-                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
+                  {{scope.row.mobile}}
                 </template>
               </el-table-column>
               <el-table-column prop="relation" label="关系" width="200"></el-table-column>
@@ -859,7 +863,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -160 + 'px'
+      this.clientHei= document.documentElement.clientHeight -180 + 'px'
     },
     printDemo(){
       this.$refs.easyPrint.print();
@@ -1087,7 +1091,7 @@ export default {
     },
     //播放录音
     playStop(index,recording){
-      if(power['sign-ht-xq-ly-play'].state){
+      if(this.power['sign-ht-xq-ly-play'].state){
         let id = 'audio'+index;
         let myAudios = document.getElementsByTagName('audio');
         let myAudio = document.getElementById(id);

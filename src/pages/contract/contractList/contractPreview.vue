@@ -23,14 +23,18 @@
         <el-button type="primary" round style="width:100px" v-if="power['sign-ht-info-edit'].state" @click="toEdit">编辑</el-button>
       </div>
     </div>
-    <div class="content">
-      <img :src="src" alt="" width="620" height="800">
-      <div class="btnList">
-        <el-button class="paging iconfont icon-tubiao_shiyong-20" @click="del"></el-button>
-        <div class="tally"><span>{{count}}</span>/<span>{{showTotal}}</span></div>
-        <el-button class="paging iconfont icon-tubiao_shiyong-22" @click="add"></el-button>
+
+    <div class="yulan" :style="{ height: clientHei }">
+      <div class="content">
+        <img :src="src" alt="" width="620" height="800">
+        <div class="btnList">
+          <el-button class="paging iconfont icon-tubiao_shiyong-20" @click="del"></el-button>
+          <div class="tally"><span>{{count}}</span>/<span>{{showTotal}}</span></div>
+          <el-button class="paging iconfont icon-tubiao_shiyong-22" @click="add"></el-button>
+        </div>
       </div>
     </div>
+    
     <!-- 合同撤单弹窗 -->
     <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
@@ -149,6 +153,7 @@ export default {
       haveUrl:false,
       //加载等待
       fullscreenLoading:false,
+      clientHei:'',
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -187,6 +192,10 @@ export default {
     this.getAdmin();//获取当前登录人信息
   },
   methods: {
+    // 控制弹框body内容高度，超过显示滚动条
+    clientHeight() {        
+      this.clientHei= document.documentElement.clientHeight -120 + 'px'
+    },
     //居间买卖切换
     changeType(value) {
       this.isActive = value;
@@ -522,7 +531,13 @@ export default {
         })
       }
     },
-  }
+  },
+  mounted(){
+    window.onresize = this.clientHeight;
+  },
+  beforeUpdate() {
+    this.clientHeight();
+  },
   // watch:{
   //   textarea:function(val){
   //     if(val.length>10){
@@ -594,6 +609,9 @@ export default {
         padding: 10px 23px;
       }
     }
+  }
+  .yulan{
+    overflow-y: auto;
   }
   .content{
     padding-top: 20px;

@@ -9,17 +9,17 @@
         <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" v-if="type===2">
           <el-table-column align="center" label="现金">
             <template slot-scope="scope">
-              <span>{{result.type==='现金'?result.amount:'--'}}</span>
+              <span>{{result.detail['1']}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="转账">
             <template slot-scope="scope">
-              <span>{{result.type==='转账'?result.amount:'--'}}</span>
+              <span>{{result.detail['2']}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="POS刷卡">
             <template slot-scope="scope">
-              <span>{{result.type==='POS刷卡'?result.amount:'--'}}</span>
+              <span>{{result.detail['3']}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="合计金额">
@@ -63,17 +63,20 @@
       <h4>400 112 5883</h4>
     </el-dialog>
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
 <script>
   import {MIXINS} from "@/assets/js/mixins";
   import LayerInvoice from '@/components/LayerInvoice'
+  import checkPerson from '@/components/checkPerson'
   export default {
     name: "receipt-result",
     mixins: [MIXINS],
     components:{
-      LayerInvoice
+      LayerInvoice,
+      checkPerson
     },
     data() {
       return {
@@ -81,13 +84,34 @@
         type: 1,//1=创建 2=录入
         edit:false,//是否为修改结果页
         result: {},
-        confirm: false
+        confirm: false,
+        checkPerson: {
+          state:false,
+          type:'set',
+          code:'',
+          flowType:1
+        },
       }
     },
     created() {
       this.type = parseInt(this.$route.query.type)
       this.edit = parseInt(this.$route.query.edit)===1?true:false
       this.result = JSON.parse(this.$route.query.content)
+      /*if(this.result.payCode&&this.result.payCode.length>0){
+        this.checkPerson.state=true
+        this.checkPerson.code=this.result.payCode
+      }*/
+    },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        if(from.path==='/receiptBill'&&vm.result.payCode&&vm.result.payCode.length>0){
+          let param={
+            state:true,
+            code:vm.result.payCode
+          }
+          vm.checkPerson=Object.assign(vm.checkPerson,param)
+        }
+      })
     },
     methods: {
       goBack: function (page) {

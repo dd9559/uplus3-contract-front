@@ -68,7 +68,7 @@
         </div>
         <p slot="footer" v-show="FooterShow">
             <el-button round size="small" class="paper-btn" @click="propCloseFn">取消</el-button>
-            <el-button round size="small" class="paper-btn paper-btn-blue" @click="printPaper" v-if="!stateBoll">打印</el-button>
+            <el-button round size="small" class="paper-btn paper-btn-blue" @click="printPaper" v-if="!stateBoll&&showBtn">打印</el-button>
         </p>
     </el-dialog>
 </template>
@@ -80,7 +80,12 @@
     import { Loading } from 'element-ui';
 
     export default {
-        props: {},
+        props: {
+            showBtn:{
+                type:Boolean,
+                default:false
+            }
+        },
         mixins: [MIXINS],
         data() {
             return {
@@ -189,6 +194,10 @@
             },
             // 票据详情 打印
             printPaper() {
+                if(!this.showBtn){
+                    this.noPower(this.power['sign-cw-bill-invoice'].name);
+                    return false
+                }
                 this.layerLoading = Loading.service({});
                 let obj = {}
                 if (!this.paperType) {

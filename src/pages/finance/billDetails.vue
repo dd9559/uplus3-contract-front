@@ -236,7 +236,7 @@
   </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :showBtn="btnPrint" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
@@ -291,6 +291,7 @@
         pageSize:10,
         total:0,
         btnCheck:false,//是否有审核权限
+        btnPrint:false,//是否有打印权限
       }
     },
     created() {
@@ -299,6 +300,7 @@
       this.checkPerson.flowType=this.activeItem==='收款信息'?1:0
       this.billId = this.$route.query.id
       this.btnCheck = this.$route.query.power.toString()==='true'?true:false
+      this.btnPrint = this.$route.query.print.toString()==='true'?true:false
       this.tabs.unshift(this.activeItem)
       this.getData()
       if(this.$route.query.type){
@@ -432,11 +434,11 @@
         }).catch(error=>{
           this.fullscreenLoading=false
           debugger
-          if(error==='下一节点审批人不存在'){
+          if(error.message==='下一节点审批人不存在'){
             this.checkPerson.state=true
           }else {
             this.$message({
-              message:error
+              message:error.message
             })
           }
         })

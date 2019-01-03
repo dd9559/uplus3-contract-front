@@ -84,6 +84,11 @@
           code: 'sign-ht-js-query'
         },
         {
+          name: '合同审核',
+          path: 'contractCheck',
+          code: 'sign-ht-htsh-query'
+        },
+        {
           name: '分账记录',
           path: 'routingRecord',
           code: 'sign-ht-fz-query'
@@ -233,6 +238,11 @@
                 name: '结算审核',
                 path: 'settleCheck',
                 code: 'sign-ht-js-query'
+              },
+              {
+                name: '合同审核',
+                path: 'contractCheck',
+                code: 'sign-ht-htsh-query'
               },
               {
                 name: '分账记录',
@@ -410,14 +420,12 @@
           // console.log(this.$store.state.user.privileges)
           this.views.forEach((item,index)=>{
             let sliders=[]
-            if(item.name!=='财务'){
-              item.child.forEach(tip=>{
-                if(arr.indexOf(tip.code)>-1){
-                  sliders.push(tip)
-                }
-              })
-              item.child=sliders
-            }
+            item.child.forEach(tip=>{
+              if(arr.indexOf(tip.code)>-1){
+                sliders.push(tip)
+              }
+            })
+            item.child=sliders
           })
         }
       })
