@@ -173,7 +173,7 @@
             <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="成交经纪人" width="150 ">
+        <el-table-column align="left" label="成交经纪人" width="150">
           <template slot-scope="scope">
             <p>{{scope.row.dealAgentStoreName}}</p>
             <p>{{scope.row.dealAgentName}}</p>
