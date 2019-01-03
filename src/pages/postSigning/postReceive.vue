@@ -218,7 +218,7 @@
                             <div class="contract-box">
                                 <template v-if="ContractDatabase.length > 0">
                                     <div v-for="items in ContractDatabase" :key="items.kind">
-                                        <div class="contract-tit">{{items.kind}}</div>
+                                        <div class="contract-tit">{{titleFn(items.kind)}}</div>
                                         <div class="contract-main" v-for="item in items.children" :key="item.title">
                                             <p class="cl-1 mb-10"><span class="spna"><template v-if="item.isrequire">*</template></span>{{item.title}}</p>
                                             <ul class="steps-img">
@@ -371,6 +371,10 @@
                         name:'合同详情',
                         state:false,
                     },
+                },
+                // 枚举数据
+                dictionary:{
+                    '520':'合同资料库标题'
                 }
             }
         },
@@ -385,9 +389,17 @@
                 } else {
                     return ''
                 }
-            }
+            },
         },
         methods: {
+            titleFn(val){
+                let arr = this.dictionary['520'];
+                for(let i=0;i<arr.length;i++){
+                    if(parseInt(val) === arr[i].key){
+                        return arr[i].value
+                    }
+                }
+            },
             // 百分比转换
             percentageFn(val){
                 if(val > 0){
@@ -942,6 +954,8 @@
         mounted() {
             // 获取城市id
             this.getAdmin();
+            // 枚举数据查询
+            this.getDictionary();
             // 贷款银行
             this.remoteMethodFn();
             // // 部门搜索
