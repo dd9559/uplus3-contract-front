@@ -20,7 +20,7 @@
         <div class="input-group col active-400">
           <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
           <div class="flex-box">
-            <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')"></select-tree>
+            <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')" @search="searchDep"></select-tree>
             <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
               <el-option class="drop-tree" value="">
                 <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
@@ -336,14 +336,12 @@
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
 <script>
   import {MIXINS} from "@/assets/js/mixins";
   import moneyTypePop from '@/components/moneyTypePop'
-  import checkPerson from '@/components/checkPerson'
 
   const rule={
     outObjId:{
@@ -400,7 +398,6 @@
     mixins: [MIXINS],
     components:{
       moneyTypePop,
-      checkPerson
     },
     data() {
       return {
@@ -411,12 +408,6 @@
         },
         inputPerson:false,//是否显示第三方输入框
         billStatus:true,//线上或线下
-        checkPerson: {
-          state:false,
-          type:'set',
-          code:'',
-          flowType:0
-        },
         form: {
           contId: '',
           remark: '',
@@ -482,7 +473,7 @@
         showAmount:false,//款类是否为代收代付
       }
     },
-    created() {
+    mounted() {
       this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
       this.getMoneyType()
       this.getDictionary()
@@ -495,7 +486,10 @@
       if (type) {
         this.getDetails({type: type, payId: this.$route.query.id})
       }else {
-        this.getAcount(this.getUser.user&&this.getUser.user.empId)
+        this.$nextTick(()=>{
+          console.log(this.$store.state)
+          this.getAcount(this.getUser.user&&this.getUser.user.empId)
+        })
       }
       if(inAccount){
         this.activeType=parseInt(inAccount)===4?2:1
@@ -529,6 +523,10 @@
         if(!val){
           this.remoteMethod()
         }
+      },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.dep.name=payload.depName
       },
       //收款人下拉选项操作
       clearSelect:function (type='dep') {
@@ -902,9 +900,19 @@
               }
             }).catch(error=>{
               this.fullscreenLoading=false
-              this.$message({
-                message:error
-              })
+              if(error.message==='下一节点审批人不存在'){
+                this.$router.replace({
+                  path: 'receiptResult',
+                  query:{
+                    type:this.billStatus?2:1,
+                    content:JSON.stringify(error.data)
+                  }
+                })
+              }else {
+                this.$message({
+                  message:message
+                })
+              }
             })
           }
       },

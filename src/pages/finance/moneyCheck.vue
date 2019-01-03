@@ -167,7 +167,7 @@
               <span>{{scope.row.auditStore}}</span>
               <p>{{scope.row.auditName}}</p>
             </template>
-            <el-button class="btn-text-info" type="text" v-if="scope.row.auditButton" @click="choseCheckPerson(scope.row)">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
@@ -177,7 +177,7 @@
               <span>{{scope.row.nextAuditStore}}</span>
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <el-button class="btn-text-info color-red" type="text" v-if="scope.row.setAudit===1" @click="choseCheckPerson(scope.row)">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -420,17 +420,11 @@
         })*/
       },
       // 选择审核人
-      choseCheckPerson:function (row) {
+      choseCheckPerson:function (row,type) {
         this.checkPerson.flowType=this.activeView===1?1:0
         this.checkPerson.code=row.payCode
-        if(row.auditButton){
-          this.checkPerson.state=true
-          this.checkPerson.type='init'
-        }
-        if(row.setAudit===1){
-          this.checkPerson.state=true
-          this.checkPerson.type='set'
-        }
+        this.checkPerson.state=true
+        this.checkPerson.type=type
       },
       /**
        * 列表横行滚动
