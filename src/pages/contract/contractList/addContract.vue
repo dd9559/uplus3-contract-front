@@ -247,7 +247,7 @@
       </div>
       <div class="houseMsg">
         <p>扩展参数</p>
-        <div class="form-content">
+        <div class="form-content" v-if="parameterList.length>0">
           <ul class="parameter">
             <li v-for="item in parameterList" :key="item.id">
               <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span>
@@ -1820,6 +1820,7 @@ export default {
     }
     .shopName{
       min-width: 200px;
+      height: 32px;
     }
     .parameter{
       display: flex;

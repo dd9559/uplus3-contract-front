@@ -297,7 +297,7 @@
         </el-table-column>
         <el-table-column align="left" label="操作" width="150">
           <template slot-scope="scope">
-            <div style="text-align:center">
+            <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
               <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&scope.row.contState.value>1" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
@@ -305,7 +305,7 @@
                 <el-button type="text" size="medium" @click="goSave(scope.row)">提审</el-button>
               </span>
               <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
-            </div>
+            <!-- </div> -->
           </template>
         </el-table-column>
       </el-table>
@@ -512,15 +512,17 @@ export default {
   //   })
   // },
   created() {
+    this.getAdmin();//获取当前登录人信息
     this.getContractList();//合同列表
     this.getDictionary();//字典
     this.getHousePurpose();//用途
     // this.getBlankPdf();//空白合同pdf
     this.remoteMethod();//部门
-    this.getAdmin();//获取当前登录人信息
-    if(this.power['sign-ht-info-print'].state){
-      this.getBlankPdf();//空白合同pdf
-    }
+    setTimeout(() => {
+      if(this.power['sign-ht-info-print'].state){
+        this.getBlankPdf();//空白合同pdf
+      }
+    }, 1000);
   },
   methods: {
     //用途
@@ -906,8 +908,6 @@ export default {
     },
     //打印空白合同
     printCont(command){
-      // debugger
-      // console.log(command)
       this.pdfUrl='';
       this.haveUrl=false;
       if(command===1){

@@ -83,11 +83,11 @@
           path: 'settleCheck',
           code: 'sign-ht-js-query'
         },
-        // {
-        //   name: '合同审核',
-        //   path: 'contractCheck',
-        //   code: 'sign-ht-js-query'
-        // },
+        {
+          name: '合同审核',
+          path: 'contractCheck',
+          code: ''
+        },
         {
           name: '分账记录',
           path: 'routingRecord',
@@ -238,6 +238,11 @@
                 name: '结算审核',
                 path: 'settleCheck',
                 code: 'sign-ht-js-query'
+              },
+              {
+                name: '合同审核',
+                path: 'contractCheck',
+                code: ''
               },
               {
                 name: '分账记录',
@@ -415,14 +420,16 @@
           // console.log(this.$store.state.user.privileges)
           this.views.forEach((item,index)=>{
             let sliders=[]
-            if(item.name!=='财务'){
-              item.child.forEach(tip=>{
-                if(arr.indexOf(tip.code)>-1){
+            item.child.forEach(tip=>{
+                if(tip.name!=='合同审核'){
+                  if(arr.indexOf(tip.code)>-1){
+                  sliders.push(tip)
+                }
+                }else{
                   sliders.push(tip)
                 }
               })
               item.child=sliders
-            }
           })
         }
       })
