@@ -163,20 +163,20 @@
             
           </div>
           <div class="col-li">
-            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
-           
+            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>       
           </div>
           <div class="col-li col-li2">
             <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
             <p>后期状态：<span>{{layerAudit.statusLaterStage.label}}</span></p>
-            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
-            
-            
+            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>         
           </div>
           <div class="col-li col-li2">
             <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
-            <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-            <p>当期实际结算：<span><em>{{layerAudit.actualsettlement}}元</em>（当期实收*结算比例-成本）</span></p>
+            <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>       
+            <p>应收佣金：<span>{{layerAudit.thisCost}}元</span></p>
+          </div>
+          <div class="col-li">
+            <p>当期实际结算：<span><em>{{layerAudit.actualsettlement}}元</em>（当期实收*结算比例-成本）</span></p>      
           </div>
         </div>
 
@@ -247,24 +247,23 @@
           <div class="col-li col-li2">
             <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
             <p>发起日期：<span>{{layerAudit.createTime | getDate}}</span></p>
-            <p>发起人：<span>{{layerAudit.sponsorStoreName + '-' + layerAudit.sponsorName}}</span></p>
-            
+            <p>发起人：<span>{{layerAudit.sponsorStoreName + '-' + layerAudit.sponsorName}}</span></p>           
           </div>
           <div class="col-li">
-            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
-           
+            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>     
           </div>
           <div class="col-li col-li2">
             <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
             <p>后期状态：<span>{{layerAudit.statusLaterStage.label}}</span></p>
-            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
-            
-            
+            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>   
           </div>
           <div class="col-li col-li2">
             <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
             <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-            <p>当期实际结算：<span><em>{{layerAudit.actualsettlement}}元</em>（当期实收*结算比例-成本）</span></p>
+            <p>应收佣金：<span>{{layerAudit.thisCost}}元</span></p>
+          </div>
+          <div class="col-li">
+              <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>                
           </div>
         </div>
 
@@ -1006,7 +1005,7 @@
       }
       .col-li2{
         p:nth-child(2n){
-          width: 190px;
+          width: 250px;
         }
         p{
           float: left;
@@ -1014,7 +1013,7 @@
             color: #ff9039;             
           }
           &:first-child{
-            width: 240px;
+            width: 250px;
             color: #6C7986;
             span{
               color: #233241;
