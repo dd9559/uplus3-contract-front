@@ -342,6 +342,8 @@
     <!-- 打印 -->
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
     <!-- <button @click="dayin">打印</button> -->
+    <!-- 设置/转交审核人 -->
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -355,6 +357,7 @@ import LayerLateProgress from '@/components/LayerLateProgress';
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import PdfPrint from '@/components/PdfPrint';
+import checkPerson from '@/components/checkPerson';
 
 export default {
   mixins: [MIXINS],
@@ -365,7 +368,8 @@ export default {
     layerSettle,
     changeCancel,
     LayerLateProgress,
-    PdfPrint
+    PdfPrint,
+    checkPerson
   },
   data() {
     return {
@@ -437,6 +441,12 @@ export default {
           value:"已驳回"
         }
       ],
+      checkPerson: {
+        state:false,
+        type:'init',
+        code:'',
+        flowType:0
+      },
       //权限配置
       power: {
         'sign-com-bill': {
