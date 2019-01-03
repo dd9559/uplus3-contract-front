@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <el-form :inline="true" :model="contractForm" class="add-form" size="small">
+    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
       <!-- 合同信息 -->
       <div class="contractMsg">
         <p>合同信息</p>
@@ -264,8 +264,8 @@
           </ul>
         </div>
       </div>
-
-      <div class="btn">
+    </el-form>
+    <div class="btn">
         <div>
           <div v-if="type===2">
             <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
@@ -279,7 +279,6 @@
           <el-button type="primary" round @click="isSave(0)">保存</el-button>
         </div>
       </div>
-    </el-form>
 
     <!-- 房源客源弹窗 -->
     <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
@@ -341,6 +340,7 @@ export default {
   },
   data() {
     return {
+      clientHei:'',
       contractForm: {
         // type: 2,
         houseinfoCode: "",
@@ -472,6 +472,10 @@ export default {
     this.getShopList()//门店
   },
   methods: {
+    // 控制弹框body内容高度，超过显示滚动条
+    clientHeight() {        
+      this.clientHei= document.documentElement.clientHeight -160 + 'px'
+    },
     addcommissionData() {
       if (this.ownerList.length < 5) {
         this.ownerList.push({
@@ -1653,6 +1657,12 @@ export default {
     }
       
   },
+   mounted(){
+    window.onresize = this.clientHeight;
+  },
+  beforeUpdate() {
+    this.clientHeight();
+  },
   // watch:{
   //   ownerList:function(){
   //     let arr = this.ownerList.map(item=>Object.assign({},item))
@@ -1680,11 +1690,12 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 .view-container {
-  padding: 0 20px 20px 0;
+  // padding: 0 0 20px 0;
   .add-form {
     padding: 10px;
     font-size: 14px;
     background: @bg-white;
+    overflow-y: auto;
   }
 }
 /deep/.form-label {
