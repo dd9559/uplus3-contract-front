@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <p class="f14">收款信息</p>
+    <p class="f14 txt-title">收款信息</p>
     <ul class="bill-form">
       <li>
         <div class="input-group col" :class="[inputPerson?'active-360':'']">
@@ -219,7 +219,7 @@
       </ul>&ndash;&gt;
     </div>-->
     <div class="input-group" v-if="billStatus">
-      <div class="flex-box">
+      <div class="flex-box txt-title">
         <label class="form-label f14">支付信息</label>
         <el-tooltip content="多种收款方式可通过“添加支付方式”进行录入" placement="top">
       <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
@@ -263,7 +263,7 @@
         </li>
       </ul>
     </div>
-    <div class="input-group" v-if="billStatus">
+    <div class="input-group col-other artice-margin" v-if="billStatus">
       <p><label class="form-label f14">刷卡资料补充</label></p>
       <el-table border :data="cardList" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="刷卡银行">
@@ -305,27 +305,30 @@
         </el-table-column>
       </el-table>
     </div>
-    <section class="flex-box">
-      <div class="input-group">
-        <p><label class="f14">备注信息</label></p>
-        <el-input v-model="form.remark" class="info-textarea" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
-      </div>
-      <div class="input-group" v-if="billStatus">
-        <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
-        <ul class="upload-list">
-          <li>
-            <file-up class="upload-context" @getUrl="getFiles">
-              <i class="iconfont icon-shangchuan"></i>
-              <span>点击上传</span>
-            </file-up>
-          </li>
-          <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"  @click="previewPhoto(imgList,index)">
-            <upload-cell :type="item.type"></upload-cell>
-            <span>{{item.name}}</span>
-            <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
-          </li>
-        </ul>
-        <!--<p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>-->
+    <section>
+      <p class="txt-title">其他信息</p>
+      <div class="flex-box col-other other-message">
+        <div class="input-group">
+          <p><label class="f14">备注信息</label></p>
+          <el-input v-model="form.remark" class="info-textarea" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
+        </div>
+        <div class="input-group" v-if="billStatus">
+          <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
+          <ul class="upload-list">
+            <li>
+              <file-up class="upload-context" @getUrl="getFiles">
+                <i class="iconfont icon-shangchuan"></i>
+                <span>点击上传</span>
+              </file-up>
+            </li>
+            <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"  @click="previewPhoto(imgList,index)">
+              <upload-cell :type="item.type"></upload-cell>
+              <span>{{item.name}}</span>
+              <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
+            </li>
+          </ul>
+          <!--<p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>-->
+        </div>
       </div>
     </section>
     <p>
@@ -1120,6 +1123,14 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .artice-margin{
+    margin-bottom: 30px;
+  }
+  .txt-title{
+    font-weight: bold;
+    margin-bottom: @margin-15;
+    font-size: @size-14;
+  }
   input[size='small']{
     height: 32px;
   }
@@ -1128,9 +1139,6 @@
   }
   .flex-box{
     display: flex;
-    .input-group:first-of-type{
-      margin-right: @margin-10;
-    }
     &.tool-tip{
       max-width: 200px;
       justify-content: space-between;
@@ -1142,6 +1150,8 @@
       margin-left: @margin-10;
       display: flex;
       align-items: center;
+      cursor: pointer;
+      font-weight: normal;
       >i{
         margin-right: 4px;
         font-size: @size-14;
@@ -1151,12 +1161,35 @@
   .info-textarea{
     width: 240px;
   }
+  .col-other{
+    >p{
+      &:first-of-type{
+        margin-bottom: @margin-10;
+      }
+    }
+    >.input-group{
+      >p{
+        margin-bottom: @margin-10;
+      }
+    }
+  }
+  .other-message{
+    .input-group{
+      margin-right: 60px;
+    }
+  }
   .bill-form{
+    margin-bottom: 30px;
     >li{
       display: flex;
+      &:last-of-type{
+        .col{
+          margin-bottom: 0px;
+        }
+      }
       .col{
         max-width: 210px;
-        margin-right: @margin-10;
+        margin: 0 60px 21px 0;
         &.active-360{
           max-width: 360px;
         }
@@ -1178,10 +1211,18 @@
     }
   }
   .pay-list{
+    margin: @margin-15 0 44px;
     >li{
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
+      border-bottom: 1px @color-E9 dashed;
+      padding-bottom: @margin-15;
+      margin-bottom: @margin-15;
+      &:last-of-type{
+        /*border: 0px;*/
+        margin-bottom: 0px;
+      }
       >i{
         color: @color-C8;
         font-size: @icon-size-30;
@@ -1191,7 +1232,7 @@
       >section{
         display: flex;
         flex-direction: column;
-        margin-right: @margin-10;
+        margin-right: 60px;
         &:nth-of-type(2){
           >input{
             height: 32px;
@@ -1266,9 +1307,8 @@
   }
 
   .input-group {
-    margin: @margin-10 0 0;
     display: block;
-    max-width: 960px;
+    max-width: 1110px;
     /*> p {
       > span {
         color: @color-red;
@@ -1348,7 +1388,7 @@
       display: flex;
       flex-wrap: nowrap;
       margin: @margin-base 0;
-      width: 710px;
+      width: 810px;
       overflow-x: auto;
       >li{
         border: 1px dashed @color-D6;
@@ -1405,7 +1445,7 @@
       }
     }
     /deep/ .el-table, .el-textarea {
-      margin: @margin-base 0;
+
     }
   }
 
