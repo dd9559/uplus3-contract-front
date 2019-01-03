@@ -251,7 +251,7 @@
               <el-select size="small" class="w300" v-model="item.activeAdmin" placeholder="请选择">
                 <el-option
                   v-for="item in account"
-                  :key="item.bankCard"
+                  :key="item.id"
                   :label="`${item.bankAccountName} ${item.bankBranchName} ${item.bankCard}`"
                   :value="item.bankCard">
                   {{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
@@ -347,6 +347,9 @@
     outObjId:{
       name:'付款方',
       type:'negativeNum'
+    },
+    outObj:{
+      name:'付款方',
     },
     inObjId:{
       name:'收款人',
@@ -910,7 +913,7 @@
                 })
               }else {
                 this.$message({
-                  message:message
+                  message:error
                 })
               }
             })

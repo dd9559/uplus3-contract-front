@@ -215,7 +215,7 @@
   import moneyTypePop from '@/components/moneyTypePop'
 
   const rule={
-    inObjType:{
+    inObj:{
       name:'收款方',
     },
     moneyType:{
@@ -547,6 +547,9 @@
             })
           }else {
             this.layer.show=true
+            if(this.form.inObjType===3){
+              this.layer.content[0].inObj=`${this.layer.content[0].inObj}-${this.form.inObj}`
+            }
             param.filePath = [].concat(this.files)
             this.layer.form=Object.assign({},param)
           }
@@ -600,7 +603,6 @@
           }).catch(error=>{
             this.fullscreenLoading=false
             if(error.message==='下一节点审批人不存在'){
-              debugger
               this.$router.replace({
                 path: 'payResult',
                 query:{
@@ -609,7 +611,7 @@
               })
             }else {
               this.$message({
-                message:message
+                message:error
               })
             }
           })
