@@ -343,7 +343,7 @@
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
     <!-- <button @click="dayin">打印</button> -->
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -445,7 +445,8 @@ export default {
         state:false,
         type:'init',
         code:'',
-        flowType:0
+        flowType:0,
+        label:false
       },
       //权限配置
       power: {
