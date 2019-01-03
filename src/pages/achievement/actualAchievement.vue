@@ -413,6 +413,7 @@
                     v-else
                   >-</span>
                 </div>
+
                 <div
                   v-if="scope.row.achievementState==1"
                   class="check-btn"
@@ -427,6 +428,7 @@
                     v-else
                   >-</span>
                 </div>
+
                 <div
                   v-if="scope.row.achievementState==2"
                   class="check-btn"
@@ -451,13 +453,12 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-retreat'].state"
                   >撤回</span>
-                  <span>-</span>
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
                     v-if="userMsg&&userMsg.empId==scope.row.auditId"
-                  >审核</span>
-                 <span v-else>-</span>
+                  >审核</span> 
+                  <span v-if="power['sign-yj-rev-retreat'].state==false&&(userMsg&&userMsg.empId!=scope.row.auditId)"></span>           
                 </div>
               </div>
               <div v-else>
