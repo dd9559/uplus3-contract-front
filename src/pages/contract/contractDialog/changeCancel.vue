@@ -137,7 +137,7 @@
 			<div class="audit-box" style=" height: 390px " v-if="getDialogType==='upload'">
 				<!-- 上传附件 -->
 				<div class="uploadfile uploadfile2">
-					<div class="uploadtitle">上传合同主体<span><b>注：</b>合同主体上传支持所有格式</span></div>
+					<div class="uploadtitle form-label">上传合同主体<span><b>注：</b>合同主体上传支持所有格式</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li>
@@ -303,7 +303,8 @@ export default {
 					this.subChangeCancel(url,param);
 				}else{
 					this.$message({
-						message:'请选合同主体'
+						message:'请选合同主体',
+						type:'warning'
 					})
 				}
 				

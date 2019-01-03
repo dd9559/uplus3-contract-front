@@ -515,9 +515,12 @@ export default {
     this.getContractList();//合同列表
     this.getDictionary();//字典
     this.getHousePurpose();//用途
-    this.getBlankPdf();//空白合同pdf
+    // this.getBlankPdf();//空白合同pdf
     this.remoteMethod();//部门
     this.getAdmin();//获取当前登录人信息
+    if(this.power['sign-ht-info-print'].state){
+      this.getBlankPdf();//空白合同pdf
+    }
   },
   methods: {
     //用途
@@ -551,6 +554,7 @@ export default {
         if (res.status === 200) {
           this.tableData = res.data.list;
           this.total = res.data.count;
+          // this.getBlankPdf();//空白合同pdf
         }
       });
     },

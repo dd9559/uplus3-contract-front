@@ -62,11 +62,15 @@
                 <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
                 <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
                 <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p>
+                <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
               </div>
               <div class="one_">
-                <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
                 <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p>
                 <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p>
+                <p style="width:500px">
+                  <span class="tag">房产证号：</span>
+                  <span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span>
+                </p>
               </div>
               <div class="one_" v-if="contType!='1'">
                 <p>
@@ -75,7 +79,7 @@
                   <span class="text" v-if="contractDetail.houseInfo.propertyRightStatus===0">无</span>
                 </p>
                 <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
-                <p><span class="tag">房产证号：</span><span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span></p>
+                
                 <p style="width:500px">
                   <span class="tag">按揭欠款：</span>
                   <span class="text dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span>
