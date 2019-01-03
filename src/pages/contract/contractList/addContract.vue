@@ -253,7 +253,7 @@
               <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span>
               <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="contractForm.extendParams[item.name]" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <el-input v-model="contractForm.extendParams[item.name]" maxlength="20" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
               <!-- 下拉框 -->
               <el-select v-model="contractForm.extendParams[item.name]" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">

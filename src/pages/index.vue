@@ -83,6 +83,11 @@
           path: 'settleCheck',
           code: 'sign-ht-js-query'
         },
+        // {
+        //   name: '合同审核',
+        //   path: 'contractCheck',
+        //   code: 'sign-ht-js-query'
+        // },
         {
           name: '分账记录',
           path: 'routingRecord',

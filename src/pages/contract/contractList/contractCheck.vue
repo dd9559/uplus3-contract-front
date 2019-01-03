@@ -156,17 +156,19 @@
           <template slot-scope="scope">
             <span v-if="scope.row.auditName">
               <p>{{scope.row.auditName}}</p>
-              <el-button type="text" v-if="scope.row.auditButton" @click="choseCheckPerson(scope.row)">转交审核人</el-button>
+              <el-button type="text" v-if="userMsg&&scope.row.auditId===userMsg.empId" @click="choseCheckPerson(scope.row,'int')">转交审核人</el-button>
+              <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="下一步审核人" width="150">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
-              <p>{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
+            <span v-if="scope.row.nextAuditName">
+              <p>{{scope.row.nextAuditName}}</p>
             </span>
-            <span v-else>-</span>
+            <p v-else>-</p>
+            <el-button type="text" v-if="userMsg&&scope.row.auditId===userMsg.empId||userMsg&&scope.row.preAuditId===userMsg.empId" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
@@ -197,7 +199,7 @@
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
-    <!-- <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson> -->
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -281,7 +283,7 @@ export default {
     this.getContractList();//合同列表
     this.getDictionary();//字典
     this.remoteMethod();//部门
-    // this.getAdmin();//获取当前登录人信息
+    this.getAdmin();//获取当前登录人信息
   },
   methods:{
     //获取合同列表
@@ -408,35 +410,29 @@ export default {
       }
     },
     clearDep:function () {
-      this.contractForm.dealAgentStoreId=''
-      this.contractForm.depName=''
+      this.contractForm.dealAgentStoreId='';
+      this.contractForm.depName='';
       // this.EmployeList=[]
-      this.contractForm.dealAgentId=''
-      this.clearSelect()
+      this.contractForm.dealAgentId='';
+      this.clearSelect();
     },
     depHandleClick(data) {
       // this.getEmploye(data.depId)
-      this.contractForm.dealAgentStoreId=data.depId
-      this.contractForm.depName=data.name
+      this.contractForm.dealAgentStoreId=data.depId;
+      this.contractForm.depName=data.name;
 
-      this.handleNodeClick(data)
+      this.handleNodeClick(data);
     },
     searchDep:function (payload) {
-      this.DepList=payload.list
-      this.contractForm.depName=payload.depName
+      this.DepList=payload.list;
+      this.contractForm.depName=payload.depName;
     },
      // 选择审核人
-    choseCheckPerson:function (row) {
-      this.checkPerson.flowType=this.activeView===1?1:0
-      this.checkPerson.code=row.payCode
-      if(row.auditButton){
-        this.checkPerson.state=true
-        this.checkPerson.type='init'
-      }
-      if(row.setAudit===1){
-        this.checkPerson.state=true
-        this.checkPerson.type='set'
-      }
+    choseCheckPerson:function (row,type) {
+      this.checkPerson.flowType=3;
+      this.checkPerson.code=row.code;
+      this.checkPerson.state=true;
+      this.checkPerson.type=type;
     },
   }
 };
