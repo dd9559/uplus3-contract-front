@@ -1091,7 +1091,7 @@ export default {
     },
     //播放录音
     playStop(index,recording){
-      if(power['sign-ht-xq-ly-play'].state){
+      if(this.power['sign-ht-xq-ly-play'].state){
         let id = 'audio'+index;
         let myAudios = document.getElementsByTagName('audio');
         let myAudio = document.getElementById(id);
