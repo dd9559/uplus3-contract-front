@@ -194,7 +194,7 @@
             },
             // 票据详情 打印
             printPaper() {
-                if(!showBtn){
+                if(!this.showBtn){
                     this.noPower(this.power['sign-cw-bill-invoice'].name);
                     return false
                 }
