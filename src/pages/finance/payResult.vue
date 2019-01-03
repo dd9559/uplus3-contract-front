@@ -14,14 +14,20 @@
           <el-button round @click="goBack('Bill')">返回收付款列表</el-button>
         </p>
       </div>
+      <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     </div>
 </template>
 
 <script>
   import {MIXINS} from "@/assets/js/mixins";
+  import checkPerson from '@/components/checkPerson'
+
   export default {
     name: "pay-result",
     mixins:[MIXINS],
+    components:{
+      checkPerson
+    },
     data(){
       return{
         steps:[
@@ -46,6 +52,12 @@
         activeStep:0,
         result:{},
         edit:false,
+        checkPerson: {
+          state:false,
+          type:'set',
+          code:'',
+          flowType:0
+        },
       }
     },
     mounted(){

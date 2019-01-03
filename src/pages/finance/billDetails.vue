@@ -432,11 +432,11 @@
         }).catch(error=>{
           this.fullscreenLoading=false
           debugger
-          if(error==='下一节点审批人不存在'){
+          if(error.message==='下一节点审批人不存在'){
             this.checkPerson.state=true
           }else {
             this.$message({
-              message:error
+              message:error.message
             })
           }
         })

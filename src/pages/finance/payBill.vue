@@ -240,7 +240,7 @@
   export default {
     mixins: [UPLOAD,MIXINS],
     components:{
-      moneyTypePop
+      moneyTypePop,
     },
     data() {
       return {
@@ -596,9 +596,19 @@
             }
           }).catch(error=>{
             this.fullscreenLoading=false
-            this.$message({
-              message:error
-            })
+            if(error.message==='下一节点审批人不存在'){
+              debugger
+              this.$router.replace({
+                path: 'payResult',
+                query:{
+                  content:(error.data.vo&&error.data.time)?JSON.stringify({dep:error.data.vo.deptName,name:error.data.vo.createByName,time:error.data.time,payCode:error.data.payCode}):''
+                }
+              })
+            }else {
+              this.$message({
+                message:message
+              })
+            }
           })
         }
         /*this.$tool.checkForm(param,rule).then((res)=>{

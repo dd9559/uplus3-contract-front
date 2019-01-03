@@ -181,7 +181,9 @@ const MIXINS = {
             a.innerText='test'
             document.body.appendChild(a)
             a.click();
-            // document.body.removeChild(a)
+            window.location=res.data[0]
+            document.write(a)
+            document.body.removeChild(a)
           }else {
             this.previewFiles=res.data
             this.preview=true
