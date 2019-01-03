@@ -162,15 +162,21 @@
         </el-table-column>
         <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <span>{{scope.row.auditStore}}</span>
-            <p>{{scope.row.auditName}}</p>
+            <p v-if="!scope.row.auditStore&&!scope.row.auditName">-</p>
+            <template v-else>
+              <span>{{scope.row.auditStore}}</span>
+              <p>{{scope.row.auditName}}</p>
+            </template>
             <el-button class="btn-text-info" type="text" v-if="scope.row.auditButton" @click="choseCheckPerson(scope.row)">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
-            <span>{{scope.row.nextAuditStore}}</span>
-            <p>{{scope.row.nextAuditName}}</p>
+            <p v-if="!scope.row.nextAuditStore&&!scope.row.nextAuditName">-</p>
+            <template v-else>
+              <span>{{scope.row.nextAuditStore}}</span>
+              <p>{{scope.row.nextAuditName}}</p>
+            </template>
             <el-button class="btn-text-info color-red" type="text" v-if="scope.row.setAudit===1" @click="choseCheckPerson(scope.row)">设置审核人</el-button>
           </template>
         </el-table-column>
