@@ -43,7 +43,7 @@
         <div class="input-group col">
           <label class="no-width f14">可支配金额:</label>
           <div class="text-height">
-            <p><span>款类大类余额：{{amount.balance}}元</span>;<span v-if="showAmount">合同余额：{{amount.contractBalance}}元</span></p>
+            <p class="no-wrap"><span>款类大类余额：{{amount.balance}}元</span>;<span v-if="showAmount">合同余额：{{amount.contractBalance}}元</span></p>
             <!--<p v-if="showAmount"><span>合同余额：{{amount.contractBalance}}元</span></p>-->
           </div>
         </div>
@@ -110,7 +110,7 @@
         </el-table-column>
       </el-table>
     </div>-->
-    <div class="input-group">
+    <div class="input-group col-other">
       <p><label class="form-label f14">收款账户</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="收款银行">
@@ -136,11 +136,11 @@
       </el-table>
     </div>
     <section class="flex-row">
-      <div class="input-group">
+      <div class="input-group col-other">
         <p><label class="f14">备注信息</label></p>
         <el-input placeholder="请填写备注信息" class="info-textarea" type="textarea" rows="5" maxlength="200" v-model="form.remark"></el-input>
       </div>
-      <div class="input-group">
+      <div class="input-group col-other">
         <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
         <ul class="upload-list">
           <li>
@@ -677,8 +677,11 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .no-wrap{
+    white-space: nowrap;
+  }
   .info-textarea{
-    width: 240px;
+    width: 285px;
   }
   input[size='small']{
     height: 32px;
@@ -691,6 +694,7 @@
     &.tool-tip{
       max-width: 200px;
       justify-content: space-between;
+      margin-bottom: @margin-10;
     }
     &.no-max{
       max-width: none;
@@ -699,6 +703,7 @@
       margin-left: @margin-10;
       display: flex;
       align-items: center;
+      cursor: pointer;
       >i{
         margin-right: 4px;
         font-size: @size-14;
@@ -706,6 +711,7 @@
     }
   }
   .bill-form{
+    margin-top: 30px;
     >li{
       display: flex;
       /*max-width: 210px;
@@ -717,7 +723,7 @@
       }*/
       .col{
         max-width: 210px;
-        margin-right: @margin-10;
+        margin: 0 60px 25px 0;
         &.active-360{
           max-width: 360px;
         }
@@ -726,6 +732,7 @@
         }
         >label{
           display: block;
+          margin-bottom: @margin-10;
         }
         >input{
           height: 32px;
@@ -744,6 +751,18 @@
       &:last-of-type{
         margin-top: @margin-15;
       }
+    }
+  }
+  .col-other{
+    >p{
+      &:first-of-type{
+        margin-bottom: @margin-10;
+      }
+    }
+  }
+  section.flex-row{
+    .input-group{
+      margin-right: 60px;
     }
   }
   /deep/.collapse-cell{
@@ -773,7 +792,7 @@
   .input-group {
     margin: @margin-10 0 0;
     display: block;
-    max-width: 815px;
+    max-width: 980px;
     .type-list{
       display: flex;
       flex-wrap: wrap;
@@ -809,7 +828,7 @@
       display: flex;
       flex-wrap: nowrap;
       margin: @margin-base;
-      width: 568px;
+      width: 630px;
       overflow-x: auto;
       >li{
         border: 1px dashed @color-D6;
@@ -872,7 +891,7 @@
       }
     }
     /deep/ .el-table,.el-textarea{
-      margin-top: @margin-base;
+
     }
   }
 
