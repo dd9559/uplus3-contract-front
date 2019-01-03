@@ -69,7 +69,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
       </p>
-      <el-table ref="dataList" class="info-scrollbar" :data="tableData" style="width: 100%"  @row-dblclick='toDetail'>
+      <el-table ref="dataList" class="info-scrollbar" :data="tableData" border style="width: 100%"  @row-dblclick='toDetail'>
         <el-table-column align="left" label="合同信息" width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
@@ -179,10 +179,10 @@
         </el-table-column>
         <el-table-column align="left" label="操作" width="100">
           <template slot-scope="scope">
-            <div style="text-align:center">
+            <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
-            </div>
+            <!-- </div> -->
           </template>
         </el-table-column>
       </el-table>

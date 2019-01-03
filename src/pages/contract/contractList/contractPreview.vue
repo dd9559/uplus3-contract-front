@@ -194,7 +194,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -100 + 'px'
+      this.clientHei= document.documentElement.clientHeight -120 + 'px'
     },
     //居间买卖切换
     changeType(value) {

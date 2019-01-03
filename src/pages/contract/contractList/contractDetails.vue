@@ -599,7 +599,7 @@
               <el-table-column prop="name" label="业主姓名" width="200"></el-table-column>
               <el-table-column label="电话" min-width="200">
                 <template slot-scope="scope">
-                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
+                  {{scope.row.mobile}}
                 </template>
               </el-table-column>
               <el-table-column prop="relation" label="关系" width="200"></el-table-column>
@@ -631,7 +631,7 @@
               <el-table-column prop="name" label="客户姓名" width="200"></el-table-column>
               <el-table-column label="电话" min-width="200">
                 <template slot-scope="scope">
-                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
+                  {{scope.row.mobile}}
                 </template>
               </el-table-column>
               <el-table-column prop="relation" label="关系" width="200"></el-table-column>
@@ -863,7 +863,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -160 + 'px'
+      this.clientHei= document.documentElement.clientHeight -180 + 'px'
     },
     printDemo(){
       this.$refs.easyPrint.print();

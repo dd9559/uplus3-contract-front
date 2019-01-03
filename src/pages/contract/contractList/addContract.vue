@@ -474,7 +474,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -160 + 'px'
+      this.clientHei= document.documentElement.clientHeight -180 + 'px'
     },
     addcommissionData() {
       if (this.ownerList.length < 5) {
