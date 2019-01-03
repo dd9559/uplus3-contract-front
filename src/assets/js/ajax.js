@@ -16,6 +16,8 @@ axios.interceptors.response.use((response)=>{
     return Promise.reject('无该功能权限')
   }else if(res.status===120){
     return Promise.reject('请登录')
+  }else if(res.status===300){
+    return Promise.reject(res)
   }else {
     return Promise.reject(res.message)
   }
