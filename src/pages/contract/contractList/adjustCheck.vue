@@ -70,10 +70,10 @@
            
           </template>
         </el-table-column>
-        <el-table-column label="成交总价" :formatter="nullFormatter">
+        <el-table-column label="成交总价" :formatter="nullFormatter" prop="dealPrice">
           <template slot-scope="scope">
-            <p v-if="scope.row.tradeType !== 1">{{scope.row.dealPrice}}元</p>
-            <p v-if="scope.row.tradeType === 1">{{scope.row.dealPrice}}元/季度</p>
+            <span>{{scope.row.dealPrice}} 元</span>
+            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.tradeType===1"> / {{item.value}}</span> 
           </template>
         </el-table-column>
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
@@ -405,6 +405,7 @@
           //数据字典
           "10": "", //合同类型
           "17": "", //审核状态
+          "507": "" // 成交总价单位
         },
       
         layerAudit:{
