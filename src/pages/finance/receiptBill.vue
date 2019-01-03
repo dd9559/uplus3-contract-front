@@ -333,12 +333,14 @@
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
 <script>
   import {MIXINS} from "@/assets/js/mixins";
   import moneyTypePop from '@/components/moneyTypePop'
+  import checkPerson from '@/components/checkPerson'
 
   const rule={
     outObjId:{
@@ -394,7 +396,8 @@
   export default {
     mixins: [MIXINS],
     components:{
-      moneyTypePop
+      moneyTypePop,
+      checkPerson
     },
     data() {
       return {
@@ -405,6 +408,12 @@
         },
         inputPerson:false,//是否显示第三方输入框
         billStatus:true,//线上或线下
+        checkPerson: {
+          state:false,
+          type:'set',
+          code:'',
+          flowType:0
+        },
         form: {
           contId: '',
           remark: '',
@@ -467,6 +476,7 @@
           row:[]
         },
         fullscreenLoading:false,//提交表单防抖
+        showAmount:false,//款类是否为代收代付
       }
     },
     created() {
