@@ -223,7 +223,7 @@
               trigger="hover"
               popper-class="wordp"
               :content="scope.row.invalidReason">
-              <p class="norwap" slot="reference">{{scope.row.invalidReason}}</p>
+              <p class="norwap" slot="reference">{{nullFormatFn(scope.row.invalidReason)}}</p>
             </el-popover>
               <!-- <p class="norwap">{{scope.row.invalidReason}}</p> -->
           </template>
@@ -241,11 +241,13 @@
               <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-bill-delete'].state">核销</el-button>
               <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收</el-button>
               <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-void'].state">作废</el-button>
+              <template v-else>--</template>
             </template>
             <!-- 已作废 -->
             <template v-else-if="scope.row.state.value===4">
               <el-button type="text" @click="btnOpera(scope.row,4)" v-if="power['sign-cw-bill-invoice'].state && scope.row.invalidPrint">开票</el-button>
               <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收</el-button>
+              <template v-else>--</template>
             </template>
             <!-- 已回收 和 已核销 -->
             <template v-else>--</template>
@@ -295,7 +297,7 @@
         <el-button round size="medium" class="paper-btn paper-btn-blue" type="primary" @click="submitForm">确定</el-button>
       </p>
     </el-dialog>
-    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :showBtn="comPrint" @emitPaperSet="emitPaperSetFn"></layer-invoice>
   </div>
 </template>
 
@@ -401,6 +403,9 @@
       },
       comPaymentTime(){
         return this.$tool.dateFormat(this.paymentTime)
+      },
+      comPrint(){
+        return this.power['sign-cw-bill-print'].state
       }
     },
     mounted() {
@@ -412,6 +417,10 @@
       this.getData();
     },
     methods: {
+      // 文字处理
+      nullFormatFn(val){
+        return this.$tool.nullFormat(val);
+      },
       // 时间处理
       dateFormat(val){
           return this.$tool.dateFormat(val);
@@ -454,10 +463,6 @@
         if(type===4){
           if(!this.power['sign-cw-bill-invoice'].state){
               this.noPower(this.power['sign-cw-bill-invoice'].name);
-              return false
-          }
-          if(!this.power['sign-cw-bill-print'].state){
-              this.noPower(this.power['sign-cw-bill-print'].name);
               return false
           }
           this.$refs.layerInvoice.show(row.proceedsId,true);
@@ -530,10 +535,6 @@
         } else if (type === 'paper') {
           if(!this.power['sign-cw-bill-detail'].state){
               this.noPower(this.power['sign-cw-bill-detail'].name);
-              return false
-          }
-          if(!this.power['sign-cw-bill-print'].state){
-              this.noPower(this.power['sign-cw-bill-print'].name);
               return false
           }
           this.$refs.layerInvoice.show(row.id,false,row.state.value===4||row.state.value===5||row.state.value===3);
