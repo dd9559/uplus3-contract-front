@@ -411,11 +411,11 @@
           },
           'sign-cw-debt-rev': {
             state: false,
-            name: '收款审核'
+            name: '收款详情'
           },
           'sign-cw-debt-pay': {
             state: false,
-            name: '付款审核'
+            name: '付款详情'
           },
           'sign-com-htdetail': {
             state: false,
@@ -523,6 +523,18 @@
        * @param row
        */
       toDetails: function (row) {
+        if(this.power['sign-cw-debt-rev'].state){
+          this.$message({
+            message:'无收款详情查看权限'
+          })
+          return
+        }
+        if(this.power['sign-cw-debt-pay'].state){
+          this.$message({
+            message:'无付款详情查看权限'
+          })
+          return
+        }
         if (row.payStatus === '未付款') {
           this.btnOpera(row, 1)
         } else {
