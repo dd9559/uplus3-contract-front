@@ -116,13 +116,13 @@
         <el-table-column label="当前审核人" min-width="140">
           <template slot-scope="scope">
             <p>{{scope.row.examineStoreName + '-' + scope.row.examineName}}</p>
-            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.code,'init')">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.id,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
             <p>{{scope.row.nextAuditStore + '-' + scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.code,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.id,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
@@ -538,7 +538,7 @@
        // 选择审核人
       choseCheckPerson:function (code,type) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
-        this.checkPerson.code=code  //业务编码为checkId
+        this.checkPerson.code=code.toString()  //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
