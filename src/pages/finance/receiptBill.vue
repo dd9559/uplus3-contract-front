@@ -14,7 +14,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model="form.outObj" v-if="inputPerson">
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model.trim="form.outObj" v-if="inputPerson">
           </div>
         </div>
         <div class="input-group col active-400">
@@ -41,7 +41,7 @@
           <label class="form-label no-width f14 margin-bottom-base">收款时间</label>
           <el-date-picker
             size="small"
-            value-format="yyyy-MM-dd hh:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
             v-model="form.createTime"
             type="datetime"
             placeholder="选择日期时间">

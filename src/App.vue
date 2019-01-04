@@ -206,6 +206,9 @@
   .w410{
     width: 410px !important;
   }
+  .w430{
+    width: 430px !important;
+  }
   .btn-info{
     min-width: 80px;
     -webkit-box-sizing: border-box;

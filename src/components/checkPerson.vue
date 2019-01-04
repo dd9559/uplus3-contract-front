@@ -4,6 +4,7 @@
     :visible="show"
     :closeOnClickModal="$tool.closeOnClickModal"
     @close="close"
+    append-to-body
     width="740px">
     <div class="dialog-container">
       <p v-if="showLabel">下一审核节点无审核人，请先设置下一节点审核人</p>

@@ -4,7 +4,7 @@
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w410" :clearable="true" size="small" v-model="searchForm.keyword"
+          <el-input class="w430" :clearable="true" size="small" v-model="searchForm.keyword"
                     placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
         </div>
         <div class="input-group">
@@ -523,13 +523,13 @@
        * @param row
        */
       toDetails: function (row) {
-        if(this.power['sign-cw-debt-rev'].state){
+        if(!this.power['sign-cw-debt-rev'].state){
           this.$message({
             message:'无收款详情查看权限'
           })
           return
         }
-        if(this.power['sign-cw-debt-pay'].state){
+        if(!this.power['sign-cw-debt-pay'].state){
           this.$message({
             message:'无付款详情查看权限'
           })
@@ -544,7 +544,7 @@
             query: {
               id: row.id,
               tab: row.type === 1 ? '收款信息' : '付款信息',
-              power: this.power[row.type===1?'sign-cw-debt-rev':'sign-cw-debt-pay'].state,
+              power: this.getUser.user.empId===row.auditBy,
               print: this.power['sign-cw-bill-print'].state,
               bill: this.power['sign-cw-debt-invoice'].state
             }
@@ -607,7 +607,7 @@
           contId:row.contId,
           contCode:row.contCode,
           operaType:type,
-          power:type==='cont'?this.power['sign-com-htdetail']:type==='house'?this.power['sign-com-house']:type==='customer'?this.power['sign-com-cust']:''
+          power:type==='cont'?this.power['sign-com-htdetail'].state:type==='house'?this.power['sign-com-house'].state:type==='customer'?this.power['sign-com-cust'].state:''
         }
         this.msgOpera(param)
       },

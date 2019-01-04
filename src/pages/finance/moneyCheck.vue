@@ -523,7 +523,7 @@
             tab: '收款信息',
             id:item.id,
             type:item.inAccountType,
-            power:powerMsg,
+            power:this.getUser.user.empId===item.auditBy,
             print:this.power['sign-cw-bill-print'].state,
             bill: this.power['sign-cw-debt-invoice'].state
           }
@@ -532,7 +532,7 @@
           param.query = {
             tab: '付款信息',
             id:item.id,
-            power:powerMsg,
+            power:this.getUser.user.empId===item.auditBy,
             print:this.power['sign-cw-bill-print'].state,
             bill: this.power['sign-cw-debt-invoice'].state
           }
@@ -559,7 +559,7 @@
           contId:row.contId,
           contCode:row.contCode,
           operaType:type,
-          power:type==='cont'?this.power['sign-com-htdetail']:type==='house'?this.power['sign-com-house']:type==='customer'?this.power['sign-com-cust']:''
+          power:type==='cont'?this.power['sign-com-htdetail'].state:type==='house'?this.power['sign-com-house'].state:type==='customer'?this.power['sign-com-cust'].state:''
         }
         this.msgOpera(param)
       },
