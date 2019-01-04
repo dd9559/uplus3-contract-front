@@ -139,7 +139,7 @@
                         }else{
                             this.moneyTypes=res.data.data
                         }
-                        this.bigId=this.bigId==''?18:this.bigId
+                            this.bigId=this.bigId==''?18:this.bigId
                     }
                 })
                 // }else{
@@ -187,21 +187,26 @@
                 }
                 if(this.title==`新增【${this.bigName}】小类`){
                     this.addForm.name=this.trim(this.addForm.name)
-                    this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
-                    if(res.status==200){
-                        this.$message({
-                        type: 'success',
-                        message: '添加成功!'
+                     if(this.power['sign-set-kl-query'].state){
+                         this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
+                        if(res.status==200){
+                            this.$message({
+                            type: 'success',
+                            message: '添加成功!'
+                            })
+                            this.addDialog=false
+                            this.initList()
+                        }
+                        }).catch(error=>{
+                            this.$message({
+                            type: 'error',
+                            message: error
+                            })
                         })
-                        this.addDialog=false
-                        this.initList()
-                    }
-                  }).catch(error=>{
-                     this.$message({
-                        type: 'error',
-                        message: error
-                        })
-                })
+                     }else{
+                         this.noPower(this.power['sign-set-kl-add'].name)
+                     }
+                   
                 }else if(this.title==`编辑【${this.bigName}】小类`){
                     let param={
                         id:this.smallId,
