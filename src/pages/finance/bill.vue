@@ -4,7 +4,7 @@
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w410" :clearable="true" size="small" v-model="searchForm.keyword"
+          <el-input class="w430" :clearable="true" size="small" v-model="searchForm.keyword"
                     placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID"></el-input>
         </div>
         <div class="input-group">
@@ -607,7 +607,7 @@
           contId:row.contId,
           contCode:row.contCode,
           operaType:type,
-          power:type==='cont'?this.power['sign-com-htdetail']:type==='house'?this.power['sign-com-house']:type==='customer'?this.power['sign-com-cust']:''
+          power:type==='cont'?this.power['sign-com-htdetail'].state:type==='house'?this.power['sign-com-house'].state:type==='customer'?this.power['sign-com-cust'].state:''
         }
         this.msgOpera(param)
       },
