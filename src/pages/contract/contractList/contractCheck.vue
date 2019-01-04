@@ -155,7 +155,7 @@
         <el-table-column align="left" label="当前审核人" width="150">
           <template slot-scope="scope">
             <span v-if="scope.row.auditId>0">
-              <p>{{scope.row.auditId}}</p>
+              <p>{{scope.row.auditName}}</p>
               <el-button type="text" v-if="userMsg&&scope.row.auditId===userMsg.empId" @click="choseCheckPerson(scope.row,'int')">转交审核人</el-button>
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>

@@ -786,6 +786,11 @@
           </el-dialog>
          </div>
         </div>
+
+        <div class="dialog3" style="z-index: 2007;">
+           <!-- 选择审核人弹框 -->
+           <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -793,6 +798,7 @@
 
 <script>
 import { MIXINS } from "@/assets/js/mixins";
+import checkPerson from '@/components/checkPerson'
 export default {
   mixins: [MIXINS],
   name: "achDialog",
@@ -833,11 +839,17 @@ export default {
       shopIndex:1,
       shopStr:null,
       shopTotal:null,
-      loading3:false
-      // amaldarIndex:1,
-      // amaldarStr:null,
-      // amaldarTotal:null
+      loading3:false,
+      checkPerson: {
+          state:false,
+          type:'init',
+          code:'',
+          flowType:0
+      },
     };
+  },
+  components:{
+    checkPerson
   },
   created() {},
   props: {
@@ -1325,8 +1337,17 @@ export default {
               this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
             } 
           }).catch(error => {
-               this.$message.error({message: error})
-               this.loading=false;
+             if(error.message==='下一节点审批人不存在'){
+               this.checkPerson.flowType=2;
+               this.checkPerson.code= this.contractCode;
+               this.checkPerson.state=true
+               this.checkPerson.type='set'
+              }else{
+                this.$message({
+                  message:error,
+                  type: "error"
+                })
+              }
           });
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1485,8 +1506,6 @@ export default {
       //  debugger;
       // console.log(sumFlag);
       if (flag && sumFlag) {
-        // this.$emit("close", this.achIndex);
-        // this.$message("操作完成");
         this.loading=true;
         console.log(this.examineDate);
         let param = {};
@@ -1528,8 +1547,18 @@ export default {
             this.$message({ message: "操作成功", type: "success" });
           }
         }).catch(error => {
-               this.$message.error({message: error})
-               this.loading=false;
+          if(error.message==='下一节点审批人不存在'){
+              this.checkPerson.flowType=2;
+              this.checkPerson.code= this.contractCode;
+              this.checkPerson.state=true
+              this.checkPerson.type='set'
+          }else{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
+         this.loading=false;
         });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1629,15 +1658,24 @@ export default {
         this.$ajax
           .postJSON("/api/achievement/distributionSave", param)
           .then(res => {
-            console.log(res.data.status);
             if (res.data.status == 200) {
               this.$emit("close");
               this.loading=false;
               this.$message({ message: "操作成功", type: "success" });
             }
-          }).catch(error => {
-               this.$message.error({message: error})
-               this.loading=false;
+            }).catch(error => {
+              if(error.message==='下一节点审批人不存在'){
+               this.checkPerson.flowType=2;
+               this.checkPerson.code= this.contractCode;
+               this.checkPerson.state=true
+               this.checkPerson.type='set'
+              }else{
+                this.$message({
+                  message:error,
+                  type: "error"
+                })
+              }
+              this.loading=false;
           });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1859,7 +1897,25 @@ export default {
     // max-width: 80%!important;
     margin: 10vh auto 0 !important;
     overflow: hidden;
-
+    /deep/ .el-dialog__header,
+    /deep/ .el-dialog__footer,
+    /deep/ .el-dialog__body {
+      padding: 0 !important;
+    }
+    /deep/ .el-dialog__header {
+      padding: 0 !important;
+      .el-dialog__headerbtn {
+        right: 0;
+        top: 0;
+        display: none !important;
+        padding: 0 !important;
+      }
+    }
+    .el-dialog__headerbtn {
+      right: 0;
+      top: 0;
+      display: none !important;
+    }
     /deep/ .el-input__suffix {
       right: 21px;
     }
@@ -2001,7 +2057,7 @@ export default {
       p {
         margin-top: 5px;
       }
-      .text-layout-out{
+      .text-layout-out {
         position: relative;
         width: 500px;
       }
@@ -2054,25 +2110,6 @@ export default {
         }
       }
     }
-    /deep/ .el-dialog__header,
-    /deep/ .el-dialog__footer,
-    /deep/ .el-dialog__body {
-      padding: 0 !important;
-    }
-    /deep/ .el-dialog__header {
-      padding: 0 !important;
-      .el-dialog__headerbtn {
-        right: 0;
-        top: 0;
-        display: none !important;
-        padding: 0 !important;
-      }
-    }
-    .el-dialog__headerbtn {
-      right: 0;
-      top: 0;
-      display: none !important;
-    }
   }
   input::-webkit-input-placeholder {
     /* WebKit browsers */
@@ -2097,10 +2134,10 @@ export default {
     color: #f56c6c;
   }
 }
-/deep/ .el-dialog.base-dialog .ach-body {
-  padding: 0 20px !important;
-}
-/deep/ .el-dialog__header {
-  padding: 0 !important;
-}
+// /deep/ .el-dialog.base-dialog .ach-body {
+//   padding: 0 20px !important;
+// }
+// /deep/ .el-dialog__header {
+//   padding: 0 !important;
+// }
 </style>

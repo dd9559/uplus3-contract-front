@@ -373,13 +373,13 @@
             </template>
           </el-table-column>
 
-          <!-- <el-table-column
+          <el-table-column
             label="当前审核人"
             width="150"
           >
             <template slot-scope="scope">
-                <p>当代一店-白熊</p>
-                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row)">转交审核人</p>
+                <p>{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
+                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="userMsg&&userMsg.empId==scope.row.auditId">转交审核人</p>
             </template>
           </el-table-column>
 
@@ -388,13 +388,14 @@
             width="150"
           >
             <template slot-scope="scope">
-                <p>当代一店-大大</p>
-                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row)">设置审核人</p>
+                <p>{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
+                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row,2)"  v-if="userMsg&&scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId">设置审核人</p>
             </template>
-          </el-table-column> -->
+          </el-table-column>
 
           <el-table-column
             label="操作"
+            min-width="100"
           >
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
@@ -412,6 +413,7 @@
                     v-else
                   >-</span>
                 </div>
+
                 <div
                   v-if="scope.row.achievementState==1"
                   class="check-btn"
@@ -426,6 +428,7 @@
                     v-else
                   >-</span>
                 </div>
+
                 <div
                   v-if="scope.row.achievementState==2"
                   class="check-btn"
@@ -450,15 +453,12 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-retreat'].state"
                   >撤回</span>
-                 <span
-                    style="cursor:pointer;"
-                    v-else
-                  >-</span>
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="userMsg&&userMsg.empId"
-                  >审核</span>
+                    v-if="userMsg&&userMsg.empId==scope.row.auditId"
+                  >审核</span> 
+                  <span v-if="power['sign-yj-rev-retreat'].state==false&&(userMsg&&userMsg.empId!=scope.row.auditId)"></span>           
                 </div>
               </div>
               <div v-else>
@@ -691,8 +691,7 @@
             <el-table-column
               label="时间"
               width="150"
-            >
-            
+            >          
               <template slot-scope="scope">
                 <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatTime}}</p>
                 <p v-else>-</p>
@@ -1201,7 +1200,7 @@ export default {
     },
     skipContDel(value) {
      if(this.power['sign-com-htdetail'].state){
-       this.setPath(this.$tool.getRouter(['应收','应收列表','合同详情'],'contractList'))
+       this.setPath(this.$tool.getRouter(['应收','应收列表','合同详情'],'actualAchievement'))
         this.$router.push({
           path: "/contractDetails",
           query: {
@@ -1214,13 +1213,20 @@ export default {
        this.noPower('合同详情查看')
      }
     },
-    choseCheckPerson(val){
-       this.checkPerson.flowType=2;
-       this.checkPerson.code=val.code;
-       console.log(  this.checkPerson.code);
-       this.checkPerson.state=true
-       this.checkPerson.type='set'
-        // this.checkPerson.type='init'
+    choseCheckPerson(val,type1){
+      if(type1==1){
+        this.checkPerson.flowType=2;
+        this.checkPerson.code=val.code;
+        console.log(  this.checkPerson.code);
+        this.checkPerson.state=true;
+        this.checkPerson.type='init';
+      }else if(type1==2){
+        this.checkPerson.flowType=2;
+        this.checkPerson.code=val.code;
+        console.log(  this.checkPerson.code);
+        this.checkPerson.state=true;
+        this.checkPerson.type='set';
+      }       
     }
   }
 };

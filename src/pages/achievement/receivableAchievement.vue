@@ -68,7 +68,7 @@
           <h4 class="f14">
             <i class="iconfont icon-tubiao-11"></i>数据列表
           </h4>
-          <ul>
+          <!-- <ul>
             <li>
               <span>
                 总分成：
@@ -96,7 +96,7 @@
                 <b class="orange">{{countData[0] ?countData[0] :'0'}}元</b>
               </span>
             </li>
-          </ul>
+          </ul> -->
         </div>
       </div>
       <!-- 头部 end -->
@@ -248,11 +248,11 @@ export default {
             console.log("22222222222")
             console.log(data.data.list);
             _that.receivableList = data.data.list;
-            if (data.data.list[0]) {
-              _that.countData = data.data.list[0].contractCount;
-            } else {
-              _that.countData = [0, 0, 0, 0];
-            }
+            // if (data.data.list[0]) {
+            //   _that.countData = data.data.list[0].contractCount;
+            // } else {
+            //   _that.countData = [0, 0, 0, 0];
+            // }
             _that.total = data.data.total;
           }
         }).catch(error => {
@@ -340,7 +340,7 @@ export default {
     skipContDel(value) {
          if(this.power['sign-com-htdetail'].state){
             this.setPath(
-              this.$tool.getRouter(["业绩", "实收列表", "合同详情"], "contractList")
+              this.$tool.getRouter(["业绩", "实收列表", "合同详情"], "receivableAchievement")
             );
             this.$router.push({
               path: "/contractDetails",

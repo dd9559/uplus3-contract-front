@@ -775,6 +775,7 @@ export default {
     //创建成功提示
     toUpload(value){//上传合同资料库
       this.dialogSuccess=false;
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
       this.$router.push({
         path: "/detailIntention",
         query: {
