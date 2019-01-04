@@ -1098,8 +1098,8 @@
                         this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
-                    this.errMeFn(err);
                     this.LookStepLoad = false;
+                    this.errMeFn(err);
                 })
             },
             // 后期进度
@@ -1372,7 +1372,7 @@
                             return ['mp4','avi'];
                             break;
                         case STEPSINPUT.excel:
-                            return ['xlsx'];
+                            return ['xlsx','xls'];
                             break;
                         case STEPSINPUT.word:
                             return ['doc','docx'];
@@ -1413,8 +1413,17 @@
                         case STEPSINPUT.mp4:
                             return '.mp4'
                             break;
-                        default:
+                        case STEPSINPUT.excel:
+                            return '.xls'
+                            break;
+                        case STEPSINPUT.word:
                             return '.doc'
+                            break;
+                        case STEPSINPUT.pdf:
+                            return '.pdf'
+                            break;
+                        default:
+                            return ''
                             break;
                     }
                 }
