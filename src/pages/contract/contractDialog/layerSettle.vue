@@ -261,9 +261,9 @@ export default {
           })
       },
       // 选择审核人
-      choseCheckPerson:function (checkId,type) {
+      choseCheckPerson:function (bizId,type) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
-        this.checkPerson.code=settlementId  //业务编码为settlementId
+        this.checkPerson.code=bizId.toString()  //业务编码为settlementId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         this.checkPerson.label=true
@@ -299,11 +299,11 @@ export default {
                         this.$emit('closeSettle')
                     }, 1500);              
                 }
-                else if (res.data.settlementId) {
+                else if (res.data.bizId) {
                     setTimeout(() => {                     
                     this.$emit('closeSettle')
                     }, 1500);  
-                    this.choseCheckPerson(res.data.settlementId,'set')
+                    this.choseCheckPerson(res.data.bizId,'set')
                 }
             }).catch(error => {
                 this.fullscreenLoading=false
