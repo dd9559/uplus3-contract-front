@@ -1200,7 +1200,7 @@ export default {
     },
     skipContDel(value) {
      if(this.power['sign-com-htdetail'].state){
-       this.setPath(this.$tool.getRouter(['应收','应收列表','合同详情'],'contractList'))
+       this.setPath(this.$tool.getRouter(['应收','应收列表','合同详情'],'actualAchievement'))
         this.$router.push({
           path: "/contractDetails",
           query: {

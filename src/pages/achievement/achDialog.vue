@@ -1337,8 +1337,17 @@ export default {
               this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
             } 
           }).catch(error => {
-               this.$message.error({message: error})
-               this.loading=false;
+             if(error.message==='下一节点审批人不存在'){
+               this.checkPerson.flowType=2;
+               this.checkPerson.code= this.contractCode;
+               this.checkPerson.state=true
+               this.checkPerson.type='set'
+              }else{
+                this.$message({
+                  message:error,
+                  type: "error"
+                })
+              }
           });
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1437,11 +1446,6 @@ export default {
     },
     // 反审核，编辑的保存
     keepAch(type, status,editStr) {
-      //  this.checkPerson.flowType=2;
-      // //  this.checkPerson.code=val.code;
-      // //  console.log(  this.checkPerson.code);
-      //  this.checkPerson.state=true
-      //  this.checkPerson.type='set'
       //resultArr表示房源客源加在一起之后组成的数组
       let resultArr = this.houseArr.concat(this.clientArr);
       let arr = [],
@@ -1502,8 +1506,6 @@ export default {
       //  debugger;
       // console.log(sumFlag);
       if (flag && sumFlag) {
-        // this.$emit("close", this.achIndex);
-        // this.$message("操作完成");
         this.loading=true;
         console.log(this.examineDate);
         let param = {};
@@ -1545,8 +1547,18 @@ export default {
             this.$message({ message: "操作成功", type: "success" });
           }
         }).catch(error => {
-               this.$message.error({message: error})
-               this.loading=false;
+          if(error.message==='下一节点审批人不存在'){
+              this.checkPerson.flowType=2;
+              this.checkPerson.code= this.contractCode;
+              this.checkPerson.state=true
+              this.checkPerson.type='set'
+          }else{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
+         this.loading=false;
         });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1646,15 +1658,24 @@ export default {
         this.$ajax
           .postJSON("/api/achievement/distributionSave", param)
           .then(res => {
-            console.log(res.data.status);
             if (res.data.status == 200) {
               this.$emit("close");
               this.loading=false;
               this.$message({ message: "操作成功", type: "success" });
             }
-          }).catch(error => {
-               this.$message.error({message: error})
-               this.loading=false;
+            }).catch(error => {
+              if(error.message==='下一节点审批人不存在'){
+               this.checkPerson.flowType=2;
+               this.checkPerson.code= this.contractCode;
+               this.checkPerson.state=true
+               this.checkPerson.type='set'
+              }else{
+                this.$message({
+                  message:error,
+                  type: "error"
+                })
+              }
+              this.loading=false;
           });;
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -2036,7 +2057,7 @@ export default {
       p {
         margin-top: 5px;
       }
-      .text-layout-out{
+      .text-layout-out {
         position: relative;
         width: 500px;
       }
