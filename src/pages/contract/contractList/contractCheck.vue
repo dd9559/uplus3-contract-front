@@ -77,16 +77,24 @@
                 <!-- 风险单 -->
                 <el-popover
                   placement="top-start"
-                  width="200"
+                  width="50"
                   trigger="hover"
-                  :content="scope.row.remarksExamine"
+                  content="风险单"
                   v-if="scope.row.isRisk">
                   <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
                 </el-popover>
                 <!-- 代办 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
                 <!-- 低佣 -->
-                <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i>
+                <!-- <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
+                <el-popover
+                  placement="top-start"
+                  width="10"
+                  trigger="hover"
+                  content="低佣"
+                  v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1">
+                  <i slot="reference" class="iconfont icon-tubiao_shiyong-3 low"></i>
+                </el-popover>
               </div>
               <ul class="contract-msglist">
                 <li>合同：<span>{{scope.row.code}}</span></li>
@@ -168,7 +176,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&scope.row.auditId===userMsg.empId||userMsg&&scope.row.preAuditId===userMsg.empId" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <el-button type="text" v-if="userMsg&&scope.row.auditId===userMsg.empId||userMsg&&scope.row.preAuditId===userMsg.empId" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
@@ -508,6 +516,9 @@ export default {
     width: 100%;
     height: 100%;
     display: inline-block; 
+  }
+  .error_{
+    color: red;
   }
 }
 .contract_msg{
