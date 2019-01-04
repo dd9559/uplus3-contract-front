@@ -126,7 +126,7 @@
                         <li v-for="(item,index) in nodeList" :key="index">
                             <div class="node-body">
                                <el-input size="small" class="w152" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
-                                <el-select size="small" class="w152" v-model="item.type" @change="getTypeOption(item.type,index)">
+                                <el-select size="small" class="w152" v-model="item.type">
                                     <el-option label="请选择审批人类型" value=""></el-option>
                                     <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                 </el-select>
@@ -163,7 +163,7 @@
                                     <span class="button" @click="removeRow(index)"><i class="icon el-icon-minus"></i></span>
                                 </div> 
                             </div>
-                            <div class="default" v-if="item.choice&&item.choice.length>0?true:false">
+                            <div class="default" v-if="item.choice&&item.choice.length>0&&index!==0">
                                 <span>选择默认审核人:</span>
                                 <div class="multiple" ref="curChoice">
                                     <span v-for="(ele,m) in item.choice" :key="m" @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">{{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i></span>
@@ -196,7 +196,7 @@
             isAudit: "1",
             userId: "",
             userName: "",
-            // depName: "",
+            depName: "",
             // personArr: [],
             // depArr: [],
             // roleArr: [],
@@ -354,6 +354,7 @@
                     this.nodeList[1].name = ""
                     this.$tool.clearForm(this.aduitForm)
                     this.isAudit = ""
+                    this.tempAudit = ""
                     this.editDisabled = false
                     this.conditionList = []
                 } else {
@@ -473,10 +474,6 @@
                 this.aduitForm.branchCondition = ""
                 this.setConditionList(val)
             },
-            getTypeOption(type,index) {
-                // this.$set(this.nodeList[index],'userId',"")
-                // this.$set(this.nodeList[index],'userName',"")
-            },
             defaultChoice(index,e,curItem) {
                 let allChoice = this.$refs.curChoice[index-1].children
                 for(var i = 0; i < allChoice.length; i++) {
@@ -496,6 +493,7 @@
                         if(choiceArr[m].userId === this.nodeList[index].personArr[i]) {
                             this.nodeList[index].personArr.splice(i,1)
                             this.$set(this.nodeList[index],'peopleTime',this.nodeList[index].peopleTime - 1)
+                            break
                         }
                     }
                 } else if(choiceArr[m].type === 1) {
@@ -503,6 +501,7 @@
                         if(choiceArr[m].userId === this.nodeList[index].depArr[i]) {
                             this.nodeList[index].depArr.splice(i,1)
                             this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
+                            break
                         }
                     }
                 } else if(choiceArr[m].type === 2) {
@@ -510,6 +509,7 @@
                         if(choiceArr[m].userId === this.nodeList[index].roleArr[i]) {
                             this.nodeList[index].roleArr.splice(i,1)
                             this.$set(this.nodeList[index],'rolesTime',this.nodeList[index].rolesTime - 1)
+                            break
                         }
                     }
                 }
@@ -709,29 +709,6 @@
                                 } else {
                                     this.$message({message:"请设置默认审核人"})
                                 }
-                                // if(item[i].userId!=""&&item[i].type===1 || item[i].userId!=""&&item[i].type===2 || item[i].userId==""&&item[i].type===3) {
-                                //     isOk = true
-                                // } else {
-                                //     this.$message({message:item[i].type===1?"请选择门店":"请选择职务"})
-                                //     return false
-                                // }
-                                // if(item[i].type===1) {
-                                //     if(item[i].userId!="") {
-                                //         isOk = true
-                                //     } else {
-                                //         this.$message({message:"请选择门店"})
-                                //         return false
-                                //     }
-                                // } else if(item[i].type===2) {
-                                //     if(typeof(item[i].userId)=="number") {
-                                //         isOk = true
-                                //     } else {
-                                //         this.$message({message:"请选择职务"})
-                                //         return false
-                                //     }
-                                // } else if(item[i].type===3) {
-                                //     isOk = true
-                                // }
                             } else {
                                 this.$message({message:"审批人类型不能为空"})
                             }
@@ -740,7 +717,8 @@
                         }
                     }
                     if(isOk) {
-                       delete this.nodeList[0].personArr 
+                       delete this.nodeList[0].personArr
+                       delete this.nodeList[0].depName 
                     }
                 }
                 let param = {

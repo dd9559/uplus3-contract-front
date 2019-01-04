@@ -26,7 +26,7 @@
           <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> -->
-          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" class="fl"></select-tree>
+          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="adjustForm.empId" placeholder="请选择">
             <el-option
@@ -60,7 +60,7 @@
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" :formatter="nullFormatter">
+        <el-table-column label="合同类型" :formatter="nullFormatter" align="center">
           <template slot-scope="scope">
             <p v-if="scope.row.tradeType === 1">租赁</p>
             <p v-if="scope.row.tradeType === 2">买卖</p>
@@ -81,12 +81,12 @@
             <p>{{scope.row.dealAgentStoreName + '-' + scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="签约日期">
+        <el-table-column label="签约日期" align="center">
           <template slot-scope="scope">
             <p>{{scope.row.signDate | getDate}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="发起日期">
+        <el-table-column label="发起日期" align="center">
           <template slot-scope="scope">
             <p>{{scope.row.createTime | getDate}}</p>
           </template>
@@ -103,43 +103,47 @@
             <span class="red" v-if="scope.row.checkState === 2">驳回</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核日期">
+        <el-table-column label="审核日期" align="center">
           <template slot-scope="scope">
             <p>{{scope.row.checkTime | getDate}}</p>
           </template>
         </el-table-column>   
         <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.checkByDepName + '-' + scope.row.checkByName}}</p>
+            <p>{{scope.row.checkByDepName + scope.row.checkByName}}</p>
+            
             <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId)" @click="choseCheckPerson(scope.row.checkId,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.nextAuditStore + '-' + scope.row.nextAuditName}}</p>
+            <p>{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
             <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.checkby === userMsg.empId)" @click="choseCheckPerson(scope.row.checkId,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="审核备注" width="200" :formatter="nullFormatter">
+        <el-table-column label="审核备注" width="200">
+          <template slot-scope="scope">     
+              <span v-if="(scope.row.checkRemark).trim().length > 0">
+                <el-popover trigger="hover" placement="top">
+                  <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
+                    {{scope.row.checkRemark}}
+                  </div>
+                  <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.checkRemark.length<16}">
+                    {{scope.row.checkRemark}}
+                  </div>
+                </el-popover>
+              </span>
+              <span v-else>--</span>                 
+          </template>   
+        </el-table-column>             
+        <el-table-column label="操作" width="100" fixed="right" align="center">
           <template slot-scope="scope">
-            <span v-if="scope.row.checkRemark">
-              <el-popover trigger="hover" placement="top">
-                <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
-                  {{scope.row.checkRemark}}
-                </div>
-                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.checkRemark.length<16}">
-                  {{scope.row.checkRemark}}
-                </div>
-              </el-popover>
-            </span>
-            <span v-else>-</span>
+            <template v-if="scope.row.checkState === 0 && scope.row.checkby === userMsg.empId">
+              <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>          
+            </template>
+            <span v-else>--</span>
           </template>
           
-        </el-table-column>             
-        <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope" v-if="scope.row.checkState === 0">
-            <el-button type="text" class="curPointer" @click="auditApply(scope.row)"  v-if="scope.row.checkby === userMsg.empId">审核</el-button>
-          </template>
         </el-table-column>
       </el-table>
       <el-pagination
@@ -176,7 +180,7 @@
           </div>
           <div class="textareabox">
             <span>调整原因</span>
-            <el-input type="textarea" :rows="3"  v-model="layerAudit.reason" class="textarea" maxlength=100 :disabled="true"></el-input>
+            <el-input type="textarea" :rows="3" v-model="layerAudit.reason" class="textarea" maxlength=100 :disabled="true"></el-input>
           </div>
         </div>
 
@@ -495,6 +499,7 @@
     },
   
     methods:{
+     
 
       //图片预览
       // getPicture(value,index){
@@ -521,10 +526,13 @@
       //         this.isDelete=''
       //     }
       // },
+      trim(str){  
+        return str.replace(/(^\s*)|(\s*$)/g, "")
+      },
       // 选择审核人
       choseCheckPerson:function (checkId,type) {
         this.checkPerson.flowType=4   //调佣的流程类型为4
-        this.checkPerson.code=checkId  //业务编码为checkId
+        this.checkPerson.code=checkId.toString()  //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
@@ -845,6 +853,10 @@
         // this.EmployeList=[]
         this.adjustForm.empId=''
         this.clearSelect()
+      },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.adjustForm.depName=payload.depName
       },
 
       initDepList: function (val) {

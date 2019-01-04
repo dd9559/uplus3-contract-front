@@ -789,7 +789,7 @@
 
         <div class="dialog3" style="z-index: 2007;">
            <!-- 选择审核人弹框 -->
-           <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+           <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose"></checkPerson>
         </div>
       </el-dialog>
     </div>
@@ -1339,7 +1339,7 @@ export default {
           }).catch(error => {
              if(error.message==='下一节点审批人不存在'){
                this.checkPerson.flowType=2;
-               this.checkPerson.code= this.contractCode;
+               this.checkPerson.code= this.aId;
                this.checkPerson.state=true
                this.checkPerson.type='set'
               }else{
@@ -1348,6 +1348,7 @@ export default {
                   type: "error"
                 })
               }
+             this.loading=false;
           });
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1549,9 +1550,9 @@ export default {
         }).catch(error => {
           if(error.message==='下一节点审批人不存在'){
               this.checkPerson.flowType=2;
-              this.checkPerson.code= this.contractCode;
+              this.checkPerson.code= this.aId;
               this.checkPerson.state=true
-              this.checkPerson.type='set'
+              this.checkPerson.type='init'
           }else{
             this.$message({
               message:error,
@@ -1658,25 +1659,21 @@ export default {
         this.$ajax
           .postJSON("/api/achievement/distributionSave", param)
           .then(res => {
-            if (res.data.status == 200) {
+            if (res.data.status == 200&&!res.data.data) {
               this.$emit("close");
               this.loading=false;
               this.$message({ message: "操作成功", type: "success" });
+            }else if(res.data.status == 200&&res.data.data){
+               this.loading=false;
+               this.checkPerson.flowType=2;
+               this.checkPerson.code= res.data.data;
+               this.checkPerson.state=true;
+               this.checkPerson.type='init';
             }
             }).catch(error => {
-              if(error.message==='下一节点审批人不存在'){
-               this.checkPerson.flowType=2;
-               this.checkPerson.code= this.contractCode;
-               this.checkPerson.state=true
-               this.checkPerson.type='set'
-              }else{
-                this.$message({
-                  message:error,
-                  type: "error"
-                })
-              }
-              this.loading=false;
-          });;
+               this.$message.error({message: error})
+               this.loading=false;
+          });
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
       } else {
@@ -1765,6 +1762,12 @@ export default {
              this.clientArr[index].place = -1;
         }
       }       
+    },
+    personChose:function () {
+        this.checkPerson.state=false
+        // this.$message({
+        //   message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
+        // })
     }
   },
   watch: {
@@ -1899,9 +1902,9 @@ export default {
     overflow: hidden;
     /deep/ .el-dialog__header,
     /deep/ .el-dialog__footer,
-    /deep/ .el-dialog__body {
-      padding: 0 !important;
-    }
+    // /deep/ .el-dialog__body {
+    //   padding: 0 !important;
+    // }
     /deep/ .el-dialog__header {
       padding: 0 !important;
       .el-dialog__headerbtn {
@@ -1933,12 +1936,12 @@ export default {
       h1 {
         // font-size: 20px;
         color: #233241;
-        margin: 20px 0 0 30px;
+        margin: 20px 0 0 20px!important;
       }
       p {
         // font-size: 14px;
         color: #6c7986;
-        margin: 12px 0 0 30px;
+        margin: 12px 0 0 20px!important;
         line-height: 0;
       }
     }
@@ -2134,9 +2137,9 @@ export default {
     color: #f56c6c;
   }
 }
-// /deep/ .el-dialog.base-dialog .ach-body {
-//   padding: 0 20px !important;
-// }
+/deep/ .el-dialog.base-dialog .ach-body {
+  padding: 0 20px !important;
+}
 // /deep/ .el-dialog__header {
 //   padding: 0 !important;
 // }

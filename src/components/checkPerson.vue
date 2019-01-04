@@ -53,7 +53,7 @@
         default:'init'
       },
       bizCode:{
-        type:String,
+        type:[String,Number],
         default:''
       },
       flowType:{
@@ -97,6 +97,10 @@
             this.$ajax.post(this.type==='init'?'/api/machine/changeAuditorNow':'/api/machine/changeAuditorNext',param).then(res=>{
               res=res.data
               if(res.status===200){
+                this.$message({
+                  message:"操作成功",
+                  type:'success'
+                })
                 this.$emit('submit',this.choseItem)
               }
             })

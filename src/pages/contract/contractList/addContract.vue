@@ -140,7 +140,7 @@
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'owner')" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyMobile(item.mobile)" @keyup="cleanAll(item,index,'owner')">
+                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -190,7 +190,7 @@
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'guest')"  class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"  @input="verifyMobile(item.mobile)" @keyup="cleanAll(item,index,'guest')">
+                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -233,7 +233,7 @@
               <input type="text" v-model="contractForm.otherCooperationInfo.name" maxlength="6" @input="inputOnly(999,'other')" placeholder="请输入姓名" class="dealPrice">
             </el-form-item>
             <el-form-item label="联系方式：" class="width-250">
-              <el-input v-model="contractForm.otherCooperationInfo.mobile" type="tel" maxlength="11" placeholder="请输入手机号" style="width:140px" @input="verifyMobile(contractForm.otherCooperationInfo.mobile)"></el-input>
+              <el-input v-model="contractForm.otherCooperationInfo.mobile" type="tel" maxlength="11" placeholder="请输入手机号" style="width:140px" @input="verifyMobile_(contractForm.otherCooperationInfo.mobile)"></el-input>
             </el-form-item>
             <el-form-item label="身份证号：" style="width:300px;text-align:right">
               <el-input v-model="contractForm.otherCooperationInfo.identifyCode" maxlength="18" placeholder="请输入身份证号" @input="verifyIdcard(contractForm.otherCooperationInfo.identifyCode)"></el-input>
@@ -308,7 +308,7 @@
       </span>
     </el-dialog>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -439,6 +439,8 @@ export default {
       dialogSuccess:false,
       detailCode:'',
       detailId:'',
+      //改变之前的手机号
+      beforeChangeMobile:'',
       checkPerson: {
         state:false,
         type:'init',
@@ -485,7 +487,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -180 + 'px'
+      this.clientHei= document.documentElement.clientHeight -150 + 'px'
     },
     addcommissionData() {
       if (this.ownerList.length < 5) {
@@ -549,19 +551,13 @@ export default {
         this.dialogDel=false;
       }
     },
-    //清除加密号码
-    cleanAll(item,index,type){
+    //存贮改变之前的手机号
+    saveMobile(item,index,type){
       if(item.isEncryption){
         if(type==="owner"){
-          if(this.ownerList[index].mobile.length<11){
-            this.ownerList[index].mobile='';
-            this.ownerList[index].isEncryption=false;
-          }
+          this.beforeChangeMobile= this.ownerList[index].mobile;
         }else if(type==="guest"){
-          if(this.guestList[index].mobile.length<11){
-            this.guestList[index].mobile='';
-            this.guestList[index].isEncryption=false;
-          }
+          this.beforeChangeMobile=this.guestList[index].mobile;
         }
       }
     },
@@ -609,8 +605,37 @@ export default {
       }
     },
     //手机号验证
-    verifyMobile(value) {
+    verifyMobile(item,index,type) {
       //let reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+       if(item.isEncryption){
+        if(type==="owner"){
+          // if(this.ownerList[index].mobile.length<11){
+            if(this.ownerList[index].mobile!==this.beforeChangeMobile){
+              this.ownerList[index].mobile='';
+              this.ownerList[index].isEncryption=false;
+            }
+          // }
+        }else if(type==="guest"){
+          // if(this.guestList[index].mobile.length<11){
+            if(this.guestList[index].mobile!==this.beforeChangeMobile){
+              this.guestList[index].mobile='';
+              this.guestList[index].isEncryption=false;
+            }
+          // }
+        }
+      }else{
+        if(item.mobile.length===11){
+          let reg = /^1[0-9]{10}$/;
+          if (!reg.test(item.mobile)) {
+            this.$message({
+              message:'手机号格式不正确',
+              type: "warning"
+            })
+          }
+        }
+      }
+    },
+    verifyMobile_(value) {
       if(value.length===11){
         let reg = /^1[0-9]{10}$/;
         if (!reg.test(value)) {
@@ -620,7 +645,6 @@ export default {
           })
         }
       }
-      
     },
     //验证合同信息
     isSave(value) {
@@ -1330,7 +1354,8 @@ export default {
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
           this.guestList=[];
-          this.contractForm.guestInfo.paymentMethod=1
+          this.$set(this.contractForm.guestInfo,'paymentMethod',1)
+          // this.contractForm.guestInfo.paymentMethod=1
           let element = {
             name: guestMsg.OwnerInfo.CustName,
             mobile: guestMsg.OwnerInfo.CustMobile,
