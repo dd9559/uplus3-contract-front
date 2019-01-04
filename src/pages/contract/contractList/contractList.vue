@@ -28,7 +28,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <br>
         <el-form-item label="部门">
           <!-- <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
             <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">

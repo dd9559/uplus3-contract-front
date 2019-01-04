@@ -46,12 +46,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="收佣状态">
-          <el-select v-model="contractForm.receiveAmountState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['13']" :key="item.key" :label="item.value" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 合同列表 -->

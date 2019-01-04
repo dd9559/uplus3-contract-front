@@ -485,7 +485,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -180 + 'px'
+      this.clientHei= document.documentElement.clientHeight -140 + 'px'
     },
     addcommissionData() {
       if (this.ownerList.length < 5) {
@@ -1330,7 +1330,8 @@ export default {
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
           this.guestList=[];
-          this.contractForm.guestInfo.paymentMethod=1
+          this.$set(this.contractForm.guestInfo,'paymentMethod',1)
+          // this.contractForm.guestInfo.paymentMethod=1
           let element = {
             name: guestMsg.OwnerInfo.CustName,
             mobile: guestMsg.OwnerInfo.CustMobile,
