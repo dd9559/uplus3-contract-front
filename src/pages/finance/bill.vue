@@ -607,7 +607,7 @@
           contId:row.contId,
           contCode:row.contCode,
           operaType:type,
-          power:type==='cont'?this.power['sign-com-htdetail'].state:type==='house'?this.power['sign-com-house'].state:type==='customer'?this.power['sign-com-cust'].state:''
+          power:type==='cont'?this.power['sign-com-htdetail']:type==='house'?this.power['sign-com-house']:type==='customer'?this.power['sign-com-cust']:''
         }
         this.msgOpera(param)
       },

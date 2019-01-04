@@ -104,7 +104,7 @@
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
-        if(from.path==='/receiptBill'&&vm.result.payCode&&vm.result.payCode.length>0){
+        if(from.path==='/receiptBill'&&from.query.errorCode==='dialog'){
           let param={
             state:true,
             code:vm.result.payCode
