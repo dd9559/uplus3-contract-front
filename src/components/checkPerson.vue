@@ -53,7 +53,7 @@
         default:'init'
       },
       bizCode:{
-        type:String,
+        type:[String,Number],
         default:''
       },
       flowType:{
