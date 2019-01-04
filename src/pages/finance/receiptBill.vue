@@ -908,7 +908,8 @@
                   path: 'receiptResult',
                   query:{
                     type:this.billStatus?2:1,
-                    content:JSON.stringify(error.data)
+                    content:JSON.stringify(error.data),
+                    errorCode:'dialog'
                   }
                 })
               }else {
