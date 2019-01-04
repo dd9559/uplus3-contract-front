@@ -1372,7 +1372,7 @@
                             return ['mp4','avi'];
                             break;
                         case STEPSINPUT.excel:
-                            return ['xlsx'];
+                            return ['xlsx','xls'];
                             break;
                         case STEPSINPUT.word:
                             return ['doc','docx'];
