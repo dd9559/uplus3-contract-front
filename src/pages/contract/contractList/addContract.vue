@@ -300,7 +300,7 @@
       </span>
     </el-dialog>
     <!-- 创建合同成功提示框 -->
-    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
       <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="toContract">取 消</el-button>
@@ -308,7 +308,7 @@
       </span>
     </el-dialog>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -1680,8 +1680,11 @@ export default {
       }else if(type==='other'){
         this.contractForm.otherCooperationInfo.name=this.$tool.textInput(this.contractForm.otherCooperationInfo.name)
       }
+    },
+    closeCheckPerson(){
+      checkPerson.state=false;
+      this.$router.push('/contractList');
     }
-      
   },
    mounted(){
     window.onresize = this.clientHeight;
