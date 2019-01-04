@@ -187,7 +187,7 @@
                 }
                 if(this.title==`新增【${this.bigName}】小类`){
                     this.addForm.name=this.trim(this.addForm.name)
-                     if(this.power['sign-set-kl-query'].state){
+                     if(this.power['sign-set-kl-add'].state){
                          this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
                         if(res.status==200){
                             this.$message({
