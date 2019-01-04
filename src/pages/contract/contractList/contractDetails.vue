@@ -62,15 +62,16 @@
                 <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
                 <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
                 <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p>
-                <p><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
+                <p v-if="contType!='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
               </div>
               <div class="one_">
                 <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p>
                 <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p>
-                <p style="width:500px">
+                <p style="width:500px" v-if="contType!='1'">
                   <span class="tag">房产证号：</span>
                   <span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span>
                 </p>
+                <p v-if="contType==='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
               </div>
               <div class="one_" v-if="contType!='1'">
                 <p>
@@ -531,6 +532,8 @@
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    <!-- 设置/转交审核人 -->
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     <!-- 打印成交报告 -->
     <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint">
       <div class="printContent">
@@ -599,7 +602,7 @@
               <el-table-column prop="name" label="业主姓名" width="200"></el-table-column>
               <el-table-column label="电话" min-width="200">
                 <template slot-scope="scope">
-                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
+                  {{scope.row.mobile}}
                 </template>
               </el-table-column>
               <el-table-column prop="relation" label="关系" width="200"></el-table-column>
@@ -631,7 +634,7 @@
               <el-table-column prop="name" label="客户姓名" width="200"></el-table-column>
               <el-table-column label="电话" min-width="200">
                 <template slot-scope="scope">
-                  {{scope.row.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}
+                  {{scope.row.mobile}}
                 </template>
               </el-table-column>
               <el-table-column prop="relation" label="关系" width="200"></el-table-column>
@@ -689,12 +692,15 @@ import changeCancel from "../contractDialog/changeCancel";
 import { MIXINS } from "@/assets/js/mixins";
 import { TOOL } from "@/assets/js/common";
 import vueEasyPrint from "vue-easy-print";
+import checkPerson from '@/components/checkPerson';
+
 export default {
   mixins: [MIXINS],
   components: {
     achDialog,
     changeCancel,
     vueEasyPrint,
+    checkPerson
   },
   data() {
     return {
@@ -783,6 +789,13 @@ export default {
       isPlay:false,
       recordSrc:'',
       clientHei: '', //窗体高度
+      checkPerson: {
+        state:false,
+        type:'init',
+        code:'',
+        flowType:0,
+        label:false
+      },
       //权限
       power: {
         'sign-ht-xq-print': {
@@ -863,7 +876,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -160 + 'px'
+      this.clientHei= document.documentElement.clientHeight -180 + 'px'
     },
     printDemo(){
       this.$refs.easyPrint.print();
@@ -983,10 +996,18 @@ export default {
           })
         }
       }).catch(error => {
-          this.$message({
-            message:error,
-            type: "error"
-          })
+          if(error.message==='下一节点审批人不存在'){
+            this.checkPerson.flowType=3;
+            this.checkPerson.code=this.contractDetail.code;
+            this.checkPerson.state=true;
+            this.checkPerson.type="set";
+            this.checkPerson.label=true;
+          }else{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
         })
     },
     // 变更解约弹窗

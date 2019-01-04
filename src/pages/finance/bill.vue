@@ -285,7 +285,7 @@
       </el-pagination>
     </div>-->
     <!-- 票据编号弹层 -->
-    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :showBtn="power['sign-cw-bill-print'].state" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <!--作废-->
     <el-dialog
       title="作废"
@@ -404,6 +404,10 @@
           'sign-cw-debt-void': {
             state: false,
             name: '作废'
+          },
+          'sign-cw-bill-print':{
+            state: false,
+            name: '打印'
           },
           'sign-cw-debt-rev': {
             state: false,
@@ -528,7 +532,9 @@
             query: {
               id: row.id,
               tab: row.type === 1 ? '收款信息' : '付款信息',
-              power: this.power[row.type===1?'sign-cw-debt-rev':'sign-cw-debt-pay'].state
+              power: this.power[row.type===1?'sign-cw-debt-rev':'sign-cw-debt-pay'].state,
+              print: this.power['sign-cw-bill-print'].state,
+              bill: this.power['sign-cw-debt-invoice'].state
             }
           })
         }

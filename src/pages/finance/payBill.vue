@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <p class="f14">付款信息</p>
+    <p class="f14 txt-title">付款信息</p>
     <ul class="bill-form">
       <li>
         <div class="input-group col" :class="[inputPerson?'active-360':'']">
@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="input-group col">
-          <label class="form-label no-width f14">申请人:</label>
+          <label class="form-label no-width f14">发起人:</label>
           <p class="text-height" v-if="userMsg">{{userMsg.depName}} - {{userMsg.name}}</p>
         </div>
       </li>
@@ -43,7 +43,7 @@
         <div class="input-group col">
           <label class="no-width f14">可支配金额:</label>
           <div class="text-height">
-            <p class="no-wrap"><span>款类大类余额：{{amount.balance}}元</span>;<span v-if="showAmount">合同余额：{{amount.contractBalance}}元</span></p>
+            <p class="no-wrap"><span>款类大类余额：{{amount.balance}}元</span>;<span>合同余额：{{amount.contractBalance}}元</span></p>
             <!--<p v-if="showAmount"><span>合同余额：{{amount.contractBalance}}元</span></p>-->
           </div>
         </div>
@@ -111,7 +111,7 @@
       </el-table>
     </div>-->
     <div class="input-group col-other">
-      <p><label class="form-label f14">收款账户</label></p>
+      <p class="txt-title"><label class="form-label f14">收款账户</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="收款银行">
           <template slot-scope="scope">
@@ -135,29 +135,32 @@
         </el-table-column>
       </el-table>
     </div>
-    <section class="flex-row">
-      <div class="input-group col-other">
-        <p><label class="f14">备注信息</label></p>
-        <el-input placeholder="请填写备注信息" class="info-textarea" type="textarea" rows="5" maxlength="200" v-model="form.remark"></el-input>
-      </div>
-      <div class="input-group col-other">
-        <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
-        <ul class="upload-list">
-          <li>
-            <file-up class="upload-context" @getUrl="getFiles">
-              <i class="iconfont icon-shangchuan"></i>
-              <span>点击上传</span>
-            </file-up>
-          </li>
-          <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="previewPhoto(imgList,index)">
-            <upload-cell :type="item.type"></upload-cell>
-            <span>{{item.name}}</span>
-            <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
-          </li>
-        </ul>
-        <!--<p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>-->
-      </div>
-    </section>
+    <div class="other-message">
+      <p class="txt-title">其他信息</p>
+      <section class="flex-row">
+        <div class="input-group col-other">
+          <p><label class="f14">备注信息</label></p>
+          <el-input placeholder="请填写备注信息" class="info-textarea" type="textarea" rows="5" maxlength="200" v-model="form.remark"></el-input>
+        </div>
+        <div class="input-group col-other">
+          <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
+          <ul class="upload-list">
+            <li>
+              <file-up class="upload-context" @getUrl="getFiles">
+                <i class="iconfont icon-shangchuan"></i>
+                <span>点击上传</span>
+              </file-up>
+            </li>
+            <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="previewPhoto(imgList,index)">
+              <upload-cell :type="item.type"></upload-cell>
+              <span>{{item.name}}</span>
+              <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
+            </li>
+          </ul>
+          <!--<p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>-->
+        </div>
+      </section>
+    </div>
     <p>
       <el-button class="btn-info" round size="small" type="primary" @click="showLayer">提交付款申请</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
@@ -212,7 +215,7 @@
   import moneyTypePop from '@/components/moneyTypePop'
 
   const rule={
-    inObjType:{
+    inObj:{
       name:'收款方',
     },
     moneyType:{
@@ -544,6 +547,9 @@
             })
           }else {
             this.layer.show=true
+            if(this.form.inObjType===3){
+              this.layer.content[0].inObj=`${this.layer.content[0].inObj}-${this.form.inObj}`
+            }
             param.filePath = [].concat(this.files)
             this.layer.form=Object.assign({},param)
           }
@@ -597,7 +603,6 @@
           }).catch(error=>{
             this.fullscreenLoading=false
             if(error.message==='下一节点审批人不存在'){
-              debugger
               this.$router.replace({
                 path: 'payResult',
                 query:{
@@ -606,7 +611,7 @@
               })
             }else {
               this.$message({
-                message:message
+                message:error
               })
             }
           })
@@ -687,6 +692,11 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .txt-title{
+    font-weight: bold;
+    margin-bottom: @margin-15;
+    font-size: @size-14;
+  }
   .no-wrap{
     white-space: nowrap;
   }
@@ -698,6 +708,9 @@
   }
   input.person{
     margin-left: @margin-10;
+  }
+  .other-message{
+    margin-top: 30px;
   }
   .flex-box{
     display: flex;
@@ -771,6 +784,7 @@
     }
   }
   section.flex-row{
+    display: flex;
     .input-group{
       margin-right: 60px;
     }
@@ -800,7 +814,6 @@
     }
   }
   .input-group {
-    margin: @margin-10 0 0;
     display: block;
     max-width: 980px;
     .type-list{
@@ -920,9 +933,6 @@
           }
         }
       }*/
-      &.flex-row{
-        display: flex;
-      }
     }
     >p{
       &:last-of-type{

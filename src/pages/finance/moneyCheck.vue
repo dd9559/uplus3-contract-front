@@ -177,7 +177,7 @@
               <span>{{scope.row.nextAuditStore}}</span>
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.auditBy!==0&&getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -259,7 +259,7 @@
     <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -282,7 +282,8 @@
           state:false,
           type:'init',
           code:'',
-          flowType:0
+          flowType:0,
+          label:false
         },
         searchForm: {
           contType: '',
@@ -346,6 +347,10 @@
             state: false,
             name: '作废'
           },
+          'sign-cw-bill-print':{
+            state: false,
+            name: '打印'
+          },
           'sign-cw-debt-pay': {
             state: false,
             name: '付款审核'
@@ -373,12 +378,12 @@
       this.activeView = parseInt(this.$route.query.type)
 
       for (let item in this.power){
-        this.power[item].state=true
-        /*if(this.getUser){
+        // this.power[item].state=true
+        if(this.getUser){
           if(this.getUser.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }*/
+        }
       }
 
       this.getData()
@@ -393,12 +398,12 @@
       this.clearDep()
 
       for (let item in this.power){
-        this.power[item].state=true
-        /*if(this.getUser){
+        // this.power[item].state=true
+        if(this.getUser){
           if(this.getUser.privileges.indexOf(item)>-1){
             this.power[item].state=true
           }
-        }*/
+        }
       }
       /*this.$nextTick(()=>{
         this.tableBox=this.$refs.dataList
@@ -425,6 +430,11 @@
         this.checkPerson.code=row.payCode
         this.checkPerson.state=true
         this.checkPerson.type=type
+        if(row.nextAuditId===-1){
+          this.checkPerson.label=true
+        }else {
+          this.checkPerson.label=false
+        }
       },
       /**
        * 列表横行滚动
@@ -502,14 +512,16 @@
             tab: '收款信息',
             id:item.id,
             type:item.inAccountType,
-            power:powerMsg
+            power:powerMsg,
+            print:this.power['sign-cw-bill-print'].state
           }
           this.setPath(this.getPath.concat({name:'收款详情'}))
         } else {
           param.query = {
             tab: '付款信息',
             id:item.id,
-            power:powerMsg
+            power:powerMsg,
+            print:this.power['sign-cw-bill-print'].state
           }
           this.setPath(this.getPath.concat({name:'付款详情'}))
         }

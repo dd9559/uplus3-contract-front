@@ -82,6 +82,8 @@
       </span>
     </el-dialog>
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
+    <!-- 设置/转交审核人 -->
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -89,12 +91,14 @@
 import changeCancel from "../contractDialog/changeCancel";
 import PdfPrint from '@/components/PdfPrint';
 import { MIXINS } from "@/assets/js/mixins";
+import checkPerson from '@/components/checkPerson';
 
 export default {
   mixins: [MIXINS],
   components: {
     changeCancel,
-    PdfPrint
+    PdfPrint,
+    checkPerson
   },
   data() {
     return {
@@ -154,6 +158,13 @@ export default {
       //加载等待
       fullscreenLoading:false,
       clientHei:'',
+      checkPerson: {
+        state:false,
+        type:'init',
+        code:'',
+        flowType:0,
+        label:false
+      },
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -194,7 +205,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -100 + 'px'
+      this.clientHei= document.documentElement.clientHeight -120 + 'px'
     },
     //居间买卖切换
     changeType(value) {
@@ -245,10 +256,18 @@ export default {
           })
         }
       }).catch(error => {
-          this.$message({
-            message:error,
-            type: "error"
-          })
+          if(error.message==='下一节点审批人不存在'){
+            this.checkPerson.flowType=3;
+            this.checkPerson.code=this.code;
+            this.checkPerson.state=true;
+            this.checkPerson.type="set";
+            this.checkPerson.label=true;
+          }else{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
         })
     },
     //签章
@@ -473,10 +492,18 @@ export default {
           this.isSubmitAudit=false
         }
       }).catch(error => {
-          this.$message({
-            message:error,
-            type: "error"
-          })
+          if(error.message==='下一节点审批人不存在'){
+            this.checkPerson.flowType=3;
+            this.checkPerson.code=this.code;
+            this.checkPerson.state=true;
+            this.checkPerson.type="set";
+            this.checkPerson.label=true;
+          }else{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
         })
     },
     // 变更解约弹窗

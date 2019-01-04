@@ -108,9 +108,16 @@
             <p>{{scope.row.checkTime | getDate}}</p>
           </template>
         </el-table-column>   
-        <el-table-column label="当前审核人" :formatter="nullFormatter">
+        <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
             <p>{{scope.row.checkByDepName + '-' + scope.row.checkByName}}</p>
+            <el-button class="btn-text-info" type="text" v-if="scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId" @click="choseCheckPerson(scope.row)">转交审核人</el-button>
+          </template>
+        </el-table-column>
+         <el-table-column align="center" label="下一步审核人" min-width="140">
+          <template slot-scope="scope">
+            <p>{{scope.row.nextAuditStore + '-' + scope.row.nextAuditName}}</p>
+            <el-button class="btn-text-info color-red" type="text" v-if="scope.row.checkby === userMsg.empId" @click="choseCheckPerson(scope.row)">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200" :formatter="nullFormatter">
@@ -348,7 +355,7 @@
       <!-- 图片放大 -->
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
-
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -361,13 +368,20 @@
   import {FILTER} from "@/assets/js/filter";
   import {TOOL} from "@/assets/js/common";
   import { MIXINS } from "@/assets/js/mixins";
+  import checkPerson from '@/components/checkPerson'
   
   export default {
     name: "adjust-check",
     // mixins: [FILTER],
     mixins: [FILTER,MIXINS],
     data(){
-      return{   
+      return{ 
+        checkPerson: {
+          state:false,
+          type:'init',
+          code:'',
+          flowType:0
+        },  
         clientHei: document.documentElement.clientHeight, //窗体高度
         fullscreenLoading:false,//创建按钮防抖
         loading:false,
@@ -502,7 +516,26 @@
       //         this.isDelete=''
       //     }
       // },
-
+      // 选择审核人
+      choseCheckPerson:function (row) {
+        this.checkPerson.flowType=4   //调佣的流程类型为4
+        this.checkPerson.code=row.checkId  //业务编码为checkId
+        if(row.preAuditId === this.userMsg.empId || row.checkby === this.userMsg.empId){
+          this.checkPerson.state=true
+          this.checkPerson.type='init'
+        }
+        if(row.checkby === this.userMsg.empId){
+          this.checkPerson.state=true
+          this.checkPerson.type='set'
+        }
+      },
+      personChose:function () {
+        this.checkPerson.state=false
+        this.$message({
+          message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
+        })
+        this.queryFn();
+      },
 
       // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
@@ -833,7 +866,8 @@
 
     components: {
           ScreeningTop,
-          Message
+          Message,
+          checkPerson
       }
   };
 </script>
@@ -842,6 +876,12 @@
 @import "~@/assets/common.less";
 
 #adjustcheck{
+  .btn-text-info{
+    padding: 0;
+    &.color-red{
+      color: red;
+    }
+  }
   .el-textarea.is-disabled .el-textarea__inner{
         color:#233241;
     }

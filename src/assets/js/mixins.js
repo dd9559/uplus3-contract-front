@@ -178,11 +178,11 @@ const MIXINS = {
             var a = document.createElement('a');
             a.download = undefined;
             a.href = res.data[0];
-            a.innerText='test'
+            // a.innerText='test'
             document.body.appendChild(a)
             a.click();
             window.location=res.data[0]
-            document.write(a)
+            alert(a)
             document.body.removeChild(a)
           }else {
             this.previewFiles=res.data

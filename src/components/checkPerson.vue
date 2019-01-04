@@ -6,7 +6,7 @@
     @close="close"
     width="740px">
     <div class="dialog-container">
-      <p v-if="type==='set'">下一审核节点无审核人，请先设置下一节点审核人</p>
+      <p v-if="showLabel">下一审核节点无审核人，请先设置下一节点审核人</p>
       <div class="chose-box">
         <span>{{type==='set'?'设置':'转交'}}审核人</span>
         <div class="box-content">
@@ -22,9 +22,9 @@
             <el-select :clearable="true" filterable remote :remote-method="searchEmp" class="w140" size="small" v-model="choseItem.empId" placeholder="人员" @visible-change="initEmp"  @change="getOption('emp')">
               <el-option
                 v-for="item in emps"
-                :key="item.emp_id"
+                :key="item.empId"
                 :label="item.name"
-                :value="item.emp_id">
+                :value="item.empId">
               </el-option>
             </el-select>
           </div>
@@ -57,6 +57,10 @@
       },
       flowType:{
         type:Number,
+      },
+      showLabel:{//是否显示文本
+        type:Boolean,
+        default:true
       }
     },
     data(){
@@ -84,7 +88,7 @@
             userId:this.choseItem.empId,
           }
           this.emps.forEach(item=>{
-            if(item.emp_id===this.choseItem.empId){
+            if(item.empId===this.choseItem.empId){
               param.userName=item.name
             }
           })
@@ -163,9 +167,9 @@
         }else {
           if(this.inputEmp){
             this.emps.find(item=>{
-              if(item.emp_id===this.choseItem.empId){
-                this.deps=[].concat({name:item.dep_name,id:item.dep_id})
-                this.choseItem.depId=item.dep_id
+              if(item.empId===this.choseItem.empId){
+                this.deps=[].concat({name:item.depName,id:item.depId})
+                this.choseItem.depId=item.depId
                 this.searchEmp()
                 this.inputEmp=false
               }

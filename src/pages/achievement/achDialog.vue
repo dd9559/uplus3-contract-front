@@ -786,6 +786,11 @@
           </el-dialog>
          </div>
         </div>
+
+        <div class="dialog3" style="z-index: 2007;">
+           <!-- 选择审核人弹框 -->
+           <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -793,6 +798,7 @@
 
 <script>
 import { MIXINS } from "@/assets/js/mixins";
+import checkPerson from '@/components/checkPerson'
 export default {
   mixins: [MIXINS],
   name: "achDialog",
@@ -833,11 +839,17 @@ export default {
       shopIndex:1,
       shopStr:null,
       shopTotal:null,
-      loading3:false
-      // amaldarIndex:1,
-      // amaldarStr:null,
-      // amaldarTotal:null
+      loading3:false,
+      checkPerson: {
+          state:false,
+          type:'init',
+          code:'',
+          flowType:0
+      },
     };
+  },
+  components:{
+    checkPerson
   },
   created() {},
   props: {
@@ -1425,6 +1437,11 @@ export default {
     },
     // 反审核，编辑的保存
     keepAch(type, status,editStr) {
+      //  this.checkPerson.flowType=2;
+      // //  this.checkPerson.code=val.code;
+      // //  console.log(  this.checkPerson.code);
+      //  this.checkPerson.state=true
+      //  this.checkPerson.type='set'
       //resultArr表示房源客源加在一起之后组成的数组
       let resultArr = this.houseArr.concat(this.clientArr);
       let arr = [],
@@ -1859,7 +1876,25 @@ export default {
     // max-width: 80%!important;
     margin: 10vh auto 0 !important;
     overflow: hidden;
-
+    /deep/ .el-dialog__header,
+    /deep/ .el-dialog__footer,
+    /deep/ .el-dialog__body {
+      padding: 0 !important;
+    }
+    /deep/ .el-dialog__header {
+      padding: 0 !important;
+      .el-dialog__headerbtn {
+        right: 0;
+        top: 0;
+        display: none !important;
+        padding: 0 !important;
+      }
+    }
+    .el-dialog__headerbtn {
+      right: 0;
+      top: 0;
+      display: none !important;
+    }
     /deep/ .el-input__suffix {
       right: 21px;
     }
@@ -2054,25 +2089,6 @@ export default {
         }
       }
     }
-    /deep/ .el-dialog__header,
-    /deep/ .el-dialog__footer,
-    /deep/ .el-dialog__body {
-      padding: 0 !important;
-    }
-    /deep/ .el-dialog__header {
-      padding: 0 !important;
-      .el-dialog__headerbtn {
-        right: 0;
-        top: 0;
-        display: none !important;
-        padding: 0 !important;
-      }
-    }
-    .el-dialog__headerbtn {
-      right: 0;
-      top: 0;
-      display: none !important;
-    }
   }
   input::-webkit-input-placeholder {
     /* WebKit browsers */
@@ -2097,10 +2113,10 @@ export default {
     color: #f56c6c;
   }
 }
-/deep/ .el-dialog.base-dialog .ach-body {
-  padding: 0 20px !important;
-}
-/deep/ .el-dialog__header {
-  padding: 0 !important;
-}
+// /deep/ .el-dialog.base-dialog .ach-body {
+//   padding: 0 20px !important;
+// }
+// /deep/ .el-dialog__header {
+//   padding: 0 !important;
+// }
 </style>

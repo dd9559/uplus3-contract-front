@@ -116,7 +116,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作">
               <template slot-scope="scope">
-                <el-button type="text" @click="getPaper('create')" v-if="(billMsg.checkStatus&&(billMsg.checkStatus.value===1||billMsg.checkStatus.value===5))&&(billMsg.billStatus&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4))">开票</el-button>
+                <el-button type="text" @click="getPaper('create')" v-if="btnBill&&(billMsg.checkStatus&&(billMsg.checkStatus.value===1||billMsg.checkStatus.value===5))&&(billMsg.billStatus&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4))">开票</el-button>
                 <span v-else>--</span>
               </template>
             </el-table-column>
@@ -236,7 +236,7 @@
   </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :showBtn="btnPrint" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
@@ -291,6 +291,8 @@
         pageSize:10,
         total:0,
         btnCheck:false,//是否有审核权限
+        btnPrint:false,//是否有打印权限
+        btnBill:false,//是否有开票权限
       }
     },
     created() {
@@ -299,6 +301,8 @@
       this.checkPerson.flowType=this.activeItem==='收款信息'?1:0
       this.billId = this.$route.query.id
       this.btnCheck = this.$route.query.power.toString()==='true'?true:false
+      this.btnPrint = this.$route.query.print.toString()==='true'?true:false
+      this.btnBill = this.$route.query.bill.toString()==='true'?true:false
       this.tabs.unshift(this.activeItem)
       this.getData()
       if(this.$route.query.type){

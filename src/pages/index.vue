@@ -86,7 +86,7 @@
         {
           name: '合同审核',
           path: 'contractCheck',
-          code: ''
+          code: 'sign-ht-htsh-query'
         },
         {
           name: '分账记录',
@@ -242,7 +242,7 @@
               {
                 name: '合同审核',
                 path: 'contractCheck',
-                code: ''
+                code: 'sign-ht-htsh-query'
               },
               {
                 name: '分账记录',
@@ -421,15 +421,11 @@
           this.views.forEach((item,index)=>{
             let sliders=[]
             item.child.forEach(tip=>{
-                if(tip.name!=='合同审核'){
-                  if(arr.indexOf(tip.code)>-1){
-                  sliders.push(tip)
-                }
-                }else{
-                  sliders.push(tip)
-                }
-              })
-              item.child=sliders
+              if(arr.indexOf(tip.code)>-1){
+                sliders.push(tip)
+              }
+            })
+            item.child=sliders
           })
         }
       })

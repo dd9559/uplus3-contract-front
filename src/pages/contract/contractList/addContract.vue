@@ -307,6 +307,8 @@
         <el-button type="primary" @click="toUpload">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 设置/转交审核人 -->
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -314,6 +316,7 @@
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import houseGuest from "../contractDialog/houseGuest";
+import checkPerson from '@/components/checkPerson';
 const rule = {
   signDate: {
     name: "签约日期"
@@ -336,7 +339,8 @@ const rule = {
 export default {
   mixins: [MIXINS],
   components: {
-    houseGuest
+    houseGuest,
+    checkPerson
   },
   data() {
     return {
@@ -435,6 +439,13 @@ export default {
       dialogSuccess:false,
       detailCode:'',
       detailId:'',
+      checkPerson: {
+        state:false,
+        type:'init',
+        code:'',
+        flowType:0,
+        label:false
+      },
       //权限配置
       power: {
         'sign-ht-info-toverify': {
@@ -474,7 +485,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -160 + 'px'
+      this.clientHei= document.documentElement.clientHeight -180 + 'px'
     },
     addcommissionData() {
       if (this.ownerList.length < 5) {
@@ -1021,12 +1032,19 @@ export default {
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;
-            this.$message({
-              message: "操作成功",
-              type: "success"
-            });
-            // this.$router.push('/contractList');
-            this.dialogSuccess=true;
+            if(res.data.isHaveNextAudit===2){
+              this.checkPerson.flowType=3;
+              this.checkPerson.code=res.data.code;
+              this.checkPerson.state=true;
+              this.checkPerson.type="set";
+              this.checkPerson.label=true;
+            }else{
+              this.$message({
+                message: "操作成功",
+                type: "success"
+              });
+              this.dialogSuccess=true;
+            }
           }
         }).catch(error => {
           this.fullscreenLoading=false;
@@ -1071,12 +1089,19 @@ export default {
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;
-            this.$message({
-              message: "操作成功",
-              type: "success"
-            });
-            // this.$router.push('/contractList');
-            this.dialogSuccess=true;
+            if(res.data.isHaveNextAudit===2){
+              this.checkPerson.flowType=3;
+              this.checkPerson.code=res.data.code;
+              this.checkPerson.state=true;
+              this.checkPerson.type="set";
+              this.checkPerson.label=true;
+            }else{
+              this.$message({
+                message: "操作成功",
+                type: "success"
+              });
+              this.dialogSuccess=true;
+            }
           }
         }).catch(error => {
           this.fullscreenLoading=false;
@@ -1092,7 +1117,8 @@ export default {
       this.dialogSuccess=false;
       if(this.power['sign-com-htdetail'].state){
         if(this.power['sign-ht-xq-data-add'].state){
-          this.$router.push({
+          this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+          this.$router.replace({
             path: "/contractDetails",
             query: {
               type: "dataBank",
