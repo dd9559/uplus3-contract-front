@@ -523,13 +523,13 @@
        * @param row
        */
       toDetails: function (row) {
-        if(!this.power['sign-cw-debt-rev'].state){
+        if(!this.power['sign-cw-debt-rev'].state&&row.type===1){
           this.$message({
             message:'无收款详情查看权限'
           })
           return
         }
-        if(!this.power['sign-cw-debt-pay'].state){
+        if(!this.power['sign-cw-debt-pay'].state&&row.type===2){
           this.$message({
             message:'无付款详情查看权限'
           })

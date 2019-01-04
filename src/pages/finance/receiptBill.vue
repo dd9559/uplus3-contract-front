@@ -230,7 +230,7 @@
           <div class="message-box flex-box">
             <section>
               <label class="f14 margin-bottom-base">支付方式</label>
-              <el-select size="small" class="w200" v-model="item.payMethod" placeholder="请选择">
+              <el-select size="small" class="w200" v-model="item.payMethod" placeholder="请选择" @change="hideCardList">
                 <el-option
                   v-for="item in dictionary['534']"
                   :key="item.key"
@@ -263,7 +263,7 @@
         </li>
       </ul>
     </div>
-    <div class="input-group col-other artice-margin" v-if="billStatus">
+    <div class="input-group col-other artice-margin" v-if="billStatus&&showCard">
       <p><label class="form-label f14">刷卡资料补充</label></p>
       <el-table border :data="cardList" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="刷卡银行">
@@ -477,6 +477,7 @@
         },
         fullscreenLoading:false,//提交表单防抖
         showAmount:false,//款类是否为代收代付
+        showCard:true,//是否显示刷卡补充
       }
     },
     mounted() {
@@ -493,7 +494,7 @@
         this.getDetails({type: type, payId: this.$route.query.id})
       }else {
         this.$nextTick(()=>{
-          console.log(this.$store.state)
+          console.log(this.getUser)
           this.getAcount(this.getUser.user&&this.getUser.user.empId)
         })
       }
@@ -570,8 +571,20 @@
           this.$refs.tree.blur()
         }*/
       },
+      //是否隐藏刷卡补充
+      hideCardList:function (val) {
+        let state = this.payList.every(item=>{
+          return item.payMethod===3
+        })
+        if(state){
+          this.showCard=false
+        }else{
+          this.showCard=true
+        }
+      },
       //支付信息表单增减
       payListOper:function (index) {
+        this.hideCardList()
         if(index===0){
           let cell={
             payMethod:'',
@@ -627,6 +640,7 @@
             // }
             this.form = Object.assign({}, this.form, obj)
             this.getAcount(this.form.inObjId)
+            this.hideCardList()
           }
         })
       },
@@ -679,6 +693,7 @@
         })
       },
       goResult: function () {
+        console.log(this.getUser)
         // let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({}, this.form)
 
@@ -694,6 +709,8 @@
         arr.push(this.$tool.checkForm(param,rule))
         //支付信息验证
         if(this.billStatus){
+          debugger
+          let cardListStatus = newPayList.every(item=>item.payMethod===3)
           newPayList.forEach(item=>{
             if(item.payMethod!==2){
               delete item.activeAdmin
@@ -701,14 +718,16 @@
             payTotal+=parseFloat(item.amount)
             arr.push(this.$tool.checkForm(item,payRule))
           })
-          //刷卡资料验证
-          this.cardList.forEach(item=>{
-            cardTotal+=parseFloat(item.amount)
-            arr.push(this.$tool.checkForm(item,cardRule))
-          })
+          if(!cardListStatus){
+            //刷卡资料验证
+            this.cardList.forEach(item=>{
+              cardTotal+=parseFloat(item.amount)
+              arr.push(this.$tool.checkForm(item,cardRule))
+            })
+          }
           Promise.all(arr).then(res=>{
             let total = parseFloat(this.form.amount)
-            if(total!==payTotal||total!==cardTotal){
+            if(total!==payTotal||(!cardListStatus&&(total!==cardTotal))){
               this.$message({
                 message:'输入金额要等于收款金额'
               })
@@ -718,7 +737,7 @@
               })
             }else {
               param.filePath = [].concat(this.files)
-              param.outAccount = [].concat(this.cardList)
+              param.outAccount = cardListStatus?[]:[].concat(this.cardList)
               param.inAccount = []
               this.payList.forEach(item=>{
                 if(item.activeAdmin===''){

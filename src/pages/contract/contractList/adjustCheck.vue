@@ -26,7 +26,7 @@
           <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> -->
-          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" class="fl"></select-tree>
+          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="adjustForm.empId" placeholder="请选择">
             <el-option
@@ -60,7 +60,7 @@
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" :formatter="nullFormatter">
+        <el-table-column label="合同类型" :formatter="nullFormatter" align="center">
           <template slot-scope="scope">
             <p v-if="scope.row.tradeType === 1">租赁</p>
             <p v-if="scope.row.tradeType === 2">买卖</p>
@@ -110,19 +110,20 @@
         </el-table-column>   
         <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.checkByDepName + '-' + scope.row.checkByName}}</p>
+            <p>{{scope.row.checkByDepName + scope.row.checkByName}}</p>
+            
             <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId)" @click="choseCheckPerson(scope.row.checkId,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.nextAuditStore + '-' + scope.row.nextAuditName}}</p>
+            <p>{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
             <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.checkby === userMsg.empId)" @click="choseCheckPerson(scope.row.checkId,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
           <template slot-scope="scope">     
-              <span v-if="scope.row.checkRemark.length > 0">
+              <span v-if="(scope.row.checkRemark).trim().length > 0">
                 <el-popover trigger="hover" placement="top">
                   <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
                     {{scope.row.checkRemark}}
@@ -137,8 +138,8 @@
         </el-table-column>             
         <el-table-column label="操作" width="100" fixed="right" align="center">
           <template slot-scope="scope">
-            <template v-if="scope.row.checkState === 0">
-              <el-button type="text" class="curPointer" @click="auditApply(scope.row)"  v-if="scope.row.checkby === userMsg.empId">审核</el-button>          
+            <template v-if="scope.row.checkState === 0 && scope.row.checkby === userMsg.empId">
+              <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>          
             </template>
             <span v-else>--</span>
           </template>
@@ -852,6 +853,10 @@
         // this.EmployeList=[]
         this.adjustForm.empId=''
         this.clearSelect()
+      },
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.adjustForm.depName=payload.depName
       },
 
       initDepList: function (val) {
