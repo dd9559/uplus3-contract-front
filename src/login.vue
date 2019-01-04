@@ -32,7 +32,7 @@
           this.$ajax.get('/api/me').then(res=>{
             res=res.data
             if(res.status===200){
-              this.$store.dispatch('asyncUser',res.data)
+              this.$store.commit('setUser',res.data)
               if(res.data.privileges.length>0){
                 this.$router.push({
                   path:'contractList'
