@@ -867,13 +867,13 @@ export default {
     closeAccount(item){
       if(this.power['sign-ht-info-end'].state){
         if(item.contChangeState.value!==2){
-          if(item.resultState.value===2){
-          this.$message({
-            message:'已结算完成，无需发起结算'
-          })
-        }else{
-          if(item.isCanChangeCommission===1){
-            let param = {
+          // if(item.resultState.value===2){
+          // this.$message({
+          //   message:'已结算完成，无需发起结算'
+          // })
+        // }else{
+          // if(item.isCanChangeCommission===1){
+          let param = {
             id: item.id         
           }
           this.$ajax.get("/api/settlement/getSettlById", param).then(res => {
@@ -889,13 +889,13 @@ export default {
                 type: "warning"
               })
             })
-          }else{
-            this.$message({
-              message:"存在未审核的调佣,无法发起结算",
-              type: "warning"
-            })
-          }
-        }
+          // }else{
+          //   this.$message({
+          //     message:"存在未审核的调佣,无法发起结算",
+          //     type: "warning"
+          //   })
+          // }
+          // }
         }else{
           this.$message({
             message:'合同已解约，无法发起结算',
