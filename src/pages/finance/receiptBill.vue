@@ -323,7 +323,10 @@
             </li>
             <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"  @click="previewPhoto(imgList,index)">
               <upload-cell :type="item.type"></upload-cell>
-              <span>{{item.name}}</span>
+              <!--<span>{{item.name}}</span>-->
+              <el-tooltip :content="item.name" placement="top">
+                <span>{{item.name}}</span>
+              </el-tooltip>
               <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
             </li>
           </ul>
