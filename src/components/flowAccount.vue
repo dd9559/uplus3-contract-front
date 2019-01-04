@@ -6,7 +6,7 @@
 			<el-tabs v-model="activeName" @tab-click="handleClick">
 				<!-- 分类账 -->
 				<el-tab-pane label="分类账" name="first">
-					<el-table :data="gridData1" border :row-class-name="rowClass" height="550">
+					<el-table :data="gridData1" border :row-class-name="rowClass" height="450">
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
 						<el-table-column label="付款（元）">
@@ -19,7 +19,7 @@
 				</el-tab-pane>
 				<!-- 业主分类账 -->
 				<el-tab-pane label="业主分类账" name="second">
-					<el-table :data="gridData2" border :row-class-name="rowClass" height="550">
+					<el-table :data="gridData2" border :row-class-name="rowClass" height="450">
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
 						<el-table-column label="付款（元）">
@@ -32,7 +32,7 @@
 				</el-tab-pane>
 				<!-- 客户分类账 -->
 				<el-tab-pane label="客户分类账" name="third">
-					<el-table :data="gridData2" border :row-class-name="rowClass" height="550">
+					<el-table :data="gridData2" border :row-class-name="rowClass" height="450">
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
 						<el-table-column label="付款（元）">
@@ -46,7 +46,7 @@
 				</el-tab-pane>
 				<!-- 分类流水账 -->
 				<el-tab-pane label="分类流水账" name="fourth">
-					<el-table :data="gridData4" border :row-class-name="rowClass" height="550">
+					<el-table :data="gridData4" border :row-class-name="rowClass" height="450">
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="payCode" label="收付款编号"> </el-table-column>
 						<el-table-column prop="type" label="类型" width="50"></el-table-column>
@@ -68,7 +68,7 @@
 				</el-tab-pane>
 				<!-- 流水账 -->
 				<el-tab-pane label="流水账" name="fifth">
-					<el-table :data="gridData5" border height="550">
+					<el-table :data="gridData5" border height="450">
 						<el-table-column prop="createByName" label="录入人"></el-table-column>
 						<el-table-column prop="deptName" label="录入门店"> </el-table-column>
 						<el-table-column label="录入日期">
@@ -86,7 +86,7 @@
 				</el-tab-pane>
 				<!-- 票据 -->
 				<el-tab-pane label="票据" name="sixth">
-					<el-table :data="gridData6" border height="550">
+					<el-table :data="gridData6" border height="450">
 						<el-table-column prop="moneyType" label="款类"></el-table-column>
 						<el-table-column label="开票时间">
               <template slot-scope="scope">
@@ -290,7 +290,7 @@ export default {
 #flowaccount {
   .el-dialog {
     width: 740px;
-    height: 700px;
+    height: 600px;
     overflow-y: auto;
   }
   .el-dialog__body {
