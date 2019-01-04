@@ -13,7 +13,7 @@
         <div class="commission gap">
             <p class="title">
                 <span>{{this.bigName}}</span>
-                 <el-button type="primary" class='paper-btn' round size="medium"  v-if="power['sign-set-kl-add'].state" @click='operation(null,1)'>新增</el-button> 
+                 <el-button type="primary" class='paper-btn' round size="medium"  v-show="power['sign-set-kl-add'].state" @click='operation(null,1)'>新增</el-button> 
             </p>
             <el-table :data="moneyTypes" v-if="isMoney" max-height="500">
                 <el-table-column align="center" label="序号" type="index"></el-table-column>

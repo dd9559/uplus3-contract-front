@@ -116,7 +116,7 @@
       <!-- 图片放大 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
-    
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     </div>
 </template>
 
@@ -125,6 +125,7 @@ import {TOOL} from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import {FILTER} from "@/assets/js/filter";
 import { Message } from 'element-ui';
+import checkPerson from '@/components/checkPerson'
 export default {
     mixins: [FILTER, MIXINS],
     props: {
@@ -139,11 +140,19 @@ export default {
     },
 
     components: {
-        Message
+        Message,
+        checkPerson
     },
 
     data() {
         return {
+          checkPerson: {
+            state:false,
+            type:'init',
+            code:'',
+            flowType:0,
+            label:false
+          }, 
           clientHei: document.documentElement.clientHeight, //窗体高度
           fullscreenLoading:false,//创建按钮防抖
           auditForm: {
@@ -278,7 +287,21 @@ export default {
           })
       },
 
-
+       
+      // 选择审核人
+      choseCheckPerson:function (checkId,type) {
+        this.checkPerson.flowType=4   //调佣的流程类型为4
+        this.checkPerson.code=checkId  //业务编码为checkId
+        this.checkPerson.state=true  
+        this.checkPerson.type=type
+        this.checkPerson.label=true
+      },
+      personChose:function () {
+        this.checkPerson.state=false
+        this.$message({
+          message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
+        })
+      },
       //发起调佣申请
       auditApply() {
         this.auditForm.money1=this.$tool.cutFloat({val:this.auditForm.money1,max:999999999.99})
@@ -304,7 +327,7 @@ export default {
             else if(parseFloat(this.auditForm.money1) < 0 || parseFloat(this.auditForm.money2) < 0 || parseFloat(this.auditForm.money4) < 0){
               this.$message('请输入非负数的金额');
             } 
-            else if(this.auditForm.money1 + this.auditForm.money2 > this.layerAudit.dealPrice){
+            else if(parseFloat(this.auditForm.money1) + parseFloat(this.auditForm.money2) > parseFloat(this.layerAudit.dealPrice)){
               this.$message('调整的业主佣金+客户佣金总和不能大于成交总价');
             }        
             else{
@@ -327,11 +350,11 @@ export default {
                         this.$emit('closeCentCommission')
                       }, 1500);                     
                     }
-                    else if (res.data.status === 300) {
-                      this.$message('已申请！当前合同没有下一步审核人，您可以去调佣列表中设置。');
+                    else if (res.data.checkId) {
                       setTimeout(() => {                     
                         this.$emit('closeCentCommission')
-                      }, 1500);                     
+                      }, 1500);  
+                      this.choseCheckPerson(res.data.checkId,'set')
                     }
 
                 }).catch(error => {
