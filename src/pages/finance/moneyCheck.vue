@@ -192,7 +192,7 @@
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态" prop="checkStatus.label"></el-table-column>
+        <el-table-column align="center" label="状态" prop="payStatus"></el-table-column>
         <el-table-column align="center" label="结算信息" v-if="activeView===1">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>

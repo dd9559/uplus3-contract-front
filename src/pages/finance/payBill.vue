@@ -504,7 +504,6 @@
           inObjId:'',
           inObj:''
         }
-        console.log(obj)
         this.dropdown.find(tip=>{
           if(tip.value===item&&!!tip.custId){
             obj.inObjId = tip.custId
@@ -526,7 +525,6 @@
         param.inAccount = [].concat(this.list)
 
         let promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
-        console.log(promiseArr)
 
         Promise.all(promiseArr).then(res=>{
           if(this.showAmount){

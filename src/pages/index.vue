@@ -75,12 +75,12 @@
     created(){
       this.Index=this.$store.state.path
       this.activeIndex = this.Index[1].path.split('/')[1]
-      this.$ajax.get('/api/me').then(res=>{
+      /*this.$ajax.get('/api/me').then(res=>{
         res=res.data
         if(res.status===200){
           // debugger
           let arr=res.data.privileges
-          this.setUser(res.data)
+          this.$store.commit('setUser',res.data)
           // console.log(this.$store.state.user.privileges)
           this.views.forEach((item,index)=>{
             let sliders=[]
@@ -92,6 +92,17 @@
             item.child=sliders
           })
         }
+      })*/
+      // console.log(this.getUser)
+      let arr=this.getUser?this.getUser.privileges:[]
+      this.views.forEach((item,index)=>{
+        let sliders=[]
+        item.child.forEach(tip=>{
+          if(arr.indexOf(tip.code)>-1){
+            sliders.push(tip)
+          }
+        })
+        item.child=sliders
       })
     },
     beforeRouteUpdate(to,from,next){
@@ -166,6 +177,22 @@
         'getUser',
         'getLoading'
       ])
+    },
+    watch:{
+      getUser:function (val) {
+        let arr=val.privileges
+        this.views=this.$tool.pathList.map(item=>Object.assign({},item))
+
+        this.views.forEach((item,index)=>{
+          let sliders=[]
+          item.child.forEach(tip=>{
+            if(arr.indexOf(tip.code)>-1){
+              sliders.push(tip)
+            }
+          })
+          item.child=sliders
+        })
+      }
     }
   }
 </script>
