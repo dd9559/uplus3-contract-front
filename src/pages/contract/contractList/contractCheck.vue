@@ -157,8 +157,9 @@
         <el-table-column align="left" label="当前审核人" width="150">
           <template slot-scope="scope">
             <span v-if="scope.row.auditId>0">
+              <p>{{scope.row.auditStoreName}}</p>
               <p>{{scope.row.auditName}}</p>
-              <el-button type="text" v-if="userMsg&&scope.row.auditId===userMsg.empId" @click="choseCheckPerson(scope.row,'int')">转交审核人</el-button>
+              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,'int')">转交审核人</el-button>
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <span v-else>-</span>
@@ -167,10 +168,11 @@
         <el-table-column align="left" label="下一步审核人" width="150">
           <template slot-scope="scope">
             <span v-if="scope.row.nextAuditId>0">
+              <p>{{scope.row.nextAuditStoreName}}</p>
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&scope.row.auditId===userMsg.empId||userMsg&&scope.row.preAuditId===userMsg.empId" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="userMsg&&(scope.row.auditId!==0&&scope.row.auditId===userMsg.empId)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
