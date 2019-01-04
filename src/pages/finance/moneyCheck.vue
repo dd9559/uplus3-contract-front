@@ -523,7 +523,7 @@
             tab: '收款信息',
             id:item.id,
             type:item.inAccountType,
-            power:powerMsg,
+            power:this.getUser.user.empId===item.auditBy,
             print:this.power['sign-cw-bill-print'].state,
             bill: this.power['sign-cw-debt-invoice'].state
           }
@@ -532,7 +532,7 @@
           param.query = {
             tab: '付款信息',
             id:item.id,
-            power:powerMsg,
+            power:this.getUser.user.empId===item.auditBy,
             print:this.power['sign-cw-bill-print'].state,
             bill: this.power['sign-cw-debt-invoice'].state
           }
