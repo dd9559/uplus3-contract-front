@@ -89,6 +89,7 @@
             <!-- 图片放大 -->
             <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
         </el-dialog>
+        <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     </div>
 </template>
 
@@ -96,10 +97,11 @@
   import {FILTER} from "@/assets/js/filter";
   import { MIXINS } from "@/assets/js/mixins";
   import {TOOL} from "@/assets/js/common";
+  import checkPerson from '@/components/checkPerson'
 export default {
     mixins: [MIXINS],
     components: {
-       
+       checkPerson
     },
     props: {
         contId: {
@@ -113,6 +115,13 @@ export default {
     },
     data() {
         return {
+            checkPerson: {
+                state:false,
+                type:'init',
+                code:'',
+                flowType:0,
+                label:false
+            }, 
             clientHei: document.documentElement.clientHeight, //窗体高度
             fullscreenLoading:false,//创建按钮防抖
              // 弹框里用到的
@@ -251,6 +260,20 @@ export default {
                 })
           })
       },
+      // 选择审核人
+      choseCheckPerson:function (checkId,type) {
+        this.checkPerson.flowType=5   //调佣的流程类型为4
+        this.checkPerson.code=settlementId  //业务编码为settlementId
+        this.checkPerson.state=true  
+        this.checkPerson.type=type
+        this.checkPerson.label=true
+      },
+      personChose:function () {
+        this.checkPerson.state=false
+        this.$message({
+          message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
+        })
+      },
 
       //发起结算申请
       auditApply() {
@@ -276,11 +299,11 @@ export default {
                         this.$emit('closeSettle')
                     }, 1500);              
                 }
-                else if (res.data.status === 300) {
-                    this.$message('已申请！当前合同没有下一步审核人，您可以去结算列表中设置。');
+                else if (res.data.settlementId) {
                     setTimeout(() => {                     
-                        this.$emit('closeSettle')
-                    }, 1500);                     
+                    this.$emit('closeSettle')
+                    }, 1500);  
+                    this.choseCheckPerson(res.data.settlementId,'set')
                 }
             }).catch(error => {
                 this.fullscreenLoading=false

@@ -116,13 +116,13 @@
         <el-table-column label="当前审核人" min-width="140">
           <template slot-scope="scope">
             <p>{{scope.row.examineStoreName + '-' + scope.row.examineName}}</p>
-            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.code,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
             <p>{{scope.row.nextAuditStore + '-' + scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.code,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
@@ -479,7 +479,11 @@
           'sign-ht-js-vdetail': {
             state: false,
             name: '结算详情'
-          }
+          },
+          'sign-com-htdetail':{
+              name:'合同详情',
+              state:false,
+          },
         }
 
         
@@ -532,9 +536,9 @@
       // },
 
        // 选择审核人
-      choseCheckPerson:function (row,type) {
+      choseCheckPerson:function (code,type) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
-        this.checkPerson.code=row.code  //业务编码为checkId
+        this.checkPerson.code=code  //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
@@ -799,6 +803,9 @@
               this.queryFn();
             }, 2000);
           }
+          else if(res.data.status === 300){
+            this.choseCheckPerson(this.myCheckId,'set')
+          }
         }).catch(error => {
             this.fullscreenLoading=false
             this.$message({
@@ -810,16 +817,20 @@
 
       //跳转合同详情页
       goContractDetail(e){
-        // console.log(e)
-        this.setPath(this.$tool.getRouter(['合同','结算审核','合同详情'],'contractList'));
-        this.$router.push({
-          path:'/contractDetails',
-          query: {
-            id: e.contractId,
-            code: e.code,
-            contType: e.contType.value
-          }
-        })
+         if(this.power['sign-com-htdetail'].state){
+          // console.log(e)
+          this.setPath(this.$tool.getRouter(['合同','结算审核','合同详情'],'contractList'));
+          this.$router.push({
+            path:'/contractDetails',
+            query: {
+              id: e.contractId,
+              code: e.code,
+              contType: e.contType.value
+            }
+          })
+        }else{
+           this.noPower(this.power['sign-com-htdetail'].name);
+        }
       },
 
       handleCurrentChange(e) {
