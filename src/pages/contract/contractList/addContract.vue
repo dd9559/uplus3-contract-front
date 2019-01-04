@@ -837,7 +837,7 @@ export default {
                               IdCardList.push(element.encryptionCode);
                               mobileList.push(element.encryptionMobile);
                             });
-                            this.guestList.forEach(element => {
+                            guestArr.forEach(element => {
                               IdCardList.push(element.encryptionCode);
                               mobileList.push(element.encryptionMobile);
                             });

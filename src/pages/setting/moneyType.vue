@@ -37,7 +37,7 @@
                 <el-table-column align="center" label="收付配置" prop="accountType.label"></el-table-column>
                 <el-table-column align="center" label="操作" :formatter="nullFormatter">
                     <template slot-scope="scope">
-                        <div v-if="bigName =='代收代付'">--</div>
+                        <div v-if="bigName =='代收代付' || !power['sign-set-kl-edit'].state">--</div>
                         <div v-else>
                             <el-button type="text" size="medium" v-if="power['sign-set-kl-edit'].state"  @click='operation(scope.row,2)'>编辑</el-button>
                         </div>
@@ -81,7 +81,6 @@
         data() {
             return {
                 tableData: [],
-                value2:'',
                 moneyTypes: [],
                 cityName: "",
                 title:'',
@@ -119,7 +118,7 @@
         },
         created(){
             this.getDictionary()
-           this.initList()
+            this.initList()
         },
         computed: {
             validInput() {
@@ -127,7 +126,6 @@
             }
         },
         methods: {
-            // 初始化数据
             initList(){
                 //  if(this.power['sign-set-kl-query'].state){
                     this.$ajax.get('api/setting/moneyType/list',{id:this.bigId},).then((res)=>{
@@ -158,7 +156,6 @@
                     this.addForm.remark=''
                     this.addForm.parentId=this.bigId
                 }else if(type==2){
-                    console.log(row,'row');
                     this.title=`编辑【${this.bigName}】小类`,
                     this.smallId=row.id
                     this.addForm.name=row.name
