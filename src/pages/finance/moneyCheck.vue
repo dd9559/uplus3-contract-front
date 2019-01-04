@@ -167,7 +167,7 @@
               <span>{{scope.row.auditStore}}</span>
               <p>{{scope.row.auditName}}</p>
             </template>
-            <el-button class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
@@ -177,7 +177,7 @@
               <span>{{scope.row.nextAuditStore}}</span>
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.auditBy!==0&&getUser.user.empId===scope.row.auditBy)" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.auditBy!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -192,7 +192,7 @@
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态" prop="payStatus"></el-table-column>
+        <el-table-column align="center" label="状态" prop="checkStatus.label"></el-table-column>
         <el-table-column align="center" label="结算信息" v-if="activeView===1">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
@@ -347,17 +347,21 @@
             state: false,
             name: '作废'
           },
+          'sign-cw-debt-invoice': {
+            state: false,
+            name: '开票'
+          },
           'sign-cw-bill-print':{
             state: false,
             name: '打印'
           },
           'sign-cw-debt-pay': {
             state: false,
-            name: '付款审核'
+            name: '付款详情'
           },
           'sign-cw-debt-rev': {
             state: false,
-            name: '收款审核'
+            name: '收款详情'
           },
           'sign-com-htdetail': {
             state: false,
@@ -504,6 +508,13 @@
       },
       toDetails:function (item) {
         let powerMsg=this.power[this.activeView===1?'sign-cw-debt-rev':'sign-cw-debt-pay'].state
+        if(!powerMsg){
+          let that=this
+          this.$message({
+            message:`${that.activeView===1?'无收款详情查看权限':'无付款详情查看权限'}`
+          })
+          return
+        }
         let param = {
           path: 'billDetails'
         }
@@ -513,7 +524,8 @@
             id:item.id,
             type:item.inAccountType,
             power:powerMsg,
-            print:this.power['sign-cw-bill-print'].state
+            print:this.power['sign-cw-bill-print'].state,
+            bill: this.power['sign-cw-debt-invoice'].state
           }
           this.setPath(this.getPath.concat({name:'收款详情'}))
         } else {
@@ -521,7 +533,8 @@
             tab: '付款信息',
             id:item.id,
             power:powerMsg,
-            print:this.power['sign-cw-bill-print'].state
+            print:this.power['sign-cw-bill-print'].state,
+            bill: this.power['sign-cw-debt-invoice'].state
           }
           this.setPath(this.getPath.concat({name:'付款详情'}))
         }

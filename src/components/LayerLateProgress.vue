@@ -82,7 +82,7 @@
                     <el-form 
                     ref="stepsFrom"
                     :model="stepsFrom"
-                    v-loading="LookStepLoad"
+                    v-loading.fullscreen.lock="LookStepLoad"
                     label-width="150px">
                         <el-form-item
                             v-for="(item,index) in stepsFrom.list"
@@ -188,7 +188,7 @@
         methods: {
             // 百分比转换
             percentageFn(val){
-                if(val = 0){
+                if(val > 0){
                     return `${val}%`
                 }else{
                     return '--'
@@ -234,7 +234,6 @@
             },
             // 查看
             operationFn(id){
-                this.stepsDataShow = true;
                 this.getLookStepFn(id);
             },
             getLookStepFn(id){
@@ -293,10 +292,12 @@
                             id:resData.id
                         };
                         this.LookStepLoad = false;
+                        this.stepsDataShow = true;
                         this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
-                    console.log(err)
+                    this.LookStepLoad = false;
+                    this.$message.error(err);
                 })
             },
             // 图片格式状态判定
