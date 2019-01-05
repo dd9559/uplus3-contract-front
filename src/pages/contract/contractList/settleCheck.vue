@@ -127,7 +127,7 @@
         </el-table-column>
         <el-table-column label="审核备注" width="200">
           <template slot-scope="scope">
-            <span v-if="(scope.row.checkRemark).trim().length > 0">
+            <span v-if="(scope.row.remarks).trim().length > 0">
               <el-popover trigger="hover" placement="top">
                 <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
                   {{scope.row.remarks}}
@@ -137,7 +137,7 @@
                 </div>
               </el-popover>
             </span>
-            <span v-else>-</span>
+            <span v-else>--</span>
           </template>
         </el-table-column>
               

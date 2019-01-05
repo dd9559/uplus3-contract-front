@@ -494,7 +494,6 @@
         this.getDetails({type: type, payId: this.$route.query.id})
       }else {
         this.$nextTick(()=>{
-          console.log(this.getUser)
           this.getAcount(this.getUser.user&&this.getUser.user.empId)
         })
       }
