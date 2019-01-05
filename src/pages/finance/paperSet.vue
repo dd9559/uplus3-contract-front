@@ -87,7 +87,7 @@
                         @node-click="depHandleClick"></el-tree> 
                     </el-option>
                 </el-select> -->
-                <select-tree :data="DepList" :init="propForm.depIdS" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+                <select-tree :data="DepList" :init="propForm.depIdS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
             </el-form-item>
             <el-form-item prop="empId">
                 <el-select 
@@ -615,6 +615,11 @@
           if(!val){
               this.remoteMethod()
           }
+      },
+      // 部门搜索
+      searchDep:function (payload) {
+          this.DepList=payload.list
+          this.propForm.depIdS = payload.depName
       },
     },
     components: {

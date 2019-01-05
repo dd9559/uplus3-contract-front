@@ -1765,6 +1765,9 @@ export default {
     },
     personChose:function () {
         this.checkPerson.state=false
+        let _this=this;
+        setTimeout(function(){_this.$emit("close");},50);
+        
         // this.$message({
         //   message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
         // })
