@@ -85,6 +85,7 @@ router.beforeEach((to,from,next)=>{
   store.commit('setPath',pathList?JSON.parse(pathList):[])
 
   // let userMsg = localStorage.getItem('userMsg')
+  console.log(store.state.user)
   if(!store.state.user){
     // debugger
     api.get('/api/me').then(res=>{
