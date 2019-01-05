@@ -7,7 +7,7 @@
         <span>步骤类型</span>
         <el-button type="primary" @click="addStepsType" v-if="power['sign-set-hq'].state">添加步骤类型</el-button>
       </div>
-      <el-table :data="listData" @cell-click="cellClick" border max-height="750">
+      <el-table :data="listData" @cell-click="cellClick" border max-height="600">
         <el-table-column
         align="center"
         :label="item.name"

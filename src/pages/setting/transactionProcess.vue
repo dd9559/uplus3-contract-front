@@ -3,18 +3,20 @@
         <div class="table_head">
             <el-button type="primary" @click="addProcess('添加交易流程')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
-        <el-table :data="listData" style="width: 100%" class="list1" border>
-          <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
-          <el-table-column align="left" label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" label="操作">
-            <template slot-scope="scope">
-              <el-button @click="rowOperation(scope.row,'init')" type="text" size="small" v-if="power['sign-set-hq'].state">交易流程管理</el-button>
-              <el-button @click="rowOperation(scope.row,'edit')" type="text" size="small" v-if="power['sign-set-hq'].state">编辑</el-button>
-              <el-button @click="rowOperation(scope.row,'delete')" type="text" size="small" v-if="power['sign-set-hq'].state">删除</el-button>
-            </template>
-          </el-table-column> 
-        </el-table>
+        <div class="list1" >
+          <el-table :data="listData" style="width: 100%" border>
+            <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
+            <el-table-column align="left" label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
+            <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
+            <el-table-column align="center" label="操作">
+              <template slot-scope="scope">
+                <el-button @click="rowOperation(scope.row,'init')" type="text" size="small" v-if="power['sign-set-hq'].state">交易流程管理</el-button>
+                <el-button @click="rowOperation(scope.row,'edit')" type="text" size="small" v-if="power['sign-set-hq'].state">编辑</el-button>
+                <el-button @click="rowOperation(scope.row,'delete')" type="text" size="small" v-if="power['sign-set-hq'].state">删除</el-button>
+              </template>
+            </el-table-column> 
+          </el-table>
+        </div>
         <!-- 添加编辑交易流程 弹出框 -->
         <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="700px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
           <el-form v-model="addForm" size="small">
@@ -529,6 +531,7 @@
     }
     .list1 {
       padding: 0 12px;
+      background-color: #fff;
       /deep/ .has-gutter th:nth-child(2) {
         text-align: center;
       }

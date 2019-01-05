@@ -3,22 +3,24 @@
         <div class="table_head">
             <el-button type="primary" @click="addCon('添加合同资料')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
-        <el-table :data="listData" style="width: 100%" class="contract-list" border>
-            <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
-            <el-table-column align="left" label="名称" prop="name"></el-table-column>
-            <el-table-column align="center" label="信息类型" prop="type">
-              <template slot-scope="scope">
-                <span>{{scope.row.type|getInfoType}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="是否为必选项" prop="isNecessary" :formatter="booleanFormatter"></el-table-column>
-            <el-table-column align="center" label="操作">
+        <div class="contract-list">
+          <el-table :data="listData" style="width: 100%" border>
+              <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
+              <el-table-column align="left" label="名称" prop="name"></el-table-column>
+              <el-table-column align="center" label="信息类型" prop="type">
                 <template slot-scope="scope">
-                    <el-button @click="rowOperation(scope.row,1,'编辑合同资料')" type="text" size="small" v-if="power['sign-set-hq'].state">编辑</el-button>
-                    <el-button @click="rowOperation(scope.row,2)" type="text" size="small" v-if="power['sign-set-hq'].state">删除</el-button>
+                  <span>{{scope.row.type|getInfoType}}</span>
                 </template>
-            </el-table-column>
-        </el-table>
+              </el-table-column>
+              <el-table-column align="center" label="是否为必选项" prop="isNecessary" :formatter="booleanFormatter"></el-table-column>
+              <el-table-column align="center" label="操作">
+                  <template slot-scope="scope">
+                      <el-button @click="rowOperation(scope.row,1,'编辑合同资料')" type="text" size="small" v-if="power['sign-set-hq'].state">编辑</el-button>
+                      <el-button @click="rowOperation(scope.row,2)" type="text" size="small" v-if="power['sign-set-hq'].state">删除</el-button>
+                  </template>
+              </el-table-column>
+          </el-table>
+        </div>
         <!-- 添加合同资料 -->
         <el-dialog :title="contractTitle" :visible.sync="contractVisible" width="740px" class="con-dialog" :closeOnClickModal="$tool.closeOnClickModal">
             <el-form v-model="contractForm" class="contract-form" size="small">
@@ -209,6 +211,7 @@ export default {
   }
   .contract-list {
     padding: 0 12px;
+    background-color: #fff;
     /deep/ .has-gutter th:nth-child(2) {
       text-align: center;
     }
