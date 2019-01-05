@@ -79,7 +79,7 @@
 @import "~@/assets/common.less";
 
 .view-container {
-  background-color: #F2F3F8!important;
+  background-color: #f5f5f5!important;
   height: 100%;
   .form-head {
     // height: 82px;
@@ -146,5 +146,8 @@
   border-radius: 18px;
   border-color: #478DE3;
   color: #478DE3;
+}
+/deep/ .el-table__empty-block {
+  line-height: 60px;
 }
 </style>
