@@ -19,13 +19,15 @@
           label="关键字"
           prop="search"
         >
-          <el-input
-            class="w460"
-            v-model="propForm.search"
-            placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
-            :trigger-on-focus="false"
-            clearable
-          ></el-input>
+          <el-tooltip content="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号" placement="top">
+             <el-input
+               class="w200"
+               v-model="propForm.search"
+               placeholder="请输入"
+               :trigger-on-focus="false"
+               clearable
+             ></el-input>
+          </el-tooltip>
         </el-form-item>
 
        <el-form-item
