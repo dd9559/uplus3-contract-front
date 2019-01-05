@@ -524,12 +524,13 @@
               this.noPower(this.power['sign-com-htdetail'].name);
               return false
           }
+          this.setPath(this.getPath.concat({name:'合同详情'}));
           this.$router.push({
               path: "/contractDetails",
               query: {
                   id: row.contId,//合同id
                   code: row.contNo,//合同编号
-                  contType: row.contType//合同类型
+                  contType: row.contType,//合同类型
               }
           });
         } else if (type === 'paper') {
@@ -543,14 +544,18 @@
               this.noPower(this.power['sign-com-revdetail'].name);
               return false
           }
+          this.setPath(this.getPath.concat({name:'收款详情'}));
           this.$router.push({
             path:'billDetails',
             query:{
               id:row.proceedsId,
               tab:'收款信息',
-              power:true
+              power:this.getUser.user.empId===row.auditId,
+              print:this.power['sign-cw-bill-print'].state,//打印权限
+              bill:this.power['sign-cw-bill-invoice'].state,//开票权限
             }
           })
+          
         }
       },
       // dialog确定

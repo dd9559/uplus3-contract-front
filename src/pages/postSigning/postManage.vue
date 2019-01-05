@@ -1414,7 +1414,7 @@
                             return '.mp4'
                             break;
                         case STEPSINPUT.excel:
-                            return '.xls'
+                            return '.xlsx'
                             break;
                         case STEPSINPUT.word:
                             return '.doc'
