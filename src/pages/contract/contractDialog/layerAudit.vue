@@ -337,19 +337,22 @@ export default {
                 .then(res => {
                   this.fullscreenLoading=false
                           
-                    if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {                             
-                      this.$message('没有金额记录调整并且申请成功');
-                        setTimeout(() => {
-                        
-                        this.$emit('closeCentCommission')
-                      }, 1500); 
+                    
+                    if (res.data.status === 200) {
+                      if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {                             
+                        this.$message('没有金额记录调整并且申请成功');
+                          setTimeout(() => {     
+                          this.$emit('closeCentCommission')
+                        }, 1500); 
+                      }
+                     else{
+                        this.$message('已申请');
+                        setTimeout(() => {                     
+                          this.$emit('closeCentCommission')
+                        }, 1500);
+                      }                      
                     }
-                    else if (res.data.status === 200) {
-                      this.$message('已申请');
-                      setTimeout(() => {                     
-                        this.$emit('closeCentCommission')
-                      }, 1500);                     
-                    }
+                   
                     else if (res.data.checkId) {
                       setTimeout(() => {                     
                         this.$emit('closeCentCommission')

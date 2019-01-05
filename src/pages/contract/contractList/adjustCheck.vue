@@ -78,7 +78,7 @@
         </el-table-column>
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName + '-' + scope.row.dealAgentName}}</p>
+            <p>{{scope.row.dealAgentStoreName + ' - ' + scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="签约日期" align="center">
@@ -93,7 +93,7 @@
         </el-table-column>
         <el-table-column label="发起人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.createByDepName + '-' + scope.row.createByName}}</p>
+            <p>{{scope.row.createByDepName + ' - ' + scope.row.createByName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="审核状态" :formatter="nullFormatter" align="center">
@@ -110,20 +110,22 @@
         </el-table-column>   
         <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.checkByDepName + scope.row.checkByName}}</p>
-            
-            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId)" @click="choseCheckPerson(scope.row.checkId,'init')">转交审核人</el-button>
+            <p v-if="scope.row.checkByDepName=='-'&&scope.row.checkByName=='-'">{{scope.row.checkByDepName + scope.row.checkByName}}</p>
+            <p v-else>{{scope.row.checkByDepName + ' - ' + scope.row.checkByName}}</p>
+           
+            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId)&&scope.row.checkState&&scope.row.checkState===0" @click="choseCheckPerson(scope.row.checkId,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.checkby === userMsg.empId)" @click="choseCheckPerson(scope.row.checkId,'set')">设置审核人</el-button>
+            <p v-if="scope.row.nextAuditStore=='-'&&scope.row.nextAuditName=='-'">{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
+            <p v-else>{{scope.row.nextAuditStore + ' - ' + scope.row.nextAuditName}}</p>
+            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.checkby === userMsg.empId)&&scope.row.checkState&&scope.row.checkState===0" @click="choseCheckPerson(scope.row.checkId,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
           <template slot-scope="scope">     
-              <span v-if="(scope.row.checkRemark).trim().length > 0">
+              <span v-if="scope.row.checkRemark&&(scope.row.checkRemark).trim().length > 0">
                 <el-popover trigger="hover" placement="top">
                   <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
                     {{scope.row.checkRemark}}
