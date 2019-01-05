@@ -1,6 +1,6 @@
 <template>
     <el-popover
-      @show="show"
+      @hide="checkInput"
       ref="popover"
       placement="bottom"
       v-model="visible">
@@ -101,6 +101,9 @@
             this.$emit('search',{list:res.data,depName:this.inputVal})
           }
         })
+      },
+      checkInput:function () {
+        this.$emit('inputBlur')
       },
       show:function () {
         /*if(this.clearOper){

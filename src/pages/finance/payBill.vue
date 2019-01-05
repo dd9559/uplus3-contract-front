@@ -607,7 +607,7 @@
               this.$router.replace({
                 path: 'payResult',
                 query:{
-                  content:(error.data.vo&&error.data.time)?JSON.stringify({dep:error.data.vo.deptName,name:error.data.vo.createByName,time:error.data.time,payCode:error.data.payCode}):''
+                  content:(error.data.vo&&error.data.time)?JSON.stringify({dep:error.data.vo.deptName,name:error.data.vo.createByName,time:error.data.time,payCode:error.data.payCode,type:error.data.type}):''
                 }
               })
             }else {

@@ -1,9 +1,11 @@
 <template>
-  <div class="view-container">
+  <div class="view-container" ref="tableComView">
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
-          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
+          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" placement="top">
+            <el-input v-model="keyword" style="width:150px" placeholder="请输入" :clearable="true"></el-input>
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="签约日期">
           <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
@@ -63,7 +65,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </span>
       </p>
-      <el-table ref="dataList" class="info-scrollbar" :data="tableData" border style="width: 100%"  @row-dblclick='toDetail'>
+      <el-table ref="tableCom" class="info-scrollbar" :data="tableData" border style="width: 100%"  @row-dblclick='toDetail' :max-height="tableNumberCom">
         <el-table-column align="left" label="合同信息" width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
@@ -156,10 +158,10 @@
         </el-table-column>
         <el-table-column align="left" label="当前审核人" width="150">
           <template slot-scope="scope">
-            <span v-if="scope.row.auditId>0">
+            <span v-if="scope.row.auditId>0&&scope.row.toExamineState.value===0">
               <p>{{scope.row.auditStoreName}}</p>
               <p>{{scope.row.auditName}}</p>
-              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,'int')">转交审核人</el-button>
+              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,'init')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <span v-else>-</span>
@@ -172,7 +174,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.auditId!==0&&scope.row.auditId===userMsg.empId)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="userMsg&&(scope.row.auditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
@@ -190,20 +192,22 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-if="tableData.length>0"
-        class="pagination-info"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        layout="total, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
+      <!-- 固定滚动条 -->
+      <div class="pagination" v-if="tableData.length>0">
+        <el-pagination
+         class="pagination-info"
+         @current-change="handleCurrentChange"
+         :current-page="currentPage"
+         layout="total, prev, pager, next, jumper"
+         :total="total">
+        </el-pagination>
+      </div>
       
     </div>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -384,7 +388,7 @@ export default {
     },
     //合同详情
     toDetail(value) {
-      if(!this.power['sign-com-htdetail'].state){
+      if(this.power['sign-com-htdetail'].state){
         this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
           this.$router.push({

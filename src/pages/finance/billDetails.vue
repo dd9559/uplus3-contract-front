@@ -351,7 +351,7 @@
           this.$ajax.get('/api/payInfo/auditOption', param).then(res => {
             res = res.data
             if (res.status === 200) {
-              this.radioMask = res.data.num === 2 ? true : false
+              // this.radioMask = res.data.num === 2 ? true : false
               this.amount=Object.assign({},res.data)
             }
           })
@@ -437,12 +437,12 @@
           }
         }).catch(error=>{
           this.fullscreenLoading=false
-          debugger
           if(error.message==='下一节点审批人不存在'){
             this.checkPerson.state=true
+            this.checkPerson.type=error.data.type===1?'set':'init'
           }else {
             this.$message({
-              message:error.message
+              message:error
             })
           }
         })

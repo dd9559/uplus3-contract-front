@@ -379,7 +379,7 @@
           >
             <template slot-scope="scope">
                 <p>{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
-                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="userMsg&&userMsg.empId==scope.row.auditId">转交审核人</p>
+                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="(userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId">转交审核人</p>
             </template>
           </el-table-column>
 
@@ -389,7 +389,7 @@
           >
             <template slot-scope="scope">
                 <p>{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
-                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row,2)"  v-if="userMsg&&scope.row.auditId===userMsg.empId">设置审核人</p>
+                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row,2)"  v-if="(userMsg&&scope.row.auditId===userMsg.empId)&&(scope.row.nextAuditId==-1)">设置审核人</p>
             </template>
           </el-table-column>
 
@@ -458,7 +458,7 @@
                     style="cursor:pointer;"
                     v-if="userMsg&&userMsg.empId==scope.row.auditId"
                   >审核</span> 
-                  <span v-if="power['sign-yj-rev-retreat'].state==false&&(userMsg&&userMsg.empId!=scope.row.auditId)"></span>           
+                  <span v-if="power['sign-yj-rev-retreat'].state==false&&(userMsg&&userMsg.empId!=scope.row.auditId)">-</span>           
                 </div>
               </div>
               <div v-else>
@@ -730,13 +730,13 @@
               <template slot-scope="scope">
                 <div>
                   <div v-if="scope.row.contType==0">
-                    <p class="blue">审核中</p>
+                    <p class="blue">提交审核</p>
                   </div>
                   <div v-if="scope.row.contType==-1">
                     <p class="blue">待提审</p>
                   </div>
                   <div v-else-if="scope.row.contType==1">
-                    <p class="green">提交审核</p>
+                    <p class="green">审核通过</p>
                   </div>
                   <div v-else-if="scope.row.contType==2">
                     <p class="orange">已驳回</p>
@@ -1435,11 +1435,11 @@ export default {
       }
     }
     /deep/ .ach-body {
-      max-height: 500px;
       // background-color: pink;
       padding: 0 20px !important;
       box-sizing: border-box;
       overflow-y: auto;
+      max-height: 500px;
       /deep/ .el-table {
         // font-size: 14px !important;
         margin-top: 20px;
@@ -1519,6 +1519,7 @@ export default {
 
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
+    max-height: 500px;
 }
 /deep/ .el-dialog.base-dialog .el-dialog__header {
   padding: 0 !important;

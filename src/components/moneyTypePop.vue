@@ -56,6 +56,8 @@
         }
       },
       cellClick:function (data,pData) {
+        console.log(this.inputVal,this.init)
+        console.log(JSON.stringify(data))
         let param = Object.assign({},data,{pId:pData.id,pName:pData.name})
         this.$refs.btn.focus()
         this.inputVal=data.name
