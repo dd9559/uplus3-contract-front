@@ -44,7 +44,7 @@
                                 @node-click="depHandleClick"></el-tree> 
                             </el-option>
                         </el-select> -->
-                        <select-tree :data="DepList" :init="propForm.regionS" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+                        <select-tree :data="DepList" :init="propForm.regionS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                     </el-form-item>
                     <el-form-item prop="regionName">
                         <el-select 
@@ -840,6 +840,11 @@
                 if(!val){
                     this.remoteMethod()
                 }
+            },
+            // 部门搜索
+            searchDep:function (payload) {
+                this.DepList=payload.list
+                this.propForm.regionS = payload.depName
             },
             // 贷款银行搜索
             remoteMethodFn(e) {
