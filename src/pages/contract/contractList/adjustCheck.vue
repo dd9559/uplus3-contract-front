@@ -546,6 +546,7 @@
         this.$message({
           message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
         })
+        this.queryFn()
       },
 
       // 控制弹框body内容高度，超过显示滚动条
@@ -803,6 +804,7 @@
           }
           else if(res.data.status === 300){
             this.choseCheckPerson(this.myCheckId,'set')
+            
           }
         }).catch(error => {
             this.fullscreenLoading=false

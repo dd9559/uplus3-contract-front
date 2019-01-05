@@ -1,6 +1,6 @@
 <template>
   <i class="iconfont" :style="getFontSize"
-     :class="[!otherFile?'icon-qita1':getType]"></i>
+     :class="getType"></i>
 </template>
 
 <script>
@@ -18,7 +18,7 @@
     },
     data() {
       return {
-        typeList: ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.mp3', '.mpeg', '.cd', '.wave', '.aiff', '.mp4', '.avi', '.rmvb', '.txt', '.pdf', '.xlsx', '.docx', '.doc', '.ppt', '.zip', '.rar']
+        typeList: ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.mp3', '.mpeg', '.cd', '.wave', '.aiff', '.mp4', '.avi', '.rmvb', '.txt', '.pdf', '.xls','.xlsx', '.docx', '.doc', '.ppt', '.zip', '.rar']
       }
     },
     computed: {

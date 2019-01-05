@@ -289,7 +289,7 @@ export default {
 <style lang="less">
 #flowaccount {
   .el-dialog {
-    width: 740px;
+    width: 800px;
     height: 600px;
     overflow-y: auto;
   }

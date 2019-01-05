@@ -7,6 +7,8 @@ let errorMsg = {
   '410':'重复请求',
   '500':'网络异常，请稍后再试',
 }
+console.log(axios.defaults)
+axios.defaults.headers.common['Cache-Control']='no-cache'
 axios.interceptors.response.use((response)=>{
   // debugger
   let res=response.data

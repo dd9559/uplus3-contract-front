@@ -177,7 +177,7 @@
               <span>{{scope.row.nextAuditStore}}</span>
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.auditBy!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
