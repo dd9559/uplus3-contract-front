@@ -271,7 +271,7 @@ export default {
       personChose:function () {
         this.checkPerson.state=false
         this.$message({
-          message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
+          message:`成功${this.checkPerson.type==='init'?'转交审核人':'设置审核人'}`
         })
       },
 
@@ -303,7 +303,7 @@ export default {
                     setTimeout(() => {                     
                     this.$emit('closeSettle')
                     }, 1500);  
-                    this.choseCheckPerson(res.data.bizId,'set')
+                    this.choseCheckPerson(res.data.bizId,'init')
                 }
             }).catch(error => {
                 this.fullscreenLoading=false
