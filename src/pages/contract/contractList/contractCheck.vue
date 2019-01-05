@@ -3,7 +3,9 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
-          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
+          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" placement="top">
+            <el-input v-model="keyword" style="width:150px" placeholder="请输入" :clearable="true"></el-input>
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="签约日期">
           <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
@@ -159,7 +161,7 @@
             <span v-if="scope.row.auditId>0&&scope.row.toExamineState.value===0">
               <p>{{scope.row.auditStoreName}}</p>
               <p>{{scope.row.auditName}}</p>
-              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
+              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,'init')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <span v-else>-</span>

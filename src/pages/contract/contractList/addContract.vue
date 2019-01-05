@@ -1793,7 +1793,7 @@ export default {
   border-bottom: 1px solid @border-ED;
   > p {
     padding-bottom: 10px;
-    padding-left: 20px;
+    padding-left: 10px;
     font-size: 14px;
     font-weight: bold;
   }
@@ -1823,7 +1823,7 @@ export default {
   }
   border-bottom: 1px solid @border-ED;
   > p {
-    padding: 20px 0 20px 20px;
+    padding: 20px 0 20px 10px;
     font-size: 14px;
     font-weight: bold;
   }
@@ -1970,6 +1970,7 @@ export default {
     }
     .icon {
       display: inline-block;
+      cursor: pointer;
       .icon-tubiao_shiyong-14 {
         font-size: 22px;
         color: @color-blue;
@@ -1987,6 +1988,7 @@ export default {
 }
 .btn {
   padding-top: 20px;
+  padding-left: 20px;
   display: flex;
   justify-content: space-between;
   p {

@@ -789,7 +789,7 @@
 
         <div class="dialog3" style="z-index: 2007;">
            <!-- 选择审核人弹框 -->
-           <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose"></checkPerson>
+           <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" v-if="checkPerson.state" @submit="personChose"></checkPerson>
         </div>
       </el-dialog>
     </div>
@@ -1659,20 +1659,22 @@ export default {
         this.$ajax
           .postJSON("/api/achievement/distributionSave", param)
           .then(res => {
-            if (res.data.status == 200&&!res.data.data) {
+            if (res.data.status == 200&&!res.data.data.bizCode) {
               this.$emit("close");
               this.loading=false;
               this.$message({ message: "操作成功", type: "success" });
-            }else if(res.data.status == 200&&res.data.data){
-               this.loading=false;
-               this.checkPerson.flowType=2;
-               this.checkPerson.code= res.data.data;
-               this.checkPerson.state=true;
-               this.checkPerson.type='init';
             }
             }).catch(error => {
-               this.$message.error({message: error})
+             if(error.status == 300){
                this.loading=false;
+               this.checkPerson.flowType=2;
+               this.checkPerson.code= error.data.bizCode;
+               this.checkPerson.state=true;
+               this.checkPerson.type='init';
+            }else{
+               this.$message({ message:error, type: "error"})   
+            }
+            this.loading=false;
           });
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
@@ -1767,10 +1769,11 @@ export default {
         this.checkPerson.state=false
         let _this=this;
         setTimeout(function(){_this.$emit("close");},50);
-        
-        // this.$message({
-        //   message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
-        // })
+    },
+    closeCheckPerson(){
+      this.checkPerson.state=false;
+      let _this=this;
+      setTimeout(function(){_this.$emit("close");},50);
     }
   },
   watch: {
@@ -1834,7 +1837,7 @@ export default {
 /deep/ .dialog2In {
   width: 450px !important;
   max-height: 450px;
-  min-height: 255px;
+  min-height: 350px;
   margin-top: 13vh !important;
   .is-checked {
     color: #478de3 !important;
@@ -1849,6 +1852,9 @@ export default {
     // min-height: 200px;
     // height: 300px;
     width: 450px !important;
+  }
+   /deep/ .el-dialog__header{
+    padding: 0 !important;
   }
   h1 {
     height: 53px;
@@ -1866,7 +1872,7 @@ export default {
     overflow-y: auto;
     max-height: 300px;
     min-height: 100px;
-    width: 450px !important;
+    // width: 450px !important;
   }
   /deep/ tr td:first-of-type,
   th:first-of-type {
@@ -1955,15 +1961,7 @@ export default {
       box-sizing: border-box;
       overflow-y: auto;
 
-      /deep/ .el-input__inner {
-        border: 0;
-        box-shadow: 0;
-        padding: 0;
-        padding-left: 5px;
-        padding-right: 25px;
-        // padding-left: 10px;
-        font-size: 12px !important;
-      }
+
       /deep/ .el-icon-circle-close {
         position: absolute;
         left: -5px;
@@ -2143,7 +2141,16 @@ export default {
 /deep/ .el-dialog.base-dialog .ach-body {
   padding: 0 20px !important;
 }
-// /deep/ .el-dialog__header {
-//   padding: 0 !important;
-// }
+/deep/ .dialog2In .el-dialog__header {
+  padding: 0 !important;
+}
+/deep/ .el-dialog.base-dialog  .el-input__inner {
+        border: 0;
+        box-shadow: 0;
+        padding: 0;
+        padding-left: 5px!important;
+        padding-right: 25px!important;
+        // padding-left: 10px;
+        font-size: 12px !important;
+      }
 </style>

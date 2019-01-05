@@ -4,7 +4,9 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
-          <el-input v-model="keyword" placeholder="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" style="width:430px" :clearable="true"></el-input>
+          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" placement="top">
+            <el-input v-model="keyword" style="width:150px" placeholder="请输入" :clearable="true"></el-input>
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="签约日期">
           <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
@@ -85,8 +87,8 @@
     </ScreeningTop>
     <!-- 合同列表 -->
     <div class="contract-list">
-      <p>
-        <span>
+      <div class="listTitle">
+        <div>
           <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
           <!-- <span class="text">有效成分汇总 </span>
           <span class="text">租赁：</span> <span class="data">123165</span>
@@ -96,8 +98,8 @@
           <span class="text">定金：</span> <span class="data">0</span>
           <span class="text">可分配业绩汇总：</span> <span class="data">564654</span>
           <span class="text">单数：</span> <span class="data">13</span> -->
-        </span>
-        <span>
+        </div>
+        <div>
           <el-dropdown placement="bottom" @command="printCont" v-if="power['sign-ht-info-print'].state"><!--  @command="printCont" -->
             <el-button round>
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
@@ -118,8 +120,8 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-        </span>
-      </p>
+        </div>
+      </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
         <el-table-column align="left" label="合同信息" width="260" fixed>
           <template slot-scope="scope">
@@ -1067,7 +1069,7 @@ export default {
   padding: 0 10px;
   border-radius: 2px;
   box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
-  > p {
+  > .listTitle {
     display: flex;
     align-items: center;
     justify-content: space-between;
