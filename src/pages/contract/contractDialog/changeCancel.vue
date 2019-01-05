@@ -161,7 +161,7 @@
 			</div>
 			<div class="btnbox" v-if="getDialogType==='upload'||getDialogType==='changeEdit'||getDialogType==='cancelEdit'">
 				<el-button @click="close">取 消</el-button>
-				<el-button type="primary" @click="saveFile">保 存</el-button>
+				<el-button type="primary" @click="saveFile" :disabled="forbid">保 存</el-button>
 			</div>
 			<!-- 图片预览 -->
     	<preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -205,7 +205,9 @@ export default {
 			textarea:'',
 			address:{},
 			isDelete:'',
-			preview:false
+			preview:false,
+			//保存按钮是否可点击
+			forbid:false
     };
   },
 
@@ -268,15 +270,18 @@ export default {
     },
 		//提交变更解约
 		subChangeCancel(url,param){
+			this.forbid=true;
 			this.$ajax.postJSON(url,param).then(res=>{
 				res=res.data;
 				if(res.status===200){
+					this.forbid=false;
 					this.$message({
 						message:'操作成功'
 					});
 					this.close();
 				}
 			}).catch(error=>{
+				this.forbid=false;
 				this.$message({
 					message:error,
 					type: "error"
