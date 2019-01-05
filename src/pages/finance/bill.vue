@@ -43,7 +43,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @inputBlur="checkInput" @search="searchDep"></select-tree>
           <!--<el-select
             class="w200"
             :clearable="true"
@@ -59,7 +59,7 @@
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>-->
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
+          <el-select :clearable="true" filterable remote :remote-method="test" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="searchForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
@@ -452,11 +452,9 @@
       }
     },*/
     methods: {
-      /*test:function (e) {
-        this.scrollWidth=this.$refs.table.$refs.rightFixedBodyWrapper.clientWidth
-        console.log(this.$refs.table.$el.offsetLeft)
-        this.$refs.table.$refs.bodyWrapper.scrollTo(e.target.scrollLeft,0)
-      },*/
+      test:function (val) {
+
+      },
       reset: function () {
         this.$tool.clearForm(this.searchForm)
       },
@@ -481,6 +479,12 @@
         // this.EmployeList=[]
         this.searchForm.empId = ''
         this.clearSelect()
+      },
+      checkInput:function () {
+        debugger
+        if(this.dep.name!==this.searchForm.depName){
+          this.searchForm.depName=this.dep.name
+        }
       },
       searchDep:function (payload) {
         this.DepList=payload.list
