@@ -1305,7 +1305,8 @@ export default {
             this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
           }else{
             this.contractForm.dealPrice = houseMsg.ListingPrice;
-            this.contractForm.timeUnit=2
+            // this.contractForm.timeUnit=2;
+            this.$set(this.contractForm,'timeUnit',2);
           }
           this.contractForm.houseInfo = houseMsg;
           if(houseMsg.OwnerInfoList.length>0){
