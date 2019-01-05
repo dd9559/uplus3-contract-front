@@ -6,7 +6,7 @@
 
         <el-form-item label="关键字" prop="search">
           <el-input
-            class="w430"
+            class="w330"
             v-model="propForm.search"
             placeholder="合同编号/房源编号/客源编号/物业地址"
             :trigger-on-focus="false"
@@ -14,16 +14,27 @@
           ></el-input>
         </el-form-item>
         
-        <el-form-item label="签约日期" prop="dateMo" class="mr">
-          <el-date-picker
-            v-model="propForm.dateMo"
-            class="w330"
-            type="daterange"
-            range-separator="至"
-            value-format="yyyy-MM-dd"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+        <el-form-item  class="mr" style="width:400px;"> 
+        <!-- <div style="width:400px;"> -->
+         <el-select :clearable="false" size="small"  placeholder="请选择" class="f_l" style="margin-right:10px;" v-model="propForm.timeType" @change="changeTimeType"> 
+                    <el-option
+                      v-for="item in timeArr"
+                      :key="item.val"
+                      :label="item.desc"
+                      :value="item.val">
+                    </el-option>
+        </el-select> 
+        <el-date-picker
+          v-model="propForm.dateMo"
+          class="w330 f_l"
+          type="daterange"
+          range-separator="至"
+          value-format="yyyy-MM-dd"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+        <!-- </div> -->
+     
         </el-form-item>
 
         <!-- 部门 -->
@@ -201,7 +212,8 @@ export default {
         departmentDetail: "", //部门详情
         contractType: "", //合同类型
         dateMo: "", //时间
-        search: "" //关键字
+        search: "" ,//关键字
+        timeType:0
       },
       dictionary: {
         //数据字典
@@ -222,7 +234,21 @@ export default {
           state: false,
           name: '合同详情'
         }
-      }
+      },
+      timeArr:[
+        {
+          desc:"全部",
+          val:0
+        },
+        {
+          desc:"结算日期",
+          val:1
+        },
+        {
+          desc:"签约日期",
+          val:2
+        }
+      ]
     };
   },
   created() {
@@ -292,7 +318,8 @@ export default {
           endTime: this.propForm.dateMo[1], //结束时间
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          timeType:this.propForm.timeType
         };
       } else {
         this.ajaxParam = {
@@ -301,7 +328,7 @@ export default {
           contractType: this.propForm.contractType, //合同类型
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
         };
       }
       this.ajaxParam.pageNum = 1;
@@ -315,7 +342,8 @@ export default {
         contractType: "", //合同类型
         startTime: "", //开始时间
         endTime: "", //结束时间
-        keyword: "" //关键字
+        keyword: "" ,//关键字
+        timeType:0
       };
       this.ajaxParam.pageNum = 1;
       this.currentPage = 1;
@@ -324,7 +352,8 @@ export default {
         departmentDetail: "", //部门详情（员工）
         contractType: "", //合同类型
         dateMo: "",
-        search: ""
+        search: "",
+        timeType:0
       };
     },
     //分页
@@ -353,6 +382,9 @@ export default {
            }else{
               this.noPower('合同详情查看')
         }
+    },
+    changeTimeType(){
+      this.propForm.dateMo="";
     }
   }
 };
