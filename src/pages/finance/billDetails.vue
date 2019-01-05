@@ -351,7 +351,7 @@
           this.$ajax.get('/api/payInfo/auditOption', param).then(res => {
             res = res.data
             if (res.status === 200) {
-              this.radioMask = res.data.num === 2 ? true : false
+              // this.radioMask = res.data.num === 2 ? true : false
               this.amount=Object.assign({},res.data)
             }
           })

@@ -30,6 +30,15 @@
     height: 100%;
     font-size: @size-base;
   }
+  input{
+    font-size: @size-base; 
+    font-family: "Avenir", Helvetica, Arial, sans-serif;
+    &::-webkit-input-placeholder{
+      font-family: "Avenir", Helvetica, Arial, sans-serif;
+      font-size: @size-base;
+      color: @color-D6;
+    }
+  }
 
   h1,
   h2,
