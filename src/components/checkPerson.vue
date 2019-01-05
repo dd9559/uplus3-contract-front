@@ -12,7 +12,7 @@
         <span>{{type==='set'?'设置':'转交'}}审核人</span>
         <div class="box-content">
           <div class="box-content-input">
-            <el-select :clearable="true" size="small" v-model="choseItem.depId" placeholder="部门" @change="getOption('dep')" @clear="clearDep">
+            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="choseItem.depId" placeholder="部门" @change="getOption('dep')" @clear="clearDep">
               <el-option
                 v-for="item in deps"
                 :key="item.id"
@@ -53,7 +53,7 @@
         default:'init'
       },
       bizCode:{
-        type:String,
+        type:[String,Number],
         default:''
       },
       flowType:{
@@ -119,10 +119,10 @@
         this.searchDep()
       },
       //获取部门
-      searchDep:function () {
+      searchDep:function (val) {
         this.inputEmp=false
         let param={
-          keyword:'',
+          keyword:!val?'':val,
           type:this.type==='init'?0:1,
           bizCode:this.bizCode,
           flowType:this.flowType
@@ -137,7 +137,7 @@
       //搜索人员
       searchEmp:function (val) {
         let param={
-          keyword:val,
+          keyword:!val?'':val,
           type:this.type==='init'?0:1,
           depId:this.choseItem.depId,
           bizCode:this.bizCode,
