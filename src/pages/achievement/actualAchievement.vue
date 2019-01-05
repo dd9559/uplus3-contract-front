@@ -379,7 +379,7 @@
           >
             <template slot-scope="scope">
                 <p>{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
-                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="(userMsg&&userMsg.empId==scope.row.preAuditId)||auditId">转交审核人</p>
+                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="(userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId">转交审核人</p>
             </template>
           </el-table-column>
 
@@ -389,7 +389,7 @@
           >
             <template slot-scope="scope">
                 <p>{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
-                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row,2)"  v-if="userMsg&&scope.row.auditId===userMsg.empId">设置审核人</p>
+                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row,2)"  v-if="(userMsg&&scope.row.auditId===userMsg.empId)&&(scope.row.nextAuditId==-1)">设置审核人</p>
             </template>
           </el-table-column>
 
