@@ -28,7 +28,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <br>
         <el-form-item label="部门">
           <!-- <el-select v-model="contractForm.dealAgentStoreId" filterable placeholder="全部" :clearable="true" style="width:150px" @change="selectDep">
             <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
@@ -343,7 +342,7 @@
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
     <!-- <button @click="dayin">打印</button> -->
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -867,13 +866,13 @@ export default {
     closeAccount(item){
       if(this.power['sign-ht-info-end'].state){
         if(item.contChangeState.value!==2){
-          if(item.resultState.value===2){
-          this.$message({
-            message:'已结算完成，无需发起结算'
-          })
-        }else{
-          if(item.isCanChangeCommission===1){
-            let param = {
+          // if(item.resultState.value===2){
+          // this.$message({
+          //   message:'已结算完成，无需发起结算'
+          // })
+        // }else{
+          // if(item.isCanChangeCommission===1){
+          let param = {
             id: item.id         
           }
           this.$ajax.get("/api/settlement/getSettlById", param).then(res => {
@@ -889,13 +888,13 @@ export default {
                 type: "warning"
               })
             })
-          }else{
-            this.$message({
-              message:"存在未审核的调佣,无法发起结算",
-              type: "warning"
-            })
-          }
-        }
+          // }else{
+          //   this.$message({
+          //     message:"存在未审核的调佣,无法发起结算",
+          //     type: "warning"
+          //   })
+          // }
+          // }
         }else{
           this.$message({
             message:'合同已解约，无法发起结算',

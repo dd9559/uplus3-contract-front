@@ -1046,9 +1046,7 @@ export default {
       this.$ajax.get('/api/record/list', param).then(res=>{
         res=res.data;
         if(res.status===200){
-          if(res.data.list.length>0){
-            this.recordData=res.data.list;
-          }
+          this.recordData=res.data.list;
           this.total=res.data.total;
         }
       }).catch(error=>{

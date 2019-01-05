@@ -153,7 +153,9 @@
             <ul class="image-list" v-if="files.length>0">
               <li class="margin-right" v-for="(item,index) in files" :key="index" @click="previewPhoto(files,index)">
                 <upload-cell :type="item.type"></upload-cell>
-                <span>{{item.name}}</span>
+                <el-tooltip :content="item.name" placement="top">
+                  <span>{{item.name}}</span>
+                </el-tooltip>
               </li>
             </ul>
             <span v-else>无</span>

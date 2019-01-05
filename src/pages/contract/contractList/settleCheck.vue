@@ -26,7 +26,7 @@
           <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> --> 
-          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" class="fl"></select-tree>
+          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="adjustForm.empId" placeholder="请选择">
             <el-option
@@ -64,7 +64,7 @@
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter">
+        <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter" align="center">
           
         </el-table-column>
 
@@ -81,7 +81,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="发起日期">
+        <el-table-column label="发起日期" align="center">
           <template slot-scope="scope">
             <p>{{scope.row.sponsorDate | getDate}}</p>
           </template>
@@ -107,21 +107,27 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="审核日期" prop="examineDate" :formatter="nullFormatter">
+        <el-table-column label="审核日期" prop="examineDate" :formatter="nullFormatter" align="center">
           <template slot-scope="scope">
             <p>{{scope.row.examineDate | getDate}}</p>
           </template>
         </el-table-column>
         
-        <el-table-column label="审核人" :formatter="nullFormatter"  width="180">
+        <el-table-column label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.examineStoreName + '-' + scope.row.examineName}}</p>
+            <p>{{scope.row.examineStoreName + scope.row.examineName}}</p>
+            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.id,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
-
+        <el-table-column align="center" label="下一步审核人" min-width="140">
+          <template slot-scope="scope">
+            <p>{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
+            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.id,'set')">设置审核人</el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="审核备注" width="200">
           <template slot-scope="scope">
-            <span v-if="scope.row.remarks">
+            <span v-if="(scope.row.checkRemark).trim().length > 0">
               <el-popover trigger="hover" placement="top">
                 <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
                   {{scope.row.remarks}}
@@ -136,8 +142,11 @@
         </el-table-column>
               
         <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope" v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === userMsg.empId">
-            <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
+          <template slot-scope="scope">
+            <template v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === userMsg.empId">
+              <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
+            </template>
+            <span v-else>--</span>
           </template>
         </el-table-column>
         
@@ -352,7 +361,9 @@
       </div>
       <!-- 图片放大 -->
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+
     </el-dialog>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
 
 
   </div>
@@ -365,11 +376,19 @@
   import {FILTER} from "@/assets/js/filter";
   import {TOOL} from "@/assets/js/common";
   import { MIXINS } from "@/assets/js/mixins";
+  import checkPerson from '@/components/checkPerson'
   export default {
     name: "settle-check",
     mixins: [FILTER,MIXINS],
     data(){
       return{
+        checkPerson: {
+          state:false,
+          type:'init',
+          code:'',
+          flowType:0,
+          label:false
+        },  
         clientHei: document.documentElement.clientHeight, //窗体高度
         fullscreenLoading:false,//创建按钮防抖
         loading:false,
@@ -463,7 +482,11 @@
           'sign-ht-js-vdetail': {
             state: false,
             name: '结算详情'
-          }
+          },
+          'sign-com-htdetail':{
+              name:'合同详情',
+              state:false,
+          },
         }
 
         
@@ -514,6 +537,28 @@
       //         this.isDelete=''
       //     }
       // },
+      trim(str){  
+        return str.replace(/(^\s*)|(\s*$)/g, "")
+      },
+       // 选择审核人
+      choseCheckPerson:function (code,type) {
+        this.checkPerson.flowType=5   //调佣的流程类型为4
+        this.checkPerson.code=code.toString()  //业务编码为checkId
+        this.checkPerson.state=true  
+        this.checkPerson.type=type
+        if(row.nextAuditId===-1){
+          this.checkPerson.label=true
+        }else {
+          this.checkPerson.label=false
+        }
+      },
+      personChose:function () {
+        this.checkPerson.state=false
+        this.$message({
+          message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
+        })
+        this.queryFn();
+      },
 
 
       // 控制弹框body内容高度，超过显示滚动条
@@ -763,6 +808,9 @@
               this.queryFn();
             }, 2000);
           }
+          else if(res.data.status === 300){
+            this.choseCheckPerson(this.myCheckId,'set')
+          }
         }).catch(error => {
             this.fullscreenLoading=false
             this.$message({
@@ -774,16 +822,20 @@
 
       //跳转合同详情页
       goContractDetail(e){
-        // console.log(e)
-        this.setPath(this.$tool.getRouter(['合同','结算审核','合同详情'],'contractList'));
-        this.$router.push({
-          path:'/contractDetails',
-          query: {
-            id: e.contractId,
-            code: e.code,
-            contType: e.contType.value
-          }
-        })
+         if(this.power['sign-com-htdetail'].state){
+          // console.log(e)
+          this.setPath(this.$tool.getRouter(['合同','结算审核','合同详情'],'contractList'));
+          this.$router.push({
+            path:'/contractDetails',
+            query: {
+              id: e.contractId,
+              code: e.code,
+              contType: e.contType.value
+            }
+          })
+        }else{
+           this.noPower(this.power['sign-com-htdetail'].name);
+        }
       },
 
       handleCurrentChange(e) {
@@ -807,6 +859,11 @@
         // this.EmployeList=[]
         this.adjustForm.empId=''
         this.clearSelect()
+      },
+
+      searchDep:function (payload) {
+        this.DepList=payload.list
+        this.adjustForm.depName=payload.depName
       },
 
       initDepList:function (val) {
@@ -835,7 +892,8 @@
 
 
     components: {
-          ScreeningTop
+          ScreeningTop,
+          checkPerson
       }
   };
 </script>
@@ -843,6 +901,12 @@
 @import "~@/assets/common.less";
 
 #settlecheck{
+  .btn-text-info{
+    padding: 0;
+    &.color-red{
+      color: red;
+    }
+  }
   .el-textarea.is-disabled .el-textarea__inner{
         color:#233241;
     }

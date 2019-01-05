@@ -14,7 +14,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model="form.inObj" v-if="inputPerson">
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model.trim="form.inObj" v-if="inputPerson">
           </div>
         </div>
         <div class="input-group col">
@@ -23,6 +23,7 @@
         </div>
       </li>
       <li>
+
         <div class="input-group col">
           <div class="flex-box tool-tip">
             <label class="form-label no-width f14">
@@ -153,7 +154,9 @@
             </li>
             <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="previewPhoto(imgList,index)">
               <upload-cell :type="item.type"></upload-cell>
-              <span>{{item.name}}</span>
+              <el-tooltip :content="item.name" placement="top">
+                <span>{{item.name}}</span>
+              </el-tooltip>
               <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
             </li>
           </ul>
@@ -501,7 +504,6 @@
           inObjId:'',
           inObj:''
         }
-        console.log(obj)
         this.dropdown.find(tip=>{
           if(tip.value===item&&!!tip.custId){
             obj.inObjId = tip.custId
@@ -523,7 +525,6 @@
         param.inAccount = [].concat(this.list)
 
         let promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
-        console.log(promiseArr)
 
         Promise.all(promiseArr).then(res=>{
           if(this.showAmount){

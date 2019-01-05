@@ -8,7 +8,7 @@
           <el-input
             class="w430"
             v-model="propForm.search"
-            placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
+            placeholder="合同编号/房源编号/客源编号/物业地址"
             :trigger-on-focus="false"
             clearable
           ></el-input>
@@ -340,7 +340,7 @@ export default {
     skipContDel(value) {
          if(this.power['sign-com-htdetail'].state){
             this.setPath(
-              this.$tool.getRouter(["业绩", "实收列表", "合同详情"], "contractList")
+              this.$tool.getRouter(["业绩", "结算业绩", "合同详情"], "receivableAchievement")
             );
             this.$router.push({
               path: "/contractDetails",

@@ -64,7 +64,6 @@
       },
       opera:function (type) {
         let e=event||window.event
-        console.log(e.currentTarget)
         // debugger
         if(type==='init'){
           this.visible=true
