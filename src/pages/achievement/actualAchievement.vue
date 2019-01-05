@@ -379,7 +379,7 @@
           >
             <template slot-scope="scope">
                 <p>{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
-                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="userMsg&&userMsg.empId==scope.row.auditId">转交审核人</p>
+                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="(userMsg&&userMsg.empId==scope.row.preAuditId)||auditId">转交审核人</p>
             </template>
           </el-table-column>
 
