@@ -116,7 +116,7 @@
       <!-- 图片放大 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
     </div>
 </template>
 
@@ -287,6 +287,14 @@ export default {
           })
       },
 
+      myclose: function() {
+        this.checkPerson.state=false
+        this.$message('已申请');
+        setTimeout(() => {                      
+          this.$emit('closeCentCommission')
+        }, 1500); 
+      },
+
        
       // 选择审核人
       choseCheckPerson:function (checkId,type) {
@@ -336,35 +344,32 @@ export default {
                 .postJSON("/api/commission/waitUpdate", param)
                 .then(res => {
                   this.fullscreenLoading=false
-                          
-                    
-                    if (res.data.status === 200) {
-                      if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {                             
-                        this.$message('没有金额记录调整并且申请成功');
-                          setTimeout(() => {     
-                          this.$emit('closeCentCommission')
-                        }, 1500); 
-                      }
-                     else{
-                        this.$message('已申请');
-                        setTimeout(() => {                     
-                          this.$emit('closeCentCommission')
-                        }, 1500);
-                      }                      
+                  if (res.data.status === 200) {
+                    if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {                             
+                      this.$message('没有金额记录调整并且申请成功');
+                        setTimeout(() => {     
+                        this.$emit('closeCentCommission')
+                      }, 1500); 
                     }
-                   
-                    else if (res.data.checkId) {
+                    else{
+                      this.$message('已申请');
                       setTimeout(() => {                     
                         this.$emit('closeCentCommission')
-                      }, 1500);  
-                      this.choseCheckPerson(res.data.checkId,'init')
-                    }
+                      }, 1500);
+                    }                      
+                  }
 
                 }).catch(error => {
+                 
                   this.fullscreenLoading=false
+                  if (error.status === 300 && error.data.checkId) {    
+                    this.choseCheckPerson(error.data.checkId,'init')                                    
+                  } else{
                     this.$message({
                       message: error
                     })
+                  }
+                    
                 })
             }
           // }else{

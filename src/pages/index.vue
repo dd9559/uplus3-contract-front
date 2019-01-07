@@ -1,10 +1,11 @@
 <template>
   <div class="main">
-    <!--<div class="nav">
-      <ul class="navbar">
-        <li>退出</li>
+    <div class="nav">
+      <ul class="navbar" v-if="getUser&&getUser.user">
+        <li>当前城市：{{getUser.user.cityName}}</li>
+        <li>当前登录人：<span>{{getUser.user.depName}}-{{getUser.user.name}}</span></li>
       </ul>
-    </div>-->
+    </div>
     <div class="container">
       <div class="slider" :class="[collapse?'':'collapse-on']">
         <el-menu
@@ -204,7 +205,7 @@
     position: relative;
     height: 100%;
     .nav{
-      height: 60px;
+      height: 40px;
       background-color: @color-blue;
       color: @color-white;
       display: flex;
@@ -215,12 +216,19 @@
         top: 50%;
         right: 20px;
         transform:translateY(-50%);
+        display: flex;
+        >li{
+          padding-right: @margin-15;
+          &:last-of-type{
+            padding: 0;
+          }
+        }
       }
     }
     .container {
       display: flex;
       position: absolute;
-      top: 0;
+      top: 40px;
       left: 0;
       right: 0;
       bottom: 0;

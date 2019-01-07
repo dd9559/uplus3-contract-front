@@ -113,16 +113,17 @@
         <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
             <p v-if="scope.row.checkByDepName=='-'&&scope.row.checkByName=='-'">{{scope.row.checkByDepName + scope.row.checkByName}}</p>
-            <p v-else>{{scope.row.checkByDepName + ' - ' + scope.row.checkByName}}</p>
-           
-            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId)&&scope.row.checkState&&scope.row.checkState===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row.checkId,'init')">转交审核人</el-button>
+            <template v-else>
+              <p>{{scope.row.checkByDepName + ' - ' + scope.row.checkByName}}</p>
+            </template>
+            <el-button class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0 && scope.row.nextAuditId != 0" @click="choseCheckPerson(scope.row.checkId,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
             <p v-if="scope.row.nextAuditStore=='-'&&scope.row.nextAuditName=='-'">{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
             <p v-else>{{scope.row.nextAuditStore + ' - ' + scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.checkby === userMsg.empId)&&scope.row.checkState&&scope.row.checkState===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row.checkId,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId) && scope.row.checkState===0&& scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row.checkId,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
@@ -363,7 +364,7 @@
       <!-- 图片放大 -->
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -533,10 +534,15 @@
       trim(str){  
         return str.replace(/(^\s*)|(\s*$)/g, "")
       },
+      myclose: function() {
+        this.checkPerson.state=false
+        // this.queryFn();
+        
+      },
       // 选择审核人
       choseCheckPerson:function (checkId,type) {
         this.checkPerson.flowType=4   //调佣的流程类型为4
-        this.checkPerson.code=checkId.toString()  //业务编码为checkId
+        this.checkPerson.code=checkId  //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
@@ -806,15 +812,19 @@
               this.queryFn();
             }, 2000);        
           }
-          else if(res.data.status === 300){
-            this.choseCheckPerson(this.myCheckId,'set')
-            
-          }
+          
         }).catch(error => {
+          
             this.fullscreenLoading=false
-            this.$message({
-              message: error
-            })
+            if(error.status === 300 && error.data.checkId){
+              this.choseCheckPerson(error.data.checkId,'set') 
+            }
+            else{
+              this.$message({
+                message: error
+              })
+            }
+             
         });
       },
 

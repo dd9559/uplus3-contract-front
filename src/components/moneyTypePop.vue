@@ -61,7 +61,6 @@
         this.inputVal=data.name
         this.$emit('checkCell',param)
         this.visible=false
-        console.log(this.inputVal,this.init)
       },
       opera:function (type) {
         if(type==='init'){
@@ -69,7 +68,6 @@
           this.$refs.popover.showPopper=true
           this.iconUp=!this.iconUp
         }else if(type==='clear') {
-          console.log('test')
           this.visible=false
           this.$refs.popover.showPopper=false
           /*if(this.init.length>0){
@@ -94,6 +92,7 @@
   .tree-box{
     position: relative;
     .box-icon{
+      cursor: pointer;
       position: absolute;
       top: 50%;
       right: 10px;

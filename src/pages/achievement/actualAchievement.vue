@@ -380,13 +380,14 @@
             width="150"
           >
             <template slot-scope="scope">
-                <p>{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
+                <p  v-if="scope.row.achievementState==0">{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
+                <p v-else>-</p>
                 <el-button 
                    type="text"
                    @click="choseCheckPerson(scope.row,'init')" 
-                   v-if="(userMsg&&((userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState!=1&&scope.row.achievementState!=2)"
+                   v-if="(userMsg&&((userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0)"
                 >    
-                   {{userMsg&&userMsg.empId===scope.row.auditId?'设置审核人':'转交审核人'}}
+                   {{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}
                 </el-button>
             </template>
           </el-table-column>
@@ -396,12 +397,13 @@
             width="150"
           >
             <template slot-scope="scope">
-                <p>{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
+                <p v-if="scope.row.achievementState==0">{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
+                <p v-else>-</p>
                 <el-button 
                  type="text" 
                  style="color:red"  
                  @click="choseCheckPerson(scope.row,'set')"  
-                 v-if="(userMsg&&scope.row.auditId===userMsg.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState!=1&&scope.row.achievementState!=2"
+                 v-if="(userMsg&&scope.row.auditId===userMsg.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState==0"
                 >
                 设置审核人
                 </el-button>
@@ -1420,7 +1422,7 @@ export default {
   /deep/ .el-dialog.base-dialog {
     // max-width: 1000px;
     margin: 13vh auto 0 !important;
-    overflow: auto;
+    // overflow: auto;
     padding-bottom: 30px;
     .el-dialog__headerbtn {
       right: 0;
@@ -1455,7 +1457,7 @@ export default {
       // background-color: pink;
       padding: 0 20px !important;
       box-sizing: border-box;
-      overflow-y: auto;
+      // overflow-y: scroll!important;
       max-height: 500px;
       /deep/ .el-table {
         // font-size: 14px !important;
@@ -1501,6 +1503,9 @@ export default {
       }
     }
   }
+    /deep/ .ach-body {
+      overflow: auto;
+    }
 }
 /deep/ .el-pagination {
   text-align: center;

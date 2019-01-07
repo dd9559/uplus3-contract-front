@@ -3,8 +3,8 @@
         <div class="table_head">
             <el-button type="primary" @click="addProcess('添加交易流程')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
-        <div class="list1" >
-          <el-table :data="listData" style="width: 100%" border>
+        <div class="list1">
+          <el-table :data="listData" style="width: 100%" border :max-height="tableHeight">
             <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
             <el-table-column align="left" label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
             <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
@@ -127,6 +127,7 @@
         AllSteps: [],
         inputMax: 30,
         flowName: "",
+        tableHeight: 0,
         power: {
           'sign-set-hq': {
             state: false,
@@ -138,6 +139,8 @@
     created() {
       this.getData();
       this.getTypeSteps()
+      let h = document.documentElement.clientHeight
+      this.tableHeight = h - 40 - 136
     },
     methods: {
       // 获取交易流程列表
