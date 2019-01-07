@@ -89,7 +89,7 @@
             <!-- 图片放大 -->
             <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
         </el-dialog>
-        <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+        <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
     </div>
 </template>
 
@@ -260,10 +260,17 @@ export default {
                 })
           })
       },
+      myclose: function() {
+        this.checkPerson.state=false
+        this.$message('已申请');
+        setTimeout(() => {                      
+          this.$emit('closeSettle')
+        }, 1500); 
+      },
       // 选择审核人
       choseCheckPerson:function (bizId,type) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
-        this.checkPerson.code=bizId.toString()  //业务编码为settlementId
+        this.checkPerson.code=bizId  //业务编码为settlementId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         this.checkPerson.label=true
@@ -299,17 +306,21 @@ export default {
                         this.$emit('closeSettle')
                     }, 1500);              
                 }
-                else if (res.data.bizId) {
-                    setTimeout(() => {                     
-                    this.$emit('closeSettle')
-                    }, 1500);  
-                    this.choseCheckPerson(res.data.bizId,'init')
-                }
+                // else if (res.data.bizId) {
+                //     setTimeout(() => {                     
+                //     this.$emit('closeSettle')
+                //     }, 1500);  
+                //     this.choseCheckPerson(res.data.bizId,'init')
+                // }
             }).catch(error => {
                 this.fullscreenLoading=false
-                this.$message({
-                    message: error
-                })
+                if (error.status === 300 && error.data.bizId) {    
+                    this.choseCheckPerson(error.data.bizId,'init')                                    
+                  } else{
+                    this.$message({
+                      message: error
+                    })
+                  }
             })
         
         }else if(this.auditForm.textarea === ""){

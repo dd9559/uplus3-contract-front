@@ -162,7 +162,7 @@
             <span v-if="scope.row.auditId>0&&scope.row.toExamineState.value===0">
               <p>{{scope.row.auditStoreName}}</p>
               <p>{{scope.row.auditName}}</p>
-              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,'init')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?'set':'init')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <span v-else>-</span>

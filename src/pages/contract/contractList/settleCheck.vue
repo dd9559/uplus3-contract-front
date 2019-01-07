@@ -367,7 +367,7 @@
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
 
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
 
 
   </div>
@@ -544,10 +544,15 @@
       trim(str){  
         return str.replace(/(^\s*)|(\s*$)/g, "")
       },
+      myclose: function() {
+        this.checkPerson.state=false
+        // this.queryFn();
+        
+      },
        // 选择审核人
       choseCheckPerson:function (code,type) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
-        this.checkPerson.code=code.toString()  //业务编码为checkId
+        this.checkPerson.code=code //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
@@ -812,14 +817,19 @@
               this.queryFn();
             }, 2000);
           }
-          else if(res.data.status === 300){
-            this.choseCheckPerson(this.myCheckId,'set')
-          }
+          // else if(res.data.status === 300){
+          //   this.choseCheckPerson(this.myCheckId,'set')
+          // }
         }).catch(error => {
-            this.fullscreenLoading=false
-            this.$message({
-              message: error
-            })
+           this.fullscreenLoading=false
+           if(error.status === 300 && error.data.bizId){
+              this.choseCheckPerson(error.data.bizId,'set') 
+            }
+            else{
+              this.$message({
+                message: error
+              })
+            }
         });
       },
 
