@@ -6,7 +6,7 @@
 				<div class="textareabox">
 					<p class="form-label">合同变更原因</p>
 					<div class="reason">
-						<el-input type="textarea" :rows="5" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
+						<el-input type="textarea" :rows="6" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
 						</el-input>
 						<span>{{textarea.length}}/100</span>
 					</div>
@@ -110,7 +110,7 @@
 					<p>合同解除原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
-						<el-input type="textarea" :rows="5" :disabled="true" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
+						<el-input type="textarea" :rows="6" :disabled="true" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:597px" maxlength="100">
 						</el-input>
 						<span>{{textarea.length}}/100</span>
 					</div>
@@ -460,10 +460,15 @@ export default {
 				}
         .reason {
 					position: relative;
+					/deep/.el-textarea{
+						textarea{
+							min-height: 120px!important;
+						}
+					}
 					> span {
 						position: absolute;
-						top: 90px;
-						right: 10px;
+						bottom: 10px;
+        		right: 20px;
 						color: @color-6c;
 					}
 					> p {

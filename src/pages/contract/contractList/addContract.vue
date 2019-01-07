@@ -487,7 +487,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -150 + 'px'
+      this.clientHei= document.documentElement.clientHeight -160 + 'px'
     },
     addcommissionData() {
       if (this.ownerList.length < 5) {
@@ -1113,7 +1113,8 @@ export default {
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;
-            if(res.data.isHaveNextAudit===2){
+            //1 下一节点没有审批人 2 有
+            if(res.data.isHaveNextAudit===1){
               this.checkPerson.flowType=3;
               this.checkPerson.code=res.data.code;
               this.checkPerson.state=true;
@@ -1987,7 +1988,7 @@ export default {
   text-align: right;
 }
 .btn {
-  padding-top: 20px;
+  padding-top: 10px;
   padding-left: 20px;
   display: flex;
   justify-content: space-between;

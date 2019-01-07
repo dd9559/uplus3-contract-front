@@ -4,7 +4,9 @@
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
                 <el-form-item label="关键字" prop="search">
-                    <el-input class="w322" v-model="propForm.search" placeholder="合同编号/物业地址/业主/客户/房产证号/手机号" clearable></el-input>
+                    <el-tooltip content="合同编号/物业地址/业主/客户/房产证号/手机号" placement="top">
+                        <el-input class="w200" v-model="propForm.search" placeholder="请输入" clearable></el-input>
+                    </el-tooltip>
                 </el-form-item>
                 <div class="in-block">
                     <el-form-item prop="region" class="mr">
