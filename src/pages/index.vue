@@ -3,7 +3,7 @@
     <div class="nav">
       <ul class="navbar" v-if="getUser&&getUser.user">
         <li>当前城市：{{getUser.user.cityName}}</li>
-        <li>当前登录人：<span>{{getUser.user.depName}}-{{getUser.user.name}}</span></li>
+        <li><span>{{getUser.user.depName}}-{{getUser.user.name}}</span></li>
       </ul>
     </div>
     <div class="container">
