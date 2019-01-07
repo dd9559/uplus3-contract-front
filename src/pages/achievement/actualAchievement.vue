@@ -19,13 +19,15 @@
           label="关键字"
           prop="search"
         >
-          <el-input
-            class="w460"
-            v-model="propForm.search"
-            placeholder="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号"
-            :trigger-on-focus="false"
-            clearable
-          ></el-input>
+          <el-tooltip content="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号" placement="top">
+             <el-input
+               class="w200"
+               v-model="propForm.search"
+               placeholder="请输入"
+               :trigger-on-focus="false"
+               clearable
+             ></el-input>
+          </el-tooltip>
         </el-form-item>
 
        <el-form-item
@@ -379,7 +381,7 @@
           >
             <template slot-scope="scope">
                 <p>{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
-                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="userMsg&&userMsg.empId==scope.row.auditId">转交审核人</p>
+                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="(userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId">转交审核人</p>
             </template>
           </el-table-column>
 
@@ -389,7 +391,7 @@
           >
             <template slot-scope="scope">
                 <p>{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
-                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row,2)"  v-if="userMsg&&scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId">设置审核人</p>
+                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row,2)"  v-if="(userMsg&&scope.row.auditId===userMsg.empId)&&(scope.row.nextAuditId==-1)">设置审核人</p>
             </template>
           </el-table-column>
 
@@ -458,7 +460,7 @@
                     style="cursor:pointer;"
                     v-if="userMsg&&userMsg.empId==scope.row.auditId"
                   >审核</span> 
-                  <span v-if="power['sign-yj-rev-retreat'].state==false&&(userMsg&&userMsg.empId!=scope.row.auditId)"></span>           
+                  <span v-if="power['sign-yj-rev-retreat'].state==false&&(userMsg&&userMsg.empId!=scope.row.auditId)">-</span>           
                 </div>
               </div>
               <div v-else>
@@ -730,16 +732,19 @@
               <template slot-scope="scope">
                 <div>
                   <div v-if="scope.row.contType==0">
-                    <p class="blue">审核中</p>
+                    <p class="blue">提交审核</p>
                   </div>
                   <div v-if="scope.row.contType==-1">
                     <p class="blue">待提审</p>
                   </div>
                   <div v-else-if="scope.row.contType==1">
-                    <p class="green">已通过</p>
+                    <p class="green">审核通过</p>
                   </div>
                   <div v-else-if="scope.row.contType==2">
                     <p class="orange">已驳回</p>
+                  </div>
+                 <div v-else-if="scope.row.contType==3">
+                    <p class="orange">撤销</p>
                   </div>
                   <div v-else>
                     <p>-</p>
@@ -776,7 +781,7 @@
       @saveData="saveData"
       @adoptData="adoptData"
       @rejectData="rejectData"
-      @close="shows=false;code2=''"
+      @close="closeDialogs"
       @opens="shows=true"
       :dialogType="dialogType"
       :contractCode="code2"
@@ -809,7 +814,7 @@
     </div>
 
      <!-- 选择审核人弹框 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose"></checkPerson>
   </div>
 
 </template>
@@ -1033,24 +1038,24 @@ export default {
     },
     changeStatus(){
       // 提审
-       if(this.statuType==0){
-         let param={
-           contId:this.statuContId,
-           aId:this.statuAid,
-           status:0
-         }
-         this.$ajax
-          .postJSON("/api/achievement/applyStatusArraign", param)
-          .then(res => {
-            if (res.data.status == 200) {
-               this.$message({ message: "操作成功", type: "success" });
-               this.recallShow=false;
-               this.selectAchList[this.statuIndex].achievementState=0;
-            }
-          }).catch(error => {
-               this.$message.error({message: error})
-          })
-       }
+      //  if(this.statuType==0){
+      //    let param={
+      //      contId:this.statuContId,
+      //      aId:this.statuAid,
+      //      status:0
+      //    }
+      //    this.$ajax
+      //     .postJSON("/api/achievement/applyStatusArraign", param)
+      //     .then(res => {
+      //       if (res.data.status == 200) {
+      //          this.$message({ message: "操作成功", type: "success" });
+      //          this.recallShow=false;
+      //          this.selectAchList[this.statuIndex].achievementState=0;
+      //       }
+      //     }).catch(error => {
+      //          this.$message.error({message: error})
+      //     })
+      //  }
       // 撤回
        if(this.statuType==1){
           let param={
@@ -1064,7 +1069,8 @@ export default {
           if (res.data.status == 200) {
                this.$message({ message: "操作成功", type: "success" });
                this.recallShow=false;
-               this.selectAchList[this.statuIndex].achievementState=-1;
+               this.getData(this.ajaxParam)
+              //  this.selectAchList[this.statuIndex].achievementState=-1;
             }
             }).catch(error => {
                   this.$message.error({message: error})
@@ -1200,7 +1206,7 @@ export default {
     },
     skipContDel(value) {
      if(this.power['sign-com-htdetail'].state){
-       this.setPath(this.$tool.getRouter(['应收','应收列表','合同详情'],'actualAchievement'))
+       this.setPath(this.$tool.getRouter(['业绩','应收业绩','合同详情'],'actualAchievement'))
         this.$router.push({
           path: "/contractDetails",
           query: {
@@ -1216,17 +1222,25 @@ export default {
     choseCheckPerson(val,type1){
       if(type1==1){
         this.checkPerson.flowType=2;
-        this.checkPerson.code=val.code;
-        console.log(  this.checkPerson.code);
+        this.checkPerson.code=val.aId;
         this.checkPerson.state=true;
         this.checkPerson.type='init';
       }else if(type1==2){
         this.checkPerson.flowType=2;
-        this.checkPerson.code=val.code;
+        this.checkPerson.code=val.aId;
         console.log(  this.checkPerson.code);
         this.checkPerson.state=true;
         this.checkPerson.type='set';
       }       
+    },
+    personChose:function () {
+        this.checkPerson.state=false
+        this.getData(this.ajaxParam);       
+    },
+    closeDialogs(){
+      this.getData(this.ajaxParam);
+      this.code2="";
+      this.shows=false; 
     }
   }
 };
@@ -1413,21 +1427,21 @@ export default {
       h1 {
         font-size: 20px;
         color: #233241;
-        margin: 20px 0 0 30px;
+        margin: 20px 0 0 20px;
       }
       p {
         // font-size: 14px;
         color: #6c7986;
-        margin: 12px 0 0 30px;
+        margin: 12px 0 0 20px;
         line-height: 0;
       }
     }
     /deep/ .ach-body {
-      max-height: 500px;
       // background-color: pink;
       padding: 0 20px !important;
       box-sizing: border-box;
       overflow-y: auto;
+      max-height: 500px;
       /deep/ .el-table {
         // font-size: 14px !important;
         margin-top: 20px;
@@ -1507,6 +1521,7 @@ export default {
 
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
+    max-height: 500px;
 }
 /deep/ .el-dialog.base-dialog .el-dialog__header {
   padding: 0 !important;

@@ -104,6 +104,7 @@
               <el-input
                 v-model="guestKeyword"
                 placeholder="客源编号/手机号/客户姓名"
+                style="width:180px"
               ></el-input>
             </el-form-item>
           </div>

@@ -126,12 +126,12 @@
                         <li v-for="(item,index) in nodeList" :key="index">
                             <div class="node-body">
                                <el-input size="small" class="w152" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
-                                <el-select size="small" class="w152" v-model="item.type" @change="getTypeOption(item.type,index)">
+                                <el-select size="small" class="w152" v-model="item.type">
                                     <el-option label="请选择审批人类型" value=""></el-option>
                                     <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                 </el-select>
                                 <div v-if="item.type===0" class="person">
-                                    <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+                                    <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                                     <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye" size="small"
                                                 v-model="item.personArr" placeholder="请选择" multiple @change="multiSelect(item.type,index)">
                                         <el-option
@@ -163,7 +163,7 @@
                                     <span class="button" @click="removeRow(index)"><i class="icon el-icon-minus"></i></span>
                                 </div> 
                             </div>
-                            <div class="default" v-if="item.choice&&item.choice.length>0?true:false">
+                            <div class="default" v-if="item.choice&&item.choice.length>0&&index!==0">
                                 <span>选择默认审核人:</span>
                                 <div class="multiple" ref="curChoice">
                                     <span v-for="(ele,m) in item.choice" :key="m" @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">{{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i></span>
@@ -196,10 +196,10 @@
             isAudit: "1",
             userId: "",
             userName: "",
-            // depName: "",
-            // personArr: [],
-            // depArr: [],
-            // roleArr: [],
+            depName: "",
+            personArr: [],
+            depArr: [],
+            roleArr: [],
             choice: [],
             // peopleTime: 1,
             // depsTime: 1,
@@ -287,12 +287,19 @@
         },
         methods: {
             aduitChange(val) {
-                if(val !== this.tempAudit) {
-                    this.nodeList = JSON.parse(JSON.stringify(arr))
+                if(this.aduitTitle === "添加") {
+                    if(val === "1") {
+                       this.nodeList = JSON.parse(JSON.stringify(arr)) 
+                    } else {
+                        this.nodeList = []
+                    }
                 } else {
-                    this.nodeList = this.tempNodeList
-                    this.nodeList[0].personArr = []
-                }
+                    if(val !== this.tempAudit) {
+                        this.nodeList = JSON.parse(JSON.stringify(arr))
+                    } else {
+                        this.nodeList = this.tempNodeList
+                    }   
+                } 
             },
             getData() {
                 let param = {
@@ -340,20 +347,21 @@
             depHandleClick(data) {
                 this.handleNodeClick(data)
             },
+            searchDep:function (payload) {
+                this.DepList=payload.list
+            },
             handleClose(done) {
                 this.nodeList = []
+                this.tempNodeList = []
                 done()
             },
             operation(title,type,row) {
                 this.aduitDialog = true
                 this.aduitTitle = title
                 if(type === 1) {
-                    this.nodeList = [...arr]
-                    this.tempNodeList = [...arr]
-                    this.nodeList[1].type = ""
-                    this.nodeList[1].name = ""
                     this.$tool.clearForm(this.aduitForm)
                     this.isAudit = ""
+                    this.tempAudit = ""
                     this.editDisabled = false
                     this.conditionList = []
                 } else {
@@ -371,11 +379,15 @@
                     this.editDisabled = true
                     //获取节点信息
                     let editRow = JSON.parse(JSON.stringify(currentRow.branch))
-                    editRow.forEach(item => {
-                        if(item.choice) {
-                         item.choice = JSON.parse(item.choice)   
-                        }
-                    })
+                    if(this.isAudit === "1") {
+                        editRow[0].choice = JSON.parse(editRow[0].choice)
+                        editRow[0].personArr = JSON.parse(editRow[0].personArr)
+                        editRow[0].depArr = JSON.parse(editRow[0].depArr)
+                        editRow[0].roleArr = JSON.parse(editRow[0].roleArr)
+                        editRow[0].depName = ""
+                        editRow[0].userId = ""
+                        delete editRow[0].code
+                    }
                     let array = []
                     array.unshift(editRow[0])
                     for(var i = 1; i < editRow.length; i++) {
@@ -388,8 +400,8 @@
                             personArr: JSON.parse(editRow[i].personArr),
                             depArr: JSON.parse(editRow[i].depArr),
                             roleArr: JSON.parse(editRow[i].roleArr),
-                            choice: editRow[i].choice,
-                            lastChoice: (editRow[i].choice.filter(e => e.isDefault===1))[0],
+                            choice: JSON.parse(editRow[i].choice),
+                            lastChoice: (JSON.parse(editRow[i].choice).filter(e => e.isDefault===1))[0],
                             peopleTime: JSON.parse(editRow[i].personArr).length + 1,
                             depsTime: JSON.parse(editRow[i].depArr).length + 1,
                             rolesTime: JSON.parse(editRow[i].roleArr).length + 1
@@ -473,10 +485,6 @@
                 this.aduitForm.branchCondition = ""
                 this.setConditionList(val)
             },
-            getTypeOption(type,index) {
-                // this.$set(this.nodeList[index],'userId',"")
-                // this.$set(this.nodeList[index],'userName',"")
-            },
             defaultChoice(index,e,curItem) {
                 let allChoice = this.$refs.curChoice[index-1].children
                 for(var i = 0; i < allChoice.length; i++) {
@@ -496,6 +504,7 @@
                         if(choiceArr[m].userId === this.nodeList[index].personArr[i]) {
                             this.nodeList[index].personArr.splice(i,1)
                             this.$set(this.nodeList[index],'peopleTime',this.nodeList[index].peopleTime - 1)
+                            break
                         }
                     }
                 } else if(choiceArr[m].type === 1) {
@@ -503,6 +512,7 @@
                         if(choiceArr[m].userId === this.nodeList[index].depArr[i]) {
                             this.nodeList[index].depArr.splice(i,1)
                             this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
+                            break
                         }
                     }
                 } else if(choiceArr[m].type === 2) {
@@ -510,6 +520,7 @@
                         if(choiceArr[m].userId === this.nodeList[index].roleArr[i]) {
                             this.nodeList[index].roleArr.splice(i,1)
                             this.$set(this.nodeList[index],'rolesTime',this.nodeList[index].rolesTime - 1)
+                            break
                         }
                     }
                 }
@@ -692,9 +703,6 @@
                                 if(item[i].choice.length>0) {
                                     if(item[i].lastChoice) {
                                         delete item[i].depName
-                                        // delete item[i].personArr
-                                        // delete item[i].depArr
-                                        // delete item[i].roleArr
                                         delete item[i].peopleTime
                                         delete item[i].depsTime
                                         delete item[i].rolesTime
@@ -709,29 +717,6 @@
                                 } else {
                                     this.$message({message:"请设置默认审核人"})
                                 }
-                                // if(item[i].userId!=""&&item[i].type===1 || item[i].userId!=""&&item[i].type===2 || item[i].userId==""&&item[i].type===3) {
-                                //     isOk = true
-                                // } else {
-                                //     this.$message({message:item[i].type===1?"请选择门店":"请选择职务"})
-                                //     return false
-                                // }
-                                // if(item[i].type===1) {
-                                //     if(item[i].userId!="") {
-                                //         isOk = true
-                                //     } else {
-                                //         this.$message({message:"请选择门店"})
-                                //         return false
-                                //     }
-                                // } else if(item[i].type===2) {
-                                //     if(typeof(item[i].userId)=="number") {
-                                //         isOk = true
-                                //     } else {
-                                //         this.$message({message:"请选择职务"})
-                                //         return false
-                                //     }
-                                // } else if(item[i].type===3) {
-                                //     isOk = true
-                                // }
                             } else {
                                 this.$message({message:"审批人类型不能为空"})
                             }
@@ -740,7 +725,7 @@
                         }
                     }
                     if(isOk) {
-                       delete this.nodeList[0].personArr 
+                       delete this.nodeList[0].depName 
                     }
                 }
                 let param = {

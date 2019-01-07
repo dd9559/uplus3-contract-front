@@ -504,7 +504,6 @@
           inObjId:'',
           inObj:''
         }
-        console.log(obj)
         this.dropdown.find(tip=>{
           if(tip.value===item&&!!tip.custId){
             obj.inObjId = tip.custId
@@ -526,7 +525,6 @@
         param.inAccount = [].concat(this.list)
 
         let promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
-        console.log(promiseArr)
 
         Promise.all(promiseArr).then(res=>{
           if(this.showAmount){
@@ -609,7 +607,7 @@
               this.$router.replace({
                 path: 'payResult',
                 query:{
-                  content:(error.data.vo&&error.data.time)?JSON.stringify({dep:error.data.vo.deptName,name:error.data.vo.createByName,time:error.data.time,payCode:error.data.payCode}):''
+                  content:(error.data.vo&&error.data.time)?JSON.stringify({dep:error.data.vo.deptName,name:error.data.vo.createByName,time:error.data.time,payCode:error.data.payCode,type:error.data.type}):''
                 }
               })
             }else {

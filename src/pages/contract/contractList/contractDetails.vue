@@ -256,7 +256,7 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="合同主体" name="second">
+      <el-tab-pane label="合同主体" name="second" v-if="power['sign-ht-xq-main-add'].state">
         <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
           <ul class="ulData">
             <!-- <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2"> -->
@@ -278,7 +278,7 @@
           </ul>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="资料库" name="third">
+      <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data-add'].state">
         <!-- <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData"> -->
         <div class="dataBank" v-if="power['sign-ht-xq-data-add'].state" :style="{ height: clientHei }">
           <div class="classify" v-if="sellerList.length>0">
@@ -533,7 +533,7 @@
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     <!-- 打印成交报告 -->
     <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint">
       <div class="printContent">

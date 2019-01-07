@@ -10,8 +10,8 @@
           </li>
         </ul>
         <p>
-          <el-button round @click="goBack('contractList')">返回合同列表</el-button>
-          <el-button round @click="goBack('Bill')">返回收付款列表</el-button>
+          <el-button round @click="goBack('contractList')" v-if="power['sign-ht-info-query'].state">返回合同列表</el-button>
+          <el-button round @click="goBack('Bill')" v-if="power['sign-cw-debt-query'].state">返回收付款列表</el-button>
         </p>
       </div>
       <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
@@ -58,6 +58,16 @@
           code:'',
           flowType:1
         },
+        power:{
+          'sign-ht-info-query':{
+            state: false,
+            name: '合同列表'
+          },
+          'sign-cw-debt-query':{
+            state: false,
+            name: '收付款单列表'
+          },
+        }
       }
     },
     mounted(){
@@ -75,7 +85,8 @@
         if(from.path==='/payBill'&&vm.result.payCode&&vm.result.payCode.length>0){
           let param={
             state:true,
-            code:vm.result.payCode
+            code:vm.result.payCode,
+            type:parseInt(vm.result.type)===1?'set':'init'
           }
           vm.checkPerson=Object.assign(vm.checkPerson,param)
         }

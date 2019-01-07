@@ -29,7 +29,7 @@
           param.empCode=this.userId
         }
         this.$ajax.post('/api/verify',param).then(res=>{
-          this.$ajax.get('/api/me').then(res=>{
+          this.$ajax.get('/api/me',{time:new Date()}).then(res=>{
             res=res.data
             if(res.status===200){
               this.$store.commit('setUser',res.data)
