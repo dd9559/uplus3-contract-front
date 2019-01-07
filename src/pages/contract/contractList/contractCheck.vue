@@ -390,7 +390,7 @@ export default {
     //合同详情
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+        this.setPath(this.$tool.getRouter(['合同','合同审核','合同详情'],'contractList'));
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
           this.$router.push({
             path: "/contractDetails",
@@ -443,7 +443,7 @@ export default {
       this.checkPerson.code=row.code;
       this.checkPerson.state=true;
       this.checkPerson.type=type;
-      if(row.nextAuditId>0){
+      if(row.nextAuditId>=0){
         this.checkPerson.label=false;
       }else{
         this.checkPerson.label=true;

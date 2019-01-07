@@ -314,7 +314,7 @@
                 <template slot-scope="scope">
                   <a
                     class="delete"
-                    style="color:#478de3;text-decoration:underline;"
+                    style="color:#478de3;text-decoration:underline;cursor:pointer;"
                     @click="deleteHouse(scope.$index,houseArr,scope.row.id)"
                   >删除</a>
                   <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
@@ -599,7 +599,7 @@
                 <template slot-scope="scope">
                   <a
                     class="delete"
-                    style="color:#478de3;text-decoration:underline;"
+                    style="color:#478de3;text-decoration:underline;cursor:pointer;"
                     @click="deleteClient(scope.$index,clientArr,scope.row.id)"
                   >删除</a>
                 </template>
@@ -1659,7 +1659,7 @@ export default {
         this.$ajax
           .postJSON("/api/achievement/distributionSave", param)
           .then(res => {
-            if (res.data.status == 200&&!res.data.data.bizCode) {
+            if (res.data.status == 200) {
               this.$emit("close");
               this.loading=false;
               this.$message({ message: "操作成功", type: "success" });
@@ -1866,6 +1866,7 @@ export default {
     border-bottom: 1px solid #edecf0;
     // /deep/ .delete {
     //   color: #478de3 !important;
+    //   cursor: pointer!important;
     // }
   }
   .mansList {
