@@ -851,6 +851,7 @@ export default {
           })
         }
       }).catch(error => {
+          this.isSubmitAudit=false;
           if(error.message==='下一节点审批人不存在'){
             this.checkPerson.flowType=3;
             this.checkPerson.code=this.submitAuditData.code;

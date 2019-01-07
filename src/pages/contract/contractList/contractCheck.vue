@@ -162,10 +162,10 @@
             <span v-if="scope.row.auditId>0&&scope.row.toExamineState.value===0">
               <p>{{scope.row.auditStoreName}}</p>
               <p>{{scope.row.auditName}}</p>
-              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?'set':'init')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
-            <span v-else>-</span>
+            <p v-else>-</p>
+            <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?'set':'init')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="下一步审核人" width="150">
@@ -362,7 +362,7 @@ export default {
     },
     //合同预览
     goPreview(item) {
-      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractCheck'));
       this.$router.push({
         path: "/contractPreview",
         query: {
@@ -374,7 +374,7 @@ export default {
     //合同审核
     goCheck(item) {
       if(this.power['sign-ht-info-view'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+        this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractCheck'));
         this.$router.push({
           path:'/contractPreview',
           query:{
@@ -390,7 +390,7 @@ export default {
     //合同详情
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同审核','合同详情'],'contractList'));
+        this.setPath(this.$tool.getRouter(['合同','合同审核','合同详情'],'contractCheck'));
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
           this.$router.push({
             path: "/contractDetails",
