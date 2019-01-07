@@ -116,14 +116,14 @@
             <template v-else>
               <p>{{scope.row.checkByDepName + ' - ' + scope.row.checkByName}}</p>
             </template>
-            <el-button class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0 && scope.row.nextAuditId != 0" @click="choseCheckPerson(scope.row.checkId,'init')">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0 && scope.row.nextAuditId != 0" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
             <p v-if="scope.row.nextAuditStore=='-'&&scope.row.nextAuditName=='-'">{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
             <p v-else>{{scope.row.nextAuditStore + ' - ' + scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId) && scope.row.checkState===0&& scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row.checkId,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId) && scope.row.checkState===0&& scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
@@ -540,9 +540,9 @@
         
       },
       // 选择审核人
-      choseCheckPerson:function (checkId,type) {
+      choseCheckPerson:function (row,type) {
         this.checkPerson.flowType=4   //调佣的流程类型为4
-        this.checkPerson.code=checkId  //业务编码为checkId
+        this.checkPerson.code=row.checkId  //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
@@ -817,7 +817,12 @@
           
             this.fullscreenLoading=false
             if(error.status === 300 && error.data.checkId){
-              this.choseCheckPerson(error.data.checkId,'set') 
+              // this.choseCheckPerson(error.data.checkId,'set') 
+              this.checkPerson.flowType=4   //调佣的流程类型为4
+              this.checkPerson.code=error.data.checkId  //业务编码为checkId
+              this.checkPerson.state=true  
+              this.checkPerson.type='set'
+              this.checkPerson.label=true
             }
             else{
               this.$message({
