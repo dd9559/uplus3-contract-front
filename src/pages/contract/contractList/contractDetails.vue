@@ -357,8 +357,8 @@
       </el-tab-pane>
       <el-tab-pane label="回访录音" name="fourth">
         <div class="type">
-          <span :class="{'active':isActive===1}" @click="changeType(1)">房源</span>
-          <span :class="{'active':isActive===2}" @click="changeType(2)">客源</span>
+          <div :class="{'active':isActive===1}" @click="changeType(1)">房源</div>
+          <div :class="{'active':isActive===2}" @click="changeType(2)">客源</div>
         </div>
         <div class="record">
           <el-table :data="recordData" border style="width: 100%" header-row-class-name="theader-bg">
@@ -1834,7 +1834,7 @@ export default {
     border-radius: 18px;
     overflow: hidden;
     display: flex;
-    > span {
+    > div {
       width: 50%;
       height: 36px;
       line-height: 36px;

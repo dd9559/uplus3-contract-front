@@ -1060,7 +1060,7 @@ export default {
               this.checkPerson.flowType=3;
               this.checkPerson.code=res.data.code;
               this.checkPerson.state=true;
-              this.checkPerson.type="set";
+              this.checkPerson.type=res.data.auditType===0?"set":"init";
               this.checkPerson.label=true;
             }else{
               this.$message({
@@ -1117,7 +1117,7 @@ export default {
               this.checkPerson.flowType=3;
               this.checkPerson.code=res.data.code;
               this.checkPerson.state=true;
-              this.checkPerson.type="set";
+              this.checkPerson.type=res.data.auditType===0?"set":"init";
               this.checkPerson.label=true;
             }else{
               this.$message({
