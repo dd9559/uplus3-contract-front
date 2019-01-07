@@ -1113,7 +1113,8 @@ export default {
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;
-            if(res.data.isHaveNextAudit===2){
+            //1 下一节点没有审批人 2 有
+            if(res.data.isHaveNextAudit===1){
               this.checkPerson.flowType=3;
               this.checkPerson.code=res.data.code;
               this.checkPerson.state=true;
