@@ -174,7 +174,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.auditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="userMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
