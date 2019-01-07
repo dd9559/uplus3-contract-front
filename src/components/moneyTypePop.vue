@@ -13,8 +13,8 @@
         </li>
       </ul>
     </div>
-    <p class="tree-box w200" slot="reference" @click="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
-      <el-input size="small" class="w200" :clearable="clearVal" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear="opera('clear')">
+    <p class="tree-box w200" slot="reference" @click.self="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
+      <el-input size="small" class="w200" :clearable="clearVal" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear.stop.prevent="opera('clear')">
       </el-input>
       <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i></span>
     </p>
@@ -56,16 +56,17 @@
         }
       },
       cellClick:function (data,pData) {
-        console.log(this.inputVal,this.init)
-        console.log(JSON.stringify(data))
+        debugger
         let param = Object.assign({},data,{pId:pData.id,pName:pData.name})
-        this.$refs.btn.focus()
+        // this.$refs.btn.focus()
         this.inputVal=data.name
         this.$emit('checkCell',param)
         this.visible=false
+        console.log(this.inputVal,this.init)
       },
       opera:function (type) {
         let e=event||window.event
+        console.log(JSON.stringify(e.target))
         // debugger
         if(type==='init'){
           this.visible=true
