@@ -150,7 +150,7 @@
                 </el-popover>
               </div>
               <ul class="contract-msglist">
-                <li>合同：<span>{{scope.row.code}}</span></li>
+                <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
                 <li>房源：<span>{{scope.row.houseinfoCode}} {{scope.row.showOwnerName}}</span></li>
                 <li>客源：<span>{{scope.row.guestinfoCode}} {{scope.row.showCustName}}</span></li>
               </ul>
@@ -1157,6 +1157,10 @@ export default {
   .contract-msglist {
     > li {
       text-align: left;
+      > span{
+        color: @color-blue;
+        cursor: pointer;
+      }
     }
   }
 }
