@@ -2059,9 +2059,12 @@ export default {
       padding-left: 20px;
       box-sizing: border-box;
       position: relative;
-       .el-input__prefix{
-         left: 73px;
-       }
+     .el-input__prefix{
+       left: 73px;
+     }
+     .el-input__suffix{
+       right: 80px;
+     }   
       p {
         margin-top: 5px;
       }

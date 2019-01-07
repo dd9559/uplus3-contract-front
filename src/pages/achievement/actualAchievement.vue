@@ -1422,7 +1422,7 @@ export default {
   /deep/ .el-dialog.base-dialog {
     // max-width: 1000px;
     margin: 13vh auto 0 !important;
-    overflow: auto;
+    // overflow: auto;
     padding-bottom: 30px;
     .el-dialog__headerbtn {
       right: 0;
@@ -1457,7 +1457,7 @@ export default {
       // background-color: pink;
       padding: 0 20px !important;
       box-sizing: border-box;
-      overflow-y: auto;
+      // overflow-y: scroll!important;
       max-height: 500px;
       /deep/ .el-table {
         // font-size: 14px !important;
@@ -1503,6 +1503,9 @@ export default {
       }
     }
   }
+    /deep/ .ach-body {
+      overflow: auto;
+    }
 }
 /deep/ .el-pagination {
   text-align: center;
