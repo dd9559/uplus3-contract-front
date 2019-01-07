@@ -367,7 +367,7 @@
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
 
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
 
 
   </div>
@@ -543,6 +543,11 @@
       // },
       trim(str){  
         return str.replace(/(^\s*)|(\s*$)/g, "")
+      },
+      myclose: function() {
+        this.checkPerson.state=false
+        // this.queryFn();
+        
       },
        // 选择审核人
       choseCheckPerson:function (code,type) {
