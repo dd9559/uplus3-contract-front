@@ -5,13 +5,15 @@
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
 
         <el-form-item label="关键字" prop="search">
+        <el-tooltip content="合同编号/房源编号/客源编号/物业地址" placement="top">
           <el-input
-            class="w330"
+            class="w200"
             v-model="propForm.search"
-            placeholder="合同编号/房源编号/客源编号/物业地址"
+            placeholder="请输入"
             :trigger-on-focus="false"
             clearable
           ></el-input>
+       </el-tooltip>
         </el-form-item>
         
         <el-form-item  class="mr" style="width:400px;"> 

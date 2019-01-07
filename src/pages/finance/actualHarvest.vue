@@ -5,7 +5,9 @@
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w394" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号"></el-input>
+          <el-tooltip content="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号" placement="top">
+            <el-input class="w200" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="请输入"></el-input>
+          </el-tooltip>
         </div>
         <div class="input-group">
           <label>收付款类:</label>

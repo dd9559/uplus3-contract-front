@@ -85,7 +85,8 @@
         if(from.path==='/payBill'&&vm.result.payCode&&vm.result.payCode.length>0){
           let param={
             state:true,
-            code:vm.result.payCode
+            code:vm.result.payCode,
+            type:parseInt(vm.result.type)===1?'set':'init'
           }
           vm.checkPerson=Object.assign(vm.checkPerson,param)
         }
