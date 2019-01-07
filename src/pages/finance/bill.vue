@@ -45,7 +45,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+          <div><select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree></div>
           <!--<el-select
             class="w200"
             :clearable="true"
