@@ -117,16 +117,16 @@
         
         <el-table-column label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <p v-if="scope.row.examineStoreName=='-' && scope.row.examineName=='-'">{{scope.row.examineStoreName + ' - ' + scope.row.examineName}}</p>
+            <p v-if="scope.row.examineStoreName=='-' && scope.row.examineName=='-'">{{scope.row.examineStoreName  + scope.row.examineName}}</p>
             <p v-else>{{scope.row.examineStoreName + ' - ' + scope.row.examineName}}</p>
-            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row.id,'init')">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
-            <p v-if="scope.row.nextAuditStoreName=='-' && scope.row.nextAuditName=='-'">{{scope.row.nextAuditStoreName + ' - '+ scope.row.nextAuditName}}</p>
+            <p v-if="scope.row.nextAuditStoreName=='-' && scope.row.nextAuditName=='-'">{{scope.row.nextAuditStoreName + scope.row.nextAuditName}}</p>
             <p v-else>{{scope.row.nextAuditStoreName + ' - '+ scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row.id,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
@@ -550,9 +550,9 @@
         
       },
        // 选择审核人
-      choseCheckPerson:function (code,type) {
+      choseCheckPerson:function (row,type) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
-        this.checkPerson.code=code //业务编码为checkId
+        this.checkPerson.code=row.id //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
@@ -823,7 +823,12 @@
         }).catch(error => {
            this.fullscreenLoading=false
            if(error.status === 300 && error.data.bizId){
-              this.choseCheckPerson(error.data.bizId,'set') 
+              // this.choseCheckPerson(error.data.bizId,'set') 
+              this.checkPerson.flowType=5   //调佣的流程类型为4
+              this.checkPerson.code=error.data.bizId  //业务编码为checkId
+              this.checkPerson.state=true  
+              this.checkPerson.type='set'
+              this.checkPerson.label=true
             }
             else{
               this.$message({
