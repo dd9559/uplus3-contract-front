@@ -251,7 +251,7 @@ const MIXINS = {
     comHeightFn(){
       if(this.$refs.tableCom&&this.$refs.tableComView){
         let wh = document.documentElement.clientHeight;
-        let h1 =this.$refs.tableComView.clientHeight + 40;
+        let h1 =this.$refs.tableComView.clientHeight + 80;
         let h2 =this.$refs.tableCom.$el.clientHeight;
         let th = wh - h1;
         this.tableNumberCom = h2 + th;

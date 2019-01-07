@@ -44,7 +44,7 @@
         </div>
         <div class="input-group">
           <label>部门:</label>
-          <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+          <div><select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree></div>
           <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
@@ -169,7 +169,7 @@
               <span>{{scope.row.auditStore}}</span>
               <p>{{scope.row.auditName}}</p>
             </template>
-            <el-button class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'init')">{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</el-button>
+            <el-button class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?'init':'set')">{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">

@@ -19,7 +19,8 @@
         </div>
         <div class="input-group col">
           <label class="form-label no-width f14">发起人:</label>
-          <p class="text-height" v-if="userMsg">{{userMsg.depName}} - {{userMsg.name}}</p>
+          <p class="text-height" v-if="userMsg&&!inObjPerson.state">{{userMsg.depName}} - {{userMsg.name}}</p>
+          <p class="text-height" v-else>{{inObjPerson.dep}} - {{inObjPerson.emp}}</p>
         </div>
       </li>
       <li>
@@ -44,7 +45,7 @@
         <div class="input-group col">
           <label class="no-width f14">可支配金额:</label>
           <div class="text-height">
-            <p class="no-wrap"><span>款类大类余额：{{amount.balance}}元</span>;<span>合同余额：{{amount.contractBalance}}元</span></p>
+            <p class="no-wrap"><span>款类大类余额：{{amount.balance}}元</span>;<span v-if="showAmount">合同余额：{{amount.contractBalance}}元</span></p>
             <!--<p v-if="showAmount"><span>合同余额：{{amount.contractBalance}}元</span></p>-->
           </div>
         </div>
@@ -297,6 +298,12 @@
             }
           ],
           form:{}
+        },
+        //发起人信息
+        inObjPerson:{
+          dep:'',
+          emp:'',
+          state:false
         }
       }
     },
@@ -310,6 +317,7 @@
 
       let type = this.$route.query.edit
       if (type) {
+        this.inObjPerson.state=true
         this.getDetails({type: type, payId: this.$route.query.id})
       }
     },
@@ -353,6 +361,7 @@
             this.imgList.forEach(item=>{
               this.files.push(`${item.path}?${item.name}`)
             })
+            this.inObjPerson = Object.assign(this.inObjPerson,{dep:res.data.store,emp:res.data.createByName})
             this.moneyTypeName = res.data.moneyTypeName
             this.showAmount=res.data.outAccountType===4?false:true
             this.list = res.data.account

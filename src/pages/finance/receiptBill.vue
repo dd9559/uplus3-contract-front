@@ -19,7 +19,7 @@
         </div>
         <div class="input-group col active-400">
           <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
-          <div class="flex-box">
+          <div class="flex-box" v-if="inObjPerson">
             <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')" @search="searchDep"></select-tree>
             <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
               <el-option class="drop-tree" value="">
@@ -36,6 +36,7 @@
               </el-option>
             </el-select>
           </div>
+          <div class="h32" v-else>{{dep.name}}-{{form.inObj}}</div>
         </div>
         <div class="input-group col">
           <label class="form-label no-width f14 margin-bottom-base">收款时间</label>
@@ -478,6 +479,7 @@
         fullscreenLoading:false,//提交表单防抖
         showAmount:false,//款类是否为代收代付
         showCard:true,//是否显示刷卡补充
+        inObjPerson:true,//收款人是否可选
       }
     },
     mounted() {
@@ -491,6 +493,7 @@
       let type = this.$route.query.edit
       let inAccount = this.$route.query.type
       if (type) {
+        this.inObjPerson=false
         this.getDetails({type: type, payId: this.$route.query.id})
       }else {
         this.$nextTick(()=>{
@@ -1158,6 +1161,11 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .h32{
+    height: 32px;
+    line-height: 32px;
+    min-width: 118px;
+  }
   .artice-margin{
     margin-bottom: 30px;
   }
