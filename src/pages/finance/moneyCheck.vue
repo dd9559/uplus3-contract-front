@@ -4,7 +4,9 @@
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-input class="w410" size="small" v-model="searchForm.keyword" :placeholder="activeView===1?'合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收款ID':'合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/付款ID'"></el-input>
+          <el-tooltip :content="activeView===1?'合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收款ID':'合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/付款ID'" placement="top">
+            <el-input class="w200" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="请输入"></el-input>
+          </el-tooltip>
         </div>
         <div class="input-group">
           <label>合同类型:</label>
@@ -167,7 +169,7 @@
               <span>{{scope.row.auditStore}}</span>
               <p>{{scope.row.auditName}}</p>
             </template>
-            <el-button class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'init')">{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
@@ -400,6 +402,7 @@
       this.activeView = parseInt(to.query.type)
       this.$tool.clearForm(this.searchForm)   //初始化筛选查询
       this.clearDep()
+      this.currentPage=1
 
       for (let item in this.power){
         // this.power[item].state=true

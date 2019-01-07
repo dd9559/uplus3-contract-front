@@ -5,8 +5,8 @@
         <p><span>合同预览</span>合同需签章打印且双方签字后生效</p>
       </div>
       <div class="type" v-if="isShowType">
-        <span :class="{'active':isActive===1}" @click="changeType(1)">居间合同</span>
-        <span :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</span>
+        <div :class="{'active':isActive===1}" @click="changeType(1)">居间合同</div>
+        <div :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</div>
       </div>
       <div class="btn" v-if="contType<4">
         <el-button type="primary" round style="width:100px" v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
@@ -519,6 +519,7 @@ export default {
     },
     // 关闭变更解约弹窗
     changeCancelDialog() {
+      this.getContImg();
       this.changeCancel_ = false;
       this.canceldialogType = "";
       this.changeCancelId = "";
@@ -614,7 +615,7 @@ export default {
       top: 12px;
       left: 50%;
       transform: translateX(-50%);
-      > span {
+      > div {
         width: 50%;
         height: 36px;
         line-height: 36px;

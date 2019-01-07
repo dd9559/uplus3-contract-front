@@ -119,13 +119,15 @@
         this.checkPerson.state=true
         this.checkPerson.code=this.result.payCode
       }*/
+      debugger
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
-        if(from.path==='/receiptBill'&&from.query.errorCode==='dialog'){
+        if(from.path==='/receiptBill'&&to.query.errorCode==='dialog'){
           let param={
             state:true,
-            code:vm.result.payCode
+            code:vm.result.payCode,
+            type:parseInt(vm.result.type)===1?'set':'init'
           }
           vm.checkPerson=Object.assign(vm.checkPerson,param)
         }
