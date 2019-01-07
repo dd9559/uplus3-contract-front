@@ -676,7 +676,7 @@
           v-if="dialogType==2"
           style="height:90px;padding-bottom: 20px;width:100%"
         >
-          <p class="f_l">审核日期：
+          <p class="f_l" style="width:300px;">审核日期：
             <el-date-picker
               v-model="examineDate"
               type="date"
@@ -2059,6 +2059,9 @@ export default {
       padding-left: 20px;
       box-sizing: border-box;
       position: relative;
+       .el-input__prefix{
+         left: 73px;
+       }
       p {
         margin-top: 5px;
       }
