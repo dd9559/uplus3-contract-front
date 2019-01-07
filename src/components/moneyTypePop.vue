@@ -13,10 +13,10 @@
         </li>
       </ul>
     </div>
-    <p class="tree-box w200" slot="reference" @click.self="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
-      <el-input size="small" class="w200" :clearable="clearVal" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear.stop.prevent="opera('clear')">
+    <p class="tree-box w200" slot="reference" @click.capture="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
+      <el-input size="small" class="w200" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear="opera('clear')">
       </el-input>
-      <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i></span>
+      <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i><i class="iconfont icon-tubiao-7" v-else  @click.stop="opera('clear')"></i></span>
     </p>
   </el-popover>
 </template>
@@ -56,7 +56,6 @@
         }
       },
       cellClick:function (data,pData) {
-        debugger
         let param = Object.assign({},data,{pId:pData.id,pName:pData.name})
         // this.$refs.btn.focus()
         this.inputVal=data.name
@@ -65,20 +64,19 @@
         console.log(this.inputVal,this.init)
       },
       opera:function (type) {
-        let e=event||window.event
-        console.log(JSON.stringify(e.target))
-        // debugger
         if(type==='init'){
           this.visible=true
           this.$refs.popover.showPopper=true
           this.iconUp=!this.iconUp
         }else if(type==='clear') {
+          console.log('test')
           this.visible=false
           this.$refs.popover.showPopper=false
           /*if(this.init.length>0){
           }else {
             this.inputVal=''
           }*/
+          this.inputVal=''
           this.$emit('clear')
         }
       },

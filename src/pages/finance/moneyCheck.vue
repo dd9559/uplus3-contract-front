@@ -679,9 +679,9 @@
         > label {
           text-align: center;
         }
-        /deep/ .el-select, .el-input {
+        /*/deep/ .el-select, .el-input {
           flex: 1;
-        }
+        }*/
       }
     }
   }
