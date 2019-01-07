@@ -472,7 +472,7 @@
                                     <template v-if="item.type === STEPSINPUT.num">
                                         <el-input 
                                         type="number"
-                                        v-model="item.val"
+                                        v-model.number="item.val"
                                         size="small"
                                         ></el-input>
                                     </template>
@@ -1083,7 +1083,13 @@
                             }else{
                                 j.required = false;
                             }
-                            e.rules = j;
+                            if(e.type === STEPSINPUT.num){
+                                e.rules = [j,
+                                { type: 'number', message: '输入必须为数字值'}];
+                            }else{
+                                e.rules = j;
+                            }
+                            
                         })
                         this.stepsFrom = {
                             list:[...arr,...arr2],
