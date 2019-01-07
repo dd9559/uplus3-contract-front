@@ -119,7 +119,7 @@
                 <!-- <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
                   <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select> -->
-                <el-input v-model="companyForm.cooperationMode" size="mini"></el-input>
+                <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input>
               </el-form-item>
             </div>
             <div class="item">
