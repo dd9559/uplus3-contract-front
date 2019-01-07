@@ -7,8 +7,8 @@
       <div class="select-tree">
         <el-tree accordion :data="dataList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
       </div>
-      <p class="tree-box" slot="reference" @click="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
-        <el-input size="small" class="w200" :clearable="clearVal" ref="btn" placeholder="请选择" v-model="inputVal" @clear="opera('clear')" @input.native="getDep">
+      <p class="tree-box" slot="reference" @click="opera('init',$event)" @mouseenter="showClear" @mouseleave="clearVal=false">
+        <el-input size="small" class="w200" :clearable="clearVal" ref="btn" placeholder="请选择" v-model="inputVal" @clear="opera('clear',$event)" @input.native="getDep">
         </el-input>
         <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i></span>
       </p>
@@ -71,8 +71,8 @@
         this.inputVal=data.name
         this.$emit('checkCell',data)
       },
-      opera:function (type) {
-        let e=event||window.event
+      opera:function (type,e) {
+        // let e=event||window.event
         // console.log(e.currentTarget)
         // debugger
         if(type==='init'){

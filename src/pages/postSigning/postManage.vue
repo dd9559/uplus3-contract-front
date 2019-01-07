@@ -777,6 +777,7 @@
                     lateState:'',
                     commission:'',
                     department:'',
+                    departmentS:'',
                     departmentMo:'',
                 },
                 // 筛选下拉
@@ -996,6 +997,7 @@
             // 重置
             resetFormFn() {
                 this.propForm.department='';
+                this.pageNum = 1;
                 this.$refs.propForm.resetFields()
                 // this.pageNum = 1;
                 // this.getDataList();
