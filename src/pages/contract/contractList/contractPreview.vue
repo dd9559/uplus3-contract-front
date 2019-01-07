@@ -40,7 +40,7 @@
       <div class="top">
         <p class="form-label">合同撤单原因</p>
         <div class="reason">
-          <el-input type="textarea" :rows="5" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100">
+          <el-input type="textarea" :rows="6" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100">
           </el-input>
           <span>{{invalidReason.length}}/100</span>
           <p v-if="examineState>-1&&contState!=2"><span>注：</span>您的合同正在审核中，是否确认要做撤单？撤单后，合同需要重新提审！</p>
@@ -205,7 +205,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -120 + 'px'
+      this.clientHei= document.documentElement.clientHeight -140 + 'px'
     },
     //居间买卖切换
     changeType(value) {
@@ -670,6 +670,11 @@ export default {
   /deep/.el-dialog__header {
     border-bottom: 1px solid @border-ED;
   }
+  /deep/.el-textarea{
+    textarea{
+      min-height: 120px!important;
+    }
+  }
   .top {
     display: flex;
     padding-top: 20px;
@@ -727,8 +732,8 @@ export default {
       position: relative;
       > span {
         position: absolute;
-        top: 90px;
-        right: 10px;
+        bottom: 10px;
+        right: 20px;
         color: @color-6c;
       }
       > p {
