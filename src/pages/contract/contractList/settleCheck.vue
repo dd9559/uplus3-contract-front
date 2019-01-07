@@ -547,7 +547,7 @@
        // 选择审核人
       choseCheckPerson:function (code,type) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
-        this.checkPerson.code=code.toString()  //业务编码为checkId
+        this.checkPerson.code=code //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
@@ -812,14 +812,19 @@
               this.queryFn();
             }, 2000);
           }
-          else if(res.data.status === 300){
-            this.choseCheckPerson(this.myCheckId,'set')
-          }
+          // else if(res.data.status === 300){
+          //   this.choseCheckPerson(this.myCheckId,'set')
+          // }
         }).catch(error => {
-            this.fullscreenLoading=false
-            this.$message({
-              message: error
-            })
+           this.fullscreenLoading=false
+           if(error.status === 300 && error.data.bizId){
+              this.choseCheckPerson(error.data.bizId,'set') 
+            }
+            else{
+              this.$message({
+                message: error
+              })
+            }
         });
       },
 
