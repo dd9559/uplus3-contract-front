@@ -125,7 +125,7 @@
         </el-table-column>
         <el-table-column align="center" min-width="160" label="签约时间" prop="operation time">
           <template slot-scope="scope">
-            {{scope.row.signDate|formatDate}}
+            {{scope.row.signTime|formatDate}}
           </template>
         </el-table-column>
         <el-table-column align="center" min-width="160" label="收款时间" prop="operation time">
@@ -350,9 +350,9 @@
         > label {
           text-align: center;
         }
-        /deep/ .el-select, .el-input {
+        /*/deep/ .el-select, .el-input {
           flex: 1;
-        }
+        }*/
       }
     }
   }

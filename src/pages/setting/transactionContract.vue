@@ -4,7 +4,7 @@
             <el-button type="primary" @click="addCon('添加合同资料')" v-if="power['sign-set-hq'].state">添加</el-button>
         </div>
         <div class="contract-list">
-          <el-table :data="listData" style="width: 100%" border>
+          <el-table :data="listData" style="width: 100%" border :max-height="tableHeight">
               <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
               <el-table-column align="left" label="名称" prop="name"></el-table-column>
               <el-table-column align="center" label="信息类型" prop="type">
@@ -80,6 +80,7 @@ export default {
       dictionary: {
         '520':''
       },
+      tableHeight: 0,
       power: {
         'sign-set-hq': {
           state: false,
@@ -91,6 +92,8 @@ export default {
   created() {
     this.getData();
     this.getDictionary()
+    let h = document.documentElement.clientHeight
+    this.tableHeight = h - 40 - 136
   },
   methods: {
     // 获取合同资料库列表

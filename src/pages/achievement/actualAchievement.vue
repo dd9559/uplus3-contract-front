@@ -54,7 +54,7 @@
                   <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                 </el-option>
               </el-select> -->
-             <select-tree :data="DepList" :init="propForm.department" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+             <select-tree :data="DepList" :init="propForm.department" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
        </el-form-item>
 
         <el-form-item>
@@ -380,8 +380,15 @@
             width="150"
           >
             <template slot-scope="scope">
-                <p>{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
-                <p  style="cursor:pointer;color:#478DE3" @click="choseCheckPerson(scope.row,1)"  v-if="(userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId">转交审核人</p>
+                <p  v-if="scope.row.achievementState==0">{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
+                <p v-else>-</p>
+                <el-button 
+                   type="text"
+                   @click="choseCheckPerson(scope.row,'init')" 
+                   v-if="(userMsg&&((userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0)"
+                >    
+                   {{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}
+                </el-button>
             </template>
           </el-table-column>
 
@@ -390,8 +397,16 @@
             width="150"
           >
             <template slot-scope="scope">
-                <p>{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
-                <p  style="cursor:pointer;color:red"  @click="choseCheckPerson(scope.row,2)"  v-if="(userMsg&&scope.row.auditId===userMsg.empId)&&(scope.row.nextAuditId==-1)">设置审核人</p>
+                <p v-if="scope.row.achievementState==0">{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
+                <p v-else>-</p>
+                <el-button 
+                 type="text" 
+                 style="color:red"  
+                 @click="choseCheckPerson(scope.row,'set')"  
+                 v-if="(userMsg&&scope.row.auditId===userMsg.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState==0"
+                >
+                设置审核人
+                </el-button>
             </template>
           </el-table-column>
 
@@ -814,7 +829,7 @@
     </div>
 
      <!-- 选择审核人弹框 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose" :showLabel="checkPerson.label"></checkPerson>
   </div>
 
 </template>
@@ -927,6 +942,7 @@ export default {
           state:false,
           type:'init',
           code:'',
+          label:false,
           flowType:0
       },
     };
@@ -973,6 +989,10 @@ export default {
       this.propForm.department=data.name
       this.propForm.dealAgentId=''
       this.handleNodeClick(data)
+    },
+    searchDep:function (payload) {
+      this.DepList=payload.list
+      this.propForm.department=payload.depName
     },
     getData(ajaxParam) {
      let _that=this;
@@ -1220,18 +1240,15 @@ export default {
      }
     },
     choseCheckPerson(val,type1){
-      if(type1==1){
         this.checkPerson.flowType=2;
         this.checkPerson.code=val.aId;
         this.checkPerson.state=true;
-        this.checkPerson.type='init';
-      }else if(type1==2){
-        this.checkPerson.flowType=2;
-        this.checkPerson.code=val.aId;
-        console.log(  this.checkPerson.code);
-        this.checkPerson.state=true;
-        this.checkPerson.type='set';
-      }       
+        this.checkPerson.type=type1;
+        if(val.nextAuditId>0){
+        this.checkPerson.label=false;
+        }else{
+        this.checkPerson.label=true;
+        }      
     },
     personChose:function () {
         this.checkPerson.state=false
@@ -1521,20 +1538,20 @@ export default {
 
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
-    max-height: 500px;
+  max-height: 500px;
 }
 /deep/ .el-dialog.base-dialog .el-dialog__header {
   padding: 0 !important;
 }
 
 .name-wrapper {
-      display: flex;
-      display: -webkit-box;
-      /*!autoprefixer: off */
-      -webkit-box-orient: vertical;
-      /* autoprefixer: on */
-      -webkit-line-clamp: 1;
-      overflow: hidden;
-      text-overflow:ellipsis;
+  display: flex;
+  display: -webkit-box;
+  /*!autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

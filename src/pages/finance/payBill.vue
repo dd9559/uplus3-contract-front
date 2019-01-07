@@ -437,6 +437,7 @@
       clearMoneyType:function () {
         this.form.moneyType=''
         this.form.moneyTypePid = ''
+        this.moneyTypeName = ''
         this.$tool.clearForm(this.amount,true)
       },
       getAmount:function () {

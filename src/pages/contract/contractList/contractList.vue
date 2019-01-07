@@ -150,7 +150,7 @@
                 </el-popover>
               </div>
               <ul class="contract-msglist">
-                <li>合同：<span>{{scope.row.code}}</span></li>
+                <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
                 <li>房源：<span>{{scope.row.houseinfoCode}} {{scope.row.showOwnerName}}</span></li>
                 <li>客源：<span>{{scope.row.guestinfoCode}} {{scope.row.showCustName}}</span></li>
               </ul>
@@ -182,7 +182,8 @@
         </el-table-column>
         <el-table-column align="left" label="签约日期" width="100">
           <template slot-scope="scope">
-            {{scope.row.signDate.substr(0, 10)}}
+            <!-- {{scope.row.signDate.substr(0, 10)}} -->
+            {{Number(scope.row.signDate)|timeFormat_}}
           </template>
         </el-table-column>
         <el-table-column align="left" label="可分配业绩 (元)" width="110">
@@ -1042,6 +1043,23 @@ export default {
         }
       })
     }
+  },
+  filters: {
+    timeFormat_: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 10)
+      }
+    }
   }
 };
 </script>
@@ -1139,6 +1157,10 @@ export default {
   .contract-msglist {
     > li {
       text-align: left;
+      > span{
+        color: @color-blue;
+        cursor: pointer;
+      }
     }
   }
 }

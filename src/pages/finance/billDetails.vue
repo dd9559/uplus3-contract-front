@@ -99,7 +99,7 @@
             <el-table-column min-width="200" align="center" label="收款账户">
               <template slot-scope="scope">
                 <p v-if="scope.row.cardNumber&&scope.row.cardNumber.length>0">{{scope.row.userName}} {{scope.row.bankName}} {{scope.row.cardNumber}}</p>
-                <span v-else>分账账户</span>
+                <span v-else>-</span>
               </template>
             </el-table-column>
 

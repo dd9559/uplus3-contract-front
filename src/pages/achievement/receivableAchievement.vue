@@ -46,7 +46,7 @@
                   <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                 </el-option>
               </el-select> -->
-             <select-tree :data="DepList" :init="propForm.department" @checkCell="depHandleClick" @clear="clearDep"></select-tree>
+             <select-tree :data="DepList" :init="propForm.department" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
        </el-form-item>
 
         <el-form-item>
@@ -306,6 +306,10 @@ export default {
       this.propForm.department=data.name
       this.propForm.dealAgentId=''
       this.handleNodeClick(data)
+    },
+     searchDep:function (payload) {
+      this.DepList=payload.list
+      this.propForm.department=payload.depName
     },
     queryFn() {
       // console.log("ssssssssssss");

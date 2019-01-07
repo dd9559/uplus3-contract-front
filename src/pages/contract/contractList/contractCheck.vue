@@ -118,7 +118,8 @@
         </el-table-column>
         <el-table-column align="left" label="签约日期" width="100">
           <template slot-scope="scope">
-            {{scope.row.signDate.substr(0, 10)}}
+            <!-- {{scope.row.signDate.substr(0, 10)}} -->
+            {{Number(scope.row.signDate)|timeFormat_}}
           </template>
         </el-table-column>
         <el-table-column align="left" label="可分配业绩 (元)" width="110">
@@ -161,7 +162,7 @@
             <span v-if="scope.row.auditId>0&&scope.row.toExamineState.value===0">
               <p>{{scope.row.auditStoreName}}</p>
               <p>{{scope.row.auditName}}</p>
-              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,'init')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+              <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?'set':'init')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <span v-else>-</span>
@@ -174,7 +175,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.auditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="userMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
@@ -389,7 +390,7 @@ export default {
     //合同详情
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+        this.setPath(this.$tool.getRouter(['合同','合同审核','合同详情'],'contractList'));
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
           this.$router.push({
             path: "/contractDetails",
@@ -442,12 +443,29 @@ export default {
       this.checkPerson.code=row.code;
       this.checkPerson.state=true;
       this.checkPerson.type=type;
-      if(row.nextAuditId>0){
+      if(row.nextAuditId>=0){
         this.checkPerson.label=false;
       }else{
         this.checkPerson.label=true;
       }
     },
+  },
+  filters: {
+    timeFormat_: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 10)
+      }
+    }
   }
 };
 </script>

@@ -2,15 +2,16 @@
     <el-popover
       @hide="checkInput"
       ref="popover"
+      trigger="manual"
       placement="bottom"
       v-model="visible">
       <div class="select-tree">
         <el-tree accordion :data="dataList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
       </div>
-      <p class="tree-box" slot="reference" @click="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
-        <el-input size="small" class="w200" :clearable="clearVal" ref="btn" placeholder="请选择" v-model="inputVal" @clear="opera('clear')" @input.native="getDep">
+      <p class="tree-box" slot="reference" @click="opera('init',$event)" @mouseenter="showClear" @mouseleave="clearVal=false">
+        <el-input size="small" class="w200" ref="btn" placeholder="请选择" v-model="inputVal" @clear="opera('clear',$event)" @input.native="getDep">
         </el-input>
-        <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i></span>
+        <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i><i class="iconfont icon-tubiao-7" v-else  @click.stop="opera('clear')"></i></span>
       </p>
     </el-popover>
 </template>
@@ -46,6 +47,7 @@
         visible:false,
         clearVal:false,
         iconUp:true,
+        pop:true,//弹窗是否失焦
       }
     },
     watch:{
@@ -63,6 +65,7 @@
         }
       },
       depHandleClick:function (data) {
+        this.pop=false
         this.$refs.btn.focus()
         if(data.subs.length===0){
           // debugger
@@ -71,8 +74,13 @@
         this.inputVal=data.name
         this.$emit('checkCell',data)
       },
-      opera:function (type) {
-        let e=event||window.event
+      popHide:function () {
+        if(this.pop){
+          this.visible=false
+        }
+      },
+      opera:function (type,e) {
+        // let e=event||window.event
         // console.log(e.currentTarget)
         // debugger
         if(type==='init'){
@@ -86,6 +94,7 @@
           }else {
             this.inputVal=''
           }*/
+          this.inputVal = ''
           this.$emit('clear')
         }
       },
@@ -103,7 +112,7 @@
         })
       },
       checkInput:function () {
-        this.$emit('inputBlur')
+        this.pop=true
       },
       show:function () {
         /*if(this.clearOper){
