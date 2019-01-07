@@ -15,7 +15,7 @@
                 <span>{{this.bigName}}</span>
                  <el-button type="primary" class='paper-btn' round size="medium"  v-show="power['sign-set-kl-add'].state==true && !isSF" @click='operation(null,1)'>新增</el-button> 
             </p>
-            <el-table :data="moneyTypes" v-if="isMoney" max-height="500">
+            <el-table :data="moneyTypes" max-height="500">
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(小类)" prop="name"></el-table-column>
                 <el-table-column align="center" label="描述" prop="remark">
@@ -84,7 +84,6 @@
                 moneyTypes: [],
                 cityName: "",
                 title:'',
-                isMoney:true,
                 smallId:'',
                 addDialog:false,
                 bigId:'',
@@ -245,9 +244,8 @@
                     return 'linestyle'
                 }
             },
-            //单击行事件
+            //单击行事件    
             rowClick(row, event, column) {
-                // this.isMoney=false
                 this.bigName=row.name
                 // var index=row.index
                 // var top=115+index*34.6

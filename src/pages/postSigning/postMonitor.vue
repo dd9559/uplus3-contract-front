@@ -212,6 +212,7 @@
                 // 筛选条件
                 propForm: {
                     department:'',
+                    departmentS:'',
                     departmentMo:'',
                     search: '',
                     paper: '',
@@ -303,6 +304,7 @@
             // 重置
             resetFormFn() {
                 this.propForm.department='';
+                this.pageNum = 1;
                 this.$refs.propForm.resetFields();
                 // this.pageNum=1;
                 // this.getListData();

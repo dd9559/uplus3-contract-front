@@ -47,6 +47,9 @@ let api = {
     })
   },
   get: function(url, param) {
+    param = Object.assign({},param,{
+      dayRandomTime:new Date().getTime()
+    })
     return axios.get(url,{params:param}).then(res => {
       return res
     })
