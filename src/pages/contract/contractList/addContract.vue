@@ -487,7 +487,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -150 + 'px'
+      this.clientHei= document.documentElement.clientHeight -160 + 'px'
     },
     addcommissionData() {
       if (this.ownerList.length < 5) {
@@ -1988,7 +1988,7 @@ export default {
   text-align: right;
 }
 .btn {
-  padding-top: 20px;
+  padding-top: 10px;
   padding-left: 20px;
   display: flex;
   justify-content: space-between;
