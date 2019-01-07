@@ -118,7 +118,8 @@
         </el-table-column>
         <el-table-column align="left" label="签约日期" width="100">
           <template slot-scope="scope">
-            {{scope.row.signDate.substr(0, 10)}}
+            <!-- {{scope.row.signDate.substr(0, 10)}} -->
+            {{Number(scope.row.signDate)|timeFormat_}}
           </template>
         </el-table-column>
         <el-table-column align="left" label="可分配业绩 (元)" width="110">
@@ -174,7 +175,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.auditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="userMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
@@ -448,6 +449,23 @@ export default {
         this.checkPerson.label=true;
       }
     },
+  },
+  filters: {
+    timeFormat_: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 10)
+      }
+    }
   }
 };
 </script>

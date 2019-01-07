@@ -5,7 +5,9 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini">
         <el-form-item label="关键字">
-          <el-input v-model="adjustForm.keyWord" clearable placeholder="合同编号/房源编号/客源编号"  class="width250"></el-input>
+          <el-tooltip effect="dark" content="合同编号/房源编号/客源编号" placement="top">
+            <el-input v-model="adjustForm.keyWord" style="width:150px" clearable placeholder="请输入"></el-input>
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="发起日期">
           <el-date-picker v-model="adjustForm.signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
@@ -83,7 +85,7 @@
 
         <el-table-column label="发起日期" align="center">
           <template slot-scope="scope">
-            <p>{{scope.row.sponsorDate | getDate}}</p>
+            <p>{{scope.row.sponsorTime | getDate}}</p>
           </template>
         </el-table-column>
 
@@ -107,27 +109,29 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="审核日期" prop="examineDate" :formatter="nullFormatter" align="center">
+        <el-table-column label="审核日期" align="center">
           <template slot-scope="scope">
-            <p>{{scope.row.examineDate | getDate}}</p>
+            <p>{{scope.row.examineTime | getDate}}</p>
           </template>
         </el-table-column>
         
         <el-table-column label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.examineStoreName + scope.row.examineName}}</p>
-            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.id,'init')">转交审核人</el-button>
+            <p v-if="scope.row.examineStoreName=='-' && scope.row.examineName=='-'">{{scope.row.examineStoreName + ' - ' + scope.row.examineName}}</p>
+            <p v-else>{{scope.row.examineStoreName + ' - ' + scope.row.examineName}}</p>
+            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row.id,'init')">转交审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
-            <p>{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)" @click="choseCheckPerson(scope.row.id,'set')">设置审核人</el-button>
+            <p v-if="scope.row.nextAuditStoreName=='-' && scope.row.nextAuditName=='-'">{{scope.row.nextAuditStoreName + ' - '+ scope.row.nextAuditName}}</p>
+            <p v-else>{{scope.row.nextAuditStoreName + ' - '+ scope.row.nextAuditName}}</p>
+            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row.id,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
           <template slot-scope="scope">
-            <span v-if="(scope.row.remarks).trim().length > 0">
+            <span v-if="scope.row.remarks&&(scope.row.remarks).trim().length > 0">
               <el-popover trigger="hover" placement="top">
                 <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
                   {{scope.row.remarks}}
@@ -141,7 +145,7 @@
           </template>
         </el-table-column>
               
-        <el-table-column label="操作" width="100" fixed="right">
+        <el-table-column label="操作" width="100" fixed="right" align="center">
           <template slot-scope="scope">
             <template v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === userMsg.empId">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
