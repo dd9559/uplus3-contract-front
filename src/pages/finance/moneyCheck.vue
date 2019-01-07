@@ -169,7 +169,7 @@
               <span>{{scope.row.auditStore}}</span>
               <p>{{scope.row.auditName}}</p>
             </template>
-            <el-button class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?'init':'set')">{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</el-button>
+            <p class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?'init':'set','current')">{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
@@ -177,9 +177,10 @@
             <p v-if="!scope.row.nextAuditStore&&!scope.row.nextAuditName">-</p>
             <template v-else>
               <span>{{scope.row.nextAuditStore}}</span>
+
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <el-button class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <p class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -261,7 +262,7 @@
     <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :current="checkPerson.current" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -285,7 +286,8 @@
           type:'init',
           code:'',
           flowType:0,
-          label:false
+          label:false,
+          current:false
         },
         searchForm: {
           contType: '',
@@ -432,11 +434,12 @@
         })*/
       },
       // 选择审核人
-      choseCheckPerson:function (row,type) {
+      choseCheckPerson:function (row,type,current) {
         this.checkPerson.flowType=this.activeView===1?1:0
         this.checkPerson.code=row.payCode
         this.checkPerson.state=true
         this.checkPerson.type=type
+        this.checkPerson.current=current==='current'?true:false
         if(row.nextAuditId===-1){
           this.checkPerson.label=true
         }else {
@@ -633,6 +636,7 @@
   @import "~@/assets/common.less";
   .btn-text-info{
     padding: 0;
+    color: @color-blue;
     &.color-red{
       color: red;
     }
