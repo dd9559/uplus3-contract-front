@@ -238,7 +238,7 @@
         <!-- 审核备注 -->
         <div class="audit-col bordernone">
           <div class="textareabox2 textlengthbox">
-            <span><em>*</em>审核备注</span>
+            <span>审核备注</span>
             <el-input type="textarea" :rows="5" class="textarea" maxlength=200 placeholder="请填写备注审核" v-model="auditForm.textarea"></el-input>
             <span class="textLength">{{auditForm.textarea.length}}/200</span>
           </div>
@@ -792,7 +792,7 @@
               })
           });
         }else{
-          this.$message('审核备注不能为空');
+          this.$message('审核备注未填写！');
         }
         
       },

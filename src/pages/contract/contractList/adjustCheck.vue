@@ -782,7 +782,7 @@
               })
           });
         }else{
-          this.$message('驳回原因不能为空');
+          this.$message('审核备注未填写！');
         }
         
       },
