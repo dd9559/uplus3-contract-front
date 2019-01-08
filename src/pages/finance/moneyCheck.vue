@@ -637,6 +637,7 @@
   .btn-text-info{
     padding: 0;
     color: @color-blue;
+    cursor: pointer;
     &.color-red{
       color: red;
     }

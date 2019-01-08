@@ -58,7 +58,7 @@
       this.$nextTick(()=>{
         let that=this
         document.onmousedown=function (e) {
-          if(!(that.$refs.popover.$refs.popper.innerHTML.indexOf(e.target.parentNode.innerHTML)>-1)&&!(e.target.parentNode===that.$refs.btn.$el)){
+          if(that.$refs.popover&&!(that.$refs.popover.$refs.popper.innerHTML.indexOf(e.target.parentNode.innerHTML)>-1)&&!(e.target.parentNode===that.$refs.btn.$el)){
             that.visible=false
           }
         }
