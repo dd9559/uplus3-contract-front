@@ -453,7 +453,8 @@ export default {
     },
     //关闭设置审核人弹窗
     closeCheckPerson(){
-      checkPerson.state=false;
+      console.log('qweqw')
+      this.checkPerson.state=false;
       this.getContractList();
     }
   },

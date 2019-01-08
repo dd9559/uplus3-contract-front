@@ -444,15 +444,15 @@
             </el-table-column>
             <el-table-column label="备注" width="320">
               <template slot-scope="scope">
-                <el-popover trigger="hover" placement="top" v-if="scope.row.auditInfo!='-'">
-                  <div style="width:300px">
-                    {{scope.row.auditInfo}}
-                  </div>
-                  <div slot="reference" class="name-wrapper">
-                    {{scope.row.auditInfo}}
-                  </div>
-                </el-popover>
-                <span v-else>{{scope.row.auditInfo}}</span>
+                  <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                    <div style="width:300px">
+                      {{scope.row.auditInfo}}
+                    </div>
+                    <div slot="reference" class="name-wrapper">
+                      {{scope.row.auditInfo}}
+                    </div>
+                  </el-popover>
+                <span v-else>-</span>
               </template>
             </el-table-column>
           </el-table>
@@ -1887,14 +1887,17 @@ export default {
     width: 950px;
     padding-top: 20px;
     .name-wrapper {
-      display: flex;
-      display: -webkit-box;
+      // display: flex;
+      // display: -webkit-box;
       /*!autoprefixer: off */
-      -webkit-box-orient: vertical;
+      // -webkit-box-orient: vertical;
       /* autoprefixer: on */
-      -webkit-line-clamp: 1;
-      overflow: hidden;
+      // -webkit-line-clamp: 1;
+      // overflow: hidden;
+      // text-overflow:ellipsis;
       text-overflow:ellipsis;
+      white-space:nowrap;
+      overflow:hidden; 
     }
     .noPower{
       width:300px;
