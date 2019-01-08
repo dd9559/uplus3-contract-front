@@ -326,7 +326,7 @@
               <upload-cell :type="item.type"></upload-cell>
               <!--<span>{{item.name}}</span>-->
               <el-tooltip :content="item.name" placement="top">
-                <span>{{item.name}}</span>
+                <div class="span">{{item.name}}</div>
               </el-tooltip>
               <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
             </li>
@@ -496,9 +496,9 @@
         this.inObjPerson=false
         this.getDetails({type: type, payId: this.$route.query.id})
       }else {
-        this.$nextTick(()=>{
-          this.getAcount(this.getUser.user&&this.getUser.user.empId)
-        })
+        if(this.getUser){
+          this.getAcount(this.getUser&&this.getUser.user.empId)
+        }
       }
       if(inAccount){
         this.activeType=parseInt(inAccount)===4?2:1
@@ -1154,6 +1154,10 @@
           this.form.inObjId=val.empId
           this.form.inObj=val.name
         }
+      },
+      getUser:function (val) {
+        debugger
+        this.getAcount(val.user.empId)
       }
     }
   }
@@ -1445,7 +1449,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        >span{
+        .span{
           width: 100px;
           text-align: center;
           /*word-break: break-all;*/

@@ -13,7 +13,7 @@ function set_upload_param(up,param, filename)
 {
 	if (filename != '') {
 		// let suffix = get_suffix(filename);
-		param.key = `${param.key}${filename}`;
+		param.key = `${param.key}${filename.replace(/\s+/g,'')}`;
 	}
 	let new_multipart_params = {
 		'key' : param.key,
@@ -22,7 +22,7 @@ function set_upload_param(up,param, filename)
 		'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
 		'x-oss-object-acl' : param.acl,
 		'signature': param.signature,
-    'Content-Disposition':`inline;filename=${filename}`
+    // 'Content-Disposition':`inline;filename=${filename.replace(/s+/g,'')}`
 	};
 	up.setOption({
 		'url': param.host,

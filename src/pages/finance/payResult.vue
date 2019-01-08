@@ -56,7 +56,7 @@
           state:false,
           type:'set',
           code:'',
-          flowType:1
+          flowType:0
         },
         power:{
           'sign-ht-info-query':{

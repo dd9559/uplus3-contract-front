@@ -125,7 +125,7 @@
             <input type="text" class="no-style" placeholder="请输入" maxlength="6" v-model.trim="scope.row.userName" @input="inputOnly">
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收款账户 ">
+        <el-table-column align="center" label="收款账户">
           <template slot-scope="scope">
             <input type="text" class="no-style" placeholder="请输入" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
           </template>
@@ -156,7 +156,7 @@
             <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="previewPhoto(imgList,index)">
               <upload-cell :type="item.type"></upload-cell>
               <el-tooltip :content="item.name" placement="top">
-                <span>{{item.name}}</span>
+                <div class="span">{{item.name}}</div>
               </el-tooltip>
               <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
             </li>
@@ -711,7 +711,7 @@
   .no-wrap{
     white-space: nowrap;
   }
-  .info-textarea{
+  /deep/.info-textarea{
     width: 285px;
     .el-textarea__inner{
       height: 115px;
@@ -880,7 +880,7 @@
         &:last-of-type{
           margin-right: 0;
         }
-        >span{
+        .span{
           width: 100px;
           text-align: center;
           /*word-break: break-all;*/

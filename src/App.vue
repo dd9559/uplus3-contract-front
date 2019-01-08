@@ -149,6 +149,15 @@
     /*!autoprefixer: off */
     -webkit-box-orient: vertical;
     /* autoprefixer: on */
+    line-height: 1.5;
+    height: 54px;
+    position: relative;
+  }
+  .one-row{
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow:ellipsis;
   }
 
   // 清除浮动
