@@ -119,14 +119,14 @@
           <template slot-scope="scope">
             <p v-if="scope.row.examineStoreName=='-' && scope.row.examineName=='-'">{{scope.row.examineStoreName  + scope.row.examineName}}</p>
             <p v-else>{{scope.row.examineStoreName + ' - ' + scope.row.examineName}}</p>
-            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,'init')">{{userMsg.empId===scope.row.auditorId?'转交审核人':'设置审核人'}}</el-button>
+            <p class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,'init')">{{userMsg.empId===scope.row.auditorId?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
             <p v-if="scope.row.nextAuditStoreName=='-' && scope.row.nextAuditName=='-'">{{scope.row.nextAuditStoreName + scope.row.nextAuditName}}</p>
             <p v-else>{{scope.row.nextAuditStoreName + ' - '+ scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId&&scope.row.nextAuditId!==0)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <p class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId&&scope.row.nextAuditId!==0)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
@@ -238,7 +238,7 @@
         <!-- 审核备注 -->
         <div class="audit-col bordernone">
           <div class="textareabox2 textlengthbox">
-            <span><em>*</em>审核备注</span>
+            <span>审核备注</span>
             <el-input type="textarea" :rows="5" class="textarea" maxlength=200 placeholder="请填写备注审核" v-model="auditForm.textarea"></el-input>
             <span class="textLength">{{auditForm.textarea.length}}/200</span>
           </div>
@@ -775,12 +775,13 @@
           .then(res => {
            this.fullscreenLoading=false
             if (res.data.status === 200) {
-              this.$message('已驳回');
-              let _this = this
-              setTimeout(() => {
-                _this.dialogVisible = false
+              this.dialogVisible = false
                 // 数据刷新
-                this.queryFn();
+              this.queryFn();
+              
+              setTimeout(() => {
+                
+                this.$message('已驳回');
 
               }, 2000);
             }
@@ -791,7 +792,7 @@
               })
           });
         }else{
-          this.$message('审核备注不能为空');
+          this.$message('审核备注未填写！');
         }
         
       },
@@ -808,13 +809,13 @@
         .then(res => {
           this.fullscreenLoading=false
           if (res.data.status === 200) {
-            console.log(res)
-            this.$message('已通过');
-            let _this = this
-            setTimeout(() => {
-              _this.dialogVisible = false
+            
+            this.dialogVisible = false
               // 数据刷新
-              this.queryFn();
+            this.queryFn();
+            setTimeout(() => {
+              
+              this.$message('已通过');
             }, 2000);
           }
           // else if(res.data.status === 300){
@@ -922,6 +923,8 @@
 #settlecheck{
   .btn-text-info{
     padding: 0;
+    color: @color-blue;
+    cursor: pointer;
     &.color-red{
       color: red;
     }
