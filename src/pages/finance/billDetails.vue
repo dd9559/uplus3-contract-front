@@ -209,7 +209,7 @@
         <div class="input">
           <el-input type="textarea" resize="none" placeholder="请输入同意/退回理由" :maxlength="invalidMax"
                     v-model="layer.reasion"
-                    class="input-textarea">
+                    class="input-textarea" :class="[layer.reasion.length>0?'':'scroll-hidden']">
           </el-input>
           <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
         </div>
@@ -390,7 +390,7 @@
           flowType:this.billMsg.audit.flowType,
           bizCode:this.billMsg.audit.bizCode
         }
-        this.$ajax.get('/api/machine/getAuditList',param).then(res=>{
+        this.$ajax.get('/api/machine/getAuditListToFinance',param).then(res=>{
           // debugger
           res=res.data
           if(res.status===200){
@@ -583,7 +583,7 @@
       .text-absloute {
         position: absolute;
         bottom: 11px;
-        right: 14px;
+        right: 20px;
       }
     }
   }
