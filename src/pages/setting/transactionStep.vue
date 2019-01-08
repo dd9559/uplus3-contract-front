@@ -7,7 +7,7 @@
         <span>步骤类型</span>
         <el-button type="primary" @click="addStepsType" v-if="power['sign-set-hq'].state">添加步骤类型</el-button>
       </div>
-      <el-table :data="listData" @cell-click="cellClick" border max-height="600">
+      <el-table :data="listData" @cell-click="cellClick" border :max-height="tableHeight">
         <el-table-column
         align="center"
         :label="item.name"
@@ -225,6 +225,7 @@
         tempRoleList: [],
         inputMax: 30,
         allRows: [],
+        tableHeight: 0,
         power: {
           'sign-set-hq': {
             state: false,
@@ -237,6 +238,8 @@
       this.getRoleList()
       this.getDictionary()
       this.getData()
+      let h = document.documentElement.clientHeight
+      this.tableHeight = h - 80 - 150
     },
     methods: {
       querySearch(queryString,cb) {

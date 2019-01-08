@@ -126,7 +126,7 @@
                         <li v-for="(item,index) in nodeList" :key="index">
                             <div class="node-body">
                                <el-input size="small" class="w152" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
-                                <el-select size="small" class="w152" v-model="item.type">
+                                <el-select size="small" class="w152" v-model="item.type" @change="getType">
                                     <el-option label="请选择审批人类型" value=""></el-option>
                                     <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                 </el-select>
@@ -340,6 +340,11 @@
                         this.roleList = res.data
                     }
                 })
+            },
+            getType(val) {
+                if(val === 1 || val === 2) {
+                    this.EmployeList = []
+                }
             },
             clearDep: function () {
                 this.clearSelect()
@@ -709,20 +714,28 @@
                                         item[i].type = item[i].lastChoice.type
                                         item[i].userName = item[i].lastChoice.userName
                                         item[i].userId = item[i].lastChoice.userId
-                                        delete item[i].lastChoice
-                                        isOk = true
                                     } else {
                                         this.$message({message:"每一个分支节点下必须选择一个默认审核人"})
+                                        return false
                                     }
                                 } else {
                                     this.$message({message:"请设置默认审核人"})
+                                    return false
                                 }
                             } else {
                                 this.$message({message:"审批人类型不能为空"})
+                                return false
                             }
                         } else {
                             this.$message({message:"节点名称不能为空"})
+                            return false
                         }
+                    }
+                    isOk = true
+                    if(isOk) {
+                        for(var i = 1; i < item.length; i++) {
+                            delete item[i].lastChoice
+                        }  
                     }
                     if(isOk) {
                        delete this.nodeList[0].depName 

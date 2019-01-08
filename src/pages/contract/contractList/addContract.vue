@@ -606,22 +606,28 @@ export default {
     },
     //手机号验证
     verifyMobile(item,index,type) {
+      console.log(Number(item.mobile))
       //let reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
        if(item.isEncryption){
         if(type==="owner"){
-          // if(this.ownerList[index].mobile.length<11){
-            if(this.ownerList[index].mobile!==this.beforeChangeMobile){
+          if(this.ownerList[index].mobile!==this.beforeChangeMobile){
+            if(Number(item.mobile)){
+              this.ownerList[index].mobile=item.mobile;
+            }else{
               this.ownerList[index].mobile='';
-              this.ownerList[index].isEncryption=false;
             }
-          // }
+            // this.ownerList[index].mobile='';
+            this.ownerList[index].isEncryption=false;
+          }
         }else if(type==="guest"){
-          // if(this.guestList[index].mobile.length<11){
-            if(this.guestList[index].mobile!==this.beforeChangeMobile){
+          if(this.guestList[index].mobile!==this.beforeChangeMobile){
+            if(Number(item.mobile)){
+              this.guestList[index].mobile=item.mobile;
+            }else{
               this.guestList[index].mobile='';
-              this.guestList[index].isEncryption=false;
             }
-          // }
+            this.guestList[index].isEncryption=false;
+          }
         }
       }else{
         if(item.mobile.length===11){
@@ -1312,6 +1318,7 @@ export default {
           this.contractForm.houseInfo = houseMsg;
           if(houseMsg.OwnerInfoList.length>0){
             this.ownerList=[];
+            this.ownerList_=[];
             houseMsg.OwnerInfoList.forEach(element => {
               element.type=1;
               element.encryptionCode='';
@@ -1356,6 +1363,7 @@ export default {
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
           this.guestList=[];
+          this.guestList_=[];
           this.$set(this.contractForm.guestInfo,'paymentMethod',1)
           // this.contractForm.guestInfo.paymentMethod=1
           let element = {
