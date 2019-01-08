@@ -121,7 +121,7 @@
                 <div class="input-box">
                     <span class="cl-1 mr-10"><span class="mr-5 red">*</span>拒绝原因：</span>
                     <div class="input">
-                        <el-input type="textarea" resize="none" :maxlength="invalidMax" v-model="invalidInput" class="input">
+                        <el-input :autosize="textAutosize" type="textarea" resize="none" :maxlength="invalidMax" v-model="invalidInput" class="input">
                         </el-input>
                         <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
                     </div>
@@ -377,7 +377,8 @@
                 // 枚举数据
                 dictionary:{
                     '520':'合同资料库标题'
-                }
+                },
+                textAutosize:{ minRows: 7, maxRows: 7 }
             }
         },
         computed: {

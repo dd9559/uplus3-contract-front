@@ -105,7 +105,7 @@ export default{
             timeout:0,
             touch:true,
             qmnewsrcArr:[],
-            signPosition:{x:0,y:0,pageIndex:''},
+            signPositions:[],
           }
         },
         created(){
@@ -140,15 +140,16 @@ export default{
                             this.imgSrc2=res.data.data.residenceImg.url
                             this.total=res.data.data.businessImg.count
                             this.total2=res.data.data.residenceImg.count
-                            this.signPosition=res.data.data.signPosition
-                            if(this.count2==this.signPosition.pageIndex){
+                            this.signPositions=res.data.data.signPosition
+                            this.sigtureShow2=false
+                            for(let i=0;i<this.signPositions.length;i++){
+                                if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
-                                dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
-                                dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                            }else{
-                               this.sigtureShow2=false
-                           }
+                                dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
+                                dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
+                              }
+                            }
                             let htImg=document.getElementById('ht')
                             let htImg2=document.getElementById('ht2')
                             var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
@@ -162,15 +163,17 @@ export default{
                            this.divWidth=this.divWidth
                            this.imgSrc=resadd.img.url
                            this.total=res.data.data.img.count
-                           this.signPosition=res.data.data.signPosition
+                           this.signPositions=res.data.data.signPosition
                            console.log(this.signPosition,'signPosition');
-                           if(this.count==this.signPosition.pageIndex){
+                           ///////////////
+                           this.sigtureShow=false
+                           for(let i=0;i<this.signPositions.length;i++){
+                            if(this.count==this.signPositions[i].pageIndex){
                              this.sigtureShow=true
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
-                             dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
-                             dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                           }else{
-                               this.sigtureShow=false
+                             dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
+                             dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
+                           }
                            }
                            let htImg=document.getElementById('ht')
                            let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
@@ -194,21 +197,62 @@ export default{
                 .catch(() => {});
             },
             showPos(){
+                // 根据this.sigtureShow判断执行创建或删除
+                // false:创建
+                // true:根据this.count遍历签章数组，获取当前展示页的签章信息，再执行删除签章对象
                 if(this.showSed){
-                    this.signPosition.pageIndex=this.count2
+                    if(this.sigtureShow2==false){
+                        //创建
+                        this.sigtureShow2=true
+                        var sign={x:0,y:0,pageIndex:this.count2}
+                        let dropbtn=document.getElementsByClassName('signaturetwo')[0]
+                             dropbtn.style.left='0px'
+                             dropbtn.style.top='0px'
+                        this.signPositions.push(JSON.parse(JSON.stringify(sign)))
+                        this.signPositions.forEach((item,index)=>{
+                            if(item.pageIndex==this.count2){
+                                this.tuozhuai(this.signPositions[index])
+                            }
+                        })
+                        
+                    }else{
+                        //签章已存在，删除
+                        for(let i=0;i<this.signPositions.length;i++){
+                            if(this.count2==this.signPositions[i].pageIndex){
+                                this.signPositions.splice(i,1)
+                                this.sigtureShow2=false
+                            }
+                        }
+                    }
                 }else{
-                     this.signPosition.pageIndex=this.count
+                    if(this.sigtureShow==false){
+                        //创建
+                        this.sigtureShow=true
+                        var sign={x:0,y:0,pageIndex:this.count}
+                        let dropbtn=document.getElementsByClassName('signatureone')[0]
+                             dropbtn.style.left='0px'
+                             dropbtn.style.top='0px'
+                        this.signPositions.push(JSON.parse(JSON.stringify(sign)))
+                        this.signPositions.forEach((item,index)=>{
+                            if(item.pageIndex==this.count){
+                                this.tuozhuai(this.signPositions[index])
+                            }
+                        })
+                        
+                    }else{
+                        //签章已存在，删除
+                        // debugger
+                        for(let i=0;i<this.signPositions.length;i++){
+                            if(this.count==this.signPositions[i].pageIndex){
+                                this.signPositions.splice(i,1)
+                                this.sigtureShow=false
+                            }
+                        }
+                    }
+                    
                 }
-                if(this.showSed){
-                    this.sigtureShow=false
-                }else{
-                    this.sigtureShow=!this.sigtureShow
-                }
-                 this.sigtureShow2=!this.sigtureShow2
-
-                 this.tuozhuai()
             },
-            tuozhuai(){
+            tuozhuai(sign){
                     if(this.showSed){
                     var oDiv=document.getElementsByClassName('signature')[1]
                     }else{
@@ -221,8 +265,8 @@ export default{
                             document.onmousemove = function(ev){
                             var l = ev.clientX-disX;
                             var t = ev.clientY-disY;
-                            This.signPosition.x=(l/622).toFixed(2)
-                            This.signPosition.y=(t/802).toFixed(2)
+                            sign.x=(l/622).toFixed(2)
+                            sign.y=(t/802).toFixed(2)
                             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-100 : l
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
@@ -237,24 +281,13 @@ export default{
                         };
                 },
             saveAll(){
-                if(this.showSed){
-                    if(this.sigtureShow2==false){
-                        this.$message({
-                        type: 'error',
-                        message: '请设置签章位置！'
-                        })
-                    return
-                    }
-                }else{
-                    if(this.sigtureShow==false){
-                        this.$message({
+                if(this.signPositions.length==0){
+                    this.$message({
                         type: 'error',
                         message: '请设置签章位置！'
                         })
                         return
-                    }
                 }
-                 this.signPosition.pageIndex=this.showSed?this.count2:this.count
                  let param={
                   address:{
                     address:this.mbanAddress==''?'':this.mbanAddress.path+'?'+this.mbanAddress.name,
@@ -265,7 +298,7 @@ export default{
                   type:this.type,
                   cityName:this.cityName,
                   name:this.contraName,
-                  signPosition:this.signPosition,
+                  signPositions:this.signPositions,
                   imgAddress:{"business":this.showSed?this.imgSrc:'', "residence":this.showSed?this.imgSrc2:'',"address":!this.showSed?this.imgSrc:''},
                   imgPage:{"business":this.showSed?this.total:0, "residence": this.showSed?this.total2:0,"count": !this.showSed?this.total:0},
                   cityId:this.cityId,
@@ -283,7 +316,6 @@ export default{
                 })
             },
             numSave(){
-                // debugger
                 for(let i=0;i<this.tableDate.length;i++){
                     if(this.tableDate[i].inputType==2){
                         if(this.tableDate[i].options==''){
@@ -309,17 +341,18 @@ export default{
                     if(this.count<=0){
                         this.count=1
                     }
-                    if(this.count==this.signPosition.pageIndex){
-                            if(this.showSed){
-                                this.sigtureShow=false
-                            }else{
-                                this.sigtureShow=true
-                            }
+                     this.sigtureShow=false
+                    for(let i=0;i<this.signPositions.length;i++){
+                        if(this.count==this.signPositions[i].pageIndex){
+                             this.sigtureShow=true
+                             if(this.showSed){
+                                  this.sigtureShow=false
+                             }
+                             this.tuozhuai(this.signPositions[i])
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
-                             dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
-                             dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                           }else{
-                               this.sigtureShow=false
+                             dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
+                             dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
+                           }
                     }
                     var htImg=document.getElementById('ht')
                     var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
@@ -330,38 +363,40 @@ export default{
                     if(this.count2<=0){
                         this.count2=1
                     }
-                    if(this.count2==this.signPosition.pageIndex){
+                     this.sigtureShow2=false
+                     for(let i=0;i<this.signPositions.length;i++){
+                         if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
-                                dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
-                                dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                            }else{
-                               this.sigtureShow2=false
-                           }
+                                dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
+                                dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
+                            }
+                     }
                     var htImg2=document.getElementById('ht2')
                     var newsrc=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
                     this.autograph(htImg2,newsrc)
                 }
             },
              add(type){
+                 //展示当前页：根据this.count遍历签章数组，获取当前展示页的签章信息
                if(type==1){
                     this.flag=0
                     this.count++
                     if(this.count>=this.total){
                         this.count=this.total
                     }
-                    if(this.count==this.signPosition.pageIndex){
-                            if(this.showSed){
-                                this.sigtureShow=false
-                            }else{
-                                this.sigtureShow=true
-                            }
-
+                     this.sigtureShow=false
+                    for(let i=0;i<this.signPositions.length;i++){
+                         if(this.count==this.signPositions[i].pageIndex){
+                             this.sigtureShow=true
+                             if(this.showSed){
+                                  this.sigtureShow=false
+                             }
+                             this.tuozhuai(this.signPositions[i])
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
-                             dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
-                             dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                           }else{
-                               this.sigtureShow=false
+                             dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
+                             dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
+                            }
                     }
                     var htImg=document.getElementById('ht')
                     var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
@@ -372,13 +407,14 @@ export default{
                     if(this.count2>=this.total2){
                         this.count2=this.total2
                     }
-                    if(this.count2==this.signPosition.pageIndex){
+                    this.sigtureShow2=false
+                    for(let i=0;i<this.signPositions.length;i++){
+                        if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
-                                dropbtn.style.left=(this.signPosition.x*this.divWidth)+'px'
-                                dropbtn.style.top=(this.signPosition.y*this.divHeight)+'px'
-                            }else{
-                               this.sigtureShow2=false
+                                dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
+                                dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
+                        }
                     }
                     var htImg2=document.getElementById('ht2')
                     var newsrc=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
@@ -386,10 +422,9 @@ export default{
                 }
             },
             autograph(obj,newsrc){
-                //    debugger
+               //    debugger
                     var flag=0
                     for(let i=0;i< this.qmnewsrcArr.length;i++){
-                        // alert(this.qmnewsrcArr[i][newsrc])
                         if(this.qmnewsrcArr[i][newsrc]){
                             obj.src=this.qmnewsrcArr[i][newsrc]
                             flag=1
