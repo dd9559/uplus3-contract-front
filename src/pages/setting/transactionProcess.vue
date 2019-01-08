@@ -140,7 +140,7 @@
       this.getData();
       this.getTypeSteps()
       let h = document.documentElement.clientHeight
-      this.tableHeight = h - 80 - 136
+      this.tableHeight = h - 80 - 140
     },
     methods: {
       // 获取交易流程列表
