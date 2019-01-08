@@ -775,12 +775,13 @@
           .then(res => {
            this.fullscreenLoading=false
             if (res.data.status === 200) {
-              this.$message('已驳回');
-              let _this = this
-              setTimeout(() => {
-                _this.dialogVisible = false
+              this.dialogVisible = false
                 // 数据刷新
-                this.queryFn();
+              this.queryFn();
+              
+              setTimeout(() => {
+                
+                this.$message('已驳回');
 
               }, 2000);
             }
@@ -808,13 +809,13 @@
         .then(res => {
           this.fullscreenLoading=false
           if (res.data.status === 200) {
-            console.log(res)
-            this.$message('已通过');
-            let _this = this
-            setTimeout(() => {
-              _this.dialogVisible = false
+            
+            this.dialogVisible = false
               // 数据刷新
-              this.queryFn();
+            this.queryFn();
+            setTimeout(() => {
+              
+              this.$message('已通过');
             }, 2000);
           }
           // else if(res.data.status === 300){
