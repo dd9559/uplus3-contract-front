@@ -30,7 +30,7 @@
                 <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
                 <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p>
               </div>
-              <div class="one_" v-if="contType!='1'">
+              <div class="one_">
                 <p v-if="contType!='1'">
                   <span class="tag">佣金合计：</span>
                   <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
@@ -192,7 +192,15 @@
             <div class="content">
               <div class="one_ extendParams">
                 <p v-for="(item,index) in parameterList" :key="index" v-if="contractDetail.extendParams[item.name]">
-                  <span class="tag">{{item.name}}：</span><span class="text">{{contractDetail.extendParams[item.name]}} {{item.unit}}</span>
+                  <!-- <span class="tag">{{item.name}}：</span><span class="text">{{contractDetail.extendParams[item.name]}} {{item.unit}}</span> -->
+                  <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+                    <span class="tag tagHidden">{{item.name}}</span>
+                  </el-tooltip>
+                    <span class="colon">  ：</span>
+                  <el-tooltip class="item" effect="dark" :content="contractDetail.extendParams[item.name]" placement="top">
+                    <span class="text tagHidden">{{contractDetail.extendParams[item.name]}} </span>
+                  </el-tooltip>
+                  {{item.unit}}
                 </p>
               </div>
             </div>
@@ -461,7 +469,7 @@
     </div>
     
     <!-- 拨号弹出框 -->
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="460px">
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <div>
         <div class="icon">
           <i class="el-icon-success"></i>
@@ -796,6 +804,7 @@ export default {
         flowType:0,
         label:false
       },
+      canCall:true,
       //权限
       power: {
         'sign-ht-xq-print': {
@@ -897,26 +906,29 @@ export default {
     },
     //打电话
     call(value) {
-      // this.dialogVisible = true;
-      // this.callNumber = value.mobile;
-      console.log(value);
-      let param = {
-        id:value.pid,
-        contractCode:this.contCode,
-        sourceType:value.personType.value===1?0:1
-      };
-      this.$ajax.get('/api/record/virtualNum',param).then(res=>{
-        res=res.data;
-        if(res.status===200){
-          this.callNumber=res.data.virtualNum;
-          this.dialogVisible = true;
-        }
-      }).catch(error=>{
-        this.$message({
-          message:error,
-          type: "error"
+      if(this.canCall){
+        let param = {
+          id:value.pid,
+          contractCode:this.contCode,
+          sourceType:value.personType.value===1?0:1
+        };
+        this.canCall=false;
+        this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+          this.canCall=true;
+          res=res.data;
+          if(res.status===200){
+            this.callNumber=res.data.virtualNum;
+            this.dialogVisible = true;
+          }
+        }).catch(error=>{
+          this.canCall=true;
+          this.$message({
+            message:error,
+            type: "error"
+          })
         })
-      })
+      }
+      
     },
     //合同预览
     goPreview() {
@@ -1627,12 +1639,35 @@ export default {
         }
       }
       .extendParams{
-        width: 820px;
+        width: 1000px;
+        display: flex;
+        flex-wrap: wrap;
         > p{
-          width: 350px;
+          display: flex;
+          width: 300px;
           padding: 4px 0;
           .tag{
-            width: 200px;
+            width: 100px;
+            cursor: pointer;
+          }
+          .text{
+            max-width: 180px;
+            cursor: pointer;
+          }
+          .colon{
+            color: @color-6c;
+          }
+          .tagHidden{
+            // display: -webkit-box;
+            /*!autoprefixer: off */
+            // -webkit-box-orient: vertical;
+            /* autoprefixer: on */
+            // -webkit-line-clamp: 1;
+            // overflow: hidden;
+            // text-overflow:ellipsis;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            overflow:hidden; 
           }
         }
       }

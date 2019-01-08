@@ -345,6 +345,9 @@ export default{
                     for(let i=0;i<this.signPositions.length;i++){
                         if(this.count==this.signPositions[i].pageIndex){
                              this.sigtureShow=true
+                             if(this.showSed){
+                                  this.sigtureShow=false
+                             }
                              this.tuozhuai(this.signPositions[i])
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
@@ -386,6 +389,9 @@ export default{
                     for(let i=0;i<this.signPositions.length;i++){
                          if(this.count==this.signPositions[i].pageIndex){
                              this.sigtureShow=true
+                             if(this.showSed){
+                                  this.sigtureShow=false
+                             }
                              this.tuozhuai(this.signPositions[i])
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'

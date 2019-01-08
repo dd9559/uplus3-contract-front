@@ -250,10 +250,15 @@
         <div class="form-content" v-if="parameterList.length>0">
           <ul class="parameter">
             <li v-for="item in parameterList" :key="item.id">
-              <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span>
+              <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
+              
+              <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+                <span class="title" :class="{'form-label':item.isRequired}">{{item.name}}</span>
+              </el-tooltip>
+              <span class="colon">: </span>
               <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="contractForm.extendParams[item.name]" maxlength="20" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <el-input v-model="contractForm.extendParams[item.name]" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
               <!-- 下拉框 -->
               <el-select v-model="contractForm.extendParams[item.name]" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
@@ -1604,6 +1609,7 @@ export default {
               let element = {
                 name:this.contractForm.contPersons[i].name,
                 mobile:this.contractForm.contPersons[i].mobile,
+                pid:this.contractForm.contPersons[i].pid,
                 encryptionMobile:this.contractForm.contPersons[i].encryptionMobile,
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
@@ -1642,6 +1648,7 @@ export default {
               let element = {
                 name:this.contractForm.contPersons[i].name,
                 mobile:this.contractForm.contPersons[i].mobile,
+                pid:this.contractForm.contPersons[i].pid,
                 encryptionMobile:this.contractForm.contPersons[i].encryptionMobile,
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
@@ -1888,19 +1895,26 @@ export default {
     }
     .parameter{
       display: flex;
-      width: 800px;
+      width: 1000px;
       flex-wrap:wrap;
       padding-bottom: 10px;
       li{
         display: flex;
         height: 50px;
-        width: 365px;
+        width: 300px;
         line-height: 50px;
         > .title{
-          width: 200px;
+          width: 100px;
+          cursor: pointer;
           text-align: right;
-          padding-right: 10px;
+          // padding-right: 10px;
           color: #606266;
+          text-overflow:ellipsis;
+          white-space:nowrap;
+          overflow:hidden; 
+        }
+        > .colon{
+          padding: 0 5px;
         }
         > .unit{
           width: 66px;
