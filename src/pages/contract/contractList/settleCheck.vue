@@ -119,14 +119,14 @@
           <template slot-scope="scope">
             <p v-if="scope.row.examineStoreName=='-' && scope.row.examineName=='-'">{{scope.row.examineStoreName  + scope.row.examineName}}</p>
             <p v-else>{{scope.row.examineStoreName + ' - ' + scope.row.examineName}}</p>
-            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row,'init')">转交审核人</el-button>
+            <el-button class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,'init')">{{userMsg.empId===scope.row.auditorId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
             <p v-if="scope.row.nextAuditStoreName=='-' && scope.row.nextAuditName=='-'">{{scope.row.nextAuditStoreName + scope.row.nextAuditName}}</p>
             <p v-else>{{scope.row.nextAuditStoreName + ' - '+ scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0&&scope.row.nextAuditId!==0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <el-button class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId&&scope.row.nextAuditId!==0)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
