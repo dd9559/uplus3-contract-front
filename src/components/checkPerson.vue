@@ -62,6 +62,10 @@
       showLabel:{//是否显示文本
         type:Boolean,
         default:true
+      },
+      current:{//是否设置当前审核人
+        type:Boolean,
+        default:false
       }
     },
     data(){
@@ -94,7 +98,7 @@
             }
           })
           if(param.userId!==''){
-            this.$ajax.post(this.type==='init'?'/api/machine/changeAuditorNow':'/api/machine/changeAuditorNext',param).then(res=>{
+            this.$ajax.post(this.current?'/api/machine/changeAuditorNow':this.type==='init'?'/api/machine/changeAuditorNow':'/api/machine/changeAuditorNext',param).then(res=>{
               res=res.data
               if(res.status===200){
                 this.$message({

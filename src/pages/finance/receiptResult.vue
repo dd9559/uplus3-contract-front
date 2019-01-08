@@ -2,7 +2,7 @@
   <div class="view">
     <div class="view-context">
       <h1><i class="iconfont icon-chenggong"></i></h1>
-      <h3>{{type===1?edit?'POS收款订单修改成功':'POS收款订单创建成功':edit?'收款信息修改成功':'收款信息录入成功'}}</h3>
+      <h3 v-if="checkPerson.state">{{type===1?edit?'POS收款订单修改成功':'POS收款订单创建成功':edit?'收款信息修改成功':'收款信息录入成功'}}</h3>
       <p>已成功生成收款单</p>
       <div class="bill-result-table">
         <p v-if="type===1">请在POS机上进行收款</p>

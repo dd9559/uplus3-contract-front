@@ -2,7 +2,7 @@
     <div class="view">
       <div class="view-context">
         <h1><i class="iconfont icon-dengdai"></i></h1>
-        <h3>付款单{{edit?'修改':'创建'}}成功</h3>
+        <h3 v-if="checkPerson.state">付款单{{edit?'修改':'创建'}}成功</h3>
         <p>请等待付款审核结果</p>
         <ul class="step-list">
           <li v-for="item in steps" :key="item.index" :class="[item.state?'active':'',activeStep===item.index?'active-last-step':'']">

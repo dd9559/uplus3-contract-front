@@ -74,7 +74,7 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
-            <el-table ref="tableCom" :max-height="tableNumberCom" :data="tableData.list" v-loading="loadingList" class="paper-table mt-20">
+            <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" v-loading="loadingList" class="paper-table mt-20">
                 <el-table-column :formatter="nullFormatterData" label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>

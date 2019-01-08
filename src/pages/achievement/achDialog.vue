@@ -1754,10 +1754,10 @@ export default {
       this.showTips = false;
     },
     selectRadio(index, event,type){
+      console.log(1);
       if(type==0){
         if(event.target.checked){ 
-             this.houseArr[index].place = -1;
-             
+             this.houseArr[index].place = -1;   
         }
       }else{
          if(event.target.checked){ 
@@ -2063,8 +2063,11 @@ export default {
        left: 73px;
      }
      .el-input__suffix{
-       right: 80px;
-     }   
+       right: 90px;
+     }  
+     .el-input__inner{
+       width: 110px!important;
+     } 
       p {
         margin-top: 5px;
       }

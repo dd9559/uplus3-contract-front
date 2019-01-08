@@ -151,8 +151,8 @@
               </div>
               <ul class="contract-msglist">
                 <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
-                <li>房源：<span>{{scope.row.houseinfoCode}} {{scope.row.showOwnerName}}</span></li>
-                <li>客源：<span>{{scope.row.guestinfoCode}} {{scope.row.showCustName}}</span></li>
+                <li>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
+                <li>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.showCustName}}</li>
               </ul>
             </div>
           </template>
