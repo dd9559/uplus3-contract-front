@@ -311,7 +311,7 @@
       <div class="flex-box col-other other-message">
         <div class="input-group">
           <p><label class="f14">备注信息</label></p>
-          <el-input v-model="form.remark" class="info-textarea scroll-hidden" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
+          <el-input v-model="form.remark" class="info-textarea" :class="[form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
         </div>
         <div class="input-group" v-if="billStatus">
           <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
@@ -1201,8 +1201,11 @@
       }
     }
   }
-  .info-textarea{
+  /deep/.info-textarea{
     width: 240px;
+    .el-textarea__inner{
+      height: 115px;
+    }
   }
   .col-other{
     >p{
