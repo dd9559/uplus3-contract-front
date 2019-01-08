@@ -165,7 +165,7 @@
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?'set':'init')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+            <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?'set':'init','current')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="下一步审核人" width="150">
@@ -438,11 +438,12 @@ export default {
       this.contractForm.depName=payload.depName;
     },
      // 选择审核人
-    choseCheckPerson:function (row,type) {
+    choseCheckPerson:function (row,type,current) {
       this.checkPerson.flowType=3;
       this.checkPerson.code=row.code;
       this.checkPerson.state=true;
       this.checkPerson.type=type;
+      this.checkPerson.current=current==='current'?true:false;
       if(row.nextAuditId>=0){
         this.checkPerson.label=false;
       }else{
