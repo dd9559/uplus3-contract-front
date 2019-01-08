@@ -440,7 +440,6 @@ export default {
     },
      // 选择审核人
     choseCheckPerson:function (row,type,current) {
-      debugger
       this.checkPerson.flowType=3;
       this.checkPerson.code=row.code;
       this.checkPerson.state=true;
