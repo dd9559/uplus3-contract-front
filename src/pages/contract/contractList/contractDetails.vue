@@ -492,7 +492,7 @@
       <div class="top">
         <p class="form-label">合同撤单原因</p>
         <div class="reason">
-          <el-input type="textarea" :rows="5" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100"></el-input>
+          <el-input type="textarea" :rows="6" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px;overflow-y:hidden" maxlength="100"></el-input>
           <span>{{invalidReason.length}}/100</span>
           <p v-if="contractDetail.toExamineState.value>-1&&contractDetail.contState.value!=2"><span>注：</span>您的合同正在审核中，是否确认要做撤单？撤单后，合同需要重新提审！</p>
           <p v-if="contractDetail.contState.value===2"><span>注：</span>您的合同已签章，是否确认要做撤单？撤单后，合同需要重新提审！</p>
@@ -876,7 +876,7 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -180 + 'px'
+      this.clientHei= document.documentElement.clientHeight -200 + 'px'
     },
     printDemo(){
       this.$refs.easyPrint.print();
@@ -1915,10 +1915,15 @@ export default {
     }
     > .reason {
       position: relative;
+      /deep/.el-textarea{
+        textarea{
+          min-height: 120px!important;
+        }
+      }
       > span {
         position: absolute;
-        top: 90px;
-        right: 10px;
+        bottom: 35px;
+        right: 20px;
         color: @color-6c;
       }
       > p {

@@ -987,6 +987,9 @@
                 }
             }
         }
+        /deep/ .el-select__tags {
+            display: none;
+        }
     }
 }
 .cur-select {

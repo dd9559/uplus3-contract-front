@@ -1,6 +1,6 @@
 <template>
   <el-popover
-    key="popOther"
+    id="popOther"
     @hide="checkInput"
     ref="popover"
     placement="bottom"
@@ -53,6 +53,16 @@
         iconUp: true,
         pop: true,//弹窗是否失焦
       }
+    },
+    mounted(){
+      this.$nextTick(()=>{
+        let that=this
+        document.onmousedown=function (e) {
+          if(that.$refs.popover&&!(that.$refs.popover.$refs.popper.innerHTML.indexOf(e.target.parentNode.innerHTML)>-1)&&!(e.target.parentNode===that.$refs.btn.$el)){
+            that.visible=false
+          }
+        }
+      })
     },
     watch: {
       init: function (val) {
