@@ -538,6 +538,7 @@
     }
     > p {
       line-height: 1.6;
+      word-break: break-all;
     }
     ul.image-list {
       display: flex;
@@ -638,7 +639,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        /*min-width: 100px;*/
+        min-width: 60px;
         padding: @margin-10 @margin-15;
         &.active {
           color: @color-blue;

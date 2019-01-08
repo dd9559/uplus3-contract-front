@@ -108,20 +108,22 @@
     },
     beforeRouteUpdate(to,from,next){
       // console.log(this.getUser)
-      let arr=this.getUser.privileges
-      this.views=this.$tool.pathList.map(item=>Object.assign({},item))
+      if(to.path!=='/login'){
+        let arr=this.getUser.privileges
+        this.views=this.$tool.pathList.map(item=>Object.assign({},item))
 
-      this.views.forEach((item,index)=>{
-        let sliders=[]
-        item.child.forEach(tip=>{
-          if(arr.indexOf(tip.code)>-1){
-            sliders.push(tip)
-          }
+        this.views.forEach((item,index)=>{
+          let sliders=[]
+          item.child.forEach(tip=>{
+            if(arr.indexOf(tip.code)>-1){
+              sliders.push(tip)
+            }
+          })
+          item.child=sliders
         })
-        item.child=sliders
-      })
-      this.Index=this.$store.state.path
-      this.activeIndex = this.Index[1].path.split('/')[1]
+        this.Index=this.$store.state.path
+        this.activeIndex = this.Index[1].path.split('/')[1]
+      }
       next()
     },
     methods: {
