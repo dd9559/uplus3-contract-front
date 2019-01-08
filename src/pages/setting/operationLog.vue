@@ -43,9 +43,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="关键字">
-                        <el-tooltip class="item" effect="dark" content="操作内容" placement="top">
-                        <el-input v-model="keyword" placeholder="请输入" size="small"></el-input>
-                        </el-tooltip>
+                        <el-input v-model="keyword" placeholder="操作内容" size="small"></el-input>
                     </el-form-item>
                 </div>
             </el-form>
