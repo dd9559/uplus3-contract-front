@@ -127,7 +127,7 @@
         this.inputEmp=false
         let param={
           keyword:!val?'':val,
-          type:this.type==='init'?0:1,
+          type:this.current?0:this.type==='init'?0:1,
           bizCode:this.bizCode,
           flowType:this.flowType
         }
@@ -142,7 +142,7 @@
       searchEmp:function (val) {
         let param={
           keyword:!val?'':val,
-          type:this.type==='init'?0:1,
+          type:this.current?0:this.type==='init'?0:1,
           depId:this.choseItem.depId,
           bizCode:this.bizCode,
           flowType:this.flowType
