@@ -153,7 +153,7 @@
       <div class="paper-set-tit">
         <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
       </div>
-      <el-table ref="tableCom" :max-height="tableNumberCom" :data="tableData.list" class="paper-table mt-20" v-loading="loadingList">
+      <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" class="paper-table mt-20" v-loading="loadingList">
         <el-table-column fixed align="center" label="序号" min-width="70">
           <template slot-scope="scope">
             <p class="tc">{{scope.$index + 1}}</p>

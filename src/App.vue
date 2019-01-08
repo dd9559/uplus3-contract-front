@@ -31,7 +31,7 @@
     font-size: @size-base;
   }
   input{
-    font-size: @size-base; 
+    font-size: @size-base;
     font-family: "Avenir", Helvetica, Arial, sans-serif;
     &::-webkit-input-placeholder{
       font-family: "Avenir", Helvetica, Arial, sans-serif;
@@ -57,6 +57,9 @@
   p {
     margin: 0;
     padding: 0;
+  }
+  .scroll-hidden{
+    overflow-y:hidden;
   }
 
   input.no-style {

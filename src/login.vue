@@ -1,5 +1,5 @@
 <template>
-<div class="login-container">
+<div class="login-container" v-if="show">
   <p>用户ID：<input type="number" v-model="userId"></p>
   <p @click="login">登录</p>
 </div>
@@ -11,20 +11,27 @@
     data(){
       return{
         userId:'',
-        code:''
+        code:{},
+        show:false
       }
     },
     created(){
-      this.code=this.$route.query.empcode?parseInt(this.$route.query.empcode):''
-      if(this.code){
+      let param=this.$route.query
+      for (let item in param){
+        param[item]=parseInt(param[item])
+      }
+      this.code=Object.assign({},param)
+      if(Object.keys(this.code).length===3){
         this.login('info')
+      }else {
+        this.show=true
       }
     },
     methods:{
       login:function (type) {
         let param={}
         if(type==='info'){
-          param.empCode = this.code
+          param = this.code
         }else {
           param.empCode=this.userId
         }
