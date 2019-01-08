@@ -59,7 +59,9 @@
     padding: 0;
   }
   .scroll-hidden{
-    overflow-y:hidden;
+    >textarea{
+      overflow-y:hidden;
+    }
   }
 
   input.no-style {
