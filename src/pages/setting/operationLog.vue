@@ -183,6 +183,8 @@
                 this.depUser='',
                 this.department=''
                 this.users=''
+                this.departmentName=''
+                this.clearSelect()
             },
             // 查询
             queryFn(){
