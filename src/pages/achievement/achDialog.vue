@@ -301,8 +301,8 @@
               >
                 <template slot-scope="scope">
                   <el-radio-group v-model="scope.row.place">
-                     <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:6px;font-size:12px">门店</el-radio>
-                     <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,0)" style="margin-top:3px;;font-size:12px">公司</el-radio>
+                     <el-radio :label="0" @click.native="selectRadio(scope.$index,$event,0,0)" style="margin-top:6px;font-size:12px">门店</el-radio>
+                     <el-radio :label="1" @click.native="selectRadio(scope.$index,$event,0,1)" style="margin-top:3px;;font-size:12px">公司</el-radio>
                   </el-radio-group>
                 </template>
               </el-table-column>
@@ -585,8 +585,8 @@
               >
                 <template slot-scope="scope">
                     <el-radio-group v-model="scope.row.place">
-                         <el-radio :label="0" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:6px;font-size:12px;">门店</el-radio>
-                         <el-radio :label="1" @click.native="selectRadio(scope.$index, $event,1)" style="margin-top:3px;font-size:12px;">公司</el-radio>
+                         <el-radio :label="0" @click.native.stop="selectRadio(scope.$index, $event,1,0)" style="margin-top:6px;font-size:12px;">门店</el-radio>
+                         <el-radio :label="1" @click.native.stop="selectRadio(scope.$index, $event,1,1)" style="margin-top:3px;font-size:12px;">公司</el-radio>
                     </el-radio-group>
                 </template>
               </el-table-column>
@@ -722,7 +722,7 @@
 
         <div class="dialog2">
           <el-dialog
-            :visible.sync="showTips"
+            :visible.sync="showTips1"
              append-to-body
              custom-class="dialog2In"
             :close-on-click-modal="false"
@@ -773,7 +773,7 @@
                          <el-button
                            type="primary"
                            round
-                           @click="showTips = false"
+                           @click="showTips1 = false"
                          >取消</el-button>
                          <el-button
                            type="primary"
@@ -810,7 +810,7 @@ export default {
       houseMansArr: [], //相关人员房源列表
       clientMansArr: [], //相关人员客源列表
       examineDate: "", //审核时间
-      showTips: false,
+      showTips1: false,
       roleType0: [], //房源角色类型
       roleType1: [], //客源角色类型
       comm: "", //可分配业绩
@@ -1165,7 +1165,7 @@ export default {
     },   
     //获取房源客源相关人员
     getMans(type,fieldStr) {
-      this.showTips = true;
+      this.showTips1 = true;
       this.loading3=true;
       let param = {
         contCode: this.contractCode
@@ -1751,19 +1751,25 @@ export default {
       } else {
         this.clientArr = resultArr;
       }
-      this.showTips = false;
+      this.showTips1 = false;
     },
-    selectRadio(index, event,type){
-      console.log(1);
+    selectRadio(index,e,type,select){
+      let event = window.event||e;
+      let target= event .target || event .srcElement; 
+      console.log(event.target.checked);
       if(type==0){
-        if(event.target.checked){ 
+        if(target.checked===true){ 
              this.houseArr[index].place = -1;   
+        }else{
+             this.houseArr[index].place =select; 
         }
-      }else{
-         if(event.target.checked){ 
-             this.clientArr[index].place = -1;
-        }
-      }       
+        }else{
+           if(target.checked){ 
+               this.clientArr[index].place = -1;
+          }else{
+               this.clientArr[index].place =select; 
+          }
+        }       
     },
     personChose:function () {
         this.checkPerson.state=false
@@ -2064,6 +2070,7 @@ export default {
      }
      .el-input__suffix{
        right: 90px;
+       display: none;
      }  
      .el-input__inner{
        width: 110px!important;
