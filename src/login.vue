@@ -18,7 +18,9 @@
     created(){
       let param=this.$route.query
       for (let item in param){
-        param[item]=parseInt(param[item])
+        if(item==='empcode'){
+          param[item]=parseInt(param[item])
+        }
       }
       this.code=Object.assign({},param)
       if(Object.keys(this.code).length===3){
@@ -33,7 +35,7 @@
         if(type==='info'){
           param = this.code
         }else {
-          param.empCode=this.userId
+          param.empcode=this.userId
         }
         this.$ajax.post('/api/verify',param).then(res=>{
           this.$ajax.get('/api/me',{time:new Date()}).then(res=>{
