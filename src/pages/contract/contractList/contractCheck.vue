@@ -208,7 +208,7 @@
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :current="checkPerson.current" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -266,7 +266,8 @@ export default {
         type:'init',
         code:'',
         flowType:0,
-        label:false
+        label:false,
+        current:false
       },
        //权限配置
       power: {
@@ -439,6 +440,7 @@ export default {
     },
      // 选择审核人
     choseCheckPerson:function (row,type,current) {
+      debugger
       this.checkPerson.flowType=3;
       this.checkPerson.code=row.code;
       this.checkPerson.state=true;
