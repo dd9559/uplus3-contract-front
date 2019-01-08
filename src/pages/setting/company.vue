@@ -34,7 +34,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="银行账户">
-          <el-input v-model="searchForm.bankCard" :clearable="true" oninput="if(value.length>19)value=value.slice(0,19)" @keyup.native="getInt(1)"></el-input>
+          <el-input v-model="searchForm.bankCard" :clearable="true" @keyup.native="getInt(1)"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
