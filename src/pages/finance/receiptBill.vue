@@ -711,7 +711,6 @@
         arr.push(this.$tool.checkForm(param,rule))
         //支付信息验证
         if(this.billStatus){
-          debugger
           let cardListStatus = newPayList.every(item=>item.payMethod===3)
           newPayList.forEach(item=>{
             if(item.payMethod!==2){
@@ -729,7 +728,7 @@
           }
           Promise.all(arr).then(res=>{
             let total = parseFloat(this.form.amount)
-            if(total!==payTotal||(!cardListStatus&&(total!==cardTotal))){
+            if(total!==payTotal){
               this.$message({
                 message:'输入金额要等于收款金额'
               })
@@ -926,7 +925,6 @@
                 })
               }
             }).catch(error=>{
-              debugger
               this.fullscreenLoading=false
               if(error.message==='下一节点审批人不存在'){
                 this.$router.replace({
@@ -1156,7 +1154,6 @@
         }
       },
       getUser:function (val) {
-        debugger
         this.getAcount(val.user.empId)
       }
     }

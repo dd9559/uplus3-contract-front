@@ -363,7 +363,7 @@
             })
             this.inObjPerson = Object.assign(this.inObjPerson,{dep:res.data.store,emp:res.data.createByName})
             this.moneyTypeName = res.data.moneyTypeName
-            this.showAmount=res.data.agent
+            this.showAmount=res.data.agent?false:true
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
             this.layer.content[0]=Object.assign(this.layer.content[0],{moneyType:res.data.moneyTypeName,inObj:`${res.data.inObjType.label}${obj.inObj?('-'+obj.inObj):''}`})

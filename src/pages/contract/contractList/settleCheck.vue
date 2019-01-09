@@ -376,7 +376,7 @@
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
 
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :page="checkPerson.page" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
 
 
   </div>
@@ -401,7 +401,7 @@
           code:'',
           flowType:0,
           label:false,
-          current:false
+          page:'list'
         },  
         clientHei: document.documentElement.clientHeight, //窗体高度
         fullscreenLoading:false,//创建按钮防抖
@@ -838,7 +838,7 @@
               this.checkPerson.flowType=5   //调佣的流程类型为4
               this.checkPerson.code=error.data.bizId  //业务编码为checkId
               this.checkPerson.state=true  
-              
+              this.checkPerson.type=3
             }
             else{
               this.$message({

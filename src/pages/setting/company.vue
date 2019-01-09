@@ -137,10 +137,10 @@
             </div>
             <div class="item">
               <el-form-item label="证件号: " class="id-card">
-                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" @blur="idCardChange" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: " class="phone-number">
-                <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" @keyup.native="getInt(2)" @blur="validPhone"></el-input>
+                <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" @keyup.native="getInt(2)"></el-input>
               </el-form-item>
               <el-form-item label="企业证件: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="directSaleSelect">
@@ -309,17 +309,6 @@
     },
     lepDocumentType: {
       name: "证件类型"
-    },
-    lepDocumentCard: {
-      name: "证件号",
-      type: "id-card"
-    },
-    lepPhone: {
-      name: "法人手机号码",
-      type: "mobile"
-    },
-    documentType: {
-      name: "企业证件"
     }
   }
   let obj1 = {
@@ -607,6 +596,44 @@
       },
       submitConfirm() {
         this.$tool.checkForm(this.companyForm,rule).then(() => {
+          if(this.companyForm.lepDocumentCard) {
+            let val = this.companyForm.lepDocumentCard
+            let type = this.companyForm.lepDocumentType
+            if(val&&type===1) {
+              if(!checkIdVlidate(val)) {
+                this.$message('身份证号格式不正确')
+                return false
+              }
+            } else if(val&&type===2) {
+              if(!/^[a-zA-Z0-9]{5,17}$/.test(val)) {
+                this.$message('护照格式不正确')
+                return false
+              }
+            } else if(val&&type===3) {
+              if(!/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(val)) {
+                this.$message('港澳通行证格式不正确')
+                return false
+              }
+            }
+          } else {
+            this.$message({message:"证件号不能为空"})
+            return false
+          }
+          if(this.companyForm.lepPhone) {
+            let val = this.companyForm.lepPhone
+            if(!checkPhoneVlidate(val)) {
+              this.$message('手机号码不正确')
+              return false
+            } else {
+              if(!this.companyForm.documentType) {
+                this.$message({message:"企业证件不能为空"})
+                return false
+              }
+            }
+          } else {
+            this.$message({message:"法人手机号码不能为空"})
+            return false
+          }
           let isOk
           let that_ = this
           function checkBank() {
@@ -791,32 +818,6 @@
           this.companyForm.lepPhone = this.companyForm.lepPhone.replace(/[^\.\d]/g,'')
         } else if(num===3) {
           this.companyBankList[index].bankCard = this.companyBankList[index].bankCard.replace(/[^\.\d]/g,'')
-        }
-      },
-      idCardChange() {
-        let val = this.companyForm.lepDocumentCard
-        let type = this.companyForm.lepDocumentType
-        if(val&&type===1) {
-          if(!checkIdVlidate(val)) {
-            this.$message('身份证号格式不正确')
-            return false
-          }
-        } else if(val&&type===2) {
-          if(!/^[a-zA-Z0-9]{5,17}$/.test(val)) {
-            this.$message('护照格式不正确')
-            return false
-          }
-        } else if(val&&type===3) {
-          if(!/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(val)) {
-            this.$message('港澳通行证格式不正确')
-            return false
-          }
-        }
-      },
-      validPhone() {
-        let val = this.companyForm.lepPhone
-        if(!checkPhoneVlidate(val)) {
-          this.$message('手机号码不正确')
         }
       },
       idTypeChange() {
