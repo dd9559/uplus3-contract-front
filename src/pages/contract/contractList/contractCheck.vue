@@ -165,7 +165,7 @@
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?'set':'init','current')">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+            <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?1:2)">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="下一步审核人" width="150">
@@ -175,7 +175,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,'set')" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="userMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="left" label="变更/解约" width="100">
@@ -265,7 +265,7 @@ export default {
         state:false,
         type:'init',
         code:'',
-        flowType:0,
+        flowType:3,
         label:false,
         current:false
       },
@@ -439,12 +439,10 @@ export default {
       this.contractForm.depName=payload.depName;
     },
      // 选择审核人
-    choseCheckPerson:function (row,type,current) {
-      this.checkPerson.flowType=3;
+    choseCheckPerson:function (row,type) {
       this.checkPerson.code=row.code;
       this.checkPerson.state=true;
       this.checkPerson.type=type;
-      this.checkPerson.current=current==='current'?true:false;
       if(row.nextAuditId>=0){
         this.checkPerson.label=false;
       }else{

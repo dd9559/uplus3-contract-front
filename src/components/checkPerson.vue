@@ -9,7 +9,7 @@
     <div class="dialog-container">
       <p v-if="showLabel">下一审核节点无审核人，请先设置下一节点审核人</p>
       <div class="chose-box">
-        <span>{{type==='set'?'设置':'转交'}}审核人</span>
+        <span>{{page==='detail'?'设置':(type===1||type===3)?'设置':'转交'}}审核人</span>
         <div class="box-content">
           <div class="box-content-input">
             <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="choseItem.depId" placeholder="部门" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
@@ -49,9 +49,9 @@
         type:Boolean,
         // default:false
       },
-      type:{//弹窗类型
-        type:String,
-        default:'init'
+      type:{//1.设置当前审核人（设置），2.设置当前审核人（转交），3.设置下一个审核人
+        type:Number,
+        default:1
       },
       bizCode:{
         type:[String,Number],
@@ -64,9 +64,9 @@
         type:Boolean,
         default:true
       },
-      current:{//接口类型(是否设置当前审核人)
-        type:Boolean,
-        default:true
+      page:{
+        type:String,
+        default:'detail'
       }
     },
     data(){
@@ -82,6 +82,9 @@
     },
     created(){
       this.searchDep('',true)
+      this.$message({
+        message:'请选择审核人'
+      })
     },
     methods:{
       opera:function (type) {
@@ -99,7 +102,7 @@
             }
           })
           if(param.userId!==''){
-            this.$ajax.post(this.current?'/api/machine/changeAuditorNow':'/api/machine/changeAuditorNext',param).then(res=>{
+            this.$ajax.post(this.page==='detail'?'/api/machine/changeAuditorNow':this.type===3?'/api/machine/changeAuditorNext':'/api/machine/changeAuditorNow',param).then(res=>{
               res=res.data
               if(res.status===200){
                 this.$message({
@@ -128,7 +131,7 @@
         this.inputEmp=false
         let param={
           keyword:!val?'':val,
-          type:this.current?0:1,
+          type:this.page==='detail'?0:this.type===3?1:0,
           bizCode:this.bizCode,
           flowType:this.flowType
         }
@@ -146,7 +149,7 @@
       searchEmp:function (val) {
         let param={
           keyword:!val?'':val,
-          type:this.current?0:1,
+          type:this.page==='detail'?0:this.type===3?1:0,
           depId:this.choseItem.depId,
           bizCode:this.bizCode,
           flowType:this.flowType

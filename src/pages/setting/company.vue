@@ -18,11 +18,11 @@
           value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="城市">
+        <!-- <el-form-item label="城市">
           <el-select v-model="searchForm.cityId" filterable @change="getStoreList" :clearable="true" class="w140">
             <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="门店选择">
           <el-select v-model="searchForm.storeId" filterable :clearable="true" class="w180">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -357,7 +357,7 @@
       return {
         // 搜索表单中的数据
         searchForm: {
-          cityId: "武汉",
+          cityId: "",
           storeId: "",
           cooperationMode: "",
           bankCard: "",
@@ -402,12 +402,13 @@
       }
     },
     created() {
+      this.searchForm.cityId = this.getUser.user.cityId
       this.getCompanyList()
       this.selectDirectInfo()
       this.initFormList()
       this.getCityList()
       this.getDictionary()
-      this.getStoreList(1)
+      this.getStoreList(this.getUser.user.cityId)
     },
     methods: {
       // 初始化表单 数组集合
@@ -427,7 +428,6 @@
           endTime: this.searchTime == null ? "" : this.searchTime[1]
         }
         param = Object.assign({},this.searchForm,param)
-        param.cityId = param.cityId === "武汉" ? 1 : param.cityId
         this.$ajax.get('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
@@ -845,9 +845,6 @@
         width: 180px;
       }
     }
-    &:nth-child(5) {
-      margin-left: 40px;
-    }
   }
   .w140 {
     .el-input {
@@ -855,6 +852,7 @@
     }
   }
   .w180 {
+    margin-right: 40px;
     /deep/ .el-input {
       width: 180px;
     }

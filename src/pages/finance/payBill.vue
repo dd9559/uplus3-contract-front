@@ -342,7 +342,7 @@
        * 修改款单，获取初始数据
        */
       getDetails: function (param) {
-        this.$ajax.get('/api/payInfo/selectPayDetail', param).then(res => {
+        this.$ajax.get('/api/payInfo/selectDetail', param).then(res => {
           res = res.data
           if (res.status === 200) {
             let obj = {
@@ -363,7 +363,7 @@
             })
             this.inObjPerson = Object.assign(this.inObjPerson,{dep:res.data.store,emp:res.data.createByName})
             this.moneyTypeName = res.data.moneyTypeName
-            this.showAmount=res.data.outAccountType===4?false:true
+            this.showAmount=res.data.agent
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
             this.layer.content[0]=Object.assign(this.layer.content[0],{moneyType:res.data.moneyTypeName,inObj:`${res.data.inObjType.label}${obj.inObj?('-'+obj.inObj):''}`})
@@ -620,6 +620,7 @@
                   content:(error.data.vo&&error.data.time)?JSON.stringify({dep:error.data.vo.deptName,name:error.data.vo.createByName,time:error.data.time,payCode:error.data.payCode,type:error.data.type}):''
                 }
               })
+
             }else {
               this.$message({
                 message:error

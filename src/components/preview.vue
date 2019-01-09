@@ -2,7 +2,7 @@
     <div class="preview">
       <div class="view-container" :class="[getType==='img'?'img-drag':'']" ref="drag" @mousedown="mousedown" @mouseup="dragging=false">
         <img ref="img" :src="imgSrc" :style="{width:getWidth,height:getHeight,transform:getRotate}" alt="" v-if="getType==='img'">
-        <video ref="video" controls v-else-if="getType==='video'">
+        <video ref="video" :style="{width:getWidth,height:getHeight,transform:getRotate}" controls v-else-if="getType==='video'">
           <source  :src="imgSrc" type="video/mp4">
         </video>
         <a :href="imgSrc" download v-else>文件不支持预览，请手动下载</a>
@@ -10,11 +10,11 @@
       <p class="pagination page-prev" @click="chose('prev')"><img :src="getImg('btn-prev.png')" alt=""></p>
       <p class="pagination page-next" @click="chose('next')"><img :src="getImg('btn-next.png')" alt=""></p>
       <p class="tools btn-close" @click="chose('close')"><img :src="getImg('btn-close.png')" alt=""></p>
-      <ul class="tools" v-if="getType==='img'">
+      <ul class="tools">
         <li @click="opera(1)"><i class="iconfont icon-yuanjiaojuxing"></i></li>
         <li @click="opera(2)"><i class="iconfont icon-tubiao-12"></i></li>
-        <li @click="opera(3)"><i class="iconfont icon-icon-test3"></i></li>
-        <li @click="opera(4)"><i class="iconfont icon-yuanjiaojuxing1"></i></li>
+        <li @click="opera(3)" v-if="getType==='img'"><i class="iconfont icon-icon-test3"></i></li>
+        <li @click="opera(4)" v-if="getType==='img'"><i class="iconfont icon-yuanjiaojuxing1"></i></li>
       </ul>
     </div>
 </template>
@@ -284,15 +284,17 @@
     left: 50%;
     transform:translateX(-50%);
     display: flex;
-    width:190px;
+    /*width:190px;*/
     background:rgba(0,0,0,0.6);
     border-radius:4px;
     z-index: 10;
     >li{
       flex: 1;
+      min-width: 50px;
       text-align: center;
       padding: @margin-10 0;
       color: @color-white;
+      cursor: pointer;
     }
   }
   .view-container{

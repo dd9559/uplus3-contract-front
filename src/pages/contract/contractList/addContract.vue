@@ -448,9 +448,9 @@ export default {
       beforeChangeMobile:'',
       checkPerson: {
         state:false,
-        type:'init',
+        type:1,
         code:'',
-        flowType:0,
+        flowType:3,
         label:false
       },
       //权限配置
@@ -1068,10 +1068,9 @@ export default {
             this.detailCode=res.data.code;
             this.detailId=res.data.id;
             if(res.data.isHaveNextAudit===1){
-              this.checkPerson.flowType=3;
               this.checkPerson.code=res.data.code;
               this.checkPerson.state=true;
-              this.checkPerson.type=res.data.auditType===0?"set":"init";
+              // this.checkPerson.type=res.data.auditType===0?"set":"init";
               this.checkPerson.label=true;
             }else{
               this.$message({
@@ -1126,10 +1125,9 @@ export default {
             this.detailId=res.data.id;
             //1 下一节点没有审批人 2 有
             if(res.data.isHaveNextAudit===1){
-              this.checkPerson.flowType=3;
               this.checkPerson.code=res.data.code;
               this.checkPerson.state=true;
-              this.checkPerson.type=res.data.auditType===0?"set":"init";
+              // this.checkPerson.type=res.data.auditType===0?"set":"init";
               this.checkPerson.label=true;
             }else{
               this.$message({
