@@ -80,7 +80,8 @@
         </el-table-column>
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName + ' - ' + scope.row.dealAgentName}}</p>
+            <p>{{scope.row.dealAgentStoreName}}</p>
+            <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="签约日期" align="center">
@@ -95,7 +96,8 @@
         </el-table-column>
         <el-table-column label="发起人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.createByDepName + ' - ' + scope.row.createByName}}</p>
+            <p>{{scope.row.createByDepName}}</p>
+            <p>{{scope.row.createByName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="审核状态" :formatter="nullFormatter" align="center">
@@ -112,17 +114,24 @@
         </el-table-column>   
         <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <p v-if="scope.row.checkByDepName=='-'&&scope.row.checkByName=='-'">{{scope.row.checkByDepName + scope.row.checkByName}}</p>
-            <template v-else>
-              <p>{{scope.row.checkByDepName + ' - ' + scope.row.checkByName}}</p>
-            </template>
-            <p class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,'init')">{{userMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
+            
+            <span v-if="scope.row.checkby>0&&scope.row.checkState===0">
+              <p>{{scope.row.checkByDepName}}</p>
+              <p>{{scope.row.checkByName}}</p>
+            </span>
+            <p v-else>--</p>
+
+            <p class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,userMsg.empId===scope.row.checkby?'init':'set','current')">{{userMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
-            <p v-if="scope.row.nextAuditStore=='-'&&scope.row.nextAuditName=='-'">{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
-            <p v-else>{{scope.row.nextAuditStore + ' - ' + scope.row.nextAuditName}}</p>
+            <span v-if="scope.row.nextAuditId>0">
+              <p>{{scope.row.nextAuditStore}}</p>
+              <p>{{scope.row.nextAuditName}}</p>
+            </span>
+            <p v-else>--</p>
+      
             <p class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</p>
           </template>
         </el-table-column>
@@ -390,7 +399,8 @@
           type:'init',
           code:'',
           flowType:0,
-          label:false
+          label:false,
+          current:false
         },  
         clientHei: document.documentElement.clientHeight, //窗体高度
         fullscreenLoading:false,//创建按钮防抖
@@ -540,11 +550,12 @@
         
       },
       // 选择审核人
-      choseCheckPerson:function (row,type) {
+      choseCheckPerson:function (row,type,current) {
         this.checkPerson.flowType=4   //调佣的流程类型为4
         this.checkPerson.code=row.checkId  //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
+        this.checkPerson.current=current==='current'?true:false
         if(row.nextAuditId===-1){
           this.checkPerson.label=true
         }else {
@@ -816,6 +827,7 @@
               this.checkPerson.state=true  
               this.checkPerson.type='set'
               this.checkPerson.label=true
+              this.checkPerson.current=false
             }
             else{
               this.$message({
