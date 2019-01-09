@@ -272,7 +272,8 @@ export default {
       choseCheckPerson:function (bizId) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
         this.checkPerson.code=bizId  //业务编码为settlementId
-        this.checkPerson.state=true  
+        this.checkPerson.state=true
+        this.checkPerson.type=1  
       },
       personChose:function () {
         this.checkPerson.state=false
