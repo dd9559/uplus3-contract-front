@@ -4,12 +4,12 @@
         @propQueryFn="queryFn"
         @propResetFormFn="resetFormFn">
         <div class="content">
-            <div class="input-group">
+            <!-- <div class="input-group">
                 <label>选择城市</label>
                 <el-select size="small" v-model="searchForm.cityId" :clearable="true">
                     <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
                 </el-select>
-            </div>
+            </div> -->
             <div class="input-group">
                 <label>运营模式</label>
                 <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
@@ -282,6 +282,7 @@
             }
         },
         created() {
+            this.searchForm.cityId = this.getUser.user.cityId
             this.getCityList()
             this.getDictionary()
             this.getData()
