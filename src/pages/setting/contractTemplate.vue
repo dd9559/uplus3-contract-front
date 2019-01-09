@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <el-form ref="form"  label-width="80px">
+    <!-- <el-form ref="form"  label-width="80px">
       <el-form-item label="城市选择" class="selectCity">
         <el-select v-model="selectCity" placeholder="请选择" value-key='label' @change='selCity'>
           <el-option
@@ -9,10 +9,10 @@
               :label="item.name"
               :value="item.cityId"
               >
-              </el-option>
+          </el-option>
         </el-select>
       </el-form-item>
-    </el-form>
+    </el-form> -->
     <div class="data-list">
       <p>
           <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
