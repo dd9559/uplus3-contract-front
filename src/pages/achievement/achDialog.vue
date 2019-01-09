@@ -1341,7 +1341,7 @@ export default {
                this.checkPerson.flowType=2;
                this.checkPerson.code= this.aId;
                this.checkPerson.state=true
-               this.checkPerson.type='set'
+               this.checkPerson.type=3;
               }else{
                 this.$message({
                   message:error,
@@ -1552,7 +1552,7 @@ export default {
               this.checkPerson.flowType=2;
               this.checkPerson.code= this.aId;
               this.checkPerson.state=true
-              this.checkPerson.type='init'
+              this.checkPerson.type=1;
           }else{
             this.$message({
               message:error,
@@ -1670,7 +1670,7 @@ export default {
                this.checkPerson.flowType=2;
                this.checkPerson.code= error.data.bizCode;
                this.checkPerson.state=true;
-               this.checkPerson.type='init';
+               this.checkPerson.type=1;
             }else{
                this.$message({ message:error, type: "error"})   
             }

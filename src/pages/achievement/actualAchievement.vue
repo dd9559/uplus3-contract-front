@@ -384,7 +384,7 @@
                 <p v-else>-</p>
                 <el-button 
                    type="text"
-                   @click="choseCheckPerson(scope.row,'init')" 
+                   @click="choseCheckPerson(scope.row,userMsg&&userMsg.empId===scope.row.auditId?2:1)" 
                    v-if="((userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0"
                 >    
                    {{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}
@@ -402,7 +402,7 @@
                 <el-button 
                  type="text" 
                  style="color:red"  
-                 @click="choseCheckPerson(scope.row,'set')"  
+                 @click="choseCheckPerson(scope.row,3)"  
                  v-if="(userMsg&&scope.row.auditId===userMsg.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState==0"
                 >
                 设置审核人
@@ -829,7 +829,7 @@
     </div>
 
      <!-- 选择审核人弹框 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose" :showLabel="checkPerson.label"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose" :showLabel="checkPerson.label" :page="checkPerson.page"></checkPerson>
   </div>
 
 </template>
@@ -943,7 +943,8 @@ export default {
           type:'init',
           code:'',
           label:false,
-          flowType:0
+          flowType:0,
+          page:'list'
       },
     };
   },
