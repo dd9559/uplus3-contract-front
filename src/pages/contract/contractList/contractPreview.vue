@@ -43,7 +43,7 @@
           <el-input type="textarea" :rows="6" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100">
           </el-input>
           <span>{{invalidReason.length}}/100</span>
-          <p v-if="examineState>-1&&contState!=2"><span>注：</span>您的合同正在审核中，是否确认要做撤单？撤单后，合同需要重新提审！</p>
+          <p v-if="examineState>-1&&contState!=2"><span>注：</span>您的合同{{examineState===1?'已审核通过':'正在审核中'}}，是否确认要做撤单？撤单后，合同需要重新提审！</p>
           <p v-if="contState===2"><span>注：</span>您的合同已签章，是否确认要做撤单？撤单后，合同需要重新提审！</p>
           <p v-if="examineState<0"><span>注：</span>您的合同是否确认要做撤单？撤单后，合同需要重新提审！</p>
         </div>
@@ -259,6 +259,7 @@ export default {
           if(error.message==='下一节点审批人不存在'){
             this.checkPerson.code=this.code;
             this.checkPerson.state=true;
+            this.checkPerson.type=3;
             // this.checkPerson.type=error.data.type===1?'set':'init';
             this.checkPerson.label=true;
           }else{
@@ -497,6 +498,7 @@ export default {
           if(error.message==='下一节点审批人不存在'){
             this.checkPerson.code=this.code;
             this.checkPerson.state=true;
+            this.checkPerson.type=1;
             // this.checkPerson.type=error.data.type===1?'set':'init';
             this.checkPerson.label=true;
           }else{

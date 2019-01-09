@@ -282,7 +282,7 @@
             }
         },
         created() {
-            this.searchForm.cityId = this.getUser.user.cityId
+            this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
             this.getCityList()
             this.getDictionary()
             this.getData()

@@ -402,13 +402,13 @@
       }
     },
     created() {
-      this.searchForm.cityId = this.getUser.user.cityId
+      this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
       this.getCompanyList()
       this.selectDirectInfo()
       this.initFormList()
       this.getCityList()
       this.getDictionary()
-      this.getStoreList(this.getUser.user.cityId)
+      this.getStoreList(this.searchForm.cityId)
     },
     methods: {
       // 初始化表单 数组集合
