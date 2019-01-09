@@ -1,31 +1,33 @@
 <template>
   <div class="view-container">
-    <el-form class="form-head" size="small">
+    <!-- <el-form class="form-head" size="small">
       <el-form-item label="城市选择">
         <el-select v-model="cityId" placeholder="请选择">
           <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
         </el-select>
       </el-form-item>
-    </el-form>
+    </el-form> -->
     <ul class="tabs">
       <li v-for="item in tabs" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)" :key="item.id">{{item.name}}</li>
     </ul>
-    <component :is="current" :cityId="cityId==='武汉' ? 1 : cityId"></component>
+    <component :is="current" :cityId="cityId"></component>
   </div>
 </template>
 
 <script>
   import { FILTER } from "@/assets/js/filter";
+  import {MIXINS} from "@/assets/js/mixins";
   import TransactionStep from "./transactionStep";
   import transactionProcess from "./transactionProcess";
   import transactionContract from "./transactionContract";
 
   export default {
     name: "post-process",
+    mixins: [FILTER,MIXINS],
     data() {
       return {
         cityList: [],
-        cityId: "武汉",
+        cityId: "",
         tabs: [
           {
             id: 1,
@@ -53,6 +55,7 @@
       transactionContract
     },
     created() {
+      this.cityId = this.getUser.user.cityId
       this.$ajax.get('/api/organize/cities').then(res => {
         res = res.data
         if(res.status === 200) {

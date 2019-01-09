@@ -8,6 +8,7 @@
   import {set_upload_param,get_suffix} from "@/assets/js/upload";
 
   let result = null
+  let publicPath = ''
   export default {
     props:{
       id:{
@@ -77,7 +78,9 @@
             },
             BeforeUpload: function(up, file) {
               // 点击上传前执行
-              set_upload_param(up,Object.assign({},result),file.name);
+              let date = new Date()
+              publicPath = `${date.getTime()}${get_suffix(file.name)}`
+              set_upload_param(up,Object.assign({},result),publicPath,file.name);
             },
             UploadProgress: function(up, file) {
               // 上传操作进行中
@@ -91,7 +94,7 @@
                 that.currentNum++
                 // console.log(file)
                 that.filePath=that.filePath.concat({
-                  path:`${result.host}/${result.key}${file.name}`,
+                  path:`${result.host}/${result.key}${publicPath}`,
                   name:file.name
                 })
                 if(that.currentNum===up.files.length){

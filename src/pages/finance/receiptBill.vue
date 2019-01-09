@@ -602,7 +602,7 @@
        * 修改款单，获取初始数据
        */
       getDetails: function (param) {
-        this.$ajax.get('/api/payInfo/selectRevDetail', param).then(res => {
+        this.$ajax.get('/api/payInfo/selectDetail', param).then(res => {
           res = res.data
           if (res.status === 200) {
             let obj = {
