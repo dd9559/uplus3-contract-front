@@ -263,7 +263,7 @@ export default {
       isSubmitAudit:false,
       checkPerson: {
         state:false,
-        type:'init',
+        type:1,
         code:'',
         flowType:3,
         label:false,

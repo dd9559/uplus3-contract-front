@@ -136,18 +136,14 @@
       }
     },
     created() {
-      // console.log(this.getUser.user.cityId,'user');
-      if(localStorage.getItem('cid')){
-        this.selectCity=parseInt(localStorage.getItem('cid'))
-      }else{
+      // if(localStorage.getItem('cid')){
+      //   this.selectCity=parseInt(localStorage.getItem('cid'))
+      // }else{
         if(localStorage.getItem('initId')){
           this.selectCity=parseInt(localStorage.getItem('initId'))
-        }else{
-          localStorage.setItem('initId',this.getUser.user.cityId)
-          this.selectCity=this.getUser.user.cityId
         }
           this.cityName='武汉'
-      }
+      // }
       this.$ajax.get('/api/organize/cities').then((res)=>{
                 if(res.status==200){
                     this.citys=res.data.data
