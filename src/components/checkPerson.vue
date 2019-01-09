@@ -104,7 +104,7 @@
             }
           })
           if(param.userId!==''){
-            this.$ajax.post(this.page==='detail'?'/api/machine/changeAuditorNow':this.type===3?'/api/machine/changeAuditorNext':'/api/machine/changeAuditorNow',param).then(res=>{
+            this.$ajax.post(this.type===3?'/api/machine/changeAuditorNext':'/api/machine/changeAuditorNow',param).then(res=>{
               res=res.data
               if(res.status===200){
                 this.$message({
@@ -137,7 +137,7 @@
         this.inputEmp=false
         let param={
           keyword:!val?'':val,
-          type:this.page==='detail'?0:this.type===3?1:0,
+          type:this.type===3?1:0,
           bizCode:this.bizCode,
           flowType:this.flowType
         }
@@ -155,7 +155,7 @@
       searchEmp:function (val) {
         let param={
           keyword:!val?'':val,
-          type:this.page==='detail'?0:this.type===3?1:0,
+          type:this.type===3?1:0,
           depId:this.choseItem.depId,
           bizCode:this.bizCode,
           flowType:this.flowType
