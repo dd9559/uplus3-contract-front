@@ -54,6 +54,9 @@
             mime_types:that.rules.length>0?[{extensions:that.rules.join(',')}]:[],
             prevent_duplicates : true //不允许选取重复文件
           },
+          resize: {
+            quality: 60,//压缩后图片的质量，只对jpg格式的图片有效，默认为90。quality可以跟width和height一起使用，但也可以单独使用，单独使用时，压缩后图片的宽高不会变化，但由于质量降低了，所以体积也会变小
+          },
           init:{
             FilesAdded: function(up, files) {
               // 选择文件后执行

@@ -14,7 +14,7 @@
           <el-button round @click="goBack('Bill')" v-if="power['sign-cw-debt-query'].state">返回收付款列表</el-button>
         </p>
       </div>
-      <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+      <checkPerson :show="checkPerson.state" :type="checkPerson.type" :current="checkPerson.current" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     </div>
 </template>
 
@@ -55,8 +55,9 @@
         checkPerson: {
           state:false,
           type:'set',
+          current:false,
           code:'',
-          flowType:1
+          flowType:0
         },
         power:{
           'sign-ht-info-query':{
@@ -86,7 +87,7 @@
           let param={
             state:true,
             code:vm.result.payCode,
-            type:parseInt(vm.result.type)===1?'set':'init'
+            current:parseInt(vm.result.type)===1?false:true
           }
           vm.checkPerson=Object.assign(vm.checkPerson,param)
         }

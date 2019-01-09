@@ -311,7 +311,7 @@
       <div class="flex-box col-other other-message">
         <div class="input-group">
           <p><label class="f14">备注信息</label></p>
-          <el-input v-model="form.remark" class="info-textarea" :class="[form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
+          <el-input v-model="form.remark" class="info-textarea" :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
         </div>
         <div class="input-group" v-if="billStatus">
           <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
@@ -326,7 +326,7 @@
               <upload-cell :type="item.type"></upload-cell>
               <!--<span>{{item.name}}</span>-->
               <el-tooltip :content="item.name" placement="top">
-                <span>{{item.name}}</span>
+                <div class="span">{{item.name}}</div>
               </el-tooltip>
               <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
             </li>
@@ -496,9 +496,9 @@
         this.inObjPerson=false
         this.getDetails({type: type, payId: this.$route.query.id})
       }else {
-        this.$nextTick(()=>{
-          this.getAcount(this.getUser.user&&this.getUser.user.empId)
-        })
+        if(this.getUser){
+          this.getAcount(this.getUser&&this.getUser.user.empId)
+        }
       }
       if(inAccount){
         this.activeType=parseInt(inAccount)===4?2:1
@@ -1154,6 +1154,10 @@
           this.form.inObjId=val.empId
           this.form.inObj=val.name
         }
+      },
+      getUser:function (val) {
+        debugger
+        this.getAcount(val.user.empId)
       }
     }
   }
@@ -1445,7 +1449,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        >span{
+        .span{
           width: 100px;
           text-align: center;
           /*word-break: break-all;*/

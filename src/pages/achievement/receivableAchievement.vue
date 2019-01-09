@@ -163,7 +163,11 @@
                       </template>
           </el-table-column>
 
-          <el-table-column prop="assignor" label="分成人" width="100"></el-table-column>
+          <el-table-column label="分成人" width="180">
+               <template slot-scope="scope">
+                          <p>{{scope.row.level4}}-{{scope.row.assignor}}</p>
+                 </template>
+          </el-table-column>
           
           <el-table-column prop="roleName" label="角色类型" width="100"></el-table-column>
 
