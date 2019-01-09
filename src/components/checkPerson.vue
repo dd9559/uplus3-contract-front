@@ -82,6 +82,9 @@
     },
     created(){
       this.searchDep('',true)
+      this.$message({
+        message:'请选择审核人'
+      })
     },
     methods:{
       opera:function (type) {
