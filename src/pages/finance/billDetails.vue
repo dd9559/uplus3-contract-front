@@ -264,7 +264,7 @@
       return {
         checkPerson: {
           state:false,
-          type:'set',
+          type:3,
           code:'',
           flowType:0
         },
@@ -439,7 +439,6 @@
           this.fullscreenLoading=false
           if(error.message==='下一节点审批人不存在'){
             this.checkPerson.state=true
-            this.checkPerson.type=error.data.type===1?'set':'init'
           }else {
             this.$message({
               message:error
