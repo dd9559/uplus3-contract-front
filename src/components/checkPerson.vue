@@ -1,6 +1,7 @@
 <template>
   <el-dialog
     title="选择审核人"
+    custom-class="dialog-z-index"
     :visible="show"
     :closeOnClickModal="$tool.closeOnClickModal"
     @close="close"
@@ -82,6 +83,10 @@
     },
     created(){
       this.searchDep('',true)
+      /*this.$message({
+        message:'test',
+        customClass:'test'
+      })*/
     },
     methods:{
       opera:function (type) {
@@ -108,6 +113,10 @@
                 })
                 this.$emit('submit',this.choseItem)
               }
+            }).catch(error=>{
+              this.$message({
+                message:error
+              })
             })
           }else {
             this.$message({
@@ -206,6 +215,12 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .test{
+    z-index: 9999;
+  }
+  .dialog-z-index{
+    z-index: 10;
+  }
   .btn-info{
     width: 100px;
   }
