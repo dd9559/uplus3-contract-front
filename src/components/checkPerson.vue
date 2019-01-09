@@ -49,7 +49,7 @@
         type:Boolean,
         // default:false
       },
-      type:{
+      type:{//弹窗类型
         type:String,
         default:'init'
       },
@@ -60,13 +60,13 @@
       flowType:{
         type:Number,
       },
-      showLabel:{//是否显示文本
+      showLabel:{//是否显示label文本
         type:Boolean,
         default:true
       },
-      current:{//是否设置当前审核人
+      current:{//接口类型(是否设置当前审核人)
         type:Boolean,
-        default:false
+        default:true
       }
     },
     data(){
@@ -99,7 +99,7 @@
             }
           })
           if(param.userId!==''){
-            this.$ajax.post(this.current?'/api/machine/changeAuditorNow':this.type==='init'?'/api/machine/changeAuditorNow':'/api/machine/changeAuditorNext',param).then(res=>{
+            this.$ajax.post(this.current?'/api/machine/changeAuditorNow':'/api/machine/changeAuditorNext',param).then(res=>{
               res=res.data
               if(res.status===200){
                 this.$message({
@@ -128,7 +128,7 @@
         this.inputEmp=false
         let param={
           keyword:!val?'':val,
-          type:this.current?0:this.type==='init'?0:1,
+          type:this.current?0:1,
           bizCode:this.bizCode,
           flowType:this.flowType
         }
@@ -146,7 +146,7 @@
       searchEmp:function (val) {
         let param={
           keyword:!val?'':val,
-          type:this.current?0:this.type==='init'?0:1,
+          type:this.current?0:1,
           depId:this.choseItem.depId,
           bizCode:this.bizCode,
           flowType:this.flowType

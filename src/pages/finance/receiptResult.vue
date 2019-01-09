@@ -63,7 +63,7 @@
       <h4>400 112 5883</h4>
     </el-dialog>
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
-    <checkPerson :show="checkPerson.state" :showBtn="power['sign-cw-bill-print'].state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :showBtn="power['sign-cw-bill-print'].state" :type="checkPerson.type" :current="checkPerson.current" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -88,6 +88,7 @@
         checkPerson: {
           state:false,
           type:'set',
+          current:false,
           code:'',
           flowType:1
         },
@@ -127,7 +128,7 @@
           let param={
             state:true,
             code:vm.result.payCode,
-            type:parseInt(vm.result.type)===1?'set':'init'
+            current:parseInt(vm.result.type)===1?false:true
           }
           vm.checkPerson=Object.assign(vm.checkPerson,param)
         }

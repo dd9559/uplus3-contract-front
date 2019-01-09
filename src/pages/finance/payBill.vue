@@ -142,7 +142,7 @@
       <section class="flex-row">
         <div class="input-group col-other">
           <p><label class="f14">备注信息</label></p>
-          <el-input placeholder="请填写备注信息" class="info-textarea" :class="[form.remark.length>0?'':'scroll-hidden']" type="textarea" rows="5" maxlength="200" v-model="form.remark"></el-input>
+          <el-input placeholder="请填写备注信息" class="info-textarea" :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']" type="textarea" rows="5" maxlength="200" v-model="form.remark"></el-input>
         </div>
         <div class="input-group col-other">
           <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
