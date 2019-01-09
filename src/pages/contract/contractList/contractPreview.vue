@@ -160,9 +160,9 @@ export default {
       clientHei:'',
       checkPerson: {
         state:false,
-        type:'init',
+        type:1,
         code:'',
-        flowType:0,
+        flowType:3,
         label:false
       },
       power: {
@@ -257,10 +257,9 @@ export default {
         }
       }).catch(error => {
           if(error.message==='下一节点审批人不存在'){
-            this.checkPerson.flowType=3;
             this.checkPerson.code=this.code;
             this.checkPerson.state=true;
-            this.checkPerson.type="set";
+            // this.checkPerson.type=error.data.type===1?'set':'init';
             this.checkPerson.label=true;
           }else{
             this.$message({
@@ -496,10 +495,9 @@ export default {
         }
       }).catch(error => {
           if(error.message==='下一节点审批人不存在'){
-            this.checkPerson.flowType=3;
             this.checkPerson.code=this.code;
             this.checkPerson.state=true;
-            this.checkPerson.type="set";
+            // this.checkPerson.type=error.data.type===1?'set':'init';
             this.checkPerson.label=true;
           }else{
             this.$message({

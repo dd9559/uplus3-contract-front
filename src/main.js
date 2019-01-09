@@ -74,7 +74,7 @@ Vue.directive("dbClick", {
         el.disabled = true;
         let timer = setTimeout(() => {
           el.disabled = false;
-        }, 1000);
+        }, 3000);
       }
     });
   }

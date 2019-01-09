@@ -133,6 +133,7 @@
       },
       logout:function (type) {
         console.log(this.getUser)
+        localStorage.removeItem('initId')
         if(type===1){
           this.$ajax.post('/api/logout').then(res=>{
             this.$router.push({

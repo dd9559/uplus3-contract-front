@@ -799,9 +799,9 @@ export default {
       clientHei: '', //窗体高度
       checkPerson: {
         state:false,
-        type:'init',
+        type:1,
         code:'',
-        flowType:0,
+        flowType:3,
         label:false
       },
       canCall:true,
@@ -1009,10 +1009,9 @@ export default {
         }
       }).catch(error => {
           if(error.message==='下一节点审批人不存在'){
-            this.checkPerson.flowType=3;
             this.checkPerson.code=this.contractDetail.code;
             this.checkPerson.state=true;
-            this.checkPerson.type="set";
+            // this.checkPerson.type=error.data.type===1?'set':'init';
             this.checkPerson.label=true;
           }else{
             this.$message({
@@ -1310,7 +1309,7 @@ export default {
         })
       }else{
         this.$message({
-          message:'请选合同主体'
+          message:'请上传合同主体资料'
         })
       }
     },
