@@ -298,13 +298,10 @@ export default {
 
        
       // 选择审核人
-      choseCheckPerson:function (checkId,type) {
+      choseCheckPerson:function (checkId) {
         this.checkPerson.flowType=4   //调佣的流程类型为4
         this.checkPerson.code=checkId  //业务编码为checkId
         this.checkPerson.state=true  
-        this.checkPerson.type=type
-        this.checkPerson.label=true
-        this.checkPerson.current=true
       },
       personChose:function () {
         this.checkPerson.state=false
@@ -370,7 +367,7 @@ export default {
                  
                   this.fullscreenLoading=false
                   if (error.status === 300 && error.data.checkId) {    
-                    this.choseCheckPerson(error.data.checkId,'init')                                    
+                    this.choseCheckPerson(error.data.checkId)                                    
                   } else{
                     this.$message({
                       message: error
