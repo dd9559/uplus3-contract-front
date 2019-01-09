@@ -93,7 +93,7 @@ export default {
     this.getData();
     this.getDictionary()
     let h = document.documentElement.clientHeight
-    this.tableHeight = h - 80 - 140
+    this.tableHeight = h - 40 - 140
   },
   methods: {
     // 获取合同资料库列表
