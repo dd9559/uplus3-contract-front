@@ -239,7 +239,7 @@
       this.getDictionary()
       this.getData()
       let h = document.documentElement.clientHeight
-      this.tableHeight = h - 80 - 150
+      this.tableHeight = h - 40 - 150
     },
     methods: {
       querySearch(queryString,cb) {
@@ -580,7 +580,7 @@
 .data-list {
   margin-top: 12px;
   display: flex;
-  height: calc(100% - 103px);
+  height: calc(100% - 63px);
   //步骤类型
   .stepsType {
     min-width: 29%;
