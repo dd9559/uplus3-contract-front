@@ -385,7 +385,7 @@
                 <el-button 
                    type="text"
                    @click="choseCheckPerson(scope.row,'init')" 
-                   v-if="(userMsg&&((userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0)"
+                   v-if="((userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0"
                 >    
                    {{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}
                 </el-button>
@@ -1556,5 +1556,8 @@ export default {
   -webkit-line-clamp: 1;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/deep/ .btn-text-info{
+  font-size: 12px !important;
 }
 </style>
