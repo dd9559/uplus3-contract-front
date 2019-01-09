@@ -151,7 +151,8 @@ export default {
             type:'init',
             code:'',
             flowType:0,
-            label:false
+            label:false,
+            current:false
           }, 
           clientHei: document.documentElement.clientHeight, //窗体高度
           fullscreenLoading:false,//创建按钮防抖
@@ -303,6 +304,7 @@ export default {
         this.checkPerson.state=true  
         this.checkPerson.type=type
         this.checkPerson.label=true
+        this.checkPerson.current=true
       },
       personChose:function () {
         this.checkPerson.state=false
