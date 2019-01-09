@@ -121,7 +121,7 @@
             </span>
             <p v-else>--</p>
 
-            <p class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,userMsg.empId===scope.row.checkby?'init':'set','current')">{{userMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
+            <p class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,userMsg.empId===scope.row.checkby?2:1)">{{userMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
@@ -132,7 +132,7 @@
             </span>
             <p v-else>--</p>
       
-            <p class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</p>
+            <p class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
@@ -373,7 +373,7 @@
       <!-- 图片放大 -->
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -550,12 +550,11 @@
         
       },
       // 选择审核人
-      choseCheckPerson:function (row,type,current) {
+      choseCheckPerson:function (row,type) {
         this.checkPerson.flowType=4   //调佣的流程类型为4
         this.checkPerson.code=row.checkId  //业务编码为checkId
         this.checkPerson.state=true  
         this.checkPerson.type=type
-        this.checkPerson.current=current==='current'?true:false
         if(row.nextAuditId===-1){
           this.checkPerson.label=true
         }else {
@@ -825,9 +824,9 @@
               this.checkPerson.flowType=4   //调佣的流程类型为4
               this.checkPerson.code=error.data.checkId  //业务编码为checkId
               this.checkPerson.state=true  
-              this.checkPerson.type='set'
-              this.checkPerson.label=true
-              this.checkPerson.current=false
+              // this.checkPerson.type='set'
+              // this.checkPerson.label=true
+              // this.checkPerson.current=false
             }
             else{
               this.$message({
