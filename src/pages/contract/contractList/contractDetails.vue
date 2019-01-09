@@ -502,7 +502,7 @@
         <div class="reason">
           <el-input type="textarea" :rows="6" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px;overflow-y:hidden" maxlength="100"></el-input>
           <span>{{invalidReason.length}}/100</span>
-          <p v-if="contractDetail.toExamineState.value>-1&&contractDetail.contState.value!=2"><span>注：</span>您的合同正在审核中，是否确认要做撤单？撤单后，合同需要重新提审！</p>
+          <p v-if="contractDetail.toExamineState.value>-1&&contractDetail.contState.value!=2"><span>注：</span>您的合同{{contractDetail.toExamineState.value===1?'已审核通过':'正在审核中'}}，是否确认要做撤单？撤单后，合同需要重新提审！</p>
           <p v-if="contractDetail.contState.value===2"><span>注：</span>您的合同已签章，是否确认要做撤单？撤单后，合同需要重新提审！</p>
           <p v-if="contractDetail.toExamineState.value<0"><span>注：</span>您的合同是否确认要做撤单？撤单后，合同需要重新提审！</p>
         </div>
@@ -1475,6 +1475,7 @@ export default {
         })
       }
     },
+    //合同资料科删除
     delectData(index,index_,type){
       console.log(index,index_,type);
       if(type==="seller"){
