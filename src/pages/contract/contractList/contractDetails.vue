@@ -253,9 +253,9 @@
           </div>
           <div v-if="contractDetail.contChangeState.value!=2">
             <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
-            <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3" @click="goChangeCancel(2)">解约</el-button>
+            <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
             <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">撤单</el-button>
-            <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1" @click="goChangeCancel(1)">变更</el-button>
+            <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
             <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
             <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0" @click="isSubmitAudit=true">提交审核</el-button>
           </div>
@@ -464,7 +464,7 @@
       <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='first'" @click="printDemo">打印成交报告</el-button>  <!-- @click="printDemo" -->
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
-      <el-button type="primary" round class="search_btn" @click="uploading" v-if="power['sign-ht-xq-data-add'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
+      <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data-add'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
       <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
     
@@ -1286,7 +1286,32 @@ export default {
     },
     //合同主体的删除
     ZTdelectData(index){
-      this.uploadList.splice(index,1)
+      if(this.contractDetail.contState.value===3){
+        if(this.uploadList.length>1){
+          this.uploadList.splice(index,1);
+          let param = {
+            contId:this.id,
+            datas:this.uploadList
+          }
+          this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
+            res=res.data;
+            if(res.status===200){
+              // this.getContractBody();
+              this.$message({
+                message:'删除成功',
+                type:'success'
+              })
+            }
+          })
+        }else{
+          this.$message({
+            message:'至少保留一个，请勿删除',
+            type:'warning'
+          })
+        }
+      }else{
+        this.uploadList.splice(index,1);
+      }
     },
     //保存上传文件
     saveFile() {
@@ -1303,13 +1328,15 @@ export default {
           if(res.status===200){
             this.getContractBody();
             this.$message({
-              message:'上传成功'
+              message:'上传成功',
+              type:'success'
             })
           }
         })
       }else{
         this.$message({
-          message:'请上传合同主体资料'
+          message:'请上传合同主体资料',
+          type:'warning'
         })
       }
     },
@@ -1424,7 +1451,7 @@ export default {
       }
     },
     //上传合同资料库
-    uploading(){
+    uploading(msg){
       let uploadContData = this.sellerList.concat(this.buyerList, this.otherList);
       console.log(uploadContData);
       let isOk;
@@ -1433,7 +1460,8 @@ export default {
         isOk = false;
         if(uploadContData[i].isrequire&&uploadContData[i].value.length===0){
           this.$message({
-            message:`${uploadContData[i].title}不能为空`
+            message:`${uploadContData[i].title}不能为空`,
+            type:'warning'
           });
           break
         }else if(uploadContData[i].isrequire&&uploadContData[i].value.length>0){
@@ -1468,7 +1496,8 @@ export default {
           res=res.data;
           if(res.status===200){
             this.$message({
-              message:'上传成功'
+              message:msg,
+              type:'success'
             });
             this.getContData();
           }
@@ -1478,13 +1507,65 @@ export default {
     //合同资料科删除
     delectData(index,index_,type){
       console.log(index,index_,type);
-      if(type==="seller"){
-        this.sellerList[index].value.splice(index_,1);
-      }else if(type==="buyer"){
-        this.buyerList[index].value.splice(index_,1);
-      }else if(type==="other"){
-        this.otherList[index].value.splice(index_,1);
+      if(this.contractDetail.isHaveData){
+        if(type==="seller"){
+          if(this.sellerList[index].isrequire){
+            if(this.sellerList[index].value.length>1){
+              this.sellerList[index].value.splice(index_,1);
+              this.uploading('删除成功')
+            }else{
+              this.$message({
+                message:'至少保留一个，请勿删除',
+                type:'warning'
+              })
+            }
+          }else{
+            this.sellerList[index].value.splice(index_,1);
+            this.uploading('删除成功')
+          }
+        }else if(type==="buyer"){
+          // this.buyerList[index].value.splice(index_,1);
+          if(this.buyerList[index].isrequire){
+            if(this.buyerList[index].value.length>1){
+              this.buyerList[index].value.splice(index_,1);
+              this.uploading('删除成功')
+            }else{
+              this.$message({
+                message:'至少保留一个，请勿删除',
+                type:'warning'
+              })
+            }
+          }else{
+            this.buyerList[index].value.splice(index_,1);
+            this.uploading('删除成功')
+          }
+        }else if(type==="other"){
+          // this.otherList[index].value.splice(index_,1);
+          if(this.otherList[index].isrequire){
+            if(this.otherList[index].value.length>1){
+              this.otherList[index].value.splice(index_,1);
+              this.uploading('删除成功')
+            }else{
+              this.$message({
+                message:'至少保留一个，请勿删除',
+                type:'warning'
+              })
+            }
+          }else{
+            this.otherList[index].value.splice(index_,1);
+            this.uploading('删除成功')
+          }
+        }
+      }else{
+        if(type==="seller"){
+          this.sellerList[index].value.splice(index_,1);
+        }else if(type==="buyer"){
+          this.buyerList[index].value.splice(index_,1);
+        }else if(type==="other"){
+          this.otherList[index].value.splice(index_,1);
+        }
       }
+      
     },
     //合同撤单弹窗
     invalid(){
@@ -1504,7 +1585,8 @@ export default {
               this.getContractDetail();
               this.dialogInvalid=false;
               this.$message({
-                message:'操作成功'
+                message:'操作成功',
+                type:'success'
               })
             }
           }).catch(error=>{
@@ -1515,12 +1597,14 @@ export default {
           })
         }else{
           this.$message({
-            message:'请填写撤单原因'
+            message:'请填写撤单原因',
+            type:'warning'
           })
         }
       }else{
         this.$message({
-          message:'请填写撤单原因'
+          message:'请填写撤单原因',
+          type:'warning'
         })
       }
     },
