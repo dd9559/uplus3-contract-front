@@ -142,9 +142,6 @@
       }else{
         if(localStorage.getItem('initId')){
           this.selectCity=parseInt(localStorage.getItem('initId'))
-        }else{
-          localStorage.setItem('initId',this.getUser.user.cityId)
-          this.selectCity=this.getUser.user.cityId
         }
           this.cityName='武汉'
       }
