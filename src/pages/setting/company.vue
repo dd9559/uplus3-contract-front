@@ -808,7 +808,10 @@
         this.getCompanyList()
       },
       resetFormFn() {
-        this.$tool.clearForm(this.searchForm)
+        this.searchForm.storeId = ""
+        this.searchForm.cooperationMode = ""
+        this.searchForm.bankCard = ""
+        this.searchForm.keyword = ""
         this.searchTime = []
       },
       getInt(num,index) {
