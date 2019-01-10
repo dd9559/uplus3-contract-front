@@ -9,17 +9,17 @@
         <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" v-if="type===2">
           <el-table-column align="center" label="现金">
             <template slot-scope="scope">
-              <span>{{result.detail['1']}}</span>
+              <span>{{result.detail['cash']}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="转账">
             <template slot-scope="scope">
-              <span>{{result.detail['2']}}</span>
+              <span>{{result.detail['trun']}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="POS刷卡">
             <template slot-scope="scope">
-              <span>{{result.detail['3']}}</span>
+              <span>{{result.detail['pos']}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="合计金额">

@@ -248,8 +248,33 @@ export default {
       }
 		},
 		delectData(index){
-      console.log(index);
-			this.uploadList.splice(index,1)
+			// this.uploadList.splice(index,1)
+			if(this.contState===3){
+        if(this.uploadList.length>1){
+          this.uploadList.splice(index,1);
+          let param = {
+            contId:this.contId,
+            datas:this.uploadList
+          }
+          this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
+            res=res.data;
+            if(res.status===200){
+              // this.getContractBody();
+              this.$message({
+                message:'删除成功',
+                type:'success'
+              })
+            }
+          })
+        }else{
+          this.$message({
+            message:'至少保留一个，请勿删除',
+            type:'warning'
+          })
+        }
+      }else{
+        this.uploadList.splice(index,1);
+      }
 		},
 		//获取合同主体信息
     getContractBody(){
@@ -276,7 +301,8 @@ export default {
 				if(res.status===200){
 					this.forbid=false;
 					this.$message({
-						message:'操作成功'
+						message:'操作成功',
+						type:'success'
 					});
 					this.close();
 				}
@@ -327,12 +353,14 @@ export default {
 						this.subChangeCancel(url,param);
 					}else{
 						this.$message({
-							message:'请上传变更协议'
+							message:'请上传变更协议',
+							type:'warning'
 						})
 					}
 				}else{
 					this.$message({
-						message:'请填写变更原因'
+						message:'请填写变更原因',
+						type:'warning'
 					})
 				}
 			}else if(this.dialogType==="cancelEdit"){
@@ -349,12 +377,14 @@ export default {
 						this.subChangeCancel(url,param);
 					}else{
 						this.$message({
-							message:'请上传解约协议'
+							message:'请上传解约协议',
+							type:'warning'
 						})
 					}
 				}else{
 					this.$message({
-						message:'请填写解约原因'
+						message:'请填写解约原因',
+						type:'warning'
 					})
 				}
 			}

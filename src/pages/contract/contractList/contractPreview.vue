@@ -12,8 +12,8 @@
         <el-button type="primary" round style="width:100px" v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
         <el-button type="primary" round style="width:100px" v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
         <el-button round type="primary" style="width:100px" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4" @click="isSubmitAudit=true">提交审核</el-button>
-        <el-button round type="primary" style="width:100px" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1" @click="goChangeCancel(1)">变更</el-button>
-        <el-button round type="danger"  style="width:100px" v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2"  @click="goChangeCancel(2)">解约</el-button>
+        <el-button round type="primary" style="width:100px" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
+        <el-button round type="danger"  style="width:100px" v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
         <el-button round style="width:100px" v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         <el-button round style="width:100px" v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
@@ -141,6 +141,7 @@ export default {
       contType:'',
       //变更解约
       contChangeState:'',
+      laterStageState:'',
       //当前待审人id
       auditId:'',
       //当前登录人信息
@@ -402,6 +403,7 @@ export default {
             this.signature(2)
           }
           this.examineState=res.data.examineState.value;
+          this.laterStageState=res.data.laterStageState.value;
           this.contState=res.data.contState.value;
           this.contType=res.data.contType.value;
           this.guestStoreId=res.data.guestStoreId;
