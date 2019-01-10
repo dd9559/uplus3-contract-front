@@ -740,11 +740,11 @@
 
             <!-- result审核结果(0未审核 1通过 2驳回)(薪资组审核) -->
             <el-table-column
-              prop="done"
+              prop="createDepName"
               label="操作"
               width="150"
             >
-              <template slot-scope="scope">
+              <!-- <template slot-scope="scope">
                 <div>
                   <div v-if="scope.row.contType==0">
                     <p class="blue">提交审核</p>
@@ -765,7 +765,7 @@
                     <p>-</p>
                   </div>
                 </div>
-              </template>
+              </template> -->
             </el-table-column>
 
             <!-- remark -->
