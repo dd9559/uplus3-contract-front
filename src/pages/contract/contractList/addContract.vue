@@ -1134,7 +1134,11 @@ export default {
                 message: "操作成功",
                 type: "success"
               });
-              this.dialogSuccess=true;
+              if(this.type===2&&this.contractForm.isHaveData){
+                 this.$router.push('/contractList');
+              }else{
+                this.dialogSuccess=true;
+              }
             }
           }
         }).catch(error => {
