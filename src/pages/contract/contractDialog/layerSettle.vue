@@ -250,8 +250,7 @@ export default {
             console.log(res);
             let data = res.data;
             if (res.data.status === 200) {
-              this.layerAudit = data.data
-             
+              this.layerAudit = data.data          
             }
             
 
