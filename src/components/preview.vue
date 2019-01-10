@@ -2,7 +2,7 @@
     <div class="preview">
       <div class="view-container" :class="[getType==='img'?'img-drag':'']" ref="drag" @mousedown="mousedown" @mouseup="dragging=false">
         <img ref="img" :src="imgSrc" :style="{width:getWidth,height:getHeight,transform:getRotate}" alt="" v-if="getType==='img'">
-        <video ref="video" :style="{width:getWidth,height:getHeight,transform:getRotate}" controls v-else-if="getType==='video'">
+        <video ref="video" :style="{transform:getRotate}" controls v-else-if="getType==='video'">
           <source  :src="imgSrc" type="video/mp4">
         </video>
         <a :href="imgSrc" download v-else>文件不支持预览，请手动下载</a>
@@ -60,7 +60,6 @@
       if(this.getImages.length>0){
         this.imgSrc=this.getImages[this.activePage].path
         // debugger
-        console.log(this.typeList)
         this.init(this.imgSrc)
       }
       this.$nextTick(()=>{
@@ -180,8 +179,10 @@
             video.onloadedmetadata=function () {
               let persent=parseFloat((video.videoWidth/video.videoHeight).toFixed(2))
               if(video.videoHeight>window.innerHeight){
+                // console.log('test',video.videoWidth,video.videoHeight,window.innerHeight,persent)
                 video.style.width=`${window.innerHeight*persent}px`
                 video.style.height=`${window.innerHeight}px`
+                // console.log(video)
               }
               if(video.videoWidth>1000){
                 video.style.width='800px'
