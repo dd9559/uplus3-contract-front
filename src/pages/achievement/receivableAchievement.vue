@@ -539,15 +539,9 @@ export default {
         padding: 24px 0;
       }
       .el-table__header {
-        height: 55px;
         th {
-          padding: 0;
-          .cell {
+            padding: 6px 0;
             background-color: #eef2fb;
-            // background-color: pink;
-            height: 55px;
-            line-height: 55px;
-          }
         }
       }
     }
