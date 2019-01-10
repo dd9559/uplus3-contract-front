@@ -568,14 +568,17 @@ export default {
     }
   }
   .name-wrapper {
-    display: flex;
-    display: -webkit-box;
+    // display: flex;
+    // display: -webkit-box;
     /*!autoprefixer: off */
-    -webkit-box-orient: vertical;
+    // -webkit-box-orient: vertical;
     /* autoprefixer: on */
-    -webkit-line-clamp: 1;
-    overflow: hidden;
+    // -webkit-line-clamp: 1;
+    // overflow: hidden;
+    // text-overflow:ellipsis;
     text-overflow:ellipsis;
+    white-space:nowrap;
+    overflow:hidden; 
   }
   .search_btn {
     padding: 8px 20px;

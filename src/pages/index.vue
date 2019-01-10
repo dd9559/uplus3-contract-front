@@ -1,6 +1,7 @@
 <template>
   <div class="main">
     <div class="nav">
+      <img :src="getImg('logo.png')" alt="">
       <ul class="navbar" v-if="getUser&&getUser.user">
         <li>{{getUser.user.cityName}}</li>
         <li><span>{{getUser.user.depName}}-{{getUser.user.name}}</span></li>
@@ -127,8 +128,12 @@
       next()
     },
     methods: {
+      getImg:function (url) {
+        return require(`@/assets/img/${url}`)
+      },
       logout:function (type) {
         console.log(this.getUser)
+        localStorage.removeItem('initId')
         if(type===1){
           this.$ajax.post('/api/logout').then(res=>{
             this.$router.push({
@@ -213,6 +218,9 @@
       display: flex;
       align-items: center;
       position: relative;
+      >img{
+        margin-left: @margin-15;
+      }
       .navbar{
         position: absolute;
         top: 50%;

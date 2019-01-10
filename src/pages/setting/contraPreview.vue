@@ -14,6 +14,7 @@
           </div>
           <img id='ht' src="" alt="">
           <div class='signature signatureone'  ref='dropBtn'  v-show='sigtureShow'>
+              <img src="../../assets/img/yz.png" alt="">
           </div>
       </div>
        <div class="ht-list listone" v-show='showSed' ref='htlist'>
@@ -25,6 +26,7 @@
           </div>
           <img id='ht2' src="" alt="">
           <div class='signature signaturetwo' ref='dropBtn' v-show='sigtureShow2'>
+              <img src="../../assets/img/yz.png" alt="">
           </div>
         </div>
       </div>
@@ -345,6 +347,9 @@ export default{
                     for(let i=0;i<this.signPositions.length;i++){
                         if(this.count==this.signPositions[i].pageIndex){
                              this.sigtureShow=true
+                             if(this.showSed){
+                                  this.sigtureShow=false
+                             }
                              this.tuozhuai(this.signPositions[i])
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
@@ -386,6 +391,9 @@ export default{
                     for(let i=0;i<this.signPositions.length;i++){
                          if(this.count==this.signPositions[i].pageIndex){
                              this.sigtureShow=true
+                             if(this.showSed){
+                                  this.sigtureShow=false
+                             }
                              this.tuozhuai(this.signPositions[i])
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
@@ -547,12 +555,25 @@ export default{
         }
         .signature{
             position: absolute;
-            background-image: url('~@/assets/img/yz.png');
+            // background-image: url('~@/assets/img/yz.png');
             background-size: 110px;
             width: 110px;
             left: 0;
             height: 110px;
             top:0;
+            &::after{
+                content:'';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 9;
+            }
+            img{
+                width: 110px;
+                height: 110px;
+            }
         }
         > button{
             position: absolute;

@@ -4,12 +4,12 @@
         @propQueryFn="queryFn"
         @propResetFormFn="resetFormFn">
         <div class="content">
-            <div class="input-group">
+            <!-- <div class="input-group">
                 <label>选择城市</label>
                 <el-select size="small" v-model="searchForm.cityId" :clearable="true">
                     <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
                 </el-select>
-            </div>
+            </div> -->
             <div class="input-group">
                 <label>运营模式</label>
                 <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
@@ -133,9 +133,9 @@
                                 <div v-if="item.type===0" class="person">
                                     <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                                     <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye" size="small"
-                                                v-model="item.personArr" placeholder="请选择" multiple @change="multiSelect(item.type,index)">
+                                                v-model="item.personArr" placeholder="请选择" filterable multiple @change="multiSelect(item.type,index)">
                                         <el-option
-                                        v-for="item in EmployeList"
+                                        v-for="item in employeList"
                                         :key="item.empId"
                                         :label="item.name"
                                         :value="item.empId">
@@ -166,7 +166,10 @@
                             <div class="default" v-if="item.choice&&item.choice.length>0&&index!==0">
                                 <span>选择默认审核人:</span>
                                 <div class="multiple" ref="curChoice">
-                                    <span v-for="(ele,m) in item.choice" :key="m" @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">{{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i></span>
+                                    <span v-for="(ele,m) in item.choice" :key="m"
+                                    @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">
+                                    {{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
+                                    </span>
                                 </div>
                             </div>
                         </li>
@@ -269,6 +272,7 @@
                 currentFlowId: "",
                 tempAudit: "",
                 tempNodeList: [],
+                employeList: [],
                 power: {
                     'sign-set-verify': {
                     state: false,
@@ -278,6 +282,7 @@
             }
         },
         created() {
+            this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
             this.getCityList()
             this.getDictionary()
             this.getData()
@@ -343,14 +348,21 @@
             },
             getType(val) {
                 if(val === 1 || val === 2) {
-                    this.EmployeList = []
+                    this.employeList = []
                 }
             },
             clearDep: function () {
                 this.clearSelect()
             },
             depHandleClick(data) {
-                this.handleNodeClick(data)
+                this.$ajax.get('/api/organize/employees/pages',{depId:data.depId,selectSubs:false}).then(res=>{
+                    res=res.data
+                    if(res.status===200){
+                        this.employeList = res.data.list
+                    }
+                })
+                this.dep.id=data.depId
+                this.dep.name=data.name
             },
             searchDep:function (payload) {
                 this.DepList=payload.list
@@ -358,6 +370,7 @@
             handleClose(done) {
                 this.nodeList = []
                 this.tempNodeList = []
+                this.employeList = []
                 done()
             },
             operation(title,type,row) {
@@ -382,6 +395,8 @@
                     this.aduitForm.flowDesc = currentRow.flowDesc
                     this.setConditionList(currentRow.type)
                     this.editDisabled = true
+                    this.dep.id = ""
+                    this.dep.name = ""
                     //获取节点信息
                     let editRow = JSON.parse(JSON.stringify(currentRow.branch))
                     if(this.isAudit === "1") {
@@ -544,12 +559,12 @@
                 }
                 if(type === 0) {
                     if(this.nodeList[index].peopleTime === this.nodeList[index].personArr.length) {
-                        for(var i = 0; i < this.EmployeList.length; i++) {
-                            if(this.nodeList[index].personArr[this.nodeList[index].peopleTime-1] === this.EmployeList[i].empId) {
+                        for(var i = 0; i < this.employeList.length; i++) {
+                            if(this.nodeList[index].personArr[this.nodeList[index].peopleTime-1] === this.employeList[i].empId) {
                                 this.nodeList[index].choice.push({
                                     type: 0,
-                                    userName: this.EmployeList[i].name,
-                                    userId: this.EmployeList[i].empId,
+                                    userName: this.employeList[i].name,
+                                    userId: this.employeList[i].empId,
                                     isDefault: 0
                                 })
                                 break
@@ -1001,7 +1016,9 @@
             }
         }
         /deep/ .el-select__tags {
-            display: none;
+            .el-tag {
+                display: none;
+            }
         }
     }
 }

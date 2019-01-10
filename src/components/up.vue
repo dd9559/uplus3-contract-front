@@ -8,6 +8,7 @@
   import {set_upload_param,get_suffix} from "@/assets/js/upload";
 
   let result = null
+  let publicPath = ''
   export default {
     props:{
       id:{
@@ -54,6 +55,9 @@
             mime_types:that.rules.length>0?[{extensions:that.rules.join(',')}]:[],
             prevent_duplicates : true //不允许选取重复文件
           },
+          resize: {
+            quality: 60,//压缩后图片的质量，只对jpg格式的图片有效，默认为90。quality可以跟width和height一起使用，但也可以单独使用，单独使用时，压缩后图片的宽高不会变化，但由于质量降低了，所以体积也会变小
+          },
           init:{
             FilesAdded: function(up, files) {
               // 选择文件后执行
@@ -74,7 +78,9 @@
             },
             BeforeUpload: function(up, file) {
               // 点击上传前执行
-              set_upload_param(up,Object.assign({},result),file.name);
+              let date = new Date()
+              publicPath = `${date.getTime()}${get_suffix(file.name)}`
+              set_upload_param(up,Object.assign({},result),publicPath,file.name);
             },
             UploadProgress: function(up, file) {
               // 上传操作进行中
@@ -88,7 +94,7 @@
                 that.currentNum++
                 // console.log(file)
                 that.filePath=that.filePath.concat({
-                  path:`${result.host}/${result.key}${file.name}`,
+                  path:`${result.host}/${result.key}${publicPath}`,
                   name:file.name
                 })
                 if(that.currentNum===up.files.length){

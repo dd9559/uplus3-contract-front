@@ -384,8 +384,8 @@
                 <p v-else>-</p>
                 <el-button 
                    type="text"
-                   @click="choseCheckPerson(scope.row,'init')" 
-                   v-if="(userMsg&&((userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0)"
+                   @click="choseCheckPerson(scope.row,userMsg&&userMsg.empId===scope.row.auditId?2:1)" 
+                   v-if="((userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0"
                 >    
                    {{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}
                 </el-button>
@@ -402,7 +402,7 @@
                 <el-button 
                  type="text" 
                  style="color:red"  
-                 @click="choseCheckPerson(scope.row,'set')"  
+                 @click="choseCheckPerson(scope.row,3)"  
                  v-if="(userMsg&&scope.row.auditId===userMsg.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState==0"
                 >
                 设置审核人
@@ -740,11 +740,11 @@
 
             <!-- result审核结果(0未审核 1通过 2驳回)(薪资组审核) -->
             <el-table-column
-              prop="done"
+              prop="createDepName"
               label="操作"
               width="150"
             >
-              <template slot-scope="scope">
+              <!-- <template slot-scope="scope">
                 <div>
                   <div v-if="scope.row.contType==0">
                     <p class="blue">提交审核</p>
@@ -765,7 +765,7 @@
                     <p>-</p>
                   </div>
                 </div>
-              </template>
+              </template> -->
             </el-table-column>
 
             <!-- remark -->
@@ -829,7 +829,7 @@
     </div>
 
      <!-- 选择审核人弹框 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose" :showLabel="checkPerson.label"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose" :showLabel="checkPerson.label" :page="checkPerson.page"></checkPerson>
   </div>
 
 </template>
@@ -943,7 +943,8 @@ export default {
           type:'init',
           code:'',
           label:false,
-          flowType:0
+          flowType:0,
+          page:'list'
       },
     };
   },
@@ -1556,5 +1557,8 @@ export default {
   -webkit-line-clamp: 1;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/deep/ .btn-text-info{
+  font-size: 12px !important;
 }
 </style>

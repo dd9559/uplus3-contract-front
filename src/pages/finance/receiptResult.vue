@@ -3,23 +3,23 @@
     <div class="view-context">
       <h1><i class="iconfont icon-chenggong"></i></h1>
       <h3 v-if="checkPerson.state">{{type===1?edit?'POS收款订单修改成功':'POS收款订单创建成功':edit?'收款信息修改成功':'收款信息录入成功'}}</h3>
-      <p>已成功生成收款单</p>
+      <p>{{edit?'收款单修改成功':'已成功生成收款单'}}</p>
       <div class="bill-result-table">
         <p v-if="type===1">请在POS机上进行收款</p>
         <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" v-if="type===2">
           <el-table-column align="center" label="现金">
             <template slot-scope="scope">
-              <span>{{result.detail['1']}}</span>
+              <span>{{result.detail['cash']}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="转账">
             <template slot-scope="scope">
-              <span>{{result.detail['2']}}</span>
+              <span>{{result.detail['trun']}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="POS刷卡">
             <template slot-scope="scope">
-              <span>{{result.detail['3']}}</span>
+              <span>{{result.detail['pos']}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="合计金额">
@@ -63,7 +63,7 @@
       <h4>400 112 5883</h4>
     </el-dialog>
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
-    <checkPerson :show="checkPerson.state" :showBtn="power['sign-cw-bill-print'].state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :showBtn="power['sign-cw-bill-print'].state" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -88,6 +88,7 @@
         checkPerson: {
           state:false,
           type:'set',
+          current:false,
           code:'',
           flowType:1
         },
@@ -127,7 +128,7 @@
           let param={
             state:true,
             code:vm.result.payCode,
-            type:parseInt(vm.result.type)===1?'set':'init'
+            current:parseInt(vm.result.type)===1?false:true
           }
           vm.checkPerson=Object.assign(vm.checkPerson,param)
         }

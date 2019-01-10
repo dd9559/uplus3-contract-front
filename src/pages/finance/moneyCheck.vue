@@ -169,7 +169,7 @@
               <span>{{scope.row.auditStore}}</span>
               <p>{{scope.row.auditName}}</p>
             </template>
-            <p class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?'init':'set','current')">{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</p>
+            <p class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?2:1)">{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
@@ -180,7 +180,7 @@
 
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <p class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</p>
+            <p class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
@@ -262,7 +262,7 @@
     <el-button size="small" class="btn-info" round type="primary" @click="deleteBill" v-loading.fullscreen.lock="getLoading">确 定</el-button>
   </span>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :current="checkPerson.current" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -429,17 +429,17 @@
     },
     methods: {
       getExcel:function () {
-        /*this.$ajax.post('/api/postSigning/getExcel').then(res=>{
-          debugger
-        })*/
+        let param = Object.assign({},this.searchForm)
+        delete param.pageSize
+        delete param.pageNum
+        this.excelCreate(this.activeView===1?'/input/proceedsAuditExcel':'/input/payMentAuditExcel',param)
       },
       // 选择审核人
-      choseCheckPerson:function (row,type,current) {
+      choseCheckPerson:function (row,type) {
         this.checkPerson.flowType=this.activeView===1?1:0
         this.checkPerson.code=row.payCode
         this.checkPerson.state=true
         this.checkPerson.type=type
-        this.checkPerson.current=current==='current'?true:false
         if(row.nextAuditId===-1){
           this.checkPerson.label=true
         }else {
@@ -614,9 +614,9 @@
       },
       personChose:function () {
         this.checkPerson.state=false
-        this.$message({
+        /*this.$message({
           message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
-        })
+        })*/
         this.getData()
       }
     },

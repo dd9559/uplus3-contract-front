@@ -71,10 +71,10 @@
 			<!-- 合同解约（编辑） -->
 			<div class="audit-box" v-if="getDialogType==='cancelEdit'">
 				<div class="textareabox">
-					<p class="form-label">合同解除原因</p>
+					<p class="form-label">合同解约原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
-						<el-input type="textarea" :rows="5" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:595px" maxlength="100">
+						<el-input type="textarea" :rows="5" placeholder="请填写合同解约原因，最多100字" v-model="textarea" resize='none' style="width:595px" maxlength="100">
 						</el-input>
 						<span>{{textarea.length}}/100</span>
 					</div>
@@ -107,17 +107,17 @@
 			<!-- 合同解约（查看） -->
 			<div class="audit-box" v-if="getDialogType==='cancelLook'">
 				<div class="textareabox">
-					<p>合同解除原因</p>
+					<p>合同解约原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
-						<el-input type="textarea" :rows="6" :disabled="true" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:595px" maxlength="100">
+						<el-input type="textarea" :rows="6" :disabled="true" placeholder="请填写合同解约原因，最多100字" v-model="textarea" resize='none' style="width:595px" maxlength="100">
 						</el-input>
 						<span>{{textarea.length}}/100</span>
 					</div>
 				</div>
 				<!-- 上传附件 -->
 				<div class="uploadfile">
-					<div class="uploadtitle">上传解除协议<span><b>注：</b>协议支持所有格式</span></div>
+					<div class="uploadtitle">上传解约协议<span><b>注：</b>协议支持所有格式</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li v-for="(item,index) in address.value" :key="index">
@@ -248,8 +248,33 @@ export default {
       }
 		},
 		delectData(index){
-      console.log(index);
-			this.uploadList.splice(index,1)
+			// this.uploadList.splice(index,1)
+			if(this.contState===3){
+        if(this.uploadList.length>1){
+          this.uploadList.splice(index,1);
+          let param = {
+            contId:this.contId,
+            datas:this.uploadList
+          }
+          this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
+            res=res.data;
+            if(res.status===200){
+              // this.getContractBody();
+              this.$message({
+                message:'删除成功',
+                type:'success'
+              })
+            }
+          })
+        }else{
+          this.$message({
+            message:'至少保留一个，请勿删除',
+            type:'warning'
+          })
+        }
+      }else{
+        this.uploadList.splice(index,1);
+      }
 		},
 		//获取合同主体信息
     getContractBody(){
@@ -276,7 +301,8 @@ export default {
 				if(res.status===200){
 					this.forbid=false;
 					this.$message({
-						message:'操作成功'
+						message:'操作成功',
+						type:'success'
 					});
 					this.close();
 				}
@@ -308,7 +334,7 @@ export default {
 					this.subChangeCancel(url,param);
 				}else{
 					this.$message({
-						message:'请选合同主体',
+						message:'请上传合同主体资料',
 						type:'warning'
 					})
 				}
@@ -327,12 +353,14 @@ export default {
 						this.subChangeCancel(url,param);
 					}else{
 						this.$message({
-							message:'请选择变更协议'
+							message:'请上传变更协议',
+							type:'warning'
 						})
 					}
 				}else{
 					this.$message({
-						message:'请填写变更原因'
+						message:'请填写变更原因',
+						type:'warning'
 					})
 				}
 			}else if(this.dialogType==="cancelEdit"){
@@ -349,12 +377,14 @@ export default {
 						this.subChangeCancel(url,param);
 					}else{
 						this.$message({
-							message:'请选择解除协议'
+							message:'请上传解约协议',
+							type:'warning'
 						})
 					}
 				}else{
 					this.$message({
-						message:'请填写解除原因'
+						message:'请填写解约原因',
+						type:'warning'
 					})
 				}
 			}
@@ -402,7 +432,7 @@ export default {
 			}
     } else if (
       this.dialogType === "cancelEdit" || this.dialogType === "cancelLook") {
-			this.title = "合同解除";
+			this.title = "合同解约";
 			if(this.dialogType === "cancelLook"){
 				this.getChangeDetail(1)
 			}

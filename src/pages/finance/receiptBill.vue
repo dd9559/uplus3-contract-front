@@ -14,7 +14,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model.trim="form.outObj" v-if="inputPerson">
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20" v-model.trim="form.outObj" v-if="inputPerson">
           </div>
         </div>
         <div class="input-group col active-400">
@@ -311,7 +311,7 @@
       <div class="flex-box col-other other-message">
         <div class="input-group">
           <p><label class="f14">备注信息</label></p>
-          <el-input v-model="form.remark" class="info-textarea" :class="[form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
+          <el-input v-model="form.remark" class="info-textarea" :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
         </div>
         <div class="input-group" v-if="billStatus">
           <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
@@ -326,7 +326,7 @@
               <upload-cell :type="item.type"></upload-cell>
               <!--<span>{{item.name}}</span>-->
               <el-tooltip :content="item.name" placement="top">
-                <span>{{item.name}}</span>
+                <div class="span">{{item.name}}</div>
               </el-tooltip>
               <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
             </li>
@@ -496,9 +496,9 @@
         this.inObjPerson=false
         this.getDetails({type: type, payId: this.$route.query.id})
       }else {
-        this.$nextTick(()=>{
-          this.getAcount(this.getUser.user&&this.getUser.user.empId)
-        })
+        if(this.getUser){
+          this.getAcount(this.getUser&&this.getUser.user.empId)
+        }
       }
       if(inAccount){
         this.activeType=parseInt(inAccount)===4?2:1
@@ -602,7 +602,7 @@
        * 修改款单，获取初始数据
        */
       getDetails: function (param) {
-        this.$ajax.get('/api/payInfo/selectRevDetail', param).then(res => {
+        this.$ajax.get('/api/payInfo/selectDetail', param).then(res => {
           res = res.data
           if (res.status === 200) {
             let obj = {
@@ -707,15 +707,18 @@
         let arr=[]
         let payTotal=0
         let cardTotal=0
+        let checkTotal=0
         //收款信息验证
         arr.push(this.$tool.checkForm(param,rule))
         //支付信息验证
         if(this.billStatus){
-          debugger
           let cardListStatus = newPayList.every(item=>item.payMethod===3)
           newPayList.forEach(item=>{
             if(item.payMethod!==2){
               delete item.activeAdmin
+            }
+            if(item.payMethod!==3){
+              checkTotal+=parseFloat(item.amount)
             }
             payTotal+=parseFloat(item.amount)
             arr.push(this.$tool.checkForm(item,payRule))
@@ -729,9 +732,13 @@
           }
           Promise.all(arr).then(res=>{
             let total = parseFloat(this.form.amount)
-            if(total!==payTotal||(!cardListStatus&&(total!==cardTotal))){
+            if(total!==payTotal){
               this.$message({
-                message:'输入金额要等于收款金额'
+                message:'收款金额=支付总金额'
+              })
+            }else if(checkTotal!==cardTotal){
+              this.$message({
+                message:'刷卡资料补充输入总金额=POS刷卡金额+转账金额'
               })
             }else if(this.files.length===0){
               this.$message({
@@ -926,7 +933,6 @@
                 })
               }
             }).catch(error=>{
-              debugger
               this.fullscreenLoading=false
               if(error.message==='下一节点审批人不存在'){
                 this.$router.replace({
@@ -1154,6 +1160,9 @@
           this.form.inObjId=val.empId
           this.form.inObj=val.name
         }
+      },
+      getUser:function (val) {
+        this.getAcount(val.user.empId)
       }
     }
   }
@@ -1445,7 +1454,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        >span{
+        .span{
           width: 100px;
           text-align: center;
           /*word-break: break-all;*/

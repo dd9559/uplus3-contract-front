@@ -80,7 +80,8 @@
         </el-table-column>
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName + ' - ' + scope.row.dealAgentName}}</p>
+            <p>{{scope.row.dealAgentStoreName}}</p>
+            <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="签约日期" align="center">
@@ -95,7 +96,8 @@
         </el-table-column>
         <el-table-column label="发起人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.createByDepName + ' - ' + scope.row.createByName}}</p>
+            <p>{{scope.row.createByDepName}}</p>
+            <p>{{scope.row.createByName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="审核状态" :formatter="nullFormatter" align="center">
@@ -112,18 +114,25 @@
         </el-table-column>   
         <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            <p v-if="scope.row.checkByDepName=='-'&&scope.row.checkByName=='-'">{{scope.row.checkByDepName + scope.row.checkByName}}</p>
-            <template v-else>
-              <p>{{scope.row.checkByDepName + ' - ' + scope.row.checkByName}}</p>
-            </template>
-            <el-button class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,'init')">{{userMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</el-button>
+            
+            <span v-if="scope.row.checkby>0&&scope.row.checkState===0">
+              <p>{{scope.row.checkByDepName}}</p>
+              <p>{{scope.row.checkByName}}</p>
+            </span>
+            <p v-else>--</p>
+
+            <p class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,userMsg.empId===scope.row.checkby?2:1)">{{userMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="140">
           <template slot-scope="scope">
-            <p v-if="scope.row.nextAuditStore=='-'&&scope.row.nextAuditName=='-'">{{scope.row.nextAuditStore + scope.row.nextAuditName}}</p>
-            <p v-else>{{scope.row.nextAuditStore + ' - ' + scope.row.nextAuditName}}</p>
-            <el-button class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,'set')">设置审核人</el-button>
+            <span v-if="scope.row.nextAuditId>0">
+              <p>{{scope.row.nextAuditStore}}</p>
+              <p>{{scope.row.nextAuditName}}</p>
+            </span>
+            <p v-else>--</p>
+      
+            <p class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
@@ -364,7 +373,7 @@
       <!-- 图片放大 -->
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :page="checkPerson.page" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="myclose" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -390,7 +399,8 @@
           type:'init',
           code:'',
           flowType:0,
-          label:false
+          label:false,
+          page:'list'
         },  
         clientHei: document.documentElement.clientHeight, //窗体高度
         fullscreenLoading:false,//创建按钮防抖
@@ -766,16 +776,12 @@
           this.$ajax.get("/api/commission/updateReject", param)
           .then(res => {
             this.fullscreenLoading=false
-            if (res.data.status === 200) {
-              
-              this.$message('已驳回');
-              let _this = this
+            if (res.data.status === 200) {          
+              this.dialogVisible = false
+              // 数据刷新
+              this.queryFn();
               setTimeout(() => {
-                
-                _this.dialogVisible = false
-                // 数据刷新
-                this.queryFn();
-                
+                 this.$message('已驳回');
               }, 2000);
               
             }
@@ -786,7 +792,7 @@
               })
           });
         }else{
-          this.$message('驳回原因不能为空');
+          this.$message('审核备注未填写！');
         }
         
       },
@@ -801,15 +807,12 @@
         this.$ajax.get("/api/commission/update", param)
         .then(res => {
           this.fullscreenLoading=false
-          if (res.data.status === 200) {
-            
-            console.log(res)
-            this.$message('已通过');
-            let _this = this
-            setTimeout(() => {
-              _this.dialogVisible = false
+          if (res.data.status === 200) {      
+            this.dialogVisible = false
               // 数据刷新
-              this.queryFn();
+            this.queryFn();
+            setTimeout(() => {         
+              this.$message('已通过');
             }, 2000);        
           }
           
@@ -821,8 +824,9 @@
               this.checkPerson.flowType=4   //调佣的流程类型为4
               this.checkPerson.code=error.data.checkId  //业务编码为checkId
               this.checkPerson.state=true  
-              this.checkPerson.type='set'
-              this.checkPerson.label=true
+              this.checkPerson.type=3
+              // this.checkPerson.label=true
+              // this.checkPerson.current=false
             }
             else{
               this.$message({
@@ -838,7 +842,7 @@
         if(this.power['sign-com-htdetail'].state){
             
           // console.log(value)
-          this.setPath(this.$tool.getRouter(['合同','调佣审核','合同详情'],'contractList'));
+          this.setPath(this.$tool.getRouter(['合同','调佣审核','合同详情'],'adjustCheck'));
           this.$router.push({
             path:'/contractDetails',
             query:{
@@ -922,6 +926,8 @@
 #adjustcheck{
   .btn-text-info{
     padding: 0;
+    color: @color-blue;
+    cursor: pointer;
     &.color-red{
       color: red;
     }

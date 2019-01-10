@@ -1,6 +1,7 @@
 <template>
   <el-dialog
     title="选择审核人"
+    custom-class="dialog-z-index"
     :visible="show"
     :closeOnClickModal="$tool.closeOnClickModal"
     @close="close"
@@ -9,10 +10,10 @@
     <div class="dialog-container">
       <p v-if="showLabel">下一审核节点无审核人，请先设置下一节点审核人</p>
       <div class="chose-box">
-        <span>{{type==='set'?'设置':'转交'}}审核人</span>
+        <span>{{page==='detail'?'设置':(type===1||type===3)?'设置':'转交'}}审核人</span>
         <div class="box-content">
           <div class="box-content-input">
-            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="choseItem.depId" placeholder="部门" @change="getOption('dep')" @clear="clearDep">
+            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="choseItem.depId" placeholder="部门" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
               <el-option
                 v-for="item in deps"
                 :key="item.id"
@@ -41,6 +42,7 @@
 </template>
 
 <script>
+  let _depList=[]
   export default {
     name: "check-person",
     props:{
@@ -48,9 +50,9 @@
         type:Boolean,
         // default:false
       },
-      type:{
-        type:String,
-        default:'init'
+      type:{//1.设置当前审核人（设置），2.设置当前审核人（转交），3.设置下一个审核人
+        type:Number,
+        default:1
       },
       bizCode:{
         type:[String,Number],
@@ -59,13 +61,13 @@
       flowType:{
         type:Number,
       },
-      showLabel:{//是否显示文本
+      showLabel:{//是否显示label文本
         type:Boolean,
         default:true
       },
-      current:{//是否设置当前审核人
-        type:Boolean,
-        default:false
+      page:{
+        type:String,
+        default:'detail'
       }
     },
     data(){
@@ -80,7 +82,11 @@
       }
     },
     created(){
-      this.searchDep()
+      this.searchDep('',true)
+      /*this.$message({
+        message:'test',
+        customClass:'test'
+      })*/
     },
     methods:{
       opera:function (type) {
@@ -98,7 +104,7 @@
             }
           })
           if(param.userId!==''){
-            this.$ajax.post(this.current?'/api/machine/changeAuditorNow':this.type==='init'?'/api/machine/changeAuditorNow':'/api/machine/changeAuditorNext',param).then(res=>{
+            this.$ajax.post(this.type===3?'/api/machine/changeAuditorNext':'/api/machine/changeAuditorNow',param).then(res=>{
               res=res.data
               if(res.status===200){
                 this.$message({
@@ -107,6 +113,10 @@
                 })
                 this.$emit('submit',this.choseItem)
               }
+            }).catch(error=>{
+              this.$message({
+                message:error
+              })
             })
           }else {
             this.$message({
@@ -123,17 +133,20 @@
         this.searchDep()
       },
       //获取部门
-      searchDep:function (val) {
+      searchDep:function (val,init=false) {
         this.inputEmp=false
         let param={
           keyword:!val?'':val,
-          type:this.current?0:this.type==='init'?0:1,
+          type:this.type===3?1:0,
           bizCode:this.bizCode,
           flowType:this.flowType
         }
         this.$ajax.get('/api/machine/selectDept',param).then(res=>{
           res=res.data
           if(res.status===200){
+            if(init){
+              _depList = res.data
+            }
             this.deps=[].concat(res.data)
           }
         })
@@ -142,14 +155,14 @@
       searchEmp:function (val) {
         let param={
           keyword:!val?'':val,
-          type:this.current?0:this.type==='init'?0:1,
+          type:this.type===3?1:0,
           depId:this.choseItem.depId,
           bizCode:this.bizCode,
           flowType:this.flowType
         }
         if(val&&val.length>0){
           this.inputEmp=true
-          param.depId=''
+          // param.depId=''
         }
         this.$ajax.get('/api/machine/selectEmp',param).then(res=>{
           res=res.data
@@ -158,10 +171,20 @@
           }
         })
       },
+      initDep:function (val) {
+        // debugger
+        if(!val){
+          this.deps=_depList.map(item=>Object.assign({},item))
+        }
+      },
       initEmp:function (val) {
-        if(!val&&this.choseItem.empId===''&&this.inputEmp){
-          this.searchEmp()
-          this.inputEmp=false
+        if(!val){
+          if(this.choseItem.depId===''){
+            this.emps=[]
+            this.inputEmp=false
+          }else if(this.emps.length===0){
+            this.searchEmp()
+          }
         }
       },
       //下拉选择
@@ -177,7 +200,7 @@
           if(this.inputEmp){
             this.emps.find(item=>{
               if(item.empId===this.choseItem.empId){
-                this.deps=[].concat({name:item.depName,id:item.depId})
+                // this.deps=[].concat({name:item.depName,id:item.depId})
                 this.choseItem.depId=item.depId
                 this.searchEmp()
                 this.inputEmp=false
@@ -192,6 +215,12 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .test{
+    z-index: 9999;
+  }
+  .dialog-z-index{
+    z-index: 10;
+  }
   .btn-info{
     width: 100px;
   }
@@ -225,3 +254,4 @@
   }
 }
 </style>
+

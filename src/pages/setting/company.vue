@@ -18,11 +18,11 @@
           value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="城市">
+        <!-- <el-form-item label="城市">
           <el-select v-model="searchForm.cityId" filterable @change="getStoreList" :clearable="true" class="w140">
             <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="门店选择">
           <el-select v-model="searchForm.storeId" filterable :clearable="true" class="w180">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -34,7 +34,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="银行账户">
-          <el-input v-model="searchForm.bankCard" :clearable="true" oninput="if(value.length>19)value=value.slice(0,19)" @keyup.native="getInt(1)"></el-input>
+          <el-input v-model="searchForm.bankCard" :clearable="true" @keyup.native="getInt(1)"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -105,10 +105,11 @@
           <p>添加企业信息</p>
           <div class="info-content">
             <div class="item">
-              <el-form-item label="城市选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.cityId" filterable @change="getStoreList">
+              <el-form-item label="当前城市: ">
+                <!-- <el-select placeholder="请选择" size="mini" v-model="companyForm.cityId" filterable @change="getStoreList">
                   <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
-                </el-select>
+                </el-select> -->
+                <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
               <el-form-item label="门店选择: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect">
@@ -137,10 +138,10 @@
             </div>
             <div class="item">
               <el-form-item label="证件号: " class="id-card">
-                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" @blur="idCardChange" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: " class="phone-number">
-                <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" @keyup.native="getInt(2)" @blur="validPhone"></el-input>
+                <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" @keyup.native="getInt(2)"></el-input>
               </el-form-item>
               <el-form-item label="企业证件: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="directSaleSelect">
@@ -215,8 +216,17 @@
               <div class="upload">
                 <span class="point">上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp><p class="text">点击上传</p></li>
-                  <li v-show="companyForm.contractSign!==''"><div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{contractName}}</p><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
+                  <li>
+                    <fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp>
+                    <p class="text">点击上传</p>
+                  </li>
+                  <el-tooltip effect="dark" :content="contractName" placement="bottom">
+                    <li v-show="companyForm.contractSign!==''">
+                      <div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div>
+                      <p class="pic-name">{{contractName}}</p>
+                      <span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span>
+                    </li>
+                  </el-tooltip>
                 </ul>
               </div>
             </div>
@@ -225,8 +235,19 @@
               <div class="upload">
                 <span class="point">上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp><p class="text">点击上传</p></li>
-                  <li v-show="companyForm.financialSign!==''"><div @click="getPicture(2)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{financialName}}</p><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
+                  <li>
+                    <fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp>
+                    <p class="text">点击上传</p>
+                  </li>
+                  <el-tooltip effect="dark" :content="financialName" placement="bottom">
+                    <li v-show="companyForm.financialSign!==''">
+                      <div @click="getPicture(2)">
+                        <upload-cell type=".png"></upload-cell>
+                      </div>
+                      <p class="pic-name">{{financialName}}</p>
+                      <span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span>
+                    </li>
+                  </el-tooltip>
                 </ul>
               </div>
             </div>
@@ -234,7 +255,7 @@
           <div class="tip">
             <span>温馨提示: </span>
             <div class="message">
-              <p>请上传<span>png透明</span>格式的图片,大小不超过<span>5M</span>；</p>
+              <p>请上传<i>png透明</i>格式的图片,大小不超过<i>5M</i>；</p>
             </div>
           </div>
         </div>
@@ -309,17 +330,6 @@
     },
     lepDocumentType: {
       name: "证件类型"
-    },
-    lepDocumentCard: {
-      name: "证件号",
-      type: "id-card"
-    },
-    lepPhone: {
-      name: "法人手机号码",
-      type: "mobile"
-    },
-    documentType: {
-      name: "企业证件"
     }
   }
   let obj1 = {
@@ -357,7 +367,7 @@
       return {
         // 搜索表单中的数据
         searchForm: {
-          cityId: "武汉",
+          cityId: "",
           storeId: "",
           cooperationMode: "",
           bankCard: "",
@@ -402,12 +412,13 @@
       }
     },
     created() {
+      this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
       this.getCompanyList()
       this.selectDirectInfo()
       this.initFormList()
       this.getCityList()
       this.getDictionary()
-      this.getStoreList(1)
+      this.getStoreList(this.searchForm.cityId)
     },
     methods: {
       // 初始化表单 数组集合
@@ -427,7 +438,6 @@
           endTime: this.searchTime == null ? "" : this.searchTime[1]
         }
         param = Object.assign({},this.searchForm,param)
-        param.cityId = param.cityId === "武汉" ? 1 : param.cityId
         this.$ajax.get('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
@@ -492,21 +502,23 @@
                 }
               }
             })
+            this.companyForm.name = ""
+            this.companyForm.contractSign = ""
+            this.companyForm.financialSign = ""
           } else {
             this.noticeShow = true
             setTimeout(() => {
               this.noticeShow = false
             }, 2000)
-            this.companyForm.storeId = ""
-            this.cooModeChange(2)
-            this.companyForm.cooperationMode = ""
+            if(this.companyFormTitle === "添加企业信息") {
+              this.companyForm.storeId = ""
+              this.cooModeChange(2)
+              this.companyForm.cooperationMode = ""
+            }
           }
         }).catch(error => {
           console.log(error);
         })
-        this.companyForm.name = ""
-        this.companyForm.contractSign = ""
-        this.companyForm.financialSign = ""
       },
       //关闭模态窗
       handleClose(done) {
@@ -521,7 +533,8 @@
         this.initFormList()
         this.directSaleSelect = false
         this.directSaleOut = false
-        this.storeList = []
+        this.companyForm.cityId = this.searchForm.cityId
+        this.getStoreList(this.companyForm.cityId)
       },
       //切换到直营属性时,自动带出证件信息
       selectDirectInfo() {
@@ -607,6 +620,44 @@
       },
       submitConfirm() {
         this.$tool.checkForm(this.companyForm,rule).then(() => {
+          if(this.companyForm.lepDocumentCard) {
+            let val = this.companyForm.lepDocumentCard
+            let type = this.companyForm.lepDocumentType
+            if(val&&type===1) {
+              if(!checkIdVlidate(val)) {
+                this.$message('身份证号格式不正确')
+                return false
+              }
+            } else if(val&&type===2) {
+              if(!/^[a-zA-Z0-9]{5,17}$/.test(val)) {
+                this.$message('护照格式不正确')
+                return false
+              }
+            } else if(val&&type===3) {
+              if(!/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(val)) {
+                this.$message('港澳通行证格式不正确')
+                return false
+              }
+            }
+          } else {
+            this.$message({message:"证件号不能为空"})
+            return false
+          }
+          if(this.companyForm.lepPhone) {
+            let val = this.companyForm.lepPhone
+            if(!checkPhoneVlidate(val)) {
+              this.$message('手机号码不正确')
+              return false
+            } else {
+              if(!this.companyForm.documentType) {
+                this.$message({message:"企业证件不能为空"})
+                return false
+              }
+            }
+          } else {
+            this.$message({message:"法人手机号码不能为空"})
+            return false
+          }
           let isOk
           let that_ = this
           function checkBank() {
@@ -781,7 +832,10 @@
         this.getCompanyList()
       },
       resetFormFn() {
-        this.$tool.clearForm(this.searchForm)
+        this.searchForm.storeId = ""
+        this.searchForm.cooperationMode = ""
+        this.searchForm.bankCard = ""
+        this.searchForm.keyword = ""
         this.searchTime = []
       },
       getInt(num,index) {
@@ -791,32 +845,6 @@
           this.companyForm.lepPhone = this.companyForm.lepPhone.replace(/[^\.\d]/g,'')
         } else if(num===3) {
           this.companyBankList[index].bankCard = this.companyBankList[index].bankCard.replace(/[^\.\d]/g,'')
-        }
-      },
-      idCardChange() {
-        let val = this.companyForm.lepDocumentCard
-        let type = this.companyForm.lepDocumentType
-        if(val&&type===1) {
-          if(!checkIdVlidate(val)) {
-            this.$message('身份证号格式不正确')
-            return false
-          }
-        } else if(val&&type===2) {
-          if(!/^[a-zA-Z0-9]{5,17}$/.test(val)) {
-            this.$message('护照格式不正确')
-            return false
-          }
-        } else if(val&&type===3) {
-          if(!/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(val)) {
-            this.$message('港澳通行证格式不正确')
-            return false
-          }
-        }
-      },
-      validPhone() {
-        let val = this.companyForm.lepPhone
-        if(!checkPhoneVlidate(val)) {
-          this.$message('手机号码不正确')
         }
       },
       idTypeChange() {
@@ -845,9 +873,6 @@
         width: 180px;
       }
     }
-    &:nth-child(5) {
-      margin-left: 40px;
-    }
   }
   .w140 {
     .el-input {
@@ -855,6 +880,7 @@
     }
   }
   .w180 {
+    margin-right: 40px;
     /deep/ .el-input {
       width: 180px;
     }
@@ -910,7 +936,7 @@
       .message {
         color: #CD6D6D;
         p:nth-child(2) { margin: 10px 0; }
-        span { font-weight: bold; color: #D56868; }
+        i { font-weight: bold; color: #D56868; }
       }
       &-top {
         margin-top: 20px;
@@ -1052,10 +1078,8 @@
                 border-radius: 4px;
                 margin-right: 10px;
                 position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: center;
                 cursor: pointer;
+                text-align: center;
                 > img {
                   width: 60px;
                   height: 60px;
@@ -1065,6 +1089,7 @@
                   position: absolute;
                   font-size: @size-base;
                   bottom: 10px;
+                  left: 35px;
                   color: #233241;
                 }
                 .pic-name {
@@ -1076,6 +1101,9 @@
                   height: 48px;
                   text-align: center;
                   z-index: 10;
+                  overflow: hidden;
+                  text-overflow:ellipsis;
+                  white-space: nowrap;
                   word-wrap: break-word;
                 }
                 .del {
@@ -1098,6 +1126,10 @@
                     background-color: #EEF2FB;
                     line-height: 50px;
                     text-align: center;
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%,-50%);
                   }
                   i {
                     font-size: 56px;
@@ -1105,6 +1137,12 @@
                   }
                 }
                 &:last-child {
+                  >div {
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%,-50%);
+                  }
                   border: none;
                   background-color: #F2F3F8;
                   &:hover .del {

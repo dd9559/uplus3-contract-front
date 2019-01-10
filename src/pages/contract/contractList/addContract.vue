@@ -250,10 +250,15 @@
         <div class="form-content" v-if="parameterList.length>0">
           <ul class="parameter">
             <li v-for="item in parameterList" :key="item.id">
-              <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span>
+              <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
+              
+              <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+                <span class="title" :class="{'form-label':item.isRequired}">{{item.name}}</span>
+              </el-tooltip>
+              <span class="colon">: </span>
               <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="contractForm.extendParams[item.name]" maxlength="20" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <el-input v-model="contractForm.extendParams[item.name]" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
               <!-- 下拉框 -->
               <el-select v-model="contractForm.extendParams[item.name]" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
@@ -443,9 +448,9 @@ export default {
       beforeChangeMobile:'',
       checkPerson: {
         state:false,
-        type:'init',
+        type:1,
         code:'',
-        flowType:0,
+        flowType:3,
         label:false
       },
       //权限配置
@@ -706,56 +711,56 @@ export default {
                                 ownerRightRatio += element.propertyRightRatio - 0;
                               }else{
                                 this.$message({
-                                  message: "业主身份证号不正确",
+                                  message: "房源信息-业主身份证号不正确",
                                   type: "warning"
                                 });
                                 break
                               }
                             } else {
                               this.$message({
-                                message: "业主身份证号不能为空",
+                                message: "房源信息-业主身份证号不能为空",
                                 type: "warning"
                               });
                               break
                             }
                           } else {
                             this.$message({
-                              message: "业主产权比不能为空或负",
+                              message: "房源信息-业主产权比不能为空或负",
                               type: "warning"
                             });
                             break
                           }
                       } else {
                         this.$message({
-                          message: "业主关系不能为空",
+                          message: "房源信息-业主关系不能为空",
                           type: "warning"
                         });
                         break
                       }
                       }else{
                         this.$message({
-                          message: "业主电话号码不正确",
+                          message: "房源信息-业主电话号码不正确",
                           type: "warning"
                         });
                         break
                       }
                     } else {
                       this.$message({
-                        message: "业主电话号码不正确",
+                        message: "房源信息-业主电话号码不正确",
                         type: "warning"
                       });
                       break
                     }
                     }else{
                       this.$message({
-                        message: "业主姓名不能为空",
+                        message: "房源信息-业主姓名不能为空",
                         type: "warning"
                       });
                       break
                     }
                   } else {
                     this.$message({
-                      message: "业主姓名不能为空",
+                      message: "房源信息-业主姓名不能为空",
                       type: "warning"
                     });
                     break
@@ -800,56 +805,56 @@ export default {
                                       guestRightRatio += element.propertyRightRatio - 0;
                                     }else{
                                       this.$message({
-                                        message: "客户身份证号不正确",
+                                        message: "客源信息-客户身份证号不正确",
                                         type: "warning"
                                       });
                                       break
                                     }
                                   } else {
                                     this.$message({
-                                      message: "客户身份证号不能为空",
+                                      message: "客源信息-客户身份证号不能为空",
                                       type: "warning"
                                     });
                                     break
                                   }
                                 } else {
                                   this.$message({
-                                    message: "客户产权比不能为空或负",
+                                    message: "客源信息-客户产权比不能为空或负",
                                     type: "warning"
                                   });
                                   break
                                 }
                               } else {
                                 this.$message({
-                                  message: "客户关系不能为空",
+                                  message: "客源信息-客户关系不能为空",
                                   type: "warning"
                                 });
                                 break
                               }
                               }else{
                                 this.$message({
-                                  message: "客户电话号码不正确",
+                                  message: "客源信息-客户电话号码不正确",
                                   type: "warning"
                                 });
                                 break
                               }
                             } else {
                               this.$message({
-                                message: "客户电话号码不正确",
+                                message: "客源信息-客户电话号码不正确",
                                 type: "warning"
                               });
                               break
                             }
                             }else{
                               this.$message({
-                                message: "客户姓名不能为空",
+                                message: "客源信息-客户姓名不能为空",
                                 type: "warning"
                               });
                               break
                             }
                           } else {
                             this.$message({
-                              message: "客户姓名不能为空",
+                              message: "客源信息-客户姓名不能为空",
                               type: "warning"
                             });
                             break
@@ -887,7 +892,7 @@ export default {
                                     mobileOk=true;
                                   }else{
                                     this.$message({
-                                      message: "三方合作手机号码不正确",
+                                      message: "三方合作-手机号码不正确",
                                       type: "warning"
                                     });
                                   }
@@ -899,7 +904,7 @@ export default {
                                     IDcardOk=true;
                                   }else{
                                     this.$message({
-                                      message: "三方合作身份证号不正确",
+                                      message: "三方合作-身份证号不正确",
                                       type: "warning"
                                     });
                                   }
@@ -910,7 +915,7 @@ export default {
                                     this.dialogSave = true;
                                   }).catch(error => {
                                       this.$message({
-                                        message: `${error.title}${error.msg}`,
+                                        message: `扩展参数-${error.title}${error.msg}`,
                                         type: "warning"
                                       });
                                     });
@@ -921,7 +926,7 @@ export default {
                                   this.dialogSave = true;
                                 }).catch(error => {
                                     this.$message({
-                                      message: `${error.title}${error.msg}`,
+                                      message: `扩展参数-${error.title}${error.msg}`,
                                       type: "warning"
                                     });
                                   });
@@ -951,58 +956,58 @@ export default {
                             //   });
                           } else {
                             this.$message({
-                              message: "客户产权比和必须为100%",
+                              message: "客源信息-客户产权比和必须为100%",
                               type: "warning"
                             });
                           }
                         }
                       } else {
                         this.$message({
-                          message: "客源方门店不能为空",
+                          message: "客源信息-客源方门店不能为空",
                           type: "warning"
                         });
                       }
                     } else {
                       this.$message({
-                        message: "付款方式不能为空",
+                        message: "客源信息-付款方式不能为空",
                         type: "warning"
                       });
                     }
                   } else {
                     this.$message({
-                      message: "业主产权比和必须为100%",
+                      message: "房源信息-业主产权比和必须为100%",
                       type: "warning"
                     });
                   }
                 }
                 }else{
                   this.$message({
-                    message:'房产证号不能为空',
+                    message:'房源信息-房产证号不能为空',
                     type: "warning"
                   })
                 }
               } else {
                 this.$message({
-                  message: "房源方门店不能为空",
+                  message: "房源信息-房源方门店不能为空",
                   type: "warning"
                 });
               }
             }else{
               this.$message({
-                message: "总佣金不能大于成交总价",
+                message: "合同信息-总佣金不能大于成交总价",
                 type: "warning"
               });
             }
           } else {
             this.$message({
-              message: "佣金不能为零",
+              message: "合同信息-佣金不能为零",
               type: "warning"
             });
           }
         })
         .catch(error => {
           this.$message({
-            message: `${error.title}${error.msg}`,
+            message: `${error.title.length<3?'':'合同信息-'}${error.title}${error.msg}`,
             type: "warning"
           });
         });
@@ -1063,10 +1068,9 @@ export default {
             this.detailCode=res.data.code;
             this.detailId=res.data.id;
             if(res.data.isHaveNextAudit===1){
-              this.checkPerson.flowType=3;
               this.checkPerson.code=res.data.code;
               this.checkPerson.state=true;
-              this.checkPerson.type=res.data.auditType===0?"set":"init";
+              // this.checkPerson.type=res.data.auditType===0?"set":"init";
               this.checkPerson.label=true;
             }else{
               this.$message({
@@ -1121,10 +1125,9 @@ export default {
             this.detailId=res.data.id;
             //1 下一节点没有审批人 2 有
             if(res.data.isHaveNextAudit===1){
-              this.checkPerson.flowType=3;
               this.checkPerson.code=res.data.code;
               this.checkPerson.state=true;
-              this.checkPerson.type=res.data.auditType===0?"set":"init";
+              // this.checkPerson.type=res.data.auditType===0?"set":"init";
               this.checkPerson.label=true;
             }else{
               this.$message({
@@ -1604,6 +1607,7 @@ export default {
               let element = {
                 name:this.contractForm.contPersons[i].name,
                 mobile:this.contractForm.contPersons[i].mobile,
+                pid:this.contractForm.contPersons[i].pid,
                 encryptionMobile:this.contractForm.contPersons[i].encryptionMobile,
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
@@ -1642,6 +1646,7 @@ export default {
               let element = {
                 name:this.contractForm.contPersons[i].name,
                 mobile:this.contractForm.contPersons[i].mobile,
+                pid:this.contractForm.contPersons[i].pid,
                 encryptionMobile:this.contractForm.contPersons[i].encryptionMobile,
                 relation:this.contractForm.contPersons[i].relation,
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
@@ -1760,6 +1765,28 @@ export default {
     font-size: 14px;
     background: @bg-white;
     overflow-y: auto;
+  }
+  input{
+    &:-ms-input-placeholder{
+      color:#CBCED5!important;
+    }
+    &::-webkit-input-placeholder{
+      color:#CBCED5;
+    }
+    &::-moz-placeholder{
+      color:#CBCED5;
+    }
+  }
+  /deep/.el-input__inner{
+    &:-ms-input-placeholder{
+      color:#CBCED5!important;
+    }
+    &::-webkit-input-placeholder{
+      color:#CBCED5;
+    }
+    &::-moz-placeholder{
+      color:#CBCED5;
+    }
   }
 }
 /deep/.form-label {
@@ -1888,19 +1915,26 @@ export default {
     }
     .parameter{
       display: flex;
-      width: 800px;
+      width: 1200px;
       flex-wrap:wrap;
       padding-bottom: 10px;
       li{
         display: flex;
         height: 50px;
-        width: 365px;
+        width: 350px;
         line-height: 50px;
         > .title{
-          width: 200px;
+          width: 100px;
+          cursor: pointer;
           text-align: right;
-          padding-right: 10px;
+          // padding-right: 10px;
           color: #606266;
+          text-overflow:ellipsis;
+          white-space:nowrap;
+          overflow:hidden; 
+        }
+        > .colon{
+          padding: 0 5px;
         }
         > .unit{
           width: 66px;

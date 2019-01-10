@@ -156,7 +156,7 @@
           </ul>
         </div>
         <p>
-          <el-button class="btn-info" round type="primary" size="small" v-if="power['sign-cw-debt-export'].state">导出</el-button>
+          <el-button class="btn-info" round type="primary" size="small" @click="getExcel" v-if="power['sign-cw-debt-export'].state">导出</el-button>
         </p>
       </div>
       <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" class="info-scrollbar" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
@@ -454,6 +454,10 @@
       }
     },*/
     methods: {
+      getExcel:function () {
+        let param = Object.assign({},this.searchForm)
+        this.excelCreate('/input/payInfoExcel',param)
+      },
       test:function (val) {
 
       },

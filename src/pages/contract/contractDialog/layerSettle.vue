@@ -120,7 +120,8 @@ export default {
                 type:'init',
                 code:'',
                 flowType:0,
-                label:false
+                label:false,
+                current:false
             }, 
             clientHei: document.documentElement.clientHeight, //窗体高度
             fullscreenLoading:false,//创建按钮防抖
@@ -249,8 +250,7 @@ export default {
             console.log(res);
             let data = res.data;
             if (res.data.status === 200) {
-              this.layerAudit = data.data
-             
+              this.layerAudit = data.data          
             }
             
 
@@ -268,12 +268,11 @@ export default {
         }, 1500); 
       },
       // 选择审核人
-      choseCheckPerson:function (bizId,type) {
+      choseCheckPerson:function (bizId) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
         this.checkPerson.code=bizId  //业务编码为settlementId
-        this.checkPerson.state=true  
-        this.checkPerson.type=type
-        this.checkPerson.label=true
+        this.checkPerson.state=true
+        this.checkPerson.type=1  
       },
       personChose:function () {
         this.checkPerson.state=false
@@ -319,7 +318,7 @@ export default {
             }).catch(error => {
                 this.fullscreenLoading=false
                 if (error.status === 300 && error.data.bizId) {    
-                    this.choseCheckPerson(error.data.bizId,'init')                                    
+                    this.choseCheckPerson(error.data.bizId)                                    
                   } else{
                     this.$message({
                       message: error

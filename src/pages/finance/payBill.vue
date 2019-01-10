@@ -14,7 +14,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model.trim="form.inObj" v-if="inputPerson">
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model.trim="form.inObj" maxlength="20" v-if="inputPerson">
           </div>
         </div>
         <div class="input-group col">
@@ -125,7 +125,7 @@
             <input type="text" class="no-style" placeholder="请输入" maxlength="6" v-model.trim="scope.row.userName" @input="inputOnly">
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收款账户 ">
+        <el-table-column align="center" label="收款账户">
           <template slot-scope="scope">
             <input type="text" class="no-style" placeholder="请输入" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
           </template>
@@ -142,7 +142,7 @@
       <section class="flex-row">
         <div class="input-group col-other">
           <p><label class="f14">备注信息</label></p>
-          <el-input placeholder="请填写备注信息" class="info-textarea" :class="[form.remark.length>0?'':'scroll-hidden']" type="textarea" rows="5" maxlength="200" v-model="form.remark"></el-input>
+          <el-input placeholder="请填写备注信息" class="info-textarea" :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']" type="textarea" rows="5" maxlength="200" v-model="form.remark"></el-input>
         </div>
         <div class="input-group col-other">
           <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
@@ -156,7 +156,7 @@
             <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''" @click="previewPhoto(imgList,index)">
               <upload-cell :type="item.type"></upload-cell>
               <el-tooltip :content="item.name" placement="top">
-                <span>{{item.name}}</span>
+                <div class="span">{{item.name}}</div>
               </el-tooltip>
               <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
             </li>
@@ -342,7 +342,7 @@
        * 修改款单，获取初始数据
        */
       getDetails: function (param) {
-        this.$ajax.get('/api/payInfo/selectPayDetail', param).then(res => {
+        this.$ajax.get('/api/payInfo/selectDetail', param).then(res => {
           res = res.data
           if (res.status === 200) {
             let obj = {
@@ -363,7 +363,7 @@
             })
             this.inObjPerson = Object.assign(this.inObjPerson,{dep:res.data.store,emp:res.data.createByName})
             this.moneyTypeName = res.data.moneyTypeName
-            this.showAmount=res.data.outAccountType===4?false:true
+            this.showAmount=res.data.agent?false:true
             this.list = res.data.account
             this.form = Object.assign({}, this.form, obj)
             this.layer.content[0]=Object.assign(this.layer.content[0],{moneyType:res.data.moneyTypeName,inObj:`${res.data.inObjType.label}${obj.inObj?('-'+obj.inObj):''}`})
@@ -620,6 +620,7 @@
                   content:(error.data.vo&&error.data.time)?JSON.stringify({dep:error.data.vo.deptName,name:error.data.vo.createByName,time:error.data.time,payCode:error.data.payCode,type:error.data.type}):''
                 }
               })
+
             }else {
               this.$message({
                 message:error
@@ -711,7 +712,7 @@
   .no-wrap{
     white-space: nowrap;
   }
-  .info-textarea{
+  /deep/.info-textarea{
     width: 285px;
     .el-textarea__inner{
       height: 115px;
@@ -880,7 +881,7 @@
         &:last-of-type{
           margin-right: 0;
         }
-        >span{
+        .span{
           width: 100px;
           text-align: center;
           /*word-break: break-all;*/

@@ -9,7 +9,7 @@ function get_suffix(filename) {
 }
 
 //设置请求参数
-function set_upload_param(up,param, filename)
+function set_upload_param(up,param, filename,infoname='')
 {
 	if (filename != '') {
 		// let suffix = get_suffix(filename);
@@ -22,7 +22,7 @@ function set_upload_param(up,param, filename)
 		'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
 		'x-oss-object-acl' : param.acl,
 		'signature': param.signature,
-    'Content-Disposition':`inline;filename=${filename}`
+    'Content-Disposition':`attachment;filename=${encodeURI(infoname)}`
 	};
 	up.setOption({
 		'url': param.host,

@@ -154,7 +154,7 @@
               <li class="margin-right" v-for="(item,index) in files" :key="index" @click="previewPhoto(files,index)">
                 <upload-cell :type="item.type"></upload-cell>
                 <el-tooltip :content="item.name" placement="top">
-                  <span>{{item.name}}</span>
+                  <p class="span">{{item.name}}</p>
                 </el-tooltip>
               </li>
             </ul>
@@ -181,7 +181,7 @@
                 width="200"
                 trigger="hover"
                 :content="scope.row.auditInfo">
-                <p class="three-row" slot="reference">{{scope.row.auditInfo}}</p>
+                <p class="one-row" slot="reference">{{scope.row.auditInfo|nullFilter}}</p>
               </el-popover>
               <span v-else>{{scope.row.auditInfo}}</span>
             </template>
@@ -264,7 +264,7 @@
       return {
         checkPerson: {
           state:false,
-          type:'set',
+          type:3,
           code:'',
           flowType:0
         },
@@ -337,6 +337,7 @@
         this.$message({
           message:'下一个节点审核人设置成功'
         })
+        this.getCheckData()
       },
       // 判断审核弹窗显示内容
       showDialog: function () {
@@ -439,7 +440,6 @@
           this.fullscreenLoading=false
           if(error.message==='下一节点审批人不存在'){
             this.checkPerson.state=true
-            this.checkPerson.type=error.data.type===1?'set':'init'
           }else {
             this.$message({
               message:error
@@ -517,6 +517,13 @@
         }else {
           return val
         }
+      },
+      nullFilter:function (val) {
+        if(!val){
+          return val===0?0:'-'
+        }else {
+          return val
+        }
       }
     }
   }
@@ -553,7 +560,7 @@
         justify-content: center;
         align-items: center;
         margin-bottom: @margin-base;
-        span {
+        .span {
           width: 100px;
           text-align: center;
           /*word-break: break-all;*/
