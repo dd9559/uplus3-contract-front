@@ -481,21 +481,23 @@
                 }
               }
             })
+            this.companyForm.name = ""
+            this.companyForm.contractSign = ""
+            this.companyForm.financialSign = ""
           } else {
             this.noticeShow = true
             setTimeout(() => {
               this.noticeShow = false
             }, 2000)
-            this.companyForm.storeId = ""
-            this.cooModeChange(2)
-            this.companyForm.cooperationMode = ""
+            if(this.companyFormTitle === "添加企业信息") {
+              this.companyForm.storeId = ""
+              this.cooModeChange(2)
+              this.companyForm.cooperationMode = ""
+            }
           }
         }).catch(error => {
           console.log(error);
         })
-        this.companyForm.name = ""
-        this.companyForm.contractSign = ""
-        this.companyForm.financialSign = ""
       },
       //关闭模态窗
       handleClose(done) {
@@ -808,7 +810,10 @@
         this.getCompanyList()
       },
       resetFormFn() {
-        this.$tool.clearForm(this.searchForm)
+        this.searchForm.storeId = ""
+        this.searchForm.cooperationMode = ""
+        this.searchForm.bankCard = ""
+        this.searchForm.keyword = ""
         this.searchTime = []
       },
       getInt(num,index) {

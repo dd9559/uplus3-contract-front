@@ -794,7 +794,7 @@
                 
                 this.$message('已驳回');
 
-              }, 2000);
+              }, 2000);                                                                                                     
             }
           }).catch(error => {
             this.fullscreenLoading=false
@@ -854,7 +854,7 @@
       goContractDetail(e){
          if(this.power['sign-com-htdetail'].state){
           // console.log(e)
-          this.setPath(this.$tool.getRouter(['合同','结算审核','合同详情'],'contractList'));
+          this.setPath(this.$tool.getRouter(['合同','结算审核','合同详情'],'settleCheck'));
           this.$router.push({
             path:'/contractDetails',
             query: {
