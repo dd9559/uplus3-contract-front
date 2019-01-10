@@ -429,12 +429,10 @@
     },
     methods: {
       getExcel:function () {
-        let param = Object.assign({},this.form)
+        let param = Object.assign({},this.searchForm)
         delete param.pageSize
         delete param.pageNum
-        this.$ajax.get('/api/input/payInfoExcel',param).then(res=>{
-          debugger
-        })
+        this.excelCreate(this.activeView===1?'/input/proceedsAuditExcel':'/input/payMentAuditExcel',param)
       },
       // 选择审核人
       choseCheckPerson:function (row,type) {

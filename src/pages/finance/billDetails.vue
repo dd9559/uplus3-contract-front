@@ -337,6 +337,7 @@
         this.$message({
           message:'下一个节点审核人设置成功'
         })
+        this.getCheckData()
       },
       // 判断审核弹窗显示内容
       showDialog: function () {
