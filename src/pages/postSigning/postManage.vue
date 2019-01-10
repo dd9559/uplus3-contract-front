@@ -1086,7 +1086,7 @@
                             }else{
                                 j.required = false;
                             }
-                            if(e.type === STEPSINPUT.num){
+                            if(e.type === STEPSINPUT.num && e.isRequired){
                                 e.rules = [j,
                                 { type: 'number', message: '输入必须为数字值'}];
                             }else{

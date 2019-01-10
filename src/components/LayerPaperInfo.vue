@@ -45,7 +45,10 @@
         <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
       <div class="paper-ov">
-        <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
+        <div class="fl">
+          <span class="fl fb mr-10">交款方式：</span>
+          <span :class="i === getMethodAndAmount.length-1?'':'mr-10'" v-for="(item,i) in getMethodAndAmount" :key="i+item.method">{{item.method}}{{item.amount}}<template v-if="item.method!==''">元</template></span>
+        </div>
         <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="paper-ov">
@@ -109,7 +112,10 @@
         <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
       <div class="paper-ov">
-        <div class="fl"><span class="fb mr-10">交款方式：</span>刷卡{{comMoney}}元</div>
+        <div class="fl">
+          <span class="fl fb mr-10">交款方式：</span>
+          <span :class="i === getMethodAndAmount.length-1?'':'mr-10'" v-for="(item,i) in getMethodAndAmount" :key="i+item.method">{{item.method}}{{item.amount}}<template v-if="item.method!==''">元</template></span>
+        </div>
         <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="paper-ov">
@@ -201,6 +207,12 @@
       num:{
         type:Number,
         default:0,
+      },
+      methodAndAmount:{
+        type:Array,
+        default(){
+          return []
+        }
       }
     },
     computed: {
@@ -262,6 +274,16 @@
       },
       comPayerType() {
         return this.defaultFn(this.payerType)
+      },
+      getMethodAndAmount(){
+        if(this.methodAndAmount.length ===0){
+          return [{
+            amount:'--',
+            method:''
+            }]
+        }else{
+          return this.methodAndAmount
+        }
       }
     },
     methods: {
