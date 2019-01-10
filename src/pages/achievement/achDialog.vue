@@ -2039,21 +2039,16 @@ export default {
         height: 100%;
       }
       .el-table__header {
-        height: 55px;
+        // height: 55px;
         th {
           padding: 0;
-          .cell {
-            background-color: #eef2fb;
-            // background-color: pink;
-            height: 55px;
-            line-height: 55px;
-          }
+          background-color: #eef2fb;
         }
       }
-      .el-table__header th .cell {
-        height: 30px;
-        line-height: 30px;
-      }
+      // .el-table__header th .cell {
+      //   height: 30px;
+      //   line-height: 30px;
+      // }
     }
     /deep/ .el-radio__label {
       font-size: 12px;
