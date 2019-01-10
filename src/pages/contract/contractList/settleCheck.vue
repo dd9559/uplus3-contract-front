@@ -117,7 +117,7 @@
           </template>
         </el-table-column>
         
-        <el-table-column label="当前审核人" min-width="140">
+        <el-table-column label="当前审核人" align="center" min-width="140">
           <template slot-scope="scope">
             
             <span v-if="scope.row.auditorId>0&&scope.row.examineState.value===0">
@@ -753,6 +753,7 @@
       // 点击审核事件
       auditApply(e){
         this.dialogVisible = true
+        this.auditForm.textarea = ''
         let param = {
           id: e.id,
         }
