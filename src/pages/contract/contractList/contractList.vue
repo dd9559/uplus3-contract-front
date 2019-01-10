@@ -940,7 +940,7 @@ export default {
         if(this.blankPdf1){
           this.getUrl(this.blankPdf1);
           // this.pdfUrl=""
-          this.haveUrl=true;
+          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
           },1500)
@@ -953,10 +953,10 @@ export default {
         if(this.blankPdf2){
           this.getUrl(this.blankPdf2);
           // this.pdfUrl=""
-          this.haveUrl=true;
+          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
-          },1500)
+          },2000)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -966,10 +966,10 @@ export default {
         if(this.blankPdf3){
           this.getUrl(this.blankPdf3);
           // this.pdfUrl=""
-          this.haveUrl=true;
+          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
-          },1500)
+          },2000)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -979,10 +979,10 @@ export default {
         if(this.blankPdf4){
           this.getUrl(this.blankPdf4);
           // this.pdfUrl=""
-          this.haveUrl=true;
+          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
-          },1500)
+          },2000)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -992,10 +992,10 @@ export default {
         if(this.blankPdf5){
           this.getUrl(this.blankPdf5);
           // this.pdfUrl=""
-          this.haveUrl=true;
+          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
-          },1500)
+          },2000)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -1040,6 +1040,7 @@ export default {
         res = res.data
         if(res.status ===200){
           this.pdfUrl = res.data.url;
+          this.haveUrl=true;
         }
       })
     }
