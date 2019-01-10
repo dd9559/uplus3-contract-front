@@ -200,7 +200,7 @@
                   <el-tooltip class="item" effect="dark" :content="contractDetail.extendParams[item.name]" placement="top">
                     <span class="text tagHidden">{{contractDetail.extendParams[item.name]}} </span>
                   </el-tooltip>
-                  {{item.unit}}
+                  <span class="extendUnit">{{item.unit}}</span>
                 </p>
               </div>
             </div>
@@ -897,7 +897,8 @@ export default {
       if(tab.name==="second"){
         if(this.contractDetail.contState.value<2){
           this.$message({
-            message:'合同未签章,不允许上传'
+            message:'合同未签章,不允许上传合同主体',
+            type:'warning'
           })
         }
       }else if(tab.name==="fifth"){
@@ -1326,7 +1327,7 @@ export default {
         this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
           res=res.data;
           if(res.status===200){
-            this.getContractBody();
+            this.getContractDetail();
             this.$message({
               message:'上传成功',
               type:'success'
@@ -1386,6 +1387,9 @@ export default {
       this.$ajax.get("/api/contract/getContAttachmentById", param).then(res => {
         res = res.data;
         if (res.status === 200) {
+          // this.buyerList=[];
+          // this.sellerList=[];
+          // this.otherList=[];
           let address = JSON.parse(res.data.address);
           console.log(address)
           address.forEach(element => {
@@ -1499,7 +1503,7 @@ export default {
               message:msg,
               type:'success'
             });
-            this.getContData();
+            this.getContractDetail();
           }
         })
       }
@@ -1740,6 +1744,10 @@ export default {
           }
           .colon{
             color: @color-6c;
+          }
+          .extendUnit{
+            color: @color-6c;
+            padding-left: 5px;
           }
           .tagHidden{
             // display: -webkit-box;

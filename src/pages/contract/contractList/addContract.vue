@@ -1915,13 +1915,13 @@ export default {
     }
     .parameter{
       display: flex;
-      width: 1000px;
+      width: 1200px;
       flex-wrap:wrap;
       padding-bottom: 10px;
       li{
         display: flex;
         height: 50px;
-        width: 300px;
+        width: 350px;
         line-height: 50px;
         > .title{
           width: 100px;
