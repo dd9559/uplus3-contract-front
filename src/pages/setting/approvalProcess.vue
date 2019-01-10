@@ -131,7 +131,7 @@
                                     <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                 </el-select>
                                 <div v-if="item.type===0" class="person">
-                                    <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick($event,index)" @clear="clearDep" @search="searchDep"></select-tree>
+                                    <select-tree :data="DepList" :init="departmentName" @checkCell="depHandleClick($event,index)" @clear="clearDep" @search="searchDep"></select-tree>
                                     <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye" size="small"
                                                 v-model="item.personArr" placeholder="请选择" filterable multiple @change="multiSelect(item.type,index)">
                                         <el-option
@@ -199,7 +199,6 @@
             isAudit: "1",
             userId: "",
             userName: "",
-            depName: "",
             personArr: [],
             depArr: [],
             roleArr: [],
@@ -213,7 +212,6 @@
             type: "",
             sort: "",
             isAudit: "1",
-            depName: "",
             personArr: [],
             depArr: [],
             roleArr: [],
@@ -273,6 +271,7 @@
                 tempAudit: "",
                 tempNodeList: [],
                 employeList: [],
+                departmentName: "",
                 power: {
                     'sign-set-verify': {
                     state: false,
@@ -352,11 +351,13 @@
                 }
             },
             clearDep: function () {
+                this.departmentName = ''
                 this.clearSelect()
             },
             depHandleClick(data,index) {
-                this.dep.id=data.depId
-                this.dep.name=data.name
+                this.dep.id = data.depId
+                this.dep.name = data.name
+                this.departmentName = data.name
                 this.$ajax.get('/api/organize/employees/pages',{depId:data.depId,selectSubs:false}).then(res=>{
                     res=res.data
                     if(res.status===200){
@@ -365,12 +366,14 @@
                 })
             },
             searchDep:function (payload) {
-                this.DepList=payload.list
+                this.DepList = payload.list
+                this.departmentName = payload.depName
             },
             handleClose(done) {
                 this.nodeList = []
                 this.tempNodeList = []
                 this.employeList = []
+                this.departmentName = ""
                 done()
             },
             operation(title,type,row) {
@@ -404,7 +407,6 @@
                         editRow[0].personArr = JSON.parse(editRow[0].personArr)
                         editRow[0].depArr = JSON.parse(editRow[0].depArr)
                         editRow[0].roleArr = JSON.parse(editRow[0].roleArr)
-                        editRow[0].depName = ""
                         editRow[0].userId = ""
                         delete editRow[0].code
                     }
@@ -416,7 +418,6 @@
                             type: editRow[i].type,
                             sort: editRow[i].sort,
                             isAudit: editRow[i].isAudit,
-                            depName: "",
                             personArr: JSON.parse(editRow[i].personArr),
                             depArr: JSON.parse(editRow[i].depArr),
                             roleArr: JSON.parse(editRow[i].roleArr),
@@ -659,7 +660,6 @@
                     type: "",
                     sort: "",
                     isAudit: "1",
-                    depName: "",
                     personArr: [],
                     depArr: [],
                     roleArr: [],
@@ -722,7 +722,6 @@
                             if(item[i].type !== "") {
                                 if(item[i].choice.length>0) {
                                     if(item[i].lastChoice) {
-                                        delete item[i].depName
                                         delete item[i].peopleTime
                                         delete item[i].depsTime
                                         delete item[i].rolesTime
@@ -751,9 +750,6 @@
                         for(var i = 1; i < item.length; i++) {
                             delete item[i].lastChoice
                         }  
-                    }
-                    if(isOk) {
-                       delete this.nodeList[0].depName 
                     }
                 }
                 let param = {
