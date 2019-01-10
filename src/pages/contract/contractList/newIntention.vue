@@ -333,6 +333,18 @@ export default {
         //     // mobile: '',
 
         // }
+      },
+      //权限配置
+      power: {
+       
+        'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
+        'sign-ht-xq-data-add': {
+          state: false,
+          name: '编辑资料库'
+        },
       }
     };
   },
@@ -775,8 +787,10 @@ export default {
     //创建成功提示
     toUpload(value){//上传合同资料库
       this.dialogSuccess=false;
+      if(this.power['sign-com-htdetail'].state){
+      if(this.power['sign-ht-xq-data-add'].state){
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
-      this.$router.push({
+      this.$router.replace({
         path: "/detailIntention",
         query: {
           type: "dataBank",
@@ -784,6 +798,18 @@ export default {
           contType: this.contractForm.type
         }
       });
+      }else{
+          this.$message({
+            message:'没有资料库权限,无法跳转到资料库'
+          });
+          this.$router.push('/contractList');
+        }
+      }else{
+        this.$message({
+          message:'没有合同详情权限,无法跳转到资料库'
+        });
+        this.$router.push('/contractList');
+      }
     },
     toContract(){//回到合同列表
       this.dialogSuccess=false;

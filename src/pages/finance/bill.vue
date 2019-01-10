@@ -456,9 +456,7 @@
     methods: {
       getExcel:function () {
         let param = Object.assign({},this.searchForm)
-        this.$ajax.get('/api/input/payInfoExcel',param).then(res=>{
-          debugger
-        })
+        this.excelCreate('/input/payInfoExcel',param)
       },
       test:function (val) {
 

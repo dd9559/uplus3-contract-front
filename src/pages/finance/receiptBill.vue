@@ -14,7 +14,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model.trim="form.outObj" v-if="inputPerson">
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20" v-model.trim="form.outObj" v-if="inputPerson">
           </div>
         </div>
         <div class="input-group col active-400">
@@ -707,6 +707,7 @@
         let arr=[]
         let payTotal=0
         let cardTotal=0
+        let checkTotal=0
         //收款信息验证
         arr.push(this.$tool.checkForm(param,rule))
         //支付信息验证
@@ -715,6 +716,9 @@
           newPayList.forEach(item=>{
             if(item.payMethod!==2){
               delete item.activeAdmin
+            }
+            if(item.payMethod!==3){
+              checkTotal+=parseFloat(item.amount)
             }
             payTotal+=parseFloat(item.amount)
             arr.push(this.$tool.checkForm(item,payRule))
@@ -730,7 +734,11 @@
             let total = parseFloat(this.form.amount)
             if(total!==payTotal){
               this.$message({
-                message:'输入金额要等于收款金额'
+                message:'收款金额=支付总金额'
+              })
+            }else if(checkTotal!==cardTotal){
+              this.$message({
+                message:'刷卡资料补充输入总金额=POS刷卡金额+转账金额'
               })
             }else if(this.files.length===0){
               this.$message({
