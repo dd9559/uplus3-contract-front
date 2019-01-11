@@ -252,20 +252,20 @@ export default {
 			if(this.contState===3){
         if(this.uploadList.length>1){
           this.uploadList.splice(index,1);
-          let param = {
-            contId:this.contId,
-            datas:this.uploadList
-          }
-          this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
-            res=res.data;
-            if(res.status===200){
-              // this.getContractBody();
-              this.$message({
-                message:'删除成功',
-                type:'success'
-              })
-            }
-          })
+          // let param = {
+          //   contId:this.contId,
+          //   datas:this.uploadList
+          // }
+          // this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
+          //   res=res.data;
+          //   if(res.status===200){
+          //     // this.getContractBody();
+          //     this.$message({
+          //       message:'删除成功',
+          //       type:'success'
+          //     })
+          //   }
+          // })
         }else{
           this.$message({
             message:'至少保留一个，请勿删除',
