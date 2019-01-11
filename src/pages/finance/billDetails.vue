@@ -181,7 +181,7 @@
                 width="200"
                 trigger="hover"
                 :content="scope.row.auditInfo">
-                <p class="one-row" slot="reference">{{scope.row.auditInfo}}</p>
+                <p class="one-row" slot="reference">{{scope.row.auditInfo|nullFilter}}</p>
               </el-popover>
               <span v-else>{{scope.row.auditInfo}}</span>
             </template>
@@ -337,6 +337,7 @@
         this.$message({
           message:'下一个节点审核人设置成功'
         })
+        this.getCheckData()
       },
       // 判断审核弹窗显示内容
       showDialog: function () {
@@ -513,6 +514,13 @@
       nullFormatter:function (val,type=1) {
         if(!val){
           return type===1?'无':'--'
+        }else {
+          return val
+        }
+      },
+      nullFilter:function (val) {
+        if(!val){
+          return val===0?0:'-'
         }else {
           return val
         }

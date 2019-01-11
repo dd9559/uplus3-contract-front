@@ -88,9 +88,6 @@
         this.inputVal = data.name
         this.$emit('checkCell', data)
       },
-      popHide: function () {
-        this.visible=false
-      },
       opera: function (type, e) {
         // let e=event||window.event
         // console.log(e.currentTarget)

@@ -842,7 +842,7 @@
         if(this.power['sign-com-htdetail'].state){
             
           // console.log(value)
-          this.setPath(this.$tool.getRouter(['合同','调佣审核','合同详情'],'contractList'));
+          this.setPath(this.$tool.getRouter(['合同','调佣审核','合同详情'],'adjustCheck'));
           this.$router.push({
             path:'/contractDetails',
             query:{

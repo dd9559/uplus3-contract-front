@@ -105,10 +105,11 @@
           <p>添加企业信息</p>
           <div class="info-content">
             <div class="item">
-              <el-form-item label="城市选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.cityId" filterable @change="getStoreList">
+              <el-form-item label="当前城市: ">
+                <!-- <el-select placeholder="请选择" size="mini" v-model="companyForm.cityId" filterable @change="getStoreList">
                   <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
-                </el-select>
+                </el-select> -->
+                <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
               <el-form-item label="门店选择: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect">
@@ -215,8 +216,17 @@
               <div class="upload">
                 <span class="point">上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp><p class="text">点击上传</p></li>
-                  <li v-show="companyForm.contractSign!==''"><div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{contractName}}</p><span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span></li>
+                  <li>
+                    <fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp>
+                    <p class="text">点击上传</p>
+                  </li>
+                  <el-tooltip effect="dark" :content="contractName" placement="bottom">
+                    <li v-show="companyForm.contractSign!==''">
+                      <div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div>
+                      <p class="pic-name">{{contractName}}</p>
+                      <span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span>
+                    </li>
+                  </el-tooltip>
                 </ul>
               </div>
             </div>
@@ -225,8 +235,19 @@
               <div class="upload">
                 <span class="point">上传电子签章图片：</span>
                 <ul>
-                  <li><fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp><p class="text">点击上传</p></li>
-                  <li v-show="companyForm.financialSign!==''"><div @click="getPicture(2)"><upload-cell type=".png"></upload-cell></div><p class="pic-name">{{financialName}}</p><span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span></li>
+                  <li>
+                    <fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false><i>+</i></fileUp>
+                    <p class="text">点击上传</p>
+                  </li>
+                  <el-tooltip effect="dark" :content="financialName" placement="bottom">
+                    <li v-show="companyForm.financialSign!==''">
+                      <div @click="getPicture(2)">
+                        <upload-cell type=".png"></upload-cell>
+                      </div>
+                      <p class="pic-name">{{financialName}}</p>
+                      <span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span>
+                    </li>
+                  </el-tooltip>
                 </ul>
               </div>
             </div>
@@ -234,7 +255,7 @@
           <div class="tip">
             <span>温馨提示: </span>
             <div class="message">
-              <p>请上传<span>png透明</span>格式的图片,大小不超过<span>5M</span>；</p>
+              <p>请上传<i>png透明</i>格式的图片,大小不超过<i>5M</i>；</p>
             </div>
           </div>
         </div>
@@ -481,21 +502,23 @@
                 }
               }
             })
+            this.companyForm.name = ""
+            this.companyForm.contractSign = ""
+            this.companyForm.financialSign = ""
           } else {
             this.noticeShow = true
             setTimeout(() => {
               this.noticeShow = false
             }, 2000)
-            this.companyForm.storeId = ""
-            this.cooModeChange(2)
-            this.companyForm.cooperationMode = ""
+            if(this.companyFormTitle === "添加企业信息") {
+              this.companyForm.storeId = ""
+              this.cooModeChange(2)
+              this.companyForm.cooperationMode = ""
+            }
           }
         }).catch(error => {
           console.log(error);
         })
-        this.companyForm.name = ""
-        this.companyForm.contractSign = ""
-        this.companyForm.financialSign = ""
       },
       //关闭模态窗
       handleClose(done) {
@@ -510,7 +533,8 @@
         this.initFormList()
         this.directSaleSelect = false
         this.directSaleOut = false
-        this.storeList = []
+        this.companyForm.cityId = this.searchForm.cityId
+        this.getStoreList(this.companyForm.cityId)
       },
       //切换到直营属性时,自动带出证件信息
       selectDirectInfo() {
@@ -808,7 +832,10 @@
         this.getCompanyList()
       },
       resetFormFn() {
-        this.$tool.clearForm(this.searchForm)
+        this.searchForm.storeId = ""
+        this.searchForm.cooperationMode = ""
+        this.searchForm.bankCard = ""
+        this.searchForm.keyword = ""
         this.searchTime = []
       },
       getInt(num,index) {
@@ -909,7 +936,7 @@
       .message {
         color: #CD6D6D;
         p:nth-child(2) { margin: 10px 0; }
-        span { font-weight: bold; color: #D56868; }
+        i { font-weight: bold; color: #D56868; }
       }
       &-top {
         margin-top: 20px;
@@ -1051,10 +1078,8 @@
                 border-radius: 4px;
                 margin-right: 10px;
                 position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: center;
                 cursor: pointer;
+                text-align: center;
                 > img {
                   width: 60px;
                   height: 60px;
@@ -1064,6 +1089,7 @@
                   position: absolute;
                   font-size: @size-base;
                   bottom: 10px;
+                  left: 35px;
                   color: #233241;
                 }
                 .pic-name {
@@ -1075,6 +1101,9 @@
                   height: 48px;
                   text-align: center;
                   z-index: 10;
+                  overflow: hidden;
+                  text-overflow:ellipsis;
+                  white-space: nowrap;
                   word-wrap: break-word;
                 }
                 .del {
@@ -1097,6 +1126,10 @@
                     background-color: #EEF2FB;
                     line-height: 50px;
                     text-align: center;
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%,-50%);
                   }
                   i {
                     font-size: 56px;
@@ -1104,6 +1137,12 @@
                   }
                 }
                 &:last-child {
+                  >div {
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%,-50%);
+                  }
                   border: none;
                   background-color: #F2F3F8;
                   &:hover .del {

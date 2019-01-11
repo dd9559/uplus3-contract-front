@@ -14,7 +14,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model.trim="form.outObj" v-if="inputPerson">
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20" v-model.trim="form.outObj" v-if="inputPerson">
           </div>
         </div>
         <div class="input-group col active-400">
@@ -762,7 +762,8 @@
                       let obj = {
                         bankName: card.bankBranchName,
                         userName: card.bankAccountName,
-                        cardNumber: card.bankCard
+                        cardNumber: card.bankCard,
+                        storeId: card.id
                       }
                       param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
                       return true
