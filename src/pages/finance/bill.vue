@@ -165,9 +165,9 @@
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span @click="toLink(scope.row,'cont')">{{scope.row.contCode}}</span></li>
-              <li>房源编号:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
-              <li>客源编号:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
+              <li>合同:<span @click="toLink(scope.row,'cont')">{{scope.row.contCode}}</span></li>
+              <li>房源:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
+              <li>客源:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
             </ul>
           </template>
         </el-table-column>
@@ -811,11 +811,18 @@
   .contract-msglist {
     > li {
       text-align: left;
-      > span {
+      >span{
         &:first-of-type {
-          color: @color-blue;
           margin-right: 10px;
-          cursor: pointer;
+        }
+      }
+      &:first-of-type{
+        > span {
+          &:first-of-type {
+            color: @color-blue;
+            margin-right: 10px;
+            cursor: pointer;
+          }
         }
       }
     }

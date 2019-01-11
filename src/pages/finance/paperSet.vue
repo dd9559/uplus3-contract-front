@@ -62,6 +62,11 @@
       </div> -->
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
         <div class="in-block">
+            <el-form-item label="关键字" prop="keyword">
+              <el-tooltip content="开票人员/合同编号/票据编号/物业地址" placement="top">
+                <el-input class="w200" v-model="propForm.keyword" placeholder="请输入" clearable></el-input>
+                </el-tooltip>
+            </el-form-item>
             <el-form-item 
             label="部门"
             prop="depIdS" 
@@ -102,11 +107,7 @@
                 </el-select>
             </el-form-item>
         </div>
-        <el-form-item label="关键字" prop="keyword">
-          <el-tooltip content="开票人员/合同编号/票据编号/物业地址" placement="top">
-            <el-input class="w200" v-model="propForm.keyword" placeholder="请输入" clearable></el-input>
-            </el-tooltip>
-        </el-form-item>
+        
         <el-form-item 
             label="票据状态"
             prop="state">

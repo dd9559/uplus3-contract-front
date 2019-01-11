@@ -76,7 +76,7 @@
     },
     created(){
       this.Index=this.$store.state.path
-      this.activeIndex = this.Index[1].path.split('/')[1]
+      this.activeIndex = this.Index.length>2?this.Index[1].path.split('/')[1]:''
       /*this.$ajax.get('/api/me').then(res=>{
         res=res.data
         if(res.status===200){
@@ -107,6 +107,13 @@
         item.child=sliders
       })
     },
+    beforeRouteEnter(to,from,next){
+      next(vm=>{
+        if(to.path==='/login'){
+          vm.Index=[]
+        }
+      })
+    },
     beforeRouteUpdate(to,from,next){
       // console.log(this.getUser)
       if(to.path!=='/login'){
@@ -124,6 +131,21 @@
         })
         this.Index=this.$store.state.path
         this.activeIndex = this.Index[1].path.split('/')[1]
+      }else {
+        let arr=[]
+        this.views=this.$tool.pathList.map(item=>Object.assign({},item))
+
+        this.views.forEach((item,index)=>{
+          let sliders=[]
+          item.child.forEach(tip=>{
+            if(arr.indexOf(tip.code)>-1){
+              sliders.push(tip)
+            }
+          })
+          item.child=sliders
+        })
+        this.Index=[]
+        // this.activeIndex = this.Index[1].path.split('/')[1]
       }
       next()
     },
@@ -133,7 +155,6 @@
       },
       logout:function (type) {
         console.log(this.getUser)
-        localStorage.removeItem('initId')
         if(type===1){
           this.$ajax.post('/api/logout').then(res=>{
             this.$router.push({

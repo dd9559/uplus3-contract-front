@@ -6,6 +6,7 @@
 </template>
 
 <script>
+  import {mapMutations} from 'vuex'
   export default {
     name: "login",
     data(){
@@ -17,6 +18,7 @@
     },
     created(){
       let param=this.$route.query
+      // this.setPath([])
       for (let item in param){
         if(item==='empcode'){
           param[item]=parseInt(param[item])
@@ -46,7 +48,6 @@
                 this.$router.push({
                   path:'contractList'
                 })
-                localStorage.setItem('initId',res.data.user.cityId)
               }else {
                 this.$message({
                   message:'无任何权限'
@@ -55,7 +56,10 @@
             }
           })
         })
-      }
+      },
+      ...mapMutations([
+        'setPath'
+      ])
     }
   }
 </script>

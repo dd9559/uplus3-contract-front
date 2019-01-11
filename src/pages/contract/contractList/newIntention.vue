@@ -29,8 +29,7 @@
                                 <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
-                                </el-input>
-                                
+                                </el-input> 
                             </el-form-item>
 
                             <el-form-item label="定金金额：" prop="dealPrice" v-if="this.contractForm.type == 5">
@@ -38,7 +37,6 @@
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
-                                
                             </el-form-item>
                         </div>
                     </div>
@@ -92,7 +90,8 @@
                                 <el-form-item label="客源编号：" prop="guestinfoCode">
                                   <el-button-group v-model="contractForm.guestinfoCode">
                                         <el-button type="primary" @click="toLayerGuest()" v-if="type===1" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</el-button>
-                                        <el-button type="text" v-if="this.$route.query.operateType==2" >{{contractForm.guestinfoCode}}</el-button>
+                                        <el-button type="text" v-if="this.$route.query.operateType==2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
+                                        
                                   </el-button-group>
                                 </el-form-item>
 
@@ -138,13 +137,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-btn">                     
-                        <el-button type="primary" round @click="checkRule('contractForm')">保 存</el-button>                  
-                </div>
+                
             </el-form>
 
 
             
+        </div>
+        <div class="form-btn">                     
+                <el-button type="primary" round @click="checkRule('contractForm')">保 存</el-button>                  
         </div>
         <!-- 房客源弹框 -->
         <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :choseHcode="choseHcode" :choseGcode="choseGcode"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
@@ -225,6 +225,16 @@ export default {
         }
       }
     };
+
+    var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请选择客源编号'));
+        } else {
+          this.$refs.contractForm.validateField('guestinfoCode');
+          callback();
+        }
+      };
+
 
     return {
       choseHcode:0,//选择的房源编号
@@ -315,22 +325,22 @@ export default {
             trigger: "change"
           }
         ],
-        subscriptionPrice: [{required: true, validator: checkPrice }],
-        dealPrice: [{ required: true, validator: checkPrice }],
-        ownname: [{ required: true, message: "请输入业主姓名" }],
-        ownmobile: [{ validator: telPhone }],
+        subscriptionPrice: [{required: true, validator: checkPrice,trigger:'change' }],
+        dealPrice: [{ required: true, validator: checkPrice,trigger:'change' }],
+        ownname: [{ type: "string",required: true, message: "请输入业主姓名",trigger:'change' }],
+        ownmobile: [{ type: "number",validator: telPhone,trigger:'change' }],
 
-        custname: [{ required: true, message: "请输入客户姓名" }],
-        custmobile: [{ validator: telPhone }],
+        custname: [{ type: "string",required: true, message: "请输入客户姓名",trigger:'change' }],
+        custmobile: [{type: "number", validator: telPhone,trigger:'change' }],
 
         guestinfoCode: [
-          { required: true, message: "请选择客源编号", trigger:'change'}
+          {  validator: validatePass, required: true, message: "请选择客源编号", trigger:'change'}
         ],
         // guestInfo: {
         //   GuestStoreName: [{ required: true, message: "请选择门店" }],
         //   EmpName: [{ required: true, message: "请选择经纪人" }]
         // },
-        custIdentifyCode: [{ validator: idCard}]
+        custIdentifyCode: [{ type: "number",validator: idCard,trigger:'change'}]
         // contPersons:{
         //     // name: '',
         //     // mobile: '',
@@ -490,7 +500,7 @@ export default {
             };
             this.contractForm.custname = guestMsg.OwnerInfo.CustName;
             this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
-             this.isShowDialog = false;
+             
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
           }
           // this.getEmployee()
@@ -679,7 +689,7 @@ export default {
 
 
     //关闭选择房源客源弹窗
-    closeCommission(value) {
+    closeCommission(value,contractForm) {
       if (value) {
         if (value.dialogType === "house") {
           
@@ -690,16 +700,23 @@ export default {
           
           this.getGuestDetail(value.selectCode);
           this.choseGcode=value.selectCode;
+          this.isShowDialog = false;
+
+          // this.$nextTick(function() {
+
+          //   this.$refs.contractForm.validateField('guestinfoCode');
+
+          // })
+          // if (this.contractForm.guestinfoCode == '') {
+          //   debugger
+          //   this.$refs.contractForm.validateField('guestinfoCode');
+          // }
+
+          // this.checkRule(contractForm) 
+
          
 
-          // this.$refs[contractForm].validate(valid => {
-          //   if (valid) {
-          //       this.dialogSure = true
-          //       return true           
-          //     } else {
-          //       return false;
-          //     }
-          // });
+        
         
           
           
@@ -711,6 +728,7 @@ export default {
     },
 
     checkRule(contractForm) {
+     
       if(this.contractForm.ownmobile !=='' &&this.contractForm.custmobile !== ''&&((this.contractForm.ownmobile).trim() === (this.contractForm.custmobile).trim())){
         this.$message({
           type: "warning",
@@ -971,7 +989,7 @@ export default {
 <style lang="less" scoped>
 
 
-    /deep/.myconfirm{
+    .myconfirm{
         /deep/.el-dialog{
             width: 420px;
     
@@ -1087,13 +1105,7 @@ export default {
         padding-bottom: 30px;
       }
     }
-    .form-btn {
-      overflow: hidden;
-      position: fixed;
-      bottom: 50px;
-      right: 138px;
-      background-color: #fff;
-    }
+    
   }
   .textlengthbox {
     position: relative;
@@ -1103,6 +1115,31 @@ export default {
     bottom: 0px;
     right: 10px;
     color: #6c7986;
+  }
+  .form-btn {
+    overflow: hidden;
+    position: fixed;
+    bottom: 50px;
+    right: 138px;
+    background-color: #fff;
+  }
+  .select {
+    display: inline-block;
+    text-align: center;
+    color: #fff;
+    background-color: #409EFF;
+    border-color: #409EFF;
+    width: 112px;
+    height: 40px;
+    line-height: 38px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .select_{
+    display: inline-block;
+    text-align: left;
+    color: #409EFF;
+    font-weight: bold;
   }
 }
 </style>

@@ -98,9 +98,9 @@
         <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
-              <li>合同编号:<span class="span-cursor" @click="toLink(scope.row,'cont')">{{scope.row.code}}</span></li>
-              <li>房源编号:<span class="span-cursor">{{scope.row.houseinfoCode}}</span><span>{{scope.row.showOwnerName}}</span></li>
-              <li>客源编号:<span class="span-cursor">{{scope.row.guestinfoCode}}</span><span>{{scope.row.showCustName}}</span></li>
+              <li>合同:<span class="span-cursor" @click="toLink(scope.row,'cont')">{{scope.row.code}}</span></li>
+              <li>房源:<span class="span-cursor">{{scope.row.houseinfoCode}}</span><span>{{scope.row.showOwnerName}}</span></li>
+              <li>客源:<span class="span-cursor">{{scope.row.guestinfoCode}}</span><span>{{scope.row.showCustName}}</span></li>
             </ul>
           </template>
         </el-table-column>
@@ -324,12 +324,20 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
   .contract-msglist{
-    >li{
+    > li {
       text-align: left;
       >span{
-        &:first-of-type{
-          color: @color-blue;
+        &:first-of-type {
           margin-right: 10px;
+        }
+      }
+      &:first-of-type{
+        > span {
+          &:first-of-type {
+            color: @color-blue;
+            margin-right: 10px;
+            cursor: pointer;
+          }
         }
       }
     }
