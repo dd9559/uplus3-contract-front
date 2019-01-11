@@ -1314,12 +1314,12 @@ export default {
         this.uploadList.splice(index,1);
       }
     },
-    //保存上传文件
+    //保存上传文件(合同主体)
     saveFile() {
       if(this.uploadList.length>0){
-        this.uploadList.forEach(element => {
-          delete element.fileType
-        });
+        // this.uploadList.forEach(element => {
+        //   delete element.fileType
+        // });
         let param = {
           contId:this.id,
           datas:this.uploadList
@@ -1469,15 +1469,15 @@ export default {
           });
           break
         }else if(uploadContData[i].isrequire&&uploadContData[i].value.length>0){
-          uploadContData[i].value.forEach(element => {
-            // delete element.fileType;
-          });
+          // uploadContData[i].value.forEach(element => {
+          // delete element.fileType;
+          // });
           arr_.push(uploadContData[i]);
           isOk = true;
         }else if(!uploadContData[i].isrequire&&uploadContData[i].value.length>0){
-          uploadContData[i].value.forEach(element => {
-            // delete element.fileType;
-          });
+          // uploadContData[i].value.forEach(element => {
+          //   delete element.fileType;
+          // });
           arr_.push(uploadContData[i]);
           isOk = true;
         }else{
