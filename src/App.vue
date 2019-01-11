@@ -33,10 +33,20 @@
   input,.el-input__inner{
     font-size: @size-base;
     font-family: "Avenir", Helvetica, Arial, sans-serif;
-    &::-webkit-input-placeholder{
+    &::-webkit-input-placeholder,&:-ms-input-placeholder{
       font-family: "Avenir", Helvetica, Arial, sans-serif;
       font-size: @size-base;
-      color: @color-A3;
+      color: @color-C8;
+    }
+    &:-ms-input-placeholder{
+      font-family: "Avenir", Helvetica, Arial, sans-serif;
+      font-size: @size-base;
+      color: @color-C8;
+    }
+    &::-moz-placeholder{
+      font-family: "Avenir", Helvetica, Arial, sans-serif;
+      font-size: @size-base;
+      color: @color-C8;
     }
   }
 

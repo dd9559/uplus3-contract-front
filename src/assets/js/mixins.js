@@ -169,6 +169,7 @@ const MIXINS = {
      * 获取签名
      */
     fileSign:function (arr,type) {
+      debugger
       let param={urls:arr.join(',')}
       if(type==='download'){
         param.rct='application%2Foctet-stream'

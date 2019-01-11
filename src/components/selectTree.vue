@@ -52,9 +52,11 @@
         clearVal: false,
         iconUp: true,
         pop: true,//弹窗是否失焦
+        list: [],
       }
     },
     mounted(){
+      // this.getList()
       this.$nextTick(()=>{
         let that=this
         document.onmousedown=function (e) {
@@ -67,6 +69,7 @@
     watch: {
       init: function (val) {
         this.inputVal = val
+        console.log('111')
         if (this.inputVal === '') {
           this.getDep('', true)
         }
@@ -106,6 +109,14 @@
           this.inputVal = ''
           this.$emit('clear')
         }
+      },
+      getList:function (keyword='') {
+        this.$ajax.get('/api/access/deps/tree', {keyword: keyword}).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.list=res.data
+          }
+        })
       },
       //部门搜索
       getDep: function (e, clear = false) {

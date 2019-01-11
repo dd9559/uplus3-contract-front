@@ -123,7 +123,7 @@
         </div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
-        <el-table-column align="left" label="合同信息" width="260" fixed>
+        <el-table-column align="left" label="合同信息" width="240" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -342,8 +342,8 @@
       </span>
     </el-dialog>
     <!-- 打印 -->
-    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
-    <!-- <button @click="dayin">打印</button> -->
+    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
+    <!-- <div class="printMaskLayer" v-if="haveUrl"></div> -->
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
@@ -932,15 +932,18 @@ export default {
 
       // this.$refs.easyPrint.print();
     },
+    closePrint(){
+       this.pdfUrl='';
+       this.haveUrl=false;
+    },
     //打印空白合同
     printCont(command){
       this.pdfUrl='';
+      // this.$refs.previewPdf.contentWindow.print();
       this.haveUrl=false;
       if(command===1){
         if(this.blankPdf1){
           this.getUrl(this.blankPdf1);
-          // this.pdfUrl=""
-          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
           },1500)
@@ -952,11 +955,16 @@ export default {
       }else if(command===2){
         if(this.blankPdf2){
           this.getUrl(this.blankPdf2);
-          // this.pdfUrl=""
-          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
           },2000)
+
+          // this.fileSign([this.blankPdf2],'download')
+
+          //  setTimeout(()=>{
+          //   this.$refs.previewPdf.contentWindow.print();
+          // },1000)
+          
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -965,8 +973,6 @@ export default {
       }else if(command===3){
         if(this.blankPdf3){
           this.getUrl(this.blankPdf3);
-          // this.pdfUrl=""
-          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
           },2000)
@@ -978,8 +984,6 @@ export default {
       }else if(command===4){
         if(this.blankPdf4){
           this.getUrl(this.blankPdf4);
-          // this.pdfUrl=""
-          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
           },2000)
@@ -991,8 +995,6 @@ export default {
       }else if(command===5){
         if(this.blankPdf5){
           this.getUrl(this.blankPdf5);
-          // this.pdfUrl=""
-          // this.haveUrl=true;
           setTimeout(()=>{
             this.$refs.pdfPrint.print();
           },2000)
@@ -1041,6 +1043,8 @@ export default {
         if(res.status ===200){
           this.pdfUrl = res.data.url;
           this.haveUrl=true;
+          // debugger
+          // this.fileSign([res.data.url],'download')
         }
       })
     }
@@ -1082,6 +1086,16 @@ export default {
 }
 /deep/.margin-left{
   margin-left: 0;
+}
+.printMaskLayer{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  // display: none;
+  z-index: 8888;
 }
 .contract-list {
   background-color: #fff;
@@ -1158,10 +1172,13 @@ export default {
   .contract-msglist {
     > li {
       text-align: left;
-      > span{
-        color: @color-blue;
-        cursor: pointer;
+      &:first-of-type{
+        > span{
+          color: @color-blue;
+          cursor: pointer;
+        }
       }
+      
     }
   }
 }
