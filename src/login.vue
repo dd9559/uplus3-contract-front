@@ -6,6 +6,7 @@
 </template>
 
 <script>
+  import {mapMutations} from 'vuex'
   export default {
     name: "login",
     data(){
@@ -17,6 +18,7 @@
     },
     created(){
       let param=this.$route.query
+      // this.setPath([])
       for (let item in param){
         if(item==='empcode'){
           param[item]=parseInt(param[item])
@@ -54,7 +56,10 @@
             }
           })
         })
-      }
+      },
+      ...mapMutations([
+        'setPath'
+      ])
     }
   }
 </script>

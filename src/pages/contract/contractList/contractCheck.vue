@@ -363,7 +363,7 @@ export default {
     },
     //合同预览
     goPreview(item) {
-      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractCheck'));
+      this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
       this.$router.push({
         path: "/contractPreview",
         query: {
@@ -375,7 +375,7 @@ export default {
     //合同审核
     goCheck(item) {
       if(this.power['sign-ht-info-view'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractCheck'));
+        this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
         this.$router.push({
           path:'/contractPreview',
           query:{
@@ -572,10 +572,13 @@ export default {
   .contract-msglist {
     > li {
       text-align: left;
-      > span{
-        color: @color-blue;
-        cursor: pointer;
+      &:first-of-type{
+        > span{
+          color: @color-blue;
+          cursor: pointer;
+        }
       }
+      
     }
   }
 }

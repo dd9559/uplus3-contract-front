@@ -104,13 +104,7 @@ router.beforeEach((to,from,next)=>{
     store.commit('setPath',arr)
     next()
   }else {
-    if(store.state.path.length===0){
-      next({
-        path:'contractList'
-      })
-    }else {
-      next()
-    }
+    next()
   }
 })
 

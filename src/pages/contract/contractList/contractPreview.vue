@@ -273,7 +273,7 @@ export default {
     },
     //签章
     signature(value){
-      if(value===3){
+      if(value===3){//签章+打印
         let param = {
           id:this.id,
           type:value
@@ -300,13 +300,13 @@ export default {
             type: "error"
           })
         })
-      }else if(value===4){
+      }else if(value===4){//打印(仅仅记录次数)
         let param = {
           id:this.id,
           type:value
         }
         this.$ajax.post('/api/contract/signture', param).then(res=>{})
-      }else{
+      }else{//打印(获取地址)
         let param = {
           id:this.id,
           type:value
