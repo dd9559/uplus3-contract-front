@@ -160,14 +160,16 @@
         <el-table
           :data="selectAchList"
           style="width: 100%"
+          class="info-scrollbar"
           @row-dblclick="enterDetail"
           ref="tableCom" 
           :max-height="tableNumberCom" 
-          border
+          border      
         >
           <el-table-column
             label="合同信息"
-            width="220px"
+            align="left"
+            width="220"
           >
             <template slot-scope="scope">
               <p>合同：<span
@@ -423,7 +425,7 @@
                   <span
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-edit'].state"
+                    v-if="power['sign-yj-rev-edit'].state&&(userMsg&&scope.row.arraignmentId===userMsg.empId)"
                   >编辑</span>
                   <span
                     style="cursor:pointer;"
@@ -438,7 +440,7 @@
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"   
-                    v-if="power['sign-yj-rev-fs'].state"
+                    v-if="power['sign-yj-rev-fs'].state&&(userMsg&&scope.row.arraignmentId!=userMsg.empId)"
                   >反审核</span>
                  <span
                     style="cursor:pointer;"
@@ -468,7 +470,7 @@
                   <span
                     @click.stop="chehui(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-retreat'].state"
+                    v-if="power['sign-yj-rev-retreat'].state&&(userMsg&&scope.row.arraignmentId===userMsg.empId)"
                   >撤回</span>
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
@@ -718,25 +720,25 @@
             <el-table-column
               prop="auditor"
               label="姓名"
-              width="200"
+              width="220"
             >
             </el-table-column>
             <!-- auditor -->
             <el-table-column
               prop="auditorDepartment"
               label="职务"
-              width="120"
+              width="150"
             >
             </el-table-column>
 
 
            <!-- 节点名称（新增）-->
-            <el-table-column
+            <!-- <el-table-column
               prop="updateByName"
               label="节点名称"
               width="130"
             >
-            </el-table-column>
+            </el-table-column> -->
 
             <!-- result审核结果(0未审核 1通过 2驳回)(薪资组审核) -->
             <el-table-column
@@ -1079,7 +1081,7 @@ export default {
       //  }
       // 撤回
        if(this.statuType==1){
-          let param={
+          let param={             
            contId:this.statuContId,
            aId:this.statuAid,
            status:-1
@@ -1404,16 +1406,10 @@ export default {
       th {
         padding: 24px 0;
       }
-      .el-table__header {
-        height: 55px;
+      .el-table__header {       
         th {
-          padding: 0;
-          .cell {
-            background-color: #eef2fb;
-            // background-color: pink;
-            height: 55px;
-            line-height: 55px;
-          }
+          padding: 6px 0;
+          background-color: #eef2fb;
         }
       }
     }
@@ -1468,21 +1464,22 @@ export default {
         //   padding: 24px 0;
         // }
         .el-table__header {
-          height: 55px;
+          // height: 55px;
           th {
             padding: 0;
+            background-color: #eef2fb;
             .cell {
-              background-color: #eef2fb;
+          
               // background-color: pink;
               // height: 55px;
               // line-height: 55px;
             }
           }
         }
-        .el-table__header th .cell {
-          height: 30px;
-          line-height: 30px;
-        }
+        // .el-table__header th .cell {
+        //   height: 30px;
+        //   line-height: 30px;
+        // }
       }
       //弹框审核信息
       h1 {

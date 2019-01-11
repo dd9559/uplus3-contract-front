@@ -5,7 +5,7 @@
             <p class="title">
                 <span>数据列表</span>
             </p>
-            <el-table :data="tableData" ref='onetable'  @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
+            <el-table :data="tableData" ref='onetable'   @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
                 <el-table-column align="center" width="100px" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(大类)" prop="name"></el-table-column>
             </el-table>
@@ -15,7 +15,7 @@
                 <span>{{this.bigName}}</span>
                  <el-button type="primary" class='paper-btn' round size="medium"  v-show="power['sign-set-kl-add'].state==true && !isSF" @click='operation(null,1)'>新增</el-button> 
             </p>
-            <el-table :data="moneyTypes" max-height="500">
+            <el-table :data="moneyTypes" max-height="500" border>
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(小类)" prop="name"></el-table-column>
                 <el-table-column align="center" label="描述" prop="remark">

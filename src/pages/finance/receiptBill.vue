@@ -762,7 +762,8 @@
                       let obj = {
                         bankName: card.bankBranchName,
                         userName: card.bankAccountName,
-                        cardNumber: card.bankCard
+                        cardNumber: card.bankCard,
+                        storeId: card.id
                       }
                       param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
                       return true
