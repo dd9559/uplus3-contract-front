@@ -580,6 +580,13 @@
         padding-left: 50px;
         border-bottom: 1px solid #ebeef5;
         &:last-child { border-bottom: none; }
+        /deep/ .el-checkbox__label {
+          width: 220px;
+          white-space:normal;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+        }
       }
       /deep/ .el-table__row {
           td:first-child {
