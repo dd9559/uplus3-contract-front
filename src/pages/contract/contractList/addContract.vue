@@ -1134,7 +1134,11 @@ export default {
                 message: "操作成功",
                 type: "success"
               });
-              this.dialogSuccess=true;
+              if(this.type===2&&this.contractForm.isHaveData){
+                 this.$router.push('/contractList');
+              }else{
+                this.dialogSuccess=true;
+              }
             }
           }
         }).catch(error => {
@@ -1915,13 +1919,13 @@ export default {
     }
     .parameter{
       display: flex;
-      width: 1000px;
+      width: 1200px;
       flex-wrap:wrap;
       padding-bottom: 10px;
       li{
         display: flex;
         height: 50px;
-        width: 300px;
+        width: 350px;
         line-height: 50px;
         > .title{
           width: 100px;

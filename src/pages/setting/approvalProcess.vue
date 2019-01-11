@@ -126,16 +126,16 @@
                         <li v-for="(item,index) in nodeList" :key="index">
                             <div class="node-body">
                                <el-input size="small" class="w152" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
-                                <el-select size="small" class="w152" v-model="item.type" @change="getType">
+                                <el-select size="small" class="w152" v-model="item.type" @change="getType($event,index)">
                                     <el-option label="请选择审批人类型" value=""></el-option>
                                     <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                 </el-select>
                                 <div v-if="item.type===0" class="person">
-                                    <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+                                    <select-tree :data="DepList" :init="departmentName" @checkCell="depHandleClick($event,index)" @clear="clearDep" @search="searchDep"></select-tree>
                                     <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye" size="small"
                                                 v-model="item.personArr" placeholder="请选择" filterable multiple @change="multiSelect(item.type,index)">
                                         <el-option
-                                        v-for="item in employeList"
+                                        v-for="item in employeList[index-1]"
                                         :key="item.empId"
                                         :label="item.name"
                                         :value="item.empId">
@@ -199,7 +199,6 @@
             isAudit: "1",
             userId: "",
             userName: "",
-            depName: "",
             personArr: [],
             depArr: [],
             roleArr: [],
@@ -213,7 +212,6 @@
             type: "",
             sort: "",
             isAudit: "1",
-            depName: "",
             personArr: [],
             depArr: [],
             roleArr: [],
@@ -273,6 +271,7 @@
                 tempAudit: "",
                 tempNodeList: [],
                 employeList: [],
+                departmentName: "",
                 power: {
                     'sign-set-verify': {
                     state: false,
@@ -346,31 +345,35 @@
                     }
                 })
             },
-            getType(val) {
+            getType(val,index) {
                 if(val === 1 || val === 2) {
-                    this.employeList = []
+                    this.employeList[index-1] = []
                 }
             },
             clearDep: function () {
+                this.departmentName = ''
                 this.clearSelect()
             },
-            depHandleClick(data) {
+            depHandleClick(data,index) {
+                this.dep.id = data.depId
+                this.dep.name = data.name
+                this.departmentName = data.name
                 this.$ajax.get('/api/organize/employees/pages',{depId:data.depId,selectSubs:false}).then(res=>{
                     res=res.data
                     if(res.status===200){
-                        this.employeList = res.data.list
+                        this.$set(this.employeList,[index-1],res.data.list)
                     }
                 })
-                this.dep.id=data.depId
-                this.dep.name=data.name
             },
             searchDep:function (payload) {
-                this.DepList=payload.list
+                this.DepList = payload.list
+                this.departmentName = payload.depName
             },
             handleClose(done) {
                 this.nodeList = []
                 this.tempNodeList = []
                 this.employeList = []
+                this.departmentName = ""
                 done()
             },
             operation(title,type,row) {
@@ -404,7 +407,6 @@
                         editRow[0].personArr = JSON.parse(editRow[0].personArr)
                         editRow[0].depArr = JSON.parse(editRow[0].depArr)
                         editRow[0].roleArr = JSON.parse(editRow[0].roleArr)
-                        editRow[0].depName = ""
                         editRow[0].userId = ""
                         delete editRow[0].code
                     }
@@ -416,7 +418,6 @@
                             type: editRow[i].type,
                             sort: editRow[i].sort,
                             isAudit: editRow[i].isAudit,
-                            depName: "",
                             personArr: JSON.parse(editRow[i].personArr),
                             depArr: JSON.parse(editRow[i].depArr),
                             roleArr: JSON.parse(editRow[i].roleArr),
@@ -559,12 +560,12 @@
                 }
                 if(type === 0) {
                     if(this.nodeList[index].peopleTime === this.nodeList[index].personArr.length) {
-                        for(var i = 0; i < this.employeList.length; i++) {
-                            if(this.nodeList[index].personArr[this.nodeList[index].peopleTime-1] === this.employeList[i].empId) {
+                        for(var i = 0; i < this.employeList[index-1].length; i++) {
+                            if(this.nodeList[index].personArr[this.nodeList[index].peopleTime-1] === this.employeList[index-1][i].empId) {
                                 this.nodeList[index].choice.push({
                                     type: 0,
-                                    userName: this.employeList[i].name,
-                                    userId: this.employeList[i].empId,
+                                    userName: this.employeList[index-1][i].name,
+                                    userId: this.employeList[index-1][i].empId,
                                     isDefault: 0
                                 })
                                 break
@@ -659,7 +660,6 @@
                     type: "",
                     sort: "",
                     isAudit: "1",
-                    depName: "",
                     personArr: [],
                     depArr: [],
                     roleArr: [],
@@ -722,7 +722,6 @@
                             if(item[i].type !== "") {
                                 if(item[i].choice.length>0) {
                                     if(item[i].lastChoice) {
-                                        delete item[i].depName
                                         delete item[i].peopleTime
                                         delete item[i].depsTime
                                         delete item[i].rolesTime
@@ -751,9 +750,6 @@
                         for(var i = 1; i < item.length; i++) {
                             delete item[i].lastChoice
                         }  
-                    }
-                    if(isOk) {
-                       delete this.nodeList[0].depName 
                     }
                 }
                 let param = {
@@ -965,8 +961,8 @@
                         background-color: #fff;
                         width: 100%;
                         padding: 10px;
-                        max-height: 90px;
-                        overflow-y: scroll;
+                        max-height: 60px;
+                        overflow: auto;
                         >span {
                             height: 28px;
                             display: inline-block;
