@@ -89,6 +89,7 @@ const MIXINS = {
         res=res.data
         if(res.status===200){
           this.userMsg = res.data.user;
+          localStorage.setItem('initId',res.data.user.cityId)
         }
       })
     },
@@ -170,7 +171,7 @@ const MIXINS = {
     fileSign:function (arr,type) {
       let param={urls:arr.join(',')}
       if(type==='download'){
-        param.rct='application%2Foctet-stream;charset=ISO-8859-1'
+        param.rct='application%2Foctet-stream'
       }
       this.$ajax.put('/api/load/generateAccessURLBatch',param,2).then(res=>{
         res=res.data
