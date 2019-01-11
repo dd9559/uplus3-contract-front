@@ -10,10 +10,10 @@
       >
       <div v-loading="loading">
         <!-- 头部右边关闭按钮 -->
-        <b
-          class="el-icon-close"
+        <div
+          class="el-icon-close close-btn"
           @click="closeDialog"
-        ></b>
+        ></div>
         <!-- 头部左边业绩分成title -->
         <div class="ach-header">
           <h1
@@ -769,7 +769,7 @@
                          </el-table>
                        </div>
 
-                     <div class="dialog2-btn f_r clearfix">
+                     <div class="dialog2-btn">
                          <el-button
                            type="primary"
                            round
@@ -1894,8 +1894,8 @@ export default {
   }
   .mansList {
     overflow-y: auto;
-    max-height: 300px;
-    min-height: 100px;
+    max-height: 250px;
+    height: 250px;
     // width: 450px !important;
   }
   /deep/ tr td:first-of-type,
@@ -1909,7 +1909,7 @@ export default {
     padding-right: 30px;
     box-sizing: border-box;
     background-color: #fff;
-    width: 100%;
+    width: 440px;
     text-align: right;
     button {
       width: 100px;
@@ -1955,7 +1955,7 @@ export default {
     /deep/ .el-input__suffix {
       right: 21px;
     }
-    b {
+    .close-btn{
       position: absolute;
       right: 30px;
       top: 30px;
