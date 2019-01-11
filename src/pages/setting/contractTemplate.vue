@@ -17,7 +17,7 @@
       <p>
           <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
       </p>
-      <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" :default-sort = "{prop: 'uploadTime', order: 'descending'}">
+      <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" border :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="type.label" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
@@ -142,7 +142,6 @@
         if(localStorage.getItem('initId')){
           this.selectCity=parseInt(localStorage.getItem('initId'))
         }
-        // alert(parseInt(this.getUser.user.cityId))
         // this.selectCity=parseInt(this.getUser.user.cityId)
           this.cityName='武汉'
       // }
