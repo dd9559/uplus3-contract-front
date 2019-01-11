@@ -142,6 +142,8 @@
         if(localStorage.getItem('initId')){
           this.selectCity=parseInt(localStorage.getItem('initId'))
         }
+        // alert(parseInt(this.getUser.user.cityId))
+        // this.selectCity=parseInt(this.getUser.user.cityId)
           this.cityName='武汉'
       // }
       this.$ajax.get('/api/organize/cities').then((res)=>{
