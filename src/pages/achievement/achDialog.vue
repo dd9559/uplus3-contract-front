@@ -1294,9 +1294,9 @@ export default {
       // ==========================
       let resultArr = this.houseArr.concat(this.clientArr);
       for (var i = 0; i < resultArr.length; i++) {
-        sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
+        sum = this.toDecimal(sum,resultArr[i].ratio);
         if (
-          resultArr[i].roleName === "" ||
+          resultArr[i].roleType === "" ||
           resultArr[i].ratio === "" ||
           resultArr[i].assignor === "" ||
           resultArr[i].isJob.label === "" ||
@@ -1395,9 +1395,9 @@ export default {
       // ==========================
       let resultArr = this.houseArr.concat(this.clientArr);
       for (var i = 0; i < resultArr.length; i++) {
-        sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
+        sum = this.toDecimal(sum,resultArr[i].ratio);
         if (
-          resultArr[i].roleName === "" ||
+          resultArr[i].roleType === "" ||
           resultArr[i].ratio === "" ||
           resultArr[i].assignor === "" ||
           resultArr[i].isJob.label === "" ||
@@ -1485,9 +1485,9 @@ export default {
       // ==========================
 
       for (var i = 0; i < resultArr.length; i++) {
-        sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
+        sum = this.toDecimal(sum,resultArr[i].ratio);
         if (
-          resultArr[i].roleName === "" ||
+          resultArr[i].roleType === "" ||
           resultArr[i].ratio === "" ||
           resultArr[i].assignor === "" ||
           resultArr[i].isJob.label === "" ||
@@ -1605,9 +1605,9 @@ export default {
       // ==========================
       let resultArr = this.houseArr.concat(this.clientArr);
       for (var i = 0; i < resultArr.length; i++) {
-        sum = parseFloat(sum) + parseFloat(resultArr[i].ratio);
+       sum = this.toDecimal(sum,resultArr[i].ratio);
         if (
-          resultArr[i].roleName === "" ||
+          resultArr[i].roleType === "" ||
           resultArr[i].ratio === "" ||
           resultArr[i].assignor === "" ||
           resultArr[i].isJob.label === "" ||
@@ -1772,15 +1772,32 @@ export default {
         }       
     },
     personChose:function () {
-        this.checkPerson.state=false
-        let _this=this;
-        setTimeout(function(){_this.$emit("close");},50);
+      this.checkPerson.state=false
+      let _this=this;
+      setTimeout(function(){_this.$emit("close");},50);
     },
     closeCheckPerson(){
       this.checkPerson.state=false;
       let _this=this;
       setTimeout(function(){_this.$emit("close");},50);
-    }
+    },
+    toDecimal(num1, num2){
+        var sq1,sq2,m;
+           try {
+              sq1 = num1.toString().split(".")[1].length;
+         }
+           catch (e) {
+           sq1 = 0;
+         }
+         try {
+           sq2 = num2.toString().split(".")[1].length;
+         }
+         catch (e) {
+           sq2 = 0;
+         }
+         m = Math.pow(10,Math.max(sq1, sq2));
+         return (num1 * m + num2 * m) / m;
+   }
   },
   watch: {
     contractCode(val) {
@@ -2127,22 +2144,7 @@ export default {
       }
     }
   }
-  input::-webkit-input-placeholder {
-    /* WebKit browsers */
-    color: #c0c4cc;
-  }
-  input:-moz-placeholder {
-    /* Mozilla Firefox 4 to 18 */
-    color: #c0c4cc;
-  }
-  input::-moz-placeholder {
-    /* Mozilla Firefox 19+ */
-    color: #c0c4cc;
-  }
-  input:-ms-input-placeholder {
-    /* Internet Explorer 10+ */
-    color: #c0c4cc;
-  }
+
   .input-ratio {
     color: #606266;
   }
@@ -2165,4 +2167,21 @@ export default {
         // padding-left: 10px;
         font-size: 12px !important;
       }
+
+  /deep/ input::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #ccc!important;
+  }
+  /deep/ input:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #ccc!important;
+  }
+  /deep/ input::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #ccc!important;
+  }
+  /deep/ input:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #ccc!important;
+  }
 </style>
