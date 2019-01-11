@@ -43,7 +43,7 @@
                     </ul>
                 </div>
                 <div class="paper-top" v-if="!paperType"></div>
-                <vueEasyPrint tableShow ref="easyPrint">
+                <LayerPrint ref="easyPrint">
                     <LayerPaperInfo
                     :number="paperInfoData.contCode"
                     :name="paperInfoData.payerName"
@@ -62,7 +62,7 @@
                     :num="paperInfoData.printTimes"
                     :methodAndAmount="paperInfoData.methodAndAmount"
                     :payerType="paperInfoData.payerType"></LayerPaperInfo>
-                </vueEasyPrint>
+                </LayerPrint>
                 <!-- :imgSrc="paperInfoData.signImg" -->
             </div>
             <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint> -->
@@ -76,7 +76,8 @@
 
 <script>
     import LayerPaperInfo from '@/components/LayerPaperInfo';
-    import vueEasyPrint from "vue-easy-print";
+    import LayerPrint from '@/components/LayerPrint';
+    // import vueEasyPrint from "vue-easy-print";
     import { MIXINS } from "@/assets/js/mixins";
     import { Loading } from 'element-ui';
 
@@ -319,7 +320,8 @@
         },
         components: {
             LayerPaperInfo,
-            vueEasyPrint,
+            // vueEasyPrint,
+            LayerPrint
         },
         mounted() {
             // 枚举类型数据获取

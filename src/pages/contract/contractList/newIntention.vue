@@ -226,16 +226,6 @@ export default {
       }
     };
 
-    var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请选择客源编号'));
-        } else {
-          this.$refs.contractForm.validateField('guestinfoCode');
-          callback();
-        }
-      };
-
-
     return {
       choseHcode:0,//选择的房源编号
       choseGcode:0,//选择的客源编号
@@ -327,20 +317,20 @@ export default {
         ],
         subscriptionPrice: [{required: true, validator: checkPrice,trigger:'change' }],
         dealPrice: [{ required: true, validator: checkPrice,trigger:'change' }],
-        ownname: [{ type: "string",required: true, message: "请输入业主姓名",trigger:'change' }],
-        ownmobile: [{ type: "number",validator: telPhone,trigger:'change' }],
+        ownname: [{ required: true, message: "请输入业主姓名",trigger:'change' }],
+        ownmobile: [{ validator: telPhone,trigger:'change' }],
 
-        custname: [{ type: "string",required: true, message: "请输入客户姓名",trigger:'change' }],
-        custmobile: [{type: "number", validator: telPhone,trigger:'change' }],
+        custname: [{ required: true, message: "请输入客户姓名",trigger:'change' }],
+        custmobile: [{ validator: telPhone,trigger:'change' }],
 
         guestinfoCode: [
-          {  validator: validatePass, required: true, message: "请选择客源编号", trigger:'change'}
+          { required: true, message: "请选择客源编号", trigger:'change'}
         ],
         // guestInfo: {
         //   GuestStoreName: [{ required: true, message: "请选择门店" }],
         //   EmpName: [{ required: true, message: "请选择经纪人" }]
         // },
-        custIdentifyCode: [{ type: "number",validator: idCard,trigger:'change'}]
+        custIdentifyCode: [{ validator: idCard,trigger:'change'}]
         // contPersons:{
         //     // name: '',
         //     // mobile: '',
@@ -500,6 +490,14 @@ export default {
             };
             this.contractForm.custname = guestMsg.OwnerInfo.CustName;
             this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
+            this.$nextTick(function() {
+            
+            if(this.contractForm.guestinfoCode !==''){
+              this.$refs.contractForm.validateField('guestinfoCode');
+            }
+            
+
+          })
              
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
           }
@@ -702,17 +700,7 @@ export default {
           this.choseGcode=value.selectCode;
           this.isShowDialog = false;
 
-          // this.$nextTick(function() {
-
-          //   this.$refs.contractForm.validateField('guestinfoCode');
-
-          // })
-          // if (this.contractForm.guestinfoCode == '') {
-          //   debugger
-          //   this.$refs.contractForm.validateField('guestinfoCode');
-          // }
-
-          // this.checkRule(contractForm) 
+         
 
          
 
@@ -728,7 +716,6 @@ export default {
     },
 
     checkRule(contractForm) {
-     
       if(this.contractForm.ownmobile !=='' &&this.contractForm.custmobile !== ''&&((this.contractForm.ownmobile).trim() === (this.contractForm.custmobile).trim())){
         this.$message({
           type: "warning",
@@ -989,7 +976,7 @@ export default {
 <style lang="less" scoped>
 
 
-    .myconfirm{
+   .myconfirm{
         /deep/.el-dialog{
             width: 420px;
     
