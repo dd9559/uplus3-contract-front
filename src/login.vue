@@ -48,7 +48,6 @@
                 this.$router.push({
                   path:'contractList'
                 })
-                localStorage.setItem('initId',res.data.user.cityId)
               }else {
                 this.$message({
                   message:'无任何权限'

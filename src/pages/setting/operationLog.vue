@@ -5,6 +5,9 @@
         @propResetFormFn="resetFormFn">
             <el-form  class="header" ref="propForm" size="small">
                 <div class="content">
+                     <el-form-item label="关键字">
+                        <el-input v-model="keyword" placeholder="操作内容" size="small"></el-input>
+                    </el-form-item>
                     <el-form-item label="部门">
                          <select-tree :data="DepList" :init="departmentName"   @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                         <!-- <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
@@ -42,9 +45,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="关键字">
-                        <el-input v-model="keyword" placeholder="操作内容" size="small"></el-input>
-                    </el-form-item>
+                   
                 </div>
             </el-form>
         </ScreeningTop>
@@ -52,7 +53,7 @@
             <p>
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
             </p>
-            <el-table :data="tableData" style="width: 100%">
+            <el-table :data="tableData" style="width: 100%" border>
                 <el-table-column width='180' label="操作日期">
                     <template slot-scope="scope">
                         {{scope.row.createTime | formatTime}}
@@ -220,7 +221,7 @@
         > .el-form-item {
             display: flex;
             margin-right: 30px;
-            &:nth-child(1) /deep/ .el-form-item__content{
+            &:nth-child(2) /deep/ .el-form-item__content{
                 display: flex;
                 span{
                     margin-right: 5px;

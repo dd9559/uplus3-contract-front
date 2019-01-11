@@ -89,6 +89,7 @@ const MIXINS = {
         res=res.data
         if(res.status===200){
           this.userMsg = res.data.user;
+          localStorage.setItem('initId',res.data.user.cityId)
         }
       })
     },
