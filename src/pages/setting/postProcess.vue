@@ -150,7 +150,4 @@
   border-color: #478DE3;
   color: #478DE3;
 }
-/deep/ .el-table__empty-block {
-  line-height: 60px;
-}
 </style>
