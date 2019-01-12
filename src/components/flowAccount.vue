@@ -286,28 +286,28 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 #flowaccount {
-  .el-dialog {
+  /deep/.el-dialog {
     width: 800px;
     height: 600px;
     overflow-y: auto;
   }
-  .el-dialog__body {
+  /deep/.el-dialog__body {
     padding: 10px 20px 30px;
     color: #233241;
   }
-  .el-tabs__nav-wrap::after {
+  /deep/.el-tabs__nav-wrap::after {
     background-color: transparent;
   }
-  .el-dialog__header {
+  /deep/.el-dialog__header {
     border-bottom: 1px solid #edecf0;
     padding: 16px 20px 15px;
     span {
       color: #233241;
       font-size: 20px;
     }
-    .el-dialog__headerbtn {
+    /deep/.el-dialog__headerbtn {
       top: 16px;
       .el-dialog__close {
         font-size: 24px;
@@ -315,13 +315,13 @@ export default {
       }
     }
   }
-  .el-table .cell {
+  /deep/.el-table .cell {
     text-align: center;
   }
-  .el-table th {
+  /deep/.el-table th {
     background-color: #eef2fb;
   }
-  .el-table th div {
+  /deep/.el-table th div {
     color: #6c7986;
   }
   .title_ {
