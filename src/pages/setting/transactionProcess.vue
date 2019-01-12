@@ -502,6 +502,7 @@
         for(var i = 0; i < this.manageData.length; i++) {
           if(i === index) {
             this.manageData[i].settlePercent = this.manageData[index].settlePercent.replace(/[^\.\d]/g,'')
+            this.manageData[i].settlePercent = this.manageData[index].settlePercent.replace('.','')
             this.$set(this.manageData[i],'isSettle',1)       
           } else {
             this.manageData[i].settlePercent = ""

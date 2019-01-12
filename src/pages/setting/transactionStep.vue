@@ -226,6 +226,7 @@
         inputMax: 30,
         allRows: [],
         tableHeight: 0,
+        rowIndex: 0,
         power: {
           'sign-set-hq': {
             state: false,
@@ -262,8 +263,8 @@
           res = res.data
           if (res.status === 200) {
             this.listData = res.data
-            this.listData_other = this.listData.length !== 0 ? this.listData[0].stepsList : []
-            this.currentRow = this.listData[0]
+            this.listData_other = this.listData.length !== 0 ? this.listData[this.rowIndex].stepsList : []
+            this.currentRow = this.listData[this.rowIndex]
             }
           }).catch(error => {
               this.$message({message:error})
@@ -282,6 +283,12 @@
         }
         cell.parentNode.firstElementChild.style.background = "#478DE3"
         cell.parentNode.firstElementChild.style.color = "#fff"
+        //获取当前点击行索引
+        this.listData.find((item,index) => {
+          if(row.typeName === item.typeName) {
+            this.rowIndex = index
+          }
+        })
       },
       firstCellLight() {
         if(this.allRows.length) {
@@ -343,7 +350,6 @@
           } else {
             let flag
             if(this.addForm.dutyType) {
-              debugger
               for(let i = 0; i < this.tempRoleList.length; i++) {
                 if(this.addForm.dutyType === this.tempRoleList[i].value) {
                   this.addForm.dutyId = this.tempRoleList[i].key
@@ -367,7 +373,7 @@
                     this.$message(res.message)
                     this.stepsTypeDialog = false
                     this.getData()
-                    this.firstCellLight()
+                    // this.firstCellLight()
                   }
                 }).catch(error => {
                     this.$message({message:error})
@@ -380,10 +386,10 @@
                 this.$ajax.postJSON(`/api/flowmanage/updateStepsType`,param).then(res => {
                   res = res.data
                   if(res.status === 200) {
-                    this.$message("编辑步骤类型成功")
+                    this.$message("修改成功")
                     this.stepsTypeDialog = false
                     this.getData()
-                    this.firstCellLight()
+                    // this.firstCellLight()
                   }
                 }).catch(error => {
                     this.$message({message:error})
@@ -451,7 +457,7 @@
             this.$message(res.message)
             this.tradeStepsDialog = false
             this.getData()
-            this.firstCellLight()
+            // this.firstCellLight()
           }
         }).catch(error => {
             this.$message({message:error})
@@ -502,13 +508,26 @@
               }
             });
           } else if (type === "stepsType") {
-            const url = "/api/flowmanage/deleteStepsType"
-            const info = "删除步骤类型"
             let param = {
               id: row.typeId
             }
-            const msg = "删除步骤类型成功"
-            this.deleteStepsPost(url,info,param,msg)
+            this.$confirm('是否删除该信息?', "删除步骤类型", {
+              distinguishCancelAndClose: true,
+              confirmButtonText: '确定',
+              cancelButtonText: '取消'
+            }).then(() => {
+              this.rowIndex = 0
+              this.$ajax.post('/api/flowmanage/deleteStepsType',param).then(res => {
+                res = res.data
+                if(res.status === 200) {
+                  this.$message({message:"删除步骤类型成功"})
+                  this.getData()
+                  this.firstCellLight()
+                }
+              }).catch(error => {
+                  this.$message({message:error})
+              })
+            })
           } else if (type === "stepBusiness") {
             const url = "/api/flowmanage/deleteSteps"
             const info = "删除交易步骤"
@@ -520,7 +539,7 @@
           }
         }
       },
-      //删除步骤类型和交易步骤请求
+      //删除交易步骤请求
       deleteStepsPost(url,info,param,msg) {
         this.$confirm('是否删除该信息?', info, {
           distinguishCancelAndClose: true,
@@ -532,7 +551,6 @@
             if(res.status === 200) {
               this.$message(msg)
               this.getData()
-              this.firstCellLight()
             }
           }).catch(error => {
               this.$message({message:error})
