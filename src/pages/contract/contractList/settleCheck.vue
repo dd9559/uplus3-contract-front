@@ -84,7 +84,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="发起日期" align="center">
+        <el-table-column label="发起日期" align="center" min-width="84">
           <template slot-scope="scope">
             <p>{{scope.row.sponsorTime | getDate}}</p>
           </template>
@@ -111,7 +111,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="审核日期" align="center">
+        <el-table-column label="审核日期" align="center" min-width="84">
           <template slot-scope="scope">
             <p>{{scope.row.examineTime | getDate}}</p>
           </template>
@@ -485,7 +485,7 @@
 
         // 分页
         pageNum: 1,
-        pageSize: 50,
+        pageSize: 10,
         count: 0,
 
         power: {

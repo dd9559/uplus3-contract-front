@@ -280,25 +280,25 @@
                 <div v-for="item in scope.row.distributions">
                   <div>
                     <div v-if="item.roleType==1">
-                      <p>录入</p>
+                      <p>录入人</p>
                     </div>
                     <div v-if="item.roleType==2">
-                      <p>维护</p>
+                      <p>维护人</p>
                     </div>
                     <div v-if="item.roleType==3">
-                      <p>独家</p>
+                      <p>独家人</p>
                     </div>
                     <div v-if="item.roleType==4">
-                      <p>房勘</p>
+                      <p>房勘人</p>
                     </div>
                     <div v-if="item.roleType==5">
-                      <p>钥匙</p>
+                      <p>钥匙人</p>
                     </div>
                     <div v-if="item.roleType==15">
-                      <p>委托</p>
+                      <p>委托人</p>
                     </div>
                     <div v-if="item.roleType==16">
-                      <p>建盘</p>
+                      <p>建盘人</p>
                     </div>
 
                     <div v-if="item.roleType==6">
@@ -313,10 +313,10 @@
                       <p>A/M</p>
                     </div>
                     <div v-if="item.roleType==7">
-                      <p>协议方</p>
+                      <p>协议分成人</p>
                     </div>
                     <div v-if="item.roleType==17">
-                      <p>协议方2</p>
+                      <p>协议分成人2</p>
                     </div>
 
                     <div v-if="item.roleType==8">
