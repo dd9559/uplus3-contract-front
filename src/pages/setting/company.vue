@@ -843,11 +843,11 @@
       },
       getInt(num,index) {
         if(num===1) {
-          this.searchForm.bankCard = this.searchForm.bankCard.replace(/[^\.\d]/g,'')
+          this.searchForm.bankCard = this.searchForm.bankCard.replace(/[^\?\d]/g,'')
         } else if(num===2) {
-          this.companyForm.lepPhone = this.companyForm.lepPhone.replace(/[^\.\d]/g,'')
+          this.companyForm.lepPhone = this.companyForm.lepPhone.replace(/[^\?\d]/g,'')
         } else if(num===3) {
-          this.companyBankList[index].bankCard = this.companyBankList[index].bankCard.replace(/[^\.\d]/g,'')
+          this.companyBankList[index].bankCard = this.companyBankList[index].bankCard.replace(/[^\?\d]/g,'')
         }
       },
       idTypeChange() {
