@@ -460,7 +460,7 @@
     methods: {
       getExcel:function () {
         let param = Object.assign({},this.searchForm)
-        if(param.timeRange.length>0){
+        if(Object.prototype.toString.call(param.timeRange)==='[object Array]'&&param.timeRange.length>0){
           param.startTime = param.timeRange[0]
           param.endTime = param.timeRange[1]
         }
