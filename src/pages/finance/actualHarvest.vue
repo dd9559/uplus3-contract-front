@@ -221,8 +221,16 @@
     methods: {
       getExcel:function () {
         let param = Object.assign({},this.searchForm)
-        delete param.pageSize
-        delete param.pageNum
+        if(Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){
+          param.beginDate = param.signTime[0]
+          param.endDate = param.signTime[1]
+          delete param.signTime
+        }
+        if(Object.prototype.toString.call(param.collectionTime)==='[object Array]'&&param.collectionTime.length>0){
+          param.beginProDate = param.collectionTime[0]
+          param.endProDate = param.collectionTime[1]
+          delete param.collectionTime
+        }
         this.excelCreate('/input/RceivablesExcel',param)
       },
       noScroll:function (payload) {

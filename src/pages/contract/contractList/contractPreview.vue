@@ -81,7 +81,10 @@
         <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
-    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint>
+    <!-- 打印 -->
+    <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint> -->
+    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
+    <div class="printMaskLayer" v-if="haveUrl"></div>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
@@ -287,10 +290,10 @@ export default {
             // debugger
             this.getUrl(pdfUrl);
             this.haveUrl=true;
-            setTimeout(()=>{
-              this.dayin();
-              this.fullscreenLoading=false;
-            },2000);
+            // setTimeout(()=>{
+            //   this.dayin();
+            //   this.fullscreenLoading=false;
+            // },2000);
             this.getContImg()
           }
         }).catch(error =>{
@@ -305,7 +308,12 @@ export default {
           id:this.id,
           type:value
         }
-        this.$ajax.post('/api/contract/signture', param).then(res=>{})
+        this.$ajax.post('/api/contract/signture', param).then(res=>{
+          res=res.data;
+          if(res.status===200){
+            this.haveUrl=true;
+          }
+        })
       }else{//打印(获取地址)
         let param = {
           id:this.id,
@@ -316,14 +324,19 @@ export default {
           if(res.status===200){
             let pdfUrl=res.data;
             this.getUrl(pdfUrl);
-            this.haveUrl=true;
+            // this.haveUrl=true;
           }
         })
       }
     },
     dayin(){
-      this.$refs.pdfPrint.print();
+      // this.$refs.pdfPrint.print();
       this.signature(4);
+    },
+    //关闭打印
+    closePrint(){
+       this.pdfUrl='';
+       this.haveUrl=false;
     },
     //获取签名
     getUrl(url){
@@ -585,6 +598,16 @@ export default {
 
 .view-container {
   background: @bg-white;
+  .printMaskLayer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    // display: none;
+    z-index: 8888;
+  }
   .header {
     // display: flex;
     // justify-content: space-between;

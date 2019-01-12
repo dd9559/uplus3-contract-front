@@ -30,11 +30,16 @@
         <span>交易步骤</span>
         <el-button type="primary" @click="addTradeSteps" v-if="power['sign-set-hq'].state">添加交易步骤</el-button>
       </div>
-      <el-table :data="listData_other" border>
+      <el-table :data="listData_other" border :max-height="tableHeight">
         <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
                         v-for="item in tHeader_other" :key="item.id">
         </el-table-column>
-        <el-table-column align="center" label="步骤附属信息">
+        <el-table-column align="center" label="计划天数" width="100">
+          <template slot-scope="scope">
+            <p>{{scope.row.planDays||scope.row.planDays===0?scope.row.planDays:'--'}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="步骤附属信息" width="200">
           <template slot-scope="scope">
             <p v-if="scope.row.transStepsAttach.length==0">--</p>
             <p v-for="(item,index) in scope.row.transStepsAttach" :key="index" v-else>{{item.title}}</p>
@@ -92,7 +97,7 @@
           </div>
           <div class="input-group">
             <label>计划天数：</label>
-            <el-input v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')" size="small"></el-input>
+            <el-input maxlength="3" v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')" size="small"></el-input>
           </div>
           <div class="menu-table">
             <h4>附属信息：</h4>
@@ -209,11 +214,6 @@
             id: 2,
             prop: "name",
             name: "步骤名称"
-          },
-          {
-            id: 3,
-            prop: "planDays",
-            name: "计划天数"
           }
         ],
         //交易步骤信息类型
@@ -226,6 +226,7 @@
         inputMax: 30,
         allRows: [],
         tableHeight: 0,
+        rowIndex: 0,
         power: {
           'sign-set-hq': {
             state: false,
@@ -262,8 +263,8 @@
           res = res.data
           if (res.status === 200) {
             this.listData = res.data
-            this.listData_other = this.listData.length !== 0 ? this.listData[0].stepsList : []
-            this.currentRow = this.listData[0]
+            this.listData_other = this.listData.length !== 0 ? this.listData[this.rowIndex].stepsList : []
+            this.currentRow = this.listData[this.rowIndex]
             }
           }).catch(error => {
               this.$message({message:error})
@@ -282,6 +283,12 @@
         }
         cell.parentNode.firstElementChild.style.background = "#478DE3"
         cell.parentNode.firstElementChild.style.color = "#fff"
+        //获取当前点击行索引
+        this.listData.find((item,index) => {
+          if(row.typeName === item.typeName) {
+            this.rowIndex = index
+          }
+        })
       },
       firstCellLight() {
         if(this.allRows.length) {
@@ -343,7 +350,6 @@
           } else {
             let flag
             if(this.addForm.dutyType) {
-              debugger
               for(let i = 0; i < this.tempRoleList.length; i++) {
                 if(this.addForm.dutyType === this.tempRoleList[i].value) {
                   this.addForm.dutyId = this.tempRoleList[i].key
@@ -354,7 +360,7 @@
               if(!flag) {
                 for(let i = 0; i < this.tempRoleList.length; i++) {
                   if(this.addForm.dutyType != this.tempRoleList[i].value) {
-                    this.$message({message:"选择的角色不存在"})
+                    this.$message({message:"选择的角色不存在",type:'warning'})
                   }
                 }
               } 
@@ -367,7 +373,7 @@
                     this.$message(res.message)
                     this.stepsTypeDialog = false
                     this.getData()
-                    this.firstCellLight()
+                    // this.firstCellLight()
                   }
                 }).catch(error => {
                     this.$message({message:error})
@@ -380,10 +386,10 @@
                 this.$ajax.postJSON(`/api/flowmanage/updateStepsType`,param).then(res => {
                   res = res.data
                   if(res.status === 200) {
-                    this.$message("编辑步骤类型成功")
+                    this.$message("修改成功")
                     this.stepsTypeDialog = false
                     this.getData()
-                    this.firstCellLight()
+                    // this.firstCellLight()
                   }
                 }).catch(error => {
                     this.$message({message:error})
@@ -398,7 +404,11 @@
         } else {
           if(this.stepBusiness.planDays) {
             if(!/^[0-9]+$/.test(this.stepBusiness.planDays)) {
-              this.$message("计划天数请输入正整数")
+              this.$message({message:"计划天数请输入正整数",type:'warning'})
+              return false
+            }
+            if(Number(this.stepBusiness.planDays) > 365) {
+              this.$message({message:"计划天数不能超过365天",type:'warning'})
               return false
             }
           }
@@ -427,7 +437,7 @@
               if(this.listData.length) {
                 this.tradeStepsPost(url)
               } else {
-                this.$message('无步骤类型不能新增交易步骤')
+                this.$message({message:'无步骤类型不能新增交易步骤',type:'warning'})
               }
             } else {
               const url = "/api/flowmanage/updateSteps"
@@ -451,7 +461,7 @@
             this.$message(res.message)
             this.tradeStepsDialog = false
             this.getData()
-            this.firstCellLight()
+            // this.firstCellLight()
           }
         }).catch(error => {
             this.$message({message:error})
@@ -502,13 +512,26 @@
               }
             });
           } else if (type === "stepsType") {
-            const url = "/api/flowmanage/deleteStepsType"
-            const info = "删除步骤类型"
             let param = {
               id: row.typeId
             }
-            const msg = "删除步骤类型成功"
-            this.deleteStepsPost(url,info,param,msg)
+            this.$confirm('是否删除该信息?', "删除步骤类型", {
+              distinguishCancelAndClose: true,
+              confirmButtonText: '确定',
+              cancelButtonText: '取消'
+            }).then(() => {
+              this.rowIndex = 0
+              this.$ajax.post('/api/flowmanage/deleteStepsType',param).then(res => {
+                res = res.data
+                if(res.status === 200) {
+                  this.$message({message:"删除步骤类型成功"})
+                  this.getData()
+                  this.firstCellLight()
+                }
+              }).catch(error => {
+                  this.$message({message:error})
+              })
+            })
           } else if (type === "stepBusiness") {
             const url = "/api/flowmanage/deleteSteps"
             const info = "删除交易步骤"
@@ -520,7 +543,7 @@
           }
         }
       },
-      //删除步骤类型和交易步骤请求
+      //删除交易步骤请求
       deleteStepsPost(url,info,param,msg) {
         this.$confirm('是否删除该信息?', info, {
           distinguishCancelAndClose: true,
@@ -532,7 +555,6 @@
             if(res.status === 200) {
               this.$message(msg)
               this.getData()
-              this.firstCellLight()
             }
           }).catch(error => {
               this.$message({message:error})

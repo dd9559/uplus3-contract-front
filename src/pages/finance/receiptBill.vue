@@ -380,7 +380,8 @@
       name:'刷卡银行'
     },
     amount:{
-      name:'金额'
+      name:'金额',
+      type:'money'
     },
     orderNo:{
       name:'订单号'
@@ -394,7 +395,8 @@
       name:'支付方式'
     },
     amount:{
-      name:'金额'
+      name:'金额',
+      type:'money'
     },
     activeAdmin:{
       name:'收帐账户'
@@ -565,7 +567,7 @@
         this.account=[]
       },
       handleNodeClick(data) {
-        this.getEmploye(data.depId)
+        this.getEmploye(data.depId,1,false)
         this.clearSelect()
         this.dep.id=data.depId
         this.dep.name=data.name

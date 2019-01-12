@@ -150,7 +150,11 @@
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收付方式" prop="method" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="150" label="收付方式">
+          <template slot-scope="scope">
+            <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="对象">
           <template slot-scope="scope">
             <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
@@ -430,8 +434,11 @@
     methods: {
       getExcel:function () {
         let param = Object.assign({},this.searchForm)
-        delete param.pageSize
-        delete param.pageNum
+        if(Object.prototype.toString.call(param.timeRange)==='[object Array]'&&param.timeRange.length>0){
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+        }
+        delete param.timeRange
         this.excelCreate(this.activeView===1?'/input/proceedsAuditExcel':'/input/payMentAuditExcel',param)
       },
       // 选择审核人

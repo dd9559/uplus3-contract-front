@@ -205,7 +205,7 @@
                     <el-option
                       v-for="item in shopkeepers"
                       :key="item.empId"
-                      :label="item.name"
+                      :label="item.name+'-'+item.depName"
                       :value="item.depId+'-'+item.name"
                     ></el-option>
                   </el-select>
@@ -260,7 +260,7 @@
                     <el-option
                       v-for="item in amaldars"
                       :key="item.empId"
-                      :label="item.name"
+                      :label="item.name+'-'+item.depName"
                       :value="item.depId+'-'+item.name"
                     ></el-option>
                   </el-select>
@@ -288,7 +288,7 @@
                     <el-option
                       v-for="item in managers"
                       :key="item.empId"
-                      :label="item.name"
+                      :label="item.name+'-'+item.depName"
                       :value="item.depId+'-'+item.name"
                     ></el-option>
                   </el-select>
@@ -489,7 +489,7 @@
                     <el-option
                       v-for="item in shopkeepers"
                       :key="item.empId"
-                      :label="item.name"
+                      :label="item.name+'-'+item.depName"
                       :value="item.depId+'-'+item.name"
                     ></el-option>
                   </el-select>
@@ -544,7 +544,7 @@
                     <el-option
                       v-for="item in amaldars"
                       :key="item.empId"
-                      :label="item.name"
+                      :label="item.name+'-'+item.depName"
                       :value="item.depId+'-'+item.name"
                     ></el-option>
                   </el-select>
@@ -572,7 +572,7 @@
                     <el-option
                       v-for="item in managers"
                       :key="item.empId"
-                      :label="item.name"
+                      :label="item.name+'-'+item.depName"
                       :value="item.depId+'-'+item.name"
                     ></el-option>
                   </el-select>
@@ -893,7 +893,8 @@ export default {
              let param = {
                keyword: queryString,
                pageNum:1,
-               pageSize:100    
+               pageSize:100, 
+               leave:true     
              };
              this.$ajax.get("/api/organize/employees/pages", param).then(res => {
                console.log(res.status);
@@ -914,7 +915,8 @@ export default {
              let param = {
                keyword: queryString,
                pageNum:page,
-               pageSize:100    
+               pageSize:100,
+               leave:true   
              };
              this.$ajax.get("/api/organize/employees/pages", param).then(res => {
                console.log(res.status);
@@ -1057,7 +1059,8 @@ export default {
          let param = {
            "keyword": queryString,
             pageNum:1,
-            pageSize:100  
+            pageSize:100,  
+            leave:true  
          };
          this.$ajax.get("/api/organize/employees/pages", param).then(res => {
           if(roleId==2){
@@ -1080,7 +1083,8 @@ export default {
          let param = {
            "keyword": queryString,
             pageNum:page,
-            pageSize:100  
+            pageSize:100,
+            leave:true  
          };
          this.$ajax.get("/api/organize/employees/pages", param).then(res => {
           if(roleId==2){
@@ -1755,31 +1759,31 @@ export default {
     },
     selectRadio(index,e,type,select){
       let event = window.event||e;
-      let target= event .target || event .srcElement; 
+      let target= event.target || event.srcElement; 
       console.log(event.target.checked);
       if(type==0){
-        if(target.checked===true){ 
+        if(target.parentNode.className.indexOf("is-checked") !== -1){ 
              this.houseArr[index].place = -1;   
-        }else{
-             this.houseArr[index].place =select; 
         }
         }else{
-           if(target.checked){ 
+           if(target.parentNode.className.indexOf("is-checked") !== -1){ 
                this.clientArr[index].place = -1;
-          }else{
-               this.clientArr[index].place =select; 
           }
         }       
     },
     personChose:function () {
       this.checkPerson.state=false
       let _this=this;
-      setTimeout(function(){_this.$emit("close");},50);
+      if(this.dialogType == 3){
+        setTimeout(function(){_this.$emit("close");},50);
+      }
     },
     closeCheckPerson(){
       this.checkPerson.state=false;
       let _this=this;
-      setTimeout(function(){_this.$emit("close");},50);
+      if(this.dialogType == 3){
+        setTimeout(function(){_this.$emit("close");},50);
+      }
     },
     toDecimal(num1, num2){
         var sq1,sq2,m;

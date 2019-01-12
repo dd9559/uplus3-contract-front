@@ -44,23 +44,23 @@ export default {
 </script>
 <style lang="less" scoped>
 .preview-pdf{
-    position: absolute;
-    width: 0;
-    height: 0;
-    z-index: -999;
     // position: absolute;
-    // top: 50%;
-    // left: 50%;
-    // transform: translate(-50%,-52%);
-    // z-index: 9999;
-    // >span{
-    //     position: absolute;
-    //     right: 20px;
-    //     top: 5px;
-    //     color: #fff;
-    //     font-size: 16px;
-    //     cursor: pointer;
-    // }
+    // width: 0;
+    // height: 0;
+    // z-index: -999;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-52%);
+    z-index: 9999;
+    >span{
+        position: absolute;
+        right: 20px;
+        top: 5px;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
 }
 </style>
 

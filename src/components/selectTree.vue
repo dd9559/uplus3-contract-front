@@ -1,18 +1,18 @@
 <template>
   <el-popover
-    id="popOther"
-    @hide="checkInput"
+    @show="initList('show')"
+    @hide="initList('hide')"
     ref="popover"
     placement="bottom"
     v-model="visible">
     <div class="select-tree">
-      <el-tree accordion :data="dataList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+      <el-tree accordion :data="list" :props="defaultProps" @node-click="depHandleClick"></el-tree>
     </div>
     <p class="tree-box" slot="reference" @click="opera('init',$event)" @mouseenter="showClear"
        @mouseleave="clearVal=false">
-      <el-input size="small" class="w200" ref="btn" placeholder="请选择" v-model="inputVal" @clear="opera('clear',$event)"
-                @input.native="getDep">
+      <el-input size="small" class="w200" ref="btn" placeholder="请选择" v-model="inputVal" @keyup.native="getDep">
       </el-input>
+      <!--<input type="text" placeholder="请选择" ref="btn" v-model="inputVal" @input="getDep">-->
       <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']"
                                 v-if="!clearVal"></i><i class="iconfont icon-tubiao-7" v-else
                                                         @click.stop="opera('clear')"></i></span>
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+  let _list = []
+  let _inputVal = ''
   export default {
     name: "select-tree",
     props: {
@@ -53,10 +55,11 @@
         iconUp: true,
         pop: true,//弹窗是否失焦
         list: [],
+        cellClick:false,//是否选择
       }
     },
     mounted(){
-      // this.getList()
+      this.getList()
       this.$nextTick(()=>{
         let that=this
         document.onmousedown=function (e) {
@@ -69,10 +72,6 @@
     watch: {
       init: function (val) {
         this.inputVal = val
-        console.log('111')
-        if (this.inputVal === '') {
-          this.getDep('', true)
-        }
       }
     },
     methods: {
@@ -82,8 +81,8 @@
         }
       },
       depHandleClick: function (data) {
-        this.pop = false
-        this.$refs.btn.focus()
+        this.cellClick=true
+        _inputVal=data.name
         if (data.subs.length === 0) {
           // debugger
           this.$refs.popover.showPopper = false
@@ -92,9 +91,6 @@
         this.$emit('checkCell', data)
       },
       opera: function (type, e) {
-        // let e=event||window.event
-        // console.log(e.currentTarget)
-        // debugger
         if (type === 'init') {
           this.visible = true
           this.$refs.popover.showPopper = true
@@ -102,6 +98,7 @@
         } else if (type === 'clear') {
           this.visible = false
           this.$refs.popover.showPopper = false
+          this.list = _list.map(item=>Object.assign({},item))
           /*if(this.init.length>0){
           }else {
             this.inputVal=''
@@ -110,40 +107,42 @@
           this.$emit('clear')
         }
       },
-      getList:function (keyword='') {
+      initList:function (type='hide') {
+        // this.inputVal=''
+        if(type==='hide'){
+          if(_inputVal!==this.inputVal){
+            this.inputVal=''
+          }
+          /*if(this.list.length!==_list.length){
+            this.list = _list.map(item=>Object.assign({},item))
+          }*/
+        }else {
+          this.list = _list.map(item=>Object.assign({},item))
+          _inputVal=this.inputVal
+          this.cellClick=false
+        }
+      },
+      getList:function (keyword='',type='init') {
         this.$ajax.get('/api/access/deps/tree', {keyword: keyword}).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list=res.data
+            if(type==='init'){
+              _list=res.data.map(item=>Object.assign({},item))
+            }
           }
         })
       },
       //部门搜索
       getDep: function (e, clear = false) {
-        // console.log(e.target.value)
-        if (!clear) {
-          this.inputVal = e.target.value
+        this.visible=true
+        this.inputVal = e.target.value
+        if(this.inputVal.length>0){
+          this.getList(this.inputVal,'search')
+          this.$emit('search')
+        }else {
+          this.list = _list.map(item=>Object.assign({},item))
         }
-        this.$ajax.get('/api/access/deps/tree', {keyword: this.inputVal}).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.$emit('search', {list: res.data, depName: this.inputVal})
-          }
-        })
-      },
-      checkInput: function () {
-        /*debugger
-        if(!this.pop&&this.inputVal.length===0){
-          this.visible=true
-          this.pop=true
-        }*/
-      },
-      show: function () {
-        /*if(this.clearOper){
-          console.log('test')
-          this.$refs.popover.showPopper=false
-          return
-        }*/
       }
     },
     computed: {

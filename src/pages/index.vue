@@ -154,7 +154,7 @@
         return require(`@/assets/img/${url}`)
       },
       logout:function (type) {
-        console.log(this.getUser)
+        // console.log(this.getUser)
         if(type===1){
           this.$ajax.post('/api/logout').then(res=>{
             this.$router.push({
@@ -369,6 +369,9 @@
                 }
               }
             }
+            .el-table__body-wrapper{
+              /*overflow-y: scroll;*/
+            }
             // &.info-scrollbar{
             //   margin-bottom: 54px;
             //   .el-table__body-wrapper{
@@ -392,6 +395,9 @@
   /deep/ .pagination-info{
     text-align: center;
     margin-top: @margin-15;
+  }
+  /deep/ .el-table__empty-block {
+    line-height: 60px;
   }
 </style>
 

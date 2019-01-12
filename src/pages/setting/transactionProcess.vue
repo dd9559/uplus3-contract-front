@@ -127,6 +127,7 @@
         AllSteps: [],
         inputMax: 30,
         flowName: "",
+        tempName: "",
         tableHeight: 0,
         power: {
           'sign-set-hq': {
@@ -167,6 +168,7 @@
           this.processTitle = "编辑交易流程"
           this.processId = row.id
           this.addForm.name = row.name
+          this.tempName = row.name
         } else if(type === 'init') {
           this.dialogManageVisible = true
           this.currentFlowId = row.id
@@ -185,7 +187,7 @@
                   i.sort = ++index
                 }
               })
-              i.settlePercent = i.settlePercent === 0 ? "" : Number(i.settlePercent)
+              i.settlePercent = i.settlePercent === 0 ? "" : i.settlePercent
             })
             this.tempManage = JSON.parse(JSON.stringify(this.manageData))
           }).catch(error => {
@@ -222,6 +224,10 @@
             param = Object.assign({},this.addForm,param)
             this.processPost(param,msg)
           } else {
+            if(this.tempName === this.addForm.name) {
+              this.$message({message:"没有做任何修改"})
+              return false
+            }
             let param = {
               id: this.processId,
               cityId: this.cityId
@@ -410,7 +416,7 @@
                 transStepsId: item.transStepsId,
                 sort: item.sort,
                 isSettle: item.isSettle,
-                settlePercent: item.settlePercent===""?0:Number(item.settlePercent)
+                settlePercent: item.settlePercent===""?0:item.settlePercent
               })
             } else {
               arr.push({
@@ -418,23 +424,28 @@
                 sort: item.sort,
                 isSettle: item.isSettle,
                 id: item.id ? item.id : null,
-                settlePercent: item.settlePercent===""?0:Number(item.settlePercent)
+                settlePercent: item.settlePercent===""?0:item.settlePercent
               })
             }
           })
           var num = 0
           for(var i = 0; i < arr.length; i++) {
             if(arr[i].settlePercent) {
-              num = Number(arr[i].settlePercent)
+              num = arr[i].settlePercent
             }
           }
+          if(!/^\d+(\.\d{0,2})?$/.test(num)) {
+            this.$message({message:"结算百分比输入格式不正确",type:'warning'})
+            return false
+          }
+          num = Number(num)
           let param = {
             transFlowId: this.currentFlowId,
             transStepsList: arr
           }
           if(arr.length !== 0) {
             if(num > 100) {
-              this.$message({message:"结算百分比不能超过100%"})
+              this.$message({message:"结算百分比不能超过100%",type:'warning'})
               return false
             }
             if(this.flowCount === 0) {
@@ -495,7 +506,7 @@
       getInt:function (index) {
         for(var i = 0; i < this.manageData.length; i++) {
           if(i === index) {
-            this.manageData[i].settlePercent = this.manageData[index].settlePercent.replace(/[^\.\d]/g,'')
+            this.manageData[i].settlePercent = this.manageData[index].settlePercent.replace(/[^\?\d.]/g,'')
             this.$set(this.manageData[i],'isSettle',1)       
           } else {
             this.manageData[i].settlePercent = ""
@@ -580,6 +591,13 @@
         padding-left: 50px;
         border-bottom: 1px solid #ebeef5;
         &:last-child { border-bottom: none; }
+        /deep/ .el-checkbox__label {
+          width: 220px;
+          white-space:normal;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+        }
       }
       /deep/ .el-table__row {
           td:first-child {

@@ -6,7 +6,7 @@
 				<div class="textareabox">
 					<p class="form-label">合同变更原因</p>
 					<div class="reason">
-						<el-input type="textarea" :rows="6" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:595px" maxlength="100">
+						<el-input type="textarea" :rows="6" placeholder="请填写合同变更原因，最多100字" v-model="textarea" resize='none' style="width:570px" maxlength="100">
 						</el-input>
 						<span>{{textarea.length}}/100</span>
 					</div>
@@ -42,7 +42,7 @@
 					<p>合同变更原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
-						<el-input type="textarea" :disabled="true" :rows="5" placeholder="暂无备注" v-model="textarea" resize='none' style="width:595px" maxlength="100">
+						<el-input type="textarea" :disabled="true" :rows="5" placeholder="暂无备注" v-model="textarea" resize='none' style="width:570px" maxlength="100">
 						</el-input>
 						<span>{{textarea.length}}/100</span>
 					</div>
@@ -74,7 +74,7 @@
 					<p class="form-label">合同解约原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
-						<el-input type="textarea" :rows="5" placeholder="请填写合同解约原因，最多100字" v-model="textarea" resize='none' style="width:595px" maxlength="100">
+						<el-input type="textarea" :rows="5" placeholder="请填写合同解约原因，最多100字" v-model="textarea" resize='none' style="width:570px" maxlength="100">
 						</el-input>
 						<span>{{textarea.length}}/100</span>
 					</div>
@@ -110,7 +110,7 @@
 					<p>合同解约原因</p>
 					<!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
 					<div class="reason">
-						<el-input type="textarea" :rows="6" :disabled="true" placeholder="请填写合同解约原因，最多100字" v-model="textarea" resize='none' style="width:595px" maxlength="100">
+						<el-input type="textarea" :rows="6" :disabled="true" placeholder="请填写合同解约原因，最多100字" v-model="textarea" resize='none' style="width:570px" maxlength="100">
 						</el-input>
 						<span>{{textarea.length}}/100</span>
 					</div>
@@ -477,7 +477,7 @@ export default {
 
     .audit-box {
       padding: 26px 20px 10px 20px;
-      max-height: 500px;
+      height: 400px;
       overflow-y: auto;
       .textareabox {
         display: flex;

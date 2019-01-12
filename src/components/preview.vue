@@ -150,16 +150,26 @@
             let img = new Image()
             img.src=src
             img.onload=function () {
+              // debugger
               //防止图片未加载，获取width为0的情况
               this.persent = parseFloat((img.width/img.height).toFixed(2))
               this.imgWidth=img.width
               if(img.width>1000){
                 this.imgWidth=800
-                picture.style.height=`${800/this.persent}px`
-              }
-              if(img.height>window.innerHeight){
-                picture.style.height=`${window.innerHeight}px`
-                this.imgWidth=window.innerHeight*this.persent
+                // picture.style.height=`${800/this.persent}px`
+                if(img.height>window.innerHeight){
+                  // picture.style.height=`${window.innerHeight}px`
+                  if(this.persent>1){
+                    this.imgWidth=window.innerHeight*this.persent*0.6
+                  }else {
+                    this.imgWidth=window.innerHeight*this.persent
+                  }
+                }
+              }else {
+                if(img.height>window.innerHeight){
+                  // picture.style.height=`${window.innerHeight}px`
+                  this.imgWidth=window.innerHeight*this.persent
+                }
               }
               this.initWidth=this.imgWidth
               /*if(img.width<=200){
