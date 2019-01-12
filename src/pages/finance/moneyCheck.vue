@@ -430,8 +430,11 @@
     methods: {
       getExcel:function () {
         let param = Object.assign({},this.searchForm)
-        delete param.pageSize
-        delete param.pageNum
+        if(param.timeRange.length>0){
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+        }
+        delete param.timeRange
         this.excelCreate(this.activeView===1?'/input/proceedsAuditExcel':'/input/payMentAuditExcel',param)
       },
       // 选择审核人
