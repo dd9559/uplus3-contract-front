@@ -625,17 +625,17 @@
             let type = this.companyForm.lepDocumentType
             if(val&&type===1) {
               if(!checkIdVlidate(val)) {
-                this.$message('身份证号格式不正确')
+                this.$message({message:'身份证号格式不正确',type:'warning'})
                 return false
               }
             } else if(val&&type===2) {
               if(!/^[a-zA-Z0-9]{5,17}$/.test(val)) {
-                this.$message('护照格式不正确')
+                this.$message({message:'护照格式不正确',type:'warning'})
                 return false
               }
             } else if(val&&type===3) {
               if(!/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(val)) {
-                this.$message('港澳通行证格式不正确')
+                this.$message({message:'港澳通行证格式不正确',type:'warning'})
                 return false
               }
             }
@@ -646,7 +646,7 @@
           if(this.companyForm.lepPhone) {
             let val = this.companyForm.lepPhone
             if(!checkPhoneVlidate(val)) {
-              this.$message('手机号码不正确')
+              this.$message({message:'手机号码不正确',type:'warning'})
               return false
             } else {
               if(!this.companyForm.documentType) {

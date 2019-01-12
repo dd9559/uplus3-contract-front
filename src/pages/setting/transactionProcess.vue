@@ -435,7 +435,7 @@
             }
           }
           if(!/^\d+(\.\d{0,2})?$/.test(num)) {
-            this.$message({message:"结算百分比输入格式不正确"})
+            this.$message({message:"结算百分比输入格式不正确",type:'warning'})
             return false
           }
           num = Number(num)
@@ -445,7 +445,7 @@
           }
           if(arr.length !== 0) {
             if(num > 100) {
-              this.$message({message:"结算百分比不能超过100%"})
+              this.$message({message:"结算百分比不能超过100%",type:'warning'})
               return false
             }
             if(this.flowCount === 0) {
