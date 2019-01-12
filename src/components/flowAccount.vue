@@ -296,6 +296,11 @@ export default {
   /deep/.el-dialog__body {
     padding: 10px 20px 30px;
     color: #233241;
+    .title_ {
+      font-weight: bold;
+      color: #233241;
+      background: #EDECF0;
+    }
   }
   /deep/.el-tabs__nav-wrap::after {
     background-color: transparent;
@@ -324,10 +329,6 @@ export default {
   /deep/.el-table th div {
     color: #6c7986;
   }
-  .title_ {
-    font-weight: bold;
-		color: #233241;
-		background: #EDECF0;
-  }
+  
 }
 </style>

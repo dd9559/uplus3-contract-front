@@ -111,6 +111,7 @@
             </li>
           </ul> -->
         </div>
+        <el-button class="f_r" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;">导出</el-button>
       </div>
       <!-- 头部 end -->
       <!-- 表格 -->
@@ -271,6 +272,12 @@ export default {
   },
   components: {},
   methods: {   
+   // 导出功能
+    getExcel(){
+        this.ajaxParam.is_Receivable=2;
+        let param = Object.assign({},this.ajaxParam)
+        this.excelCreate('/input/achievementExcel',param)
+    },
     getData(param) {
        // 实收列表
         let _that = this;
