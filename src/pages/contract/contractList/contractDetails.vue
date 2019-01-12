@@ -396,15 +396,10 @@
                     <span class="duration">
                       <span>{{scope.row.talkTime|SecondFormat}}</span>
                       <el-progress :percentage="recordKey===scope.$index?playTime:0" :show-text="false"></el-progress>
-                      <!-- <span class="totalTime" v-else>
-                        <span class="playTime"></span>
-                      </span> -->
                     </span>
                   </div>
                   <span v-else>--</span>
                   <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio>
-                  <!-- <audio src="http://voicedownload.jjdc.com.cn:8081/api/CallService/DownloadSoundRecording?Url=f9e885accb3bc5ae83a4ea943b2fb381" :id="'audio'+scope.$index"></audio> -->
-                  <!-- ../../../../static/录音-001.MP3 -->
                 </template>
               </el-table-column>
               <el-table-column label="备注" width="320">
@@ -1200,6 +1195,7 @@ export default {
         myAudio.onended=function(e){
           that.playTime=0;
           that.isPlay=false;
+          myAudio.pause();
         }
       }else{
         this.noPower('听取录音')

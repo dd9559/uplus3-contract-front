@@ -343,7 +343,7 @@
     </el-dialog>
     <!-- 打印 -->
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
-    <!-- <div class="printMaskLayer" v-if="haveUrl"></div> -->
+    <div class="printMaskLayer" v-if="haveUrl"></div>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
@@ -939,14 +939,13 @@ export default {
     //打印空白合同
     printCont(command){
       this.pdfUrl='';
-      // this.$refs.previewPdf.contentWindow.print();
       this.haveUrl=false;
       if(command===1){
         if(this.blankPdf1){
           this.getUrl(this.blankPdf1);
-          setTimeout(()=>{
-            this.$refs.pdfPrint.print();
-          },1500)
+          // setTimeout(()=>{
+          //   this.$refs.pdfPrint.print();
+          // },1500)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -955,16 +954,6 @@ export default {
       }else if(command===2){
         if(this.blankPdf2){
           this.getUrl(this.blankPdf2);
-          setTimeout(()=>{
-            this.$refs.pdfPrint.print();
-          },2000)
-
-          // this.fileSign([this.blankPdf2],'download')
-
-          //  setTimeout(()=>{
-          //   this.$refs.previewPdf.contentWindow.print();
-          // },1000)
-          
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -973,9 +962,9 @@ export default {
       }else if(command===3){
         if(this.blankPdf3){
           this.getUrl(this.blankPdf3);
-          setTimeout(()=>{
-            this.$refs.pdfPrint.print();
-          },2000)
+          // setTimeout(()=>{
+          //   this.$refs.pdfPrint.print();
+          // },2000)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -984,9 +973,9 @@ export default {
       }else if(command===4){
         if(this.blankPdf4){
           this.getUrl(this.blankPdf4);
-          setTimeout(()=>{
-            this.$refs.pdfPrint.print();
-          },2000)
+          // setTimeout(()=>{
+          //   this.$refs.pdfPrint.print();
+          // },2000)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -995,9 +984,9 @@ export default {
       }else if(command===5){
         if(this.blankPdf5){
           this.getUrl(this.blankPdf5);
-          setTimeout(()=>{
-            this.$refs.pdfPrint.print();
-          },2000)
+          // setTimeout(()=>{
+          //   this.$refs.pdfPrint.print();
+          // },2000)
         }else{
           this.$message({
             message:'该类型合同模板未上传,请上传后再打印'
@@ -1043,8 +1032,6 @@ export default {
         if(res.status ===200){
           this.pdfUrl = res.data.url;
           this.haveUrl=true;
-          // debugger
-          // this.fileSign([res.data.url],'download')
         }
       })
     }
