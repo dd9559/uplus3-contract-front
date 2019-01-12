@@ -175,7 +175,11 @@
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收付方式" prop="method" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="160" label="收付方式">
+          <template slot-scope="scope">
+            <span>{{scope.row.method}}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="对象">
           <template slot-scope="scope">
             <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
@@ -472,13 +476,6 @@
         this.currentPage = val
         this.getData()
       },
-      initDepList: function (val) {
-        if (!val) {
-          this.remoteMethod()
-        }else {
-
-        }
-      },
       clearDep: function () {
         this.searchForm.deptId = ''
         this.searchForm.depName = ''
@@ -486,15 +483,11 @@
         this.searchForm.empId = ''
         this.clearSelect()
       },
-      checkInput:function () {
-        debugger
-        if(this.dep.name!==this.searchForm.depName){
-          this.searchForm.depName=this.dep.name
-        }
-      },
       searchDep:function (payload) {
-        this.DepList=payload.list
-        this.searchForm.depName=payload.depName
+        /*this.DepList=payload.list
+        this.searchForm.depName=payload.depName*/
+        this.searchForm.empId = ''
+        this.clearSelect('emp')
       },
       depHandleClick(data) {
         // this.getEmploye(data.depId)

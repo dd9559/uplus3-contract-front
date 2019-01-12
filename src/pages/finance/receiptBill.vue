@@ -565,7 +565,7 @@
         this.account=[]
       },
       handleNodeClick(data) {
-        this.getEmploye(data.depId)
+        this.getEmploye(data.depId,1,false)
         this.clearSelect()
         this.dep.id=data.depId
         this.dep.name=data.name

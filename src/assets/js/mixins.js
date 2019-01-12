@@ -105,8 +105,8 @@ const MIXINS = {
         }
       })
     },
-    getEmploye:function (val,page=1) {
-      this.$ajax.get('/api/organize/employees/pages',{depId:val,pageNum:page}).then(res=>{
+    getEmploye:function (val,page=1,sub=true) {
+      this.$ajax.get('/api/organize/employees/pages',{depId:val,pageNum:page,selectSubs:sub}).then(res=>{
         res=res.data
         if(res.status===200){
           this.EmployeList=this.EmployeList.concat(res.data.list)
@@ -120,7 +120,7 @@ const MIXINS = {
         this.dep.name=''
         this.EmployeList=[]
         this.employePage=1
-        this.remoteMethod()
+        // this.remoteMethod()
       }else {
         this.EmployeList=[]
         this.employePage=1
@@ -169,7 +169,6 @@ const MIXINS = {
      * 获取签名
      */
     fileSign:function (arr,type) {
-      debugger
       let param={urls:arr.join(',')}
       if(type==='download'){
         param.rct='application%2Foctet-stream'
