@@ -258,6 +258,10 @@ const MIXINS = {
           a.click();
           document.body.removeChild(a)
         }
+      }).catch(error=>{
+        this.$message({
+          message:error
+        })
       })
     },
     /**

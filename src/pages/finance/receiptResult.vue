@@ -120,7 +120,6 @@
         this.checkPerson.state=true
         this.checkPerson.code=this.result.payCode
       }*/
-      debugger
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
