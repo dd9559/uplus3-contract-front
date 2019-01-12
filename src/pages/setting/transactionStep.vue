@@ -30,11 +30,16 @@
         <span>交易步骤</span>
         <el-button type="primary" @click="addTradeSteps" v-if="power['sign-set-hq'].state">添加交易步骤</el-button>
       </div>
-      <el-table :data="listData_other" border>
+      <el-table :data="listData_other" border :max-height="tableHeight">
         <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
                         v-for="item in tHeader_other" :key="item.id">
         </el-table-column>
-        <el-table-column align="center" label="步骤附属信息">
+        <el-table-column align="center" label="计划天数" width="100">
+          <template slot-scope="scope">
+            <p>{{scope.row.planDays||scope.row.planDays===0?scope.row.planDays:'--'}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="步骤附属信息" width="200">
           <template slot-scope="scope">
             <p v-if="scope.row.transStepsAttach.length==0">--</p>
             <p v-for="(item,index) in scope.row.transStepsAttach" :key="index" v-else>{{item.title}}</p>
@@ -209,11 +214,6 @@
             id: 2,
             prop: "name",
             name: "步骤名称"
-          },
-          {
-            id: 3,
-            prop: "planDays",
-            name: "计划天数"
           }
         ],
         //交易步骤信息类型
