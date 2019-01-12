@@ -148,7 +148,11 @@
               <span>出租：<b class="orange">{{countData[0] ?countData[0] :'0'}}元</b></span>
             </li>
           </ul>
+
+
         </div>
+        <p> <el-button class="f_r" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;">导出</el-button></p>
+        
       </div>
       <!-- 头部 end -->
 
@@ -440,7 +444,7 @@
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"   
-                    v-if="power['sign-yj-rev-fs'].state&&(userMsg&&scope.row.arraignmentId!=userMsg.empId)"
+                    v-if="power['sign-yj-rev-fs'].state&&(userMsg&&scope.row.finalAuditorId===userMsg.empId)"
                   >反审核</span>
                  <span
                     style="cursor:pointer;"
@@ -974,6 +978,12 @@ export default {
         }
   },
   methods: {
+   // 导出功能
+    getExcel(){
+        this.ajaxParam.is_Receivable=1;
+        let param = Object.assign({},this.ajaxParam)
+        this.excelCreate('/input/achievementExcel',param)
+    },
    //获取当前部门
     initDepList:function (val) {
       if(!val){
@@ -1247,10 +1257,10 @@ export default {
         this.checkPerson.code=val.aId;
         this.checkPerson.state=true;
         this.checkPerson.type=type1;
-        if(val.nextAuditId>0){
-        this.checkPerson.label=false;
-        }else{
+        if(val.nextAuditId===0){
         this.checkPerson.label=true;
+        }else{
+        this.checkPerson.label=false;
         }      
     },
     personChose:function () {
@@ -1261,7 +1271,7 @@ export default {
       this.getData(this.ajaxParam);
       this.code2="";
       this.shows=false; 
-    }
+    },
   }
 };
 </script>
