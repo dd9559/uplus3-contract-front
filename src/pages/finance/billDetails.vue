@@ -59,7 +59,7 @@
             </el-table-column>
             <el-table-column align="center" label="收款人" v-else>
               <template slot-scope="scope">
-                <span>{{billMsg.store}}-{{billMsg.inObjName}}</span>
+                <span>{{billMsg.inObjStore}}-{{billMsg.inObjName}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="款类" v-if="activeItem==='付款信息'">

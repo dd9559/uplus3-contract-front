@@ -154,7 +154,7 @@
         return require(`@/assets/img/${url}`)
       },
       logout:function (type) {
-        console.log(this.getUser)
+        // console.log(this.getUser)
         if(type===1){
           this.$ajax.post('/api/logout').then(res=>{
             this.$router.push({
