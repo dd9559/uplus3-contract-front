@@ -84,12 +84,12 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="签约日期" align="center">
+        <el-table-column label="签约日期" align="center" min-width="84">
           <template slot-scope="scope">
             <p>{{scope.row.signDate | getDate}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="发起日期" align="center">
+        <el-table-column label="发起日期" align="center" min-width="84">
           <template slot-scope="scope">
             <p>{{scope.row.createTime | getDate}}</p>
           </template>
@@ -107,7 +107,7 @@
             <span class="red" v-if="scope.row.checkState === 2">驳回</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核日期" align="center">
+        <el-table-column label="审核日期" align="center" min-width="84">
           <template slot-scope="scope">
             <p>{{scope.row.checkTime | getDate}}</p>
           </template>
@@ -411,7 +411,7 @@
 
         // 分页
         pageNum: 1,
-        pageSize: 50,
+        pageSize: 10,
         total: 0,
         // Form :{
         //   getDepName: '',

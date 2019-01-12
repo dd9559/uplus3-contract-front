@@ -127,6 +127,7 @@
         AllSteps: [],
         inputMax: 30,
         flowName: "",
+        tempName: "",
         tableHeight: 0,
         power: {
           'sign-set-hq': {
@@ -167,6 +168,7 @@
           this.processTitle = "编辑交易流程"
           this.processId = row.id
           this.addForm.name = row.name
+          this.tempName = row.name
         } else if(type === 'init') {
           this.dialogManageVisible = true
           this.currentFlowId = row.id
@@ -222,6 +224,10 @@
             param = Object.assign({},this.addForm,param)
             this.processPost(param,msg)
           } else {
+            if(this.tempName === this.addForm.name) {
+              this.$message({message:"没有做任何修改"})
+              return false
+            }
             let param = {
               id: this.processId,
               cityId: this.cityId
@@ -496,6 +502,7 @@
         for(var i = 0; i < this.manageData.length; i++) {
           if(i === index) {
             this.manageData[i].settlePercent = this.manageData[index].settlePercent.replace(/[^\.\d]/g,'')
+            this.manageData[i].settlePercent = this.manageData[index].settlePercent.replace('.','')
             this.$set(this.manageData[i],'isSettle',1)       
           } else {
             this.manageData[i].settlePercent = ""
@@ -580,6 +587,13 @@
         padding-left: 50px;
         border-bottom: 1px solid #ebeef5;
         &:last-child { border-bottom: none; }
+        /deep/ .el-checkbox__label {
+          width: 220px;
+          white-space:normal;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+        }
       }
       /deep/ .el-table__row {
           td:first-child {

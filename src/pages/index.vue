@@ -393,5 +393,8 @@
     text-align: center;
     margin-top: @margin-15;
   }
+  /deep/ .el-table__empty-block {
+    line-height: 60px;
+  }
 </style>
 

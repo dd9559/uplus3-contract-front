@@ -196,7 +196,7 @@
             <div class="functionTable">
                 
                 <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && (this.contState === 2 || this.contState === 3) && power['sign-ht-xq-main-add'].state">上传</el-button>  <!-- 合同主体上传 --> 
-                <el-button type="primary" round class="search_btn" @click="uploading" v-if="name==='third' && power['sign-ht-xq-data-add'].state">上传</el-button>  <!-- 资料库上传 -->
+                <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="name==='third' && power['sign-ht-xq-data-add'].state">上传</el-button>  <!-- 资料库上传 -->
                 
             </div>
             
@@ -458,7 +458,7 @@ export default {
         
 
         //上传资料库
-        uploading(){
+        uploading(msg){
             let uploadContData = this.sellerList.concat(this.buyerList, this.otherList);
             console.log(uploadContData);
             let isOk;
@@ -496,7 +496,8 @@ export default {
                     res=res.data;
                     if(res.status===200){
                         this.$message({
-                            message:'上传成功'
+                            message:msg,
+                            type:'success'
                         })
                         this.getContData();
                     }
@@ -510,6 +511,57 @@ export default {
 
         delectData(index,index_,type){
             console.log(index,index_,type);
+            if(this.detailData.isHaveData){
+                if(type==="seller"){
+                    if(this.sellerList[index].isrequire){
+                        if(this.sellerList[index].value.length>1){
+                            this.sellerList[index].value.splice(index_,1);
+                            this.uploading('删除成功')
+                        }else{
+                        this.$message({
+                            message:'至少保留一个，请勿删除',
+                            type:'warning'
+                        })
+                        }
+                    }else{
+                        this.sellerList[index].value.splice(index_,1);
+                        this.uploading('删除成功')
+                    }
+                }else if(type==="buyer"){
+                // this.buyerList[index].value.splice(index_,1);
+                    if(this.buyerList[index].isrequire){
+                        if(this.buyerList[index].value.length>1){
+                            this.buyerList[index].value.splice(index_,1);
+                            this.uploading('删除成功')
+                        }else{
+                        this.$message({
+                            message:'至少保留一个，请勿删除',
+                            type:'warning'
+                        })
+                        }
+                    }else{
+                        this.buyerList[index].value.splice(index_,1);
+                        this.uploading('删除成功')
+                    }
+                }else if(type==="other"){
+                // this.otherList[index].value.splice(index_,1);
+                if(this.otherList[index].isrequire){
+                        if(this.otherList[index].value.length>1){
+                            this.otherList[index].value.splice(index_,1);
+                            this.uploading('删除成功')
+                        }else{
+                        this.$message({
+                            message:'至少保留一个，请勿删除',
+                            type:'warning'
+                        })
+                    }
+                }else{
+                    this.otherList[index].value.splice(index_,1);
+                    this.uploading('删除成功')
+                }
+            }
+        }
+        else{
             if(type==="seller"){
                 this.sellerList[index].value.splice(index_,1);
             }else if(type==="buyer"){
@@ -517,7 +569,10 @@ export default {
             }else if(type==="other"){
                 this.otherList[index].value.splice(index_,1);
             }
+        }
         },
+            
+        
 
          //获取合同主体信息（已上传后，拿到返回的文件路径）
         getContractBody(){

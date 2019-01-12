@@ -490,14 +490,12 @@ export default {
             };
             this.contractForm.custname = guestMsg.OwnerInfo.CustName;
             this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
-            this.$nextTick(function() {
-            
-            if(this.contractForm.guestinfoCode !==''){
-              this.$refs.contractForm.validateField('guestinfoCode');
-            }
-            
 
-          })
+            this.$nextTick(function() {    
+              if(this.contractForm.guestinfoCode !==''){
+                this.$refs.contractForm.validateField('guestinfoCode');
+              }
+            })
              
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
           }

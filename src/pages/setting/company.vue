@@ -829,6 +829,9 @@
         this.getCompanyList()
       },
       queryFn() {
+        if(!this.searchForm.bankCard) {
+          this.pageNum = 1
+        }
         this.getCompanyList()
       },
       resetFormFn() {
