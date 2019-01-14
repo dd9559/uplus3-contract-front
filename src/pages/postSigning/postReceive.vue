@@ -803,12 +803,13 @@
                     this.noPower(this.power['sign-com-htdetail'].name);
                     return false
                 }
+                this.setPath(this.getPath.concat({name:'合同详情'}));
                 this.$router.push({
                     path: "/contractDetails",
                     query: {
                         id: value.id, //合同id
                         code: value.code, //合同编号
-                        contType: this.power['sign-com-htdetail'].state?1:0 //合同类型
+                        contType: value.tradeType.value //合同类型
                     }
                 });
             },
