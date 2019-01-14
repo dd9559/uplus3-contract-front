@@ -26,12 +26,12 @@
 
     <div class="yulan" :style="{ height: clientHei }">
       <div class="content">
-        <img :src="src" alt="" width="620" height="800">
-        <div class="btnList">
+        <img v-for="(item,index) in src" :key="index" :src="item" alt="" width="620" height="800">
+        <!-- <div class="btnList">
           <el-button class="paging iconfont icon-tubiao_shiyong-20" @click="del"></el-button>
           <div class="tally"><span>{{count}}</span>/<span>{{showTotal}}</span></div>
           <el-button class="paging iconfont icon-tubiao_shiyong-22" @click="add"></el-button>
-        </div>
+        </div> -->
       </div>
     </div>
     
@@ -134,7 +134,7 @@ export default {
       //展示地址
       showAddress:'',
       showTotal:'',
-      src:'',
+      src:[],
       count:1,
       //合同状态
       contState:'',
@@ -217,28 +217,28 @@ export default {
       if(value===1){
         this.count=1;
         this.showAddress=this.residence;
-        this.setSrc(this.showAddress,this.count);
-        this.showTotal=this.total_r
+        this.setSrc(this.showAddress,this.total_r);
+        // this.showTotal=this.total_r
       }else{
         this.count=1;
         this.showAddress=this.business;
-        this.setSrc(this.showAddress,this.count);
-        this.showTotal=this.total_b;
+        this.setSrc(this.showAddress,this.total_b);
+        // this.showTotal=this.total_b;
       }
     },
     //翻页
-    add(){
-      if(this.count<this.showTotal){
-        this.count++;
-        this.setSrc(this.showAddress,this.count);
-      }
-    },
-    del(){
-      if(this.count>1){
-        this.count--;
-        this.setSrc(this.showAddress,this.count);
-      }
-    },
+    // add(){
+    //   if(this.count<this.showTotal){
+    //     this.count++;
+    //     this.setSrc(this.showAddress,this.count);
+    //   }
+    // },
+    // del(){
+    //   if(this.count>1){
+    //     this.count--;
+    //     this.setSrc(this.showAddress,this.count);
+    //   }
+    // },
     //标记风险单
     sign() {
       if (this.isSign) {
@@ -436,29 +436,36 @@ export default {
             this.residence=res.data.imgAddress.residence; 
             this.total_r=res.data.imgCount.residence;
             this.showAddress=res.data.imgAddress.residence;
-            this.showTotal=res.data.imgCount.residence;
-            this.setSrc(this.showAddress,this.count);
+            // this.showTotal=res.data.imgCount.residence;
+            this.setSrc(this.showAddress,res.data.imgCount.residence);
           }else {
             //其他
             this.address=res.data.imgAddress.address;
             this.total_a=res.data.imgCount.count;
             this.showAddress=res.data.imgAddress.address;
-            this.showTotal=res.data.imgCount.count;
-            this.setSrc(this.showAddress,this.count);
+            // this.showTotal=res.data.imgCount.count;
+            this.setSrc(this.showAddress,res.data.imgCount.count);
           }
         }
       })
     },
     //拼接地址
     setSrc(value,count){
-      let src = value.substr(0,value.lastIndexOf('.'))+count+value.substr(value.lastIndexOf('.'));
-      let param = {
-        url:src
+      // let src = value.substr(0,value.lastIndexOf('.'))+count+value.substr(value.lastIndexOf('.'));
+      var arrSrc = [];
+      for(let i=1;i<=count;i++){
+        let src = value.substr(0,value.lastIndexOf('.'))+i+value.substr(value.lastIndexOf('.'));
+        arrSrc.push(src);
       }
-      this.$ajax.get("/api/load/generateAccessURL",param).then(res=>{
+      console.log(arrSrc)
+
+      let param = {
+        urls:arrSrc.join(',')
+      }
+      this.$ajax.put("/api/load/generateAccessURLBatch",param,2).then(res=>{
         res = res.data
         if(res.status ===200){
-          this.src = res.data.url;
+          this.src = res.data;
         }
       })
     },
@@ -671,12 +678,14 @@ export default {
   }
   .content{
     padding-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // text-align: center;
     img{
       border: 1px solid #ccc;
+      display: block;
+      margin: 0 auto;
     }
     .btnList{
       margin-left: 20px;
