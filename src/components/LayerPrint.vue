@@ -3,7 +3,7 @@
         <div id="printHtml">
             <slot></slot>
         </div>
-        <iframe width="0" height="0" src="" id="printf" frameborder="0"></iframe>
+        <iframe src="" id="printf" frameborder="0"></iframe>
     </div>
 </template>
 
@@ -136,5 +136,11 @@
 </script>
 
 <style>
-
+#printf{
+    width: 100px;
+    height: 100px;
+    position: fixed;
+    top: -100px;
+    left: -100px;
+}
 </style>

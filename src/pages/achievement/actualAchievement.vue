@@ -181,8 +181,8 @@
                   @click="skipContDel(scope.row)"
                   style="cursor:pointer;"
                 >{{scope.row.code}}</span></p>
-              <p>房源：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
-              <p>客源：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
+              <p>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
+              <p>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
             </template>
           </el-table-column>
 
