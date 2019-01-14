@@ -692,7 +692,7 @@
               </div>
             </div>
           </div>
-          <div class="bgcImg"></div>
+          <div class="bgcImg" :style={backgroundImage:url}></div>
         </div>
       </LayerPrint>
     <!-- </vue-easy-print> -->
@@ -878,7 +878,8 @@ export default {
           state: false,
           name: '查看备注'
         },
-      }
+      },
+      url:`url(${require('@/assets/img/shuiyin.png')})`
     };
   },
   created() {
@@ -2133,7 +2134,7 @@ export default {
     right: 0;
     bottom: 0;
     opacity: 0.5;
-    background-image: url("../../../assets/img/shuiyin.png");
+    // background-image: url("../../../assets/img/shuiyin.png");
   }
   p{
     display: inline-block;
