@@ -47,7 +47,7 @@
               </el-table-column> -->
               <el-table-column align="center" label="结算百分比(%)">
                 <template slot-scope="scope">
-                  <el-input size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)"></el-input>
+                  <el-input class="percent" size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="操作">
@@ -434,7 +434,7 @@
               num = arr[i].settlePercent
             }
           }
-          if(!/^\d+(\.\d{0,2})?$/.test(num)) {
+          if(!/^\d+(\.\d{0,2})?$/.test(num)||!/\d$/.test(num)) {
             this.$message({message:"结算百分比输入格式不正确",type:'warning'})
             return false
           }
@@ -582,6 +582,11 @@
       /deep/ .el-input {
         width: 80px;
         .el-input__icon { line-height: 0; }
+      }
+      .percent {
+        /deep/ .el-input__inner{
+          ime-mode:disabled;
+        }
       }
     }
     .process-list {

@@ -1,7 +1,7 @@
 <template>
     <div class="preview-pdf">
         <span @click="close">关闭</span>
-        <iframe :style="{width:`${wrapperHeight*0.8}px`,height:`${wrapperHeight}px`}" name="previewPdf" :src="'/static/pdf/web/viewer.html?file=' + getUrl"></iframe>
+        <iframe :style="{width:`${wrapperHeight*0.9}px`,height:`${wrapperHeight}px`}" name="previewPdf" :src="'/static/pdf/web/viewer.html?file=' + getUrl"></iframe>
     </div>
     
 </template>

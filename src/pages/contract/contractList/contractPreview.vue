@@ -9,29 +9,30 @@
         <div :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</div>
       </div>
       <div class="btn" v-if="contType<4">
-        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
-        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
-        <el-button round type="primary" style="width:100px" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4" @click="isSubmitAudit=true">提交审核</el-button>
-        <el-button round type="primary" style="width:100px" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
-        <el-button round type="danger"  style="width:100px" v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
-        <el-button round style="width:100px" v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
-        <el-button round style="width:100px" v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
-        <el-button type="primary" round style="width:100px" @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
-        <el-button round style="width:100px" v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4" @click="isSubmitAudit=true">提交审核</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
+        <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
+        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
+        <el-button type="primary" round @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
+        <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
+        <el-button round @click="showContData" v-if="power['sign-ht-xq-data-add'].state">资料库</el-button>
       </div>
       <div class="btn" v-else>
-        <el-button type="primary" round style="width:100px" v-if="power['sign-ht-info-edit'].state" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state" @click="toEdit">编辑</el-button>
       </div>
     </div>
 
     <div class="yulan" :style="{ height: clientHei }">
       <div class="content">
-        <img :src="src" alt="" width="620" height="800">
-        <div class="btnList">
+        <img v-for="(item,index) in src" :key="index" :src="item" alt="" width="620" height="800">
+        <!-- <div class="btnList">
           <el-button class="paging iconfont icon-tubiao_shiyong-20" @click="del"></el-button>
           <div class="tally"><span>{{count}}</span>/<span>{{showTotal}}</span></div>
           <el-button class="paging iconfont icon-tubiao_shiyong-22" @click="add"></el-button>
-        </div>
+        </div> -->
       </div>
     </div>
     
@@ -87,6 +88,70 @@
     <div class="printMaskLayer" v-if="haveUrl"></div>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <!-- 合同资料库弹窗 -->
+    <el-dialog title="资料库" :visible.sync="dialogContData" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="contData">
+        <div class="classify" v-if="sellerList.length>0">
+          <p class="title">卖方</p>
+          <div class="one_" v-for="(item,index) in sellerList" :key="index">
+            <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+            <ul class="ulData" v-if="item.value.length>0">
+              <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
+                <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                  <div class="namePath" @click="previewPhoto(item.value,index_)">
+                    <upload-cell :type="item_.fileType"></upload-cell>
+                    <p>{{item_.name}}</p>
+                  </div>
+                </el-tooltip>
+              </li>
+            </ul>
+            <div v-else class="noData">
+              暂无数据
+            </div>
+          </div>
+        </div>
+        <div class="classify" v-if="buyerList.length>0">
+          <p class="title">买方</p>
+          <div class="one_" v-for="(item,index) in buyerList" :key="index">
+            <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+            <ul class="ulData" v-if="item.value.length>0">
+              <li v-for="(item_,index_) in item.value" :key="item_.index">
+                <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                  <div class="namePath" @click="previewPhoto(item.value,index_)">
+                    <upload-cell :type="item_.fileType"></upload-cell>
+                    <p>{{item_.name}}</p>
+                  </div>
+                </el-tooltip>
+              </li>
+            </ul>
+            <div v-else class="noData">
+              暂无数据
+            </div>
+          </div>
+        </div>
+        <div class="classify" v-if="otherList.length>0">
+          <p class="title">其他</p>
+          <div class="one_" v-for="(item,index) in otherList" :key="index">
+            <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+            <ul class="ulData" v-if="item.value.length>0">
+              <li v-for="(item_,index_) in item.value" :key="item_.index">
+                <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                  <div class="namePath" @click="previewPhoto(item.value,index_)">
+                    <upload-cell :type="item_.fileType"></upload-cell>
+                    <p>{{item_.name}}</p>
+                  </div>
+                </el-tooltip>
+              </li>
+            </ul>
+            <div v-else class="noData">
+              暂无数据
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 图片预览 -->
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    </el-dialog>
   </div>
 </template>
            
@@ -134,7 +199,7 @@ export default {
       //展示地址
       showAddress:'',
       showTotal:'',
-      src:'',
+      src:[],
       count:1,
       //合同状态
       contState:'',
@@ -162,6 +227,14 @@ export default {
       //加载等待
       fullscreenLoading:false,
       clientHei:'',
+      //合同资料库
+      dialogContData:false,
+       //买方类型
+      buyerList: [],
+      //卖方类型
+      sellerList: [],
+      //其他类型
+      otherList: [],
       checkPerson: {
         state:false,
         type:1,
@@ -193,7 +266,11 @@ export default {
         'sign-ht-view-print': {
           state: false,
           name: '签章打印'
-        }
+        },
+        'sign-ht-xq-data-add': {
+          state: false,
+          name: '编辑资料库'
+        },
       }
     };
   },
@@ -203,8 +280,10 @@ export default {
     if (this.$route.query.operationType) {
       this.operationType = this.$route.query.operationType;
     }
+    this.getContDataType();//获取合同集料库类型
     this.getContImg();
     this.getAdmin();//获取当前登录人信息
+    
   },
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
@@ -217,28 +296,28 @@ export default {
       if(value===1){
         this.count=1;
         this.showAddress=this.residence;
-        this.setSrc(this.showAddress,this.count);
-        this.showTotal=this.total_r
+        this.setSrc(this.showAddress,this.total_r);
+        // this.showTotal=this.total_r
       }else{
         this.count=1;
         this.showAddress=this.business;
-        this.setSrc(this.showAddress,this.count);
-        this.showTotal=this.total_b;
+        this.setSrc(this.showAddress,this.total_b);
+        // this.showTotal=this.total_b;
       }
     },
     //翻页
-    add(){
-      if(this.count<this.showTotal){
-        this.count++;
-        this.setSrc(this.showAddress,this.count);
-      }
-    },
-    del(){
-      if(this.count>1){
-        this.count--;
-        this.setSrc(this.showAddress,this.count);
-      }
-    },
+    // add(){
+    //   if(this.count<this.showTotal){
+    //     this.count++;
+    //     this.setSrc(this.showAddress,this.count);
+    //   }
+    // },
+    // del(){
+    //   if(this.count>1){
+    //     this.count--;
+    //     this.setSrc(this.showAddress,this.count);
+    //   }
+    // },
     //标记风险单
     sign() {
       if (this.isSign) {
@@ -412,6 +491,7 @@ export default {
       this.$ajax.get('/api/contract/preview', param).then(res=>{
         res=res.data;
         if(res.status===200){
+          // this.getContData();
           if(res.data.contState.value===2&&!type){
             this.signature(2)
           }
@@ -436,29 +516,34 @@ export default {
             this.residence=res.data.imgAddress.residence; 
             this.total_r=res.data.imgCount.residence;
             this.showAddress=res.data.imgAddress.residence;
-            this.showTotal=res.data.imgCount.residence;
-            this.setSrc(this.showAddress,this.count);
+            // this.showTotal=res.data.imgCount.residence;
+            this.setSrc(this.showAddress,res.data.imgCount.residence);
           }else {
             //其他
             this.address=res.data.imgAddress.address;
             this.total_a=res.data.imgCount.count;
             this.showAddress=res.data.imgAddress.address;
-            this.showTotal=res.data.imgCount.count;
-            this.setSrc(this.showAddress,this.count);
+            // this.showTotal=res.data.imgCount.count;
+            this.setSrc(this.showAddress,res.data.imgCount.count);
           }
         }
       })
     },
     //拼接地址
     setSrc(value,count){
-      let src = value.substr(0,value.lastIndexOf('.'))+count+value.substr(value.lastIndexOf('.'));
-      let param = {
-        url:src
+      // let src = value.substr(0,value.lastIndexOf('.'))+count+value.substr(value.lastIndexOf('.'));
+      var arrSrc = [];
+      for(let i=1;i<=count;i++){
+        let src = value.substr(0,value.lastIndexOf('.'))+i+value.substr(value.lastIndexOf('.'));
+        arrSrc.push(src);
       }
-      this.$ajax.get("/api/load/generateAccessURL",param).then(res=>{
+      let param = {
+        urls:arrSrc.join(',')
+      }
+      this.$ajax.put("/api/load/generateAccessURLBatch",param,2).then(res=>{
         res = res.data
         if(res.status ===200){
-          this.src = res.data.url;
+          this.src = res.data;
         }
       })
     },
@@ -577,6 +662,89 @@ export default {
         })
       }
     },
+    //合同资料库弹窗
+    showContData(){
+      this.getContData();
+      this.dialogContData=true;
+    },
+     //获取合同资料库类型列表
+    getContDataType() {
+      let param = {
+        id: this.id
+      };
+      this.$ajax.get("/api/contract/getContDataTypeById", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          let dataType = JSON.parse(res.data);
+          // console.log(dataType);
+          dataType.forEach(element => {
+            if(element.type==='1'){
+              let item={};
+              item.value=[];
+              item.kind=element.type;
+              item.title=element.name;
+              item.isrequire=element.isNecessary;
+              this.buyerList.push(item);
+            }else if(element.type==='2'){
+              let item={};
+              item.value=[];
+              item.kind=element.type;
+              item.title=element.name;
+              item.isrequire=element.isNecessary;
+              this.sellerList.push(item);
+            }else if(element.type==='3'){
+              let item={};
+              item.value=[];
+              item.kind=element.type;
+              item.title=element.name;
+              item.isrequire=element.isNecessary;
+              this.otherList.push(item);
+            }
+          });
+        }
+      })
+    },
+    //获取合同资料库信息
+
+    getContData() {
+      let param = {
+        id: this.id
+      };
+      this.$ajax.get("/api/contract/getContAttachmentById", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          if(res.data){
+            let address = JSON.parse(res.data.address);
+            // console.log(address)
+            address.forEach(element => {
+              element.value.forEach(item => {
+                let fileType = this.$tool.get_suffix(item.name);
+                item.fileType=fileType
+              });
+              if(element.kind==="1"){
+                this.buyerList.forEach(ele => {
+                  if(element.title===ele.title){
+                    ele.value=element.value
+                  }
+                });
+              }else if(element.kind==="2"){
+                this.sellerList.forEach(ele => {
+                  if(element.title===ele.title){
+                    ele.value=element.value
+                  }
+                });
+              }else if(element.kind==="3"){
+                this.otherList.forEach(ele => {
+                  if(element.title===ele.title){
+                    ele.value=element.value
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
+    },
   },
   mounted(){
     window.onresize = this.clientHeight;
@@ -671,12 +839,14 @@ export default {
   }
   .content{
     padding-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // text-align: center;
     img{
       border: 1px solid #ccc;
+      display: block;
+      margin: 0 auto;
     }
     .btnList{
       margin-left: 20px;
@@ -771,6 +941,74 @@ export default {
         > span {
           color: @color-blank;
         }
+      }
+    }
+  }
+  .contData{
+    height: 500px;
+    overflow-y: auto;
+    .classify {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid @border-ED;
+      .title {
+        font-size: 16px;
+        color: @color-324;
+      }
+      .one_ {
+        padding-left: 20px;
+        > p {
+          font-size: 14px;
+          padding: 10px 0;
+          color: @color-6c;
+          > i {
+            color: @color-FF;
+          }
+        }
+      }
+      .noData{
+        text-align: center;
+        width: 100px;
+        height: 100px;
+        padding-top: 40px;
+        box-sizing: border-box;
+        border-radius:4px;
+        background: @color-F2;
+      }
+    }
+    .ulData{
+      display: flex;
+      flex-wrap:wrap;
+      li{
+        margin-right: 10px;
+        position: relative;
+        margin-bottom: 10px;
+        > i{
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          color: @color-warning;
+          font-size: 20px;
+          cursor: pointer;
+        }
+      }
+    }
+    .namePath{
+      display: inline-block;
+      text-align: center;
+      width: 100px;
+      height: 100px;
+      padding-top: 10px;
+      box-sizing: border-box;
+      border-radius:4px;
+      background: @color-F2;
+      > p{
+        padding-top: 3px;
+        display: inline-block;
+        width: 100px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
       }
     }
   }

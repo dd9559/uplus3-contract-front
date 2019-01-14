@@ -8,6 +8,7 @@
               <div class="title">合同信息</div>
               <div class="content">
                 <div class="one_">
+                  <p><span class="tag">合同编号：</span><span class="serialNumber">{{contractDetail.code}}</span></p>
                   <p><span class="tag">签约日期：</span><span class="text">{{contractDetail.signDate}}</span></p>
                   <p>
                     <span class="tag">合同类型：</span>

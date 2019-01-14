@@ -13,13 +13,13 @@
         </el-form-item>
         <el-form-item label="合同类型">
           <el-select v-model="contractForm.contType" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==4&&item.key!==5">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="合同状态">
           <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==0">
             </el-option>
           </el-select>
         </el-form-item>
@@ -38,7 +38,7 @@
         </el-form-item>
         <el-form-item label="审核状态">
           <el-select v-model="contractForm.toExamineState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==-1">
             </el-option>
           </el-select>
         </el-form-item>
