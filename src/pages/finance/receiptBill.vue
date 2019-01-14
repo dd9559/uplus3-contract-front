@@ -734,11 +734,11 @@
           }
           Promise.all(arr).then(res=>{
             let total = parseFloat(this.form.amount)
-            if(total!==payTotal){
+            if(total!==parseFloat(payTotal.toFixed(2))){
               this.$message({
                 message:'收款金额=支付总金额'
               })
-            }else if(checkTotal!==cardTotal){
+            }else if(parseFloat(checkTotal.toFixed(2))!==parseFloat(cardTotal.toFixed(2))){
               this.$message({
                 message:'刷卡资料补充输入总金额=POS刷卡金额+转账金额'
               })
