@@ -255,7 +255,7 @@
                   :key="item.id"
                   :label="`${item.bankAccountName} ${item.bankBranchName} ${item.bankCard}`"
                   :value="item.bankCard">
-                  {{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
+                  {{item.storeName}}-{{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
                 </el-option>
               </el-select>
             </section>
@@ -765,7 +765,8 @@
                         bankName: card.bankBranchName,
                         userName: card.bankAccountName,
                         cardNumber: card.bankCard,
-                        storeId: card.id
+                        accountId: card.id,
+                        storeId: card.storeId
                       }
                       param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
                       return true

@@ -86,7 +86,7 @@
           <label>收付状态:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.checkStatus" placeholder="请选择">
             <el-option
-              v-for="item in dictionary['23']"
+              v-for="item in dictionary[activeView===1?'61':'62']"
               :key="item.key"
               :label="item.value"
               :value="item.key">
@@ -320,7 +320,9 @@
           '507': '',
           '57': '',
           '59': '',
-          '60': ''
+          '60': '',
+          '61': '',
+          '62': ''
         },
         drop_MoneyType:[],
         //分页

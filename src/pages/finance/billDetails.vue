@@ -116,7 +116,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作">
               <template slot-scope="scope">
-                <el-button type="text" @click="getPaper('create')" v-if="btnBill&&(billMsg.checkStatus&&(billMsg.checkStatus.value===1||billMsg.checkStatus.value===5))&&(billMsg.billStatus&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4))">开票</el-button>
+                <el-button type="text" @click="getPaper('create')" v-if="billMsg.billStatus&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)">开票</el-button>
                 <span v-else>--</span>
               </template>
             </el-table-column>

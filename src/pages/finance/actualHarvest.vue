@@ -301,7 +301,7 @@
           res = res.data
           if (res.status === 200) {
             this.list = res.data.list
-            this.total = res.data.count
+            this.total = res.data.total
           }
         }).catch(error => {
           console.log(error)
