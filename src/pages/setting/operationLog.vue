@@ -45,7 +45,6 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                   
                 </div>
             </el-form>
         </ScreeningTop>

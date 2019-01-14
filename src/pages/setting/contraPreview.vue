@@ -160,7 +160,6 @@ export default{
                             this.autograph(htImg2,newsrc2)
                      }else{
                            let btn=document.getElementsByClassName('ht-list')[0]
-                           console.log(btn,'btn');
                            btn.style.margin='0 auto'
                            this.divWidth=this.divWidth
                            this.imgSrc=resadd.img.url
