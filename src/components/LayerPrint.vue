@@ -67,11 +67,14 @@
                 //     f.focus();
                 //     f.contentWindow.print();
                 // }
-                try {
-                    window.frames['printf'].print();
-                } catch (e) {
-                    f.contentWindow.print();
-                }
+                setTimeout(()=>{
+                    try {
+                        window.frames['printf'].print();
+                    } catch (e) {
+                        f.contentWindow.print();
+                    }
+                },100)
+                
                 // var HKEY_Root, HKEY_Path, HKEY_Key;
                 // HKEY_Root = "HKEY_CURRENT_USER";
                 // HKEY_Path = "\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
@@ -142,5 +145,6 @@
     position: fixed;
     top: -100px;
     left: -100px;
+    z-index: 0;
 }
 </style>

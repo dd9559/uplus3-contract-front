@@ -8,6 +8,7 @@
               <div class="title">合同信息</div>
               <div class="content">
                 <div class="one_">
+                  <p><span class="tag">合同编号：</span><span class="serialNumber">{{contractDetail.code}}</span></p>
                   <p><span class="tag">签约日期：</span><span class="text">{{contractDetail.signDate}}</span></p>
                   <p>
                     <span class="tag">合同类型：</span>
@@ -546,7 +547,7 @@
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" style="width:900px" v-show="false">
-        <div class="printContent">
+        <div class="printContent" style="width:900px;height:1250px">
           <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
           </div>
@@ -691,6 +692,7 @@
               </div>
             </div>
           </div>
+          <div class="bgcImg"></div>
         </div>
       </LayerPrint>
     <!-- </vue-easy-print> -->
@@ -1688,6 +1690,9 @@ export default {
    size: auto;
    margin: 0mm;
   }
+  @media print {
+    body {-webkit-print-color-adjust: exact;}
+  }
  </style>
 <style scoped lang="less">
 @import "~@/assets/common.less";
@@ -2116,9 +2121,20 @@ export default {
 //打印模块
 .printContent{
   // width: 1000px;
+  position: relative;
   font-size: 16px;
   box-sizing: border-box;
   padding: 40px 40px;
+  .bgcImg{
+    position: absolute;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.5;
+    background-image: url("~@/assets/img/shuiyin.png");
+  }
   p{
     display: inline-block;
     width: 240px;

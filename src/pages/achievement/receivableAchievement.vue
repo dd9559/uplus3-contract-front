@@ -394,9 +394,12 @@ export default {
                 id: value.id,
                 code: value.code,
                 contType: value.contType.value
+                // id: 415,
+                // code: 'S0001190114009',
+                // contType: 2
               }
             });
-           }else{
+        }else{
               this.noPower('合同详情查看')
         }
     },
