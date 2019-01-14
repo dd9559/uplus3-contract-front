@@ -894,7 +894,7 @@
     }
     .aduit-node {
         > div {
-            margin-bottom: 18px;
+            margin-bottom: 10px;
             label {
                 margin-right: 10px;
             }
@@ -1013,7 +1013,7 @@
                     }
                 }
                 &:last-child {
-                    margin-bottom: 18px;
+                    margin-bottom: 10px;
                 }
             }
         }
@@ -1036,10 +1036,12 @@
     border-bottom: 1px solid #EDECF0;
 }
 /deep/ .el-dialog__body {
-    padding-top: 20px;
+    max-height: 400px;
+    overflow: auto;
+    padding-top: 10px;
 }
 /deep/ .el-dialog__footer {
-    padding-bottom: 34px;
+    padding-right: 10px;
     .el-button {
         width: 100px;
         height: 38px;
