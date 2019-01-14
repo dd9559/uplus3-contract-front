@@ -556,8 +556,8 @@ export default {
 }
 /deep/ .el-pagination {
   text-align: center;
-  padding-bottom: 50px;
-  padding-top: 50px;
+  // padding-bottom: 50px;
+  // padding-top: 50px;
 }
 .w430 {
   width: 430px;
