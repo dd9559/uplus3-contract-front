@@ -194,10 +194,12 @@
               <p
                 v-if="scope.row.achievementState==-1"
                 class="blue"
+                style="cursor:text"
               >待提审</p>
               <p
                 v-if="scope.row.achievementState==0"
                 class="blue"
+                style="cursor:text"
               >审核中</p>
               <p
                 v-if="scope.row.achievementState==1"
