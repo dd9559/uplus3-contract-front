@@ -84,7 +84,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="发起日期" align="center" min-width="84">
+        <el-table-column label="发起日期" align="center" min-width="100">
           <template slot-scope="scope">
             <p>{{scope.row.sponsorTime | getDate}}</p>
           </template>
@@ -111,7 +111,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="审核日期" align="center" min-width="84">
+        <el-table-column label="审核日期" align="center" min-width="100">
           <template slot-scope="scope">
             <p>{{scope.row.examineTime | getDate}}</p>
           </template>

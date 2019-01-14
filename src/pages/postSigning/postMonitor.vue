@@ -139,7 +139,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="guestinfo.ShopOwnerName" label="店长" min-width="70">
                 </el-table-column>
-                <el-table-column prop="overtimeSteps" label="已超时步骤"  :formatter="nullFormatterData" min-width="110">
+                <el-table-column prop="overtimeSteps" label="当前步骤"  :formatter="nullFormatterData" min-width="110">
                     <!-- <template slot-scope="scope">
                         <el-button class="blue" type="text" @click="tradingStepsFn(scope.row)">{{scope.row.overtimeSteps}}</el-button>
                     </template> -->
@@ -221,7 +221,7 @@
                     paper: '',
                     time: '',
                     late: '',
-                    dateMo: '',
+                    lateName: 3,
                 },
                 // 筛选选项
                 rules: {
@@ -244,10 +244,10 @@
                     late: [],
                     lateName:[{
                         key:1,
-                        value:'已办理'
+                        value:'已完成'
                     },{
                         key:2,
-                        value:'未办理'
+                        value:'办理中'
                     },{
                         key:3,
                         value:'超时未办理'
@@ -328,7 +328,7 @@
                     query: {
                         id: value.id,//合同id
                         code: value.code,//合同编号
-                        contType: this.power['sign-com-htdetail'].state?1:0//合同类型
+                        contType: value.tradeType.value//合同类型
                     }
                 });
             },
