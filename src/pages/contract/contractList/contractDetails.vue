@@ -2133,7 +2133,7 @@ export default {
     right: 0;
     bottom: 0;
     opacity: 0.5;
-    background-image: url("~@/assets/img/shuiyin.png");
+    background-image: url("../../../assets/img/shuiyin.png");
   }
   p{
     display: inline-block;
