@@ -19,7 +19,7 @@
           label="关键字"
           prop="search"
         >
-          <el-tooltip content="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号" placement="top">
+          <el-tooltip content="合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号" placement="top">
              <el-input
                class="w200"
                v-model="propForm.search"
@@ -377,7 +377,7 @@
               </div>
               <div v-else>
                 <p v-for="item in scope.row.distributions">
-                  {{item.ratio/100*scope.row.receiptsCommission | rounding}}
+                  {{item.aMoney| rounding}}
                 </p>
               </div>
             </template>
@@ -1259,11 +1259,15 @@ export default {
         this.checkPerson.code=val.aId;
         this.checkPerson.state=true;
         this.checkPerson.type=type1;
-        if(val.nextAuditId===0){
-        this.checkPerson.label=true;
+        if(type1==1||type1==2){
+              this.checkPerson.label=false;
         }else{
-        this.checkPerson.label=false;
-        }      
+          if(val.nextAuditId!=0){
+          this.checkPerson.label=false;
+          }else{
+          this.checkPerson.label=true;
+          }  
+        }
     },
     personChose:function () {
         this.checkPerson.state=false
