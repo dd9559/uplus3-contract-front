@@ -97,7 +97,7 @@
           </div>
           <div class="input-group">
             <label>计划天数：</label>
-            <el-input maxlength="3" v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')" size="small"></el-input>
+            <el-input class="plan-days" maxlength="3" v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')" size="small"></el-input>
           </div>
           <div class="menu-table">
             <h4>附属信息：</h4>
@@ -563,7 +563,7 @@
       },
       //获取整数
       getInt:function (param,int=1) {
-        this.stepBusiness[param]=this.stepBusiness[param].replace(/[^\.\d]/g,'')
+        this.stepBusiness[param]=this.stepBusiness[param].replace(/[^\d]/g,'')
         if(int){
           this.stepBusiness[param]=this.stepBusiness[param].replace('.','')
         }
@@ -735,6 +735,11 @@
             color: #CECECE;
           }
         }
+      }
+    }
+    .plan-days {
+      /deep/ .el-input__inner{
+        ime-mode:disabled;
       }
     }
   }
