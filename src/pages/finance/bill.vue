@@ -177,7 +177,7 @@
         <el-table-column align="center" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" min-width="160" label="收付方式">
           <template slot-scope="scope">
-            <span>{{scope.row.method}}</span>
+            <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="对象">
@@ -460,6 +460,11 @@
     methods: {
       getExcel:function () {
         let param = Object.assign({},this.searchForm)
+        if(Object.prototype.toString.call(param.timeRange)==='[object Array]'&&param.timeRange.length>0){
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+        }
+        delete param.timeRange
         this.excelCreate('/input/payInfoExcel',param)
       },
       test:function (val) {

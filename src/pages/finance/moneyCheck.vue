@@ -24,6 +24,7 @@
           <div class="time-picker">
             <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
               <el-option
+                v-if="(activeView===1&&item.value!==3)||(activeView===2&&item.value!==2)"
                 v-for="item in $tool.dropdown.dateType_money"
                 :key="item.value"
                 :label="item.label"
@@ -107,7 +108,7 @@
           <label>收付方式:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.payMethod" placeholder="请选择">
             <el-option
-              v-for="item in dictionary['24']"
+              v-for="item in dictionary[activeView===1?'59':'60']"
               :key="item.key"
               :label="item.value"
               :value="item.key">
@@ -150,7 +151,11 @@
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收付方式" prop="method" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="150" label="收付方式">
+          <template slot-scope="scope">
+            <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="对象">
           <template slot-scope="scope">
             <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
@@ -185,7 +190,7 @@
         </el-table-column>
         <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
         <!--<el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>-->
-        <el-table-column align="center" :label="activeView===1?'收付时间':'付款时间'" prop="createTime" :formatter="nullFormatter" min-width="140">
+        <el-table-column align="center" :label="activeView===1?'收款时间':'付款时间'" prop="createTime" :formatter="nullFormatter" min-width="140">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
@@ -313,7 +318,9 @@
           '24': '',
           '25': '',
           '507': '',
-          '57': ''
+          '57': '',
+          '59': '',
+          '60': ''
         },
         drop_MoneyType:[],
         //分页
@@ -430,8 +437,11 @@
     methods: {
       getExcel:function () {
         let param = Object.assign({},this.searchForm)
-        delete param.pageSize
-        delete param.pageNum
+        if(Object.prototype.toString.call(param.timeRange)==='[object Array]'&&param.timeRange.length>0){
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+        }
+        delete param.timeRange
         this.excelCreate(this.activeView===1?'/input/proceedsAuditExcel':'/input/payMentAuditExcel',param)
       },
       // 选择审核人

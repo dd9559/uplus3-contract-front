@@ -97,7 +97,7 @@
           </div>
           <div class="input-group">
             <label>计划天数：</label>
-            <el-input v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')" size="small"></el-input>
+            <el-input maxlength="3" v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')" size="small"></el-input>
           </div>
           <div class="menu-table">
             <h4>附属信息：</h4>
@@ -360,7 +360,7 @@
               if(!flag) {
                 for(let i = 0; i < this.tempRoleList.length; i++) {
                   if(this.addForm.dutyType != this.tempRoleList[i].value) {
-                    this.$message({message:"选择的角色不存在"})
+                    this.$message({message:"选择的角色不存在",type:'warning'})
                   }
                 }
               } 
@@ -404,7 +404,11 @@
         } else {
           if(this.stepBusiness.planDays) {
             if(!/^[0-9]+$/.test(this.stepBusiness.planDays)) {
-              this.$message("计划天数请输入正整数")
+              this.$message({message:"计划天数请输入正整数",type:'warning'})
+              return false
+            }
+            if(Number(this.stepBusiness.planDays) > 365) {
+              this.$message({message:"计划天数不能超过365天",type:'warning'})
               return false
             }
           }
@@ -433,7 +437,7 @@
               if(this.listData.length) {
                 this.tradeStepsPost(url)
               } else {
-                this.$message('无步骤类型不能新增交易步骤')
+                this.$message({message:'无步骤类型不能新增交易步骤',type:'warning'})
               }
             } else {
               const url = "/api/flowmanage/updateSteps"
