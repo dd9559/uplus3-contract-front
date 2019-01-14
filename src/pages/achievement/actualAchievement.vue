@@ -181,8 +181,8 @@
                   @click="skipContDel(scope.row)"
                   style="cursor:pointer;"
                 >{{scope.row.code}}</span></p>
-              <p>房源：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
-              <p>客源：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
+              <p>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
+              <p>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
             </template>
           </el-table-column>
 
@@ -194,10 +194,12 @@
               <p
                 v-if="scope.row.achievementState==-1"
                 class="blue"
+                style="cursor:text"
               >待提审</p>
               <p
                 v-if="scope.row.achievementState==0"
                 class="blue"
+                style="cursor:text"
               >审核中</p>
               <p
                 v-if="scope.row.achievementState==1"

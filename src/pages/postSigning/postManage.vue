@@ -474,9 +474,9 @@
                                     </template>
                                     <template v-if="item.type === STEPSINPUT.num">
                                         <el-input 
-                                        type="number"
-                                        v-model.number="item.val"
+                                        v-model="item.val"
                                         size="small"
+                                        @input="numberChange(index)"
                                         ></el-input>
                                     </template>
                                     <template v-else-if="item.type === STEPSINPUT.time">
@@ -1086,13 +1086,7 @@
                             }else{
                                 j.required = false;
                             }
-                            if(e.type === STEPSINPUT.num && e.isRequired){
-                                e.rules = [j,
-                                { type: 'number', message: '输入必须为数字值'}];
-                            }else{
-                                e.rules = j;
-                            }
-                            
+                            e.rules = j;
                         })
                         this.stepsFrom = {
                             list:[...arr,...arr2],
@@ -1112,6 +1106,12 @@
                     this.LookStepLoad = false;
                     this.errMeFn(err);
                 })
+            },
+            // 数字改变的时候
+            numberChange(index){
+                this.$nextTick(() => {
+                    this.stepsFrom.list[index].val = this.stepsFrom.list[index].val.toString().replace(/[^0-9.]/g, '')
+                });
             },
             // 后期进度
             progressFn(row){
