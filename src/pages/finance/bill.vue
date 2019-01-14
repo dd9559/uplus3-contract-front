@@ -218,7 +218,7 @@
           <template slot-scope="scope">
             <template v-if="scope.row.type===1&&((power['sign-cw-debt-invoice'].state&&(scope.row.payStatus==='已通过'||scope.row.payStatus==='已到账')&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)||((scope.row.caozuo===1||scope.row.caozuo===0)&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state))))">
               <el-button type="text" @click="btnOpera(scope.row,3)"
-                         v-if="power['sign-cw-debt-invoice'].state&&(scope.row.payStatus==='已通过'||scope.row.payStatus==='已到账')&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">
+                         v-if="power['sign-cw-debt-invoice'].state&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">
                 开票
               </el-button>
               <template v-if="(scope.row.caozuo===1||scope.row.caozuo===0)&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state)">

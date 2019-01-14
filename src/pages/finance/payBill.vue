@@ -427,7 +427,7 @@
       },
       //款类选择
       getType:function (label,type,index) {
-        this.showAmount=label.pName==='代收代付'?false:true
+        this.showAmount=label.pName!=='佣金'?false:true
         if(type==='focus'){
           // this.form.moneyType=label.moneyTypes[index].key
           this.form.moneyType=label.key
@@ -437,7 +437,7 @@
         this.getAmount()
       },
       getCell:function (label) {
-        this.showAmount=label.pName==='代收代付'?false:true
+        this.showAmount=label.pName!=='佣金'?false:true
         this.form.moneyType=label.key
         this.form.moneyTypePid = label.pId
         this.layer.content[0].moneyType=label.name
