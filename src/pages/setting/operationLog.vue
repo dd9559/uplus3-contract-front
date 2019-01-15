@@ -68,8 +68,8 @@
                 <el-table-column label="操作内容"  prop="content"></el-table-column>
                 <el-table-column label="IP地址" prop="ip" width="230" ></el-table-column>
             </el-table>
-        </div>
-        <el-pagination
+            <div class="pagination">
+            <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
@@ -78,6 +78,9 @@
             layout="prev, pager, next,  total, sizes, jumper"
             :total="total">
         </el-pagination>
+        </div>
+        </div>
+        
     </div>
 </template>
 
@@ -247,7 +250,8 @@
   background:rgba(238,242,251,1);
 }
 /deep/ .el-pagination{
-    text-align: center
+    text-align: center;
+    margin-top: 13px;
 }
 .el-select-dropdown__item.selected {
     font-weight: normal;
