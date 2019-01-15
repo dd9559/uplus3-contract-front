@@ -20,7 +20,13 @@
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
-        </el-form-item>         
+        </el-form-item>    
+        <el-form-item label="合作方式">
+          <el-select v-model="adjustForm.depAttr" placeholder="全部" class="width150" clearable>
+            <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>      
         <el-form-item label="部门"> 
           <!-- <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" :loading="loading" @clear="clearDepNameFn" class="width200">
               <el-option v-for="item in adjustForm.getDepName" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -420,6 +426,7 @@
         adjustForm:{
           signDate: '', //发起日期
           tradeType: '', //合同类型
+          depAttr: '', //合作方式
           depName:'',
           depId: '',
           empId: '',
@@ -439,7 +446,8 @@
           //数据字典
           "10": "", //合同类型
           "17": "", //审核状态
-          "507": "" // 成交总价单位
+          "507": "", // 成交总价单位
+          "53": "" // 合作方式
         },
       
         layerAudit:{
@@ -682,7 +690,8 @@
               empId: this.adjustForm.empId,               
               startTime,    
               endTime,      
-              contractType: this.adjustForm.tradeType,           
+              contractType: this.adjustForm.tradeType,  
+              depAttr: this.adjustForm.depAttr,         
               checkState: this.adjustForm.checkState,                              
               keyword: this.adjustForm.keyWord             
             }

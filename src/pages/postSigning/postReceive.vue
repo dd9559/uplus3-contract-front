@@ -25,27 +25,6 @@
                 </el-form-item>
                 <div class="in-block">
                     <el-form-item label="部门" prop="regionS" class="mr">
-                        <!-- <el-select 
-                        ref="tree" 
-                        size="small" 
-                        :loading="Loading" 
-                        :remote-method="remoteMethod" 
-                        v-model="propForm.regionS"
-                        @clear="clearDep"
-                        @visible-change="initDepList" 
-                        clearable 
-                        filterable
-                        remote 
-                        placeholder="请选择">
-                            <el-option 
-                            class="drop-tree" 
-                            value="">
-                                <el-tree 
-                                :data="DepList" 
-                                :props="defaultProps" 
-                                @node-click="depHandleClick"></el-tree> 
-                            </el-option>
-                        </el-select> -->
                         <select-tree :data="DepList" :init="propForm.regionS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                     </el-form-item>
                     <el-form-item prop="regionName">
@@ -66,6 +45,19 @@
                     <el-select v-model="propForm.late" class="w180">
                         <el-option v-for="item in rules.late" :key="'state'+item.key" :label="item.label" :value="item.key"></el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item 
+                    label="合作方式"
+                    prop="depAttr">
+                        <el-select 
+                        v-model="propForm.depAttr" 
+                        class="w100">
+                            <el-option 
+                            v-for="item in rules.depAttr" 
+                            :key="'depAttr'+item.key" 
+                            :label="item.value" 
+                            :value="item.key"></el-option>
+                        </el-select>
                 </el-form-item>
             </el-form>
         </ScreeningTop>
@@ -291,6 +283,7 @@
                     time: '',
                     late: '',
                     dateMo: '',
+                    depAttr:'',
                 },
                 // 筛选选项
                 rules: {
@@ -313,7 +306,8 @@
                     late: [{
                         label: '全部',
                         key: ''
-                    }]
+                    }],
+                    depAttr:[]
                 },
                 // 搜索变量
                 employees: {
@@ -376,7 +370,8 @@
                 },
                 // 枚举数据
                 dictionary:{
-                    '520':'合同资料库标题'
+                    '520':'合同资料库标题',
+                    '53':'合作方式',
                 },
                 textAutosize:{ minRows: 7, maxRows: 7 }
             }
@@ -903,6 +898,7 @@
                     statusLaterStage: this.propForm.late,
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
+                    depAttr:this.propForm.depAttr,
                 }).then((res) => {
                     res = res.data
                     if (res.status === 200) {
@@ -978,6 +974,10 @@
             
         },
         watch: {
+            dictionary(newData,oldData){
+                // 合作方式
+                this.rules.depAttr= [...newData[53]]
+            },
             cityId() {
                 // 交易流程
                 this.getTransactionProcess();
