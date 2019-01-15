@@ -85,6 +85,17 @@
             </el-date-picker>
           </div>
         </div>
+        <div class="input-group">
+          <label>合作方式:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.cooperation" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['53']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
+        </div>
       </div>
     </ScreeningTop>
     <div class="view-context">
@@ -166,7 +177,8 @@
         showScroll:false,
         dictionary:{
           '10': '',
-          '55': ''
+          '55': '',
+          '53': ''
         },
         drop_MoneyType:[],
         searchForm: {
@@ -178,6 +190,7 @@
           receiveAmountState:'',
           signTime: '',
           collectionTime: '',
+          cooperation: '',
           keyword: ''
         },
         list: [],
@@ -213,7 +226,7 @@
     mounted() {
       this.$nextTick(()=>{
         this.getData()
-        this.remoteMethod()
+        // this.remoteMethod()
         this.getDictionary()
         this.getMoneyTypes()
       })
@@ -259,8 +272,10 @@
         this.clearSelect()
       },
       searchDep:function (payload) {
-        this.DepList=payload.list
-        this.searchForm.dealAgentStoreName=payload.depName
+        /*this.DepList=payload.list
+        this.searchForm.dealAgentStoreName=payload.depName*/
+        this.searchForm.dealAgentId=''
+        this.clearSelect('emp')
       },
       depHandleClick(data) {
         this.searchForm.dealAgentStoreId=data.depId

@@ -24,7 +24,7 @@
           <div class="time-picker">
             <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
               <el-option
-                v-if="(activeView===1&&item.value!==3)||(activeView===2&&item.value!==2)"
+                v-if="(activeView===1&&item.value!==3)||(activeView===2&&item.value===3)"
                 v-for="item in $tool.dropdown.dateType_money"
                 :key="item.value"
                 :label="item.label"
@@ -126,6 +126,17 @@
             </el-option>
           </el-select>
         </div>
+        <div class="input-group">
+          <label>合作方式:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.cooperation" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['53']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
+        </div>
       </div>
     </ScreeningTop>
     <div class="view-context">
@@ -209,9 +220,9 @@
         <el-table-column align="center" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
-            <template v-if="(scope.row.auditButton)||(scope.row.caozuo===0&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state)">
+            <template v-if="(scope.row.auditButton)||(scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&scope.row.caozuo===0&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state)">
               <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
-              <el-button type="text" @click="cellOpera(scope.row,'del')" v-if="scope.row.caozuo===0&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state">作废</el-button>
+              <el-button type="text" @click="cellOpera(scope.row,'del')" v-else>作废</el-button>
             </template>
             <span v-else>--</span>
           </template>
@@ -307,7 +318,8 @@
           payMethod: '',
           keyword: '',
           timeRange:'',
-          payObjType:''
+          payObjType:'',
+          cooperation:''
         },
         list: [],
         dictionary: {
@@ -322,7 +334,8 @@
           '59': '',
           '60': '',
           '61': '',
-          '62': ''
+          '62': '',
+          '53': ''
         },
         drop_MoneyType:[],
         //分页
@@ -404,7 +417,7 @@
       }
 
       this.getData()
-      this.remoteMethod()
+      // this.remoteMethod()
       this.getDictionary()
       this.getMoneyTypes()
     },
@@ -492,8 +505,10 @@
         this.clearSelect()
       },
       searchDep:function (payload) {
-        this.DepList=payload.list
-        this.searchForm.depName=payload.depName
+        /*this.DepList=payload.list
+        this.searchForm.depName=payload.depName*/
+        this.searchForm.empId=''
+        this.clearSelect('emp')
       },
       depHandleClick(data) {
         this.searchForm.deptId=data.depId
