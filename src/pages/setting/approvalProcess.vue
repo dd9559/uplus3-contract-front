@@ -115,7 +115,7 @@
                     <el-input size="small" maxlength="15" v-model.trim="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </div>
                 <div class="aduit-node">
-                    <div>
+                    <div class="must">
                         <label>分支节点:</label>
                         <el-radio-group v-model="isAudit" @change="aduitChange">
                             <el-radio label="1">需要审核</el-radio>
@@ -878,7 +878,7 @@
             line-height: 32px;
         }
         .mr-7 {
-            margin-right: 7px;
+            margin-left: 6px;
         }
         &:nth-child(-n+5) {
             /deep/ .el-input {
@@ -892,7 +892,7 @@
         }
     }
     .must {
-        label::before {
+        >label::before {
             content: "*";
             color: red;
             margin-right: 1px;
