@@ -68,10 +68,10 @@
     <!-- 添加和编辑步骤类型 -->
     <el-dialog :title="modalTitle" :visible.sync="stepsTypeDialog" width="740px" class="steps-type" :closeOnClickModal="$tool.closeOnClickModal">
       <el-form :model="addForm" class="addform" size="small">
-        <el-form-item label="步骤类型">
+        <el-form-item label="步骤类型:">
           <el-input v-model.trim="addForm.name" autocomplete="off" maxlength="30" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
         </el-form-item>
-        <el-form-item label="分配负责角色">
+        <el-form-item label="分配负责角色:">
           <!-- <el-select v-model="addForm.dutyType" filterable>
             <el-option v-for="item in roleList" :key="item.key" :label="item.value" :value="item.value"></el-option>
           </el-select> -->
@@ -87,20 +87,20 @@
       <div class="modal-context">
         <template>
           <div class="input-group">
-            <label>步骤类型：</label>
+            <label>步骤类型:</label>
             <span>{{stepBusiness.stepsTypeName}}</span>
           </div>
           <div class="input-group">
-            <label class="step-name">步骤名称：</label>
+            <label class="step-name">步骤名称:</label>
             <el-input type="text" v-model.trim="stepBusiness.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')" size="small"></el-input>
             <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
           </div>
           <div class="input-group">
-            <label>计划天数：</label>
+            <label>计划天数:</label>
             <el-input class="plan-days" maxlength="3" v-model="stepBusiness.planDays" @keyup.native="getInt('planDays')" size="small"></el-input>
           </div>
           <div class="menu-table">
-            <h4>附属信息：</h4>
+            <h4>附属信息:</h4>
             <el-table border :data="tableForm" style="width: 100%">
               <el-table-column align="center" label="名称" min-width="150">
                 <template slot-scope="scope">
@@ -697,6 +697,9 @@
     .el-form-item {
       display: flex;
       &:first-child {
+        /deep/ .el-form-item__label {
+          margin-left: 23px;
+        }
         /deep/ .el-form-item__label::before {
           content: "*";
           color: red;
@@ -715,6 +718,14 @@
         content: "*";
         color: red;
       }
+      &:nth-child(odd) {
+        >label {
+          margin-left: 6px;
+        }
+        >.el-input {
+          margin-left: -6px;
+        }
+      }
     }
     .text-absolute {
       position: absolute;
@@ -724,6 +735,7 @@
     .menu-table {
       h4 {
         margin-bottom: 8px;
+        padding-left: 6px;
       }
       p {
         width: 100%;

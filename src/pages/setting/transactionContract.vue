@@ -24,15 +24,15 @@
         <!-- 添加合同资料 -->
         <el-dialog :title="contractTitle" :visible.sync="contractVisible" width="740px" class="con-dialog" :closeOnClickModal="$tool.closeOnClickModal">
             <el-form v-model="contractForm" class="contract-form" size="small">
-                <el-form-item label="信息类型">
+                <el-form-item label="信息类型:">
                     <el-select v-model="contractForm.type" placeholder="请选择信息类型">
                         <el-option v-for="item in dictionary['520']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="资料名称">
+                <el-form-item label="资料名称:">
                     <el-input v-model.trim="contractForm.name" maxlength="15" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </el-form-item>
-                <el-form-item label="是否必填">
+                <el-form-item label="是否必填:">
                     <el-radio label="1" v-model="contractForm.isNecessary">是</el-radio>
                     <el-radio label="0" v-model="contractForm.isNecessary">否</el-radio>
                 </el-form-item>
