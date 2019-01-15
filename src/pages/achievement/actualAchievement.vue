@@ -121,6 +121,25 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+
+       <el-form-item
+          label="合作方式"
+          prop="contractType"
+        >
+          <el-select
+            v-model="propForm.joinMethods"
+            class="w120"
+            :clearable="true"
+          >
+            <el-option
+              v-for="item in dictionary['53']"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
 
@@ -872,7 +891,8 @@ export default {
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
-        search: ""
+        search: "",
+        joinMethods:""//合作方式
       },
       shows: false,
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
@@ -882,6 +902,7 @@ export default {
         //数据字典
         "10": "", //合同类型
         "21": "", //分成状态
+        "53":""  //合作方式
       },
       beginData: false,
       currentPage: 1,
@@ -1150,7 +1171,8 @@ export default {
         endTime: this.propForm.dateMo[1], //结束时间
         keyword: this.propForm.search, //关键字
         pageNum: this.currentPage,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        joinMethods:this.propForm.joinMethods
       };
     }else{
        this.ajaxParam = {
@@ -1161,7 +1183,8 @@ export default {
         achievementStatus: this.propForm.achType, //业绩类型
         keyword: this.propForm.search, //关键字
         pageNum: this.currentPage,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        joinMethods:this.propForm.joinMethods
       };
     }
     this.ajaxParam.pageNum=1;
@@ -1178,6 +1201,7 @@ export default {
         startTime: "", //开始时间
         endTime: "", //结束时间
         keyword: "", //关键字
+        joinMethods:"",
         pageNum: this.currentPage,
         pageSize: this.pageSize
       };
@@ -1190,7 +1214,8 @@ export default {
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
-        search: ""
+        search: "",
+        joinMethods:""
       }
     },
     checkAch(value,index) {
