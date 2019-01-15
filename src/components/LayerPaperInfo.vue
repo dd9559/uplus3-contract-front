@@ -67,7 +67,7 @@
         <p>2、手动填写修改此收据无效。</p>
       </div>
     </div>
-    <!-- <div class="paper-dashed"></div> -->
+    <div class="paper-dashed"></div>
     <div class="paper-border">
       <div class="paper-tit">专用收款收据</div>
       <div class="paper-number">合同编号：{{comNumber}}<span class="red">{{comText}}</span></div>
@@ -394,7 +394,7 @@
 
   .paper-border {
     border: 1px solid #E8EAF6;
-    margin: 2px 0 0;
+    margin: 0 0 0;
     padding: 0 48px 10px 24px;
     &:first-child{
       margin-top: 0;
@@ -536,7 +536,7 @@
   }
 
   .paper-dashed {
-    padding-top: 10px;
+    // padding-top: 10px;
     border-bottom: 1px dashed #AFAFAF;
   }
 
