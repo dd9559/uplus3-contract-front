@@ -10,7 +10,7 @@
         <li><span class="cl-1 mr-10">开票日期：</span>{{comInvoiceTime}}</li>
         <li class="w2"><span class="cl-1 mr-10">票据编号：</span>{{comPaper}}</li>
       </ul>
-      <div class="paper-small-tit">收款项目明细</div>
+      <div class="paper-small-tit">收款项目明细<span class="paper-nomal">门店名称：{{comStoresName}}</span></div>
       <div class="paper-table">
         <table class="paper-table-main">
             <thead>
@@ -42,22 +42,22 @@
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">客户身份：</span>{{comPayerType}}</div>
-        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
+        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl">
           <span class="fl fb mr-10">交款方式：</span>
           <span :class="i === getMethodAndAmount.length-1?'':'mr-10'" v-for="(item,i) in getMethodAndAmount" :key="i+item.method">{{item.method}}{{item.amount}}<template v-if="item.method!==''">元</template></span>
         </div>
-        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
+        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
-      <div class="paper-ov">
-        <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
-      </div>
+      <!-- <div class="paper-ov"> -->
+        <!-- <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div> -->
+      <!-- </div> -->
       <div class="pr">
         <div class="paper-ov2">
-          <div class="fr fb"><span class="mr-10">开票人：</span>{{comCreate}}</div>
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
+          <div class="fr"><span class="mr-10">开票人：</span><em class="fb">{{comCreate}}</em></div>
         </div>
         <div class="pr-img"><img v-if="comImgSrc!==''" :src="comImgSrc"></div>
       </div>
@@ -77,7 +77,7 @@
         <li><span class="cl-1 mr-10">开票日期：</span>{{comInvoiceTime}}</li>
         <li class="w2"><span class="cl-1 mr-10">票据编号：</span>{{comPaper}}</li>
       </ul>
-      <div class="paper-small-tit">收款项目明细</div>
+      <div class="paper-small-tit">收款项目明细<span class="paper-nomal">门店名称：{{comStoresName}}</span></div>
       <div class="paper-table">
           <table class="paper-table-main">
             <thead>
@@ -109,22 +109,22 @@
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10">客户身份：</span>{{comPayerType}}</div>
-        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
+        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl">
           <span class="fl fb mr-10">交款方式：</span>
           <span :class="i === getMethodAndAmount.length-1?'':'mr-10'" v-for="(item,i) in getMethodAndAmount" :key="i+item.method">{{item.method}}{{item.amount}}<template v-if="item.method!==''">元</template></span>
         </div>
-        <div class="fr"><span class="mr-10">人民币大写：</span><span class="fb">{{comMoneyZh}}</span></div>
+        <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
       </div>
       <div class="pr">
         <div class="paper-ov3">
-          <div class="fr fb"><span class="mr-10">开票人：</span>{{comCreate}}</div>
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
+          <div class="fr"><span class="mr-10">开票人：</span><em class="fb">{{comCreate}}</em></div>
         </div>
           <div class="pr-img2">
             <img v-if="comImgSrc!==''" :src="comImgSrc">
@@ -200,6 +200,10 @@
         type: String,
         default: ''
       },
+      storesName: {//门店名称
+        type: String,
+        default: '--'
+      },
       time:{
         type:String,
         default:'',
@@ -222,6 +226,9 @@
         }else{
           return ``
         }
+      },
+      comStoresName(){
+        return this.storesName
       },
       comNumber() {
         return this.defaultFn(this.number);
@@ -303,35 +310,35 @@
       display: none;
     }
     /deep/.paper-info-child{
-      margin:5mm 5mm 0;
+      margin:0 4.7mm;
       font-size: 12px;
       // height: 290mm;
       // overflow: hidden;
     }
-    /deep/.paper-info-child .paper-ul{
-        padding-top: 16px;
-      }
-    /deep/.paper-info-child .paper-small-tit{
-      padding-top: 18px;
-    }
-    /deep/.paper-info-child .paper-number{
-      padding-top: 10px;
-    }
-    /deep/.paper-info-child .paper-tit{
-      font-size: 18px;
-    }
+    // /deep/.paper-info-child .paper-ul{
+    //     padding-top: 16px;
+    //   }
+    // /deep/.paper-info-child .paper-small-tit{
+    //   padding-top: 18px;
+    // }
+    // /deep/.paper-info-child .paper-number{
+    //   padding-top: 10px;
+    // }
+    // /deep/.paper-info-child .paper-tit{
+    //   font-size: 18px;
+    // }
     /deep/.paper-info-child .paper-table-main{
       font-size: 12px;
     }
-    /deep/.paper-info-child .paper-ov{
-      padding-top: 16px;
-    }
-    /deep/.paper-info-child .paper-border{
-      margin-bottom: 0;
-    }
-    /deep/.paper-info-child .paper-dashed{
-      padding-top: 20px;
-    }
+    // /deep/.paper-info-child .paper-ov{
+    //   padding-top: 16px;
+    // }
+    // /deep/.paper-info-child .paper-border{
+    //   margin-bottom: 0;
+    // }
+    // /deep/.paper-info-child .paper-dashed{
+    //   padding-top: 20px;
+    // }
     @page {
       size: auto;
       margin: 0mm;
@@ -340,7 +347,7 @@
   .red{
     color: #FF3E3E;
     font-weight: normal;
-    margin-left: 10px;
+    float: right;
   }
   .cl-1 {
     color: #999;
@@ -351,7 +358,7 @@
   }
 
   .mr-10 {
-    margin-right: 10px;
+    margin-right: 6px;
   }
 
   .mr-20 {
@@ -378,15 +385,16 @@
   }
 
   .paper-info {
-    width: 780px;
+    width: 860px;
     margin: auto;
     color: #333;
     overflow: hidden;
+    font-size: 14px;
   }
 
   .paper-border {
     border: 1px solid #E8EAF6;
-    margin: 20px 0;
+    margin: 0 0 0;
     padding: 0 48px 10px 24px;
     &:first-child{
       margin-top: 0;
@@ -395,40 +403,46 @@
 
   .paper-tit {
     font-size: 24px;
-    padding-top: 22px;
+    padding-top: 12px;
     text-align: center;
     font-weight: bold;
   }
 
   .paper-number {
     color: #666;
-    padding-top: 14px;
+    padding-top: 10px;
     // text-align: center;
     font-weight: 400;
   }
 
   .paper-ul {
     // display: flex;
-    padding-top: 20px;
+    padding-top: 10px;
     border-bottom: 1px solid #E5E5E5;
     overflow: hidden;
   }
 
   .paper-ul > li {
     float: left;
-    min-width: 25%;
-    margin-bottom: 14px;
+    width: 25%;
+    margin-bottom: 10px;
   }
 
   .paper-ul .w1{
-      min-width: 23%;
+      width: 23%;
   }
   .paper-ul .w2{
-      min-width: 21%;
+      width: 27%;
+      text-align: right;
   }
   .paper-small-tit {
     font-weight: bold;
-    padding-top: 22px;
+    padding-top: 10px;
+    .paper-nomal{
+      font-weight: normal;
+      color: #666;
+      margin-left: 30px;
+    }
   }
 
   .paper-table {
@@ -484,8 +498,8 @@
       word-break: break-all;
       word-wrap: break-word;
       padding: 0;
-      line-height: 38px;
-      min-height: 38px;
+      line-height: 32px;
+      min-height: 32px;
       border-bottom: 1px solid #C8C8C8;
       border-right: 1px solid #C8C8C8;
   }
@@ -494,31 +508,35 @@
       font-weight: normal;
       color: #666;
   }
+  .paper-table-main td{
+    font-size: 12px;
+  }
 
   .paper-ov {
     overflow: hidden;
-    padding-top: 20px;
+    padding-top: 10px;
   }
 
   .paper-ov2 {
     overflow: hidden;
-    padding-top: 55px;
+    padding-top: 52px;
   }
 
   .paper-ov3 {
     overflow: hidden;
-    padding: 80px 0 50px;
+    padding: 64px 0 50px;
   }
 
   .paper-tips {
-    margin-top: 40px;
-    line-height: 24px;
+    margin-top: 20px;
+    line-height: 20px;
     color: #666;
-    padding-top: 14px;
+    padding-top: 10px;
     border-top: 1px solid #EDECF0;
   }
 
   .paper-dashed {
+    // padding-top: 10px;
     border-bottom: 1px dashed #AFAFAF;
   }
 
@@ -528,10 +546,10 @@
 
   .pr-img {
     position: absolute;
-    width: 130px;
-    height: 130px;
-    left: 146px;
-    bottom: -36px;
+    width: 120px;
+    height: 120px;
+    left: 190px;
+    bottom: -50px;
     // line-height: 130px;
     // text-align: center;
     display: flex;
@@ -539,17 +557,17 @@
     align-items: center;
     >img{
       // vertical-align:middle;
-      max-width: 130px;
-      max-height: 130px;
+      max-width: 120px;
+      max-height: 120px;
     }
   }
 
   .pr-img2 {
     position: absolute;
-    width: 130px;
-    height: 130px;
-    left: 146px;
-    bottom: 19px;
+    width: 120px;
+    height: 120px;
+    left: 190px;
+    bottom: -2px;
     // line-height: 130px;
     // text-align: center;
     display: flex;
@@ -557,8 +575,8 @@
     align-items: center;
     >img{
       // vertical-align:middle;
-      max-width: 130px;
-      max-height: 130px;
+      max-width: 120px;
+      max-height: 120px;
     }
   }
 </style>

@@ -253,7 +253,7 @@
               <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
               
               <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
-                <span class="title" :class="{'form-label':item.isRequired}">{{item.name}}</span>
+                <span class="title form-label">{{item.name}}</span>
               </el-tooltip>
               <span class="colon">: </span>
               <!-- class="form-label" -->
@@ -585,13 +585,13 @@ export default {
         if(res.status===200){
           this.parameterList=res.data;
           res.data.forEach(element => {
-            if(element.isRequired){
+            // if(element.isRequired){
               let name_ = element.name;
               this.parameterRule[name_]={name:element.name};
               if(this.type===1){
                 this.$set(this.contractForm.extendParams,name_,'')
               }
-            }
+            // }
           });
         }
       })

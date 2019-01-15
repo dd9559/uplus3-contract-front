@@ -13,13 +13,13 @@
         </el-form-item>
         <el-form-item label="合同类型">
           <el-select v-model="contractForm.contType" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==4&&item.key!==5">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="合同状态">
           <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==0">
             </el-option>
           </el-select>
         </el-form-item>
@@ -38,13 +38,19 @@
         </el-form-item>
         <el-form-item label="审核状态">
           <el-select v-model="contractForm.toExamineState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==-1">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="变更/解约">
           <el-select v-model="contractForm.contChangeState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['6']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="合作方式">
+          <el-select v-model="contractForm.dealAgentStoreAttr" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -246,6 +252,7 @@ export default {
         "6": "", //变更/解约
         "14": "", //结算状态
         "13": "", //收佣状态
+        "53": "", //合作方式
         "54": "", //业绩状态
         "538": "", //用途
         "507": ""

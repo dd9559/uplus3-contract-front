@@ -20,7 +20,7 @@
         <!-- 添加编辑交易流程 弹出框 -->
         <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="700px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
           <el-form v-model="addForm" size="small">
-            <el-form-item label="名称" class="add-form-item">
+            <el-form-item label="名称:" class="add-form-item">
               <el-input v-model.trim="addForm.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
             </el-form-item>
@@ -47,7 +47,7 @@
               </el-table-column> -->
               <el-table-column align="center" label="结算百分比(%)">
                 <template slot-scope="scope">
-                  <el-input size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)"></el-input>
+                  <el-input class="percent" size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="操作">
@@ -127,7 +127,7 @@
         AllSteps: [],
         inputMax: 30,
         flowName: "",
-        tempName: "",
+        // tempName: "",
         tableHeight: 0,
         power: {
           'sign-set-hq': {
@@ -168,7 +168,7 @@
           this.processTitle = "编辑交易流程"
           this.processId = row.id
           this.addForm.name = row.name
-          this.tempName = row.name
+          // this.tempName = row.name
         } else if(type === 'init') {
           this.dialogManageVisible = true
           this.currentFlowId = row.id
@@ -224,10 +224,10 @@
             param = Object.assign({},this.addForm,param)
             this.processPost(param,msg)
           } else {
-            if(this.tempName === this.addForm.name) {
-              this.$message({message:"没有做任何修改"})
-              return false
-            }
+            // if(this.tempName === this.addForm.name) {
+            //   this.$message({message:"没有做任何修改"})
+            //   return false
+            // }
             let param = {
               id: this.processId,
               cityId: this.cityId
@@ -434,7 +434,7 @@
               num = arr[i].settlePercent
             }
           }
-          if(!/^\d+(\.\d{0,2})?$/.test(num)) {
+          if(!/^\d+(\.\d{0,2})?$/.test(num)||!/\d$/.test(num)) {
             this.$message({message:"结算百分比输入格式不正确",type:'warning'})
             return false
           }
@@ -582,6 +582,11 @@
       /deep/ .el-input {
         width: 80px;
         .el-input__icon { line-height: 0; }
+      }
+      .percent {
+        /deep/ .el-input__inner{
+          ime-mode:disabled;
+        }
       }
     }
     .process-list {

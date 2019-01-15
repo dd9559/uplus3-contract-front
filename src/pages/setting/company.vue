@@ -926,7 +926,7 @@
     > p {
       font-size: 14px;
       font-weight: bold;
-      margin-bottom: @margin-10;
+      // margin-bottom: @margin-10;
       color:rgba(35,50,65,1);
     }
     .tip {
@@ -938,11 +938,10 @@
       }
       .message {
         color: #CD6D6D;
-        p:nth-child(2) { margin: 10px 0; }
         i { font-weight: bold; color: #D56868; }
       }
       &-top {
-        margin-top: 20px;
+        margin-top: 10px;
       }
     }
     &:first-child {
@@ -1057,6 +1056,9 @@
       > div {
         display: flex;
         margin-bottom: @margin-10;
+        &.tip {
+          margin-bottom: 0;
+        }
         > .stamp {
           display: inline-block;
           flex: 1;
@@ -1215,6 +1217,9 @@
 }
 /deep/ .el-dialog__header {
   border-bottom: 1px solid rgba(237,236,240,1);
+}
+/deep/ .el-dialog__footer {
+  padding-top: 0;
 }
 /deep/ .el-table th {
   background:rgba(238,242,251,1);

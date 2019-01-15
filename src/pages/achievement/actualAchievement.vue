@@ -19,7 +19,7 @@
           label="关键字"
           prop="search"
         >
-          <el-tooltip content="合同编号/房源编号/客源编号物业地址/业主/客户/房产证号/手机号" placement="top">
+          <el-tooltip content="合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号" placement="top">
              <el-input
                class="w200"
                v-model="propForm.search"
@@ -121,6 +121,25 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+
+       <el-form-item
+          label="合作方式"
+          prop="contractType"
+        >
+          <el-select
+            v-model="propForm.joinMethods"
+            class="w120"
+            :clearable="true"
+          >
+            <el-option
+              v-for="item in dictionary['53']"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
 
@@ -181,8 +200,8 @@
                   @click="skipContDel(scope.row)"
                   style="cursor:pointer;"
                 >{{scope.row.code}}</span></p>
-              <p>房源：<span class="blue">{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
-              <p>客源：<span class="blue">{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
+              <p>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.ownerName}}</p>
+              <p>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.customerName}}</p>
             </template>
           </el-table-column>
 
@@ -194,10 +213,12 @@
               <p
                 v-if="scope.row.achievementState==-1"
                 class="blue"
+                style="cursor:text"
               >待提审</p>
               <p
                 v-if="scope.row.achievementState==0"
                 class="blue"
+                style="cursor:text"
               >审核中</p>
               <p
                 v-if="scope.row.achievementState==1"
@@ -375,7 +396,7 @@
               </div>
               <div v-else>
                 <p v-for="item in scope.row.distributions">
-                  {{item.ratio/100*scope.row.receiptsCommission | rounding}}
+                  {{item.aMoney| rounding}}
                 </p>
               </div>
             </template>
@@ -481,7 +502,7 @@
                     style="cursor:pointer;"
                     v-if="userMsg&&userMsg.empId==scope.row.auditId"
                   >审核</span> 
-                  <span v-if="power['sign-yj-rev-retreat'].state==false&&(userMsg&&userMsg.empId!=scope.row.auditId)">-</span>           
+                  <span v-if="userMsg&&userMsg.empId!=scope.row.auditId&&scope.row.arraignmentId!=userMsg.empId">-</span>           
                 </div>
               </div>
               <div v-else>
@@ -870,7 +891,8 @@ export default {
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
-        search: ""
+        search: "",
+        joinMethods:""//合作方式
       },
       shows: false,
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
@@ -880,6 +902,7 @@ export default {
         //数据字典
         "10": "", //合同类型
         "21": "", //分成状态
+        "53":""  //合作方式
       },
       beginData: false,
       currentPage: 1,
@@ -1148,7 +1171,8 @@ export default {
         endTime: this.propForm.dateMo[1], //结束时间
         keyword: this.propForm.search, //关键字
         pageNum: this.currentPage,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        joinMethods:this.propForm.joinMethods
       };
     }else{
        this.ajaxParam = {
@@ -1159,7 +1183,8 @@ export default {
         achievementStatus: this.propForm.achType, //业绩类型
         keyword: this.propForm.search, //关键字
         pageNum: this.currentPage,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        joinMethods:this.propForm.joinMethods
       };
     }
     this.ajaxParam.pageNum=1;
@@ -1176,6 +1201,7 @@ export default {
         startTime: "", //开始时间
         endTime: "", //结束时间
         keyword: "", //关键字
+        joinMethods:"",
         pageNum: this.currentPage,
         pageSize: this.pageSize
       };
@@ -1188,7 +1214,8 @@ export default {
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
-        search: ""
+        search: "",
+        joinMethods:""
       }
     },
     checkAch(value,index) {
@@ -1257,11 +1284,15 @@ export default {
         this.checkPerson.code=val.aId;
         this.checkPerson.state=true;
         this.checkPerson.type=type1;
-        if(val.nextAuditId===0){
-        this.checkPerson.label=true;
+        if(type1==1||type1==2){
+              this.checkPerson.label=false;
         }else{
-        this.checkPerson.label=false;
-        }      
+          if(val.nextAuditId!=0){
+          this.checkPerson.label=false;
+          }else{
+          this.checkPerson.label=true;
+          }  
+        }
     },
     personChose:function () {
         this.checkPerson.state=false

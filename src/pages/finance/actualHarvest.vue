@@ -9,7 +9,7 @@
             <el-input class="w200" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="请输入"></el-input>
           </el-tooltip>
         </div>
-        <div class="input-group">
+        <!--<div class="input-group">
           <label>收付款类:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
             <el-option
@@ -19,7 +19,7 @@
               :value="item.key">
             </el-option>
           </el-select>
-        </div>
+        </div>-->
         <div class="input-group">
           <label>收款状态:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.receiveAmountState" placeholder="请选择">
@@ -85,6 +85,17 @@
             </el-date-picker>
           </div>
         </div>
+        <div class="input-group">
+          <label>合作方式:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.cooperation" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['53']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
+        </div>
       </div>
     </ScreeningTop>
     <div class="view-context">
@@ -99,8 +110,8 @@
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同:<span class="span-cursor" @click="toLink(scope.row,'cont')">{{scope.row.code}}</span></li>
-              <li>房源:<span class="span-cursor">{{scope.row.houseinfoCode}}</span><span>{{scope.row.showOwnerName}}</span></li>
-              <li>客源:<span class="span-cursor">{{scope.row.guestinfoCode}}</span><span>{{scope.row.showCustName}}</span></li>
+              <li>房源:<span>{{scope.row.houseinfoCode}}</span><span>{{scope.row.showOwnerName}}</span></li>
+              <li>客源:<span>{{scope.row.guestinfoCode}}</span><span>{{scope.row.showCustName}}</span></li>
             </ul>
           </template>
         </el-table-column>
@@ -166,7 +177,8 @@
         showScroll:false,
         dictionary:{
           '10': '',
-          '55': ''
+          '55': '',
+          '53': ''
         },
         drop_MoneyType:[],
         searchForm: {
@@ -178,6 +190,7 @@
           receiveAmountState:'',
           signTime: '',
           collectionTime: '',
+          cooperation: '',
           keyword: ''
         },
         list: [],
@@ -213,7 +226,7 @@
     mounted() {
       this.$nextTick(()=>{
         this.getData()
-        this.remoteMethod()
+        // this.remoteMethod()
         this.getDictionary()
         this.getMoneyTypes()
       })
@@ -222,13 +235,13 @@
       getExcel:function () {
         let param = Object.assign({},this.searchForm)
         if(Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){
-          param.beginDate = param.signTime[0]
-          param.endDate = param.signTime[1]
+          param.beginDate = this.$tool.dateFormat(param.signTime[0])
+          param.endDate = this.$tool.dateFormat(param.signTime[1])
           delete param.signTime
         }
         if(Object.prototype.toString.call(param.collectionTime)==='[object Array]'&&param.collectionTime.length>0){
-          param.beginProDate = param.collectionTime[0]
-          param.endProDate = param.collectionTime[1]
+          param.beginProDate = this.$tool.dateFormat(param.collectionTime[0])
+          param.endProDate = this.$tool.dateFormat(param.collectionTime[1])
           delete param.collectionTime
         }
         this.excelCreate('/input/RceivablesExcel',param)
@@ -259,8 +272,10 @@
         this.clearSelect()
       },
       searchDep:function (payload) {
-        this.DepList=payload.list
-        this.searchForm.dealAgentStoreName=payload.depName
+        /*this.DepList=payload.list
+        this.searchForm.dealAgentStoreName=payload.depName*/
+        this.searchForm.dealAgentId=''
+        this.clearSelect('emp')
       },
       depHandleClick(data) {
         this.searchForm.dealAgentStoreId=data.depId
@@ -285,23 +300,23 @@
         }
         let param=Object.assign({},this.searchForm)
         if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
-          param.beginDate = param.signTime[0]
-          param.endDate = param.signTime[1]
+          param.beginDate = this.$tool.dateFormat(param.signTime[0])
+          param.endDate = this.$tool.dateFormat(param.signTime[1])
         }
         if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
-          param.beginProDate = param.collectionTime[0]
-          param.endProDate = param.collectionTime[1]
+          param.beginProDate = this.$tool.dateFormat(param.collectionTime[0])
+          param.endProDate = this.$tool.dateFormat(param.collectionTime[1])
         }
         delete param.signTime
         delete param.collectionTime
-        delete param.moneyType
+        // delete param.moneyType
         param.pageNum=this.currentPage
         param.pageSize=this.pageSize
         this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list = res.data.list
-            this.total = res.data.count
+            this.total = res.data.total
           }
         }).catch(error => {
           console.log(error)

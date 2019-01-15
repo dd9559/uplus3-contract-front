@@ -3,7 +3,7 @@
         <div id="printHtml">
             <slot></slot>
         </div>
-        <iframe width="0" height="0" src="" id="printf" frameborder="0"></iframe>
+        <iframe src="" id="printf" frameborder="0"></iframe>
     </div>
 </template>
 
@@ -67,11 +67,14 @@
                 //     f.focus();
                 //     f.contentWindow.print();
                 // }
-                try {
-                    window.frames['printf'].print();
-                } catch (e) {
-                    f.contentWindow.print();
-                }
+                setTimeout(()=>{
+                    try {
+                        window.frames['printf'].print();
+                    } catch (e) {
+                        f.contentWindow.print();
+                    }
+                },100)
+                
                 // var HKEY_Root, HKEY_Path, HKEY_Key;
                 // HKEY_Root = "HKEY_CURRENT_USER";
                 // HKEY_Path = "\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
@@ -136,5 +139,12 @@
 </script>
 
 <style>
-
+#printf{
+    width: 100px;
+    height: 100px;
+    position: fixed;
+    top: -100px;
+    left: -100px;
+    z-index: 0;
+}
 </style>

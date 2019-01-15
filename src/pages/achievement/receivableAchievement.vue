@@ -70,6 +70,17 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+      <el-form-item label="合作方式" prop="contractType">
+          <el-select v-model="propForm.joinMethods" class="w120" :clearable="true">
+            <el-option
+              v-for="item in dictionary['53']"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 筛选条件 end -->
@@ -220,11 +231,13 @@ export default {
         contractType: "", //合同类型
         dateMo: "", //时间
         search: "" ,//关键字
-        timeType:0
+        timeType:0,
+        joinMethods:""//合作方式
       },
       dictionary: {
         //数据字典
-        "10": "" //合同类型
+        "10": "", //合同类型
+        "53":""  //合作方式
       },
       pageSize: 10,
       currentPage: 1,
@@ -336,7 +349,8 @@ export default {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          timeType:this.propForm.timeType
+          timeType:this.propForm.timeType,
+          joinMethods:this.propForm.joinMethods//合作方式
         };
       } else {
         this.ajaxParam = {
@@ -346,6 +360,7 @@ export default {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
+          joinMethods:this.propForm.joinMethods//合作方式
         };
       }
       this.ajaxParam.pageNum = 1;
@@ -360,7 +375,8 @@ export default {
         startTime: "", //开始时间
         endTime: "", //结束时间
         keyword: "" ,//关键字
-        timeType:0
+        timeType:0,
+        joinMethods:""//合作方式
       };
       this.ajaxParam.pageNum = 1;
       this.currentPage = 1;
@@ -370,7 +386,8 @@ export default {
         contractType: "", //合同类型
         dateMo: "",
         search: "",
-        timeType:0
+        timeType:0,
+        joinMethods:""
       };
     },
     //分页
@@ -394,9 +411,12 @@ export default {
                 id: value.id,
                 code: value.code,
                 contType: value.contType.value
+                // id: 415,
+                // code: 'S0001190114009',
+                // contType: 2
               }
             });
-           }else{
+        }else{
               this.noPower('合同详情查看')
         }
     },
@@ -556,8 +576,8 @@ export default {
 }
 /deep/ .el-pagination {
   text-align: center;
-  padding-bottom: 50px;
-  padding-top: 50px;
+  // padding-bottom: 50px;
+  // padding-top: 50px;
 }
 .w430 {
   width: 430px;

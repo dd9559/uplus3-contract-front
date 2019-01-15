@@ -173,6 +173,7 @@ const MIXINS = {
       if(type==='download'){
         param.rct='application%2Foctet-stream'
       }
+      // param.style='jjw-watermark'
       this.$ajax.put('/api/load/generateAccessURLBatch',param,2).then(res=>{
         res=res.data
         if(res.status===200){
@@ -250,13 +251,14 @@ const MIXINS = {
       this.$ajax.get(`/api${url}`,param).then(res=>{
         res=res.data
         if(res.status===200){
-          var a = document.createElement('a');
+          this.fileSign([res.data],'download')
+          /*var a = document.createElement('a');
           a.download = undefined;
           a.href = res.data;
           // a.innerText='test'
           document.body.appendChild(a)
           a.click();
-          document.body.removeChild(a)
+          document.body.removeChild(a)*/
         }
       }).catch(error=>{
         this.$message({

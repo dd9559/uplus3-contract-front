@@ -25,7 +25,7 @@
                         v-model="propForm.steps" 
                         placeholder="交易步骤"
                         class="w110">
-                            <el-option v-for="item in rules.steps" 
+                            <el-option v-for="item in rulesSteps" 
                             :key="'regionSteps'+item.id" 
                             :label="item.name" 
                             :value="item.id"></el-option>
@@ -38,30 +38,34 @@
                     </el-form-item>
                 </div>
                 <div class="in-block">
+                    
                     <el-form-item 
+                    prop="stepsMo"
                     label="交易步骤"
-                    prop="steps" 
                     class="mr">
-                        <el-select 
-                        v-model="propForm.steps" 
-                        placeholder="交易步骤"
-                        class="w110">
-                            <el-option v-for="item in rules.steps" 
-                            :key="'steps'+item.id" 
-                            :label="item.name" 
-                            :value="item.id"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item prop="stepsMo">
                         <el-select 
                         v-model="propForm.stepsMo" 
                         class="w110" 
+                        @change="rulesStepsFn"
                         placeholder="状态">
                             <el-option 
                             v-for="item in rules.stepsMo" 
                             :key="'stepsMo'+item.key" 
                             :label="item.value" 
                             :value="item.key"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item 
+                    prop="steps" 
+                    >
+                        <el-select 
+                        v-model="propForm.steps" 
+                        placeholder="交易步骤"
+                        class="w110">
+                            <el-option v-for="item in rulesSteps" 
+                            :key="'steps'+item.id" 
+                            :label="item.name" 
+                            :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
@@ -152,27 +156,6 @@
                     label="合同来源部门"
                     prop="departmentS" 
                     class="mr">
-                        <!-- <el-select 
-                        ref="tree" 
-                        size="small" 
-                        :loading="Loading" 
-                        :remote-method="remoteMethod"
-                        v-model="propForm.departmentS" 
-                        @clear="clearDep"
-                        @visible-change="initDepList" 
-                        clearable 
-                        filterable
-                        remote 
-                        placeholder="请选择">
-                            <el-option 
-                            class="drop-tree" 
-                            value="">
-                                <el-tree 
-                                :data="DepList" 
-                                :props="defaultProps" 
-                                @node-click="depHandleClick"></el-tree> 
-                            </el-option>
-                        </el-select> -->
                         <select-tree :data="DepList" :init="propForm.departmentS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                     </el-form-item>
                     <el-form-item prop="departmentMo">
@@ -198,6 +181,19 @@
                             <el-option 
                             v-for="item in rules.commission" 
                             :key="'commission'+item.key" 
+                            :label="item.value" 
+                            :value="item.key"></el-option>
+                        </el-select>
+                </el-form-item>
+                <el-form-item 
+                    label="合作方式"
+                    prop="depAttr">
+                        <el-select 
+                        v-model="propForm.depAttr" 
+                        class="w100">
+                            <el-option 
+                            v-for="item in rules.depAttr" 
+                            :key="'depAttr'+item.key" 
                             :label="item.value" 
                             :value="item.key"></el-option>
                         </el-select>
@@ -456,170 +452,131 @@
                         ref="stepsFrom"
                         :model="stepsFrom"
                         v-loading.fullscreen.lock="LookStepLoad"
-                        label-width="150px">
+                        label-width="136px">
                             <el-form-item
                                 v-for="(item,index) in stepsFrom.list"
                                 :prop="'list.' + index + '.val'"
                                 :key="'bl'+item.id + index"
-                                :label="item.title+ '：'"
+                                :label="item.title"
                                 :rules="item.rules"
                             >
-                                <!-- 办理 编辑 -->
-                                <template v-if="stepsData.tit !== STEPS.end">
-                                    <template v-if="item.type === STEPSINPUT.start">
-                                        <el-input 
-                                        v-model="item.val"
-                                        size="small"
-                                        ></el-input>
-                                    </template>
-                                    <template v-if="item.type === STEPSINPUT.num">
-                                        <el-input 
-                                        type="number"
-                                        v-model.number="item.val"
-                                        size="small"
-                                        ></el-input>
-                                    </template>
-                                    <template v-else-if="item.type === STEPSINPUT.time">
-                                        <el-date-picker
-                                        v-model="item.val"
-                                        size="small"
-                                        type="date"
-                                        class="w160"
-                                        placeholder="选择日期">
-                                        </el-date-picker>
-                                    </template>
-                                    <template v-else-if="item.type === STEPSINPUT.textarea">
-                                        <div class="steps-input">
+                                <span class="steps-postion-a">：</span>
+                                <div class="steps-postion-b">
+                                    <!-- 办理 编辑 -->
+                                    <template v-if="stepsData.tit !== STEPS.end">
+                                        <template v-if="item.type === STEPSINPUT.start">
                                             <el-input 
-                                            type="textarea" 
-                                            resize="none" 
-                                            :maxlength="invalidMax" 
-                                            v-model="item.val" 
-                                            class="input">
-                                            </el-input>
-                                            <div class="text-absloute">{{item.val.length}}/{{invalidMax}}</div>
-                                        </div>
-                                    </template>
-                                    <template v-else-if="item.type === STEPSINPUT.img || item.type === STEPSINPUT.mp4 || item.type === STEPSINPUT.pdf || item.type === STEPSINPUT.excel || item.type === STEPSINPUT.word">
-                                        <div>
-                                            <fileUp 
-                                            :id="'fileUp'+index"
-                                            :rules="stepsTypeImg(item.type,1)"
-                                            @getUrl="imgBtnFn"
-                                            class="fileUp">
-                                                <el-button 
-                                                class="paper-btn paper-btn-blue" 
-                                                round
-                                                type="primary" 
-                                                size="small">{{stepsTypeImg(item.type,2)}}</el-button>
-                                            </fileUp>
-                                        </div>
-                                        <ul class="steps-img">
-                                            <el-tooltip class="item" 
-                                            effect="dark" 
-                                            :content="i.name" 
-                                            placement="bottom" 
-                                            v-for="(i,n) in item.val"
-                                            :key="i.name">
-                                                <li 
-                                                @click="previewPhoto(item.val,n)"
-                                                >
-                                                    <i @click.stop="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
-                                                    <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
-                                                    <p class="p">{{i.name}}</p>
-                                                </li>
-                                            </el-tooltip>
-                                        </ul>
-                                    </template>
-                                    <!-- <template v-else>
-                                        <div>
-                                            <template v-if="item.type === STEPSINPUT.mp4">
-                                                <el-button class="paper-btn paper-btn-blue" round type="primary" size="small" @click="imgBtnFn">上传视频</el-button>
-                                            </template>
-                                            <template v-if="item.type === STEPSINPUT.excel">
-                                                <el-button class="paper-btn paper-btn-blue" round type="primary" size="small" @click="imgBtnFn">上传Word</el-button>
-                                            </template>
-                                            <template v-if="item.type === STEPSINPUT.word">
-                                                <el-button class="paper-btn paper-btn-blue" round type="primary" size="small" @click="imgBtnFn">上传Excel</el-button>
-                                            </template>
-                                            <template v-if="item.type === STEPSINPUT.pdf">
-                                                <el-button class="paper-btn paper-btn-blue" round type="primary" size="small" @click="imgBtnFn">上传PDF</el-button>
-                                            </template>
-                                        </div>
-                                        <ul class="steps-img">
-                                            <li 
-                                            v-for="(i,n) in item.val"
-                                            @click="clearFn(index,n)"
-                                            :key="i.name"
-                                            >  
-                                                <img 
-                                                class="icon-steps" 
-                                                v-if="item.type === STEPSINPUT.mp4"
-                                                src="../../assets/img/icon-steps01.png">
-                                                <img 
-                                                class="icon-steps" 
-                                                v-if="item.type === STEPSINPUT.excel"
-                                                src="../../assets/img/icon-steps02.png">
-                                                <img 
-                                                class="icon-steps" 
-                                                v-if="item.type === STEPSINPUT.word"
-                                                src="../../assets/img/icon-steps03.png">
-                                                <img 
-                                                class="icon-steps" 
-                                                v-if="item.type === STEPSINPUT.pdf"
-                                                src="../../assets/img/icon-steps04.png">
-                                                <span class="fl">{{i.name}}</span>
-                                                <i class="iconfont icon-tubiao-7"></i>
-                                            </li>
-                                        </ul>
-                                    </template> -->
-                                </template>
-                                <!-- 查看 -->
-                                <template v-else>
-                                    <template v-if="item.type === STEPSINPUT.start || item.type === STEPSINPUT.time || item.type === STEPSINPUT.textarea || item.type === STEPSINPUT.num">
-                                        <div class="steps-see">{{item.val}}</div>
-                                    </template>
-                                    <template v-else>
-                                        <!-- <ul class="steps-img">
-                                            <li 
-                                            class="steps-mp4-li"
-                                            v-for="(i,n) in item.val"
-                                            @click="clearFn(index,n)"
-                                            :key="i.name"
-                                            >  
-                                                <img 
-                                                class="icon-steps" 
-                                                v-if="item.type === STEPSINPUT.mp4"
-                                                src="../../assets/img/icon-steps01.png">
-                                                <img 
-                                                class="icon-steps" 
-                                                v-if="item.type === STEPSINPUT.excel"
-                                                src="../../assets/img/icon-steps02.png">
-                                                <img 
-                                                class="icon-steps" 
-                                                v-if="item.type === STEPSINPUT.word"
-                                                src="../../assets/img/icon-steps03.png">
-                                                <img 
-                                                class="icon-steps" 
-                                                v-if="item.type === STEPSINPUT.pdf"
-                                                src="../../assets/img/icon-steps04.png">
-                                                <span class="fl">{{i.name}}</span>
-                                            </li>
-                                        </ul> -->
-                                        <ul class="steps-img">
-                                            <el-tooltip class="item" effect="dark" :content="i.name" placement="bottom" 
+                                            v-model="item.val"
+                                            size="small"
+                                            ></el-input>
+                                        </template>
+                                        <template v-if="item.type === STEPSINPUT.num">
+                                            <el-input 
+                                            v-model="item.val"
+                                            size="small"
+                                            @input="numberChangeFn(index,$event)"
+                                            ></el-input>
+                                        </template>
+                                        <template v-else-if="item.type === STEPSINPUT.time">
+                                            <el-date-picker
+                                            v-model="item.val"
+                                            size="small"
+                                            type="date"
+                                            class="w160"
+                                            placeholder="选择日期">
+                                            </el-date-picker>
+                                        </template>
+                                        <template v-else-if="item.type === STEPSINPUT.textarea">
+                                            <div class="steps-input">
+                                                <el-input 
+                                                type="textarea" 
+                                                resize="none" 
+                                                :maxlength="invalidMax" 
+                                                v-model="item.val" 
+                                                class="input">
+                                                </el-input>
+                                                <div class="text-absloute">{{item.val.length}}/{{invalidMax}}</div>
+                                            </div>
+                                        </template>
+                                        <template v-else-if="item.type === STEPSINPUT.img || item.type === STEPSINPUT.mp4 || item.type === STEPSINPUT.pdf || item.type === STEPSINPUT.excel || item.type === STEPSINPUT.word">
+                                            <div>
+                                                <fileUp 
+                                                :id="'fileUp'+index"
+                                                :rules="stepsTypeImg(item.type,1)"
+                                                @getUrl="imgBtnFn"
+                                                class="fileUp">
+                                                    <el-button 
+                                                    class="paper-btn paper-btn-blue" 
+                                                    round
+                                                    type="primary" 
+                                                    size="small">{{stepsTypeImg(item.type,2)}}</el-button>
+                                                </fileUp>
+                                            </div>
+                                            <ul class="steps-img">
+                                                <el-tooltip class="item" 
+                                                effect="dark" 
+                                                :content="i.name" 
+                                                placement="bottom" 
                                                 v-for="(i,n) in item.val"
                                                 :key="i.name">
-                                                <li 
-                                                @click="previewPhoto(item.val,n)"
-                                                >
-                                                    <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
-                                                    <p class="p">{{i.name}}</p>
-                                                </li>
-                                            </el-tooltip>
-                                        </ul>
+                                                    <li 
+                                                    @click="previewPhoto(item.val,n)"
+                                                    >
+                                                        <i @click.stop="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
+                                                        <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                                        <p class="p">{{i.name}}</p>
+                                                    </li>
+                                                </el-tooltip>
+                                            </ul>
+                                        </template>
                                     </template>
-                                </template>
+                                    <!-- 查看 -->
+                                    <template v-else>
+                                        <template v-if="item.type === STEPSINPUT.start || item.type === STEPSINPUT.time || item.type === STEPSINPUT.textarea || item.type === STEPSINPUT.num">
+                                            <div class="steps-see">{{item.val}}</div>
+                                        </template>
+                                        <template v-else>
+                                            <!-- <ul class="steps-img">
+                                                <li 
+                                                class="steps-mp4-li"
+                                                v-for="(i,n) in item.val"
+                                                @click="clearFn(index,n)"
+                                                :key="i.name"
+                                                >  
+                                                    <img 
+                                                    class="icon-steps" 
+                                                    v-if="item.type === STEPSINPUT.mp4"
+                                                    src="../../assets/img/icon-steps01.png">
+                                                    <img 
+                                                    class="icon-steps" 
+                                                    v-if="item.type === STEPSINPUT.excel"
+                                                    src="../../assets/img/icon-steps02.png">
+                                                    <img 
+                                                    class="icon-steps" 
+                                                    v-if="item.type === STEPSINPUT.word"
+                                                    src="../../assets/img/icon-steps03.png">
+                                                    <img 
+                                                    class="icon-steps" 
+                                                    v-if="item.type === STEPSINPUT.pdf"
+                                                    src="../../assets/img/icon-steps04.png">
+                                                    <span class="fl">{{i.name}}</span>
+                                                </li>
+                                            </ul> -->
+                                            <ul class="steps-img">
+                                                <el-tooltip class="item" effect="dark" :content="i.name" placement="bottom" 
+                                                    v-for="(i,n) in item.val"
+                                                    :key="i.name">
+                                                    <li 
+                                                    @click="previewPhoto(item.val,n)"
+                                                    >
+                                                        <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                                        <p class="p">{{i.name}}</p>
+                                                    </li>
+                                                </el-tooltip>
+                                            </ul>
+                                        </template>
+                                    </template>
+                                </div>
                             </el-form-item>
                         </el-form>
                         <!-- 预览 -->
@@ -661,6 +618,7 @@
                             <template slot-scope="scope">
                                 <p class="check-all">
                                     <el-checkbox 
+                                    class="check-break"
                                     v-model="scope.row.bool" 
                                     @change="adjustAllChange(scope.$index,$event)">{{scope.row.typeName}}</el-checkbox>
                                 </p>
@@ -678,6 +636,7 @@
                                     v-for="item in scope.row.stepsList" 
                                     :key="item.name">
                                         <el-checkbox 
+                                        class="check-break"
                                         :disabled="item.disabled"
                                         :label="item">{{item.name}}</el-checkbox>
                                     </p>
@@ -761,6 +720,7 @@
                     '22':'是否超时',
                     '44':'后期状态',
                     '48':'数据范围',
+                    '53':'合作方式',
                     '561':'步骤附属信息类型',
                     '570':'是否必填',
                 },
@@ -782,6 +742,7 @@
                     department:'',
                     departmentS:'',
                     departmentMo:'',
+                    depAttr:'',
                 },
                 // 筛选下拉
                 rules:{
@@ -796,10 +757,10 @@
                     steps: [],
                     stepsMo: [{
                         key:1,
-                        value:'已办理'
+                        value:'已完成'
                     },{
                         key:2,
-                        value:'未办理'
+                        value:'办理中'
                     },{
                         key:3,
                         value:'超时未办理'
@@ -843,6 +804,7 @@
                         name: "全部",
                         empId: ""
                     }],
+                    depAttr:[]
                 },
                 // 列表数据
                 tableData:{},
@@ -913,7 +875,8 @@
                         name:'合同详情',
                         state:false,
                     },
-                }
+                },
+                rulesSteps:[]
             }
         },
         computed:{
@@ -924,9 +887,13 @@
                 }else{
                     return ''
                 }
-            }
+            },
         },
         methods:{
+            // 赋值给交易步骤
+            rulesStepsFn(e){
+                this.rulesSteps = this.rules.steps;
+            },
             // 百分比转换
             percentageFn(val){
                 if(val > 0){
@@ -1020,12 +987,13 @@
                     this.noPower(this.power['sign-com-htdetail'].name);
                     return false
                 }
+                this.setPath(this.getPath.concat({name:'合同详情'}));
                 this.$router.push({
                     path: "/contractDetails",
                     query: {
                         id: value.id,//合同id
                         code: value.code,//合同编号
-                        contType: this.power['sign-com-htdetail'].state?1:0//合同类型
+                        contType: value.tradeType.value//合同类型
                     }
                 });
             },
@@ -1087,12 +1055,11 @@
                                 j.required = false;
                             }
                             if(e.type === STEPSINPUT.num && e.isRequired){
-                                e.rules = [j,
-                                { type: 'number', message: '输入必须为数字值'}];
+                                e.rules = [j,{ 
+                                    validator: this.checkNumberFn}]
                             }else{
                                 e.rules = j;
                             }
-                            
                         })
                         this.stepsFrom = {
                             list:[...arr,...arr2],
@@ -1112,6 +1079,39 @@
                     this.LookStepLoad = false;
                     this.errMeFn(err);
                 })
+            },
+            // 数字改变的时候
+            checkNumberFn(rule, value, callback){
+                if(!this.isNumber(value)){
+                    callback(new Error('请输入数字'));
+                }else{
+                    callback();
+                }
+            },
+            numberChangeFn(i,e){
+                this.$nextTick(() => {
+                    let val = e.toString().replace(/[^0-9.]/, '');
+                    let point;
+                    let t ='';
+                    let pos = val.indexOf('.')
+                    if (pos > -1) {
+                        point = val.split('.')[1]
+                        t = `${val.slice(0, pos)}.${point}`
+                    }else{
+                        t = val;
+                    }
+                    this.stepsFrom.list[i].val = t
+                });
+            },
+            isNumber(val) {
+                let regPos = /^\d+(\.\d+)?$/; //非负浮点数
+                let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+                // || regNeg.test(val)
+                if(regPos.test(val) ) {
+                    return true;
+                } else {
+                    return false;
+                }
             },
             // 后期进度
             progressFn(row){
@@ -1630,6 +1630,7 @@
                     receiveTimeEnd,
                     receiveTimeStar,
                     keyword:this.propForm.search,
+                    depAttr:this.propForm.depAttr,
                 }).then(res=>{
                     res = res.data;
                     if(res.status === 200){
@@ -1774,6 +1775,8 @@
                             value: "全部",
                             key: ""
                         },...newData[48]];
+                // 合作方式
+                this.rules.depAttr= [...newData[53]]
            },
            cityId(){
                // 交易流程

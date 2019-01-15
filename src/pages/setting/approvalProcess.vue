@@ -11,7 +11,7 @@
                 </el-select>
             </div> -->
             <div class="input-group">
-                <label>运营模式</label>
+                <label>合作方式</label>
                 <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
                     <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
@@ -44,7 +44,7 @@
                             <span>{{scope.row.cityName}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="运营模式" prop="deptAttr" :formatter="nullFormatter"></el-table-column>
+                    <el-table-column align="center" label="合作方式" prop="deptAttr" :formatter="nullFormatter"></el-table-column>
                     <el-table-column align="center" label="流程类型" prop="type">
                         <template slot-scope="scope">
                             <span>{{scope.row.type|getTypeName}}</span>
@@ -90,7 +90,7 @@
                         </el-select>
                     </div>
                     <div class="aduit-input must">
-                        <label>运营模式:</label>
+                        <label>合作方式:</label>
                         <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
                             <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
@@ -115,7 +115,7 @@
                     <el-input size="small" maxlength="15" v-model.trim="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                 </div>
                 <div class="aduit-node">
-                    <div>
+                    <div class="must">
                         <label>分支节点:</label>
                         <el-radio-group v-model="isAudit" @change="aduitChange">
                             <el-radio label="1">需要审核</el-radio>
@@ -168,7 +168,7 @@
                                 <div class="multiple" ref="curChoice">
                                     <span v-for="(ele,m) in item.choice" :key="m"
                                     @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">
-                                    {{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
+                                    {{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.temp?ele.temp+'-'+ele.userName:ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
                                     </span>
                                 </div>
                             </div>
@@ -272,6 +272,7 @@
                 currentFlowId: "",
                 tempAudit: "",
                 tempNodeList: [],
+                copyNodeList: [],
                 employeList: [],
                 power: {
                     'sign-set-verify': {
@@ -567,7 +568,8 @@
                                     type: 0,
                                     userName: this.employeList[index-1][i].name,
                                     userId: this.employeList[index-1][i].empId,
-                                    isDefault: 0
+                                    isDefault: 0,
+                                    temp: this.nodeList[index].depName
                                 })
                                 break
                             }
@@ -597,7 +599,8 @@
                                     type: 1,
                                     userName: this.depsList[i].name,
                                     userId: this.depsList[i].id,
-                                    isDefault: 0
+                                    isDefault: 0,
+                                    temp: ""
                                 })
                                 break
                             }
@@ -627,7 +630,8 @@
                                     type: 2,
                                     userName: this.roleList[i].value,
                                     userId: this.roleList[i].key,
-                                    isDefault: 0
+                                    isDefault: 0,
+                                    temp: ""
                                 })
                                 break
                             }
@@ -717,6 +721,7 @@
                     }]
                     this.nodeList = arr1
                 } else {
+                    this.copyNodeList = JSON.parse(JSON.stringify(this.nodeList))
                     let item = this.nodeList
                     for(var i = 1; i < item.length; i++) {
                         isOk = false
@@ -784,6 +789,7 @@
                     }
                 }).catch(error => {
                     this.$message({message:error})
+                    this.nodeList = this.copyNodeList
                 })
             },
             queryFn() {
@@ -872,7 +878,7 @@
             line-height: 32px;
         }
         .mr-7 {
-            margin-right: 7px;
+            margin-left: 6px;
         }
         &:nth-child(-n+5) {
             /deep/ .el-input {
@@ -886,7 +892,7 @@
         }
     }
     .must {
-        label::before {
+        >label::before {
             content: "*";
             color: red;
             margin-right: 1px;
@@ -894,7 +900,7 @@
     }
     .aduit-node {
         > div {
-            margin-bottom: 18px;
+            margin-bottom: 10px;
             label {
                 margin-right: 10px;
             }
@@ -1013,7 +1019,7 @@
                     }
                 }
                 &:last-child {
-                    margin-bottom: 18px;
+                    margin-bottom: 10px;
                 }
             }
         }
@@ -1036,10 +1042,12 @@
     border-bottom: 1px solid #EDECF0;
 }
 /deep/ .el-dialog__body {
-    padding-top: 20px;
+    max-height: 400px;
+    overflow: auto;
+    padding-top: 10px;
 }
 /deep/ .el-dialog__footer {
-    padding-bottom: 34px;
+    padding-right: 10px;
     .el-button {
         width: 100px;
         height: 38px;
