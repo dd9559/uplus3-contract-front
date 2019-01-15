@@ -483,7 +483,7 @@
                     style="cursor:pointer;"
                     v-if="userMsg&&userMsg.empId==scope.row.auditId"
                   >审核</span> 
-                  <span v-if="power['sign-yj-rev-retreat'].state==false&&(userMsg&&userMsg.empId!=scope.row.auditId)">-</span>           
+                  <span v-if="userMsg&&userMsg.empId!=scope.row.auditId&&scope.row.arraignmentId!=userMsg.empId">-</span>           
                 </div>
               </div>
               <div v-else>
