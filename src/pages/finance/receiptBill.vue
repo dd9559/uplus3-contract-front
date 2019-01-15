@@ -67,6 +67,19 @@
           </div>
           <input type="text" size="small" class="w400 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum(1)">
         </div>
+        <div class="input-group col">
+          <label class="form-label f14 margin-bottom-base">收账账户</label>
+          <el-select size="small" class="w200" v-model="activeAdmin" placeholder="请选择" v-if="firstCreate.state">
+            <el-option
+              v-for="item in account"
+              :key="item.id"
+              :label="`${item.storeName}-${item.bankAccountName} ${item.bankBranchName} ${item.bankCard}`"
+              :value="item.id">
+              {{item.storeName}}-{{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
+            </el-option>
+          </el-select>
+          <div class="h32" :class="[!firstCreate.state?'other':'']" v-else>{{firstCreate.content.storeName}}-{{firstCreate.content.account[0].userName}}-{{firstCreate.content.account[0].bankName}}-{{firstCreate.content.account[0].cardNumber}}</div>
+        </div>
       </li>
     </ul>
     <!--<section>
@@ -247,7 +260,7 @@
               </div>
               <input type="text" class="w400 el-input__inner" placeholder="请输入" v-model="item.amount" @input="cutNum(item,'amount')">
             </section>
-            <section v-if="item.payMethod===2">
+            <!--<section v-if="item.payMethod===2">
               <label class="f14 margin-bottom-base">收账账户</label>
               <el-select size="small" class="w300" v-model="item.activeAdmin" placeholder="请选择">
                 <el-option
@@ -258,7 +271,7 @@
                   {{item.storeName}}-{{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
                 </el-option>
               </el-select>
-            </section>
+            </section>-->
           </div>
           <i class="iconfont" :class="[index===0?'icon-icon-test':'icon-del']" @click="payListOper(index)"></i>
         </li>
@@ -367,6 +380,9 @@
     amount:{
       name:'收款金额',
       type:'money'
+    },
+    admin:{
+      name:'收账账户'
     }
   }
   const cardRule = {
@@ -398,9 +414,9 @@
       name:'金额',
       type:'money'
     },
-    activeAdmin:{
+    /*activeAdmin:{
       name:'收帐账户'
-    }
+    }*/
   }
 
   export default {
@@ -482,6 +498,10 @@
         showAmount:false,//款类是否为代收代付
         showCard:true,//是否显示刷卡补充
         inObjPerson:true,//收款人是否可选
+        firstCreate:{
+          state:true,
+          content:{}
+        },//合同是否第一次创建
       }
     },
     mounted() {
@@ -492,6 +512,7 @@
       this.getDropdown()
       // this.getReceiptman()
       this.getAdmin()
+      this.addInit(this.$route.query.contId)
       let type = this.$route.query.edit
       let inAccount = this.$route.query.type
       if (type) {
@@ -507,6 +528,18 @@
       }
     },
     methods: {
+      addInit:function (id) {
+        this.$ajax.get('/api/payInfo/toInsert',{contId:id}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            if(res.data){
+              this.firstCreate.state=false
+              this.firstCreate.content = Object.assign({},res.data)
+              this.activeAdmin = res.data.account[0].accountId
+            }
+          }
+        })
+      },
       clearData:function () {
         this.$tool.clearForm(this.form)
         this.cardList=[]
@@ -536,8 +569,10 @@
         }
       },
       searchDep:function (payload) {
-        this.DepList=payload.list
-        this.dep.name=payload.depName
+        /*this.DepList=payload.list
+        this.dep.name=payload.depName*/
+        this.form.inObjId=''
+        this.clearSelect('emp')
       },
       //收款人下拉选项操作
       clearSelect:function (type='dep') {
@@ -564,6 +599,9 @@
         this.payList.forEach(item=>{
           item.activeAdmin=''
         })
+        if(this.firstCreate.state){
+          this.activeAdmin = ''
+        }
         this.account=[]
       },
       handleNodeClick(data) {
@@ -638,9 +676,9 @@
               this.cardList = res.data.account //刷卡补充
             let arr = res.data.inAccount.map(item=>Object.assign({},item,{activeAdmin:item.cardNumber,payMethod:item.payMethod.value}))
               this.payList = [].concat(arr)
-              /*if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
-                this.activeAdmin = res.data.inAccount[0].cardNumber
-              }*/
+              if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
+                this.activeAdmin = res.data.inAccount[0].accountId
+              }
             // }
             this.form = Object.assign({}, this.form, obj)
             this.getAcount(this.form.inObjId)
@@ -699,7 +737,7 @@
       goResult: function () {
         console.log(this.getUser)
         // let RULE = this.activeType===1?rule:otherRule
-        let param = Object.assign({}, this.form)
+        let param = Object.assign({admin:this.activeAdmin}, this.form)
 
         //支付信息列表更新
         let newPayList = this.payList.map(item=>{
@@ -751,16 +789,9 @@
               param.outAccount = cardListStatus?[]:[].concat(this.cardList)
               param.inAccount = []
               this.payList.forEach(item=>{
-                if(item.activeAdmin===''){
-                  let obj = {
-                    bankName: '',
-                    userName: '',
-                    cardNumber: ''
-                  }
-                  param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
-                }else {
+                if(this.firstCreate.state){
                   this.account.find(card => {
-                    if (card.bankCard === item.activeAdmin) {
+                    if (card.id === this.activeAdmin) {
                       let obj = {
                         bankName: card.bankBranchName,
                         userName: card.bankAccountName,
@@ -772,6 +803,13 @@
                       return true
                     }
                   })
+                }else {
+                  let obj = Object.assign({},this.firstCreate.content.account[0])
+                  delete obj.amount
+                  delete obj.fee
+                  delete obj.orderNo
+                  delete obj.payMethod
+                  param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
                 }
               })
               this.getResult(param,this.$route.query.edit?'edit':'')
@@ -1071,8 +1109,10 @@
               }
             } else {
               obj.inObj = tip.name
-              this.activeAdmin=''
-              this.getAcount(this.form.inObjId)
+              if(this.firstCreate.state){
+                this.activeAdmin=''
+                this.getAcount(this.form.inObjId)
+              }
             }
             return
           }
@@ -1178,6 +1218,9 @@
     height: 32px;
     line-height: 32px;
     min-width: 118px;
+    &.other{
+      min-width: 300px;
+    }
   }
   .artice-margin{
     margin-bottom: 30px;
