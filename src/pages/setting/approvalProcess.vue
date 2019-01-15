@@ -11,7 +11,7 @@
                 </el-select>
             </div> -->
             <div class="input-group">
-                <label>运营模式</label>
+                <label>合作方式</label>
                 <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
                     <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
@@ -44,7 +44,7 @@
                             <span>{{scope.row.cityName}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="运营模式" prop="deptAttr" :formatter="nullFormatter"></el-table-column>
+                    <el-table-column align="center" label="合作方式" prop="deptAttr" :formatter="nullFormatter"></el-table-column>
                     <el-table-column align="center" label="流程类型" prop="type">
                         <template slot-scope="scope">
                             <span>{{scope.row.type|getTypeName}}</span>
@@ -90,7 +90,7 @@
                         </el-select>
                     </div>
                     <div class="aduit-input must">
-                        <label>运营模式:</label>
+                        <label>合作方式:</label>
                         <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
                             <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
@@ -168,7 +168,7 @@
                                 <div class="multiple" ref="curChoice">
                                     <span v-for="(ele,m) in item.choice" :key="m"
                                     @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">
-                                    {{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
+                                    {{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.temp?ele.temp+'-'+ele.userName:ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
                                     </span>
                                 </div>
                             </div>
@@ -272,6 +272,7 @@
                 currentFlowId: "",
                 tempAudit: "",
                 tempNodeList: [],
+                copyNodeList: [],
                 employeList: [],
                 power: {
                     'sign-set-verify': {
@@ -567,7 +568,8 @@
                                     type: 0,
                                     userName: this.employeList[index-1][i].name,
                                     userId: this.employeList[index-1][i].empId,
-                                    isDefault: 0
+                                    isDefault: 0,
+                                    temp: this.nodeList[index].depName
                                 })
                                 break
                             }
@@ -597,7 +599,8 @@
                                     type: 1,
                                     userName: this.depsList[i].name,
                                     userId: this.depsList[i].id,
-                                    isDefault: 0
+                                    isDefault: 0,
+                                    temp: ""
                                 })
                                 break
                             }
@@ -627,7 +630,8 @@
                                     type: 2,
                                     userName: this.roleList[i].value,
                                     userId: this.roleList[i].key,
-                                    isDefault: 0
+                                    isDefault: 0,
+                                    temp: ""
                                 })
                                 break
                             }
@@ -717,6 +721,7 @@
                     }]
                     this.nodeList = arr1
                 } else {
+                    this.copyNodeList = JSON.parse(JSON.stringify(this.nodeList))
                     let item = this.nodeList
                     for(var i = 1; i < item.length; i++) {
                         isOk = false
@@ -784,6 +789,7 @@
                     }
                 }).catch(error => {
                     this.$message({message:error})
+                    this.nodeList = this.copyNodeList
                 })
             },
             queryFn() {
