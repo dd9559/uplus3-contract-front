@@ -52,7 +52,7 @@
         <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
       <div class="paper-ov">
-        <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
+        <!-- <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div> -->
         <div class="fr"><span class="mr-10">开票人：</span><em class="fb">{{comCreate}}</em></div>
       </div>
       <div class="pr">

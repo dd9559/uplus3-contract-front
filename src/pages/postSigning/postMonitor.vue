@@ -15,20 +15,8 @@
                 <div class="in-block">
                     <el-form-item 
                     label="交易步骤" 
-                    prop="late" 
-                    class="mr">
-                        <el-select 
-                        v-model="propForm.late" 
-                        placeholder="交易步骤"
-                        class="w100">
-                            <el-option 
-                            v-for="item in rules.late" 
-                            :key="'steps'+item.id" 
-                            :label="item.name" 
-                            :value="item.id"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item prop="lateName">
+                    class="mr"
+                    prop="lateName">
                         <el-select 
                         v-model="propForm.lateName" 
                         class="w100" 
@@ -38,6 +26,19 @@
                             :key="'lateName'+item.key" 
                             :label="item.value" 
                             :value="item.key"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item 
+                    prop="late">
+                        <el-select 
+                        v-model="propForm.late" 
+                        placeholder="交易步骤"
+                        class="w100">
+                            <el-option 
+                            v-for="item in rules.late" 
+                            :key="'steps'+item.id" 
+                            :label="item.name" 
+                            :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
@@ -99,6 +100,19 @@
                         </el-select>
                     </el-form-item>
                 </div>
+                <el-form-item 
+                    label="合作方式"
+                    prop="depAttr">
+                        <el-select 
+                        v-model="propForm.depAttr" 
+                        class="w100">
+                            <el-option 
+                            v-for="item in rules.depAttr" 
+                            :key="'depAttr'+item.key" 
+                            :label="item.value" 
+                            :value="item.key"></el-option>
+                        </el-select>
+                </el-form-item>
             </el-form>
         </ScreeningTop>
         <!-- 列表 -->
@@ -211,6 +225,7 @@
                 // 枚举数据
                 dictionary:{
                     '13':'收佣状态',
+                    '53':'合作方式',
                 },
                 // 筛选条件
                 propForm: {
@@ -222,6 +237,7 @@
                     time: '',
                     late: '',
                     lateName: 3,
+                    depAttr:'',
                 },
                 // 筛选选项
                 rules: {
@@ -254,7 +270,8 @@
                     },{
                         key:4,
                         value:'超时已办理'
-                    },]
+                    },],
+                    depAttr:[]
                 },
                 // 列表数据
                 tableData:{},
@@ -323,6 +340,7 @@
                     this.noPower(this.power['sign-com-htdetail'].name);
                     return false
                 }
+                this.setPath(this.getPath.concat({name:'合同详情'}));
                 this.$router.push({
                     path: "/contractDetails",
                     query: {
@@ -399,6 +417,7 @@
                     receiveTimeEnd,
                     receiveTimeStar,
                     keyword:this.propForm.search,
+                    depAttr:this.propForm.depAttr,
                 }).then(res=>{
                     res = res.data;
                     if(res.status === 200){
@@ -486,6 +505,8 @@
                             value: "全部",
                             key: ""
                         },...newData[13]];
+                // 合作方式
+                this.rules.depAttr= [...newData[53]];
             },
             cityId(){
                // 交易流程
