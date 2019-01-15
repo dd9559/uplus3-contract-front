@@ -547,7 +547,7 @@
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" style="width:900px" v-show="false">
-        <div class="printContent">
+        <div class="printContent" style="width:900px;height:1250px">
           <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
           </div>
@@ -692,6 +692,7 @@
               </div>
             </div>
           </div>
+          <div class="bgcImg" :style={backgroundImage:url}></div>
         </div>
       </LayerPrint>
     <!-- </vue-easy-print> -->
@@ -877,7 +878,8 @@ export default {
           state: false,
           name: '查看备注'
         },
-      }
+      },
+      url:`url(${require('@/assets/img/shuiyin.png')})`
     };
   },
   created() {
@@ -1689,6 +1691,9 @@ export default {
    size: auto;
    margin: 0mm;
   }
+  @media print {
+    body {-webkit-print-color-adjust: exact;}
+  }
  </style>
 <style scoped lang="less">
 @import "~@/assets/common.less";
@@ -1779,7 +1784,7 @@ export default {
             cursor: pointer;
           }
           .text{
-            max-width: 180px;
+            max-width: 110px;
             cursor: pointer;
           }
           .colon{
@@ -2117,9 +2122,20 @@ export default {
 //打印模块
 .printContent{
   // width: 1000px;
+  position: relative;
   font-size: 16px;
   box-sizing: border-box;
   padding: 40px 40px;
+  .bgcImg{
+    position: absolute;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.5;
+    // background-image: url("../../../assets/img/shuiyin.png");
+  }
   p{
     display: inline-block;
     width: 240px;

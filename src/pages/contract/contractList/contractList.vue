@@ -83,6 +83,12 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="合作方式">
+          <el-select v-model="contractForm.dealAgentStoreAttr" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 合同列表 -->
@@ -397,6 +403,7 @@ export default {
         "6": "", //变更/解约
         "14": "", //结算状态
         "13": "", //收佣状态
+        "53": "", //合作方式
         "54": "", //业绩状态
         "538": "", //用途
         "507": ""
