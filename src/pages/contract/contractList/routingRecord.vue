@@ -5,11 +5,11 @@
         <!-- <el-form-item label="关键字">
           <el-input v-model="searchForm.keyword" placeholder="合同编号/房源编号/客源编号" style="width:250px"></el-input>
         </el-form-item> -->
-        <el-form-item label="打款日期">
+        <el-form-item label="结算日期">
           <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="合同类型">
+        <el-form-item label="分账门店">
           <el-select v-model="searchForm.contractType" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
@@ -197,6 +197,17 @@ export default {
         }
       });
       }
+    },
+    //分账详情
+    toDetail(){
+      let newPage = this.$router.resolve({ 
+        path: '/contractList',
+        query:{
+          objectType:1,
+          infoId:1
+        }
+      });
+      window.open(newPage.href, '_blank');
     },
     //获取当前部门
     initDepList:function (val) {
