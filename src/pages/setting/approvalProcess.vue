@@ -796,10 +796,16 @@
                 })
             },
             queryFn() {
+                if(!this.searchForm.name) {
+                    this.pageNum = 1
+                }
                 this.getData()
             },
             resetFormFn() {
-                this.$tool.clearForm(this.searchForm)
+                this.searchForm.deptAttr = ""
+                this.searchForm.name = ""
+                this.searchForm.type = ""
+                this.searchForm.branchCondition = ""
             },
             handleSizeChange(val) {
                 this.pageSize = val
