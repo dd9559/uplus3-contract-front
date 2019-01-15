@@ -1784,7 +1784,7 @@ export default {
             cursor: pointer;
           }
           .text{
-            max-width: 180px;
+            max-width: 110px;
             cursor: pointer;
           }
           .colon{
