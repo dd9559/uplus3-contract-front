@@ -813,7 +813,7 @@
                   param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
                 }
               })
-              // this.getResult(param,this.$route.query.edit?'edit':'')
+              this.getResult(param,this.$route.query.edit?'edit':'')
             }
           }).catch(error=>{
             this.$message({
