@@ -450,7 +450,7 @@
                   <span
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-edit'].state&&(userMsg&&scope.row.arraignmentId===userMsg.empId)"
+                    v-if="power['sign-yj-rev-edit'].state&&((userMsg&&scope.row.arraignmentId===userMsg.empId)||scope.row.arraignmentId===-1)"
                   >编辑</span>
                   <span
                     style="cursor:pointer;"
