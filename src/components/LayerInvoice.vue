@@ -61,7 +61,7 @@
                     :time="paperInfoData.printDate"
                     :num="paperInfoData.printTimes"
                     :methodAndAmount="paperInfoData.methodAndAmount"
-                    :storesName="paperInfoData.sotreName"
+                    :storesName="paperInfoData.storeName"
                     :payerType="paperInfoData.payerType"></LayerPaperInfo>
                 </LayerPrint>
                 <!-- :imgSrc="paperInfoData.signImg" -->
