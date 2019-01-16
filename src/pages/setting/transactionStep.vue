@@ -696,6 +696,7 @@
   .addform {
     .el-form-item {
       display: flex;
+      margin-bottom: 10px;
       &:first-child {
         /deep/ .el-form-item__label {
           margin-left: 23px;
