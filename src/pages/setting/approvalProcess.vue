@@ -84,10 +84,11 @@
             <div class="aduit-content">
                 <div class="row">
                     <div class="aduit-input must">
-                        <label>选择城市:</label>
-                        <el-select size="small" v-model="aduitForm.cityId" :disabled="editDisabled">
+                        <label>当前城市:</label>
+                        <!-- <el-select size="small" v-model="aduitForm.cityId" :disabled="editDisabled">
                             <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
-                        </el-select>
+                        </el-select> -->
+                        <el-input size="small" v-model="aduitForm.cityId" disabled></el-input>
                     </div>
                     <div class="aduit-input must">
                         <label>合作方式:</label>
@@ -381,6 +382,7 @@
                 this.aduitTitle = title
                 if(type === 1) {
                     this.$tool.clearForm(this.aduitForm)
+                    this.aduitForm.cityId = this.tableData[0].cityName
                     this.isAudit = ""
                     this.tempAudit = ""
                     this.editDisabled = false
@@ -388,7 +390,7 @@
                 } else {
                     let {...currentRow} = row
                     this.currentFlowId = currentRow.id
-                    this.aduitForm.cityId = currentRow.cityId
+                    this.aduitForm.cityId = currentRow.cityName
                     this.aduitForm.deptAttr = currentRow.deptAttr.value
                     this.aduitForm.name = currentRow.name
                     this.aduitForm.type = currentRow.type
@@ -702,7 +704,7 @@
                             return false                                            
                         }
                     } else {
-                        this.$message({message:"运营模式不能为空"})
+                        this.$message({message:"合作方式不能为空"})
                         return false
                     }
                 } else {
@@ -767,6 +769,7 @@
                     branch: this.nodeList
                 }
                 param = Object.assign({},this.aduitForm,param)
+                param.cityId = this.searchForm.cityId
                 const url = "/api/auditflow/operateFlow"
                 if(isOk || this.isAudit === '0') {
                     if(this.aduitTitle === "添加") {
@@ -793,10 +796,16 @@
                 })
             },
             queryFn() {
+                if(!this.searchForm.name) {
+                    this.pageNum = 1
+                }
                 this.getData()
             },
             resetFormFn() {
-                this.$tool.clearForm(this.searchForm)
+                this.searchForm.deptAttr = ""
+                this.searchForm.name = ""
+                this.searchForm.type = ""
+                this.searchForm.branchCondition = ""
             },
             handleSizeChange(val) {
                 this.pageSize = val

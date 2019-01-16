@@ -1,5 +1,5 @@
 <template>
-    <div class="view-container">
+    <div class="view-container" ref="tableComView">
         <ScreeningTop
         @propQueryFn="queryFn"
         @propResetFormFn="resetFormFn">
@@ -45,7 +45,6 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                   
                 </div>
             </el-form>
         </ScreeningTop>
@@ -53,7 +52,7 @@
             <p>
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
             </p>
-            <el-table :data="tableData" style="width: 100%" border>
+            <el-table :data="tableData" ref="tableCom" style="width: 100%" border :max-height="tableNumberCom">
                 <el-table-column width='180' label="操作日期">
                     <template slot-scope="scope">
                         {{scope.row.createTime | formatTime}}
@@ -69,8 +68,8 @@
                 <el-table-column label="操作内容"  prop="content"></el-table-column>
                 <el-table-column label="IP地址" prop="ip" width="230" ></el-table-column>
             </el-table>
-        </div>
-        <el-pagination
+            <div class="pagination">
+            <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
@@ -79,6 +78,9 @@
             layout="prev, pager, next,  total, sizes, jumper"
             :total="total">
         </el-pagination>
+        </div>
+        </div>
+        
     </div>
 </template>
 
@@ -248,7 +250,8 @@
   background:rgba(238,242,251,1);
 }
 /deep/ .el-pagination{
-    text-align: center
+    text-align: center;
+    margin-top: 13px;
 }
 .el-select-dropdown__item.selected {
     font-weight: normal;

@@ -571,9 +571,9 @@
       },
       personChose:function () {
         this.checkPerson.state=false
-        this.$message({
-          message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
-        })
+        // this.$message({
+        //   message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
+        // })
         this.queryFn()
       },
 

@@ -1090,10 +1090,15 @@
             },
             numberChangeFn(i,e){
                 this.$nextTick(() => {
-                    let val = e.toString().replace(/[^0-9.]/, '');
-                    let point;
-                    let t ='';
-                    let pos = val.indexOf('.')
+                    e = e.toString();
+                    let point,pos,val,t;
+                    let n = e.search(/[^0-9.]/);
+                    if(n >= 0){
+                        val = e.slice(0,n);
+                    }else{
+                        val = e;
+                    }
+                    pos = val.indexOf('.');
                     if (pos > -1) {
                         point = val.split('.')[1]
                         t = `${val.slice(0, pos)}.${point}`
@@ -1249,7 +1254,7 @@
                     let upId = e.row.id;
                     let downId = this.tableProgress[index-1].id;
                     this.oderStepFn(upId,downId);
-                    this.getDataList();
+                    // this.getDataList();
                     // }
                 }
             },
@@ -1267,7 +1272,7 @@
                     let upId = this.tableProgress[index+1].id;
                     let downId = e.row.id;
                     this.oderStepFn(upId,downId);
-                    this.getDataList();
+                    
                     // }
                 }
             },
@@ -1284,6 +1289,7 @@
                     if(res.status === 200){
                         this.successMeFn(res.message);
                         this.lateProgressFn();
+                        this.getDataList();
                     }else{
                         this.errMeFn(res.message);
                     }

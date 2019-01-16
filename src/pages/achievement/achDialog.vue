@@ -1774,14 +1774,14 @@ export default {
     personChose:function () {
       this.checkPerson.state=false
       let _this=this;
-      if(this.dialogType == 3){
+      if(this.dialogType == 3||this.dialogType == 1){
         setTimeout(function(){_this.$emit("close");},50);
       }
     },
     closeCheckPerson(){
       this.checkPerson.state=false;
       let _this=this;
-      if(this.dialogType == 3){
+      if(this.dialogType == 3||this.dialogType == 1){
         setTimeout(function(){_this.$emit("close");},50);
       }
     },
