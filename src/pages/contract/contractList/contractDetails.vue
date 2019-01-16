@@ -278,7 +278,7 @@
               </li>
               <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                  <div class="namePath" @click="previewPhoto(uploadList,index)">
+                  <div class="namePath" @click="previewPhoto(uploadList,index,2)">
                     <upload-cell :type="item.fileType"></upload-cell>
                     <p>{{item.name}}</p>
                   </div>
@@ -304,7 +304,7 @@
                   </li>
                   <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                     <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                      <div class="namePath" @click="previewPhoto(item.value,index_)">
+                      <div class="namePath" @click="previewPhoto(item.value,index_,3)">
                         <upload-cell :type="item_.fileType"></upload-cell>
                         <p>{{item_.name}}</p>
                       </div>
@@ -327,7 +327,7 @@
                   </li>
                   <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                     <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                      <div class="namePath" @click="previewPhoto(item.value,index_)">
+                      <div class="namePath" @click="previewPhoto(item.value,index_,3)">
                         <upload-cell :type="item_.fileType"></upload-cell>
                         <p>{{item_.name}}</p>
                       </div>
@@ -350,7 +350,7 @@
                   </li>
                   <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                     <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                      <div class="namePath" @click="previewPhoto(item.value,index_)">
+                      <div class="namePath" @click="previewPhoto(item.value,index_,3)">
                         <upload-cell :type="item_.fileType"></upload-cell>
                         <p>{{item_.name}}</p>
                       </div>
@@ -539,7 +539,7 @@
     <!-- 变更/解约编辑弹窗 -->
     <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
-    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     <!-- 流水明细弹框 -->
@@ -816,6 +816,7 @@ export default {
       canCall:true,
       water:false,//流水
       waterId:'',
+      previewType:'none',
       //权限
       power: {
         'sign-com-bill': {
@@ -858,9 +859,17 @@ export default {
           state: false,
           name: '编辑合同主体'
         },
+        'sign-ht-xq-main-down': {
+          state: false,
+          name: '下载合同主体'
+        },
         'sign-ht-xq-data-add': {
           state: false,
           name: '编辑资料库'
+        },
+        'sign-ht-xq-data-down': {
+          state: false,
+          name: '下载资料库'
         },
         'sign-ht-xq-ly-wmemo': {
           state: false,

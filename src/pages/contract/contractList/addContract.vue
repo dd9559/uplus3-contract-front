@@ -356,11 +356,6 @@ export default {
         guestinfoCode: "",
         signDate: "",
         transFlowCode: "",
-        // custCommission: "161.00",
-        // ownerCommission: "109.00",
-        // commissionPayment: "28.00",
-        // otherCooperationCost: "27.00",
-        // timeUnit: 1,
         dealPrice: "",
         contPersons: [],
         houseInfo: {

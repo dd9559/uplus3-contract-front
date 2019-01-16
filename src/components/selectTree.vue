@@ -62,11 +62,12 @@
       this.getList()
       this.$nextTick(()=>{
         let that=this
-        document.onmousedown=function (e) {
+        document.addEventListener('mousedown',function (e) {
+          console.log(e)
           if(that.$refs.popover&&!(that.$refs.popover.$refs.popper.innerHTML.indexOf(e.target.parentNode.innerHTML)>-1)&&!(e.target.parentNode===that.$refs.btn.$el)){
             that.visible=false
           }
-        }
+        })
       })
     },
     watch: {
@@ -76,7 +77,8 @@
     },
     methods: {
       showClear: function () {
-        if (this.inputVal.length > 0 && this.dataList.length > 0) {
+        // debugger
+        if (this.inputVal.length > 0 && this.list.length > 0) {
           this.clearVal = true
         }
       },

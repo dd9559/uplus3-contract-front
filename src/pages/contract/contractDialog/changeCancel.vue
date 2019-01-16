@@ -148,7 +148,7 @@
 							</li>
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-									<div class="namePath" @click="previewPhoto(uploadList,index)">
+									<div class="namePath" @click="previewPhoto(uploadList,index,2)">
 										<upload-cell :type="item.fileType"></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
@@ -164,7 +164,7 @@
 				<el-button type="primary" @click="saveFile" :disabled="forbid">保 存</el-button>
 			</div>
 			<!-- 图片预览 -->
-    	<preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    	<preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
 		</el-dialog>
 	</div>
 </template>
@@ -207,7 +207,14 @@ export default {
 			isDelete:'',
 			preview:false,
 			//保存按钮是否可点击
-			forbid:false
+			forbid:false,
+			previewType:'none',
+			power:{
+				'sign-ht-xq-main-down': {
+          state: false,
+          name: '下载合同主体'
+        },
+			}
     };
   },
 
