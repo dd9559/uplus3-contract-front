@@ -78,7 +78,7 @@
               {{item.storeName}}-{{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
             </el-option>
           </el-select>
-          <div class="h32" :class="[!firstCreate.state?'other':'']" v-else>{{firstCreate.content.storeName}}-{{firstCreate.content.account[0].userName}}-{{firstCreate.content.account[0].bankName}}-{{firstCreate.content.account[0].cardNumber}}</div>
+          <div class="h32" :class="[!firstCreate.state?'other':'']" v-else>{{firstCreate.content.account[0].storeName}}-{{firstCreate.content.account[0].userName}}-{{firstCreate.content.account[0].bankName}}-{{firstCreate.content.account[0].cardNumber}}</div>
         </div>
       </li>
     </ul>
@@ -287,7 +287,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index)">
+            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index,'userName')">
           </template>
         </el-table-column>
         <el-table-column align="center" label="账户 ">
@@ -303,7 +303,7 @@
         </el-table-column>
         <el-table-column align="center" label="订单编号">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.orderNo" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.orderNo" maxlength="20" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index,'orderNo')">
           </template>
         </el-table-column>
         <el-table-column align="center" label="手续费（元）">
@@ -403,7 +403,8 @@
       name:'订单号'
     },
     fee:{
-      name:'手续费'
+      name:'手续费',
+      type:'zeroNum'
     }
   }
   const payRule = {
@@ -553,8 +554,12 @@
           val[item]=this.$tool.cutFloat({val:val[item],max:999999999.99})
         }
       },
-      inputOnly:function (index) {
-        this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
+      inputOnly:function (index,type) {
+        if(type==='userName'){
+          this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
+        }else {
+          this.cardList[index].orderNo=this.$tool.textInput(this.cardList[index].orderNo,2)
+        }
       },
       getPicture:function () {
         let arr=[]
@@ -738,7 +743,6 @@
         // console.log(this.getUser)
         // let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({admin:this.activeAdmin}, this.form)
-        debugger
 
         //支付信息列表更新
         let newPayList = this.payList.map(item=>{
@@ -798,7 +802,8 @@
                         userName: card.bankAccountName,
                         cardNumber: card.bankCard,
                         accountId: card.id,
-                        storeId: card.storeId
+                        storeId: card.storeId,
+                        storeName: card.storeName
                       }
                       param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
                       return true
@@ -965,8 +970,8 @@
           } else {
             this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
               res = res.data
-              this.fullscreenLoading=false
               if (res.status === 200) {
+                this.fullscreenLoading=false
                 this.$router.replace({
                   path: 'receiptResult',
                   query:{

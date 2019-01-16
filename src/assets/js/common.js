@@ -357,9 +357,11 @@ let TOOL = {
         // debugger
         if (type === '[object Number]') {
           if (val <= 0&&typeInfo !== 'negativeNum') {
-            res.msg = '请输入大于0的数字'
-            reject(res)
-            return
+            if(typeInfo!=='zeroNum'){
+              res.msg = '请输入大于0的数字'
+              reject(res)
+              return
+            }
           }
         }
         if (type === '[object String]') {
@@ -570,8 +572,13 @@ let TOOL = {
       return val
     }
   },
-  textInput: function (val) {
-    return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g, '').replace(/\s/g, '')
+  textInput: function (val,type=1) {
+    // debugger
+    if(type===1){
+      return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g, '').replace(/\s/g, '')
+    }else if(type===2){
+      return val.replace(/[^\d\a-zA-Z]/g, '').replace(/\s/g, '')
+    }
   },
   numberInput: function (val) {
     return val.replace(/[^\d]/g, '')

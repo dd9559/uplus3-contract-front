@@ -219,12 +219,10 @@ export default {
       text-align: center;
     }
   }
-  .con-dialog {
-    /deep/ .el-dialog__body { margin-bottom: 50px; }
-  }
   .contract-form {
     .el-form-item {
       display: flex;
+      margin-bottom: 10px;
       /deep/ .el-form-item__label::before {
         content: "*";
         color: red;

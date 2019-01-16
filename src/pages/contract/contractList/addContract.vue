@@ -249,7 +249,7 @@
         <p>扩展参数</p>
         <div class="form-content" v-if="parameterList.length>0">
           <ul class="parameter">
-            <li v-for="item in parameterList" :key="item.id">
+            <li v-for="(item,index) in parameterList" :key="index">
               <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
               
               <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
@@ -258,9 +258,9 @@
               <span class="colon">: </span>
               <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="contractForm.extendParams[item.name]" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
               <!-- 下拉框 -->
-              <el-select v-model="contractForm.extendParams[item.name]" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2" size="small">
+              <el-select v-model="contractForm.extendParams[index].value" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2||item.inputType.value===3" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
                 </el-option>
               </el-select>
@@ -371,7 +371,7 @@ export default {
           identifyCode:'',
           mobile:''
         },
-        extendParams:{},
+        extendParams:[],
         isHaveCooperation: 0
       },
       //业主信息
@@ -580,13 +580,16 @@ export default {
         if(res.status===200){
           this.parameterList=res.data;
           res.data.forEach(element => {
-            // if(element.isRequired){
-              let name_ = element.name;
-              this.parameterRule[name_]={name:element.name};
-              if(this.type===1){
-                this.$set(this.contractForm.extendParams,name_,'')
-              }
-            // }
+            let name_ = element.name;
+            this.parameterRule[name_]={name:element.name};
+            if(this.type===1){
+              // this.$set(this.contractForm.extendParams,name_,'')
+              this.contractForm.extendParams.push({
+                name:name_,
+                value:'',
+                type:element.inputType.value,
+              })
+            }
           });
         }
       })
@@ -1057,8 +1060,8 @@ export default {
         }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
-          this.fullscreenLoading=false;
           if (res.status === 200) {
+            this.fullscreenLoading=false;
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;
@@ -1113,8 +1116,8 @@ export default {
         }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
-          this.fullscreenLoading=false;
           if (res.status === 200) {
+            this.fullscreenLoading=false;
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;

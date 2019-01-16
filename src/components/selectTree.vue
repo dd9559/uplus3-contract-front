@@ -61,14 +61,11 @@
     mounted(){
       this.getList()
       this.$nextTick(()=>{
-        let that=this
-        document.addEventListener('mousedown',function (e) {
-          console.log(e)
-          if(that.$refs.popover&&!(that.$refs.popover.$refs.popper.innerHTML.indexOf(e.target.parentNode.innerHTML)>-1)&&!(e.target.parentNode===that.$refs.btn.$el)){
-            that.visible=false
-          }
-        })
+        document.body.addEventListener('mousedown',this.bodyClick)
       })
+    },
+    beforeDestroy(){
+      document.body.removeEventListener('mousedown',this.bodyClick)
     },
     watch: {
       init: function (val) {
@@ -76,6 +73,11 @@
       }
     },
     methods: {
+      bodyClick:function (e) {
+        if(this.$refs.popover&&!(this.$refs.popover.$refs.popper.innerHTML.indexOf(e.target.parentNode.innerHTML)>-1)&&!(e.target.parentNode===this.$refs.btn.$el)){
+          this.visible=false
+        }
+      },
       showClear: function () {
         // debugger
         if (this.inputVal.length > 0 && this.list.length > 0) {
