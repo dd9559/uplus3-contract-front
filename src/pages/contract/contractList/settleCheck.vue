@@ -19,7 +19,13 @@
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
-        </el-form-item>  
+        </el-form-item> 
+        <el-form-item label="合作方式">
+          <el-select v-model="adjustForm.depAttr" placeholder="全部" class="width150" clearable>
+            <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item> 
 
         <el-form-item label="部门">
           <!-- <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" :loading="loading" class="width200">
@@ -69,7 +75,7 @@
         <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter" align="center">
           
         </el-table-column>
-
+ 
         <el-table-column label="成交总价" :formatter="nullFormatter" prop="dealPrice">
           <template slot-scope="scope">
             <span>{{scope.row.dealPrice}} 元</span>
@@ -414,6 +420,7 @@
          adjustForm:{
           signDate: '', //发起日期
           contType: '', //合同类型
+          depAttr: '', //合作方式
           examineState:'',
           depName:'',
           depId: '',
@@ -452,7 +459,8 @@
           //数据字典
           "10": "", //合同类型
           "17": "", //审核状态
-          "507": "" //成交总价单位
+          "507": "",//成交总价单位
+          "53": "" //合作方式
         },
         layerAudit:{
           contractType:{
@@ -573,9 +581,9 @@
       },
       personChose:function () {
         this.checkPerson.state=false
-        this.$message({
-          message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
-        })
+        // this.$message({
+        //   message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
+        // })
         this.queryFn();
       },
 
@@ -692,6 +700,7 @@
               endDate,
               examineState: this.adjustForm.examineState,    //this.examineState
               contractType: this.adjustForm.contType,    //this.adjustForm.contType.key,
+              depAttr: this.adjustForm.depAttr,   
               dealAgentStoreId: this.adjustForm.depId,    //this.Form.getDepName.id,
               dealAgentId: this.adjustForm.empId,    //this.Form.getAgentName.empId,
               keyword: this.adjustForm.keyWord

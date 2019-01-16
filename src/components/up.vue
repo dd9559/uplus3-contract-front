@@ -9,6 +9,7 @@
 
   let result = null
   let publicPath = ''
+  let loading = null
   export default {
     props:{
       id:{
@@ -62,6 +63,12 @@
             FilesAdded: function(up, files) {
               // 选择文件后执行
               that.up()
+              loading = that.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+              });
               /*let fileType=get_suffix(files[0].name).toLowerCase();
               if(that.rules.length>0){
                 if(that.rules.indexOf(fileType)>-1){
@@ -99,6 +106,7 @@
                 })
                 if(that.currentNum===up.files.length){
                   // 向父组件传递监听函数，并初始化上传配置
+                  loading.close()
                   that.$emit('getUrl',{param:that.filePath,btnId:that.getId})
                   that.uploader.splice(0,up.files.length)
                   that.currentNum=0
@@ -108,6 +116,7 @@
             },
             Error: function(up, err) {
               // debugger
+              loading.close()
               if(err.code===-601){
                 that.$message({
                   message:`只允许上传${that.rules.join('、')}格式的文件`

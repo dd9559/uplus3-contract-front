@@ -37,14 +37,14 @@
                <el-table :data='tableDate' style="width: 100%" header-row-class-name="theader-bg">
                     <el-table-column type="index" width="50"></el-table-column>
                     <el-table-column align="center" label="参数名称" prop="name"></el-table-column>
-                    <el-table-column align="center" label="是否必填" min-width="150">
+                    <!-- <el-table-column align="center" label="是否必填" min-width="150">
                         <template slot-scope="scope">
                             <el-select v-model="scope.row.isRequired" placeholder="请选择信息类型">
                                 <el-option :value='1' label="是"></el-option>
                                 <el-option :value='0' label="否"></el-option>
                             </el-select>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                     <el-table-column align="center" label="输入格式" min-width="150">
                         <template slot-scope="scope">
                             <el-select v-model="scope.row.inputType">
@@ -160,7 +160,6 @@ export default{
                             this.autograph(htImg2,newsrc2)
                      }else{
                            let btn=document.getElementsByClassName('ht-list')[0]
-                           console.log(btn,'btn');
                            btn.style.margin='0 auto'
                            this.divWidth=this.divWidth
                            this.imgSrc=resadd.img.url
@@ -471,7 +470,7 @@ export default{
                   for(let i=0;i<this.tableDate.length;i++){
                       var obj={}
                       obj['name']=this.tableDate[i]
-                      obj['isRequired']=1
+                    //   obj['isRequired']=1
                       obj['inputType']=1
                       obj['options']=''
                       obj['unit']=''

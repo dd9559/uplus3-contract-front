@@ -178,28 +178,28 @@
           <p>添加企业银行账户</p>
           <div class="info-content">
             <el-table style="width: 100%" :data="companyBankList" class="addBankRow">
-              <el-table-column width="260px" align="center" label="">
+              <el-table-column width="260" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
                     <el-input size="mini" maxlength="15" v-model.trim="companyBankList[scope.$index].bankAccountName" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column width="270px" align="center" label="">
+              <el-table-column width="310" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
                     <el-input size="mini" oninput="if(value.length>19)value=value.slice(0,19)" v-model="companyBankList[scope.$index].bankCard" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" @keyup.native="getInt(3,scope.$index)"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="" width="365px">
+              <el-table-column align="center" label="" width="320">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
                     <el-input size="mini" v-model.trim="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column label="" width="65px">
+              <el-table-column label="" width="65">
                 <template slot-scope="scope">
                   <span @click="addRow" class="button"><i class="icon el-icon-plus"></i></span>
                   <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':scope.$index<directInfo.companyBankList.length&&directSaleSelect}"><i class="icon el-icon-minus"></i></span>
@@ -1033,13 +1033,15 @@
           /deep/ .cell {
             padding: 0;
           }
-          tr td:nth-child(3) {
-            .el-form-item {
-              box-sizing: border-box;
+          tr td:nth-child(2) {
               .el-input {
-                width: 295px;
+                width: 200px;
               }
-            }
+          }
+          tr td:nth-child(3) {
+              .el-input {
+                width: 249px;
+              }
           }
         }
       }
