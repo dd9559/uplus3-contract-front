@@ -585,6 +585,11 @@ export default {
               this.parameterRule[name_]={name:element.name};
               if(this.type===1){
                 this.$set(this.contractForm.extendParams,name_,'')
+                // this.contractForm.extendParams.push({
+                //   name:name_,
+                //   value:'',
+                //   type:element.inputType.value,
+                // })
               }
             // }
           });

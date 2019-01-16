@@ -50,7 +50,7 @@
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="payCode" label="收付款编号"> </el-table-column>
 						<el-table-column prop="type" label="类型" width="50"></el-table-column>
-						<el-table-column label="业务日期">
+						<el-table-column label="业务日期" width="90">
               <template slot-scope="scope">
                 {{scope.row.createTime|formatTime}}
               </template>
@@ -71,7 +71,7 @@
 					<el-table :data="gridData5" border height="450">
 						<el-table-column prop="createByName" label="录入人"></el-table-column>
 						<el-table-column prop="deptName" label="录入门店"> </el-table-column>
-						<el-table-column label="录入日期">
+						<el-table-column label="录入日期" width="90">
               <template slot-scope="scope">
                 {{scope.row.createTime|formatTime}}
               </template>
@@ -88,7 +88,7 @@
 				<el-tab-pane label="票据" name="sixth">
 					<el-table :data="gridData6" border height="450">
 						<el-table-column prop="moneyType" label="款类"></el-table-column>
-						<el-table-column label="开票时间">
+						<el-table-column label="开票时间" width="90">
               <template slot-scope="scope">
                 {{scope.row.createTime|formatTime}}
               </template>
@@ -288,13 +288,16 @@ export default {
 
 <style lang="less" scoped>
 #flowaccount {
+  /deep/.el-dialog__wrapper{
+    overflow: hidden;
+  }
   /deep/.el-dialog {
     width: 800px;
-    height: 600px;
+    height: 580px;
     overflow-y: auto;
   }
   /deep/.el-dialog__body {
-    padding: 10px 20px 30px;
+    padding: 10px 20px 10px;
     color: #233241;
     .title_ {
       font-weight: bold;
