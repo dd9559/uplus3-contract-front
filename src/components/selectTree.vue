@@ -76,7 +76,8 @@
     },
     methods: {
       showClear: function () {
-        if (this.inputVal.length > 0 && this.dataList.length > 0) {
+        // debugger
+        if (this.inputVal.length > 0 && this.list.length > 0) {
           this.clearVal = true
         }
       },
