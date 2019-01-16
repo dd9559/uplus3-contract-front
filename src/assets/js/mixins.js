@@ -90,6 +90,7 @@ const MIXINS = {
         if(res.status===200){
           this.userMsg = res.data.user;
           localStorage.setItem('initId',res.data.user.cityId)
+          localStorage.setItem('cityName',res.data.user.cityName)
         }
       })
     },
