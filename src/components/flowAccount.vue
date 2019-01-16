@@ -96,7 +96,17 @@
 						<el-table-column prop="amount" label="开票金额（元）"></el-table-column>
 						<el-table-column prop="code" label="票据号"></el-table-column>
 						<el-table-column prop="status" label="票据状态"></el-table-column>
-						<el-table-column prop="drawerName" label="开票人"></el-table-column>
+						<el-table-column prop="drawerName" label="开票人">
+              <template slot-scope="scope">
+                <span v-if="scope.row.drawerName==='--'&&scope.row.drawerDepName==='--'">
+                  <p>--</p>
+                </span>
+                <span v-else>
+                  <p>{{scope.row.drawerDepName}}</p>
+                  <p>{{scope.row.drawerName}}</p>
+                </span>
+              </template>
+            </el-table-column>
 					</el-table>
 				</el-tab-pane>
 				<!-- 应实对照 -->
