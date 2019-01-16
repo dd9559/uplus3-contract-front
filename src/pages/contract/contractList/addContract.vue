@@ -1057,8 +1057,8 @@ export default {
         }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
-          this.fullscreenLoading=false;
           if (res.status === 200) {
+            this.fullscreenLoading=false;
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;
@@ -1113,8 +1113,8 @@ export default {
         }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
-          this.fullscreenLoading=false;
           if (res.status === 200) {
+            this.fullscreenLoading=false;
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;

@@ -1,5 +1,5 @@
 <template>
-  <div class="view-container">
+  <div class="view-container" ref="tableComView">
     <!-- 头部表单 -->
     <ScreeningTop
     @propQueryFn="queryFn"
@@ -44,7 +44,7 @@
         <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
         <el-button @click="addCompany" icon="el-icon-plus" v-if="power['sign-set-gs'].state">公司信息</el-button>
       </p>
-      <el-table :data="tableData" style="width: 100%" border>
+      <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
         <el-table-column align="center" label="城市" prop="cityName" width="90">
         </el-table-column>
         <el-table-column align="center" label="门店" prop="storeName">
