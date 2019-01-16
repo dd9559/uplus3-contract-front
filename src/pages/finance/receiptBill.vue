@@ -20,7 +20,7 @@
         <div class="input-group col active-400">
           <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
           <div class="flex-box" v-if="inObjPerson">
-            <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')" @search="searchDep"></select-tree>
+            <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')" @search="searchDep" key="other"></select-tree>
             <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
               <el-option class="drop-tree" value="">
                 <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
@@ -67,7 +67,7 @@
           </div>
           <input type="text" size="small" class="w400 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum(1)">
         </div>
-        <div class="input-group col">
+        <div class="input-group col" :class="[!firstCreate.state?'no-max':'']">
           <label class="form-label f14 margin-bottom-base">收账账户</label>
           <el-select size="small" class="w200" v-model="activeAdmin" placeholder="请选择" v-if="firstCreate.state">
             <el-option
@@ -78,7 +78,7 @@
               {{item.storeName}}-{{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
             </el-option>
           </el-select>
-          <div class="h32" :class="[!firstCreate.state?'other':'']" v-else>{{firstCreate.content.storeName}}-{{firstCreate.content.account[0].userName}}-{{firstCreate.content.account[0].bankName}}-{{firstCreate.content.account[0].cardNumber}}</div>
+          <div class="h32" :class="[!firstCreate.state?'other':'']" v-else>{{firstCreate.content.account[0].storeName}}-{{firstCreate.content.account[0].userName}}-{{firstCreate.content.account[0].bankName}}-{{firstCreate.content.account[0].cardNumber}}</div>
         </div>
       </li>
     </ul>
@@ -508,7 +508,7 @@
       this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
       this.getMoneyType()
       this.getDictionary()
-      this.remoteMethod()
+      // this.remoteMethod()
       this.getDropdown()
       // this.getReceiptman()
       this.getAdmin()
@@ -735,9 +735,10 @@
         })
       },
       goResult: function () {
-        console.log(this.getUser)
+        // console.log(this.getUser)
         // let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({admin:this.activeAdmin}, this.form)
+        debugger
 
         //支付信息列表更新
         let newPayList = this.payList.map(item=>{
@@ -797,7 +798,8 @@
                         userName: card.bankAccountName,
                         cardNumber: card.bankCard,
                         accountId: card.id,
-                        storeId: card.storeId
+                        storeId: card.storeId,
+                        storeName: card.storeName
                       }
                       param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
                       return true
@@ -964,8 +966,8 @@
           } else {
             this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
               res = res.data
-              this.fullscreenLoading=false
               if (res.status === 200) {
+                this.fullscreenLoading=false
                 this.$router.replace({
                   path: 'receiptResult',
                   query:{
@@ -1292,6 +1294,9 @@
       .col{
         max-width: 210px;
         margin: 0 60px 21px 0;
+        &.no-max{
+          max-width: none;
+        }
         &.active-360{
           max-width: 360px;
         }
@@ -1317,7 +1322,7 @@
     >li{
       display: flex;
       align-items: flex-end;
-      justify-content: space-between;
+      /*justify-content: space-between;*/
       border-bottom: 1px @color-E9 dashed;
       padding-bottom: @margin-15;
       margin-bottom: @margin-15;

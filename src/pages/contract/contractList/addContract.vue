@@ -356,11 +356,6 @@ export default {
         guestinfoCode: "",
         signDate: "",
         transFlowCode: "",
-        // custCommission: "161.00",
-        // ownerCommission: "109.00",
-        // commissionPayment: "28.00",
-        // otherCooperationCost: "27.00",
-        // timeUnit: 1,
         dealPrice: "",
         contPersons: [],
         houseInfo: {
@@ -1062,8 +1057,8 @@ export default {
         }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
-          this.fullscreenLoading=false;
           if (res.status === 200) {
+            this.fullscreenLoading=false;
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;
@@ -1118,8 +1113,8 @@ export default {
         }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
-          this.fullscreenLoading=false;
           if (res.status === 200) {
+            this.fullscreenLoading=false;
             this.dialogSave=false;
             this.detailCode=res.data.code;
             this.detailId=res.data.id;

@@ -351,7 +351,7 @@
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
     <div class="printMaskLayer" v-if="haveUrl"></div>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
            
@@ -871,6 +871,10 @@ export default {
             })
           }
         })
+    },
+    closeCheckPerson(){
+      this.checkPerson.state=false;
+      this.getContractList();
     },
     //发起结算弹窗
     closeAccount(item){
