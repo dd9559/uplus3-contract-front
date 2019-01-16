@@ -276,10 +276,10 @@ export default{
                             var t = ev.clientY-disY;
                             sign.x=(l/622).toFixed(2)
                             sign.y=(t/802).toFixed(2)
-                            l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-100 : l
+                            l > oDiv.parentNode.offsetWidth-110 ? l = oDiv.parentNode.offsetWidth-110 : l
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
-                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-150 : t
+                            t > oDiv.parentNode.offsetHeight-110 ? t = oDiv.parentNode.offsetWidth-110 : t
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
