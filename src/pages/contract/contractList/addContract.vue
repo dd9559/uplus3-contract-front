@@ -258,9 +258,9 @@
               <span class="colon">: </span>
               <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <el-input v-model="contractForm.extendParams[item.name]" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
               <!-- 下拉框 -->
-              <el-select v-model="contractForm.extendParams[index].value" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2||item.inputType.value===3" size="small">
+              <el-select v-model="contractForm.extendParams[item.name]" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2||item.inputType.value===3" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
                 </el-option>
               </el-select>
@@ -371,7 +371,7 @@ export default {
           identifyCode:'',
           mobile:''
         },
-        extendParams:[],
+        extendParams:{},
         isHaveCooperation: 0
       },
       //业主信息
@@ -583,12 +583,12 @@ export default {
             let name_ = element.name;
             this.parameterRule[name_]={name:element.name};
             if(this.type===1){
-              // this.$set(this.contractForm.extendParams,name_,'')
-              this.contractForm.extendParams.push({
-                name:name_,
-                value:'',
-                type:element.inputType.value,
-              })
+              this.$set(this.contractForm.extendParams,name_,'')
+              // this.contractForm.extendParams.push({
+              //   name:name_,
+              //   value:'',
+              //   type:element.inputType.value,
+              // })
             }
           });
         }
