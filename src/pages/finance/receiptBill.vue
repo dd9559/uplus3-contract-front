@@ -78,7 +78,7 @@
               {{item.storeName}}-{{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
             </el-option>
           </el-select>
-          <div class="h32" :class="[!firstCreate.state?'other':'']" v-else>{{firstCreate.content.storeName}}-{{firstCreate.content.account[0].userName}}-{{firstCreate.content.account[0].bankName}}-{{firstCreate.content.account[0].cardNumber}}</div>
+          <div class="h32" :class="[!firstCreate.state?'other':'']" v-else>{{firstCreate.content.account[0].storeName}}-{{firstCreate.content.account[0].userName}}-{{firstCreate.content.account[0].bankName}}-{{firstCreate.content.account[0].cardNumber}}</div>
         </div>
       </li>
     </ul>
@@ -798,7 +798,8 @@
                         userName: card.bankAccountName,
                         cardNumber: card.bankCard,
                         accountId: card.id,
-                        storeId: card.storeId
+                        storeId: card.storeId,
+                        storeName: card.storeName
                       }
                       param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
                       return true
@@ -965,8 +966,8 @@
           } else {
             this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
               res = res.data
-              this.fullscreenLoading=false
               if (res.status === 200) {
+                this.fullscreenLoading=false
                 this.$router.replace({
                   path: 'receiptResult',
                   query:{
