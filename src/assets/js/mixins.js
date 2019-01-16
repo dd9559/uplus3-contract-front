@@ -184,6 +184,14 @@ const MIXINS = {
             document.body.appendChild(a)
             a.click();
             document.body.removeChild(a)
+          }else if(type===2){//合同主体
+            this.previewFiles=res.data
+            this.preview=true
+            this.previewType="contMain"
+          }else if(type===3){//合同资料库
+            this.previewFiles=res.data
+            this.preview=true
+            this.previewType="contData"
           }else {
             this.previewFiles=res.data
             this.preview=true
@@ -198,7 +206,7 @@ const MIXINS = {
      * @param {图片数组} arr
      * @param {点击第几张图片} i
      */
-    previewPhoto(arr,i){
+    previewPhoto(arr,i,downType=1){
         let type = this.$tool.get_suffix(arr[i].path)
         if(this.imgBoolFn(type)){
             // 图片 和 视频 预览
@@ -211,10 +219,25 @@ const MIXINS = {
                     arr2.push(e.path);
                 }
             })
-            this.fileSign(arr2)
+            this.fileSign(arr2,downType)
         }else{
             // 其他文件 下载
-          this.fileSign([].concat(arr[i].path),'download')
+            if(downType===2){//合同主体
+              if(this.power['sign-ht-xq-main-down'].state){
+                this.fileSign([].concat(arr[i].path),'download');
+              }else{
+                this.noPower('合同主体下载');
+              }
+            }else if(downType===3){
+              if(this.power['sign-ht-xq-data-down'].state){
+                this.fileSign([].concat(arr[i].path),'download');
+              }else{
+                this.noPower('合同资料库下载');
+              }
+            }else{
+              this.fileSign([].concat(arr[i].path),'download');
+            }
+          
         }
     },
     // 判断图片类别

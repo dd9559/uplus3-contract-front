@@ -98,7 +98,7 @@
             <ul class="ulData" v-if="item.value.length>0">
               <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                 <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                  <div class="namePath" @click="previewPhoto(item.value,index_)">
+                  <div class="namePath" @click="previewPhoto(item.value,index_,3)">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
@@ -117,7 +117,7 @@
             <ul class="ulData" v-if="item.value.length>0">
               <li v-for="(item_,index_) in item.value" :key="item_.index">
                 <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                  <div class="namePath" @click="previewPhoto(item.value,index_)">
+                  <div class="namePath" @click="previewPhoto(item.value,index_,3)">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
@@ -136,7 +136,7 @@
             <ul class="ulData" v-if="item.value.length>0">
               <li v-for="(item_,index_) in item.value" :key="item_.index">
                 <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                  <div class="namePath" @click="previewPhoto(item.value,index_)">
+                  <div class="namePath" @click="previewPhoto(item.value,index_,3)">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
@@ -150,7 +150,7 @@
         </div>
       </div>
       <!-- 图片预览 -->
-      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+      <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
   </div>
 </template>
@@ -242,6 +242,7 @@ export default {
         flowType:3,
         label:false
       },
+      previewType:"none",
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -270,6 +271,14 @@ export default {
         'sign-ht-xq-data-add': {
           state: false,
           name: '编辑资料库'
+        },
+        'sign-ht-xq-main-down': {
+            state: false,
+            name: '下载合同主体'
+        },
+        'sign-ht-xq-data-down': {
+          state: false,
+          name: '下载合同资料库'
         },
       }
     };

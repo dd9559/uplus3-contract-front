@@ -103,6 +103,24 @@
       <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+
+
+    <!-- 测试 -->
+    <div v-for="(item,index) in params" :key="index">
+      <span>{{item.name}}</span>
+      <span v-if="item.inputType.value===1">
+        <el-input v-model="ceshi[index].value" placeholder="请输入内容" style="width:140px" size="small"></el-input>
+      </span>
+      <span v-if="item.inputType.value===2">
+        <el-select v-model="ceshi[index].value" placeholder="请选择" style="width:140px" size="small">
+          <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
+          </el-option>
+        </el-select>
+      </span>
+      <span v-if="item.inputType.value===3">
+        <span v-for="item3 in item.options" :key="item3" :class="{'red':ceshi[index].value[item3]}" @click="checked(index,item3)">{{item3}}</span>
+      </span>
+    </div>
   </div>
 </template>
            
@@ -118,6 +136,46 @@ export default {
   },
   data() {
     return {
+      params:[
+        {
+          inputType:{value:1,label:"输入框"},
+          name:"哈哈哈",
+          options:[]
+        },
+        {
+          inputType:{value:2,label:"下拉框"},
+          name:"嘿嘿嘿",
+          options:["这是","我擦","擦擦地"]
+        },
+        {
+          inputType:{value:3,label:"复选框"},
+          name:"呵呵呵",
+          options:["第一个","第二个","第三个"]
+        },
+      ],
+      ceshi:[
+        {
+          name:'哈哈哈',
+          value:'',
+          type:1
+        },
+        {
+          name:'哈哈哈',
+          value:'',
+          type:2
+        },
+        {
+          name:'哈哈哈',
+          value:{"第一个":true,"第二个":false,"第三个":false},
+          type:3
+        },
+      ],
+
+
+
+
+
+
       searchForm: {
         contractType:'',
         dealAgentStoreId:'',
@@ -146,6 +204,16 @@ export default {
     // this.remoteMethod();//部门
   },
   methods: {
+    checked(index,name){
+      if(this.ceshi[index].value[name]){
+        this.ceshi[index].value[name]=false
+      }else{
+        this.ceshi[index].value[name]=true
+      }
+    },
+
+
+
     //获取分账记录列表
     getProateNotes(){
       let param = {
@@ -234,6 +302,9 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.red{
+  color: red;
+}
 .routing-list {
   // margin-top: 20px;
   background-color: #fff;
