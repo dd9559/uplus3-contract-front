@@ -288,13 +288,16 @@ export default {
 
 <style lang="less" scoped>
 #flowaccount {
+  /deep/.el-dialog__wrapper{
+    overflow: hidden;
+  }
   /deep/.el-dialog {
     width: 800px;
-    height: 600px;
+    height: 580px;
     overflow-y: auto;
   }
   /deep/.el-dialog__body {
-    padding: 10px 20px 30px;
+    padding: 10px 20px 10px;
     color: #233241;
     .title_ {
       font-weight: bold;
