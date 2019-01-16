@@ -212,46 +212,45 @@
             :data="tableData.list" 
             v-loading="loadingList"
             @cell-dblclick="dblclickFn"
-            :formatter="nullFormatterData"
             class="paper-table mt-20">
-                <el-table-column prop="code" label="合同编号" min-width="130">
+                <el-table-column :formatter="nullFormatterData" prop="code" label="合同编号" min-width="130">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)" >{{scope.row.code}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="statusLaterStage.label" label="后期状态" min-width="90">
+                <el-table-column :formatter="nullFormatterData" prop="statusLaterStage.label" label="后期状态" min-width="90">
                 </el-table-column>
                 <el-table-column label="变更/解约" min-width="90">
                     <template slot-scope="scope">
                         {{statusChangeFn(scope.row.statusChange)}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="propertyAddr" label="物业地址" min-width="170">
+                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" min-width="170">
                 </el-table-column>
-                <el-table-column prop="transFlowName" label="交易流程" min-width="235">
+                <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" min-width="235">
                 </el-table-column>
-                <el-table-column prop="owner" label="业主" min-width="70">
+                <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" min-width="70">
                 </el-table-column>
-                <el-table-column prop="customer" label="客户" min-width="70">
+                <el-table-column :formatter="nullFormatterData" prop="customer" label="客户" min-width="70">
                 </el-table-column>
-                <el-table-column label="成交经纪人" min-width="146">
+                <el-table-column :formatter="nullFormatterData" label="成交经纪人" min-width="146">
                     <template slot-scope="scope">
                         {{agentFn(scope.row.dealagentStoreName,scope.row.dealAgentName)}}
                     </template>
                 </el-table-column>
-                <el-table-column label="接收日期" min-width="114">
+                <el-table-column :formatter="nullFormatterData" label="接收日期" min-width="114">
                     <template slot-scope="scope">
                         {{dateFormat(scope.row.receiveTime)}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="a10" label="实收/应收" min-width="105">
+                <el-table-column :formatter="nullFormatterData" prop="a10" label="实收/应收" min-width="105">
                     <template slot-scope="scope">
                         {{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="statusReceiveAmount.label" label="收佣状态" min-width="121">
+                <el-table-column :formatter="nullFormatterData" prop="statusReceiveAmount.label" label="收佣状态" min-width="121">
                 </el-table-column>
-                <el-table-column prop="stepInstanceName" label="后期进度" min-width="182">
+                <el-table-column :formatter="nullFormatterData" prop="stepInstanceName" label="后期进度" min-width="182">
                     <template slot-scope="scope">
                         <template v-if="scope.row.statusLaterStage.label === STATE.start">
                             <el-button class="blue" type="text" @click="progressFn(scope.row)">查看交易流程</el-button>
@@ -262,9 +261,9 @@
                         </template>
                     </template>
                 </el-table-column>
-                <el-table-column prop="isOvertime.label" label="当前步骤是否超时" min-width="140">
+                <el-table-column :formatter="nullFormatterData" prop="isOvertime.label" label="当前步骤是否超时" min-width="140">
                 </el-table-column>
-                <el-table-column prop="personLiableName" label="当前步骤责任人" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="personLiableName" label="当前步骤责任人" min-width="120">
                 </el-table-column>
             </el-table>
         </div>
