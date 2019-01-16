@@ -10,7 +10,7 @@
         <li><span class="cl-1 mr-10">开票日期：</span>{{comInvoiceTime}}</li>
         <li class="w2"><span class="cl-1 mr-10">票据编号：</span>{{comPaper}}</li>
       </ul>
-      <div class="paper-small-tit">收款项目明细</div>
+      <div class="paper-small-tit">收款项目明细<span class="paper-nomal">门店名称：{{comStoresName}}</span></div>
       <div class="paper-table">
         <table class="paper-table-main">
             <thead>
@@ -51,13 +51,13 @@
         </div>
         <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
-      <div class="paper-ov">
-        <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
-        <div class="fr"><span class="mr-10">开票人：</span><em class="fb">{{comCreate}}</em></div>
-      </div>
+      <!-- <div class="paper-ov"> -->
+        <!-- <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div> -->
+      <!-- </div> -->
       <div class="pr">
         <div class="paper-ov2">
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
+          <div class="fr"><span class="mr-10">开票人：</span><em class="fb">{{comCreate}}</em></div>
         </div>
         <div class="pr-img"><img v-if="comImgSrc!==''" :src="comImgSrc"></div>
       </div>
@@ -77,7 +77,7 @@
         <li><span class="cl-1 mr-10">开票日期：</span>{{comInvoiceTime}}</li>
         <li class="w2"><span class="cl-1 mr-10">票据编号：</span>{{comPaper}}</li>
       </ul>
-      <div class="paper-small-tit">收款项目明细</div>
+      <div class="paper-small-tit">收款项目明细<span class="paper-nomal">门店名称：{{comStoresName}}</span></div>
       <div class="paper-table">
           <table class="paper-table-main">
             <thead>
@@ -120,11 +120,11 @@
       </div>
       <div class="paper-ov">
         <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
-        <div class="fr"><span class="mr-10">开票人：</span><em class="fb">{{comCreate}}</em></div>
       </div>
       <div class="pr">
         <div class="paper-ov3">
           <div class="fl fb">收款单位（加盖财务专用章）：</div>
+          <div class="fr"><span class="mr-10">开票人：</span><em class="fb">{{comCreate}}</em></div>
         </div>
           <div class="pr-img2">
             <img v-if="comImgSrc!==''" :src="comImgSrc">
@@ -200,6 +200,10 @@
         type: String,
         default: ''
       },
+      storesName: {//门店名称
+        type: String,
+        default: '--'
+      },
       time:{
         type:String,
         default:'',
@@ -222,6 +226,9 @@
         }else{
           return ``
         }
+      },
+      comStoresName(){
+        return this.storesName
       },
       comNumber() {
         return this.defaultFn(this.number);
@@ -303,7 +310,7 @@
       display: none;
     }
     /deep/.paper-info-child{
-      margin:5mm 5mm 0;
+      margin:0 4.7mm;
       font-size: 12px;
       // height: 290mm;
       // overflow: hidden;
@@ -387,7 +394,7 @@
 
   .paper-border {
     border: 1px solid #E8EAF6;
-    margin: 10px 0 0;
+    margin: 0 0 0;
     padding: 0 48px 10px 24px;
     &:first-child{
       margin-top: 0;
@@ -431,6 +438,11 @@
   .paper-small-tit {
     font-weight: bold;
     padding-top: 10px;
+    .paper-nomal{
+      font-weight: normal;
+      color: #666;
+      margin-left: 30px;
+    }
   }
 
   .paper-table {
@@ -507,16 +519,16 @@
 
   .paper-ov2 {
     overflow: hidden;
-    padding-top: 24px;
+    padding-top: 52px;
   }
 
   .paper-ov3 {
     overflow: hidden;
-    padding: 24px 0 40px;
+    padding: 64px 0 50px;
   }
 
   .paper-tips {
-    margin-top: 25px;
+    margin-top: 20px;
     line-height: 20px;
     color: #666;
     padding-top: 10px;
@@ -524,7 +536,7 @@
   }
 
   .paper-dashed {
-    padding-top: 10px;
+    // padding-top: 10px;
     border-bottom: 1px dashed #AFAFAF;
   }
 
@@ -545,8 +557,8 @@
     align-items: center;
     >img{
       // vertical-align:middle;
-      max-width: 130px;
-      max-height: 130px;
+      max-width: 120px;
+      max-height: 120px;
     }
   }
 
@@ -555,7 +567,7 @@
     width: 120px;
     height: 120px;
     left: 190px;
-    bottom: -10px;
+    bottom: -2px;
     // line-height: 130px;
     // text-align: center;
     display: flex;
@@ -563,8 +575,8 @@
     align-items: center;
     >img{
       // vertical-align:middle;
-      max-width: 130px;
-      max-height: 130px;
+      max-width: 120px;
+      max-height: 120px;
     }
   }
 </style>

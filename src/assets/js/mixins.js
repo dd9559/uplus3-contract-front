@@ -173,6 +173,7 @@ const MIXINS = {
       if(type==='download'){
         param.rct='application%2Foctet-stream'
       }
+      // param.style='jjw-watermark'
       this.$ajax.put('/api/load/generateAccessURLBatch',param,2).then(res=>{
         res=res.data
         if(res.status===200){

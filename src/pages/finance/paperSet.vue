@@ -61,12 +61,12 @@
         </div>
       </div> -->
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
+        <el-form-item label="关键字" prop="keyword">
+          <el-tooltip content="开票人员/合同编号/票据编号/物业地址" placement="top">
+            <el-input class="w200" v-model="propForm.keyword" placeholder="请输入" clearable></el-input>
+            </el-tooltip>
+        </el-form-item>
         <div class="in-block">
-            <el-form-item label="关键字" prop="keyword">
-              <el-tooltip content="开票人员/合同编号/票据编号/物业地址" placement="top">
-                <el-input class="w200" v-model="propForm.keyword" placeholder="请输入" clearable></el-input>
-                </el-tooltip>
-            </el-form-item>
             <el-form-item 
             label="部门"
             prop="depIdS" 
@@ -107,7 +107,6 @@
                 </el-select>
             </el-form-item>
         </div>
-        
         <el-form-item 
             label="票据状态"
             prop="state">
@@ -146,8 +145,20 @@
                 </el-date-picker>
             </el-form-item>
         </div>
+        <el-form-item 
+              label="合作方式"
+              prop="cooperation">
+                  <el-select 
+                  v-model="propForm.cooperation" 
+                  class="w100">
+                      <el-option 
+                      v-for="item in rules.cooperation" 
+                      :key="'cooperation'+item.key" 
+                      :label="item.value" 
+                      :value="item.key"></el-option>
+                  </el-select>
+          </el-form-item>
       </el-form>
-
     </ScreeningTop>
     <!-- 列表 -->
     <div class="paper-table-box">
@@ -328,6 +339,7 @@
           state: '',
           dateType: 1,
           timeRange: '',
+          cooperation:'',
         },
         // 筛选下拉
         rules:{
@@ -339,6 +351,7 @@
                   name: "全部",
                   empId: ""
               }],
+          cooperation:[]
         },
         //分页
         pageSize: 10,
@@ -346,6 +359,7 @@
         // 筛选选项
         dictionary: {
           '33': '',
+          '53':'合作方式',
         },
         dictionaryData:[],
         // 作废弹层输入框
@@ -640,6 +654,8 @@
           key:'',
           value:'全部'
         },...n[33]];
+        // 合作方式
+        this.rules.cooperation= [...n[53]]
       }
     }
   }
