@@ -276,9 +276,9 @@ export default {
       },
       personChose:function () {
         this.checkPerson.state=false
-        this.$message({
-          message:`成功${this.checkPerson.type==='init'?'转交审核人':'设置审核人'}`
-        })
+        // this.$message({
+        //   message:`成功${this.checkPerson.type==='init'?'转交审核人':'设置审核人'}`
+        // })
         setTimeout(() => { 
             this.$message('已申请');                     
             this.$emit('closeSettle')
