@@ -382,7 +382,7 @@
                 this.aduitTitle = title
                 if(type === 1) {
                     this.$tool.clearForm(this.aduitForm)
-                    this.aduitForm.cityId = this.tableData[0].cityName
+                    this.aduitForm.cityId = localStorage.getItem('cityName')
                     this.isAudit = ""
                     this.tempAudit = ""
                     this.editDisabled = false

@@ -2,7 +2,7 @@
     <div class='view-container'  v-loading="loading">
       <p class='title'>
           <span>合同模板预览</span>
-          <el-button type="primary saveAll paper-btn" @click="saveAll" v-if="saveBtn">保存</el-button>
+          <el-button type="primary saveAll paper-btn" @click="saveAll" v-dbClick v-if="saveBtn">保存</el-button>
       </p>
       <div class="bodycontainer"  ref='bigbox'>
           <div class="ht-list listone"  ref='htlist'>
@@ -47,15 +47,25 @@
                     </el-table-column> -->
                     <el-table-column align="center" label="输入格式" min-width="150">
                         <template slot-scope="scope">
-                            <el-select v-model="scope.row.inputType">
-                                <el-option :value='2' label="下拉框"></el-option>
-                                <el-option :value='1' label="输入框"></el-option>
+                             <!-- {{content[scope.$index]+'1'}} -->
+                            <el-select v-model="scope.row.inputType" v-if="content[scope.$index]==0">
+                                <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
+                            </el-select>
+                            <el-select v-model="scope.row.inputType" v-else disabled>
+                                <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
                             </el-select>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="选项值" min-width="150">
                         <template slot-scope="scope">
+                            <el-tooltip v-if="scope.row.inputType==3" :content=contents[scope.$index] class="item" effect="dark"  placement="top">
                             <el-input v-model="scope.row.options"></el-input>
+                            </el-tooltip>
+                            <el-input v-else v-model="scope.row.options"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="单位" min-width="150">
@@ -106,6 +116,8 @@ export default{
             divHeight:'',
             timeout:0,
             touch:true,
+            contents:[],
+            content:[],
             qmnewsrcArr:[],
             signPositions:[],
           }
@@ -166,7 +178,6 @@ export default{
                            this.total=res.data.data.img.count
                            this.signPositions=res.data.data.signPosition
                            console.log(this.signPosition,'signPosition');
-                           ///////////////
                            this.sigtureShow=false
                            for(let i=0;i<this.signPositions.length;i++){
                             if(this.count==this.signPositions[i].pageIndex){
@@ -266,12 +277,12 @@ export default{
                             document.onmousemove = function(ev){
                             var l = ev.clientX-disX;
                             var t = ev.clientY-disY;
-                            sign.x=(l/622).toFixed(2)
-                            sign.y=(t/802).toFixed(2)
-                            l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-100 : l
+                            l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
-                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-150 : t
+                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-130 : t
+                            sign.x=(l/622).toFixed(2)
+                            sign.y=(t/802).toFixed(2)
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
@@ -305,8 +316,8 @@ export default{
                   cityId:this.cityId,
                   id:this.id
                 }
-                    let saveAll=document.getElementsByClassName('saveAll')[0]
-                    saveAll.disabled=true
+                    // let saveAll=document.getElementsByClassName('saveAll')[0]
+                    // saveAll.disabled=true
                     this.$ajax.postJSON('/api/setting/contractTemplate/insert',param).then(res=>{
                     if(res.status==200){
                             this.touch=false
@@ -314,7 +325,15 @@ export default{
                             path: "/contractTemplate",
                         });
                     }
-                })
+                }).catch(
+                    error=>{
+                    this.$message({
+                    type: 'error',
+                    message:error
+                    })
+                    this.modalDialog=true
+                 }
+                )
             },
             numSave(){
                 for(let i=0;i<this.tableDate.length;i++){
@@ -330,6 +349,15 @@ export default{
                         else{
                              this.modalDialog=false
                         }
+                    }else if(this.tableDate[i].inputType==3){
+                            if(this.tableDate[i].options==''){
+                                this.$message({
+                                type: 'error',
+                                message: `复选框选项值不能为空`
+                                })
+                                this.modalDialog=true
+                                break
+                            }
                     }else{
                         this.modalDialog=false
                     }
@@ -349,7 +377,9 @@ export default{
                              if(this.showSed){
                                   this.sigtureShow=false
                              }
-                             this.tuozhuai(this.signPositions[i])
+                             if(this.show==1){
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -368,6 +398,9 @@ export default{
                      for(let i=0;i<this.signPositions.length;i++){
                          if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
+                                if(this.show==1){
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -393,7 +426,9 @@ export default{
                              if(this.showSed){
                                   this.sigtureShow=false
                              }
-                             this.tuozhuai(this.signPositions[i])
+                             if(this.show==1){
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -412,6 +447,9 @@ export default{
                     for(let i=0;i<this.signPositions.length;i++){
                         if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
+                                if(this.show==1){
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -423,7 +461,6 @@ export default{
                 }
             },
             autograph(obj,newsrc){
-               //    debugger
                     var flag=0
                     for(let i=0;i< this.qmnewsrcArr.length;i++){
                         if(this.qmnewsrcArr[i][newsrc]){
@@ -462,7 +499,11 @@ export default{
               if(res.status==200){
                   this.loading=false
                   if(res.data.data.unPlaceholder!==''){
-                      this.tableDate=res.data.data.unPlaceholder
+                      for(let key in res.data.data.unPlaceholder){
+                         this.tableDate.push(key)
+                         this.content.push(res.data.data.unPlaceholder[key])
+                         this.contents.push('该占位符需要输入'+res.data.data.unPlaceholder[key]+'个值')
+                      }
                   }else{
                         this.tableDate=null
                   }
@@ -471,7 +512,8 @@ export default{
                       var obj={}
                       obj['name']=this.tableDate[i]
                     //   obj['isRequired']=1
-                      obj['inputType']=1
+                      obj['inputType']=Number(this.content[i])!==0?3:1
+                      obj['checkboxCount']=this.content[i]
                       obj['options']=''
                       obj['unit']=''
                       arr.push(obj)
@@ -487,8 +529,6 @@ export default{
                     // console.log(res.data.data.businessImg.url,'imgsrc');
                     this.imgSrc=res.data.data.businessImg.url
                     this.imgSrc2=res.data.data.residenceImg.url
-                   
-                    // console.log(this.imgSrc2,'imgsrc2');
                     this.total=res.data.data.businessImg.count
                     this.total2=res.data.data.residenceImg.count
                     let htImg=document.getElementById('ht')
@@ -497,7 +537,6 @@ export default{
                     var newsrc2=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
                     this.autograph(htImg,newsrc)
                     this.autograph(htImg2,newsrc2)
-
                  }else{
                   this.imgSrc=res.data.data.img.url  //一个的
                   this.total=res.data.data.img.count
@@ -555,10 +594,10 @@ export default{
         .signature{
             position: absolute;
             // background-image: url('~@/assets/img/yz.png');
-            background-size: 110px;
-            width: 110px;
+            background-size: 130px;
+            width: 130px;
             left: 0;
-            height: 110px;
+            height: 130px;
             top:0;
             &::after{
                 content:'';
@@ -570,8 +609,8 @@ export default{
                 z-index: 9;
             }
             img{
-                width: 110px;
-                height: 110px;
+                width: 130px;
+                height: 130px;
             }
         }
         > button{
@@ -641,4 +680,7 @@ export default{
         }
     }
 }
+// .disabled{
+//     disabled:true
+// }
 </style>

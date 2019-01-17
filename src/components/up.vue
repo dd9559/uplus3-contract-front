@@ -29,6 +29,10 @@
       more:{
         type:Boolean,
         default:true
+      },
+      picSize:{
+        type:Boolean,
+        default:false
       }
     },
     data(){
@@ -40,6 +44,7 @@
       }
     },
     mounted() {
+      console.log(this.rules)
       let that = this
       this.filePath = []
       this.$nextTick(()=>{
@@ -62,13 +67,13 @@
           init:{
             FilesAdded: function(up, files) {
               // 选择文件后执行
-              that.up()
               loading = that.$loading({
                 lock: true,
                 text: 'Loading',
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)'
               });
+              that.up()
               /*let fileType=get_suffix(files[0].name).toLowerCase();
               if(that.rules.length>0){
                 if(that.rules.indexOf(fileType)>-1){
@@ -143,16 +148,22 @@
         let path = 'picture/'
         let maxSize = 1024
         if(this.uploader.files.length!==0){
-          /*let type=get_suffix(this.uploader.files[0].name)
+          let type=get_suffix(this.uploader.files[0].name)
           if(this.fileType.includes(type)){
-            maxSize=10
-            if(this.uploader.files[0].size>10*1024*1024){
-              this.$message({
-                message:'上传图片不能超过10M'
-              })
-              return
+            // maxSize=10
+            if(this.picSize) {
+              if(this.uploader.files[0].size>5*1024*1024){
+                this.$message({
+                  message:'上传图片不能超过5M'
+                })
+                loading.close()
+                this.uploader.splice(0,this.uploader.files.length)
+                this.currentNum=0
+                this.filePath=[]
+                return
+              }
             }
-          }*/
+          }
           this.getUrl(path,maxSize).then(res=>{
             result=JSON.parse(JSON.stringify(res))
             set_upload_param(this.uploader,Object.assign({},res),'');

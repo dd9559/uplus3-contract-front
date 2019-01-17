@@ -287,7 +287,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index)">
+            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index,'userName')">
           </template>
         </el-table-column>
         <el-table-column align="center" label="账户 ">
@@ -303,7 +303,7 @@
         </el-table-column>
         <el-table-column align="center" label="订单编号">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.orderNo" class="no-style" placeholder="请输入">
+            <input type="text" v-model="scope.row.orderNo" maxlength="20" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index,'orderNo')">
           </template>
         </el-table-column>
         <el-table-column align="center" label="手续费（元）">
@@ -403,7 +403,8 @@
       name:'订单号'
     },
     fee:{
-      name:'手续费'
+      name:'手续费',
+      type:'zeroNum'
     }
   }
   const payRule = {
@@ -553,8 +554,12 @@
           val[item]=this.$tool.cutFloat({val:val[item],max:999999999.99})
         }
       },
-      inputOnly:function (index) {
-        this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
+      inputOnly:function (index,type) {
+        if(type==='userName'){
+          this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
+        }else {
+          this.cardList[index].orderNo=this.$tool.textInput(this.cardList[index].orderNo,2)
+        }
       },
       getPicture:function () {
         let arr=[]
@@ -662,6 +667,7 @@
             if(obj.outObjType===3){
               this.inputPerson=true
             }
+            this.billStatus=res.data.inAccountType===3?false:true
             this.moneyTypeName=res.data.moneyTypeName
             this.dep.id=res.data.inObjStoreId
             this.dep.name=res.data.inObjStore
@@ -738,7 +744,6 @@
         // console.log(this.getUser)
         // let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({admin:this.activeAdmin}, this.form)
-        debugger
 
         //支付信息列表更新
         let newPayList = this.payList.map(item=>{

@@ -242,6 +242,7 @@
                                 // this.$refs.pdfPrint.print();
                                 this.$emit("emitPaperSet");
                                 this.$refs.easyPrint.print();
+                                this.paperShow = false;
                             }
                             this.layerLoading.close();
                         }).catch(err=>{

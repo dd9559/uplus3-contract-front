@@ -37,7 +37,11 @@
               <el-table-column align="center" type="index" label="序号" width="45"></el-table-column>
               <el-table-column align="center" label="步骤类型" prop="stepsTypeName"></el-table-column>
               <el-table-column align="center" label="步骤名称" prop="stepsName"></el-table-column>
-              <el-table-column align="center" label="计划天数" prop="planDays"></el-table-column>
+              <el-table-column align="center" label="计划天数" prop="planDays">
+                <template slot-scope="scope">
+                  <div>{{scope.row.planDays||scope.row.planDays===0?scope.row.planDays:'--'}}</div>
+                </template>
+              </el-table-column>
               <!-- <el-table-column align="center" label="是否可以结算">
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.isSettle" size="small" @change="isSettleChange(scope.$index,$event)">

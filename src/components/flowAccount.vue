@@ -50,7 +50,7 @@
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="payCode" label="收付款编号"> </el-table-column>
 						<el-table-column prop="type" label="类型" width="50"></el-table-column>
-						<el-table-column label="业务日期">
+						<el-table-column label="业务日期" width="90">
               <template slot-scope="scope">
                 {{scope.row.createTime|formatTime}}
               </template>
@@ -71,7 +71,7 @@
 					<el-table :data="gridData5" border height="450">
 						<el-table-column prop="createByName" label="录入人"></el-table-column>
 						<el-table-column prop="deptName" label="录入门店"> </el-table-column>
-						<el-table-column label="录入日期">
+						<el-table-column label="录入日期" width="90">
               <template slot-scope="scope">
                 {{scope.row.createTime|formatTime}}
               </template>
@@ -88,7 +88,7 @@
 				<el-tab-pane label="票据" name="sixth">
 					<el-table :data="gridData6" border height="450">
 						<el-table-column prop="moneyType" label="款类"></el-table-column>
-						<el-table-column label="开票时间">
+						<el-table-column label="开票时间" width="90">
               <template slot-scope="scope">
                 {{scope.row.createTime|formatTime}}
               </template>
@@ -96,7 +96,17 @@
 						<el-table-column prop="amount" label="开票金额（元）"></el-table-column>
 						<el-table-column prop="code" label="票据号"></el-table-column>
 						<el-table-column prop="status" label="票据状态"></el-table-column>
-						<el-table-column prop="drawerName" label="开票人"></el-table-column>
+						<el-table-column prop="drawerName" label="开票人">
+              <template slot-scope="scope">
+                <span v-if="scope.row.drawerName==='--'&&scope.row.drawerDepName==='--'">
+                  <p>--</p>
+                </span>
+                <span v-else>
+                  <p>{{scope.row.drawerDepName}}</p>
+                  <p>{{scope.row.drawerName}}</p>
+                </span>
+              </template>
+            </el-table-column>
 					</el-table>
 				</el-tab-pane>
 				<!-- 应实对照 -->
