@@ -1380,6 +1380,7 @@
             // 图片格式状态判定
             stepsTypeImg(type,bool){
                 if(bool === 1){
+                    console.log(type)
                     switch (type) {
                         case STEPSINPUT.img:
                             return ['png','jpg','jpeg'];
