@@ -667,6 +667,7 @@
             if(obj.outObjType===3){
               this.inputPerson=true
             }
+            this.billStatus=res.data.inAccountType===3?false:true
             this.moneyTypeName=res.data.moneyTypeName
             this.dep.id=res.data.inObjStoreId
             this.dep.name=res.data.inObjStore
