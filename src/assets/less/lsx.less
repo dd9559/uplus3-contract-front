@@ -783,3 +783,18 @@
 .steps-postion-b{
     padding-left: 12px;
 }
+.steps-p{
+    position: relative;
+    padding-left: 60px;
+    .steps-span{
+        position: absolute;
+        left: 0;
+        top:0;
+        line-height: 40px;
+    }
+    /deep/.el-button--text{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: 100%;
+    }
+}

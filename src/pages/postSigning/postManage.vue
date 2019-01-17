@@ -256,7 +256,16 @@
                             <el-button class="blue" type="text" @click="progressFn(scope.row)">查看交易流程</el-button>
                         </template>
                         <template v-else>
-                            <p>当前步骤：<el-button class="blue" type="text" @click="transactionFn(scope.row.stepInstanceid)">{{scope.row.stepInstanceName}}</el-button></p>
+                            <p class="steps-p">
+                                <span class="steps-span">当前步骤：</span>
+                                <el-tooltip 
+                                class="item" 
+                                effect="dark" 
+                                :content="scope.row.stepInstanceName" 
+                                placement="top">
+                                    <el-button class="blue" type="text" @click="transactionFn(scope.row.stepInstanceid)">{{scope.row.stepInstanceName}}</el-button>
+                                </el-tooltip>
+                            </p>
                             <p>{{nextStepFn(scope.row.nextStepName)}}</p>
                         </template>
                     </template>
@@ -474,6 +483,7 @@
                                             v-model="item.val"
                                             size="small"
                                             @input="numberChangeFn(index,$event)"
+                                            @focus="inputFocusFn"
                                             ></el-input>
                                         </template>
                                         <template v-else-if="item.type === STEPSINPUT.time">
@@ -843,6 +853,7 @@
                     list:[],
                     id:'',
                 },
+                inputFocus:false,
                 // 办理状态
                 STEPS,
                 // 办理输入形式
@@ -1012,7 +1023,11 @@
                     res = res.data;
                     if(res.status === 200){
                         let resData = res.data;
-                        let arr = [...resData.transAtepsAttach];
+                        let arr = [{
+                            type:1,
+                            value:'',
+                            title:'111',
+                        },...resData.transAtepsAttach];
                         let arr2 = [{
                                     val:this.dateFormat(resData.handleDatetime),
                                     title:'办理日期',
@@ -1053,9 +1068,11 @@
                             }else{
                                 j.required = false;
                             }
-                            if(e.type === STEPSINPUT.num && e.isRequired){
+                            if(e.type === STEPSINPUT.num){
                                 e.rules = [j,{ 
-                                    validator: this.checkNumberFn}]
+                                    bool:e.isRequired,
+                                    validator: this.checkNumberFn,
+                                }]
                             }else{
                                 e.rules = j;
                             }
@@ -1081,11 +1098,16 @@
             },
             // 数字改变的时候
             checkNumberFn(rule, value, callback){
-                if(!this.isNumber(value)){
+                if(!rule.bool && this.inputFocus){
+                    callback();
+                }else if(!this.isNumber(value)){
                     callback(new Error('请输入数字'));
                 }else{
                     callback();
                 }
+            },
+            inputFocusFn(){
+                this.inputFocus = false;
             },
             numberChangeFn(i,e){
                 this.$nextTick(() => {
@@ -1451,6 +1473,7 @@
             },
             // 办理数据提交
             confirmStepFn(url='/api/postSigning/confirmStep'){
+                this.inputFocus = true;
                 this.$refs['stepsFrom'].validate((valid) => {
                     if (valid) {
                         let id = this.stepsFrom.id;

@@ -111,6 +111,9 @@ export default {
         settleDialog: {
             type: Boolean,
             default: false
+        },
+        layerAudit: {
+           
         }
     },
     data() {
@@ -130,15 +133,15 @@ export default {
             dialogVisible: false,
             previewIndex:'',
             
-            layerAudit:{
-                contarctType:{
-                    label: ""
-                },
-                laterStageStatus: {
-                    lable: ""
-                }
+            // layerAudit:{
+            //     contarctType:{
+            //         label: ""
+            //     },
+            //     laterStageStatus: {
+            //         lable: ""
+            //     }
 
-            },
+            // },
 
             auditForm: {
                 textarea: '', //备注
@@ -240,26 +243,26 @@ export default {
       },
 
       //根据合同id获取结算申请弹框的内容
-      getData(){
-        let param = {
-            id: this.contId         
-          }
-          this.$ajax         
-          .get("/api/settlement/getSettlById", param)
-          .then(res => {
-            console.log(res);
-            let data = res.data;
-            if (res.data.status === 200) {
-              this.layerAudit = data.data          
-            }
+    //   getData(){
+    //     let param = {
+    //         id: this.contId         
+    //       }
+    //       this.$ajax         
+    //       .get("/api/settlement/getSettlById", param)
+    //       .then(res => {
+    //         console.log(res);
+    //         let data = res.data;
+    //         if (res.data.status === 200) {
+    //           this.layerAudit = data.data          
+    //         }
             
 
-          }).catch(error => {
-              this.$message({
-                message: error
-                })
-          })
-      },
+    //       }).catch(error => {
+    //           this.$message({
+    //             message: error
+    //             })
+    //       })
+    //   },
       myclose: function() {
         this.checkPerson.state=false
         this.$message('已申请');
@@ -336,7 +339,7 @@ export default {
     },
 
     created() {
-      this.getData()
+    //   this.getData()
     },
 
     mounted() {
