@@ -193,14 +193,14 @@
               <div class="title">扩展参数</div>
               <div class="content">
                 <div class="one_ extendParams">
-                  <p v-for="(item,index) in parameterList" :key="index" v-if="contractDetail.extendParams[item.name]">
-                    <!-- <span class="tag">{{item.name}}：</span><span class="text">{{contractDetail.extendParams[item.name]}} {{item.unit}}</span> -->
+                  <!-- <p v-for="(item,index) in parameterList" :key="index" v-if="contractDetail.extendParams[item.name]"> -->
+                  <p v-for="(item,index) in contractDetail.extendParams" :key="index">
                     <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                       <span class="tag tagHidden">{{item.name}}</span>
                     </el-tooltip>
                       <span class="colon">  ：</span>
-                    <el-tooltip class="item" effect="dark" :content="contractDetail.extendParams[item.name]" placement="top">
-                      <span class="text tagHidden">{{contractDetail.extendParams[item.name]}} </span>
+                    <el-tooltip class="item" effect="dark" :content="item.value" placement="top">
+                      <span class="text tagHidden">{{item.value}} </span>
                     </el-tooltip>
                     <span class="extendUnit">{{item.unit}}</span>
                   </p>
@@ -916,7 +916,7 @@ export default {
     this.getTransFlow();//交易类型
     this.getAchievement();//业绩分成
     this.getContDataType();//获取合同集料库类型
-    this.getExtendParams();//获取扩展参数
+    // this.getExtendParams();//获取扩展参数
     this.getRecordList();//电话录音
   },
   methods: {
