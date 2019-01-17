@@ -48,7 +48,12 @@
                     <el-table-column align="center" label="输入格式" min-width="150">
                         <template slot-scope="scope">
                              <!-- {{content[scope.$index]+'1'}} -->
-                            <el-select v-model="scope.row.inputType" :class="content[scope.$index]!==0?disabled:''">
+                            <el-select v-model="scope.row.inputType" v-if="content[scope.$index]==0">
+                                <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
+                            </el-select>
+                            <el-select v-model="scope.row.inputType" v-else disabled>
                                 <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
@@ -173,7 +178,6 @@ export default{
                            this.total=res.data.data.img.count
                            this.signPositions=res.data.data.signPosition
                            console.log(this.signPosition,'signPosition');
-                           ///////////////
                            this.sigtureShow=false
                            for(let i=0;i<this.signPositions.length;i++){
                             if(this.count==this.signPositions[i].pageIndex){
@@ -324,11 +328,11 @@ export default{
                 }).catch(
                     error=>{
                     this.$message({
+                    type: 'error',
                     message:error
                     })
                     this.modalDialog=true
-                }
-                 
+                 }
                 )
             },
             numSave(){
@@ -349,7 +353,7 @@ export default{
                             if(this.tableDate[i].options==''){
                                 this.$message({
                                 type: 'error',
-                                message: `选项值不能为空`
+                                message: `复选框选项值不能为空`
                                 })
                                 this.modalDialog=true
                                 break
