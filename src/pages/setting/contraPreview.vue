@@ -274,12 +274,12 @@ export default{
                             document.onmousemove = function(ev){
                             var l = ev.clientX-disX;
                             var t = ev.clientY-disY;
-                            sign.x=(l/622).toFixed(2)
-                            sign.y=(t/802).toFixed(2)
                             l > oDiv.parentNode.offsetWidth-110 ? l = oDiv.parentNode.offsetWidth-110 : l
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
                             t > oDiv.parentNode.offsetHeight-110 ? t = oDiv.parentNode.offsetWidth-110 : t
+                            sign.x=(l/622).toFixed(2)
+                            sign.y=(t/802).toFixed(2)
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
@@ -357,7 +357,10 @@ export default{
                              if(this.showSed){
                                   this.sigtureShow=false
                              }
-                             this.tuozhuai(this.signPositions[i])
+                             if(this.show==1){
+                                 debugger
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -376,6 +379,9 @@ export default{
                      for(let i=0;i<this.signPositions.length;i++){
                          if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
+                                if(this.show==1){
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -401,7 +407,10 @@ export default{
                              if(this.showSed){
                                   this.sigtureShow=false
                              }
-                             this.tuozhuai(this.signPositions[i])
+                             if(this.show==1){
+                                 debugger
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -420,6 +429,9 @@ export default{
                     for(let i=0;i<this.signPositions.length;i++){
                         if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
+                                if(this.show==1){
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -431,7 +443,6 @@ export default{
                 }
             },
             autograph(obj,newsrc){
-               //    debugger
                     var flag=0
                     for(let i=0;i< this.qmnewsrcArr.length;i++){
                         if(this.qmnewsrcArr[i][newsrc]){
@@ -472,7 +483,6 @@ export default{
                   if(res.data.data.unPlaceholder!==''){
                       for(let key in res.data.data.unPlaceholder){
                          this.tableDate.push(key)
-                        //  if(res.data.data.unPlaceholder[key]==0){}
                          this.content.push(res.data.data.unPlaceholder[key])
                          this.contents.push('该占位符需要输入'+res.data.data.unPlaceholder[key]+'个值')
                       }

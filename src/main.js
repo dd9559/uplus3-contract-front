@@ -5,8 +5,8 @@ import 'babel-polyfill'
 import App from './App'
 import router from './router'
 import {store} from './store'
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import ELEMENT from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
 
 import ScreeningTop from '@/components/ScreeningTop';
 import fileUp from '@/components/up'
@@ -17,7 +17,7 @@ import scrollBar from '@/components/scrollBar'
 import {api} from '@/assets/js/ajax'
 import {TOOL} from "@/assets/js/common"
 
-Vue.use(ElementUI);
+Vue.use(ELEMENT);
 
 Vue.config.productionTip = false
 

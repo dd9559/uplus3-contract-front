@@ -100,7 +100,7 @@
                       <el-table-column label="电话">
                         <template slot-scope="scope">
                           {{scope.row.mobile}} 
-                          <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                          <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-ht-xq-ly-call'].state"></i>
                         </template>
                       </el-table-column>
                       <el-table-column prop="relation" label="关系"></el-table-column>
@@ -137,7 +137,7 @@
                       <el-table-column label="电话">
                         <template slot-scope="scope">
                           {{scope.row.mobile}} 
-                          <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row)" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                          <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
                         </template>
                       </el-table-column>
                       <el-table-column prop="relation" label="关系"></el-table-column>
@@ -579,6 +579,10 @@
               <p><span class="printTag">业主佣金：</span><span class="printTxt">{{contractDetail.ownerCommission}} 元</span></p>
               <p><span class="printTag">佣金支付费：</span><span class="printTxt">{{contractDetail.commissionPayment}} 元</span></p>
             </div>
+            <div class="printItem">
+              <p v-if="contType!='1'"><span class="printTag">佣金合计：</span><span class="printTxt">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span></p>
+              <p class="p_width"><span class="printTag">交易流程：</span><span class="printTxt" v-for="item in transFlowList" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span></p>
+            </div>
           </div>
           <div class="printMsg">
             <div class="contTitle">房源信息</div>
@@ -607,6 +611,13 @@
               <p><span class="printTag">房源方门店：</span><span class="printTxt">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
               <p><span class="printTag">店 长：</span><span class="printTxt">{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
               <p><span class="printTag">手 机：</span><span class="printTxt">{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
+            </div>
+            <div class="printItem" v-if="contType!='1'">
+              <p><span class="printTag">产权状态：</span><span class="printTxt" v-for="item in dictionary['514']" :key="item.key" v-if="item.key===contractDetail.houseInfo.propertyRightStatus">{{item.value}}</span><span class="text" v-if="contractDetail.houseInfo.propertyRightStatus===0">无</span></p>
+              <p><span class="printTag">按揭银行：</span><span class="printTxt">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
+            </div>
+            <div class="printItem" v-if="contType!='1'">
+              <p style="width:500px"><span class="printTag">按揭欠款：</span><span class="printTxt dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span></p>
             </div>
             <div class="printItem printItem_" style="width:840px;margin-top:5px">
               <el-table :data="ownerData" border header-row-class-name="theader-bg" style="width:100%">
@@ -932,30 +943,85 @@ export default {
       }
     },
     //打电话
-    call(value) {
-      if(this.canCall){
-        let param = {
-          id:value.pid,
-          contractCode:this.contCode,
-          sourceType:value.personType.value===1?0:1
-        };
-        this.canCall=false;
-        this.$ajax.get('/api/record/virtualNum',param).then(res=>{
-          this.canCall=true;
-          res=res.data;
-          if(res.status===200){
-            this.callNumber=res.data.virtualNum;
+    call(value,index,type) {
+      var nowTime = (new Date()).getTime();
+      var param = {
+        id:value.pid,
+        contractCode:this.contCode,
+        sourceType:value.personType.value===1?0:1
+      };
+      if(type==='owner'){
+        // console.log(nowTime);
+        if(this.ownerData[index].time){
+          let oldTime = (nowTime-this.ownerData[index].time);
+          if(oldTime<300000){
+            this.callNumber=this.ownerData[index].virtualNum;
             this.dialogVisible = true;
+          }else{
+            this.ownerData[index].time=nowTime;
+            this.getVirtualNum(param,index,type);
           }
-        }).catch(error=>{
-          this.canCall=true;
-          this.$message({
-            message:error,
-            type: "error"
-          })
-        })
+        }else{
+          this.ownerData[index].time=nowTime;
+          this.getVirtualNum(param,index,type);
+        }
+      }else if(type==='guest'){
+        if(this.clientrData[index].time){
+          let oldTime = (nowTime-this.clientrData[index].time);
+          if(oldTime<300000){
+            this.callNumber=this.clientrData[index].virtualNum;
+            this.dialogVisible = true;
+          }else{
+            this.ownerData[index].time=nowTime;
+            this.getVirtualNum(param,index,type);
+          }
+        }else{
+          this.clientrData[index].time=nowTime;
+          this.getVirtualNum(param,index,type);
+        }
       }
-      
+      // let param = {
+      //   id:value.pid,
+      //   contractCode:this.contCode,
+      //   sourceType:value.personType.value===1?0:1
+      // };
+      // this.canCall=false;
+      // this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+      //   this.canCall=true;
+      //   res=res.data;
+      //   if(res.status===200){
+      //     this.callNumber=res.data.virtualNum;
+      //     this.dialogVisible = true;
+      //   }
+      // }).catch(error=>{
+      //   this.canCall=true;
+      //   this.$message({
+      //     message:error,
+      //     type: "error"
+      //   })
+      // })
+    },
+    //生成虚拟号码
+    getVirtualNum(param,index,type){
+      this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+        this.canCall=true;
+        res=res.data;
+        if(res.status===200){
+          if(type==='owner'){
+            this.ownerData[index].virtualNum=res.data.virtualNum
+          }else if(type==='guest'){
+            this.clientrData[index].virtualNum=res.data.virtualNum
+          }
+          this.callNumber=res.data.virtualNum;
+          this.dialogVisible = true;
+        }
+      }).catch(error=>{
+        this.canCall=true;
+        this.$message({
+          message:error,
+          type: "error"
+        })
+      })
     },
     //合同预览
     goPreview() {
