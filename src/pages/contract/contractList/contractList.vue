@@ -278,7 +278,10 @@
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4">
               <span v-if="scope.row.stepInstanceName==='-'">-</span>
-              <el-button v-else type="text" size="medium" @click="showStepInstance(scope.row)">{{scope.row.stepInstanceName}}</el-button>
+              <!-- <el-button v-else type="text" size="medium" @click="showStepInstance(scope.row)">{{scope.row.stepInstanceName}}</el-button> -->
+              <el-tooltip class="item" v-else effect="dark" :content="scope.row.stepInstanceName" placement="top">
+                <span class="stepInstanceName">{{scope.row.stepInstanceName}}</span>
+              </el-tooltip>
             </span>
             <span v-else>-</span>
           </template>
@@ -1141,6 +1144,15 @@ export default {
     width: 100%;
     height: 100%;
     display: inline-block; 
+  }
+  .stepInstanceName{
+    max-width: 130px;
+    color: @color-blue;
+    cursor: pointer;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    overflow:hidden; 
+    display: inline-block;
   }
 }
 .contract_msg{
