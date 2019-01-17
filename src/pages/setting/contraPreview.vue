@@ -357,7 +357,10 @@ export default{
                              if(this.showSed){
                                   this.sigtureShow=false
                              }
-                             this.tuozhuai(this.signPositions[i])
+                             if(this.show==1){
+                                 debugger
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -376,6 +379,9 @@ export default{
                      for(let i=0;i<this.signPositions.length;i++){
                          if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
+                                if(this.show==1){
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -401,7 +407,10 @@ export default{
                              if(this.showSed){
                                   this.sigtureShow=false
                              }
-                             this.tuozhuai(this.signPositions[i])
+                             if(this.show==1){
+                                 debugger
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -420,6 +429,9 @@ export default{
                     for(let i=0;i<this.signPositions.length;i++){
                         if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
+                                if(this.show==1){
+                                    this.tuozhuai(this.signPositions[i])
+                                }
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
