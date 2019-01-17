@@ -1098,7 +1098,7 @@ export default {
   .textLength {
     position: absolute;
     bottom: 0px;
-    right: 10px;
+    right: 24px;
     color: #6c7986;
   }
   .form-btn {

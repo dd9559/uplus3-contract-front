@@ -337,7 +337,7 @@
     <!-- 调佣弹框 -->
     <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
     <!-- 结算弹窗 -->
-    <layerSettle :settleDialog="jiesuan" :contId="settleId" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
+    <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerAudit" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
@@ -384,6 +384,15 @@ export default {
   },
   data() {
     return {
+       layerAudit:{
+          contarctType:{
+              label: ""
+          },
+          laterStageStatus: {
+              lable: ""
+          }
+
+      },
       tableBox:null,
       contractForm: {},
       keyword: "",
@@ -898,6 +907,7 @@ export default {
             if (res.data.status === 200) {
               this.jiesuan=true;
               this.settleId=item.id;
+              this.layerAudit = data.data
             }
           }).catch(error => {
               this.$message({
