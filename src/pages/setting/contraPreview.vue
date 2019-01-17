@@ -47,15 +47,21 @@
                     </el-table-column> -->
                     <el-table-column align="center" label="输入格式" min-width="150">
                         <template slot-scope="scope">
+                             <!-- {{content[scope.$index]+'1'}} -->
                             <el-select v-model="scope.row.inputType">
-                                <el-option :value='2' label="下拉框"></el-option>
-                                <el-option :value='1' label="输入框"></el-option>
+                               
+                                <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=3 label="复选框" v-show="content[scope.$index]!==0"></el-option>
                             </el-select>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="选项值" min-width="150">
                         <template slot-scope="scope">
+                            <el-tooltip v-if="scope.row.inputType==3" :content=contents[scope.$index] class="item" effect="dark"  placement="top">
                             <el-input v-model="scope.row.options"></el-input>
+                            </el-tooltip>
+                            <el-input v-else v-model="scope.row.options"></el-input>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="单位" min-width="150">
@@ -106,6 +112,8 @@ export default{
             divHeight:'',
             timeout:0,
             touch:true,
+            contents:[],
+            content:[],
             qmnewsrcArr:[],
             signPositions:[],
           }
@@ -266,12 +274,12 @@ export default{
                             document.onmousemove = function(ev){
                             var l = ev.clientX-disX;
                             var t = ev.clientY-disY;
-                            sign.x=(l/622).toFixed(2)
-                            sign.y=(t/802).toFixed(2)
-                            l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-100 : l
+                            l > oDiv.parentNode.offsetWidth-110 ? l = oDiv.parentNode.offsetWidth-110 : l
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
-                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-150 : t
+                            t > oDiv.parentNode.offsetHeight-110 ? t = oDiv.parentNode.offsetWidth-110 : t
+                            sign.x=(l/622).toFixed(2)
+                            sign.y=(t/802).toFixed(2)
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
@@ -423,7 +431,6 @@ export default{
                 }
             },
             autograph(obj,newsrc){
-               //    debugger
                     var flag=0
                     for(let i=0;i< this.qmnewsrcArr.length;i++){
                         if(this.qmnewsrcArr[i][newsrc]){
@@ -462,7 +469,11 @@ export default{
               if(res.status==200){
                   this.loading=false
                   if(res.data.data.unPlaceholder!==''){
-                      this.tableDate=res.data.data.unPlaceholder
+                      for(let key in res.data.data.unPlaceholder){
+                         this.tableDate.push(key)
+                         this.content.push(res.data.data.unPlaceholder[key])
+                         this.contents.push('该占位符需要输入'+res.data.data.unPlaceholder[key]+'个值')
+                      }
                   }else{
                         this.tableDate=null
                   }
@@ -471,7 +482,8 @@ export default{
                       var obj={}
                       obj['name']=this.tableDate[i]
                     //   obj['isRequired']=1
-                      obj['inputType']=1
+                      obj['inputType']=Number(this.content[i])!==0?3:1
+                      obj['checkboxCount']=this.content[i]
                       obj['options']=''
                       obj['unit']=''
                       arr.push(obj)
