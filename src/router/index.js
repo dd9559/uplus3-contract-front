@@ -54,7 +54,7 @@ const contractCheck = () => import("@/pages/contract/contractList/contractCheck"
 
 const Login = () => import("@/login")
 
-Vue.use(Router)
+// Vue.use(Router)
 
 export default new Router({
   routes: [{
