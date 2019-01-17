@@ -1023,11 +1023,7 @@
                     res = res.data;
                     if(res.status === 200){
                         let resData = res.data;
-                        let arr = [{
-                            type:1,
-                            value:'',
-                            title:'111',
-                        },...resData.transAtepsAttach];
+                        let arr = [...resData.transAtepsAttach];
                         let arr2 = [{
                                     val:this.dateFormat(resData.handleDatetime),
                                     title:'办理日期',
