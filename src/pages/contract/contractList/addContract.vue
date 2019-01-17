@@ -258,9 +258,9 @@
               <span class="colon">: </span>
               <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="contractForm.extendParams[item.name]" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
               <!-- 下拉框 -->
-              <el-select v-model="contractForm.extendParams[item.name]" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2||item.inputType.value===3" size="small">
+              <el-select v-model="contractForm.extendParams[index].value" :clearable="true" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2||item.inputType.value===3" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
                 </el-option>
               </el-select>
@@ -279,8 +279,10 @@
           </div>
         </div>
         <div>
-          <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button>
-          <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===2" round @click="isSave(1)">提交审核</el-button>
+          <!-- 新增+提审 -->
+          <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button>
+          <!-- 编辑+提审 -->
+          <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2" round @click="isSave(1)">提交审核</el-button>
           <el-button type="primary" round @click="isSave(0)">保存</el-button>
         </div>
       </div>
@@ -371,7 +373,7 @@ export default {
           identifyCode:'',
           mobile:''
         },
-        extendParams:{},
+        extendParams:[],
         isHaveCooperation: 0
       },
       //业主信息
@@ -581,14 +583,15 @@ export default {
           this.parameterList=res.data;
           res.data.forEach(element => {
             let name_ = element.name;
-            this.parameterRule[name_]={name:element.name};
+            // this.parameterRule[name_]={name:element.name};
             if(this.type===1){
-              this.$set(this.contractForm.extendParams,name_,'')
-              // this.contractForm.extendParams.push({
-              //   name:name_,
-              //   value:'',
-              //   type:element.inputType.value,
-              // })
+              // this.$set(this.contractForm.extendParams,name_,'')
+              this.contractForm.extendParams.push({
+                name:name_,
+                value:'',
+                type:element.inputType.value,
+                unit:element.unit
+              })
             }
           });
         }
@@ -878,7 +881,7 @@ export default {
                             let IdCardList_= Array.from(new Set(IdCardList));
                             if(mobileList.length===mobileList_.length){
                               if(IdCardList.length===IdCardList_.length){
-                              //验证扩展参数
+                              //验证三方合作
                               if(this.contractForm.isHaveCooperation){
                                 let mobileOk=true;
                                 let IDcardOk=true;
@@ -909,25 +912,80 @@ export default {
                                 };
                                 if(mobileOk&&IDcardOk){
                                   // 合同扩展参数验证
-                                  this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
-                                    this.dialogSave = true;
-                                  }).catch(error => {
+                                  let paramsOk=true;
+                                  for(var i=0;i<this.contractForm.extendParams.length;i++){
+                                    paramsOk=false;
+                                    let item = this.contractForm.extendParams[i];
+                                    console.log(item);
+                                    if(item.value){
+                                      item.value=item.value.replace(/\s/g,"");
+                                      if(item.value){
+                                        paramsOk=true
+                                      }else{
+                                        this.$message({
+                                          message: `扩展参数-${item.name}不能为空`,
+                                          type: "warning"
+                                        });
+                                        break
+                                      }
+                                    }else{
                                       this.$message({
-                                        message: `扩展参数-${error.title}${error.msg}`,
+                                        message: `扩展参数-${item.name}不能为空`,
                                         type: "warning"
                                       });
-                                    });
+                                      break
+                                    }
+                                  }
+                                  if(paramsOk){
+                                    this.dialogSave = true;
+                                  }
+                                  // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                                  //   this.dialogSave = true;
+                                  // }).catch(error => {
+                                  //     this.$message({
+                                  //       message: `扩展参数-${error.title}${error.msg}`,
+                                  //       type: "warning"
+                                  //     });
+                                  //   });
+
                                 }
                               }else{
                                 // 合同扩展参数验证
-                                this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
-                                  this.dialogSave = true;
-                                }).catch(error => {
-                                    this.$message({
-                                      message: `扩展参数-${error.title}${error.msg}`,
-                                      type: "warning"
-                                    });
-                                  });
+                                let paramsOk=true;
+                                  for(var i=0;i<this.contractForm.extendParams.length;i++){
+                                    paramsOk=false;
+                                    let item = this.contractForm.extendParams[i];
+                                    console.log(item);
+                                    if(item.value){
+                                      item.value=item.value.replace(/\s/g,"");
+                                      if(item.value){
+                                        paramsOk=true
+                                      }else{
+                                        this.$message({
+                                          message: `扩展参数-${item.name}不能为空`,
+                                          type: "warning"
+                                        });
+                                        break
+                                      }
+                                    }else{
+                                      this.$message({
+                                        message: `扩展参数-${item.name}不能为空`,
+                                        type: "warning"
+                                      });
+                                      break
+                                    }
+                                  }
+                                  if(paramsOk){
+                                    this.dialogSave = true;
+                                  }
+                                // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                                //   this.dialogSave = true;
+                                // }).catch(error => {
+                                //     this.$message({
+                                //       message: `扩展参数-${error.title}${error.msg}`,
+                                //       type: "warning"
+                                //     });
+                                //   });
                               }
                             }else{
                               this.$message({
@@ -941,17 +999,6 @@ export default {
                                 type: "warning"
                               })
                             }
-                            
-
-                            
-                            // 合同扩展参数验证
-                            // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
-                            //   this.dialogSave = true;
-                            // }).catch(error => {
-                            //     this.$message({
-                            //       message: `${error.title}${error.msg}`
-                            //     });
-                            //   });
                           } else {
                             this.$message({
                               message: "客源信息-客户产权比和必须为100%",
