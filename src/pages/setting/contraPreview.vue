@@ -47,7 +47,6 @@
                     </el-table-column> -->
                     <el-table-column align="center" label="输入格式" min-width="150">
                         <template slot-scope="scope">
-                             <!-- {{content[scope.$index]+'1'}} -->
                             <el-select v-model="scope.row.inputType" v-if="content[scope.$index]==0">
                                 <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
@@ -277,12 +276,15 @@ export default{
                             document.onmousemove = function(ev){
                             var l = ev.clientX-disX;
                             var t = ev.clientY-disY;
+                           
                             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
+                             console.log(l,oDiv.parentNode.offsetWidth-130);
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
                             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-130 : t
                             sign.x=(l/622).toFixed(2)
                             sign.y=(t/802).toFixed(2)
+                            console.log(sign,'sign');
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };

@@ -384,15 +384,6 @@ export default {
   },
   data() {
     return {
-       layerAudit:{
-          contarctType:{
-              label: ""
-          },
-          laterStageStatus: {
-              lable: ""
-          }
-
-      },
       tableBox:null,
       contractForm: {},
       keyword: "",
@@ -430,6 +421,14 @@ export default {
       //合同状态
       contState:99,
       settleId:'',
+      layerAudit:{
+        contarctType:{
+          label: ""
+        },
+        laterStageStatus: {
+          lable: ""
+        }
+      },
       //流水用合同编号
       contCode:'',
       waterContId:'',
