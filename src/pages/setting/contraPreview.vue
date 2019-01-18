@@ -646,8 +646,8 @@ export default{
     .tip{
         position: absolute;
         top: 30px;
-        left: 250px;
-        color:rgba(255,62,62,1);
+        left: 250px; 
+        color:#6d95bd;
         font-size: 14px
     }
     /deep/ .el-dialog__body{
@@ -655,7 +655,7 @@ export default{
         padding-top:21px;
         .ex-body{
             p:first-child{
-                color:rgba(109,149,189,1);
+                color:#ff3e3e;
                 margin-bottom: 17px;
             }
             .footer{
