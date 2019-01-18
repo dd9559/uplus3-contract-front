@@ -547,7 +547,7 @@
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
-        <div class="printContent" style="width:900px;height:1280px">
+        <div class="printContent" style="width:900px;height:1270px">
           <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
           </div>
@@ -2195,7 +2195,7 @@ export default {
   .bgcImg{
     position: absolute;
     width: 900px;
-    height: 1280px;
+    height: 1270px;
     z-index: 9999;
     top: 0;
     left: 0;
