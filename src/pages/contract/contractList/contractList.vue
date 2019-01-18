@@ -280,7 +280,7 @@
               <span v-if="scope.row.stepInstanceName==='-'">-</span>
               <!-- <el-button v-else type="text" size="medium" @click="showStepInstance(scope.row)">{{scope.row.stepInstanceName}}</el-button> -->
               <el-tooltip class="item" v-else effect="dark" :content="scope.row.stepInstanceName" placement="top">
-                <span class="stepInstanceName">{{scope.row.stepInstanceName}}</span>
+                <span class="stepInstanceName" @click="showStepInstance(scope.row)">{{scope.row.stepInstanceName}}</span>
               </el-tooltip>
             </span>
             <span v-else>-</span>
@@ -313,7 +313,7 @@
               <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&scope.row.contState.value>1" @click="upload(scope.row)">上传</el-button>
               <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4" @click="goSave(scope.row)">提审</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&userMsg&&scope.row.recordId===userMsg.empId" @click="goSave(scope.row)">提审</el-button>
               <!-- </span> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
             <!-- </div> -->
@@ -576,10 +576,13 @@ export default {
         keyword: this.keyword
       };
       param = Object.assign({}, param, this.contractForm);
-      if (this.signDate.length > 0) {
-        param.beginDate = this.signDate[0];
-        param.endDate = this.signDate[1];
+      if(this.signDate){
+        if (this.signDate.length > 0) {
+          param.beginDate = this.signDate[0];
+          param.endDate = this.signDate[1];
+        }
       }
+      
       delete param.depName
       //console.log(param)
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
