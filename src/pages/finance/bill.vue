@@ -555,7 +555,7 @@
           })
           return
         }
-        if (row.payStatus === '未付款') {
+        if (row.payStatus === '未付款'&&this.power['sign-cw-debt-edit'].state&&row.caozuo===1&&row.isDel===1&&((row.type===1&&row.billStatus&&row.billStatus.value===1)||row.type===2)) {
           this.btnOpera(row, 1)
         } else {
           this.setPath(this.getPath.concat({name: row.type === 1 ? '收款详情' : '付款详情'}))
