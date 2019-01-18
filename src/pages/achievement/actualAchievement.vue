@@ -1027,7 +1027,7 @@ export default {
     getData(ajaxParam) {
      let _that=this;
         this.$ajax
-          .get("/api/achievement/selectAchievementList", this.ajaxParam)
+          .get("/api/achievement/selectAchievementList", ajaxParam)
           .then(res => {
             console.log(res);
             let data = res.data;
@@ -1447,7 +1447,7 @@ export default {
       th {
         padding: 24px 0;
       }
-      .el-table__header {       
+      .el-table__header {
         th {
           padding: 6px 0;
           background-color: #eef2fb;
@@ -1510,7 +1510,6 @@ export default {
             padding: 0;
             background-color: #eef2fb;
             .cell {
-          
               // background-color: pink;
               // height: 55px;
               // line-height: 55px;
@@ -1542,9 +1541,9 @@ export default {
       }
     }
   }
-    /deep/ .ach-body {
-      overflow: auto;
-    }
+  /deep/ .ach-body {
+    overflow: auto;
+  }
 }
 /deep/ .el-pagination {
   text-align: center;
@@ -1596,7 +1595,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/deep/ .btn-text-info{
+/deep/ .btn-text-info {
   font-size: 12px !important;
 }
 </style>
