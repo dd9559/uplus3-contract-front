@@ -227,18 +227,18 @@
         </el-table-column>
         <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
-            <template v-if="scope.row.type===1&&scope.row.isDel===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&(power['sign-cw-debt-invoice'].state||((scope.row.caozuo===1||scope.row.caozuo===0)&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state)))">
+            <template v-if="scope.row.type===1&&scope.row.isDel===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&(power['sign-cw-debt-invoice'].state||((scope.row.caozuo===1)&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state)))">
               <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-debt-invoice'].state">
                 开票
               </el-button>
-              <template v-if="scope.row.billStatus&&(scope.row.billStatus.value===1)&&(scope.row.caozuo===1||scope.row.caozuo===0)&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state)">
-                <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-debt-edit'].state&&scope.row.caozuo===1">修改</el-button>
+              <template v-if="scope.row.billStatus&&(scope.row.billStatus.value===1)&&(scope.row.caozuo===1)&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state)">
+                <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-debt-edit'].state">修改</el-button>
                 <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-debt-void'].state">作废</el-button>
               </template>
               <!--<span v-else>&#45;&#45;</span>-->
             </template>
-            <template v-else-if="scope.row.type===2&&scope.row.isDel===1&&(scope.row.caozuo===1||scope.row.caozuo===0)&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state)">
-              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-debt-edit'].state&&scope.row.caozuo===1">修改</el-button>
+            <template v-else-if="scope.row.type===2&&scope.row.isDel===1&&(scope.row.caozuo===1)&&(power['sign-cw-debt-edit'].state||power['sign-cw-debt-void'].state)">
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-debt-edit'].state">修改</el-button>
               <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-debt-void'].state">作废</el-button>
             </template>
             <template v-else>
@@ -555,7 +555,7 @@
           })
           return
         }
-        if (row.payStatus === '未付款') {
+        if (row.payStatus === '未付款'&&this.power['sign-cw-debt-edit'].state&&row.caozuo===1&&row.isDel===1&&((row.type===1&&row.billStatus&&row.billStatus.value===1)||row.type===2)) {
           this.btnOpera(row, 1)
         } else {
           this.setPath(this.getPath.concat({name: row.type === 1 ? '收款详情' : '付款详情'}))
