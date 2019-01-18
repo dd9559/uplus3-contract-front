@@ -51,11 +51,13 @@
                                 <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
+                                <el-option :value=4 label="日期"  v-show="content[scope.$index] ==0"></el-option>
                             </el-select>
                             <el-select v-model="scope.row.inputType" v-else disabled>
                                 <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
+                                <el-option :value=4 label="日期"  v-show="content[scope.$index]==0"></el-option>
                             </el-select>
                         </template>
                     </el-table-column>
@@ -69,7 +71,7 @@
                     </el-table-column>
                     <el-table-column align="center" label="单位" min-width="150">
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.unit"></el-input>
+                            <el-input v-model="scope.row.unit" maxlength="5"></el-input>
                         </template>
                     </el-table-column>
                </el-table>
@@ -328,13 +330,12 @@ export default{
                         });
                     }
                 }).catch(
-                    error=>{
-                    this.$message({
-                    type: 'error',
-                    message:error
-                    })
+                        error=>this.$notify({
+                            type:'error',
+                            message: error,
+                            duration:3000,
+                        }),
                     this.modalDialog=true
-                 }
                 )
             },
             numSave(){
@@ -554,8 +555,10 @@ export default{
             }).catch(error=>{
                  this.$message({
                     type: 'error',
+                    center:true,
                     message: error
                     })
+          
                     setTimeout(() => {
                         this.loading=false
                         this.$router.push({
