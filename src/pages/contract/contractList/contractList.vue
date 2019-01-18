@@ -576,10 +576,13 @@ export default {
         keyword: this.keyword
       };
       param = Object.assign({}, param, this.contractForm);
-      if (this.signDate.length > 0) {
-        param.beginDate = this.signDate[0];
-        param.endDate = this.signDate[1];
+      if(this.signDate){
+        if (this.signDate.length > 0) {
+          param.beginDate = this.signDate[0];
+          param.endDate = this.signDate[1];
+        }
       }
+      
       delete param.depName
       //console.log(param)
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {

@@ -546,7 +546,7 @@
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
-      <LayerPrint ref="easyPrint" style="width:900px" v-show="false">
+      <LayerPrint ref="easyPrint" class="easyPrint_">
         <div class="printContent" style="width:900px;height:1250px">
           <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
@@ -951,7 +951,6 @@ export default {
         sourceType:value.personType.value===1?0:1
       };
       if(type==='owner'){
-        // console.log(nowTime);
         if(this.ownerData[index].time){
           let oldTime = (nowTime-this.ownerData[index].time);
           if(oldTime<300000){
@@ -1144,7 +1143,6 @@ export default {
     changeType(value) {
       this.isActive = value;
       this.currentPage=1;
-      // console.log(type)
       this.getRecordList();
     },
     //查询录音
@@ -1230,24 +1228,9 @@ export default {
           this.playTime=0
         }
         this.recordKey=index;
-        // console.log(myAudio.src);
-        // if(!myAudio.src){
-        //   debugger
-        //   let param = {
-        //     recording:recording
-        //   };
-        //   this.$ajax.get('/api/record/downloadRecord',param).then(res=>{
-        //     res=res.data;
-        //     if(res.status===200){
-        //       myAudio.src=res.data;
-        //     }
-        //   })
-        // }
         if (myAudio.paused){
           for(var i=0;i<myAudios.length;i++){
             myAudios[i].pause();
-            // console.log(myAudios[i].id,myAudio.id)
-            // debugger
             if(myAudios[i].id!=myAudio.id){
               if(myAudios[i].paused){
                 // this.playTime=0
@@ -1492,7 +1475,6 @@ export default {
           // this.sellerList=[];
           // this.otherList=[];
           let address = JSON.parse(res.data.address);
-          console.log(address)
           address.forEach(element => {
             element.value.forEach(item => {
               let fileType = this.$tool.get_suffix(item.name);
@@ -1527,7 +1509,6 @@ export default {
     },
     //合同资料库添加数据
     addSubject(data){
-      console.log(data);
       let arr = data.param;
       let num = Number(data.btnId.substring(data.btnId.length-1));
       let typeId = data.btnId.substring(0,data.btnId.length-1);
@@ -1558,7 +1539,6 @@ export default {
     //上传合同资料库
     uploading(msg){
       let uploadContData = this.sellerList.concat(this.buyerList, this.otherList);
-      console.log(uploadContData);
       let isOk;
       let arr_=[];
       for(let i=0;i<uploadContData.length;i++){
@@ -1596,7 +1576,6 @@ export default {
           contId: this.id,
           operation:code
         }
-        // console.log(param)
         this.$ajax.postJSON('/api/contract/uploadContData', param).then(res=>{
           res=res.data;
           if(res.status===200){
@@ -1611,7 +1590,6 @@ export default {
     },
     //合同资料科删除
     delectData(index,index_,type){
-      console.log(index,index_,type);
       if(this.contractDetail.isHaveData){
         if(type==="seller"){
           if(this.sellerList[index].isrequire){
@@ -1774,6 +1752,7 @@ export default {
 @import "~@/assets/common.less";
 
 .view-container {
+  position: relative;
   .mainContent{
     /deep/.el-tabs{
       .el-tabs__header {
@@ -1785,6 +1764,11 @@ export default {
         line-height: 60px;
       }
     }
+  }
+  .easyPrint_{
+    position: fixed;
+    z-index: -9999;
+    left: 20000px;
   }
     // /deep/.el-tabs{
     //   .el-tabs__header {
