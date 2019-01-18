@@ -218,9 +218,14 @@
                     if (res.status === 200) {
                         this.tableProgress = res.data;
                     }
-                    this.loading = false;
+                    this.$nextTick(()=>{
+                        this.loadingAdjust = false;
+                    });
                 }).catch(err => {
-                    console.log(err)
+                    this.$message.error(err);
+                    this.$nextTick(()=>{
+                        this.loadingAdjust = false;
+                    });
                 })
             },
             show(data) {
@@ -291,12 +296,16 @@
                             list:[...arr,...arr2],
                             id:resData.id
                         };
-                        this.LookStepLoad = false;
+                        this.$nextTick(()=>{
+                            this.LookStepLoad = false;
+                        });
                         this.stepsDataShow = true;
                         this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
-                    this.LookStepLoad = false;
+                    this.$nextTick(()=>{
+                        this.LookStepLoad = false;
+                    });
                     this.$message.error(err);
                 })
             },
