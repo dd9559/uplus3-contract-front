@@ -242,7 +242,10 @@
                                 // this.$refs.pdfPrint.print();
                                 this.$emit("emitPaperSet");
                                 this.$refs.easyPrint.print();
-                                this.paperShow = false;
+                                let that = this;
+                                setTimeout(()=>{
+                                    that.paperShow = false;
+                                },101)
                             }
                             this.layerLoading.close();
                         }).catch(err=>{

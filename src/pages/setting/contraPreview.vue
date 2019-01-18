@@ -134,7 +134,7 @@ export default{
             this.enableTemplateId=this.$route.query.enableTemplateId
         },
         mounted(){
-            this.divWidth=622
+            this.divWidth=620
             this.divHeight=802
             if(this.show==1){
                this.getImgAdd(this.count)
@@ -189,7 +189,7 @@ export default{
                            let htImg=document.getElementById('ht')
                            let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
                            bodycontainer.style.display='block'
-                           htImg.style.width='622px'
+                           htImg.style.width='620px'
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
                      }
@@ -282,7 +282,7 @@ export default{
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
                             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-130 : t
-                            sign.x=(l/622).toFixed(2)
+                            sign.x=(l/620).toFixed(2)
                             sign.y=(t/802).toFixed(2)
                             console.log(sign,'sign');
                             oDiv.style.left = l+'px';
@@ -546,7 +546,7 @@ export default{
                   btn.style.margin='0 auto'
                   let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
                   bodycontainer.style.display='block'
-                  htImg.style.width='622px'
+                  htImg.style.width='620px'
                   var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                   this.autograph(htImg,newsrc)
                  }
@@ -587,10 +587,10 @@ export default{
         min-height: 500px;
         margin: 0 25px;
         position: relative;
-        width:622px;
+        width:620px;
             height:802px;
         img{
-            width: 622px;
+            width: 620px;
         }
         .signature{
             position: absolute;
@@ -676,7 +676,7 @@ export default{
     width:100%;
     .ht-list{
         img{
-            width:622px;
+            width:620px;
             height:802px;
         }
     }
