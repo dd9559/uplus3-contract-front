@@ -547,7 +547,7 @@
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
-        <div class="printContent" style="width:900px;height:1250px">
+        <div class="printContent" style="width:900px;height:1280px">
           <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
           </div>
@@ -703,7 +703,8 @@
               </div>
             </div>
           </div>
-          <div class="bgcImg" :style={backgroundImage:url}></div>
+          <!-- <div class="bgcImg" :style={backgroundImage:url}></div> -->
+          <img class="bgcImg" :src="url" alt="">
         </div>
       </LayerPrint>
     <!-- </vue-easy-print> -->
@@ -901,7 +902,8 @@ export default {
           name: '查看备注'
         },
       },
-      url:`url(${require('@/assets/img/shuiyin.png')})`
+      // url:`url(${require('@/assets/img/shuiyin.png')})`,
+      url:`${require('@/assets/img/shuiyin.png')}`,
     };
   },
   created() {
@@ -2192,11 +2194,13 @@ export default {
   background: #fff;
   .bgcImg{
     position: absolute;
+    width: 900px;
+    height: 1280px;
     z-index: 9999;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    // right: 0;
+    // bottom: 0;
     opacity: 0.5;
     // background-image: url("../../../assets/img/shuiyin.png");
   }
