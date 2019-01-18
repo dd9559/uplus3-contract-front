@@ -423,10 +423,14 @@
                     if(res.status === 200){
                         this.tableData = res.data;
                     }
-                    this.loadingList = false;
+                    this.$nextTick(()=>{
+                        this.loadingList = false;
+                    });
                 }).catch(err=>{
                     this.errMeFn(err);
-                    this.loadingList = false;
+                    this.$nextTick(()=>{
+                        this.loadingList = false;
+                    });
                 })
             },
             // 分页

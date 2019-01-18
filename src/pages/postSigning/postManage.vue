@@ -1077,7 +1077,9 @@
                             list:[...arr,...arr2],
                             id:resData.id
                         };
-                        this.LookStepLoad = false;
+                        this.$nextTick(()=>{
+                            this.LookStepLoad = false;
+                        });
                         let stepsKey = {
                             show:true
                         };
@@ -1088,7 +1090,9 @@
                         this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
-                    this.LookStepLoad = false;
+                    this.$nextTick(()=>{
+                        this.LookStepLoad = false;
+                    });
                     this.errMeFn(err);
                 })
             },
@@ -1196,12 +1200,16 @@
                         this.replaceData.transFlowCode = i;
                         this.replaceData.index = i;
                     }
-                    this.loadingReplace = false;
-                    this.loadingBtn1 = false;
+                    this.$nextTick(()=>{
+                        this.loadingReplace = false;
+                        this.loadingBtn1 = false;
+                    });
                 }).catch(err=>{
                     this.errMeFn(err);
-                    this.loadingReplace = false;
-                    this.loadingBtn1 = false;
+                    this.$nextTick(()=>{
+                        this.loadingReplace = false;
+                        this.loadingBtn1 = false;
+                    });
                 })
             },
             // 步骤管理
@@ -1244,10 +1252,14 @@
                         this.adjustData = [...arr];
                         this.copyAdjustData= arr2.join();
                     }
-                    this.loadingAdjust = false;
+                    this.$nextTick(()=>{
+                        this.loadingAdjust = false;
+                    });
                 }).catch(err=>{
                     this.errMeFn(err);
-                    this.loadingAdjust = false;
+                    this.$nextTick(()=>{
+                        this.loadingAdjust = false;
+                    });
                 })
             },
             // 确认
@@ -1667,10 +1679,14 @@
                             total:0,
                         };
                     }
-                    this.loadingList = false;
+                    this.$nextTick(()=>{
+                        this.loadingList = false;
+                    });
                 }).catch(err=>{
                     this.errMeFn(err);
-                    this.loadingList = false;
+                    this.$nextTick(()=>{
+                        this.loadingList = false;
+                    });
                 })
             },
             // 贷款银行搜索
@@ -1750,10 +1766,14 @@
                     if(res.status === 200){
                         this.tableProgress = res.data;
                     }
-                    this.loadingProgress = false;
+                    this.$nextTick(()=>{
+                        this.loadingProgress = false;
+                    });
                 }).catch(err=>{
                     this.errMeFn(err);
-                    this.loadingProgress = false;
+                    this.$nextTick(()=>{
+                        this.loadingProgress = false;
+                    });
                 })
             },
             // 交易步骤获取数据
