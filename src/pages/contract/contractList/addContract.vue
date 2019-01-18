@@ -265,6 +265,8 @@
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
                 </el-option>
               </el-select>
+              <!-- 日期选择器 -->
+              <!-- <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.extendParams[index].value" style="width:140px" v-if="item.inputType.value===4&&contractForm.extendParams[index]"></el-date-picker> -->
               <span class="unit">{{item.unit}}</span>
             </li>
           </ul>
@@ -275,7 +277,7 @@
         <div>
           <div v-if="type===2">
             <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
-            <p><span>录入人：</span>{{contractForm.dealAgentStoreName}}-{{contractForm.dealAgentName}}</p>
+            <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
             <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
           </div>
         </div>
@@ -1992,7 +1994,7 @@ export default {
           padding: 0 5px;
         }
         > .unit{
-          width: 66px;
+          width: 70px;
           padding-left: 10px;
           color: #606266;
           overflow: hidden;
