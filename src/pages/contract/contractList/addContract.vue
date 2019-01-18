@@ -266,7 +266,7 @@
                 </el-option>
               </el-select>
               <!-- 日期选择器 -->
-              <!-- <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.extendParams[index].value" style="width:140px" v-if="item.inputType.value===4&&contractForm.extendParams[index]"></el-date-picker> -->
+              <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.extendParams[index].value" style="width:140px" v-if="item.inputType.value===4&&contractForm.extendParams[index]" size="small"></el-date-picker>
               <span class="unit">{{item.unit}}</span>
             </li>
           </ul>

@@ -18,7 +18,7 @@
                     <span class="text" v-if="contractDetail.contType.value===4">意向</span>
                     <span class="text" v-if="contractDetail.contType.value===5">定金</span>
                   </p>
-                  <p style="width:500px">
+                  <p style="width:530px">
                     <span class="tag">成交总价：</span>
                     <span class="dealPrice">{{contractDetail.dealPrice}} 元
                       <i v-for="item in dictionary['507']" :key="item.key" v-if="item.key===contractDetail.timeUnit&&contractDetail.contType.value===1"> / {{item.value}}</i>
@@ -83,7 +83,7 @@
                   </p>
                   <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
                   
-                  <p style="width:500px">
+                  <p style="width:530px">
                     <span class="tag">按揭欠款：</span>
                     <span class="text dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span>
                   </p>
@@ -566,7 +566,7 @@
               <p><span class="printTag">客户保证金：</span><span class="printTxt">{{contractDetail.custEnsure}} 元</span></p>
             </div>
             <div class="printItem">
-              <p class="p_width">
+              <p style="width:600px">
                 <span class="printTag">成交总价：</span>
                 <span class="dealPrice">{{contractDetail.dealPrice}} 元
                   <i v-for="item in dictionary['507']" :key="item.key" v-if="item.key===contractDetail.timeUnit&&contractDetail.contType.value===1"> / {{item.value}}</i>
@@ -617,7 +617,7 @@
               <p><span class="printTag">按揭银行：</span><span class="printTxt">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
             </div>
             <div class="printItem" v-if="contType!='1'">
-              <p style="width:500px"><span class="printTag">按揭欠款：</span><span class="printTxt dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span></p>
+              <p style="width:600px"><span class="printTag">按揭欠款：</span><span class="printTxt dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span></p>
             </div>
             <div class="printItem printItem_" style="width:840px;margin-top:5px">
               <el-table :data="ownerData" border header-row-class-name="theader-bg" style="width:100%">
