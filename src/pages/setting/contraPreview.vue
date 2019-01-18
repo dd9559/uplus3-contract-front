@@ -135,7 +135,7 @@ export default{
         },
         mounted(){
             this.divWidth=620
-            this.divHeight=802
+            this.divHeight=800
             if(this.show==1){
                this.getImgAdd(this.count)
             }else{
@@ -281,9 +281,9 @@ export default{
                              console.log(l,oDiv.parentNode.offsetWidth-130);
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
-                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-130 : t
+                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
                             sign.x=(l/620).toFixed(2)
-                            sign.y=(t/802).toFixed(2)
+                            sign.y=(t/800).toFixed(2)
                             console.log(sign,'sign');
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
@@ -588,7 +588,7 @@ export default{
         margin: 0 25px;
         position: relative;
         width:620px;
-            height:802px;
+            height:800px;
         img{
             width: 620px;
         }
@@ -677,7 +677,7 @@ export default{
     .ht-list{
         img{
             width:620px;
-            height:802px;
+            height:800px;
         }
     }
 }
