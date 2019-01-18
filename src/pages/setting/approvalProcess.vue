@@ -796,9 +796,6 @@
                 })
             },
             queryFn() {
-                if(!this.searchForm.name) {
-                    this.pageNum = 1
-                }
                 this.getData()
             },
             resetFormFn() {
@@ -806,6 +803,7 @@
                 this.searchForm.name = ""
                 this.searchForm.type = ""
                 this.searchForm.branchCondition = ""
+                this.pageNum = 1
             },
             handleSizeChange(val) {
                 this.pageSize = val
