@@ -9,9 +9,9 @@
         <div :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</div>
       </div>
       <div class="btn" v-if="contType<4">
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
-        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4" @click="isSubmitAudit=true">提交审核</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)&&userMsg.empId===recordId" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0&&userMsg.empId===recordId" @click="dialogInvalid = true">撤单</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&userMsg.empId===recordId" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
@@ -95,7 +95,13 @@
           <p class="title">卖方</p>
           <div class="one_" v-for="(item,index) in sellerList" :key="index">
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
-            <ul class="ulData" v-if="item.value.length>0">
+            <ul class="ulData">
+              <li>
+                <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
+                  <i class="iconfont icon-shangchuan"></i>
+                  <p>点击上传</p>
+                </file-up>
+              </li>
               <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                 <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(item.value,index_,3)">
@@ -103,52 +109,62 @@
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
+                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="isDelete===item.title+item_.path"></i>
               </li>
             </ul>
-            <div v-else class="noData">
-              暂无数据
-            </div>
           </div>
         </div>
         <div class="classify" v-if="buyerList.length>0">
           <p class="title">买方</p>
           <div class="one_" v-for="(item,index) in buyerList" :key="index">
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
-            <ul class="ulData" v-if="item.value.length>0">
-              <li v-for="(item_,index_) in item.value" :key="item_.index">
+            <ul class="ulData">
+              <li>
+                <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
+                  <i class="iconfont icon-shangchuan"></i>
+                  <p>点击上传</p>
+                </file-up>
+              </li>
+              <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                 <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(item.value,index_,3)">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
+                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>
               </li>
             </ul>
-            <div v-else class="noData">
-              暂无数据
-            </div>
           </div>
         </div>
         <div class="classify" v-if="otherList.length>0">
           <p class="title">其他</p>
           <div class="one_" v-for="(item,index) in otherList" :key="index">
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
-            <ul class="ulData" v-if="item.value.length>0">
-              <li v-for="(item_,index_) in item.value" :key="item_.index">
+            <ul class="ulData">
+              <li>
+                <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
+                  <i class="iconfont icon-shangchuan"></i>
+                  <p>点击上传</p>
+                </file-up>
+              </li>
+              <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                 <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(item.value,index_,3)">
                     <upload-cell :type="item_.fileType"></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
+                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="isDelete===item.title+item_.path"></i>
               </li>
             </ul>
-            <div v-else class="noData">
-              暂无数据
-            </div>
           </div>
         </div>
       </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button round @click="dialogContData=false">取消</el-button>
+        <el-button round type="primary" @click="uploading('上传成功')">保存</el-button>
+      </span>
       <!-- 图片预览 -->
       <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
@@ -228,6 +244,7 @@ export default {
       fullscreenLoading:false,
       clientHei:'',
       //合同资料库
+      isHaveData:'',
       dialogContData:false,
        //买方类型
       buyerList: [],
@@ -235,6 +252,8 @@ export default {
       sellerList: [],
       //其他类型
       otherList: [],
+      isDelete:'',
+      recordId:'',//合同创建人id
       checkPerson: {
         state:false,
         type:1,
@@ -423,7 +442,6 @@ export default {
     },
     //关闭打印
     closePrint(){
-       this.pdfUrl='';
        this.haveUrl=false;
     },
     //获取签名
@@ -508,11 +526,13 @@ export default {
           this.laterStageState=res.data.laterStageState.value;
           this.contState=res.data.contState.value;
           this.contType=res.data.contType.value;
+          this.recordId=res.data.recordId;
           this.guestStoreId=res.data.guestStoreId;
           this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
           this.auditId=res.data.auditId;
           this.isSign=res.data.isRisk;
+          this.isHaveData=res.data.isHaveData;
           if(res.data.isRisk){
             this.textarea=res.data.remarksExamine;
           }
@@ -673,7 +693,9 @@ export default {
     },
     //合同资料库弹窗
     showContData(){
-      this.getContData();
+      if(this.isHaveData){
+        this.getContData();
+      }
       this.dialogContData=true;
     },
      //获取合同资料库类型列表
@@ -753,6 +775,152 @@ export default {
           }
         }
       });
+    },
+    //合同资料库添加数据
+    addSubject(data){
+      let arr = data.param;
+      let num = Number(data.btnId.substring(data.btnId.length-1));
+      let typeId = data.btnId.substring(0,data.btnId.length-1);
+      arr.forEach(element => {
+        let fileType = this.$tool.get_suffix(element.name);
+        element.fileType = fileType;
+      });
+      if(typeId==='seller'){
+        // this.sellerList[num].value.push(arr[0]);
+        this.sellerList[num].value=this.sellerList[num].value.concat(arr);
+      }else if(typeId==='buyer'){
+        // this.buyerList[num].value.push(arr[0]);
+        this.buyerList[num].value=this.buyerList[num].value.concat(arr);
+      }else if(typeId==='other'){
+        // this.otherList[num].value.push(arr[0]);
+        this.otherList[num].value=this.otherList[num].value.concat(arr);
+      }
+    },
+    //显示删除按钮
+    moveIn(value){
+      this.isDelete=value
+    },
+    moveOut(value){
+      if(this.isDelete===value){
+        this.isDelete=''
+      }
+    },
+    //上传合同资料库
+    uploading(msg){
+      let uploadContData = this.sellerList.concat(this.buyerList, this.otherList);
+      console.log(uploadContData);
+      let isOk;
+      let arr_=[];
+      for(let i=0;i<uploadContData.length;i++){
+        isOk = false;
+        if(uploadContData[i].isrequire&&uploadContData[i].value.length===0){
+          this.$message({
+            message:`${uploadContData[i].title}不能为空`,
+            type:'warning'
+          });
+          break
+        }else if(uploadContData[i].isrequire&&uploadContData[i].value.length>0){
+          // uploadContData[i].value.forEach(element => {
+          // delete element.fileType;
+          // });
+          arr_.push(uploadContData[i]);
+          isOk = true;
+        }else if(!uploadContData[i].isrequire&&uploadContData[i].value.length>0){
+          // uploadContData[i].value.forEach(element => {
+          //   delete element.fileType;
+          // });
+          arr_.push(uploadContData[i]);
+          isOk = true;
+        }else{
+          isOk = true;
+        }
+      }
+      if(isOk){
+        if(this.laterStageState===4||this.laterStageState===1){
+          var code = 1;
+        }else{
+          var code = 2;
+        }
+        let param = {
+          datas: arr_,
+          contId: this.id,
+          operation:code
+        }
+        // console.log(param)
+        this.$ajax.postJSON('/api/contract/uploadContData', param).then(res=>{
+          res=res.data;
+          if(res.status===200){
+            this.$message({
+              message:msg,
+              type:'success'
+            });
+            this.getContImg();
+            this.dialogContData=false;
+          }
+        })
+      }
+    },
+    //合同资料科删除
+    delectData(index,index_,type){
+      if(this.isHaveData){
+        if(type==="seller"){
+          if(this.sellerList[index].isrequire){
+            if(this.sellerList[index].value.length>1){
+              this.sellerList[index].value.splice(index_,1);
+              // this.uploading('删除成功')
+            }else{
+              this.$message({
+                message:'至少保留一个，请勿删除',
+                type:'warning'
+              })
+            }
+          }else{
+            this.sellerList[index].value.splice(index_,1);
+            // this.uploading('删除成功')
+          }
+        }else if(type==="buyer"){
+          // this.buyerList[index].value.splice(index_,1);
+          if(this.buyerList[index].isrequire){
+            if(this.buyerList[index].value.length>1){
+              this.buyerList[index].value.splice(index_,1);
+              // this.uploading('删除成功')
+            }else{
+              this.$message({
+                message:'至少保留一个，请勿删除',
+                type:'warning'
+              })
+            }
+          }else{
+            this.buyerList[index].value.splice(index_,1);
+            // this.uploading('删除成功')
+          }
+        }else if(type==="other"){
+          // this.otherList[index].value.splice(index_,1);
+          if(this.otherList[index].isrequire){
+            if(this.otherList[index].value.length>1){
+              this.otherList[index].value.splice(index_,1);
+              // this.uploading('删除成功')
+            }else{
+              this.$message({
+                message:'至少保留一个，请勿删除',
+                type:'warning'
+              })
+            }
+          }else{
+            this.otherList[index].value.splice(index_,1);
+            // this.uploading('删除成功')
+          }
+        }
+      }else{
+        if(type==="seller"){
+          this.sellerList[index].value.splice(index_,1);
+        }else if(type==="buyer"){
+          this.buyerList[index].value.splice(index_,1);
+        }else if(type==="other"){
+          this.otherList[index].value.splice(index_,1);
+        }
+      }
+      
     },
   },
   mounted(){
@@ -954,7 +1122,7 @@ export default {
     }
   }
   .contData{
-    height: 500px;
+    height: 450px;
     overflow-y: auto;
     .classify {
       padding-top: 10px;
@@ -994,11 +1162,30 @@ export default {
         margin-bottom: 10px;
         > i{
           position: absolute;
-          top: 5px;
-          right: 5px;
+          top: 2px;
+          right: 2px;
           color: @color-warning;
           font-size: 20px;
           cursor: pointer;
+        }
+      }
+      .uploadSubject {
+        display: inline-block;
+        text-align: center;
+        width: 100px;
+        height: 100px;
+        box-sizing: border-box;
+        padding-top: 10px;
+        border: 1px dashed @border-DE;
+        border-radius:1px;
+        i {
+          color: @bg-th;
+          font-size: 50px;
+        }
+        p {
+          padding-top: 5px;
+          color: @color-324;
+          font-size: 12px;
         }
       }
     }

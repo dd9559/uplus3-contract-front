@@ -142,20 +142,6 @@
                                 </el-table-column>
                                 <el-table-column :formatter="nullFormatterData" prop="specifiedDay" align="center" label="计划天数">
                                 </el-table-column>
-                                <!-- <el-table-column :formatter="nullFormatterData" prop="a4" align="center" min-width="185" label="分配角色">
-                                    <template slot-scope="scope">
-                                        <el-select v-model="scope.row.roleId" placeholder="分配角色" filterable :loading="loading3" :disabled="roleDisabledFn(scope.row)" @change="roleChangeFn(scope.$index,$event)" size="small" class="w185">
-                                            <el-option v-for="item in dealTableRule" :key="'fp'+item.key + scope.$index" :label="item.value" :value="item.key"></el-option>
-                                        </el-select>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column :formatter="nullFormatterData" align="center" min-width="185" label="责任人">
-                                    <template slot-scope="scope">
-                                        <el-select v-model="scope.row.personLiableCode" :disabled="roleDisabledFn(scope.row)" v-loadmore="loadMoreFn" placeholder="选择责任人" @focus="roleRemoteFn(scope.$index,scope.row.roleId)" filterable remote :remote-method="roleRemoteMethodFn" :loading="loading4" @change="roleRemoteChangeFn($event,scope.$index)" size="small" class="w185">
-                                            <el-option v-for="item in empRulesList(scope.row.rules)" :key="'zrr'+item.empId + scope.$index" :label="item.name" :value="item.empId"></el-option>
-                                        </el-select>
-                                    </template>
-                                </el-table-column> -->
                                 <el-table-column align="center" min-width="185" label="分配角色">
                                     <template slot-scope="scope">
                                         <!-- @change="roleChangeFn(scope.$index,$event)"  -->
@@ -525,11 +511,15 @@
                                e.roleBool = true;
                         })
                         this.dealTable = arr;
-                        this.loadingdealTable = false;
+                        this.$nextTick(()=>{
+                            this.loadingdealTable = false;
+                        })
                     }
                 }).catch(err => {
                     this.errMeFn(err);
-                    this.loadingdealTable = false;
+                    this.$nextTick(()=>{
+                        this.loadingdealTable = false;
+                    });
                 })
                 // 合同资料库数据
                 this.$ajax.get("/api/postSigning/getDatabase", {
@@ -873,10 +863,6 @@
             },
             // 获取数据
             getListData() {
-                // if(!this.power['sign-qh-rev-query'].state){
-                //     this.noPower(this.power['sign-qh-rev-query'].name);
-                //     return false
-                // }
                 this.loadingList = true;
                 let signDateSta = '';
                 let signDateEnd = '';
@@ -904,10 +890,14 @@
                     if (res.status === 200) {
                         this.tableData = res.data;
                     }
-                    this.loadingList = false;
+                    this.$nextTick(()=>{
+                        this.loadingList = false;
+                    })
                 }).catch(err => {
                     this.errMeFn(err);
-                    this.loadingList = false;
+                    this.$nextTick(()=>{
+                        this.loadingList = false;
+                    })
                 })
             },
             // 交易流程获取数据

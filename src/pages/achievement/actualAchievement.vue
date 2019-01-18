@@ -1001,12 +1001,6 @@ export default {
         }
   },
   methods: {
-   // 导出功能
-    getExcel(){
-        this.ajaxParam.is_Receivable=1;
-        let param = Object.assign({},this.ajaxParam)
-        this.excelCreate('/input/achievementExcel',param)
-    },
    //获取当前部门
     initDepList:function (val) {
       if(!val){
@@ -1033,18 +1027,17 @@ export default {
     getData(ajaxParam) {
      let _that=this;
         this.$ajax
-          .get("/api/achievement/selectAchievementList", ajaxParam)
+          .get("/api/achievement/selectAchievementList", this.ajaxParam)
           .then(res => {
             console.log(res);
             let data = res.data;
             if (res.status === 200) {
-              // debugger;
                _that.selectAchList = data.data.list;
                _that.total = data.data.total;
               if(data.data.list[0]){
                    _that.countData = data.data.list[0].contractCount;
               }else {
-              _that.countData = [0, 0, 0, 0];
+                   _that.countData = [0, 0, 0, 0];
             }       
 
             }            
@@ -1052,6 +1045,13 @@ export default {
             this.$message({message:error})
      }); 
       this.loading=false;
+    },
+    // 导出功能
+    getExcel(){
+        this.queryFn();
+        this.ajaxParam.is_Receivable=1;
+        let param = Object.assign({},this.ajaxParam)
+        this.excelCreate('/input/achievementExcel',param)
     },
     closeDialog() {
       this.dialogVisible = false;

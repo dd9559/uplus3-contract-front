@@ -1,65 +1,6 @@
 <template>
   <div ref="tableComView" class="paper-set">
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
-      <!-- <div class="content">
-        <div class="input-group">
-          <label>部门:</label>
-          <el-select size="small" v-model="propForm.depId" placeholder="请选择">
-            <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          <el-select class="margin-left-10 w100" size="small" v-model="propForm.empId" placeholder="请选择">
-            <el-option
-              v-for="item in 5"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>关键字:</label>
-          <el-input size="small" v-model="propForm.keyword" placeholder="合同编号/房源编号/客源编号/物业地址/客户/房产证号/手机号"></el-input>
-        </div>
-        <div class="input-group">
-          <label>票据状态:</label>
-          <el-select size="small" v-model="propForm.state" placeholder="请选择">
-            <el-option
-              v-for="item in dictionaryData"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>查询时间:</label>
-          <div class="time-picker">
-            <el-select class="w120" size="small" v-model="propForm.dateType" placeholder="请选择">
-              <el-option
-                v-for="item in $tool.dropdown.dateType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-            <el-date-picker
-              class="margin-left-10"
-              v-model="propForm.timeRange"
-              type="daterange"
-              size="small"
-              value-format="yyyy-MM-dd"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
-          </div>
-        </div>
-      </div> -->
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
         <el-form-item label="关键字" prop="keyword">
           <el-tooltip content="开票人员/合同编号/票据编号/物业地址" placement="top">
@@ -470,9 +411,13 @@
           if (res.status === 200) {
             this.tableData = res.data
           }
-          this.loadingList = false;
+          this.$nextTick(()=>{
+              this.loadingList = false;
+          });
         }).catch(err=>{
-          this.loadingList = false;
+          this.$nextTick(()=>{
+              this.loadingList = false;
+          });
         })
       },
       btnOpera: function (row,type) {

@@ -247,6 +247,7 @@
       </div>
       <div class="houseMsg">
         <p>扩展参数</p>
+        <!-- {{contractForm.extendParams}} -->
         <div class="form-content" v-if="parameterList.length>0">
           <ul class="parameter">
             <li v-for="(item,index) in parameterList" :key="index">
@@ -258,12 +259,14 @@
               <span class="colon">: </span>
               <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="contractForm.extendParams[item.name]" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1&&contractForm.extendParams[index]" size="small"></el-input>
               <!-- 下拉框 -->
-              <el-select v-model="contractForm.extendParams[item.name]" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2||item.inputType.value===3" size="small">
+              <el-select v-model="contractForm.extendParams[index].value" :clearable="true" placeholder="请选择" style="width:140px" v-if="(item.inputType.value===2||item.inputType.value===3)&&contractForm.extendParams[index]" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
                 </el-option>
               </el-select>
+              <!-- 日期选择器 -->
+              <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.extendParams[index].value" style="width:140px" v-if="item.inputType.value===4&&contractForm.extendParams[index]" size="small"></el-date-picker>
               <span class="unit">{{item.unit}}</span>
             </li>
           </ul>
@@ -274,13 +277,15 @@
         <div>
           <div v-if="type===2">
             <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
-            <p><span>录入人：</span>{{contractForm.dealAgentStoreName}}-{{contractForm.dealAgentName}}</p>
+            <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
             <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
           </div>
         </div>
         <div>
-          <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button>
-          <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===2" round @click="isSave(1)">提交审核</el-button>
+          <!-- 新增+提审 -->
+          <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button>
+          <!-- 编辑+提审 -->
+          <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button>
           <el-button type="primary" round @click="isSave(0)">保存</el-button>
         </div>
       </div>
@@ -371,7 +376,7 @@ export default {
           identifyCode:'',
           mobile:''
         },
-        extendParams:{},
+        extendParams:[],
         isHaveCooperation: 0
       },
       //业主信息
@@ -448,6 +453,8 @@ export default {
         flowType:3,
         label:false
       },
+      userMsg:{}, //当前登录人信息
+      recordId:'',//合同创建人id
       //权限配置
       power: {
         'sign-ht-info-toverify': {
@@ -483,6 +490,7 @@ export default {
     this.getRelation();//人员关系
     this.getExtendParams();//扩展参数
     this.getShopList()//门店
+    this.getAdmin();//获取当前登录人信息
   },
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
@@ -581,14 +589,15 @@ export default {
           this.parameterList=res.data;
           res.data.forEach(element => {
             let name_ = element.name;
-            this.parameterRule[name_]={name:element.name};
+            // this.parameterRule[name_]={name:element.name};
             if(this.type===1){
-              this.$set(this.contractForm.extendParams,name_,'')
-              // this.contractForm.extendParams.push({
-              //   name:name_,
-              //   value:'',
-              //   type:element.inputType.value,
-              // })
+              // this.$set(this.contractForm.extendParams,name_,'')
+              this.contractForm.extendParams.push({
+                name:name_,
+                value:'',
+                type:element.inputType.value,
+                unit:element.unit
+              })
             }
           });
         }
@@ -878,7 +887,7 @@ export default {
                             let IdCardList_= Array.from(new Set(IdCardList));
                             if(mobileList.length===mobileList_.length){
                               if(IdCardList.length===IdCardList_.length){
-                              //验证扩展参数
+                              //验证三方合作
                               if(this.contractForm.isHaveCooperation){
                                 let mobileOk=true;
                                 let IDcardOk=true;
@@ -909,25 +918,80 @@ export default {
                                 };
                                 if(mobileOk&&IDcardOk){
                                   // 合同扩展参数验证
-                                  this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
-                                    this.dialogSave = true;
-                                  }).catch(error => {
+                                  let paramsOk=true;
+                                  for(var i=0;i<this.contractForm.extendParams.length;i++){
+                                    paramsOk=false;
+                                    let item = this.contractForm.extendParams[i];
+                                    // console.log(item);
+                                    if(item.value){
+                                      item.value=item.value.replace(/\s/g,"");
+                                      if(item.value){
+                                        paramsOk=true
+                                      }else{
+                                        this.$message({
+                                          message: `扩展参数-${item.name}不能为空`,
+                                          type: "warning"
+                                        });
+                                        break
+                                      }
+                                    }else{
                                       this.$message({
-                                        message: `扩展参数-${error.title}${error.msg}`,
+                                        message: `扩展参数-${item.name}不能为空`,
                                         type: "warning"
                                       });
-                                    });
+                                      break
+                                    }
+                                  }
+                                  if(paramsOk){
+                                    this.dialogSave = true;
+                                  }
+                                  // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                                  //   this.dialogSave = true;
+                                  // }).catch(error => {
+                                  //     this.$message({
+                                  //       message: `扩展参数-${error.title}${error.msg}`,
+                                  //       type: "warning"
+                                  //     });
+                                  //   });
+
                                 }
                               }else{
                                 // 合同扩展参数验证
-                                this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
-                                  this.dialogSave = true;
-                                }).catch(error => {
-                                    this.$message({
-                                      message: `扩展参数-${error.title}${error.msg}`,
-                                      type: "warning"
-                                    });
-                                  });
+                                let paramsOk=true;
+                                  for(var i=0;i<this.contractForm.extendParams.length;i++){
+                                    paramsOk=false;
+                                    let item = this.contractForm.extendParams[i];
+                                    // console.log(item);
+                                    if(item.value){
+                                      item.value=item.value.replace(/\s/g,"");
+                                      if(item.value){
+                                        paramsOk=true
+                                      }else{
+                                        this.$message({
+                                          message: `扩展参数-${item.name}不能为空`,
+                                          type: "warning"
+                                        });
+                                        break
+                                      }
+                                    }else{
+                                      this.$message({
+                                        message: `扩展参数-${item.name}不能为空`,
+                                        type: "warning"
+                                      });
+                                      break
+                                    }
+                                  }
+                                  if(paramsOk){
+                                    this.dialogSave = true;
+                                  }
+                                // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                                //   this.dialogSave = true;
+                                // }).catch(error => {
+                                //     this.$message({
+                                //       message: `扩展参数-${error.title}${error.msg}`,
+                                //       type: "warning"
+                                //     });
+                                //   });
                               }
                             }else{
                               this.$message({
@@ -941,17 +1005,6 @@ export default {
                                 type: "warning"
                               })
                             }
-                            
-
-                            
-                            // 合同扩展参数验证
-                            // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
-                            //   this.dialogSave = true;
-                            // }).catch(error => {
-                            //     this.$message({
-                            //       message: `${error.title}${error.msg}`
-                            //     });
-                            //   });
                           } else {
                             this.$message({
                               message: "客源信息-客户产权比和必须为100%",
@@ -1574,6 +1627,7 @@ export default {
         res = res.data;
         if (res.status === 200) {
           this.contractForm = res.data;
+          this.recordId = res.data.recordId;
           this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
           this.contractForm.extendParams=JSON.parse(res.data.extendParams);
@@ -1940,7 +1994,7 @@ export default {
           padding: 0 5px;
         }
         > .unit{
-          width: 66px;
+          width: 70px;
           padding-left: 10px;
           color: #606266;
           overflow: hidden;

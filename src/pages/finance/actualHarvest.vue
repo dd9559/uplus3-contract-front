@@ -233,6 +233,7 @@
     },
     methods: {
       getExcel:function () {
+        this.getData('search')
         let param = Object.assign({},this.searchForm)
         if(Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){
           param.beginDate = this.$tool.dateFormat(param.signTime[0])

@@ -44,7 +44,6 @@
       }
     },
     mounted() {
-      console.log(this.rules)
       let that = this
       this.filePath = []
       this.$nextTick(()=>{

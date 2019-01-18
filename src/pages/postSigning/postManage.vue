@@ -256,7 +256,16 @@
                             <el-button class="blue" type="text" @click="progressFn(scope.row)">查看交易流程</el-button>
                         </template>
                         <template v-else>
-                            <p>当前步骤：<el-button class="blue" type="text" @click="transactionFn(scope.row.stepInstanceid)">{{scope.row.stepInstanceName}}</el-button></p>
+                            <p class="steps-p">
+                                <span class="steps-span">当前步骤：</span>
+                                <el-tooltip 
+                                class="item" 
+                                effect="dark" 
+                                :content="scope.row.stepInstanceName" 
+                                placement="top">
+                                    <el-button class="blue" type="text" @click="transactionFn(scope.row.stepInstanceid)">{{scope.row.stepInstanceName}}</el-button>
+                                </el-tooltip>
+                            </p>
                             <p>{{nextStepFn(scope.row.nextStepName)}}</p>
                         </template>
                     </template>
@@ -474,6 +483,7 @@
                                             v-model="item.val"
                                             size="small"
                                             @input="numberChangeFn(index,$event)"
+                                            @focus="inputFocusFn"
                                             ></el-input>
                                         </template>
                                         <template v-else-if="item.type === STEPSINPUT.time">
@@ -843,6 +853,7 @@
                     list:[],
                     id:'',
                 },
+                inputFocus:false,
                 // 办理状态
                 STEPS,
                 // 办理输入形式
@@ -1053,9 +1064,11 @@
                             }else{
                                 j.required = false;
                             }
-                            if(e.type === STEPSINPUT.num && e.isRequired){
+                            if(e.type === STEPSINPUT.num){
                                 e.rules = [j,{ 
-                                    validator: this.checkNumberFn}]
+                                    bool:e.isRequired,
+                                    validator: this.checkNumberFn,
+                                }]
                             }else{
                                 e.rules = j;
                             }
@@ -1064,7 +1077,9 @@
                             list:[...arr,...arr2],
                             id:resData.id
                         };
-                        this.LookStepLoad = false;
+                        this.$nextTick(()=>{
+                            this.LookStepLoad = false;
+                        });
                         let stepsKey = {
                             show:true
                         };
@@ -1075,17 +1090,24 @@
                         this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
-                    this.LookStepLoad = false;
+                    this.$nextTick(()=>{
+                        this.LookStepLoad = false;
+                    });
                     this.errMeFn(err);
                 })
             },
             // 数字改变的时候
             checkNumberFn(rule, value, callback){
-                if(!this.isNumber(value)){
+                if(!rule.bool && this.inputFocus){
+                    callback();
+                }else if(!this.isNumber(value)){
                     callback(new Error('请输入数字'));
                 }else{
                     callback();
                 }
+            },
+            inputFocusFn(){
+                this.inputFocus = false;
             },
             numberChangeFn(i,e){
                 this.$nextTick(() => {
@@ -1178,12 +1200,16 @@
                         this.replaceData.transFlowCode = i;
                         this.replaceData.index = i;
                     }
-                    this.loadingReplace = false;
-                    this.loadingBtn1 = false;
+                    this.$nextTick(()=>{
+                        this.loadingReplace = false;
+                        this.loadingBtn1 = false;
+                    });
                 }).catch(err=>{
                     this.errMeFn(err);
-                    this.loadingReplace = false;
-                    this.loadingBtn1 = false;
+                    this.$nextTick(()=>{
+                        this.loadingReplace = false;
+                        this.loadingBtn1 = false;
+                    });
                 })
             },
             // 步骤管理
@@ -1226,10 +1252,14 @@
                         this.adjustData = [...arr];
                         this.copyAdjustData= arr2.join();
                     }
-                    this.loadingAdjust = false;
+                    this.$nextTick(()=>{
+                        this.loadingAdjust = false;
+                    });
                 }).catch(err=>{
                     this.errMeFn(err);
-                    this.loadingAdjust = false;
+                    this.$nextTick(()=>{
+                        this.loadingAdjust = false;
+                    });
                 })
             },
             // 确认
@@ -1380,7 +1410,6 @@
             // 图片格式状态判定
             stepsTypeImg(type,bool){
                 if(bool === 1){
-                    console.log(type)
                     switch (type) {
                         case STEPSINPUT.img:
                             return ['png','jpg','jpeg'];
@@ -1452,6 +1481,7 @@
             },
             // 办理数据提交
             confirmStepFn(url='/api/postSigning/confirmStep'){
+                this.inputFocus = true;
                 this.$refs['stepsFrom'].validate((valid) => {
                     if (valid) {
                         let id = this.stepsFrom.id;
@@ -1649,10 +1679,14 @@
                             total:0,
                         };
                     }
-                    this.loadingList = false;
+                    this.$nextTick(()=>{
+                        this.loadingList = false;
+                    });
                 }).catch(err=>{
                     this.errMeFn(err);
-                    this.loadingList = false;
+                    this.$nextTick(()=>{
+                        this.loadingList = false;
+                    });
                 })
             },
             // 贷款银行搜索
@@ -1732,10 +1766,14 @@
                     if(res.status === 200){
                         this.tableProgress = res.data;
                     }
-                    this.loadingProgress = false;
+                    this.$nextTick(()=>{
+                        this.loadingProgress = false;
+                    });
                 }).catch(err=>{
                     this.errMeFn(err);
-                    this.loadingProgress = false;
+                    this.$nextTick(()=>{
+                        this.loadingProgress = false;
+                    });
                 })
             },
             // 交易步骤获取数据

@@ -47,16 +47,17 @@
                     </el-table-column> -->
                     <el-table-column align="center" label="输入格式" min-width="150">
                         <template slot-scope="scope">
-                             <!-- {{content[scope.$index]+'1'}} -->
                             <el-select v-model="scope.row.inputType" v-if="content[scope.$index]==0">
                                 <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
+                                <el-option :value=4 label="日期"  v-show="content[scope.$index] ==0"></el-option>
                             </el-select>
                             <el-select v-model="scope.row.inputType" v-else disabled>
                                 <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
+                                <el-option :value=4 label="日期"  v-show="content[scope.$index]==0"></el-option>
                             </el-select>
                         </template>
                     </el-table-column>
@@ -70,7 +71,7 @@
                     </el-table-column>
                     <el-table-column align="center" label="单位" min-width="150">
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.unit"></el-input>
+                            <el-input v-model="scope.row.unit" maxlength="5"></el-input>
                         </template>
                     </el-table-column>
                </el-table>
@@ -135,8 +136,8 @@ export default{
             this.enableTemplateId=this.$route.query.enableTemplateId
         },
         mounted(){
-            this.divWidth=622
-            this.divHeight=802
+            this.divWidth=620
+            this.divHeight=800
             if(this.show==1){
                this.getImgAdd(this.count)
             }else{
@@ -190,7 +191,7 @@ export default{
                            let htImg=document.getElementById('ht')
                            let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
                            bodycontainer.style.display='block'
-                           htImg.style.width='622px'
+                           htImg.style.width='620px'
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
                      }
@@ -277,12 +278,15 @@ export default{
                             document.onmousemove = function(ev){
                             var l = ev.clientX-disX;
                             var t = ev.clientY-disY;
+                           
                             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
+                             console.log(l,oDiv.parentNode.offsetWidth-130);
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
-                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetWidth-130 : t
-                            sign.x=(l/622).toFixed(2)
-                            sign.y=(t/802).toFixed(2)
+                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
+                            sign.x=(l/620).toFixed(2)
+                            sign.y=(t/800).toFixed(2)
+                            console.log(sign,'sign');
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
@@ -326,13 +330,12 @@ export default{
                         });
                     }
                 }).catch(
-                    error=>{
-                    this.$message({
-                    type: 'error',
-                    message:error
-                    })
+                        error=>this.$notify({
+                            type:'error',
+                            message: error,
+                            duration:3000,
+                        }),
                     this.modalDialog=true
-                 }
                 )
             },
             numSave(){
@@ -344,7 +347,7 @@ export default{
                              message: `第${i+1}行请输入选项值！`
                             })
                             this.modalDialog=true
-                            break
+                            return
                         }
                         else{
                              this.modalDialog=false
@@ -356,12 +359,11 @@ export default{
                                 message: `复选框选项值不能为空`
                                 })
                                 this.modalDialog=true
-                                break
+                                return
                             }
-                    }else{
-                        this.modalDialog=false
                     }
                 }
+                        this.modalDialog=false
             },
             del(type){
                 if(type==1){
@@ -545,7 +547,7 @@ export default{
                   btn.style.margin='0 auto'
                   let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
                   bodycontainer.style.display='block'
-                  htImg.style.width='622px'
+                  htImg.style.width='620px'
                   var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                   this.autograph(htImg,newsrc)
                  }
@@ -553,8 +555,10 @@ export default{
             }).catch(error=>{
                  this.$message({
                     type: 'error',
+                    center:true,
                     message: error
                     })
+          
                     setTimeout(() => {
                         this.loading=false
                         this.$router.push({
@@ -586,10 +590,10 @@ export default{
         min-height: 500px;
         margin: 0 25px;
         position: relative;
-        width:622px;
-            height:802px;
+        width:620px;
+            height:800px;
         img{
-            width: 622px;
+            width: 620px;
         }
         .signature{
             position: absolute;
@@ -645,8 +649,8 @@ export default{
     .tip{
         position: absolute;
         top: 30px;
-        left: 250px;
-        color:rgba(255,62,62,1);
+        left: 250px; 
+        color:#6d95bd;
         font-size: 14px
     }
     /deep/ .el-dialog__body{
@@ -654,7 +658,7 @@ export default{
         padding-top:21px;
         .ex-body{
             p:first-child{
-                color:rgba(109,149,189,1);
+                color:#ff3e3e;
                 margin-bottom: 17px;
             }
             .footer{
@@ -675,8 +679,8 @@ export default{
     width:100%;
     .ht-list{
         img{
-            width:622px;
-            height:802px;
+            width:620px;
+            height:800px;
         }
     }
 }

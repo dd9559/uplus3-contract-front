@@ -232,7 +232,7 @@
       text-align: center;
     }
     h4{
-      margin: 28px 0;
+      padding: 28px 0;
       text-align: center;
       font-weight: bold;
     }

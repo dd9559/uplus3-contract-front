@@ -688,6 +688,9 @@
           }
           if(this.companyForm.documentType === 1) {
             if(this.documentCard.creditCode) {
+              this.documentCard.icRegisterCode = ""
+              this.documentCard.organizationCode = ""
+              this.documentCard.taxRegisterCode = ""
               checkBank()
             } else {
               this.$message({message:"统一社会信用代码不能为空"})
@@ -696,6 +699,7 @@
             if(this.documentCard.icRegisterCode) {
               if(this.documentCard.organizationCode) {
                 if(this.documentCard.taxRegisterCode) {
+                  this.documentCard.creditCode = ""
                   checkBank()
                 } else {
                   this.$message({message:"税务登记证不能为空"})
@@ -829,9 +833,6 @@
         this.getCompanyList()
       },
       queryFn() {
-        if(!this.searchForm.bankCard) {
-          this.pageNum = 1
-        }
         this.getCompanyList()
       },
       resetFormFn() {
@@ -840,6 +841,7 @@
         this.searchForm.bankCard = ""
         this.searchForm.keyword = ""
         this.searchTime = []
+        this.pageNum = 1
       },
       getInt(num,index) {
         if(num===1) {
