@@ -1739,15 +1739,15 @@ export default {
   }
 };
 </script>
- <style media="print">
+<style media="print">
   @page {
    size: auto;
-   margin: 0mm;
+   margin: 0;
   }
   @media print {
     body {-webkit-print-color-adjust: exact;}
   }
- </style>
+</style>
 <style scoped lang="less">
 @import "~@/assets/common.less";
 
@@ -2185,6 +2185,7 @@ export default {
   font-size: 16px;
   box-sizing: border-box;
   padding: 40px 40px;
+  background: #fff;
   .bgcImg{
     position: absolute;
     z-index: 9999;
