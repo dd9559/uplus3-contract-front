@@ -178,6 +178,7 @@
             },
             // 重置
             resetFormFn() {
+                this.pageNum=1
                 this.keyword=''
                 this.selectType='',
                 this.searchTime='',
