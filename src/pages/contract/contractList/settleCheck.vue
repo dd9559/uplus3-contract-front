@@ -673,6 +673,7 @@
       // 重置
       resetFormFn() {
           TOOL.clearForm(this.adjustForm);
+          this.pageNum = 1;
           // this.changeDepNameFn('');
           // this.pageNum=1;
           // this.queryFn();
@@ -682,7 +683,7 @@
       queryFn() {
         // console.log(this.power)
         // if(this.power['sign-ht-js-query'].state){
-
+          
           this.loadingTable = true;
           let beginDate;
           let endDate;

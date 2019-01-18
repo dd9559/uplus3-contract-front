@@ -664,6 +664,7 @@
       // 重置
       resetFormFn() {
           TOOL.clearForm(this.adjustForm);
+          this.pageNum = 1;
           // this.changeDepNameFn('');
           // this.pageNum=1;
           // this.queryFn();
@@ -675,6 +676,7 @@
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
+          
           this.loadingTable = true;
           let startTime = '';
           let endTime = '';
