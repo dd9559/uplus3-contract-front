@@ -314,33 +314,10 @@
       font-size: 12px;
       margin-top: 4.7mm\9;
       margin-top: 4.7mm\0;
-      // height: 290mm;
-      // overflow: hidden;
     }
-    // /deep/.paper-info-child .paper-ul{
-    //     padding-top: 16px;
-    //   }
-    // /deep/.paper-info-child .paper-small-tit{
-    //   padding-top: 18px;
-    // }
-    // /deep/.paper-info-child .paper-number{
-    //   padding-top: 10px;
-    // }
-    // /deep/.paper-info-child .paper-tit{
-    //   font-size: 18px;
-    // }
     /deep/.paper-info-child .paper-table-main{
       font-size: 12px;
     }
-    // /deep/.paper-info-child .paper-ov{
-    //   padding-top: 16px;
-    // }
-    // /deep/.paper-info-child .paper-border{
-    //   margin-bottom: 0;
-    // }
-    // /deep/.paper-info-child .paper-dashed{
-    //   padding-top: 20px;
-    // }
     @page {
       size: auto;
       margin: 0mm;
