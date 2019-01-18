@@ -247,6 +247,7 @@
       </div>
       <div class="houseMsg">
         <p>扩展参数</p>
+        <!-- {{contractForm.extendParams}} -->
         <div class="form-content" v-if="parameterList.length>0">
           <ul class="parameter">
             <li v-for="(item,index) in parameterList" :key="index">
@@ -258,9 +259,9 @@
               <span class="colon">: </span>
               <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1" size="small"></el-input>
+              <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1&&contractForm.extendParams[index]" size="small"></el-input>
               <!-- 下拉框 -->
-              <el-select v-model="contractForm.extendParams[index].value" :clearable="true" placeholder="请选择" style="width:140px" v-if="item.inputType.value===2||item.inputType.value===3" size="small">
+              <el-select v-model="contractForm.extendParams[index].value" :clearable="true" placeholder="请选择" style="width:140px" v-if="(item.inputType.value===2||item.inputType.value===3)&&contractForm.extendParams[index]" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
                 </el-option>
               </el-select>
@@ -282,7 +283,7 @@
           <!-- 新增+提审 -->
           <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button>
           <!-- 编辑+提审 -->
-          <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button>
+          <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button>
           <el-button type="primary" round @click="isSave(0)">保存</el-button>
         </div>
       </div>
