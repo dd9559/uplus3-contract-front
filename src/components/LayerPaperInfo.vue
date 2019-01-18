@@ -312,6 +312,8 @@
     /deep/.paper-info-child{
       margin:0 4.7mm;
       font-size: 12px;
+      margin-top: 4.7mm\9;
+      margin-top: 4.7mm\0;
       // height: 290mm;
       // overflow: hidden;
     }
