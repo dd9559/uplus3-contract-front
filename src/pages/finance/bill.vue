@@ -471,6 +471,7 @@
     },*/
     methods: {
       getExcel:function () {
+        this.getData('search')
         let param = Object.assign({},this.searchForm)
         if(Object.prototype.toString.call(param.timeRange)==='[object Array]'&&param.timeRange.length>0){
           param.startTime = param.timeRange[0]
