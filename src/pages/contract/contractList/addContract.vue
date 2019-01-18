@@ -916,7 +916,7 @@ export default {
                                   for(var i=0;i<this.contractForm.extendParams.length;i++){
                                     paramsOk=false;
                                     let item = this.contractForm.extendParams[i];
-                                    console.log(item);
+                                    // console.log(item);
                                     if(item.value){
                                       item.value=item.value.replace(/\s/g,"");
                                       if(item.value){
@@ -955,7 +955,7 @@ export default {
                                   for(var i=0;i<this.contractForm.extendParams.length;i++){
                                     paramsOk=false;
                                     let item = this.contractForm.extendParams[i];
-                                    console.log(item);
+                                    // console.log(item);
                                     if(item.value){
                                       item.value=item.value.replace(/\s/g,"");
                                       if(item.value){

@@ -10,8 +10,8 @@
       </div>
       <div class="btn" v-if="contType<4">
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
-        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4" @click="isSubmitAudit=true">提交审核</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0&&userMsg.empId===recordId" @click="dialogInvalid = true">撤单</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&userMsg.empId===recordId" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
@@ -253,6 +253,7 @@ export default {
       //其他类型
       otherList: [],
       isDelete:'',
+      recordId:'',//合同创建人id
       checkPerson: {
         state:false,
         type:1,
@@ -525,6 +526,7 @@ export default {
           this.laterStageState=res.data.laterStageState.value;
           this.contState=res.data.contState.value;
           this.contType=res.data.contType.value;
+          this.recordId=res.data.recordId;
           this.guestStoreId=res.data.guestStoreId;
           this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
