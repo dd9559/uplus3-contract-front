@@ -346,7 +346,7 @@ export default{
                              message: `第${i+1}行请输入选项值！`
                             })
                             this.modalDialog=true
-                            break
+                            return
                         }
                         else{
                              this.modalDialog=false
@@ -358,12 +358,11 @@ export default{
                                 message: `复选框选项值不能为空`
                                 })
                                 this.modalDialog=true
-                                break
+                                return
                             }
-                    }else{
-                        this.modalDialog=false
                     }
                 }
+                        this.modalDialog=false
             },
             del(type){
                 if(type==1){
