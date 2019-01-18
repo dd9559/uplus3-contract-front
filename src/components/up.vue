@@ -57,7 +57,7 @@
           url: 'http://oss.aliyuncs.com',
 
           filters: {
-            mime_types:that.rules.length>0?[{title:'test',extensions:that.rules.join(',')}]:[],
+            mime_types:that.rules.length>0?[{extensions:that.rules.join(',')}]:[],
             prevent_duplicates : true //不允许选取重复文件
           },
           resize: {
