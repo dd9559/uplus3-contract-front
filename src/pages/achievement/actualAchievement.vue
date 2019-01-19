@@ -1408,6 +1408,7 @@ export default {
     padding-top: 0;
     background-color: #fff;
     margin-top: 20px;
+    padding-bottom: 0;
     .table-tool {
       position: relative;
       display: flex;
@@ -1545,11 +1546,15 @@ export default {
     overflow: auto;
   }
 }
-/deep/ .el-pagination {
-  text-align: center;
+/deep/ .pagination{
+  padding-top: 0;
+  .el-pagination {
+  text-align: right;
   // padding-bottom: 50px;
   // padding-top: 50px;
 }
+}
+
 /deep/ tr.el-table__row {
   overflow: scroll !important;
 }
