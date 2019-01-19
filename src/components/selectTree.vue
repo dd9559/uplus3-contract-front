@@ -140,7 +140,8 @@
       //部门搜索
       getDep: function (e, clear = false) {
         this.visible=true
-        this.inputVal = e.target.value
+        this.inputVal = e.target.value.replace(/\s/g,'')
+        // debugger
         if(this.inputVal.length>0){
           this.getList(this.inputVal,'search')
           this.$emit('search')
