@@ -17,6 +17,7 @@ axios.interceptors.response.use((response)=>{
   }else if(res.status===110){
     return Promise.reject('无该功能权限')
   }else if(res.status===120){
+    Vue.prototype.$message('请到U+客户端登录')
     return Promise.reject('请登录')
   }else if(res.status===300){
     return Promise.reject(res)

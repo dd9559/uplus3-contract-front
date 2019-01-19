@@ -93,6 +93,8 @@ router.beforeEach((to,from,next)=>{
       if(res.status===200){
         store.commit('setUser',res.data)
       }
+    }).catch(error=>{
+
     })
   }
 
@@ -107,6 +109,8 @@ router.beforeEach((to,from,next)=>{
     next()
   }
 })
+
+
 
 /* eslint-disable no-new */
 new Vue({
