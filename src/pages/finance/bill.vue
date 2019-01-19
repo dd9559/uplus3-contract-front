@@ -877,7 +877,7 @@
 
   .view-context {
     background-color: @color-white;
-    padding: 0 @margin-10 @margin-10;
+    padding: 0 @margin-10;
     /deep/ .theader-bg {
       > th {
         background-color: @bg-th;
