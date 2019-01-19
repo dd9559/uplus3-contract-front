@@ -42,10 +42,7 @@ const MIXINS = {
       }
     },
     getBodyScollShow(){
-        // this.comHeightFn();
-        this.$nextTick(()=>{
-          this.comHeightFn();
-        })
+        this.comHeightFn();
     }
   },
   methods: {
