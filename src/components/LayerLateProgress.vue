@@ -163,7 +163,7 @@
                     }
                 },
                 // 加载
-                loading: true,
+                loading: false,
                 // 查看
                 STEPSINPUT,
                 stepsDataShow:false,
@@ -219,12 +219,12 @@
                         this.tableProgress = res.data;
                     }
                     this.$nextTick(()=>{
-                        this.loadingAdjust = false;
+                        this.loading = false;
                     });
                 }).catch(err => {
                     this.$message.error(err);
                     this.$nextTick(()=>{
-                        this.loadingAdjust = false;
+                        this.loading = false;
                     });
                 })
             },
