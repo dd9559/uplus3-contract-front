@@ -23,6 +23,7 @@ Vue.config.productionTip = false
 
 Vue.prototype.$ajax=api   //axios请求封装
 Vue.prototype.$tool=TOOL  //工具方法封装
+Vue.prototype.$routerObj=router
 
 Vue.filter("formatDate", TOOL.dateFormat);
 Vue.filter("formatTime", TOOL.timeFormat);

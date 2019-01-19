@@ -46,10 +46,10 @@
             <i class="iconfont icon-fanhui"></i>
             <span>返回</span>
           </p>
-          <p style="position: absolute;top:50%;left:50%;transform:translate(-50%,-50%);cursor: pointer">
+          <!--<p style="position: absolute;top:50%;left:50%;transform:translate(-50%,-50%);cursor: pointer">
             <span @click="logout(1)">退出登录</span>
             <span @click="logout(2)">登录</span>
-          </p>
+          </p>-->
         </div>
         <div class="page-view-content">
           <router-view class="router-view"></router-view>
