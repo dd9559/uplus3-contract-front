@@ -9,6 +9,16 @@
         <div :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</div>
       </div>
       <div class="btn" v-if="contType<4">
+        <!-- <el-button round><i class="iconfont icon-icon-test3"></i></el-button> -->
+        <!-- <el-button round><i class="iconfont icon-yuanjiaojuxing1"></i></el-button> -->
+        <!-- <div class="blowUp">
+          <div @click="blowUp">放大</div>
+          <div @click="shrink">缩小</div>
+        </div> -->
+        <el-button-group>
+          <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
+          <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
+        </el-button-group>
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)&&userMsg.empId===recordId" @click="toEdit">编辑</el-button>
         <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0&&userMsg.empId===recordId" @click="dialogInvalid = true">撤单</el-button>
         <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&userMsg.empId===recordId" @click="isSubmitAudit=true">提交审核</el-button>
@@ -27,12 +37,16 @@
 
     <div class="yulan" :style="{ height: clientHei }">
       <div class="content">
-        <img v-for="(item,index) in src" :key="index" :src="item" alt="" width="620" height="800">
+        <img v-for="(item,index) in src" :key="index" :src="item" alt="" :style="{width:getWidth}">
         <!-- <div class="btnList">
           <el-button class="paging iconfont icon-tubiao_shiyong-20" @click="del"></el-button>
           <div class="tally"><span>{{count}}</span>/<span>{{showTotal}}</span></div>
           <el-button class="paging iconfont icon-tubiao_shiyong-22" @click="add"></el-button>
         </div> -->
+        <div class="blowUp">
+          <button @click="blowUp">放大</button>
+          <button @click="shrink">缩小</button>
+        </div>
       </div>
     </div>
     
@@ -262,6 +276,7 @@ export default {
         label:false
       },
       previewType:"none",
+      imgWidth:650,
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -331,6 +346,17 @@ export default {
         this.showAddress=this.business;
         this.setSrc(this.showAddress,this.total_b);
         // this.showTotal=this.total_b;
+      }
+    },
+    //放大缩小
+    blowUp(){//放大
+      if(this.imgWidth<950){
+        this.imgWidth+=50
+      }
+    },
+    shrink(){//缩小
+      if(this.imgWidth>650){
+        this.imgWidth-=50
       }
     },
     //翻页
@@ -929,6 +955,11 @@ export default {
   beforeUpdate() {
     this.clientHeight();
   },
+  computed:{
+    getWidth:function () {
+      return `${this.imgWidth}px`
+    },
+  }
   // watch:{
   //   textarea:function(val){
   //     if(val.length>10){
@@ -1008,6 +1039,12 @@ export default {
       top: 12px;
       /deep/.el-button.is-round {
         padding: 10px 23px;
+      }
+    }
+    /deep/.el-button-group{
+      margin-right: 10px;
+      .el-button{
+        padding: 5px 15px !important;
       }
     }
   }

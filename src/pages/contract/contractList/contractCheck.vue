@@ -58,9 +58,9 @@
     </ScreeningTop>
     <!-- 合同列表 -->
     <div class="contract-list">
-      <p>
-        <span>
-          <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
+      <!-- <p> -->
+        <!-- <span> -->
+          <!-- <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span> -->
           <!-- <span class="text">有效成分汇总 </span>
           <span class="text">租赁：</span> <span class="data">123165</span>
           <span class="text">买卖：</span> <span class="data">75454</span>
@@ -69,8 +69,8 @@
           <span class="text">定金：</span> <span class="data">0</span>
           <span class="text">可分配业绩汇总：</span> <span class="data">564654</span>
           <span class="text">单数：</span> <span class="data">13</span> -->
-        </span>
-      </p>
+        <!-- </span> -->
+      <!-- </p> -->
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" border style="width: 100%"  @row-dblclick='toDetail' :max-height="tableNumberCom">
         <el-table-column align="left" label="合同信息" width="250" fixed>
           <template slot-scope="scope">
@@ -504,9 +504,16 @@ export default {
 /deep/.margin-left{
   margin-left: 0;
 }
+.pagination{
+  /deep/.pagination-info{
+    text-align: right;
+    margin-top: 0;
+  }
+}
 .contract-list {
+  // padding-top: 10px;
   background-color: #fff;
-  padding: 0 10px;
+  padding: 10px 10px 0 10px;
   border-radius: 2px;
   box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   > p {
