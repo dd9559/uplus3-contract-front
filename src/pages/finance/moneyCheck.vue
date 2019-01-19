@@ -139,7 +139,7 @@
         </div>
       </div>
     </ScreeningTop>
-    <div class="view-context" :class="[(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)?'':'other']">
+    <div class="view-context" :class="[((activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state))?'':'other']">
       <div class="table-tool" v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
