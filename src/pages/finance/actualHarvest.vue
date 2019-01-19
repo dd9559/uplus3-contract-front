@@ -98,8 +98,8 @@
         </div>
       </div>
     </ScreeningTop>
-    <div class="view-context">
-      <div class="table-tool">
+    <div class="view-context" :class="[power['sign-cw-rec-export'].state?'':'other']">
+      <div class="table-tool" v-if="power['sign-cw-rec-export'].state">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
           <el-button class="btn-info" round size="small" type="primary" v-if="power['sign-cw-rec-export'].state" @click="getExcel">导出</el-button>
@@ -300,11 +300,11 @@
           this.currentPage=1
         }
         let param=Object.assign({},this.searchForm)
-        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
+        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){
           param.beginDate = this.$tool.dateFormat(param.signTime[0])
           param.endDate = this.$tool.dateFormat(param.signTime[1])
         }
-        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
+        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'&&param.collectionTime.length>0){
           param.beginProDate = this.$tool.dateFormat(param.collectionTime[0])
           param.endProDate = this.$tool.dateFormat(param.collectionTime[1])
         }
@@ -396,7 +396,10 @@
   }
   .view-context{
     background-color: @color-white;
-    padding: 0 @margin-10 @margin-10;
+    padding: 0 @margin-10;
+    &.other{
+      padding-top: @margin-10;
+    }
     /deep/ .theader-bg{
       >th{
         background-color: @bg-th;

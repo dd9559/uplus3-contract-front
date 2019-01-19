@@ -61,7 +61,7 @@
 
     <!-- 数据列表 -->
     <div class="contract-list">  
-      <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>   
+      <!-- <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>    -->
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
         <el-table-column label="合同编号" width="150" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
@@ -977,8 +977,8 @@
     font-size: 14px;
   }
   .el-pagination{
-      text-align: center;
-      padding: 30px 0 20px;
+      text-align: right;
+      // padding: 30px 0 20px;
   }
 
   .adjustbox{
@@ -994,7 +994,7 @@
 
   .contract-list {
       background-color: #fff;
-      padding: 0px 12px;
+      padding: 10px 12px 0;
     .form-title-fl{
       font-size: 14px;
       color: #233241;

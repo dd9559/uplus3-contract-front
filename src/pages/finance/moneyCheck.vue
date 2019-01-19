@@ -139,8 +139,8 @@
         </div>
       </div>
     </ScreeningTop>
-    <div class="view-context">
-      <div class="table-tool">
+    <div class="view-context" :class="[(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)?'':'other']">
+      <div class="table-tool" v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
           <el-button class="btn-info" round size="small" type="primary" @click="getExcel" v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)">导出</el-button>
@@ -729,6 +729,9 @@
   .view-context {
     background-color: @color-white;
     padding: 0 @margin-10 @margin-10;
+    &.other{
+      padding-top: @margin-10;
+    }
     /deep/ .theader-bg {
       > th {
         background-color: @bg-th;

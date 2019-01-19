@@ -527,6 +527,7 @@ export default {
     padding: 20px;
     padding-top: 0;
     margin-top: 20px;
+    padding-bottom: 0;
     .table-tool {
       position: relative;
       display: flex;
@@ -575,10 +576,13 @@ export default {
     }
   }
 }
-/deep/ .el-pagination {
-  text-align: center;
+/deep/ .pagination{
+  padding-top: 0;
+  .el-pagination {
+  text-align: right;
   // padding-bottom: 50px;
   // padding-top: 50px;
+}
 }
 .w430 {
   width: 430px;

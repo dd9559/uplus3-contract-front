@@ -14,9 +14,6 @@
       </el-form-item>
     </el-form> -->
     <div class="data-list">
-      <p>
-          <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-      </p>
       <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" border :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="type.label" :formatter="nullFormatter"></el-table-column>

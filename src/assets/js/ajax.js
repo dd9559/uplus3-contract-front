@@ -20,8 +20,9 @@ axios.interceptors.response.use((response)=>{
     return Promise.reject('无该功能权限')
   }else if(res.status===120){
     times++
-    if(times===1){
+    if(times===1&&Vue.prototype.$routerObj.currentRoute.path!=='/login'){
       Vue.prototype.$message('请到U+客户端登录')
+      console.log(times,Vue.prototype.$routerObj,Vue.prototype.$routerObj.currentRoute.path)
       Vue.prototype.$routerObj.push({
         path:'login'
       })
