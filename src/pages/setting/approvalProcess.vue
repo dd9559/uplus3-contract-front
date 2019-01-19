@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div ref="tableComView">
         <ScreeningTop
         @propQueryFn="queryFn"
         @propResetFormFn="resetFormFn">
@@ -37,7 +37,7 @@
                 <el-button @click="operation('添加',1)" v-if="power['sign-set-verify'].state">添加</el-button>
             </p>
             <div class="table">
-                <el-table :data="tableData" style="width: 100%" border>
+                <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
                     <el-table-column align="center" label="流程名称" prop="name"></el-table-column>
                     <el-table-column align="center" label="城市" prop="cityName">
                         <template slot-scope="scope">
@@ -262,7 +262,7 @@
                     '601':'',
                     '603':''
                 },
-                pageSize: 5,
+                pageSize: 10,
                 pageNum: 1,
                 total: 0,
                 homeConditionList: [],
