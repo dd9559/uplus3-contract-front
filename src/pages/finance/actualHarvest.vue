@@ -300,11 +300,11 @@
           this.currentPage=1
         }
         let param=Object.assign({},this.searchForm)
-        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'){
+        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){
           param.beginDate = this.$tool.dateFormat(param.signTime[0])
           param.endDate = this.$tool.dateFormat(param.signTime[1])
         }
-        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'){
+        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'&&param.collectionTime.length>0){
           param.beginProDate = this.$tool.dateFormat(param.collectionTime[0])
           param.endProDate = this.$tool.dateFormat(param.collectionTime[1])
         }
