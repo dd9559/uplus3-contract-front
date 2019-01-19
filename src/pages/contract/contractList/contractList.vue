@@ -1100,6 +1100,12 @@ export default {
 /deep/.margin-left{
   margin-left: 0;
 }
+.pagination{
+  /deep/.pagination-info{
+    text-align: right;
+    margin-top: 0;
+  }
+}
 .printMaskLayer{
   position: fixed;
   top: 0;
