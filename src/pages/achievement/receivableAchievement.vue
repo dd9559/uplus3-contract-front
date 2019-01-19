@@ -190,21 +190,22 @@
           <el-table-column prop="agentPayFee" label="刷卡手续费（元）" width="130"></el-table-column>
 
           <el-table-column prop="agentPlatformFee" label="特许服务费（元）"></el-table-column>
-
         </el-table>
+         <el-pagination
+             @size-change="handleSizeChange"
+             @current-change="handleCurrentChange"
+             :current-page="currentPage"
+             :page-size="pageSize"
+             layout="total,prev, pager, next , jumper"
+             :total="total"
+             v-if="total!=0"
+       ></el-pagination>
       </div>
 
       <!-- 分页 -->
-       <div class="pagination" v-if="total!=0">
-              <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="currentPage"
-                :page-size="pageSize"
-                layout="total,prev, pager, next , jumper"
-                :total="total"
-              ></el-pagination>
-       </div>
+       <!-- <div class="pagination" v-if="total!=0">
+     
+       </div> -->
 
     </div>
   </div>
@@ -524,7 +525,7 @@ export default {
   //数据列表
   .data-layout {
     background-color: #fff;
-    padding: 20px;
+    padding: 10px;
     padding-top: 0;
     margin-top: 20px;
     padding-bottom: 0;
@@ -576,14 +577,14 @@ export default {
     }
   }
 }
-/deep/ .pagination{
-  padding-top: 0;
+// /deep/ .pagination{
+//   padding-top: 0;
   .el-pagination {
   text-align: right;
   // padding-bottom: 50px;
   // padding-top: 50px;
 }
-}
+// }
 .w430 {
   width: 430px;
 }

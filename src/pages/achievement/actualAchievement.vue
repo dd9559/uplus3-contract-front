@@ -512,19 +512,22 @@
             </template>
           </el-table-column>
         </el-table>
+
+        <el-pagination
+           @size-change="handleSizeChange"
+           @current-change="handleCurrentChange"
+           :current-page="currentPage"
+           :page-size="pageSize"
+           layout="total,prev, pager, next , jumper"
+           :total="total"
+            v-if="total!=0"
+          >
+        </el-pagination>
       </div>
       <!-- 分页 -->
-      <div class="pagination" v-if="total!=0">
-          <el-pagination
-             @size-change="handleSizeChange"
-             @current-change="handleCurrentChange"
-             :current-page="currentPage"
-             :page-size="pageSize"
-             layout="total,prev, pager, next , jumper"
-             :total="total"
-            >
-           </el-pagination>
-      </div>
+      <!-- <div class="pagination" v-if="total!=0">
+      
+      </div> -->
     
 
     </div>
@@ -1403,12 +1406,14 @@ export default {
   }
 
   //数据列表
+
   .data-layout {
-    padding: 20px;
+    padding: 10px;
     padding-top: 0;
     background-color: #fff;
     margin-top: 20px;
     padding-bottom: 0;
+
     .table-tool {
       position: relative;
       display: flex;
@@ -1546,14 +1551,6 @@ export default {
     overflow: auto;
   }
 }
-/deep/ .pagination{
-  padding-top: 0;
-  .el-pagination {
-  text-align: right;
-  // padding-bottom: 50px;
-  // padding-top: 50px;
-}
-}
 
 /deep/ tr.el-table__row {
   overflow: scroll !important;
@@ -1590,6 +1587,11 @@ export default {
   padding: 0 !important;
 }
 
+.el-pagination {
+  text-align: right !important;
+  // padding-bottom: 50px;
+  // padding-top: 50px;
+}
 .name-wrapper {
   display: flex;
   display: -webkit-box;
