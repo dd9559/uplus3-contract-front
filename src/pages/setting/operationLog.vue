@@ -233,15 +233,7 @@
 
 .table-list {
     background-color: #fff;
-    margin-top: 20px;
-    > p {
-        padding: 0 6px;
-        display: flex;
-        height: 36px;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 14px;
-    }
+    margin-top: 10px;
 }
 
 /deep/ .el-table th {

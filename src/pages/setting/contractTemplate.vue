@@ -366,7 +366,7 @@
 } 
   .data-list {
     background-color: #fff;
-    padding: 6px 0;
+    // padding: 6px 0;
     margin-top: 1px;
       > p {
         padding: 0 6px;
