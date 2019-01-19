@@ -334,8 +334,10 @@ export default{
                             type:'error',
                             message: error,
                             duration:3000,
-                        }),
-                    this.modalDialog=true
+                        },
+                         this.modalDialog=true
+                        ),
+                   
                 )
             },
             numSave(){
@@ -501,10 +503,19 @@ export default{
               if(res.status==200){
                   this.loading=false
                   if(res.data.data.unPlaceholder!==''){
-                      for(let key in res.data.data.unPlaceholder){
-                         this.tableDate.push(key)
-                         this.content.push(res.data.data.unPlaceholder[key])
-                         this.contents.push('该占位符需要输入'+res.data.data.unPlaceholder[key]+'个值')
+                      for( let i=0;i<res.data.data.unPlaceholder.length;i++){
+                          if(res.data.data.unPlaceholder[i]!==null){
+                              for(let key in res.data.data.unPlaceholder[i]){
+                                if(key=='key'){
+                                    this.tableDate.push(res.data.data.unPlaceholder[i].key)
+                                }
+                                if(key=='value'){
+                                this.content.push(res.data.data.unPlaceholder[i].value) 
+                                    this.contents.push('该占位符需要输入'+res.data.data.unPlaceholder[i].value+'个值')
+                                }
+                              }   
+
+                          }
                       }
                   }else{
                         this.tableDate=null

@@ -23,6 +23,7 @@ Vue.config.productionTip = false
 
 Vue.prototype.$ajax=api   //axios请求封装
 Vue.prototype.$tool=TOOL  //工具方法封装
+Vue.prototype.$routerObj=router
 
 Vue.filter("formatDate", TOOL.dateFormat);
 Vue.filter("formatTime", TOOL.timeFormat);
@@ -86,7 +87,7 @@ router.beforeEach((to,from,next)=>{
 
   // let userMsg = localStorage.getItem('userMsg')
   // console.log(store.state.user)
-  if(!store.state.user){
+  if(!store.state.user&&to.path!=='login'){
     // debugger
     api.get('/api/me').then(res=>{
       res=res.data
