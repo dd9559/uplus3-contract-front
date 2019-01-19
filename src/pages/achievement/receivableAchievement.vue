@@ -287,6 +287,7 @@ export default {
   methods: {   
    // 导出功能
     getExcel(){
+        this.queryFn();
         this.ajaxParam.is_Receivable=2;
         let param = Object.assign({},this.ajaxParam)
         this.excelCreate('/input/achievementExcel',param)

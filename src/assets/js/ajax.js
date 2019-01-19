@@ -7,17 +7,26 @@ let errorMsg = {
   '410':'重复请求',
   '500':'网络异常，请稍后再试',
 }
-console.log(axios.defaults)
+let times = 0
+
 axios.defaults.headers.common['Cache-Control']='no-cache'
 axios.interceptors.response.use((response)=>{
   // debugger
   let res=response.data
   if(res.status===200){
+    times = 0
     return response
   }else if(res.status===110){
     return Promise.reject('无该功能权限')
   }else if(res.status===120){
-    return Promise.reject('请登录')
+    times++
+    if(times===1){
+      Vue.prototype.$message('请到U+客户端登录')
+      Vue.prototype.$routerObj.push({
+        path:'login'
+      })
+    }
+    // return Promise.reject('请登录')
   }else if(res.status===300){
     return Promise.reject(res)
   }else {

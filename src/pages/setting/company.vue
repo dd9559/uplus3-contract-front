@@ -833,9 +833,6 @@
         this.getCompanyList()
       },
       queryFn() {
-        if(!this.searchForm.bankCard) {
-          this.pageNum = 1
-        }
         this.getCompanyList()
       },
       resetFormFn() {
@@ -844,6 +841,7 @@
         this.searchForm.bankCard = ""
         this.searchForm.keyword = ""
         this.searchTime = []
+        this.pageNum = 1
       },
       getInt(num,index) {
         if(num===1) {

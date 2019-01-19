@@ -1001,12 +1001,6 @@ export default {
         }
   },
   methods: {
-   // 导出功能
-    getExcel(){
-        this.ajaxParam.is_Receivable=1;
-        let param = Object.assign({},this.ajaxParam)
-        this.excelCreate('/input/achievementExcel',param)
-    },
    //获取当前部门
     initDepList:function (val) {
       if(!val){
@@ -1038,13 +1032,12 @@ export default {
             console.log(res);
             let data = res.data;
             if (res.status === 200) {
-              // debugger;
                _that.selectAchList = data.data.list;
                _that.total = data.data.total;
               if(data.data.list[0]){
                    _that.countData = data.data.list[0].contractCount;
               }else {
-              _that.countData = [0, 0, 0, 0];
+                   _that.countData = [0, 0, 0, 0];
             }       
 
             }            
@@ -1052,6 +1045,13 @@ export default {
             this.$message({message:error})
      }); 
       this.loading=false;
+    },
+    // 导出功能
+    getExcel(){
+        this.queryFn();
+        this.ajaxParam.is_Receivable=1;
+        let param = Object.assign({},this.ajaxParam)
+        this.excelCreate('/input/achievementExcel',param)
     },
     closeDialog() {
       this.dialogVisible = false;
@@ -1447,7 +1447,7 @@ export default {
       th {
         padding: 24px 0;
       }
-      .el-table__header {       
+      .el-table__header {
         th {
           padding: 6px 0;
           background-color: #eef2fb;
@@ -1510,7 +1510,6 @@ export default {
             padding: 0;
             background-color: #eef2fb;
             .cell {
-          
               // background-color: pink;
               // height: 55px;
               // line-height: 55px;
@@ -1542,9 +1541,9 @@ export default {
       }
     }
   }
-    /deep/ .ach-body {
-      overflow: auto;
-    }
+  /deep/ .ach-body {
+    overflow: auto;
+  }
 }
 /deep/ .el-pagination {
   text-align: center;
@@ -1596,7 +1595,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/deep/ .btn-text-info{
+/deep/ .btn-text-info {
   font-size: 12px !important;
 }
 </style>

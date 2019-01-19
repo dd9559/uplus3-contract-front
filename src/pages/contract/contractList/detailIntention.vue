@@ -9,8 +9,9 @@
                             <li class="tabs-title">合同信息</li>
                             <ul class="ul3">
                                 <li>
-                                    <div class="div1"><span>签约日期：</span>{{detailData.signDate | subStrFn}}</div>
-                                    <div class="div2"><span>认购期限：</span>{{detailData.subscriptionTerm | subStrFn}}</div>
+                                    <div class="div1"><span>合同编号：</span><em class="blue">{{detailData.code}}</em></div>
+                                    <div class="div2"><span>签约日期：</span>{{detailData.signDate | subStrFn}}</div>
+                                    <div class="div3"><span>认购期限：</span>{{detailData.subscriptionTerm | subStrFn}}</div>
                                 </li>
                                 <li>
                                     <div class="div1"><span>合同类型：</span>{{detailData.contType.label | nullData}}</div>

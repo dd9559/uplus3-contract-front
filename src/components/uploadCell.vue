@@ -49,6 +49,8 @@
           case '.mp4':
           case '.avi':
           case '.rmvb':
+          case '.wmv':
+          case '.mkv':
             return 'icon-shipin1'
             break
           case '.txt':

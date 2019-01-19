@@ -510,6 +510,7 @@
                                         <template v-else-if="item.type === STEPSINPUT.img || item.type === STEPSINPUT.mp4 || item.type === STEPSINPUT.pdf || item.type === STEPSINPUT.excel || item.type === STEPSINPUT.word">
                                             <div>
                                                 <fileUp 
+                                                v-if="stepsData.show"
                                                 :id="'fileUp'+index"
                                                 :rules="stepsTypeImg(item.type,1)"
                                                 @getUrl="imgBtnFn"
@@ -1415,7 +1416,7 @@
                             return ['png','jpg','jpeg'];
                             break;
                         case STEPSINPUT.mp4:
-                            return ['mp4','avi'];
+                            return ['mp4','avi','rmvb','wmv','mkv'];
                             break;
                         case STEPSINPUT.excel:
                             return ['xlsx','xls'];

@@ -1,7 +1,7 @@
 <template>
 <div class="login-container" v-if="show">
-  <p>用户ID：<input type="number" v-model="userId"></p>
-  <p @click="login">登录</p>
+  <!--<p>用户ID：<input type="number" v-model="userId"></p>
+  <p @click="login">登录</p>-->
 </div>
 </template>
 
