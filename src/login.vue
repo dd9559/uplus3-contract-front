@@ -40,21 +40,24 @@
           param.empcode=this.userId
         }
         this.$ajax.post('/api/verify',param).then(res=>{
-          this.$ajax.get('/api/me',{time:new Date()}).then(res=>{
-            res=res.data
-            if(res.status===200){
-              this.$store.commit('setUser',res.data)
-              if(res.data.privileges.length>0){
-                this.$router.push({
-                  path:'contractList'
-                })
-              }else {
-                this.$message({
-                  message:'无任何权限'
-                })
+          res=res.data
+          if(res.status===200){
+            this.$ajax.get('/api/me',{time:new Date()}).then(res=>{
+              res=res.data
+              if(res.status===200){
+                this.$store.commit('setUser',res.data)
+                if(res.data.privileges.length>0){
+                  this.$router.push({
+                    path:'contractList'
+                  })
+                }else {
+                  this.$message({
+                    message:'无任何权限'
+                  })
+                }
               }
-            }
-          })
+            })
+          }
         })
       },
       ...mapMutations([
