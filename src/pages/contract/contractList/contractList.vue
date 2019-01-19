@@ -107,7 +107,7 @@
         </div>
         <div>
           <el-dropdown placement="bottom" @command="printCont" v-if="power['sign-ht-info-print'].state"><!--  @command="printCont" -->
-            <el-button round>
+            <el-button round size="small">
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
@@ -117,7 +117,7 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-add'].state">
-            <el-button round type="primary">
+            <el-button round type="primary" size="small">
               创建正式合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
