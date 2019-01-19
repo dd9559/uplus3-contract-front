@@ -9,8 +9,9 @@
                             <li class="tabs-title">合同信息</li>
                             <ul class="ul3">
                                 <li>
-                                    <div class="div1"><span>签约日期：</span>{{detailData.signDate | subStrFn}}</div>
-                                    <div class="div2"><span>认购期限：</span>{{detailData.subscriptionTerm | subStrFn}}</div>
+                                    <div class="div1"><span>合同编号：</span><em class="blue">{{detailData.code}}</em></div>
+                                    <div class="div2"><span>签约日期：</span>{{detailData.signDate | subStrFn}}</div>
+                                    <div class="div3"><span>认购期限：</span>{{detailData.subscriptionTerm | subStrFn}}</div>
                                 </li>
                                 <li>
                                     <div class="div1"><span>合同类型：</span>{{detailData.contType.label | nullData}}</div>
@@ -79,7 +80,7 @@
                                 </div>
                                 <div class="fr">                  
                                     <el-button type="primary" plain round class="btn1" @click="onPreview()" v-if="power['sign-ht-xq-view'].state">预 览</el-button>
-                                    <el-button type="primary" round class="mr30 btn2" @click="onEdit(detailData.contType)">编 辑</el-button>                  
+                                    <el-button type="primary" round class="mr30 btn2" v-if="power['sign-ht-info-edit'].state&&userMsg.empId===detailData.recordId" @click="onEdit(detailData.contType)">编 辑</el-button>                  
                                 </div>
                             </div>
                         </div>
@@ -217,6 +218,7 @@ export default {
     mixins: [MIXINS],
     data() {
         return {
+            userMsg:{}, //当前登录人信息
             clientHei: document.documentElement.clientHeight, //窗体高度
             activeName: 'first',
             name:'first',
@@ -286,6 +288,10 @@ export default {
                 'sign-ht-xq-data-add': {
                     state: false,
                     name: '编辑资料库'
+                },
+                'sign-ht-info-edit': {
+                    state: false,
+                    name: '编辑'
                 },
             }
         }
@@ -723,6 +729,7 @@ export default {
 
     created() {
         this.getDetail();  //合同详细信息
+        this.getAdmin();//获取当前登录人信息
         this.getContDataType();   //获取资料库里的资料类型
         if (this.$route.query.type === "dataBank") {
             this.activeName = "third";

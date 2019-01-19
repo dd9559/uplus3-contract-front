@@ -49,9 +49,6 @@
             </el-form>
         </ScreeningTop>
         <div class="table-list">
-            <p>
-                <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-            </p>
             <el-table :data="tableData" ref="tableCom" style="width: 100%" border :max-height="tableNumberCom">
                 <el-table-column width='180' label="操作日期">
                     <template slot-scope="scope">
@@ -251,8 +248,7 @@
   background:rgba(238,242,251,1);
 }
 /deep/ .el-pagination{
-    text-align: center;
-    margin-top: 13px;
+    text-align: right;
 }
 .el-select-dropdown__item.selected {
     font-weight: normal;
