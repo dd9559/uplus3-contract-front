@@ -728,7 +728,7 @@
 
   .view-context {
     background-color: @color-white;
-    padding: 0 @margin-10 @margin-10;
+    padding: 0 @margin-10;
     &.other{
       padding-top: @margin-10;
     }

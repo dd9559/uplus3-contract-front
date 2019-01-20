@@ -109,7 +109,7 @@
                         <el-select size="small" v-model="aduitForm.branchCondition" :disabled="editDisabled">
                             <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
-                    </div> 
+                    </div>
                 </div>
                 <div class="aduit-input must">
                     <label>流程名称:</label>
@@ -162,7 +162,7 @@
                                 <div class="row-icon">
                                     <span class="button" @click="addRow"><i class="icon el-icon-plus"></i></span>
                                     <span class="button" @click="removeRow(index)"><i class="icon el-icon-minus"></i></span>
-                                </div> 
+                                </div>
                             </div>
                             <div class="default" v-if="item.choice&&item.choice.length>0&&index!==0">
                                 <span>选择默认审核人:</span>
@@ -224,7 +224,7 @@
             rolesTime: 1
         }
     ]
-    
+
     export default {
         name: "approvalProcess",
         mixins: [FILTER,MIXINS],
@@ -296,7 +296,7 @@
             aduitChange(val) {
                 if(this.aduitTitle === "添加") {
                     if(val === "1") {
-                       this.nodeList = JSON.parse(JSON.stringify(arr)) 
+                       this.nodeList = JSON.parse(JSON.stringify(arr))
                     } else {
                         this.nodeList = []
                     }
@@ -305,8 +305,8 @@
                         this.nodeList = JSON.parse(JSON.stringify(arr))
                     } else {
                         this.nodeList = this.tempNodeList
-                    }   
-                } 
+                    }
+                }
             },
             getData() {
                 let param = {
@@ -456,7 +456,7 @@
             //         }).catch(error => {
             //             this.$message({message:error})
             //         })
-            //     })   
+            //     })
             // },
             setConditionList(val) {
                 switch(val) {
@@ -521,7 +521,7 @@
                     curNodeChoice[i].isDefault = 0
                 }
                 curNodeChoice[e].isDefault = 1
-                this.nodeList[index].lastChoice = curItem 
+                this.nodeList[index].lastChoice = curItem
             },
             delChoice(index,choiceArr,m) {
                 if(choiceArr[m].type === 0) {
@@ -559,7 +559,7 @@
                 function getArrDiff(m, n) {
                     return m.concat(n).filter(function(v, i, arr) {
                         return arr.indexOf(v) === arr.lastIndexOf(v)
-                
+
                     })
                 }
                 if(type === 0) {
@@ -701,7 +701,7 @@
                             }
                         } else {
                             this.$message({message:"流程类型不能为空"})
-                            return false                                            
+                            return false
                         }
                     } else {
                         this.$message({message:"合作方式不能为空"})
@@ -759,7 +759,7 @@
                     if(isOk) {
                         for(var i = 1; i < item.length; i++) {
                             delete item[i].lastChoice
-                        }  
+                        }
                     }
                     if(isOk) {
                         delete this.nodeList[0].depName
@@ -852,8 +852,8 @@
     }
 }
 .aduit-list {
-    padding: 5px 10px;
-    > p { 
+    padding: 5px 10px 0px;
+    > p {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -940,7 +940,7 @@
                     /deep/ .el-icon-circle-close {
                         display: none;
                     }
-                    
+
                 }
                 .other {
                     /deep/ .el-input {
