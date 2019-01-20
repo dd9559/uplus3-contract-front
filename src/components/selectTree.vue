@@ -56,6 +56,8 @@
         pop: true,//弹窗是否失焦
         list: [],
         cellClick:false,//是否选择
+        operaTime:null,//键盘输入时间
+        operaStatus:false,
       }
     },
     mounted(){
@@ -141,13 +143,19 @@
       getDep: function (e, clear = false) {
         this.visible=true
         this.inputVal = e.target.value.replace(/\s/g,'')
-        // debugger
-        if(this.inputVal.length>0){
-          this.getList(this.inputVal,'search')
-          this.$emit('search')
-        }else {
-          this.list = _list.map(item=>Object.assign({},item))
+        this.operaStatus=false
+        if(!this.operaStatus){
+          clearTimeout(this.operaTime)
+          this.operaTime = setTimeout(()=>{
+            if(this.inputVal.length>0){
+              this.getList(this.inputVal,'search')
+              this.$emit('search')
+            }else {
+              this.list = _list.map(item=>Object.assign({},item))
+            }
+          },800)
         }
+        // debugger
       }
     },
     computed: {

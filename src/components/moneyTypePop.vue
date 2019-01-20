@@ -16,7 +16,7 @@
     <p class="tree-box w200" slot="reference" @click.capture="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
       <el-input size="small" class="w200" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear="opera('clear')">
       </el-input>
-      <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i><i class="iconfont icon-tubiao-7" v-else  @click.stop="opera('clear')"></i></span>
+      <span class="box-icon"><i class="el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i><i class="iconfont icon-tubiao-7" v-else  @click.stop="opera('clear')"></i></span>
     </p>
   </el-popover>
 </template>

@@ -61,8 +61,9 @@
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>-->
-          <el-select :clearable="true" filterable remote :remote-method="test" v-loadmore="moreEmploye" class="margin-left" size="small"
-                     v-model="searchForm.empId" placeholder="请选择">
+          <el-select :clearable="true" class="margin-left" size="small" v-loadmore="moreEmploye" v-model="searchForm.empId" placeholder="请选择">
+          <!--<el-select :clearable="true" filterable remote :remote-method="test" v-loadmore="moreEmploye" @visible-change="empHandle" class="margin-left" size="small"
+                     v-model="searchForm.empId" placeholder="请选择">-->
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -481,7 +482,7 @@
         this.excelCreate('/input/payInfoExcel',param)
       },
       test:function (val) {
-        // this.getEmploye
+        this.getEmployeByText(val)
       },
       reset: function () {
         this.$tool.clearForm(this.searchForm)
@@ -515,6 +516,12 @@
         this.searchForm.empId = ''
 
         this.handleNodeClick(data)
+      },
+      empHandle:function (val) {
+        // debugger
+        if(val&&this.EmployeInit!==this.employeTotal&&this.searchForm.deptId){
+          this.getEmployeByText()
+        }
       },
       getData: function (type='init') {
         // debugger
