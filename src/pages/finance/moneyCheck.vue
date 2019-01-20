@@ -484,6 +484,7 @@
       },
       reset:function () {
         this.$tool.clearForm(this.searchForm)
+        this.EmployeList = []
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);

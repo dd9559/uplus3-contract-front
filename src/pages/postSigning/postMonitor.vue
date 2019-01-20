@@ -13,103 +13,103 @@
                     </el-date-picker>
                 </el-form-item> -->
                 <div class="in-block">
-                    <el-form-item 
-                    label="交易步骤" 
+                    <el-form-item
+                    label="交易步骤"
                     class="mr"
                     prop="lateName">
-                        <el-select 
-                        v-model="propForm.lateName" 
-                        class="w100" 
+                        <el-select
+                        v-model="propForm.lateName"
+                        class="w100"
                         placeholder="状态">
-                            <el-option 
-                            v-for="item in rules.lateName" 
-                            :key="'lateName'+item.key" 
-                            :label="item.value" 
+                            <el-option
+                            v-for="item in rules.lateName"
+                            :key="'lateName'+item.key"
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item 
+                    <el-form-item
                     prop="late">
-                        <el-select 
-                        v-model="propForm.late" 
+                        <el-select
+                        v-model="propForm.late"
                         placeholder="交易步骤"
                         class="w100">
-                            <el-option 
-                            v-for="item in rules.late" 
-                            :key="'steps'+item.id" 
-                            :label="item.name" 
+                            <el-option
+                            v-for="item in rules.late"
+                            :key="'steps'+item.id"
+                            :label="item.name"
                             :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
                 <el-form-item label="交易流程" prop="time">
                     <el-select v-model="propForm.time" class="w270">
-                        <el-option 
-                            v-for="item in rules.time" 
-                            :key="'time'+item.id" 
-                            :label="item.name" 
+                        <el-option
+                            v-for="item in rules.time"
+                            :key="'time'+item.id"
+                            :label="item.name"
                             :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="收佣状态" prop="paper">
                     <el-select v-model="propForm.paper" class="w134">
-                        <el-option v-for="item in rules.paper" 
-                        :key="'paper'+item.key" 
-                        :label="item.value" 
+                        <el-option v-for="item in rules.paper"
+                        :key="'paper'+item.key"
+                        :label="item.value"
                         :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
                 <div class="in-block">
-                    <el-form-item label="部门" 
+                    <el-form-item label="部门"
                     prop="departmentS"
                     class="mr">
-                        <!-- <el-select 
-                        ref="tree" 
-                        size="small" 
-                        :loading="Loading" 
-                        :remote-method="remoteMethod" 
-                        v-model="propForm.departmentS" 
+                        <!-- <el-select
+                        ref="tree"
+                        size="small"
+                        :loading="Loading"
+                        :remote-method="remoteMethod"
+                        v-model="propForm.departmentS"
                         @clear="clearDep"
-                        @visible-change="initDepList" 
-                        clearable 
+                        @visible-change="initDepList"
+                        clearable
                         filterable
-                        remote 
+                        remote
                         placeholder="请选择">
-                            <el-option 
-                            class="drop-tree" 
+                            <el-option
+                            class="drop-tree"
                             value="">
-                                <el-tree 
-                                :data="DepList" 
-                                :props="defaultProps" 
-                                @node-click="depHandleClick"></el-tree> 
+                                <el-tree
+                                :data="DepList"
+                                :props="defaultProps"
+                                @node-click="depHandleClick"></el-tree>
                             </el-option>
                         </el-select> -->
                         <select-tree :data="DepList" :init="propForm.departmentS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                     </el-form-item>
                     <el-form-item prop="departmentMo">
-                        <el-select 
-                        v-model="propForm.departmentMo" 
+                        <el-select
+                        v-model="propForm.departmentMo"
                         v-loadmore="moreEmploye"
                         clearable
                         class="w100">
-                            <el-option 
-                            v-for="item in EmployeList" 
-                            :key="'departmentMo'+item.empId" 
+                            <el-option
+                            v-for="item in EmployeList"
+                            :key="'departmentMo'+item.empId"
                             :label="item.name"
                             :value="item.empId"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
-                <el-form-item 
+                <el-form-item
                     label="合作方式"
                     prop="depAttr">
-                        <el-select 
-                        v-model="propForm.depAttr" 
+                        <el-select
+                        v-model="propForm.depAttr"
                         class="w100">
-                            <el-option 
-                            v-for="item in rules.depAttr" 
-                            :key="'depAttr'+item.key" 
-                            :label="item.value" 
+                            <el-option
+                            v-for="item in rules.depAttr"
+                            :key="'depAttr'+item.key"
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
@@ -120,14 +120,14 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
-            <el-table 
+            <el-table
              border
-            ref="tableCom" 
+            ref="tableCom"
             :max-height="tableNumberCom"
             :data="tableData.list"
-            v-loading="loadingList" 
+            v-loading="loadingList"
             @row-dblclick="tradingStepsFn"
-            class="paper-table mt-20">
+            class="paper-table">
                 <el-table-column label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>

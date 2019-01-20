@@ -27,7 +27,7 @@ axios.interceptors.response.use((response)=>{
         path:'login'
       })
     }
-    // return Promise.reject('请登录')
+    return Promise.reject('请到U+客户端登录')
   }else if(res.status===300){
     return Promise.reject(res)
   }else {

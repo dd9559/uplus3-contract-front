@@ -14,7 +14,7 @@
                             <el-option class="drop-tree" value="">
                             <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                             </el-option>
-                        </el-select> -->    
+                        </el-select> -->
                         <el-select v-model="depUser" :clearable="true" v-loadmore="moreEmploye" filterable placeholder="请选择">
                             <el-option
                                 v-for="item in EmployeList"
@@ -70,14 +70,13 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
-            :page-sizes="[30, 40, 50, 60]"
             :page-size="pageSize"
-            layout="prev, pager, next,  total, sizes, jumper"
+            layout="total, prev, pager, next, jumper"
             :total="total">
         </el-pagination>
         </div>
         </div>
-        
+
     </div>
 </template>
 
@@ -233,7 +232,8 @@
 
 .table-list {
     background-color: #fff;
-    margin-top: 10px;
+    margin: 0 10px;
+  padding-top: 10px;
 }
 
 /deep/ .el-table th {

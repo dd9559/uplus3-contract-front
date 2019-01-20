@@ -252,6 +252,7 @@
       },
       reset:function () {
         this.$tool.clearForm(this.searchForm)
+        this.EmployeList = []
       },
       handleSizeChange:function () {
 

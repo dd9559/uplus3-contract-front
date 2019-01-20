@@ -113,7 +113,7 @@
         <el-table-column align="left" label="成交总价" prop="dealPrice" width="120" fixed>
           <template slot-scope="scope">
             <span>{{scope.row.dealPrice}} 元</span>
-            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span> 
+            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="成交经纪人" width="150 ">
@@ -209,7 +209,7 @@
          :total="total">
         </el-pagination>
       </div>
-      
+
     </div>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
@@ -217,7 +217,7 @@
     <checkPerson :show="checkPerson.state" page="list" :type="checkPerson.type" :current="checkPerson.current" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
-           
+
 <script>
 import ScreeningTop from "@/components/ScreeningTop";
 import changeCancel from "../contractDialog/changeCancel";
@@ -319,7 +319,7 @@ export default {
           param.endDate = this.signDate[1];
         }
       }
-      
+
       delete param.depName
       //console.log(param)
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
@@ -348,7 +348,7 @@ export default {
     },
      //字典查询
     getDictionaries() {
-      this.$ajas.get("/api/dictionary/batchQuery", param).then(res => {}); 
+      this.$ajas.get("/api/dictionary/batchQuery", param).then(res => {});
     },
     //变更解约弹窗
     goChangeCancel(item) {
@@ -491,8 +491,8 @@ export default {
   margin-bottom: 10px;
 }
 /deep/.paper-box {
-  padding-top: 10px !important;
-  margin-bottom: 10px;
+  /*padding-top: 10px !important;
+  margin-bottom: 10px;*/
   background-color: #fff;
   border-radius: 2px;
   box-sizing: border-box;
@@ -556,7 +556,7 @@ export default {
   .shell{
     width: 100%;
     height: 100%;
-    display: inline-block; 
+    display: inline-block;
   }
   .error_{
     color: red;
@@ -584,7 +584,7 @@ export default {
         width: 60px;
       }
     }
-    
+
   }
   .contract-msglist {
     > li {
@@ -595,7 +595,7 @@ export default {
           cursor: pointer;
         }
       }
-      
+
     }
   }
 }

@@ -115,6 +115,15 @@ const MIXINS = {
         }
       })
     },
+    getEmployeByText:function (val,sub=true) {
+      this.$ajax.get('/api/organize/employees/pages',{keyword:val,depId:this.dep.id,pageNum:1,selectSubs:sub}).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.EmployeList=this.EmployeList.concat(res.data.list)
+          this.employeTotal=res.data.total
+        }
+      })
+    },
     clearSelect:function (type='dep') {
       if(type==='dep'){
         this.dep.id=''
@@ -239,7 +248,7 @@ const MIXINS = {
             }else{
               this.fileSign([].concat(arr[i].path),'download');
             }
-          
+
         }
     },
     // 判断图片类别

@@ -13,7 +13,7 @@
       <el-input size="small" class="w200" ref="btn" placeholder="请选择" v-model="inputVal" @keyup.native="getDep">
       </el-input>
       <!--<input type="text" placeholder="请选择" ref="btn" v-model="inputVal" @input="getDep">-->
-      <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']"
+      <span class="box-icon"><i class="el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']"
                                 v-if="!clearVal"></i><i class="iconfont icon-tubiao-7" v-else
                                                         @click.stop="opera('clear')"></i></span>
     </p>

@@ -28,15 +28,15 @@
                         <select-tree :data="DepList" :init="propForm.regionS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                     </el-form-item>
                     <el-form-item prop="regionName">
-                        <el-select 
-                        v-model="propForm.regionName" 
+                        <el-select
+                        v-model="propForm.regionName"
                         v-loadmore="moreEmploye"
-                        class="w100" 
+                        class="w100"
                         clearable>
-                            <el-option 
-                            v-for="item in EmployeList" 
-                            :key="'bmName'+item.empId" 
-                            :label="item.name" 
+                            <el-option
+                            v-for="item in EmployeList"
+                            :key="'bmName'+item.empId"
+                            :label="item.name"
                             :value="item.empId"></el-option>
                         </el-select>
                     </el-form-item>
@@ -46,16 +46,16 @@
                         <el-option v-for="item in rules.late" :key="'state'+item.key" :label="item.label" :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item 
+                <el-form-item
                     label="合作方式"
                     prop="depAttr">
-                        <el-select 
-                        v-model="propForm.depAttr" 
+                        <el-select
+                        v-model="propForm.depAttr"
                         class="w100">
-                            <el-option 
-                            v-for="item in rules.depAttr" 
-                            :key="'depAttr'+item.key" 
-                            :label="item.value" 
+                            <el-option
+                            v-for="item in rules.depAttr"
+                            :key="'depAttr'+item.key"
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
@@ -66,7 +66,7 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
-            <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" v-loading="loadingList" class="paper-table mt-20">
+            <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" v-loading="loadingList" class="paper-table">
                 <el-table-column :formatter="nullFormatterData" label="合同编号" min-width="161">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>
@@ -145,40 +145,40 @@
                                 <el-table-column align="center" min-width="185" label="分配角色">
                                     <template slot-scope="scope">
                                         <!-- @change="roleChangeFn(scope.$index,$event)"  -->
-                                        <el-select 
-                                        v-model="scope.row.roleId" 
-                                        placeholder="分配角色" 
-                                        filterable 
+                                        <el-select
+                                        v-model="scope.row.roleId"
+                                        placeholder="分配角色"
+                                        filterable
                                         :loading="loading3"
                                         :disabled="roleDisabledFn(scope.row)"
                                         @change="roleChangeFn(scope.$index,$event)"
-                                        size="small" 
+                                        size="small"
                                         class="w185">
-                                            <el-option 
-                                            v-for="item in dealTableRule" 
-                                            :key="'fp'+item.key + scope.$index" 
-                                            :label="item.value" 
+                                            <el-option
+                                            v-for="item in dealTableRule"
+                                            :key="'fp'+item.key + scope.$index"
+                                            :label="item.value"
                                             :value="item.key"></el-option>
                                         </el-select>
                                     </template>
                                 </el-table-column>
                                 <el-table-column align="center" min-width="185" label="责任人">
                                     <template slot-scope="scope">
-                                        <el-select 
-                                        v-model="scope.row.personLiableCode" 
+                                        <el-select
+                                        v-model="scope.row.personLiableCode"
                                         :value="scope.row.value"
                                         :disabled="roleDisabledFn(scope.row)"
                                         @visible-change="roleRemoteFn(scope.$index,scope.row.roleId,$event)"
-                                        placeholder="选择责任人" 
+                                        placeholder="选择责任人"
                                         filterable
                                         :loading="loading4"
                                         @change="roleRemoteChangeFn($event,scope.$index)"
-                                        size="small" 
+                                        size="small"
                                         class="w185">
-                                            <el-option 
-                                            v-for="item in scope.row.rules" 
-                                            :key="'zrr'+item.empId + scope.$index" 
-                                            :label="item.name" 
+                                            <el-option
+                                            v-for="item in scope.row.rules"
+                                            :key="'zrr'+item.empId + scope.$index"
+                                            :label="item.name"
                                             :value="item.empId"></el-option>
                                         </el-select>
                                     </template>
@@ -961,7 +961,7 @@
             this.getLateState();
             // 列表数据
             this.getListData();
-            
+
         },
         watch: {
             dictionary(newData,oldData){

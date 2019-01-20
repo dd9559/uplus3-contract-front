@@ -10,191 +10,191 @@
                 </el-form-item>
                 <div class="in-block">
                     <el-form-item prop="region" class="mr">
-                        <el-select 
-                        v-model="propForm.region" 
+                        <el-select
+                        v-model="propForm.region"
                         @change="receivingdateChangeFn"
                         class="w110">
                             <el-option v-for="item in rules.region" :key="item.value" :label="item.label" :value="item.value"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item 
+                    <el-form-item
                     v-show="propForm.region === RECEIVINGDATE.end"
                     class="mr"
                     prop="steps">
-                        <el-select 
-                        v-model="propForm.steps" 
+                        <el-select
+                        v-model="propForm.steps"
                         placeholder="交易步骤"
                         class="w110">
-                            <el-option v-for="item in rulesSteps" 
-                            :key="'regionSteps'+item.id" 
-                            :label="item.name" 
+                            <el-option v-for="item in rulesSteps"
+                            :key="'regionSteps'+item.id"
+                            :label="item.name"
                             :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item 
+                    <el-form-item
                     prop="dateMo">
                         <el-date-picker v-model="propForm.dateMo" class="w284" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
                 </div>
                 <div class="in-block">
-                    
-                    <el-form-item 
+
+                    <el-form-item
                     prop="stepsMo"
                     label="交易步骤"
                     class="mr">
-                        <el-select 
-                        v-model="propForm.stepsMo" 
-                        class="w110" 
+                        <el-select
+                        v-model="propForm.stepsMo"
+                        class="w110"
                         @change="rulesStepsFn"
                         placeholder="状态">
-                            <el-option 
-                            v-for="item in rules.stepsMo" 
-                            :key="'stepsMo'+item.key" 
-                            :label="item.value" 
+                            <el-option
+                            v-for="item in rules.stepsMo"
+                            :key="'stepsMo'+item.key"
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item 
-                    prop="steps" 
+                    <el-form-item
+                    prop="steps"
                     >
-                        <el-select 
-                        v-model="propForm.steps" 
+                        <el-select
+                        v-model="propForm.steps"
                         placeholder="交易步骤"
                         class="w110">
-                            <el-option v-for="item in rulesSteps" 
-                            :key="'steps'+item.id" 
-                            :label="item.name" 
+                            <el-option v-for="item in rulesSteps"
+                            :key="'steps'+item.id"
+                            :label="item.name"
                             :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
-                <el-form-item 
+                <el-form-item
                     label="交易流程"
                     prop="process">
-                        <el-select 
-                        v-model="propForm.process" 
+                        <el-select
+                        v-model="propForm.process"
                         class="w270">
-                            <el-option 
-                            v-for="item in rules.process" 
-                            :key="'jy'+item.id" 
-                            :label="item.name" 
+                            <el-option
+                            v-for="item in rules.process"
+                            :key="'jy'+item.id"
+                            :label="item.name"
                             :value="item.id"></el-option>
                         </el-select>
                 </el-form-item>
-                <el-form-item 
+                <el-form-item
                     label="是否超时"
                     prop="timeout">
-                        <el-select 
-                        v-model="propForm.timeout" 
+                        <el-select
+                        v-model="propForm.timeout"
                         class="w110">
-                            <el-option 
-                            v-for="item in rules.timeout" 
+                            <el-option
+                            v-for="item in rules.timeout"
                             :key="'timeout'+item.key"
-                            :label="item.value" 
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
-                <el-form-item 
+                <el-form-item
                     label="贷款银行"
                     prop="bank">
-                        <el-select 
-                        v-model="propForm.bank" 
+                        <el-select
+                        v-model="propForm.bank"
                         :remote-method="remoteMethodFn"
-                        remote 
+                        remote
                         clearable
                         filterable
                         class="w262">
-                            <el-option 
-                            v-for="item in rules.bank" 
-                            :key="'bank'+item.bankId" 
-                            :label="item.bankName" 
+                            <el-option
+                            v-for="item in rules.bank"
+                            :key="'bank'+item.bankId"
+                            :label="item.bankName"
                             :value="item.id"></el-option>
                         </el-select>
                 </el-form-item>
-                <el-form-item 
+                <el-form-item
                     label="数据范围"
                     prop="range">
-                        <el-select 
-                        v-model="propForm.range" 
+                        <el-select
+                        v-model="propForm.range"
                         class="w180">
-                            <el-option 
-                            v-for="item in rules.range" 
-                            :key="'range'+item.key" 
-                            :label="item.value" 
+                            <el-option
+                            v-for="item in rules.range"
+                            :key="'range'+item.key"
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
-                <el-form-item 
+                <el-form-item
                     label="变更/解约"
                     prop="termination">
-                        <el-select 
-                        v-model="propForm.termination" 
+                        <el-select
+                        v-model="propForm.termination"
                         class="w120">
-                            <el-option 
-                            v-for="item in rules.termination" 
-                            :key="'termination'+item.key" 
-                            :label="item.value" 
+                            <el-option
+                            v-for="item in rules.termination"
+                            :key="'termination'+item.key"
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
-                <el-form-item 
+                <el-form-item
                     label="后期状态"
                     prop="lateState">
-                        <el-select 
-                        v-model="propForm.lateState" 
+                        <el-select
+                        v-model="propForm.lateState"
                         class="w100">
-                            <el-option 
-                            v-for="item in rules.lateState" 
-                            :key="'lateState' + item.key" 
-                            :label="item.value" 
+                            <el-option
+                            v-for="item in rules.lateState"
+                            :key="'lateState' + item.key"
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
                 <div class="in-block">
-                    <el-form-item 
+                    <el-form-item
                     label="合同来源部门"
-                    prop="departmentS" 
+                    prop="departmentS"
                     class="mr">
                         <select-tree :data="DepList" :init="propForm.departmentS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                     </el-form-item>
                     <el-form-item prop="departmentMo">
-                        <el-select 
-                        v-model="propForm.departmentMo" 
+                        <el-select
+                        v-model="propForm.departmentMo"
                          v-loadmore="moreEmploye"
                         clearable
                         class="w100">
-                            <el-option 
-                            v-for="item in EmployeList" 
-                            :key="'departmentMo'+item.empId" 
+                            <el-option
+                            v-for="item in EmployeList"
+                            :key="'departmentMo'+item.empId"
                             :label="item.name"
                             :value="item.empId"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
-                <el-form-item 
+                <el-form-item
                     label="收佣状态"
                     prop="commission">
-                        <el-select 
-                        v-model="propForm.commission" 
+                        <el-select
+                        v-model="propForm.commission"
                         class="w100">
-                            <el-option 
-                            v-for="item in rules.commission" 
-                            :key="'commission'+item.key" 
-                            :label="item.value" 
+                            <el-option
+                            v-for="item in rules.commission"
+                            :key="'commission'+item.key"
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
-                <el-form-item 
+                <el-form-item
                     label="合作方式"
                     prop="depAttr">
-                        <el-select 
-                        v-model="propForm.depAttr" 
+                        <el-select
+                        v-model="propForm.depAttr"
                         class="w100">
-                            <el-option 
-                            v-for="item in rules.depAttr" 
-                            :key="'depAttr'+item.key" 
-                            :label="item.value" 
+                            <el-option
+                            v-for="item in rules.depAttr"
+                            :key="'depAttr'+item.key"
+                            :label="item.value"
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
@@ -205,14 +205,14 @@
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
             </div>
-            <el-table 
+            <el-table
             border
-            ref="tableCom" 
+            ref="tableCom"
             :max-height="tableNumberCom"
-            :data="tableData.list" 
+            :data="tableData.list"
             v-loading="loadingList"
             @cell-dblclick="dblclickFn"
-            class="paper-table mt-20">
+            class="paper-table">
                 <el-table-column :formatter="nullFormatterData" prop="code" label="合同编号" min-width="130">
                     <template slot-scope="scope">
                         <span class="blue" @click="contractFn(scope.row)" >{{scope.row.code}}</span>
@@ -258,10 +258,10 @@
                         <template v-else>
                             <p class="steps-p">
                                 <span class="steps-span">当前步骤：</span>
-                                <el-tooltip 
-                                class="item" 
-                                effect="dark" 
-                                :content="scope.row.stepInstanceName" 
+                                <el-tooltip
+                                class="item"
+                                effect="dark"
+                                :content="scope.row.stepInstanceName"
                                 placement="top">
                                     <el-button class="blue" type="text" @click="transactionFn(scope.row.stepInstanceid)">{{scope.row.stepInstanceName}}</el-button>
                                 </el-tooltip>
@@ -317,78 +317,78 @@
                             <span class="cl-2">{{layerShowData.statusReceiveAmount.label}}</span>
                         </li>
                     </ul>
-                    <el-table 
+                    <el-table
                     border
-                    :data="tableProgress" 
+                    :data="tableProgress"
                     v-loading="loadingProgress"
                     class="paper-table mt-20">
-                        <el-table-column 
+                        <el-table-column
                         min-width="120px"
-                        label="步骤类型" 
+                        label="步骤类型"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionStepsType)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column 
+                        <el-table-column
                         min-width="120px"
-                        label="步骤名称" 
+                        label="步骤名称"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.transactionSteps)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column 
-                        label="结算百分比" 
+                        <el-table-column
+                        label="结算百分比"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{percentageFn(scope.row.settlePercent)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column 
-                        label="操作人" 
+                        <el-table-column
+                        label="操作人"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.operatorName)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column 
-                        label="操作日期" 
+                        <el-table-column
+                        label="操作日期"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.operationTime)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column 
-                        label="责任人" 
+                        <el-table-column
+                        label="责任人"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.personLiableName)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column 
-                        label="确定日期" 
+                        <el-table-column
+                        label="确定日期"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.endDatetime)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column 
-                        label="办理天数" 
+                        <el-table-column
+                        label="办理天数"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.actualDay)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column 
-                        label="规定天数" 
+                        <el-table-column
+                        label="规定天数"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{getDataVal(scope.row.specifiedDay)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column 
-                        label="操作" 
+                        <el-table-column
+                        label="操作"
                         min-width="120px"
                         align="center">
                             <template slot-scope="scope">
@@ -421,8 +421,8 @@
                 <div>
                     <div class="tit">交易流程</div>
                     <ul class="ul">
-                        <li 
-                        v-for="item in replaceData.tit" 
+                        <li
+                        v-for="item in replaceData.tit"
                         :class="replaceData.index === item.id ?'on':''"
                         @click="replaceTabFn(item.id)"
                         :key="'jylc'+item.id">{{item.name}}</li>
@@ -431,7 +431,7 @@
                 <div>
                     <div class="tit">交易步骤</div>
                     <ul class="ul-box pr">
-                        <li 
+                        <li
                         v-for="item in replaceData.children"
                         :key="'jybz'+item.id">
                             <span v-show="replaceData.index === replaceData.transFlowCode">
@@ -456,7 +456,7 @@
         <el-dialog :title="stepsData.tit" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="stepsData.show" width="740px"  class="layer-paper layer-scroll-auto">
             <LayerScrollAuto>
                 <div class="steps-from">
-                        <el-form 
+                        <el-form
                         ref="stepsFrom"
                         :model="stepsFrom"
                         v-loading.fullscreen.lock="LookStepLoad"
@@ -473,13 +473,13 @@
                                     <!-- 办理 编辑 -->
                                     <template v-if="stepsData.tit !== STEPS.end">
                                         <template v-if="item.type === STEPSINPUT.start">
-                                            <el-input 
+                                            <el-input
                                             v-model="item.val"
                                             size="small"
                                             ></el-input>
                                         </template>
                                         <template v-if="item.type === STEPSINPUT.num">
-                                            <el-input 
+                                            <el-input
                                             v-model="item.val"
                                             size="small"
                                             @input="numberChangeFn(index,$event)"
@@ -497,11 +497,11 @@
                                         </template>
                                         <template v-else-if="item.type === STEPSINPUT.textarea">
                                             <div class="steps-input">
-                                                <el-input 
-                                                type="textarea" 
-                                                resize="none" 
-                                                :maxlength="invalidMax" 
-                                                v-model="item.val" 
+                                                <el-input
+                                                type="textarea"
+                                                resize="none"
+                                                :maxlength="invalidMax"
+                                                v-model="item.val"
                                                 class="input">
                                                 </el-input>
                                                 <div class="text-absloute">{{item.val.length}}/{{invalidMax}}</div>
@@ -509,27 +509,27 @@
                                         </template>
                                         <template v-else-if="item.type === STEPSINPUT.img || item.type === STEPSINPUT.mp4 || item.type === STEPSINPUT.pdf || item.type === STEPSINPUT.excel || item.type === STEPSINPUT.word">
                                             <div>
-                                                <fileUp 
+                                                <fileUp
                                                 v-if="stepsData.show"
                                                 :id="'fileUp'+index"
                                                 :rules="stepsTypeImg(item.type,1)"
                                                 @getUrl="imgBtnFn"
                                                 class="fileUp">
-                                                    <el-button 
-                                                    class="paper-btn paper-btn-blue" 
+                                                    <el-button
+                                                    class="paper-btn paper-btn-blue"
                                                     round
-                                                    type="primary" 
+                                                    type="primary"
                                                     size="small">{{stepsTypeImg(item.type,2)}}</el-button>
                                                 </fileUp>
                                             </div>
                                             <ul class="steps-img">
-                                                <el-tooltip class="item" 
-                                                effect="dark" 
-                                                :content="i.name" 
-                                                placement="bottom" 
+                                                <el-tooltip class="item"
+                                                effect="dark"
+                                                :content="i.name"
+                                                placement="bottom"
                                                 v-for="(i,n) in item.val"
                                                 :key="i.name">
-                                                    <li 
+                                                    <li
                                                     @click="previewPhoto(item.val,n)"
                                                     >
                                                         <i @click.stop="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
@@ -547,36 +547,36 @@
                                         </template>
                                         <template v-else>
                                             <!-- <ul class="steps-img">
-                                                <li 
+                                                <li
                                                 class="steps-mp4-li"
                                                 v-for="(i,n) in item.val"
                                                 @click="clearFn(index,n)"
                                                 :key="i.name"
-                                                >  
-                                                    <img 
-                                                    class="icon-steps" 
+                                                >
+                                                    <img
+                                                    class="icon-steps"
                                                     v-if="item.type === STEPSINPUT.mp4"
                                                     src="../../assets/img/icon-steps01.png">
-                                                    <img 
-                                                    class="icon-steps" 
+                                                    <img
+                                                    class="icon-steps"
                                                     v-if="item.type === STEPSINPUT.excel"
                                                     src="../../assets/img/icon-steps02.png">
-                                                    <img 
-                                                    class="icon-steps" 
+                                                    <img
+                                                    class="icon-steps"
                                                     v-if="item.type === STEPSINPUT.word"
                                                     src="../../assets/img/icon-steps03.png">
-                                                    <img 
-                                                    class="icon-steps" 
+                                                    <img
+                                                    class="icon-steps"
                                                     v-if="item.type === STEPSINPUT.pdf"
                                                     src="../../assets/img/icon-steps04.png">
                                                     <span class="fl">{{i.name}}</span>
                                                 </li>
                                             </ul> -->
                                             <ul class="steps-img">
-                                                <el-tooltip class="item" effect="dark" :content="i.name" placement="bottom" 
+                                                <el-tooltip class="item" effect="dark" :content="i.name" placement="bottom"
                                                     v-for="(i,n) in item.val"
                                                     :key="i.name">
-                                                    <li 
+                                                    <li
                                                     @click="previewPhoto(item.val,n)"
                                                     >
                                                         <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
@@ -611,25 +611,25 @@
         </el-dialog>
         <!-- 调整步骤 -->
         <el-dialog title="调整步骤"  :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal"
-        :visible.sync="adjustShow" 
-        width="740px"  
+        :visible.sync="adjustShow"
+        width="740px"
         class="layer-paper layer-scroll-auto">
             <LayerScrollAuto>
                 <div class="layer-chekbox-box" v-loading="loadingAdjust">
                     <el-table
                     :data="adjustData"
-                    class="paper-table" 
+                    class="paper-table"
                     border>
                         <el-table-column
-                            class="layer-all-chekbox" 
+                            class="layer-all-chekbox"
                             align="center"
                             width="250px"
                             label="标题">
                             <template slot-scope="scope">
                                 <p class="check-all">
-                                    <el-checkbox 
+                                    <el-checkbox
                                     class="check-break"
-                                    v-model="scope.row.bool" 
+                                    v-model="scope.row.bool"
                                     @change="adjustAllChange(scope.$index,$event)">{{scope.row.typeName}}</el-checkbox>
                                 </p>
                             </template>
@@ -638,14 +638,14 @@
                             align="center"
                             label="内容">
                             <template slot-scope="scope">
-                                <el-checkbox-group 
+                                <el-checkbox-group
                                 class="layer-checkbox-p"
                                 v-model="scope.row.list"
                                 @change="adjustChange(scope.$index,$event)">
-                                    <p 
-                                    v-for="item in scope.row.stepsList" 
+                                    <p
+                                    v-for="item in scope.row.stepsList"
                                     :key="item.name">
-                                        <el-checkbox 
+                                        <el-checkbox
                                         class="check-break"
                                         :disabled="item.disabled"
                                         :label="item">{{item.name}}</el-checkbox>
@@ -1032,7 +1032,7 @@
                                     type:2,
                                     id:'bj'+resData.id + 1,
                                     rules:{
-                                        required: true, 
+                                        required: true,
                                         message: `请输入办理日期`
                                     }
                                 },{
@@ -1042,7 +1042,7 @@
                                     type:8,
                                     id:'bj' + resData.id + 2,
                                     rules:{
-                                        required: false 
+                                        required: false
                                     }
                                 }]
 
@@ -1066,7 +1066,7 @@
                                 j.required = false;
                             }
                             if(e.type === STEPSINPUT.num){
-                                e.rules = [j,{ 
+                                e.rules = [j,{
                                     bool:e.isRequired,
                                     validator: this.checkNumberFn,
                                 }]
@@ -1143,9 +1143,9 @@
             // 后期进度
             progressFn(row){
                 this.layerShow = true;
-                this.layerBtn = false;  
+                this.layerBtn = false;
                 this.layerShowData = row;
-                this.lateProgressFn();             
+                this.lateProgressFn();
             },
             // 下一步骤显示
             nextStepFn(e){
@@ -1302,7 +1302,7 @@
                     let upId = this.tableProgress[index+1].id;
                     let downId = e.row.id;
                     this.oderStepFn(upId,downId);
-                    
+
                     // }
                 }
             },
@@ -1474,7 +1474,7 @@
                             break;
                     }
                 }
-                
+
             },
             // 办理确定
             handleBtnFn(){
@@ -1795,12 +1795,12 @@
         },
         watch:{
            dictionary(newData,oldData){
-                //是否超时    
+                //是否超时
                 this.rules.timeout = [{
                             value: "全部",
                             key: ""
                         },...newData[22]];
-                //后期状态    
+                //后期状态
                 this.rules.lateState = [{
                             value: "全部",
                             key: ""
