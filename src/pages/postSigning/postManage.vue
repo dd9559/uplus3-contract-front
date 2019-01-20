@@ -982,6 +982,7 @@
                 this.$refs.propForm.resetFields()
                 // this.pageNum = 1;
                 // this.getDataList();
+              this.EmployeList = []
             },
             // 查询
             queryFn() {
@@ -1754,8 +1755,8 @@
             },
             // 部门搜索
             searchDep:function (payload) {
-                this.DepList=payload.list
-                this.propForm.departmentS = payload.depName
+                /*this.DepList=payload.list
+                this.propForm.departmentS = payload.depName*/
             },
             // 后期进度获取数据
             lateProgressFn(){

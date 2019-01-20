@@ -599,6 +599,7 @@ export default {
       TOOL.clearForm(this.contractForm);
       this.keyword = "";
       this.signDate = [];
+      this.EmployeList = []
     },
     // 查询
     queryFn() {
@@ -843,8 +844,8 @@ export default {
       this.handleNodeClick(data)
     },
     searchDep:function (payload) {
-      this.DepList=payload.list
-      this.contractForm.depName=payload.depName
+      /*this.DepList=payload.list
+      this.contractForm.depName=payload.depName*/
     },
     //提审
     goSave(item){

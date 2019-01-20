@@ -117,8 +117,8 @@
         },
         methods: {
             searchDep:function (payload) {
-                this.DepList=payload.list
-                this.departmentName=payload.depName
+                /*this.DepList=payload.list
+                this.departmentName=payload.depName*/
             },
             depHandleClick(data) {
                 this.depUser=''
@@ -183,6 +183,7 @@
                 this.users=''
                 this.departmentName=''
                 this.clearSelect()
+              this.EmployeList = []
             },
             // 查询
             queryFn(){

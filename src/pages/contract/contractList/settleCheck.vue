@@ -19,13 +19,13 @@
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
-        </el-form-item> 
+        </el-form-item>
         <el-form-item label="合作方式">
           <el-select v-model="adjustForm.depAttr" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
-        </el-form-item> 
+        </el-form-item>
 
         <el-form-item label="部门">
           <!-- <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" :loading="loading" class="width200">
@@ -33,7 +33,7 @@
           </el-select>
           <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
-          </el-select> --> 
+          </el-select> -->
           <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="adjustForm.empId" placeholder="请选择">
@@ -59,12 +59,12 @@
             <el-option label="驳回" value="2"></el-option>
           </el-select>
         </el-form-item>
-        
+
       </el-form>
     </ScreeningTop>
 
     <!-- 数据列表 -->
-    <div class="contract-list">  
+    <div class="contract-list">
       <!-- <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>    -->
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
         <el-table-column label="合同编号" width="150" fixed>
@@ -73,16 +73,16 @@
           </template>
         </el-table-column>
         <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter" align="center">
-          
+
         </el-table-column>
- 
+
         <el-table-column label="成交总价" :formatter="nullFormatter" prop="dealPrice">
           <template slot-scope="scope">
             <span>{{scope.row.dealPrice}} 元</span>
-            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span> 
+            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
-       
+
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
           <template slot-scope="scope">
             <p>{{scope.row.dealAgentStoreName}}</p>
@@ -122,10 +122,10 @@
             <p>{{scope.row.examineTime | getDate}}</p>
           </template>
         </el-table-column>
-        
+
         <el-table-column label="当前审核人" align="center" min-width="140">
           <template slot-scope="scope">
-            
+
             <span v-if="scope.row.auditorId>0&&scope.row.examineState.value===0">
               <p>{{scope.row.examineStoreName}}</p>
               <p>{{scope.row.examineName}}</p>
@@ -159,7 +159,7 @@
             <span v-else>--</span>
           </template>
         </el-table-column>
-              
+
         <el-table-column label="操作" width="100" fixed="right" align="center">
           <template slot-scope="scope">
             <template v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === userMsg.empId">
@@ -168,7 +168,7 @@
             <span v-else>--</span>
           </template>
         </el-table-column>
-        
+
       </el-table>
       <el-pagination
       @current-change="handleCurrentChange"
@@ -188,23 +188,23 @@
             <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
             <p>发起日期：<span>{{layerAudit.createTime | getDate}}</span></p>
             <p>发起人：<span>{{layerAudit.sponsorStoreName + '-' + layerAudit.sponsorName}}</span></p>
-            
+
           </div>
           <div class="col-li">
-            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>       
+            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
           <div class="col-li col-li2">
             <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
             <p>后期状态：<span>{{layerAudit.statusLaterStage.label}}</span></p>
-            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>         
+            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
           </div>
           <div class="col-li col-li2">
             <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
-            <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>       
+            <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
             <p>应收佣金：<span>{{layerAudit.thisCost}}元</span></p>
           </div>
           <div class="col-li">
-            <p>当期实际结算：<span><em>{{layerAudit.actualsettlement}}元</em>（当期实收*结算比例-成本）</span></p>      
+            <p>当期实际结算：<span><em>{{layerAudit.actualsettlement}}元</em>（当期实收*结算比例-成本）</span></p>
           </div>
         </div>
 
@@ -219,8 +219,8 @@
             </el-table-column>
             <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
             <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
-          </el-table> 
-          <div class="zhushi">注：结算中的当期实收分成金额已扣除了特许服务费、刷卡手续费</div>           
+          </el-table>
+          <div class="zhushi">注：结算中的当期实收分成金额已扣除了特许服务费、刷卡手续费</div>
         </div>
 
         <!-- 上传附件 -->
@@ -238,7 +238,7 @@
                   <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
                 </li>
             </ul>
-          </div>     
+          </div>
         </div>
 
         <!-- 结算备注 -->
@@ -262,10 +262,10 @@
       </div>
       <div class="btnbox">
         <el-button class="refuse" @click="refuseFn()" v-loading.fullscreen.lock="fullscreenLoading">驳 回</el-button>
-        <el-button type="primary" class="recept"  @click="receptFn()" v-loading.fullscreen.lock="fullscreenLoading">通 过</el-button>  
+        <el-button type="primary" class="recept"  @click="receptFn()" v-loading.fullscreen.lock="fullscreenLoading">通 过</el-button>
       </div>
       <!-- 图片放大 -->
-      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview> 
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
 
     <!-- 结算详情 -->
@@ -275,15 +275,15 @@
           <div class="col-li col-li2">
             <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
             <p>发起日期：<span>{{layerAudit.createTime | getDate}}</span></p>
-            <p>发起人：<span>{{layerAudit.sponsorStoreName + '-' + layerAudit.sponsorName}}</span></p>           
+            <p>发起人：<span>{{layerAudit.sponsorStoreName + '-' + layerAudit.sponsorName}}</span></p>
           </div>
           <div class="col-li">
-            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>     
+            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
           <div class="col-li col-li2">
             <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
             <p>后期状态：<span>{{layerAudit.statusLaterStage.label}}</span></p>
-            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>   
+            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
           </div>
           <div class="col-li col-li2">
             <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
@@ -291,7 +291,7 @@
             <p>应收佣金：<span>{{layerAudit.thisCost}}元</span></p>
           </div>
           <div class="col-li">
-              <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>                
+              <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>
           </div>
         </div>
 
@@ -306,8 +306,8 @@
             </el-table-column>
             <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
             <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
-          </el-table> 
-          <div class="zhushi">注：结算中的当期实收分成金额已扣除了特许服务费、刷卡手续费</div>           
+          </el-table>
+          <div class="zhushi">注：结算中的当期实收分成金额已扣除了特许服务费、刷卡手续费</div>
         </div>
 
         <!-- 上传附件 -->
@@ -325,7 +325,7 @@
                   <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
                 </li>
             </ul>
-          </div>     
+          </div>
         </div>
 
         <!-- 结算备注 -->
@@ -373,7 +373,7 @@
                 <span v-else>--</span>
               </template>
             </el-table-column>
-          </el-table> 
+          </el-table>
         </div>
 
 
@@ -389,7 +389,7 @@
 </template>
 
 
-      
+
 <script>
   import ScreeningTop from '@/components/ScreeningTop';
   import {FILTER} from "@/assets/js/filter";
@@ -408,7 +408,7 @@
           flowType:0,
           label:false,
           page:'list'
-        },  
+        },
         clientHei: document.documentElement.clientHeight, //窗体高度
         fullscreenLoading:false,//创建按钮防抖
         loading:false,
@@ -432,12 +432,12 @@
           // getAgentName: [{
           //   name: "全部",
           //   empId: ""
-          // }], 
+          // }],
                      //审核状态
           keyWord: ''   //关键字
 
         },
-       
+
 
         // toExamineState: [{
         //   label: '审核中',
@@ -469,7 +469,7 @@
           statusLaterStage: {
             label:""
           },
-          
+
 
         },
         checkInfo:[],
@@ -479,7 +479,7 @@
         //上传的协议
         uploadList: [],
         myCheckId: '',
-        
+
         auditForm: {
           textarea: '', //备注
         },
@@ -488,7 +488,7 @@
         dialogImageUrl: '',
         dialogVisible: false,
         dialogVisible2: false,
-             
+
         tableData:[],
 
         // 分页
@@ -511,7 +511,7 @@
           },
         }
 
-        
+
       }
     },
 
@@ -532,7 +532,7 @@
          return TOOL.timeFormat(val)
        }
     },
-  
+
     methods:{
       //图片预览
       // getPicture(value,index){
@@ -544,7 +544,7 @@
       //     })
       //     this.fileSign(arr)
       // },
-      
+
       //合同主体的删除
       // ZTdelectData(index){
       //     this.uploadList.splice(index,1)
@@ -559,19 +559,19 @@
       //         this.isDelete=''
       //     }
       // },
-      trim(str){  
+      trim(str){
         return str.replace(/(^\s*)|(\s*$)/g, "")
       },
       myclose: function() {
         this.checkPerson.state=false
         // this.queryFn();
-        
+
       },
        // 选择审核人
       choseCheckPerson:function (row,type) {
         this.checkPerson.flowType=5   //调佣的流程类型为4
         this.checkPerson.code=row.id //业务编码为checkId
-        this.checkPerson.state=true  
+        this.checkPerson.state=true
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
           this.checkPerson.label=true
@@ -589,10 +589,10 @@
 
 
       // 控制弹框body内容高度，超过显示滚动条
-      clientHeight() {        
+      clientHeight() {
           return this.clientHei - 265 + 'px'
       },
-      clientHeight2() {        
+      clientHeight2() {
           return this.clientHei - 197 + 'px'
       },
 
@@ -600,10 +600,10 @@
       // getDepNameFn(e) {
       //   this.loading = true;
       //   this.$ajax.get("/api/access/deps", {keyword: e})
-      //   .then(res => {       
-      //     let data = res.data;         
-      //     if (res.data.status === 200) { 
-      //       this.loading = false; 
+      //   .then(res => {
+      //     let data = res.data;
+      //     if (res.data.status === 200) {
+      //       this.loading = false;
       //       if(e === '' || !e){
       //         this.adjustForm.getDepName = [{
       //           name: "全部",
@@ -611,8 +611,8 @@
       //         },...data.data]
       //       }else{
       //         this.adjustForm.getDepName = data.data
-      //       } 
-             
+      //       }
+
       //     }
       //   }).catch(error => {
       //       this.$message({
@@ -629,13 +629,13 @@
       //       cityId:this.userMsg.cityId,
       //       depId: e
       //     })
-      //     .then(res => {       
-                    
-      //       if (res.data.status === 200) {  
+      //     .then(res => {
+
+      //       if (res.data.status === 200) {
       //         this.loading2 = false;
-      //         this.Form.getAgentName = ''; 
-      //         if(res.data.data.length > 0){ 
-                
+      //         this.Form.getAgentName = '';
+      //         if(res.data.data.length > 0){
+
       //           this.adjustForm.getAgentName = [{
       //             name: "全部",
       //             empId: ""
@@ -644,21 +644,21 @@
       //         else{
       //           this.adjustForm.getAgentName = res.data.data
       //         }
-              
+
       //       }
 
       //     }).catch(error => {
       //         this.$message({
       //           message: error
       //         })
-      //     })  
-      //   }else{    
-      //       this.Form.getAgentName = '';       
+      //     })
+      //   }else{
+      //       this.Form.getAgentName = '';
       //       this.adjustForm.getAgentName = [{
       //           name: "全部",
       //           empId: ""
       //       }]
-      //       this.Form.getDepName = ''; 
+      //       this.Form.getDepName = '';
       //       this.getDepNameFn('');
       //   }
       // },
@@ -666,8 +666,8 @@
       // 清除部门搜索
       // clearDepNameFn(){
       //     this.getDepNameFn('');
-      // }, 
-      
+      // },
+
 
 
       // 重置
@@ -677,17 +677,18 @@
           // this.changeDepNameFn('');
           // this.pageNum=1;
           // this.queryFn();
+        this.EmployeList = []
       },
-      
+
       // 查询
       queryFn() {
         // console.log(this.power)
         // if(this.power['sign-ht-js-query'].state){
-          
+
           this.loadingTable = true;
           let beginDate;
           let endDate;
-          
+
           if(this.adjustForm.signDate.length === 2){
               beginDate = TOOL.dateFormat(this.adjustForm.signDate[0]);
               endDate = TOOL.dateFormat(this.adjustForm.signDate[1]);
@@ -701,26 +702,26 @@
               endDate,
               examineState: this.adjustForm.examineState,    //this.examineState
               contractType: this.adjustForm.contType,    //this.adjustForm.contType.key,
-              depAttr: this.adjustForm.depAttr,   
+              depAttr: this.adjustForm.depAttr,
               dealAgentStoreId: this.adjustForm.depId,    //this.Form.getDepName.id,
               dealAgentId: this.adjustForm.empId,    //this.Form.getAgentName.empId,
               keyword: this.adjustForm.keyWord
-              
+
             },
             pageNum: this.pageNum,
             pageSize: this.pageSize
-            
+
           }
             // 结算审核列表
-            this.$ajax         
+            this.$ajax
             .postJSON("/api/contract/contResultList", param)
             .then(res => {
               let data = res.data;
               if (res.data.status === 200) {
-                this.tableData = data.data              
+                this.tableData = data.data
               }
               this.loadingTable = false;
-        
+
             }).catch(error => {
                 this.$message({
                   message: error
@@ -729,7 +730,7 @@
         // }else{
         //   this.noPower(this.power['sign-ht-js-query'].name)
         // }
-        
+
       },
 
       // 双击详情事件
@@ -741,8 +742,8 @@
             }
             this.$ajax.get("/api/settlement/applyExamineById", param)
             .then(res => {
-              if (res.data.status === 200) {        
-                
+              if (res.data.status === 200) {
+
                 this.layerAudit = res.data.data.contractResult;
                 this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
                 this.myCheckId = res.data.data.contractResult.id; //结算id
@@ -757,7 +758,7 @@
         }else{
           this.noPower(this.power['sign-ht-js-vdetail'].name)
         }
-       
+
       },
 
       // 点击审核事件
@@ -768,7 +769,7 @@
           id: e.id,
         }
         this.$ajax.get("/api/settlement/applyExamineById", param)
-        .then(res => {     
+        .then(res => {
           if (res.data.status === 200) {
            this.layerAudit = res.data.data.contractResult;
            this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
@@ -784,7 +785,7 @@
 
       // 驳回操作
       refuseFn() {
-        
+
         if(this.auditForm.textarea !== ""){
           this.fullscreenLoading=true
           let param = {
@@ -799,12 +800,12 @@
               this.dialogVisible = false
                 // 数据刷新
               this.queryFn();
-              
+
               setTimeout(() => {
-                
+
                 this.$message('已驳回');
 
-              }, 2000);                                                                                                     
+              }, 2000);
             }
           }).catch(error => {
             this.fullscreenLoading=false
@@ -815,7 +816,7 @@
         }else{
           this.$message('审核备注未填写！');
         }
-        
+
       },
 
       // 通过操作
@@ -830,12 +831,12 @@
         .then(res => {
           this.fullscreenLoading=false
           if (res.data.status === 200) {
-            
+
             this.dialogVisible = false
               // 数据刷新
             this.queryFn();
             setTimeout(() => {
-              
+
               this.$message('已通过');
             }, 2000);
           }
@@ -845,10 +846,10 @@
         }).catch(error => {
            this.fullscreenLoading=false
            if(error.status === 300 && error.data.bizId){
-              // this.choseCheckPerson(error.data.bizId,'set') 
+              // this.choseCheckPerson(error.data.bizId,'set')
               this.checkPerson.flowType=5   //调佣的流程类型为4
               this.checkPerson.code=error.data.bizId  //业务编码为checkId
-              this.checkPerson.state=true  
+              this.checkPerson.state=true
               this.checkPerson.type=3
             }
             else{
@@ -902,8 +903,8 @@
       },
 
       searchDep:function (payload) {
-        this.DepList=payload.list
-        this.adjustForm.depName=payload.depName
+        /*this.DepList=payload.list
+        this.adjustForm.depName=payload.depName*/
       },
 
       initDepList:function (val) {
@@ -911,8 +912,8 @@
           this.remoteMethod()
         }
       },
-      
-      
+
+
     },
 
     created() {
@@ -1019,7 +1020,7 @@
           }
         }
       }
-      
+
     }
   }
 
@@ -1075,8 +1076,8 @@
       span{
           color: #233241;
           font-size: 20px;
-          
-          
+
+
       }
       .el-dialog__headerbtn{
           top: 16px;
@@ -1084,7 +1085,7 @@
               font-size: 24px;
               color: #32485F;
           }
-      } 
+      }
     }
     .el-dialog__body{
           padding: 0;
@@ -1099,7 +1100,7 @@
       .el-table th{
         background-color: #F2F3F8 !important;
       }
-      
+
       .col-li{
         overflow: hidden;
         clear: left;
@@ -1107,7 +1108,7 @@
         &:last-child{
           margin-bottom: 0;
         }
-       
+
       }
       .col-li2{
         p:nth-child(2n){
@@ -1115,15 +1116,15 @@
         }
         p{
           float: left;
-          span em{           
-            color: #ff9039;             
+          span em{
+            color: #ff9039;
           }
           &:first-child{
             width: 250px;
             color: #6C7986;
             span{
               color: #233241;
-              
+
               &.blue{
                 color: #478DE3;
               }
@@ -1155,7 +1156,7 @@
           padding: 0 15px 0 10px;
         }
       }
-      
+
       .uploadfile{
         margin: 20px 0 30px;
         display: flex;
@@ -1168,14 +1169,14 @@
           }
           span{
             margin-left: 16px;
-            color: #8E8E8E;           
+            color: #8E8E8E;
             b{
               color: #6C7986;
             }
           }
         }
         .ulData{
- 
+
             width: 100%;
             overflow: hidden;
             li{
@@ -1214,11 +1215,11 @@
               text-overflow:ellipsis;
               white-space: nowrap;
             }
-        }       
-        
+        }
+
       }
-      
-    }   
+
+    }
     .bordernone{
       border-bottom: none;
     }
@@ -1255,7 +1256,7 @@
         background-color: #54D384;
         border-color: #54D384;
       }
-      
+
     }
   }
   .zhushi{

@@ -804,6 +804,7 @@
                 this.pageNum = 1;
                 this.$refs.propForm.resetFields();
                 // this.getListData();
+              this.EmployeList = []
             },
             // 查询
             queryFn() {
@@ -832,8 +833,8 @@
             },
             // 部门搜索
             searchDep:function (payload) {
-                this.DepList=payload.list
-                this.propForm.regionS = payload.depName
+                /*this.DepList=payload.list
+                this.propForm.regionS = payload.depName*/
             },
             // 贷款银行搜索
             remoteMethodFn(e) {

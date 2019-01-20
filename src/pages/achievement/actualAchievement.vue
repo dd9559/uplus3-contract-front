@@ -46,7 +46,7 @@
           >
           </el-date-picker>
         </el-form-item>
-        
+
         <!-- 部门 -->
         <el-form-item label="部门" style="margin-right:0px;">
               <!-- <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
@@ -171,7 +171,7 @@
 
         </div>
         <p> <el-button class="f_r" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;">导出</el-button></p>
-        
+
       </div>
       <!-- 头部 end -->
 
@@ -185,9 +185,9 @@
           style="width: 100%"
           class="info-scrollbar"
           @row-dblclick="enterDetail"
-          ref="tableCom" 
-          :max-height="tableNumberCom" 
-          border      
+          ref="tableCom"
+          :max-height="tableNumberCom"
+          border
         >
           <el-table-column
             label="合同信息"
@@ -409,11 +409,11 @@
             <template slot-scope="scope">
                 <p  v-if="scope.row.achievementState==0">{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
                 <p v-else>-</p>
-                <el-button 
+                <el-button
                    type="text"
-                   @click="choseCheckPerson(scope.row,userMsg&&userMsg.empId===scope.row.auditId?2:1)" 
+                   @click="choseCheckPerson(scope.row,userMsg&&userMsg.empId===scope.row.auditId?2:1)"
                    v-if="((userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0"
-                >    
+                >
                    {{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}
                 </el-button>
             </template>
@@ -426,10 +426,10 @@
             <template slot-scope="scope">
                 <p v-if="scope.row.achievementState==0">{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
                 <p v-else>-</p>
-                <el-button 
-                 type="text" 
-                 style="color:red"  
-                 @click="choseCheckPerson(scope.row,3)"  
+                <el-button
+                 type="text"
+                 style="color:red"
+                 @click="choseCheckPerson(scope.row,3)"
                  v-if="(userMsg&&scope.row.auditId===userMsg.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState==0"
                 >
                 设置审核人
@@ -464,7 +464,7 @@
                 >
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
-                    style="cursor:pointer;"   
+                    style="cursor:pointer;"
                     v-if="power['sign-yj-rev-fs'].state&&(userMsg&&scope.row.finalAuditorId===userMsg.empId)"
                   >反审核</span>
                  <span
@@ -501,8 +501,8 @@
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
                     v-if="userMsg&&userMsg.empId==scope.row.auditId"
-                  >审核</span> 
-                  <span v-if="userMsg&&userMsg.empId!=scope.row.auditId&&scope.row.arraignmentId!=userMsg.empId">-</span>           
+                  >审核</span>
+                  <span v-if="userMsg&&userMsg.empId!=scope.row.auditId&&scope.row.arraignmentId!=userMsg.empId">-</span>
                 </div>
               </div>
               <div v-else>
@@ -526,9 +526,9 @@
       </div>
       <!-- 分页 -->
       <!-- <div class="pagination" v-if="total!=0">
-      
+
       </div> -->
-    
+
 
     </div>
 
@@ -561,7 +561,7 @@
             border
           >
             <!-- roleType 分成人角色类型 :
-             房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
+             房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘
              客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
             <el-table-column
               label="角色类型"
@@ -649,10 +649,10 @@
             border
           >
             <!-- roleType 分成人角色类型 :
-                房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘   
+                房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘
                 客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
             <el-table-column
-                          
+
               label="角色类型"
               width="100"
             >
@@ -738,7 +738,7 @@
             <el-table-column
               label="时间"
               width="150"
-            >          
+            >
               <template slot-scope="scope">
                 <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatTime}}</p>
                 <p v-else>-</p>
@@ -808,15 +808,15 @@
                    </div>
                    <div v-else>
                        --
-                   </div>           
+                   </div>
               </template>
-            </el-table-column>   
+            </el-table-column>
           </el-table>
         </div>
       </div>
       <div class="ach-footer"></div>
     </div>
- 
+
     </el-dialog>
    </div>
 
@@ -984,7 +984,7 @@ export default {
     this.ajaxParam={
         pageNum: this.currentPage,
         pageSize: this.pageSize
-    } 
+    }
     this.getAdmin();//获取当前登录人信息
     this.getData(this.ajaxParam);
     // 字典初始化
@@ -1009,7 +1009,7 @@ export default {
       if(!val){
         this.remoteMethod()
       }
-    },   
+    },
     clearDep:function () {
       this.propForm.department=''
       this.EmployeList=[]
@@ -1017,15 +1017,15 @@ export default {
       this.propForm.dealAgentStoreId='';
       this.clearSelect()
     },
-    depHandleClick(data) {           
+    depHandleClick(data) {
       this.propForm.dealAgentStoreId=data.depId
       this.propForm.department=data.name
       this.propForm.dealAgentId=''
       this.handleNodeClick(data)
     },
     searchDep:function (payload) {
-      this.DepList=payload.list
-      this.propForm.department=payload.depName
+      /*this.DepList=payload.list
+      this.propForm.department=payload.depName*/
     },
     getData(ajaxParam) {
      let _that=this;
@@ -1041,12 +1041,12 @@ export default {
                    _that.countData = data.data.list[0].contractCount;
               }else {
                    _that.countData = [0, 0, 0, 0];
-            }       
+            }
 
-            }            
+            }
         }).catch(error => {
             this.$message({message:error})
-     }); 
+     });
       this.loading=false;
     },
     // 导出功能
@@ -1065,7 +1065,7 @@ export default {
         this.selectAchList[index].distributions=resultArr;
         if(status||status==0){
           this.selectAchList[index].achievementState=status;
-        }   
+        }
     },
     // 通过操作
     adoptData(index,resultArr,result){
@@ -1117,12 +1117,12 @@ export default {
       //  }
       // 撤回
        if(this.statuType==1){
-          let param={             
+          let param={
            contId:this.statuContId,
            aId:this.statuAid,
            status:-1
-         }    
-        this.$ajax         
+         }
+        this.$ajax
           .postJSON("/api/achievement/withdrawStatusArraign", param)
            .then(res => {
           if (res.data.status == 200) {
@@ -1138,7 +1138,7 @@ export default {
     },
     //获取应收列表详情
     enterDetail(row) {
-      this.dialogVisible = true;  
+      this.dialogVisible = true;
       this.loading2=true;
       //合同边和获取业绩详情
       this.code = row.code;
@@ -1152,14 +1152,14 @@ export default {
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;
-                this.loading2=false;            
+                this.loading2=false;
             }else{
               this.checkArr = [];
             }
-            
+
             this.comm = data.data.comm;
           }
-        });     
+        });
     },
     queryFn() {
     console.log(this.propForm.dateMo)
@@ -1220,6 +1220,7 @@ export default {
         search: "",
         joinMethods:""
       }
+      this.EmployeList=[]
     },
     checkAch(value,index) {
       this.beginData = true;
@@ -1234,11 +1235,11 @@ export default {
     },
     editAch(value,index) {
         this.beginData = true;
-        this.code2 =  value.code; 
-        this.aId =  value.aId; 
-        this.contractId =  value.id; 
-        this.dialogType = 1; 
-        this.achIndex=index  
+        this.code2 =  value.code;
+        this.aId =  value.aId;
+        this.contractId =  value.id;
+        this.dialogType = 1;
+        this.achIndex=index
         this.achObj={
           contractId:value.id,//合同id
         }
@@ -1250,7 +1251,7 @@ export default {
       this.aId =  value.aId;
       this.contractId =  value.id;
       this.dialogType = 2;
-      this.achIndex=index 
+      this.achIndex=index
       this.achObj={
         contractId:value.id,//合同id
       }
@@ -1294,17 +1295,17 @@ export default {
           this.checkPerson.label=false;
           }else{
           this.checkPerson.label=true;
-          }  
+          }
         }
     },
     personChose:function () {
         this.checkPerson.state=false
-        this.getData(this.ajaxParam);       
+        this.getData(this.ajaxParam);
     },
     closeDialogs(){
       this.getData(this.ajaxParam);
       this.code2="";
-      this.shows=false; 
+      this.shows=false;
     },
   }
 };

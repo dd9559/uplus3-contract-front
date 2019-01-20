@@ -386,6 +386,7 @@
       reset: function () {
         this.$refs.propForm.resetFields();
         this.$tool.clearForm(this.propForm)
+        this.EmployeList = []
       },
       // 错误提示
       errMeFn(e){
@@ -585,8 +586,8 @@
       },
       // 部门搜索
       searchDep:function (payload) {
-          this.DepList=payload.list
-          this.propForm.depIdS = payload.depName
+          /*this.DepList=payload.list
+          this.propForm.depIdS = payload.depName*/
       },
     },
     components: {
