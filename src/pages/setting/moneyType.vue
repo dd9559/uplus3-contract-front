@@ -316,11 +316,14 @@
         border-radius:4px;
         .el-table {
             height: calc(100% - 48px);
-            background:rgba(254,252,247,1);
             overflow-y: scroll;
         }
-        /deep/ .el-table th {
-            background:rgba(242,243,248,1);
+        /deep/ .el-table 
+        th {
+            background:#eef2fb;
+        }
+        /deep/ td.is-center{
+            background-color: #fefcf7;
         }
     }
     .gap {
