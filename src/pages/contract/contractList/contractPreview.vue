@@ -31,7 +31,7 @@
         <el-button round @click="showContData" v-if="power['sign-ht-xq-data-add'].state">资料库</el-button>
       </div>
       <div class="btn" v-else>
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&userMsg.empId===recordId" @click="toEdit">编辑</el-button>
       </div>
     </div>
 
@@ -43,10 +43,10 @@
           <div class="tally"><span>{{count}}</span>/<span>{{showTotal}}</span></div>
           <el-button class="paging iconfont icon-tubiao_shiyong-22" @click="add"></el-button>
         </div> -->
-        <div class="blowUp">
+        <!-- <div class="blowUp">
           <button @click="blowUp">放大</button>
           <button @click="shrink">缩小</button>
-        </div>
+        </div> -->
       </div>
     </div>
     
