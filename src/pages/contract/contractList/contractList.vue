@@ -975,7 +975,8 @@ export default {
           // },1500)
         }else{
           this.$message({
-            message:'该类型合同模板未上传,请上传后再打印'
+            message:'该类型合同模板未上传,请上传后再打印',
+            type: "warning"
           })
         }
       }else if(command===2){
@@ -983,7 +984,8 @@ export default {
           this.getUrl(this.blankPdf2);
         }else{
           this.$message({
-            message:'该类型合同模板未上传,请上传后再打印'
+            message:'该类型合同模板未上传,请上传后再打印',
+            type: "warning"
           })
         }
       }else if(command===3){
@@ -994,7 +996,8 @@ export default {
           // },2000)
         }else{
           this.$message({
-            message:'该类型合同模板未上传,请上传后再打印'
+            message:'该类型合同模板未上传,请上传后再打印',
+            type: "warning"
           })
         }
       }else if(command===4){
@@ -1005,7 +1008,8 @@ export default {
           // },2000)
         }else{
           this.$message({
-            message:'该类型合同模板未上传,请上传后再打印'
+            message:'该类型合同模板未上传,请上传后再打印',
+            type: "warning"
           })
         }
       }else if(command===5){
@@ -1016,7 +1020,8 @@ export default {
           // },2000)
         }else{
           this.$message({
-            message:'该类型合同模板未上传,请上传后再打印'
+            message:'该类型合同模板未上传,请上传后再打印',
+            type: "warning"
           })
         }
       }
