@@ -393,8 +393,7 @@
     }
   }
   /deep/ .pagination-info{
-    text-align: center;
-    margin-top: @margin-15;
+    text-align: right;
   }
   /deep/ .el-table__empty-block {
     line-height: 60px;

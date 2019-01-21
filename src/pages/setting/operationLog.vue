@@ -14,7 +14,7 @@
                             <el-option class="drop-tree" value="">
                             <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                             </el-option>
-                        </el-select> -->    
+                        </el-select> -->
                         <el-select v-model="depUser" :clearable="true" v-loadmore="moreEmploye" filterable placeholder="请选择">
                             <el-option
                                 v-for="item in EmployeList"
@@ -49,9 +49,6 @@
             </el-form>
         </ScreeningTop>
         <div class="table-list">
-            <p>
-                <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-            </p>
             <el-table :data="tableData" ref="tableCom" style="width: 100%" border :max-height="tableNumberCom">
                 <el-table-column width='180' label="操作日期">
                     <template slot-scope="scope">
@@ -73,14 +70,13 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
-            :page-sizes="[30, 40, 50, 60]"
             :page-size="pageSize"
-            layout="prev, pager, next,  total, sizes, jumper"
+            layout="total, prev, pager, next, jumper"
             :total="total">
         </el-pagination>
         </div>
         </div>
-        
+
     </div>
 </template>
 
@@ -121,8 +117,8 @@
         },
         methods: {
             searchDep:function (payload) {
-                this.DepList=payload.list
-                this.departmentName=payload.depName
+                /*this.DepList=payload.list
+                this.departmentName=payload.depName*/
             },
             depHandleClick(data) {
                 this.depUser=''
@@ -187,6 +183,7 @@
                 this.users=''
                 this.departmentName=''
                 this.clearSelect()
+              this.EmployeList = []
             },
             // 查询
             queryFn(){
@@ -236,23 +233,15 @@
 
 .table-list {
     background-color: #fff;
-    margin-top: 20px;
-    > p {
-        padding: 0 6px;
-        display: flex;
-        height: 36px;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 14px;
-    }
+    margin: 0 10px;
+  padding-top: 10px;
 }
 
 /deep/ .el-table th {
   background:rgba(238,242,251,1);
 }
 /deep/ .el-pagination{
-    text-align: center;
-    margin-top: 13px;
+    text-align: right;
 }
 .el-select-dropdown__item.selected {
     font-weight: normal;

@@ -15,17 +15,17 @@
           ></el-input>
        </el-tooltip>
         </el-form-item>
-        
-        <el-form-item  class="mr" style="width:400px;"> 
+
+        <el-form-item  class="mr" style="width:400px;">
         <!-- <div style="width:400px;"> -->
-         <el-select :clearable="false" size="small"  placeholder="请选择" class="f_l" style="margin-right:10px;" v-model="propForm.timeType" @change="changeTimeType"> 
+         <el-select :clearable="false" size="small"  placeholder="请选择" class="f_l" style="margin-right:10px;" v-model="propForm.timeType" @change="changeTimeType">
                     <el-option
                       v-for="item in timeArr"
                       :key="item.val"
                       :label="item.desc"
                       :value="item.val">
                     </el-option>
-        </el-select> 
+        </el-select>
         <el-date-picker
           v-model="propForm.dateMo"
           class="w330 f_l"
@@ -36,7 +36,7 @@
           end-placeholder="结束日期"
         ></el-date-picker>
         <!-- </div> -->
-     
+
         </el-form-item>
 
         <!-- 部门 -->
@@ -180,7 +180,7 @@
                           <p>{{scope.row.level4}}-{{scope.row.assignor}}</p>
                  </template>
           </el-table-column>
-          
+
           <el-table-column prop="roleName" label="角色类型" width="100"></el-table-column>
 
           <el-table-column prop="ratio" label="分成比例（%）" width="120"></el-table-column>
@@ -190,21 +190,22 @@
           <el-table-column prop="agentPayFee" label="刷卡手续费（元）" width="130"></el-table-column>
 
           <el-table-column prop="agentPlatformFee" label="特许服务费（元）"></el-table-column>
-
         </el-table>
+         <el-pagination
+             @size-change="handleSizeChange"
+             @current-change="handleCurrentChange"
+             :current-page="currentPage"
+             :page-size="pageSize"
+             layout="total,prev, pager, next , jumper"
+             :total="total"
+             v-if="total!=0"
+       ></el-pagination>
       </div>
 
       <!-- 分页 -->
-       <div class="pagination" v-if="total!=0">
-              <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="currentPage"
-                :page-size="pageSize"
-                layout="total,prev, pager, next , jumper"
-                :total="total"
-              ></el-pagination>
-       </div>
+       <!-- <div class="pagination" v-if="total!=0">
+
+       </div> -->
 
     </div>
   </div>
@@ -279,12 +280,12 @@ export default {
     };
     this.getData(this.ajaxParam);
     // 字典初始化
-    this.getDictionary();  
+    this.getDictionary();
     //部门初始化
     this.remoteMethod();
   },
   components: {},
-  methods: {   
+  methods: {
    // 导出功能
     getExcel(){
         this.queryFn();
@@ -318,7 +319,7 @@ export default {
       if(!val){
         this.remoteMethod()
       }
-    },   
+    },
      clearDep:function () {
       this.propForm.department='';
       this.EmployeList=[];
@@ -333,8 +334,8 @@ export default {
       this.handleNodeClick(data)
     },
      searchDep:function (payload) {
-      this.DepList=payload.list
-      this.propForm.department=payload.depName
+      /*this.DepList=payload.list
+      this.propForm.department=payload.depName*/
     },
     queryFn() {
       // console.log("ssssssssssss");
@@ -383,6 +384,8 @@ export default {
       this.currentPage = 1;
       this.propForm = {
         department: "", //部门
+        dealAgentStoreId:null,
+        dealAgentId:null,
         departmentDetail: "", //部门详情（员工）
         contractType: "", //合同类型
         dateMo: "",
@@ -390,6 +393,7 @@ export default {
         timeType:0,
         joinMethods:""
       };
+      this.EmployeList=[]
     },
     //分页
     handleSizeChange(val) {
@@ -524,7 +528,7 @@ export default {
   //数据列表
   .data-layout {
     background-color: #fff;
-    padding: 20px;
+    padding: 10px;
     padding-top: 0;
     margin-top: 20px;
     padding-bottom: 0;
@@ -576,14 +580,14 @@ export default {
     }
   }
 }
-/deep/ .pagination{
-  padding-top: 0;
+// /deep/ .pagination{
+//   padding-top: 0;
   .el-pagination {
   text-align: right;
   // padding-bottom: 50px;
   // padding-top: 50px;
 }
-}
+// }
 .w430 {
   width: 430px;
 }

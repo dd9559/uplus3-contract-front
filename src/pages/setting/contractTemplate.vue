@@ -14,9 +14,6 @@
       </el-form-item>
     </el-form> -->
     <div class="data-list">
-      <p>
-          <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-      </p>
       <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" border :default-sort = "{prop: 'uploadTime', order: 'descending'}">
         <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同类型" prop="type.label" :formatter="nullFormatter"></el-table-column>
@@ -59,15 +56,15 @@
                    <span v-show="jjianAddress!==''">上传成功！  {{jjianAddress.name}}</span>
                 </p>
                 <span class="wordtip">温馨提示：只支持Word格式</span>
-                <el-button class="sureUp" @click='sureUp'>确定</el-button>  
+                <el-button class="sureUp" @click='sureUp'>确定</el-button>
               </div>
               <div v-else>
                 <p>
                   <fileUp id='mban' :rules="mbrules" @getUrl='getAdd("mban",arguments)' :more="false"  class='fileup'>模板</fileUp>
                   <span v-show="mbanAddress!==''">上传成功！  {{mbanAddress.name}}</span>
                 </p>
-                <span class="wordtip">温馨提示：只支持Word格式</span> 
-                <el-button class="sureUp" @click='sureUp'>确定</el-button>                  
+                <span class="wordtip">温馨提示：只支持Word格式</span>
+                <el-button class="sureUp" @click='sureUp'>确定</el-button>
               </div>
             </div>
           </div>
@@ -81,7 +78,7 @@
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="上传人" prop="uploadByName"
                            :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" min-width="100px" label="上传时间" 
+          <el-table-column align="center" min-width="100px" label="上传时间"
                            :formatter="nullFormatter">
                            <template slot-scope="scope">
                           {{scope.row.uploadTime | formatDate}}
@@ -204,9 +201,9 @@
         // else{
         //   this.noPower(this.power['sign-set-ht-query'].name)
         // }
-        
+
       },
-      trim(str){  
+      trim(str){
                  return str.replace(/(^\s*)|(\s*$)/g, "")
       },
       /**
@@ -220,7 +217,7 @@
                 type: 'error',
                 message: '合同名称不能为空'
                 })
-              return 
+              return
           }
         if(this.uploadType){
               if(this.mmaiAddress=='' || this.jjianAddress==''){
@@ -228,7 +225,7 @@
                     type: 'error',
                     message: '请上传买卖和居间模板！'
                     })
-                  return 
+                  return
               }
         }else{
               if(this.mbanAddress==''){
@@ -236,7 +233,7 @@
                     type: 'error',
                     message: '请上传模板！'
                     })
-                  return 
+                  return
               }
             }
         this.modal=false
@@ -255,7 +252,7 @@
           id:this.id
         }
       });
-            
+
       },
       /**
        * 启用
@@ -365,12 +362,12 @@
         }
       }
     }
-  } 
-} 
+  }
+}
   .data-list {
     background-color: #fff;
-    padding: 6px 0;
-    margin-top: 1px;
+    padding-top: @margin-10;
+    margin: 0px 10px;
       > p {
         padding: 0 6px;
         display: flex;
@@ -382,7 +379,7 @@
              margin-right: 8px;
         }
     }
-    /deep/ 
+    /deep/
     .has-gutter {
         tr {
           border-radius: 4px;
@@ -443,7 +440,7 @@
       display: flex;
       justify-content: left;
       align-items: center;
-      border-bottom: solid 1px rgba(237,236,240,1); 
+      border-bottom: solid 1px rgba(237,236,240,1);
     }
     .modal-context {
       display: flex;

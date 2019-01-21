@@ -87,7 +87,7 @@ router.beforeEach((to,from,next)=>{
 
   // let userMsg = localStorage.getItem('userMsg')
   // console.log(store.state.user)
-  if(!store.state.user&&to.path!=='login'){
+  if(!store.state.user&&to.path!=='/login'){
     // debugger
     api.get('/api/me').then(res=>{
       res=res.data

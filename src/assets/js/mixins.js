@@ -6,6 +6,7 @@ const MIXINS = {
       userMsg:null,
       DepList:[],
       EmployeList:[],
+      EmployeInit:0,//初始员工总数
       employeScroll:null,
       tree:true,
       Loading:true,
@@ -42,10 +43,7 @@ const MIXINS = {
       }
     },
     getBodyScollShow(){
-        // this.comHeightFn();
-        this.$nextTick(()=>{
-          this.comHeightFn();
-        })
+        this.comHeightFn();
     }
   },
   methods: {
@@ -114,6 +112,16 @@ const MIXINS = {
         res=res.data
         if(res.status===200){
           this.EmployeList=this.EmployeList.concat(res.data.list)
+          this.employeTotal=res.data.total
+          this.EmployeInit = res.data.total
+        }
+      })
+    },
+    getEmployeByText:function (val,sub=true) {
+      this.$ajax.get('/api/organize/employees/pages',{keyword:val,depId:this.dep.id,pageNum:1,selectSubs:sub}).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.EmployeList=[].concat(res.data.list)
           this.employeTotal=res.data.total
         }
       })
@@ -242,7 +250,7 @@ const MIXINS = {
             }else{
               this.fileSign([].concat(arr[i].path),'download');
             }
-          
+
         }
     },
     // 判断图片类别

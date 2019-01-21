@@ -13,7 +13,7 @@
       <el-input size="small" class="w200" ref="btn" placeholder="请选择" v-model="inputVal" @keyup.native="getDep">
       </el-input>
       <!--<input type="text" placeholder="请选择" ref="btn" v-model="inputVal" @input="getDep">-->
-      <span class="box-icon"><i class="iconfont el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']"
+      <span class="box-icon"><i class="el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']"
                                 v-if="!clearVal"></i><i class="iconfont icon-tubiao-7" v-else
                                                         @click.stop="opera('clear')"></i></span>
     </p>
@@ -56,6 +56,8 @@
         pop: true,//弹窗是否失焦
         list: [],
         cellClick:false,//是否选择
+        operaTime:null,//键盘输入时间
+        operaStatus:false,
       }
     },
     mounted(){
@@ -140,13 +142,20 @@
       //部门搜索
       getDep: function (e, clear = false) {
         this.visible=true
-        this.inputVal = e.target.value
-        if(this.inputVal.length>0){
-          this.getList(this.inputVal,'search')
-          this.$emit('search')
-        }else {
-          this.list = _list.map(item=>Object.assign({},item))
+        this.inputVal = e.target.value.replace(/\s/g,'')
+        this.operaStatus=false
+        if(!this.operaStatus){
+          clearTimeout(this.operaTime)
+          this.operaTime = setTimeout(()=>{
+            if(this.inputVal.length>0){
+              this.getList(this.inputVal,'search')
+              this.$emit('search')
+            }else {
+              this.list = _list.map(item=>Object.assign({},item))
+            }
+          },800)
         }
+        // debugger
       }
     },
     computed: {

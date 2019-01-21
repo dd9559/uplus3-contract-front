@@ -8,94 +8,94 @@
             </el-tooltip>
         </el-form-item>
         <div class="in-block">
-            <el-form-item 
+            <el-form-item
             label="部门"
-            prop="depIdS" 
+            prop="depIdS"
             class="mr">
-                <!-- <el-select 
-                ref="tree" 
-                size="small" 
-                :loading="Loading" 
-                :remote-method="remoteMethod" 
-                v-model="propForm.depIdS" 
+                <!-- <el-select
+                ref="tree"
+                size="small"
+                :loading="Loading"
+                :remote-method="remoteMethod"
+                v-model="propForm.depIdS"
                 @clear="clearDep"
-                @visible-change="initDepList" 
-                clearable 
+                @visible-change="initDepList"
+                clearable
                 filterable
-                remote 
+                remote
                 placeholder="请选择">
-                    <el-option 
-                    class="drop-tree" 
+                    <el-option
+                    class="drop-tree"
                     value="">
-                        <el-tree 
-                        :data="DepList" 
-                        :props="defaultProps" 
-                        @node-click="depHandleClick"></el-tree> 
+                        <el-tree
+                        :data="DepList"
+                        :props="defaultProps"
+                        @node-click="depHandleClick"></el-tree>
                     </el-option>
                 </el-select> -->
                 <select-tree :data="DepList" :init="propForm.depIdS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
             </el-form-item>
             <el-form-item prop="empId">
-                <el-select 
-                v-model="propForm.empId" 
+                <el-select
+                v-model="propForm.empId"
                 clearable
                 class="w100">
-                    <el-option 
-                    v-for="item in EmployeList" 
-                    :key="'empId'+item.empId" 
+                    <el-option
+                    v-for="item in EmployeList"
+                    :key="'empId'+item.empId"
                     :label="item.name"
                     :value="item.empId"></el-option>
                 </el-select>
             </el-form-item>
         </div>
-        <el-form-item 
+        <el-form-item
             label="票据状态"
             prop="state">
-                <el-select 
-                v-model="propForm.state" 
+                <el-select
+                v-model="propForm.state"
                 class="w180">
-                    <el-option 
-                    v-for="item in dictionaryData" 
-                    :key="'dictionaryData'+item.key" 
-                    :label="item.value" 
+                    <el-option
+                    v-for="item in dictionaryData"
+                    :key="'dictionaryData'+item.key"
+                    :label="item.value"
                     :value="item.key"></el-option>
                 </el-select>
         </el-form-item>
         <div class="in-block">
             <el-form-item label="查询时间" prop="dateType" class="mr">
-                <el-select 
+                <el-select
                 v-model="propForm.dateType"
                 class="w110">
-                    <el-option 
-                    v-for="item in $tool.dropdown.dateType" 
-                    :key="item.value" 
-                    :label="item.label" 
+                    <el-option
+                    v-for="item in $tool.dropdown.dateType"
+                    :key="item.value"
+                    :label="item.label"
                     :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item 
+            <el-form-item
             prop="timeRange">
-                <el-date-picker 
+                <el-date-picker
                 v-model="propForm.timeRange"
-                class="w284" 
+                class="w284"
                 type="daterange"
-                value-format="yyyy-MM-dd" 
-                range-separator="至" 
-                start-placeholder="开始日期" 
+                value-format="yyyy-MM-dd"
+                range-separator="至"
+                start-placeholder="开始日期"
                 end-placeholder="结束日期">
                 </el-date-picker>
             </el-form-item>
         </div>
-        <el-form-item 
+        <el-form-item
               label="合作方式"
               prop="cooperation">
-                  <el-select 
-                  v-model="propForm.cooperation" 
+                  <el-select
+                  v-model="propForm.cooperation"
                   class="w100">
-                      <el-option 
-                      v-for="item in rules.cooperation" 
-                      :key="'cooperation'+item.key" 
-                      :label="item.value" 
+                      <el-option
+                      v-for="item in rules.cooperation"
+                      :key="'cooperation'+item.key"
+                      :label="item.value"
                       :value="item.key"></el-option>
                   </el-select>
           </el-form-item>
@@ -106,7 +106,7 @@
       <div class="paper-set-tit">
         <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
       </div>
-      <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" class="paper-table mt-20" v-loading="loadingList">
+      <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" class="paper-table" v-loading="loadingList">
         <el-table-column fixed align="center" label="序号" min-width="70">
           <template slot-scope="scope">
             <p class="tc">{{scope.$index + 1}}</p>
@@ -386,6 +386,7 @@
       reset: function () {
         this.$refs.propForm.resetFields();
         this.$tool.clearForm(this.propForm)
+        this.EmployeList = []
       },
       // 错误提示
       errMeFn(e){
@@ -517,7 +518,7 @@
               bill:this.power['sign-cw-bill-invoice'].state,//开票权限
             }
           })
-          
+
         }
       },
       // dialog确定
@@ -585,8 +586,8 @@
       },
       // 部门搜索
       searchDep:function (payload) {
-          this.DepList=payload.list
-          this.propForm.depIdS = payload.depName
+          /*this.DepList=payload.list
+          this.propForm.depIdS = payload.depName*/
       },
     },
     components: {

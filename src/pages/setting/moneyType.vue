@@ -15,7 +15,7 @@
                 <span>{{this.bigName}}</span>
                  <el-button type="primary" class='paper-btn' round size="medium"  v-show="power['sign-set-kl-add'].state==true && !isSF" @click='operation(null,1)'>新增</el-button> 
             </p>
-            <el-table :data="moneyTypes" max-height="500" border>
+            <el-table :data="moneyTypes" border>
                 <el-table-column align="center" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(小类)" prop="name"></el-table-column>
                 <el-table-column align="center" label="描述" prop="remark">
@@ -247,9 +247,6 @@
             //单击行事件    
             rowClick(row, event, column) {
                 this.bigName=row.name
-                // var index=row.index
-                // var top=115+index*34.6
-                // var sjx=document.getElementsByClassName('sjx')
                 var paperBtn=document.getElementsByClassName('paper-btn')
                 if(row.name=='代收代付'){
                     this.isSF=true
@@ -260,21 +257,10 @@
                      this.isSF=false
                      paperBtn[0].classList.remove('grey')
                 }
-                // sjx[0].style.top=top+'px'
                 this.$refs.onetable.$el.classList.remove('onetable')
                 this.addForm.parentId=row.id
                 this.bigId=row.id
                 this.initList()
-                // if(this.power['sign-set-kl-query'].state){
-                //   this.$ajax.get('api/setting/moneyType/list',{id:this.bigId}).then((res)=>{
-                //     if(res.status==200){
-                //         this.moneyTypes=res.data.data
-                //         this.isMoney=true
-                //     }})
-                // }
-                // else{
-                //       this.noPower(this.power['sign-set-kl-query'].name)
-                // }
             }
         }
     }
@@ -283,6 +269,7 @@
 <style lang="less" scoped>
 .view-container {
     display: flex;
+    height: 100%;
     background-color: #F5F5F5 !important;
     .data-list {
         position: relative;
@@ -301,7 +288,7 @@
                 border-color:transparent transparent transparent white; /* transparent 设置边框颜色透明 */
         }
         /deep/ .el-table{
-            height: 501px;
+            // height: calc(100%-48px);
          th {
             background:rgba(242,243,248,1);
             }
@@ -328,10 +315,15 @@
         box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
         border-radius:4px;
         .el-table {
-            background:rgba(254,252,247,1);
+            height: calc(100% - 48px);
+            overflow-y: scroll;
         }
-        /deep/ .el-table th {
-            background:rgba(242,243,248,1);
+        /deep/ .el-table 
+        th {
+            background:#eef2fb;
+        }
+        /deep/ td.is-center{
+            background-color: #fefcf7;
         }
     }
     .gap {

@@ -107,7 +107,7 @@
         </div>
         <div>
           <el-dropdown placement="bottom" @command="printCont" v-if="power['sign-ht-info-print'].state"><!--  @command="printCont" -->
-            <el-button round>
+            <el-button round size="small">
               打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
@@ -117,7 +117,7 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-add'].state">
-            <el-button round type="primary">
+            <el-button round type="primary" size="small">
               创建正式合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
@@ -170,7 +170,7 @@
         <el-table-column align="left" label="成交总价" prop="dealPrice" width="120" fixed>
           <template slot-scope="scope">
             <span>{{scope.row.dealPrice}} 元</span>
-            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span> 
+            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
         <el-table-column align="left" label="财务收付" width="100" fixed>
@@ -330,7 +330,7 @@
          :total="total">
         </el-pagination>
       </div>
-      
+
     </div>
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterContId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
@@ -357,7 +357,7 @@
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
-           
+
 <script>
 import ScreeningTop from "@/components/ScreeningTop";
 import flowAccount from "@/components/flowAccount";
@@ -582,7 +582,7 @@ export default {
           param.endDate = this.signDate[1];
         }
       }
-      
+
       delete param.depName
       //console.log(param)
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
@@ -599,6 +599,7 @@ export default {
       TOOL.clearForm(this.contractForm);
       this.keyword = "";
       this.signDate = [];
+      this.EmployeList = []
     },
     // 查询
     queryFn() {
@@ -696,7 +697,7 @@ export default {
       }else{
         this.noPower('后期状态')
       }
-      
+
     },
     handleCurrentChange(val) {
       this.currentPage = val;
@@ -769,7 +770,7 @@ export default {
       }else{
         this.noPower('合同预览')
       }
-      
+
     },
     //调佣弹窗
     //Z171231001
@@ -797,7 +798,7 @@ export default {
     },
     //字典查询
     getDictionaries() {
-      this.$ajas.get("/api/dictionary/batchQuery", param).then(res => {}); 
+      this.$ajas.get("/api/dictionary/batchQuery", param).then(res => {});
     },
     //变更解约弹窗
     goChangeCancel(item) {
@@ -843,8 +844,8 @@ export default {
       this.handleNodeClick(data)
     },
     searchDep:function (payload) {
-      this.DepList=payload.list
-      this.contractForm.depName=payload.depName
+      /*this.DepList=payload.list
+      this.contractForm.depName=payload.depName*/
     },
     //提审
     goSave(item){
@@ -901,7 +902,7 @@ export default {
         // }else{
           // if(item.isCanChangeCommission===1){
           let param = {
-            id: item.id         
+            id: item.id
           }
           this.$ajax.get("/api/settlement/getSettlById", param).then(res => {
             // console.log(res);
@@ -1087,8 +1088,8 @@ export default {
   margin-bottom: 10px;
 }
 /deep/.paper-box {
-  padding-top: 10px !important;
-  margin-bottom: 10px;
+  /*padding-top: 10px !important;
+  margin-bottom: 10px;*/
   background-color: #fff;
   border-radius: 2px;
   box-sizing: border-box;
@@ -1099,6 +1100,12 @@ export default {
 }
 /deep/.margin-left{
   margin-left: 0;
+}
+.pagination{
+  /deep/.pagination-info{
+    text-align: right;
+    margin-top: 0;
+  }
 }
 .printMaskLayer{
   position: fixed;
@@ -1155,7 +1162,7 @@ export default {
   .shell{
     width: 100%;
     height: 100%;
-    display: inline-block; 
+    display: inline-block;
   }
   .stepInstanceName{
     max-width: 130px;
@@ -1163,7 +1170,7 @@ export default {
     cursor: pointer;
     text-overflow:ellipsis;
     white-space:nowrap;
-    overflow:hidden; 
+    overflow:hidden;
     display: inline-block;
   }
 }
@@ -1189,7 +1196,7 @@ export default {
         width: 60px;
       }
     }
-    
+
   }
   .contract-msglist {
     > li {
@@ -1200,7 +1207,7 @@ export default {
           cursor: pointer;
         }
       }
-      
+
     }
   }
 }

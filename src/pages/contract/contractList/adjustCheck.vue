@@ -20,14 +20,14 @@
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
-        </el-form-item>    
+        </el-form-item>
         <el-form-item label="合作方式">
           <el-select v-model="adjustForm.depAttr" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
-        </el-form-item>      
-        <el-form-item label="部门"> 
+        </el-form-item>
+        <el-form-item label="部门">
           <!-- <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" :loading="loading" @clear="clearDepNameFn" class="width200">
               <el-option v-for="item in adjustForm.getDepName" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
@@ -54,13 +54,13 @@
             <el-option label="驳回" value="2"></el-option>
           </el-select>
         </el-form-item>
-        
-        
+
+
       </el-form>
     </ScreeningTop>
 
     <!-- 数据列表 -->
-    <div class="contract-list">  
+    <div class="contract-list">
       <!-- <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>    -->
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
         <el-table-column label="合同编号" width="150" fixed :formatter="nullFormatter">
@@ -75,13 +75,13 @@
             <p v-if="scope.row.tradeType === 3">代办</p>
             <p v-if="scope.row.tradeType === 4">意向</p>
             <p v-if="scope.row.tradeType === 5">定金</p>
-           
+
           </template>
         </el-table-column>
         <el-table-column label="成交总价" :formatter="nullFormatter" prop="dealPrice">
           <template slot-scope="scope">
             <span>{{scope.row.dealPrice}} 元</span>
-            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.tradeType===1"> / {{item.value}}</span> 
+            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.tradeType===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
         <el-table-column label="成交经纪人" :formatter="nullFormatter">
@@ -117,10 +117,10 @@
           <template slot-scope="scope">
             <p>{{scope.row.checkTime | getDate}}</p>
           </template>
-        </el-table-column>   
+        </el-table-column>
         <el-table-column align="center" label="当前审核人" min-width="140">
           <template slot-scope="scope">
-            
+
             <span v-if="scope.row.checkby>0&&scope.row.checkState===0">
               <p>{{scope.row.checkByDepName}}</p>
               <p>{{scope.row.checkByName}}</p>
@@ -137,12 +137,12 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>--</p>
-      
+
             <p class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" width="200">
-          <template slot-scope="scope">     
+          <template slot-scope="scope">
               <span v-if="scope.row.checkRemark&&(scope.row.checkRemark).trim().length > 0">
                 <el-popover trigger="hover" placement="top">
                   <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
@@ -153,17 +153,17 @@
                   </div>
                 </el-popover>
               </span>
-              <span v-else>--</span>                 
-          </template>   
-        </el-table-column>             
+              <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="100" fixed="right" align="center">
           <template slot-scope="scope">
             <template v-if="scope.row.checkState === 0 && scope.row.checkby === userMsg.empId">
-              <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>          
+              <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
           </template>
-          
+
         </el-table-column>
       </el-table>
       <el-pagination
@@ -246,19 +246,19 @@
                   <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
                 </li>
             </ul>
-          </div>                  
+          </div>
         </div>
         <!-- 审核备注 -->
         <div class="textareabox2 textlengthbox">
           <span>审核备注</span>
           <el-input type="textarea" :rows="5" v-model="auditForm.textarea" class="textarea" maxlength=200 ></el-input>
           <span class="textLength">{{auditForm.textarea.length}}/200</span>
-        </div>  
+        </div>
       </div>
       <div class="btnbox">
         <el-button class="refuse" @click="refuseFn()" v-loading.fullscreen.lock="fullscreenLoading">驳 回</el-button>
-        <el-button type="primary"  @click="receptFn()" class="recept" v-loading.fullscreen.lock="fullscreenLoading">通 过</el-button>  
-      </div> 
+        <el-button type="primary"  @click="receptFn()" class="recept" v-loading.fullscreen.lock="fullscreenLoading">通 过</el-button>
+      </div>
       <!-- 图片放大 -->
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
@@ -332,8 +332,8 @@
                   <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
                 </li>
             </ul>
-          </div> 
-                                   
+          </div>
+
         </div>
 
         <div class="audit-col bordernone">
@@ -371,7 +371,7 @@
                 <span v-else>--</span>
               </template>
             </el-table-column>
-          </el-table> 
+          </el-table>
         </div>
 
       </div>
@@ -384,7 +384,7 @@
 </template>
 
 
-      
+
 <script>
   import ScreeningTop from '@/components/ScreeningTop';
   import { Message } from 'element-ui';
@@ -393,13 +393,13 @@
   import {TOOL} from "@/assets/js/common";
   import { MIXINS } from "@/assets/js/mixins";
   import checkPerson from '@/components/checkPerson'
-  
+
   export default {
     name: "adjust-check",
     // mixins: [FILTER],
     mixins: [FILTER,MIXINS],
     data(){
-      return{ 
+      return{
         checkPerson: {
           state:false,
           type:'init',
@@ -407,7 +407,7 @@
           flowType:0,
           label:false,
           page:'list'
-        },  
+        },
         clientHei: document.documentElement.clientHeight, //窗体高度
         fullscreenLoading:false,//创建按钮防抖
         loading:false,
@@ -437,7 +437,7 @@
           // getAgentName: [{
           //   name: "全部",
           //   empId: ""
-          // }], 
+          // }],
           checkState: '',  //审核状态
           keyWord: ''   //关键字
 
@@ -449,7 +449,7 @@
           "507": "", // 成交总价单位
           "53": "" // 合作方式
         },
-      
+
         layerAudit:{
 
         },
@@ -460,7 +460,7 @@
         // start:'',
 
         isDelete:'',
-        
+
         myCheckId: '',
         //上传的协议
         uploadList: [],
@@ -473,7 +473,7 @@
         dialogVisible: false,
         dialogVisible2: false,
         // checked: false, //是否有解除协议
-       
+
         tableData:[],
 
         power: {
@@ -491,9 +491,9 @@
           },
         }
 
-        
 
-        
+
+
       }
     },
 
@@ -506,7 +506,7 @@
         }
       }
 
-    
+
     },
 
     filters: {
@@ -520,9 +520,9 @@
          return TOOL.timeFormat(val)
        }
     },
-  
+
     methods:{
-     
+
 
       //图片预览
       // getPicture(value,index){
@@ -549,19 +549,19 @@
       //         this.isDelete=''
       //     }
       // },
-      trim(str){  
+      trim(str){
         return str.replace(/(^\s*)|(\s*$)/g, "")
       },
       myclose: function() {
         this.checkPerson.state=false
         // this.queryFn();
-        
+
       },
       // 选择审核人
       choseCheckPerson:function (row,type) {
         this.checkPerson.flowType=4   //调佣的流程类型为4
         this.checkPerson.code=row.checkId  //业务编码为checkId
-        this.checkPerson.state=true  
+        this.checkPerson.state=true
         this.checkPerson.type=type
         if(row.nextAuditId===-1){
           this.checkPerson.label=true
@@ -578,11 +578,11 @@
       },
 
       // 控制弹框body内容高度，超过显示滚动条
-      clientHeight() {        
+      clientHeight() {
           return this.clientHei - 265 + 'px'
       },
 
-      clientHeight2() {        
+      clientHeight2() {
           return this.clientHei - 197 + 'px'
       },
 
@@ -590,10 +590,10 @@
       // getDepNameFn(e) {
       //   this.loading = true;
       //   this.$ajax.get("/api/access/deps", {keyword: e})
-      //   .then(res => {       
-      //     let data = res.data;         
-      //     if (res.data.status === 200) { 
-      //       this.loading = false; 
+      //   .then(res => {
+      //     let data = res.data;
+      //     if (res.data.status === 200) {
+      //       this.loading = false;
       //       if(e === '' || !e){
       //         this.adjustForm.getDepName = [{
       //           name: "全部",
@@ -601,8 +601,8 @@
       //         },...data.data]
       //       }else{
       //         this.adjustForm.getDepName = data.data
-      //       } 
-             
+      //       }
+
       //     }
       //   }).catch(error => {
       //     this.$message({
@@ -618,14 +618,14 @@
       //       cityId:this.userMsg.cityId,
       //       depId: e
       //     })
-          
-      //     .then(res => {       
-                    
-      //       if (res.data.status === 200) {  
+
+      //     .then(res => {
+
+      //       if (res.data.status === 200) {
       //         this.loading2 = false;
-      //         this.Form.getAgentName = ''; 
-      //         if(res.data.data.length > 0){ 
-                
+      //         this.Form.getAgentName = '';
+      //         if(res.data.data.length > 0){
+
       //           this.adjustForm.getAgentName = [{
       //             name: "全部",
       //             empId: ""
@@ -634,31 +634,31 @@
       //         else{
       //           this.adjustForm.getAgentName = res.data.data
       //         }
-              
+
       //       }
 
       //     }).catch(error => {
       //       this.$message({
       //         message: error
       //       })
-      //     })  
-      //   }else{    
-      //       this.Form.getAgentName = '';       
+      //     })
+      //   }else{
+      //       this.Form.getAgentName = '';
       //       this.adjustForm.getAgentName = [{
       //           name: "全部",
       //           empId: ""
       //       }]
-      //       // this.Form.getDepName = '全部'; 
-      //       this.Form.getDepName = ''; 
+      //       // this.Form.getDepName = '全部';
+      //       this.Form.getDepName = '';
       //       this.getDepNameFn('');
       //   }
       // },
 
-      
+
       // 清除部门搜索
       // clearDepNameFn(){
       //     this.getDepNameFn('');
-      // }, 
+      // },
 
 
       // 重置
@@ -668,7 +668,7 @@
           // this.changeDepNameFn('');
           // this.pageNum=1;
           // this.queryFn();
-          
+          this.EmployeList = []
       },
 
       // 查询
@@ -676,38 +676,38 @@
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
-          
+
           this.loadingTable = true;
           let startTime = '';
           let endTime = '';
-          
+
           if(this.adjustForm.signDate.length === 2){
               startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
               endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
           }
             let param = {
-              pageNum: this.pageNum,                 
-              pageSize: this.pageSize,          
-              deptId: this.adjustForm.depId,              
-              empId: this.adjustForm.empId,               
-              startTime,    
-              endTime,      
-              contractType: this.adjustForm.tradeType,  
-              depAttr: this.adjustForm.depAttr,         
-              checkState: this.adjustForm.checkState,                              
-              keyword: this.adjustForm.keyWord             
+              pageNum: this.pageNum,
+              pageSize: this.pageSize,
+              deptId: this.adjustForm.depId,
+              empId: this.adjustForm.empId,
+              startTime,
+              endTime,
+              contractType: this.adjustForm.tradeType,
+              depAttr: this.adjustForm.depAttr,
+              checkState: this.adjustForm.checkState,
+              keyword: this.adjustForm.keyWord
             }
             //调整佣金审核列表
-            this.$ajax         
+            this.$ajax
             .get("/api/commission/updateList", param)
             .then(res => {
               let data = res.data;
               if (res.data.status === 200) {
-                this.tableData = data.data  
-                          
+                this.tableData = data.data
+
               }
               this.loadingTable = false;
-        
+
             }).catch(error => {
               this.$message({
                 message: error
@@ -716,7 +716,7 @@
         // }else{
         //   this.noPower(this.power['sign-ht-maid-query'].name)
         // }
-        
+
       },
 
       // 双击详情事件
@@ -747,7 +747,7 @@
         }else{
           this.noPower(this.power['sign-ht-maid-vdetail'].name)
         }
-        
+
       },
 
       // 点击审核事件
@@ -777,7 +777,7 @@
 
       // 驳回操作
       refuseFn() {
-        
+
         let param = {
           checkId: this.myCheckId,
           remark: this.auditForm.textarea
@@ -787,14 +787,14 @@
           this.$ajax.get("/api/commission/updateReject", param)
           .then(res => {
             this.fullscreenLoading=false
-            if (res.data.status === 200) {          
+            if (res.data.status === 200) {
               this.dialogVisible = false
               // 数据刷新
               this.queryFn();
               setTimeout(() => {
                  this.$message('已驳回');
               }, 2000);
-              
+
             }
           }).catch(error => {
               this.fullscreenLoading=false
@@ -805,7 +805,7 @@
         }else{
           this.$message('审核备注未填写！');
         }
-        
+
       },
 
       // 通过操作
@@ -818,23 +818,23 @@
         this.$ajax.get("/api/commission/update", param)
         .then(res => {
           this.fullscreenLoading=false
-          if (res.data.status === 200) {      
+          if (res.data.status === 200) {
             this.dialogVisible = false
               // 数据刷新
             this.queryFn();
-            setTimeout(() => {         
+            setTimeout(() => {
               this.$message('已通过');
-            }, 2000);        
+            }, 2000);
           }
-          
+
         }).catch(error => {
-          
+
             this.fullscreenLoading=false
             if(error.status === 300 && error.data.checkId){
-              // this.choseCheckPerson(error.data.checkId,'set') 
+              // this.choseCheckPerson(error.data.checkId,'set')
               this.checkPerson.flowType=4   //调佣的流程类型为4
               this.checkPerson.code=error.data.checkId  //业务编码为checkId
-              this.checkPerson.state=true  
+              this.checkPerson.state=true
               this.checkPerson.type=3
               // this.checkPerson.label=true
               // this.checkPerson.current=false
@@ -844,14 +844,14 @@
                 message: error
               })
             }
-             
+
         });
       },
 
       //跳转合同详情页
       goContractDetail(value){
         if(this.power['sign-com-htdetail'].state){
-            
+
           // console.log(value)
           this.setPath(this.$tool.getRouter(['合同','调佣审核','合同详情'],'adjustCheck'));
           this.$router.push({
@@ -866,7 +866,7 @@
            this.noPower(this.power['sign-com-htdetail'].name);
         }
       },
-      
+
       handleCurrentChange(e) {
         this.pageNum = e;
         this.queryFn();
@@ -891,8 +891,8 @@
         this.clearSelect()
       },
       searchDep:function (payload) {
-        this.DepList=payload.list
-        this.adjustForm.depName=payload.depName
+        /*this.DepList=payload.list
+        this.adjustForm.depName=payload.depName*/
       },
 
       initDepList: function (val) {
@@ -902,7 +902,7 @@
 
         }
       },
-    
+
     },
 
     created() {
@@ -911,9 +911,9 @@
       this.getDictionary();
       this.getAdmin();
       this.remoteMethod()
-      
 
-     
+
+
     },
 
     mounted() {
@@ -999,7 +999,7 @@
       font-size: 14px;
       color: #233241;
       padding: 6px 0;
-      
+
       .mr8{
         margin-right: 8px;
       }
@@ -1018,7 +1018,7 @@
           }
         }
       }
-      
+
     }
   }
 
@@ -1075,8 +1075,8 @@
       span{
           color: #233241;
           font-size: 20px;
-          
-          
+
+
       }
       .el-dialog__headerbtn{
           top: 16px;
@@ -1084,7 +1084,7 @@
               font-size: 24px;
               color: #32485F;
           }
-      } 
+      }
     }
     .el-dialog__body{
           padding: 0;
@@ -1160,14 +1160,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-  
+
           }
           .width70{
             width: 72px;
             height: 28px;
             line-height: 28px;
             margin-right: 3px;
-           
+
           }
           .mr10{
             margin-right: 10px;
@@ -1199,9 +1199,9 @@
               color: #6C7986;
             }
           }
-        }       
+        }
         .ulData{
- 
+
             width: 100%;
             overflow: hidden;
             li{
@@ -1243,8 +1243,8 @@
         }
 
       }
-      
-    }   
+
+    }
     .bordernone{
       border-bottom: none;
     }
@@ -1274,7 +1274,7 @@
         background-color: #54D384;
         border-color: #54D384;
       }
-      
+
     }
   }
   .name-wrapper {
@@ -1289,7 +1289,7 @@
     word-break: break-all;
     word-wrap:break-word;
   }
-   
+
   .isFlex{
     display: flex;
     align-items: center;
