@@ -399,7 +399,7 @@
                                     <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" @click="downFn(scope)">下</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.sure && layerShowData.statusLaterStage.label !== STATE.start">
-                                    <el-button class="blue" type="text" @click="sureFn(scope.row.id)">{{showSeeFn('确认',scope.row)}}</el-button>
+                                    <el-button class="blue" type="text" @click="sureFn(scope.row)">{{showSeeFn('确认',scope.row)}}</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.not && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" v-if="isUpBtnFn(scope.$index) && power['sign-qh-mgr-jd-move'].state" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" class="blue" type="text" @click="downFn(scope)">下</el-button>
