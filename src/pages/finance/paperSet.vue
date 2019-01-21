@@ -133,14 +133,16 @@
         </el-table-column>
         <el-table-column fixed prop="state" label="票据状态" min-width="84" :formatter="nullFormatter">
         </el-table-column>
-        <el-table-column label="收款人" min-width="170">
+        <el-table-column label="收款人" min-width="130">
           <template slot-scope="scope">
-              {{agentFn(scope.row.payeeStoreName,scope.row.payeeName)}}
+              <p>{{nullFormatFn(scope.row.payeeStoreName)}}</p>
+              <p>{{nullFormatFn(scope.row.payeeName)}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="开票人员" min-width="170">
+        <el-table-column label="开票人员" min-width="130">
           <template slot-scope="scope">
-              {{agentFn(scope.row.drawerDepName,scope.row.drawerName)}}
+              <p>{{nullFormatFn(scope.row.drawerDepName)}}</p>
+              <p>{{nullFormatFn(scope.row.drawerName)}}</p>
           </template>
         </el-table-column>
         <el-table-column prop="drawerDepName" label="门店" min-width="85">
@@ -154,9 +156,10 @@
         </el-table-column>
         <el-table-column prop="printTimes" label="打印次数" min-width="85">
         </el-table-column>
-        <el-table-column prop="printByName" label="打印人" min-width="170">
+        <el-table-column prop="printByName" label="打印人" min-width="130">
           <template slot-scope="scope">
-              {{agentFn(scope.row.printByStoreName,scope.row.printByName)}}
+              <p>{{nullFormatFn(scope.row.printByStoreName)}}</p>
+              <p>{{nullFormatFn(scope.row.printByName)}}</p>
           </template>
         </el-table-column>
         <el-table-column label="打印日期" min-width="152">
@@ -192,9 +195,10 @@
               <!-- <p class="norwap">{{scope.row.invalidReason}}</p> -->
           </template>
         </el-table-column>
-        <el-table-column label="操作人/时间" min-width="170">
+        <el-table-column label="操作人/时间" min-width="130">
           <template slot-scope="scope">
-            <p>{{agentFn(scope.row.updateByStoreName,scope.row.updateByName)}}</p>
+            <p>{{nullFormatFn(scope.row.updateByStoreName)}}</p>
+            <p>{{nullFormatFn(scope.row.updateByName)}}</p>
             <p>{{dateFormat(scope.row.updateTime)}}</p>
           </template>
         </el-table-column>
@@ -384,18 +388,6 @@
       this.getData();
     },
     methods: {
-      // 经纪人
-      agentFn(s,t){
-          if(!!s && !!t){
-              return `${s}-${t}`
-          }else if(!!s){
-              return s
-          }else if(!!t){
-              return t
-          }else{
-              return '--'
-          }
-      },
       // 文字处理
       nullFormatFn(val){
         return this.$tool.nullFormat(val);
