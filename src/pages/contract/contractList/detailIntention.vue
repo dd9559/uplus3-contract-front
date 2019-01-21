@@ -707,7 +707,7 @@ export default {
 
     filters: {
         getDate(val) {
-            return TOOL.dateFormat(val);
+            return TOOL.timeFormat(val);
         },
 
         subStrFn(val) {
