@@ -559,7 +559,10 @@
           }else {
             this.layer.show=true
             if(this.form.inObjType===3){
-              this.layer.content[0].inObj=`${this.layer.content[0].inObj}-${this.form.inObj}`
+              let leng=this.layer.content[0].inObj.split('-').length
+              if(leng===1){
+                this.layer.content[0].inObj=`${this.layer.content[0].inObj}-${this.form.inObj}`
+              }
             }
             param.filePath = [].concat(this.files)
             this.layer.form=Object.assign({},param)

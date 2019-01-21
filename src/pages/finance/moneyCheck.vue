@@ -71,7 +71,7 @@
             </el-option>
           </el-select>
         </div>
-        <div class="input-group">
+        <div class="input-group" v-if="activeView===1">
           <label>收款账户:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.proAccount" placeholder="请选择">
             <el-option

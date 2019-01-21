@@ -75,8 +75,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium">查看</el-button>
-            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium">编辑</el-button>
+            <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
+            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
