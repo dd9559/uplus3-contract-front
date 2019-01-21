@@ -48,7 +48,7 @@
         </el-form-item>
 
         <!-- 部门 -->
-        <el-form-item label="部门" style="margin-right:0px;">
+        <el-form-item label="部门" style="margin-left:20px;">
               <!-- <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
                 <el-option class="drop-tree" value="">
                   <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
