@@ -122,7 +122,7 @@
             </li>
           </ul> -->
         </div>
-        <el-button class="f_r" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;" v-if="power['sign-yj-rec-query'].state">导出</el-button>
+        <el-button class="f_r" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;" v-if="power['sign-yj-rec-export'].state">导出</el-button>
       </div>
       <!-- 头部 end -->
       <!-- 表格 -->
@@ -258,7 +258,7 @@ export default {
         'sign-yj-rec-export': {
           state: false,
           name: '导出'
-        }
+        }      
       },
       timeArr:[
         {
