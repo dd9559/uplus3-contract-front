@@ -1212,6 +1212,8 @@ export default {
       this.currentPage=1;
       this.propForm={
         department: "", //部门
+        dealAgentStoreId:null,
+        dealAgentId:null,
         departmentDetail: "", //部门详情（员工）
         contractType: "", //合同类型
         divideType: "", //分成类型

@@ -398,5 +398,12 @@
   /deep/ .el-table__empty-block {
     line-height: 60px;
   }
+  /deep/ .el-dialog__headerbtn {
+      top: 16px;
+      .el-dialog__close{
+          font-size: 24px;
+          color: #32485F;
+      }
+  }
 </style>
 
