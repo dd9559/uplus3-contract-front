@@ -77,6 +77,7 @@
             <p v-if="scope.row.tradeType === 5">定金</p>
 
           </template>
+          
         </el-table-column>
         <el-table-column label="成交总价" :formatter="nullFormatter" prop="dealPrice">
           <template slot-scope="scope">
@@ -191,7 +192,9 @@
           </div>
           <div class="col-li">
             <p>合同类型：<span>{{layerAudit.tradeType}}</span></p>
-            <p class="mr100">成交总价：<span>{{layerAudit.dealPrice}}元</span></p>
+            <p class="mr100">成交总价：{{layerAudit.dealPrice}}元
+              <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===layerAudit.timeUnit"> / {{item.value}}</span>
+            </p>
             <p>可分配业绩：<span>{{layerAudit.money}}元</span></p>
           </div>
           <div class="col-li">
@@ -277,7 +280,9 @@
           </div>
           <div class="col-li">
             <p>合同类型：<span>{{layerAudit.tradeType}}</span></p>
-            <p class="mr100">成交总价：<span>{{layerAudit.dealPrice}}元</span></p>
+            <p class="mr100">成交总价：{{layerAudit.dealPrice}}元
+              <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===layerAudit.timeUnit"> / {{item.value}}</span>
+            </p>
             <p>可分配业绩：<span>{{layerAudit.money}}元</span></p>
           </div>
           <div class="col-li">
