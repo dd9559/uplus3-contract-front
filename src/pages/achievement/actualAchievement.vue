@@ -48,7 +48,7 @@
         </el-form-item>
 
         <!-- 部门 -->
-        <el-form-item label="部门" style="margin-right:0px;">
+        <el-form-item label="部门" style="margin-left:20px;">
               <!-- <el-select :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep"   v-model="propForm.department" placeholder="请选择">
                 <el-option class="drop-tree" value="">
                   <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
@@ -170,7 +170,7 @@
 
 
         </div>
-        <p> <el-button class="f_r" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;">导出</el-button></p>
+        <p> <el-button class="f_r" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;" v-if="power['sign-yj-rev-export'].state">导出</el-button></p>
 
       </div>
       <!-- 头部 end -->
@@ -968,6 +968,10 @@ export default {
       'sign-com-htdetail': {
             state: false,
             name: '合同详情'
+       },
+      'sign-yj-rev-export': {
+            state: false,
+            name: '导出'
        }
       },
       checkPerson: {
@@ -1052,7 +1056,7 @@ export default {
     // 导出功能
     getExcel(){
         this.queryFn();
-        this.ajaxParam.is_Receivable=1;
+        // this.ajaxParam.is_Receivable=1;
         let param = Object.assign({},this.ajaxParam)
         this.excelCreate('/input/achievementExcel',param)
     },
@@ -1212,6 +1216,8 @@ export default {
       this.currentPage=1;
       this.propForm={
         department: "", //部门
+        dealAgentStoreId:null,
+        dealAgentId:null,
         departmentDetail: "", //部门详情（员工）
         contractType: "", //合同类型
         divideType: "", //分成类型

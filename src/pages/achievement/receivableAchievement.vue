@@ -122,7 +122,7 @@
             </li>
           </ul> -->
         </div>
-        <el-button class="f_r" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+        <el-button class="f_r" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;" v-if="power['sign-yj-rec-export'].state">导出</el-button>
       </div>
       <!-- 头部 end -->
       <!-- 表格 -->
@@ -254,7 +254,11 @@ export default {
         'sign-com-htdetail': {
           state: false,
           name: '合同详情'
-        }
+        },
+        'sign-yj-rec-export': {
+          state: false,
+          name: '导出'
+        }      
       },
       timeArr:[
         {
@@ -289,9 +293,9 @@ export default {
    // 导出功能
     getExcel(){
         this.queryFn();
-        this.ajaxParam.is_Receivable=2;
+        // this.ajaxParam.is_Receivable=2;
         let param = Object.assign({},this.ajaxParam)
-        this.excelCreate('/input/achievementExcel',param)
+        this.excelCreate('/input/exportSettleExcel',param)
     },
     getData(param) {
        // 实收列表

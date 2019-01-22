@@ -399,14 +399,14 @@
                                     <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" @click="downFn(scope)">下</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.sure && layerShowData.statusLaterStage.label !== STATE.start">
-                                    <el-button class="blue" type="text" @click="sureFn(scope.row.id)">确认</el-button>
+                                    <el-button class="blue" type="text" @click="sureFn(scope.row)">{{showSeeFn('确认',scope.row)}}</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.not && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" v-if="isUpBtnFn(scope.$index) && power['sign-qh-mgr-jd-move'].state" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" class="blue" type="text" @click="downFn(scope)">下</el-button>
                                     <template v-if="!power['sign-qh-mgr-jd-move'].state">--</template>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.amend && layerShowData.statusLaterStage.label !== STATE.start">
-                                    <el-button class="blue" type="text" @click="amendFn(scope.row.id)">修改</el-button>
+                                    <el-button class="blue" type="text" @click="amendFn(scope.row)">{{showSeeFn('修改',scope.row)}}</el-button>
                                 </template>
                                 <template v-else>--</template>
                             </template>
@@ -1265,12 +1265,19 @@
                 })
             },
             // 确认
-            sureFn(id){
+            sureFn(row){
                 // this.stepsData = {
                 //     show:true,
                 //     tit:'确认'
                 // }
-                this.getLookStepFn(id,'确认');
+                this.getLookStepFn(row.id,this.showSeeFn('确认',row));
+            },
+            showSeeFn(txt,row){
+                if(row.personLiableCode === this.getUser.user.empId){
+                    return txt;
+                }else{
+                    return '查看';
+                }
             },
             // 上
             upFn(e){
@@ -1329,12 +1336,12 @@
                 })
             },
             // 修改
-            amendFn(id){
+            amendFn(row){
                 // this.stepsData = {
                 //     show:true,
                 //     tit:'修改'
                 // }
-                this.getLookStepFn(id,'修改');
+                this.getLookStepFn(row.id,this.showSeeFn('修改',row));
             },
             // 选择交易流程 取消
             replaceCloseFn(){

@@ -40,9 +40,9 @@
     </ScreeningTop>
     <!-- table表格 -->
     <div class="company-list">
-      <p>
+      <p v-if="power['sign-set-gs'].state">
         <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-        <el-button @click="addCompany" icon="el-icon-plus" v-if="power['sign-set-gs'].state">公司信息</el-button>
+        <el-button @click="addCompany" icon="el-icon-plus">公司信息</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
         <el-table-column align="center" label="城市" prop="cityName" width="90">
@@ -75,8 +75,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium">查看</el-button>
-            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium">编辑</el-button>
+            <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
+            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>

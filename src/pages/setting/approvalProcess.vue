@@ -32,9 +32,9 @@
         </div>
         </ScreeningTop>
         <div class="aduit-list">
-            <p>
+            <p v-if="power['sign-set-verify'].state">
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-                <el-button @click="operation('添加',1)" v-if="power['sign-set-verify'].state">添加</el-button>
+                <el-button @click="operation('添加',1)">添加</el-button>
             </p>
             <div class="table">
                 <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">

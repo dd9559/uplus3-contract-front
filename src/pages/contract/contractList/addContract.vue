@@ -48,8 +48,8 @@
             <i class="yuan">元</i>
             <!-- <el-input v-model="contractForm.commissionPayment" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
-          <el-form-item label="交易流程：" class="form-label" style="width:298px;text-align:right">
-            <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true">
+          <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right">
+            <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true" style="width:220px">
               <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>

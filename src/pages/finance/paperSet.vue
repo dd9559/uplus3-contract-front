@@ -133,9 +133,17 @@
         </el-table-column>
         <el-table-column fixed prop="state" label="票据状态" min-width="84" :formatter="nullFormatter">
         </el-table-column>
-        <el-table-column prop="payeeName" label="收款人" min-width="71">
+        <el-table-column label="收款人" min-width="130">
+          <template slot-scope="scope">
+              <p>{{nullFormatFn(scope.row.payeeStoreName)}}</p>
+              <p>{{nullFormatFn(scope.row.payeeName)}}</p>
+          </template>
         </el-table-column>
-        <el-table-column prop="drawerName" label="开票人员" min-width="86">
+        <el-table-column label="开票人员" min-width="130">
+          <template slot-scope="scope">
+              <p>{{nullFormatFn(scope.row.drawerDepName)}}</p>
+              <p>{{nullFormatFn(scope.row.drawerName)}}</p>
+          </template>
         </el-table-column>
         <el-table-column prop="drawerDepName" label="门店" min-width="85">
         </el-table-column>
@@ -148,7 +156,11 @@
         </el-table-column>
         <el-table-column prop="printTimes" label="打印次数" min-width="85">
         </el-table-column>
-        <el-table-column prop="printByName" label="打印人" min-width="72">
+        <el-table-column prop="printByName" label="打印人" min-width="130">
+          <template slot-scope="scope">
+              <p>{{nullFormatFn(scope.row.printByStoreName)}}</p>
+              <p>{{nullFormatFn(scope.row.printByName)}}</p>
+          </template>
         </el-table-column>
         <el-table-column label="打印日期" min-width="152">
            <template slot-scope="scope">
@@ -183,9 +195,10 @@
               <!-- <p class="norwap">{{scope.row.invalidReason}}</p> -->
           </template>
         </el-table-column>
-        <el-table-column label="操作人/时间" min-width="146">
+        <el-table-column label="操作人/时间" min-width="130">
           <template slot-scope="scope">
-            <p>{{scope.row.updateByName}}</p>
+            <p>{{nullFormatFn(scope.row.updateByStoreName)}}</p>
+            <p>{{nullFormatFn(scope.row.updateByName)}}</p>
             <p>{{dateFormat(scope.row.updateTime)}}</p>
           </template>
         </el-table-column>
