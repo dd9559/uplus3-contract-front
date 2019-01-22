@@ -34,7 +34,7 @@
           <p class='tip'>系统暂不支持以下合同参数，需要进行设置</p>
           <div class="ex-body">
               <p>温馨提示：选项值之间请用英文下的逗号隔开！</p>
-               <el-table :data='tableDate' max-height="371px" style="width: 100%;overflow-y:scroll" header-row-class-name="theader-bg">
+               <el-table :data='tableDate' max-height="383px" style="width: 100%;overflow-y:auto" header-row-class-name="theader-bg">
                     <el-table-column type="index" width="50"></el-table-column>
                     <el-table-column align="center" label="参数名称" prop="name"></el-table-column>
                     <!-- <el-table-column align="center" label="是否必填" min-width="150">
@@ -694,6 +694,9 @@ export default{
             height:800px;
         }
     }
+}
+/deep/ .el-table::before{
+    height: 0;
 }
 // .disabled{
 //     disabled:true
