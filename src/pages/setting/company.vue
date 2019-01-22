@@ -473,7 +473,7 @@
         })
         if(this.companyFormTitle) {
           this.cityList.find(item => {
-            if(val === item.id) {
+            if(val === item.cityId) {
               this.companyForm.cityName = item.name
               this.companyForm.storeId = ""
             }
