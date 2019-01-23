@@ -298,6 +298,7 @@ export default {
         this.excelCreate('/input/exportSettleExcel',param)
     },
     getData(param) {
+       this.loading=true;
        // 实收列表
         let _that = this;
         this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
@@ -312,11 +313,12 @@ export default {
             //   _that.countData = [0, 0, 0, 0];
             // }
             _that.total = data.data.total;
+            this.loading=false;
           }
         }).catch(error => {
                this.$message({message:error})
-        });;
-        this.loading = false;
+               this.loading = false;
+        });; 
     },
        //获取当前部门
     initDepList:function (val) {

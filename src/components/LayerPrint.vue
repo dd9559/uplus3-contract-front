@@ -13,7 +13,10 @@
             print() {
                 var printhtml = document.getElementById('printHtml').innerHTML;
                 var f = document.getElementById('printf');
-
+                printhtml = `
+                <div style='position:relative;z-index:100;'>${printhtml}</div>
+                <div style='position:absolute;z-index:99;left:0;top:0;right:0;bottom:0;background-color:#fff'></div>
+                `
                 // css
                 this.getStyle(f);
                 // html
@@ -72,7 +75,9 @@
                 for (var i = 0; i < styles1.length; i++) {
                     str += styles1[i].outerHTML;
                 }
-
+                str +=`<style>header, footer {
+    display: none;
+}</style>`
                 printI.contentDocument.head.innerHTML = str;
                 // 添加link引入
                 let styles = document.querySelectorAll("link");

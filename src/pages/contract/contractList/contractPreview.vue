@@ -697,7 +697,8 @@ export default {
               this.getContImg();
               this.dialogInvalid=false;
               this.$message({
-                message:'操作成功'
+                message:'操作成功',
+                type:"success"
               })
             }
           }).catch(error => {
@@ -708,12 +709,14 @@ export default {
           })
         }else{
           this.$message({
-            message:'请填写撤单原因'
+            message:'请填写撤单原因',
+            type:"warning"
           })
         }
       }else{
         this.$message({
-          message:'请填写撤单原因'
+          message:'请填写撤单原因',
+          type:"warning"
         })
       }
     },
@@ -1053,6 +1056,7 @@ export default {
   }
   .content{
     padding-top: 20px;
+    padding-bottom: 10px;
     // display: flex;
     // justify-content: center;
     // align-items: center;

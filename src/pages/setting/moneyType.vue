@@ -134,10 +134,10 @@
                             this.tableData=res.data.data
                             this.moneyTypes=res.data.data[0].moneyTypes
                             this.bigName=res.data.data[0].name
+                            this.bigId=res.data.data[0].id
                         }else{
                             this.moneyTypes=res.data.data
                         }
-                            this.bigId=this.bigId==''?18:this.bigId
                     }
                 })
                 // }else{
