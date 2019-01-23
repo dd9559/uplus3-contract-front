@@ -372,7 +372,7 @@ export default{
                     this.count--
                     this.flag=0
                     if(this.count<=0){
-                        this.count=1
+                        this.count=this.total
                     }
                      this.sigtureShow=false
                     for(let i=0;i<this.signPositions.length;i++){
@@ -396,7 +396,7 @@ export default{
                     this.count2--
                     this.flag=0
                     if(this.count2<=0){
-                        this.count2=1
+                        this.count2=this.total2
                     }
                      this.sigtureShow2=false
                      for(let i=0;i<this.signPositions.length;i++){
@@ -420,8 +420,8 @@ export default{
                if(type==1){
                     this.flag=0
                     this.count++
-                    if(this.count>=this.total){
-                        this.count=this.total
+                    if(this.count>this.total){
+                        this.count=1
                     }
                      this.sigtureShow=false
                     for(let i=0;i<this.signPositions.length;i++){
@@ -444,8 +444,8 @@ export default{
                }else if(type==2){
                     this.flag=0
                     this.count2++
-                    if(this.count2>=this.total2){
-                        this.count2=this.total2
+                    if(this.count2>this.total2){
+                        this.count2=1
                     }
                     this.sigtureShow2=false
                     for(let i=0;i<this.signPositions.length;i++){
