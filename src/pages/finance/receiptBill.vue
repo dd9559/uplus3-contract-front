@@ -19,8 +19,9 @@
         </div>
         <div class="input-group col active-400">
           <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
-          <div class="flex-box" v-if="inObjPerson">
-            <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')" @search="searchDep" key="other"></select-tree>
+          <div class="flex-box w400" v-if="inObjPerson">
+            <select-tree v-if="firstCreate.state" :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')" @search="searchDep" key="other"></select-tree>
+            <div class="h32" :class="[!firstCreate.state?'no-min':'']" v-else>{{firstCreate.content.storeName}}</div>
             <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
               <el-option class="drop-tree" value="">
                 <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
@@ -512,7 +513,7 @@
       // this.remoteMethod()
       this.getDropdown()
       // this.getReceiptman()
-      this.getAdmin()
+      // this.getAdmin()
       this.addInit(this.$route.query.contId)
       let type = this.$route.query.edit
       let inAccount = this.$route.query.type
@@ -537,6 +538,16 @@
               this.firstCreate.state=false
               this.firstCreate.content = Object.assign({},res.data)
               this.activeAdmin = res.data.account[0].accountId
+              this.getEmploye(res.data.storeId)
+            }else {
+              console.log(this.getUser)
+              this.firstCreate.state=true
+
+              this.dep.id=this.getUser.user.depId
+              this.dep.name=this.getUser.user.depName
+              this.getEmploye(this.getUser.user.depId)
+              this.form.inObjId=this.getUser.user.empId
+              this.form.inObj=this.getUser.user.name
             }
           }
         })
@@ -1204,15 +1215,15 @@
           })
         }
       },
-      userMsg:function (val) {
-        if(!this.$route.query.edit){
+      /*userMsg:function (val) {
+        if(!this.$route.query.edit&&this.firstCreate.state){
           this.dep.id=val.depId
           this.dep.name=val.depName
           this.getEmploye(val.depId)
           this.form.inObjId=val.empId
           this.form.inObj=val.name
         }
-      },
+      },*/
       getUser:function (val) {
         this.getAcount(val.user.empId)
       }
@@ -1228,6 +1239,9 @@
     min-width: 118px;
     &.other{
       min-width: 300px;
+    }
+    &.no-min{
+      min-width: initial;
     }
   }
   .artice-margin{
