@@ -22,7 +22,7 @@
             </div>
             <div class="input-group">
                 <label>流程类型</label>
-                <el-select size="small" v-model="searchForm.type" @change="changeFlowTypeOne" :clearable="true">
+                <el-select size="small" v-model="searchForm.type" @change="changeFlowTypeOne" :clearable="true" @clear="clearCondition">
                     <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
                 <el-select size="small" v-model="searchForm.branchCondition" :clearable="true" class="branch-condition">
@@ -132,7 +132,7 @@
                                     <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                 </el-select>
                                 <div v-if="item.type===0" class="person">
-                                    <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick($event,index)" @clear="clearDep" @search="searchDep($event,index)"></select-tree>
+                                    <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick($event,index)" @clear="clearDep(index)" @search="searchDep($event,index)"></select-tree>
                                     <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye" size="small"
                                                 v-model="item.personArr" placeholder="请选择" filterable multiple @change="multiSelect(item.type,index)">
                                         <el-option
@@ -353,7 +353,8 @@
                     this.employeList[index-1] = []
                 }
             },
-            clearDep: function () {
+            clearDep: function (index) {
+                this.$set(this.employeList,[index-1],[])
                 this.clearSelect()
             },
             depHandleClick(data,index) {
@@ -803,7 +804,11 @@
                 this.searchForm.name = ""
                 this.searchForm.type = ""
                 this.searchForm.branchCondition = ""
+                this.homeConditionList = []
                 this.pageNum = 1
+            },
+            clearCondition() {
+                this.homeConditionList = []
             },
             handleSizeChange(val) {
                 this.pageSize = val
