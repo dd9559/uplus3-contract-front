@@ -631,7 +631,7 @@
       },
       //支付信息表单增减
       payListOper:function (index) {
-        this.hideCardList()
+        // this.hideCardList()
         if(index===0){
           let cell={
             payMethod:'',
@@ -642,6 +642,7 @@
         }else {
           this.payList.splice(index,1)
         }
+        this.hideCardList()
       },
       /**
        * 修改款单，获取初始数据
