@@ -194,7 +194,7 @@
               <div class="content">
                 <div class="one_ extendParams">
                   <!-- <p v-for="(item,index) in parameterList" :key="index" v-if="contractDetail.extendParams[item.name]"> -->
-                  <p v-for="(item,index) in contractDetail.extendParams" :key="index">
+                  <p v-for="(item,index) in contractDetail.extendParams" :key="index" v-if="item.value">
                     <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                       <span class="tag tagHidden">{{item.name}}</span>
                     </el-tooltip>
@@ -1304,6 +1304,11 @@ export default {
               this.clientrData.push(this.contractDetail.contPersons[i]);
             }
           }
+          this.contractDetail.extendParams.forEach(element => {
+            if(element.type===5){
+              element.value=element.value.join(',')
+            }
+          });
           if(res.data.isHaveData){
             this.getContData()
           }
