@@ -2255,14 +2255,15 @@ export default {
     display: flex;
     .remarks{
       color: @color-233;
-      padding: 10px;
+      padding: 0 10px;
       box-sizing: border-box;
-      width: 750px;
-      height: 200px;
+      width: 700px;
+      height: 120px;
       border: 1px solid #ebeef5;
       border-radius: 4px;
       >P{
-        width: 770px;
+        width: 680px;
+        font-size: 14px;
       }
     }
   }
