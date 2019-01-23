@@ -52,12 +52,14 @@
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
                                 <el-option :value=4 label="日期"  v-show="content[scope.$index] ==0"></el-option>
+                                <el-option :value=5 label="多选框" v-show="content[scope.$index]==0"></el-option>
                             </el-select>
                             <el-select v-model="scope.row.inputType" v-else disabled>
                                 <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
                                 <el-option :value=4 label="日期"  v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=5 label="多选框" v-show="content[scope.$index]==0"></el-option>
                             </el-select>
                         </template>
                     </el-table-column>
@@ -342,7 +344,7 @@ export default{
             },
             numSave(){
                 for(let i=0;i<this.tableDate.length;i++){
-                    if(this.tableDate[i].inputType==2){
+                    if(this.tableDate[i].inputType==2||this.tableDate[i].inputType==5){
                         if(this.tableDate[i].options==''){
                              this.$message({
                              type: 'error',
