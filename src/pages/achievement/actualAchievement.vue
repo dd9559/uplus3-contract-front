@@ -1033,8 +1033,7 @@ export default {
     },
     getData(ajaxParam) {
       this.loading=true;
-     let _that=this;
-
+      let _that=this;
         this.$ajax
           .get("/api/achievement/selectAchievementList", ajaxParam)
           .then(res => {
@@ -1048,11 +1047,15 @@ export default {
               }else {
                    _that.countData = [0, 0, 0, 0];
             }
-             this.loading=false;
+             this. $nextTick(()=>{
+                this.loading=false;
+             })
             }
         }).catch(error => {
             this.$message({message:error})
-            this.loading=false;
+            this. $nextTick(()=>{
+               this.loading=false;
+            })
      });
     },
     // 导出功能
@@ -1158,7 +1161,10 @@ export default {
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;
-                this.loading2=false;
+                this. $nextTick(()=>{
+                  this.loading2=false;
+               })
+             
             }else{
               this.checkArr = [];
             }
