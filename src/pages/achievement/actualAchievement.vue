@@ -1032,7 +1032,9 @@ export default {
       this.propForm.department=payload.depName*/
     },
     getData(ajaxParam) {
+      this.loading=true;
      let _that=this;
+
         this.$ajax
           .get("/api/achievement/selectAchievementList", ajaxParam)
           .then(res => {
@@ -1046,12 +1048,12 @@ export default {
               }else {
                    _that.countData = [0, 0, 0, 0];
             }
-
+             this.loading=false;
             }
         }).catch(error => {
             this.$message({message:error})
+            this.loading=false;
      });
-      this.loading=false;
     },
     // 导出功能
     getExcel(){
