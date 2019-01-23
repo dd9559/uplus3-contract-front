@@ -22,7 +22,7 @@
             </div>
             <div class="input-group">
                 <label>流程类型</label>
-                <el-select size="small" v-model="searchForm.type" @change="changeFlowTypeOne" :clearable="true">
+                <el-select size="small" v-model="searchForm.type" @change="changeFlowTypeOne" :clearable="true" @clear="clearCondition">
                     <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
                 <el-select size="small" v-model="searchForm.branchCondition" :clearable="true" class="branch-condition">
@@ -803,7 +803,11 @@
                 this.searchForm.name = ""
                 this.searchForm.type = ""
                 this.searchForm.branchCondition = ""
+                this.homeConditionList = []
                 this.pageNum = 1
+            },
+            clearCondition() {
+                this.homeConditionList = []
             },
             handleSizeChange(val) {
                 this.pageSize = val
