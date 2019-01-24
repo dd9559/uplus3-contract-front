@@ -53,35 +53,78 @@
     <!-- 列表 -->
     <div class="routing-list">
       <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
-      <el-table :data="tableData" border>
-        <el-table-column align="left" label="分账门店" prop="outStoreName" width="150">
+      <el-table :data="tableData" border @row-dblclick='toDetail'>
+        <el-table-column align="left" label="分账门店" prop="outStoreName">
         </el-table-column>
-        <el-table-column align="left" label="分账门店账户" prop="outBankCard" width="250">
+        <el-table-column align="left" label="分账门店账户" prop="outBankCard">
         </el-table-column>
-        <el-table-column align="left" label="收款门店" prop="inStoreName" width="150">
+        <el-table-column align="left" label="收款门店" prop="inStoreName">
         </el-table-column>
-        <el-table-column align="left" label="收款门店账户" width="250">
+        <el-table-column align="left" label="收款门店账户">
           <template slot-scope="scope">
-            <p v-for="item in scope.row.inBank" :key="item.bankCard">{{item.bankCard}}</p>
+            <!-- <p v-for="item in scope.row.inBank" :key="item.bankCard">{{item.bankCard}}</p> -->
+            <el-tooltip placement="top">
+              <div slot="content">
+                <div v-for="item in scope.row.inBank" :key="item.bankCard">
+                  <p>银行账户：{{item.bankCard}}</p>
+                  <p>开户名：{{item.bankAccountName}}</p>
+                  <p>开户行：{{item.bankBranchName}}</p>
+                </div>
+              </div>
+              <div>
+                <p v-for="item in scope.row.inBank" :key="item.bankCard">{{item.bankCard}}</p>
+              </div> 
+            </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="分账周期" width="250">
+        <el-table-column align="left" label="分账周期">
           <template slot-scope="scope">
             <span>{{scope.row.startTime|timeFormat_}}</span> ~
             <span>{{scope.row.endTime|timeFormat_}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="分账金额(元)" prop="accountAmount" width="150">
+        <el-table-column align="left" label="分账金额(元)" prop="accountAmount">
         </el-table-column>
-        <el-table-column align="left" label="操作" width="250">
+        <el-table-column align="left" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium">确认收款</el-button>
+            <el-button type="text" size="medium" @click="toReceipt(scope.row)">确认收款</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+      <!-- 固定滚动条 -->
+      <div class="pagination" v-if="tableData.length>0">
+        <el-pagination
+         class="pagination-info"
+         @current-change="handleCurrentChange"
+         :current-page="currentPage"
+         layout="total, prev, pager, next, jumper"
+         :total="total">
+        </el-pagination>
+      </div>
     </div>
+
+    <!-- 确认收款 -->
+    <el-dialog title="确认打款" :visible.sync="dialogReceipt" width="600px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="receipt_one">
+        <span class="tag">分账周期：<span class="text">{{receiptData.startTime|timeFormat_}} ~ {{receiptData.endTime|timeFormat_}}</span></span><span class="tag">收款门店：<span class="text">{{receiptData.inStoreName}}</span></span>
+      </div>
+      <div class="receipt_two">
+        <p class="tag">收款门店账户选择：</p>
+        <ul>
+          <li v-for="(item,index) in receiptData.inBank" :key="index">
+            <el-radio v-model="radio" :label="item.bankCard"><span>银行账户：</span><span>{{item.bankCard}}</span></el-radio>
+          </li>
+        </ul>
+      </div>
+      <div class="receipt_three">
+        <span class="tag">打款备注：</span>
+        <el-input type="textarea" :rows="6" placeholder="请输入核销理由，最多200字 " v-model="receiptReason" resize='none' style="width:460px;overflow-y:hidden" maxlength="200"></el-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button round @click="dialogReceipt = false">取消</el-button>
+        <el-button round type="primary" @click="commit">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
            
@@ -117,6 +160,10 @@ export default {
         //数据字典
         "53": "", //合作方式
       },
+      dialogReceipt:false,
+      receiptData:{},
+      receiptReason:'',//备注
+      radio:''
     };
   },
   created() {
@@ -139,6 +186,7 @@ export default {
         res=res.data;
         if(res.status===200){
           this.tableData=res.data.list;
+          this.total=res.data.total;
         }
       }).catch(error=>{
         this.$message({
@@ -149,7 +197,7 @@ export default {
     },
     // 查询
     queryFn() {
-      if(this.signDate.length>1){
+      if(this.signDate&&this.signDate.length>1){
         this.getProateNotes();
       }else{
         this.$message({
@@ -187,17 +235,6 @@ export default {
       });
       }
     },
-    //分账详情
-    toDetail(){
-      let newPage = this.$router.resolve({ 
-        path: '/contractList',
-        query:{
-          objectType:1,
-          infoId:1
-        }
-      });
-      window.open(newPage.href, '_blank');
-    },
     //获取当前部门
     initDepList:function (val) {
       if(!val){
@@ -217,7 +254,66 @@ export default {
       this.searchForm.depName=data.name
 
       this.handleNodeClick(data)
-    }
+    },
+    //确认收款
+    toReceipt(item){
+      this.dialogReceipt=true
+      this.receiptData=item;
+    },
+    commit(){
+      if(this.radio){
+        this.receiptData.remark=this.receiptReason;
+        this.receiptData.inBankCard=this.radio;
+        let param = this.receiptData;
+        this.$ajax.postJSON('/api/separate/account/allotted',param).then(res=>{
+          res=res.data;
+          if(res.status===200){
+            this.$message({
+              message:'收款成功',
+              type:'success'
+            });
+            this.getProateNotes();
+            this.dialogReceipt=false;
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error.message,
+            type:"error"
+          })
+        })
+      }else{
+        this.$message({
+          message:'请选择收款账户',
+          type:'warning'
+        })
+      }
+      
+    },
+    toDetail(){
+      this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
+      let newPage = this.$router.resolve({ 
+        path: '/routingRemitDetail',
+        query:{
+          objectType:1,
+          infoId:1
+        }
+      });
+      window.open(newPage.href, '_blank');
+      // this.$router.push({
+      //   path: "/routingRemitDetail",
+      // })
+    },
+     //分账详情
+    // toDetail(){
+    //   let newPage = this.$router.resolve({ 
+    //     path: '/contractList',
+    //     query:{
+    //       objectType:1,
+    //       infoId:1
+    //     }
+    //   });
+    //   window.open(newPage.href, '_blank');
+    // },
   },
   filters: {
     timeFormat_: function (val) {
@@ -240,13 +336,11 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
-.red{
-  color: red;
-}
+
 .routing-list {
   // margin-top: 20px;
   background-color: #fff;
-  padding: 0 10px 10px 10px;
+  padding: 0 10px;
   border-radius: 2px;
   box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   >p{
@@ -257,10 +351,6 @@ export default {
         padding-right: 10px;
       }
     }
-  }
-  .contCode{
-    color: @color-blue;
-    cursor: pointer;
   }
 }
 /deep/.paper-box {
@@ -277,7 +367,42 @@ export default {
 /deep/ .el-table th {
   background: @bg-th;
 }
-/deep/.margin-left{
-  margin-left: 0;
+//确认打款弹窗
+/deep/.el-dialog__header{
+  padding: 10px;
+  border-bottom: 1px solid #edecf0;
+  .el-dialog__headerbtn{
+    top:10px;
+    right: 10px;
+  }
+}
+.tag{
+  color: @color-6c; 
+  padding-left: 20px;
+}
+.text{
+  color: @color-blank;
+}
+.receipt_one{
+  padding-top: 10px;
+}
+.receipt_two{
+  padding: 5px 0;
+  >ul{
+    padding-left: 40px;
+    >li{
+      padding: 5px 0;
+      color: @color-blank;
+    }
+  }
+}
+.receipt_three{
+  padding-top: 5px;
+  display: flex;
+}
+.dialog-footer{
+  /deep/.is-round{
+    padding: 9px 15px;
+  }
 }
 </style>
