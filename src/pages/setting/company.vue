@@ -525,6 +525,7 @@
         this.creditCodeShow = false
         this.icRegisterShow = false
         this.companyFormTitle = ""
+        this.delIds = []
         done()
       },
       addCompany() {
@@ -567,17 +568,11 @@
           this.companyBankList = [...this.directInfo.companyBankList]
         } else {
           this.directSaleSelect = false
-          for(let key in this.companyForm)
-          {
-            if(
-              key === "lepName" || key === "lepDocumentType" ||
-              key === "lepDocumentCard" || key === "lepPhone" ||
-              key === "documentType"
-              )
-            {
-              this.companyForm[key] = ""
-            }
-          }
+          this.companyForm.lepName = ""
+          this.companyForm.lepDocumentType = ""
+          this.companyForm.lepDocumentCard = ""
+          this.companyForm.lepPhone = ""
+          this.companyForm.documentType = ""
           this.icRegisterShow = false
           this.creditCodeShow = false
           this.documentCard = JSON.parse(JSON.stringify(obj2))
@@ -763,7 +758,9 @@
       },
       //点击查看和编辑
       viewEditCompany(row, type) {
-        this.getStoreList(row.cityId)
+        if(!this.storeList.length) {
+          this.getStoreList(row.cityId)
+        }
         if(type === 'init') {
           this.dialogViewVisible = true
         } else {
@@ -824,7 +821,6 @@
             this.imgList.push(pic2.split('?')[0],pic1.split('?')[0])
           }
         }
-        console.log(this.imgList);
         this.fileSign(this.imgList)
       },
       handleSizeChange(val) {
