@@ -52,12 +52,14 @@
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
                                 <el-option :value=4 label="日期"  v-show="content[scope.$index] ==0"></el-option>
+                                <el-option :value=5 label="多选框" v-show="content[scope.$index]==0"></el-option>
                             </el-select>
                             <el-select v-model="scope.row.inputType" v-else disabled>
                                 <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=1 label="输入框" v-show="content[scope.$index]==0"></el-option>
                                 <el-option :value=3 label="复选框" disabled v-show="content[scope.$index]!==0"></el-option>
                                 <el-option :value=4 label="日期"  v-show="content[scope.$index]==0"></el-option>
+                                <el-option :value=5 label="多选框" v-show="content[scope.$index]==0"></el-option>
                             </el-select>
                         </template>
                     </el-table-column>
@@ -145,7 +147,9 @@ export default{
                 this.position2=false
                 this.saveBtn=false
                 this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:this.enableTemplateId}).then((res)=>{
+                    this.$nextTick(()=>{
                       this.loading=false
+                    })
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
                             this.showSed=true
@@ -342,7 +346,7 @@ export default{
             },
             numSave(){
                 for(let i=0;i<this.tableDate.length;i++){
-                    if(this.tableDate[i].inputType==2){
+                    if(this.tableDate[i].inputType==2||this.tableDate[i].inputType==5){
                         if(this.tableDate[i].options==''){
                              this.$message({
                              type: 'error',
@@ -372,7 +376,7 @@ export default{
                     this.count--
                     this.flag=0
                     if(this.count<=0){
-                        this.count=1
+                        this.count=this.total
                     }
                      this.sigtureShow=false
                     for(let i=0;i<this.signPositions.length;i++){
@@ -396,7 +400,7 @@ export default{
                     this.count2--
                     this.flag=0
                     if(this.count2<=0){
-                        this.count2=1
+                        this.count2=this.total2
                     }
                      this.sigtureShow2=false
                      for(let i=0;i<this.signPositions.length;i++){
@@ -420,8 +424,8 @@ export default{
                if(type==1){
                     this.flag=0
                     this.count++
-                    if(this.count>=this.total){
-                        this.count=this.total
+                    if(this.count>this.total){
+                        this.count=1
                     }
                      this.sigtureShow=false
                     for(let i=0;i<this.signPositions.length;i++){
@@ -444,8 +448,8 @@ export default{
                }else if(type==2){
                     this.flag=0
                     this.count2++
-                    if(this.count2>=this.total2){
-                        this.count2=this.total2
+                    if(this.count2>this.total2){
+                        this.count2=1
                     }
                     this.sigtureShow2=false
                     for(let i=0;i<this.signPositions.length;i++){
@@ -501,7 +505,9 @@ export default{
               }
               this.$ajax.get('/api/setting/contractTemplate/checkTemplate',param).then(res=>{
               if(res.status==200){
-                  this.loading=false
+                  this.$nextTick(()=>{
+                      this.loading=false
+                    })
                   if(res.data.data.unPlaceholder!==''){
                       for( let i=0;i<res.data.data.unPlaceholder.length;i++){
                           if(res.data.data.unPlaceholder[i]!==null){
@@ -571,7 +577,9 @@ export default{
                     })
           
                     setTimeout(() => {
-                        this.loading=false
+                        this.$nextTick(()=>{
+                            this.loading=false
+                        })
                         this.$router.push({
                             path: "/contractTemplate",
                         });

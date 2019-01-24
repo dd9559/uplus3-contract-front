@@ -254,7 +254,7 @@
               <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
               
               <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
-                <span class="title form-label">{{item.name}}</span>
+                <span class="title" :class="{'form-label':item.inputType.value!=4}">{{item.name}}</span>
               </el-tooltip>
               <span class="colon">: </span>
               <!-- class="form-label" -->
@@ -267,6 +267,22 @@
               </el-select>
               <!-- 日期选择器 -->
               <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.extendParams[index].value" style="width:140px" v-if="item.inputType.value===4&&contractForm.extendParams[index]" size="small"></el-date-picker>
+              <!-- 下拉多选 -->
+              <el-select
+                v-if="item.inputType.value===5&&contractForm.extendParams[index]"
+                size="small"
+                v-model="contractForm.extendParams[index].value"
+                multiple
+                collapse-tags
+                style="margin-left: 20px;"
+                placeholder="请选择">
+                <el-option
+                  v-for="item_ in item.options"
+                  :key="item_"
+                  :label="item_"
+                  :value="item_">
+                </el-option>
+              </el-select>
               <span class="unit">{{item.unit}}</span>
             </li>
           </ul>
@@ -923,10 +939,30 @@ export default {
                                     paramsOk=false;
                                     let item = this.contractForm.extendParams[i];
                                     // console.log(item);
-                                    if(item.value){
-                                      item.value=item.value.replace(/\s/g,"");
+                                    if(item.type!=4){
                                       if(item.value){
-                                        paramsOk=true
+                                        if(item.type===5){
+                                          if(item.value.length>0){
+                                            paramsOk=true
+                                          }else{
+                                            this.$message({
+                                              message: `扩展参数-${item.name}不能为空`,
+                                              type: "warning"
+                                            });
+                                            break
+                                          }
+                                        }else{
+                                          item.value=item.value.replace(/\s/g,"");
+                                          if(item.value){
+                                            paramsOk=true
+                                          }else{
+                                            this.$message({
+                                              message: `扩展参数-${item.name}不能为空`,
+                                              type: "warning"
+                                            });
+                                            break
+                                          }
+                                        }
                                       }else{
                                         this.$message({
                                           message: `扩展参数-${item.name}不能为空`,
@@ -934,13 +970,8 @@ export default {
                                         });
                                         break
                                       }
-                                    }else{
-                                      this.$message({
-                                        message: `扩展参数-${item.name}不能为空`,
-                                        type: "warning"
-                                      });
-                                      break
                                     }
+                                    
                                   }
                                   if(paramsOk){
                                     this.dialogSave = true;
@@ -962,10 +993,30 @@ export default {
                                     paramsOk=false;
                                     let item = this.contractForm.extendParams[i];
                                     // console.log(item);
-                                    if(item.value){
-                                      item.value=item.value.replace(/\s/g,"");
+                                    if(item.type!=4){
                                       if(item.value){
-                                        paramsOk=true
+                                        if(item.type===5){
+                                          if(item.value.length>0){
+                                            paramsOk=true
+                                          }else{
+                                            this.$message({
+                                              message: `扩展参数-${item.name}不能为空`,
+                                              type: "warning"
+                                            });
+                                            break
+                                          }
+                                        }else{
+                                          item.value=item.value.replace(/\s/g,"");
+                                          if(item.value){
+                                            paramsOk=true
+                                          }else{
+                                            this.$message({
+                                              message: `扩展参数-${item.name}不能为空`,
+                                              type: "warning"
+                                            });
+                                            break
+                                          }
+                                        }
                                       }else{
                                         this.$message({
                                           message: `扩展参数-${item.name}不能为空`,
@@ -973,13 +1024,8 @@ export default {
                                         });
                                         break
                                       }
-                                    }else{
-                                      this.$message({
-                                        message: `扩展参数-${item.name}不能为空`,
-                                        type: "warning"
-                                      });
-                                      break
                                     }
+                                    
                                   }
                                   if(paramsOk){
                                     this.dialogSave = true;

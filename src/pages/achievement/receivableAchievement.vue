@@ -298,6 +298,7 @@ export default {
         this.excelCreate('/input/exportSettleExcel',param)
     },
     getData(param) {
+       this.loading=true;
        // 实收列表
         let _that = this;
         this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
@@ -312,11 +313,17 @@ export default {
             //   _that.countData = [0, 0, 0, 0];
             // }
             _that.total = data.data.total;
+            this. $nextTick(()=>{
+               this.loading=false;
+            })
+          
           }
         }).catch(error => {
                this.$message({message:error})
-        });;
-        this.loading = false;
+               this. $nextTick(()=>{
+                  this.loading=false;
+               })
+        });; 
     },
        //获取当前部门
     initDepList:function (val) {
@@ -577,8 +584,8 @@ export default {
       }
       .el-table__header {
         th {
-            padding: 6px 0;
-            background-color: #eef2fb;
+          padding: 6px 0;
+          background-color: #eef2fb;
         }
       }
     }
@@ -586,7 +593,7 @@ export default {
 }
 // /deep/ .pagination{
 //   padding-top: 0;
-  .el-pagination {
+.el-pagination {
   text-align: right;
   // padding-bottom: 50px;
   // padding-top: 50px;
