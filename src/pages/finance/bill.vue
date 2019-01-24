@@ -228,12 +228,12 @@
         </el-table-column>
         <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
-            <div v-if="(power['sign-cw-debt-invoice'].state&&scope.row.type===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4))||(((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1&&((power['sign-cw-debt-edit'].state&&scope.row.caozuo===1)||(power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2))))">
+            <div v-if="(power['sign-cw-debt-invoice'].state&&scope.row.type===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4))||(((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1&&(power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)))">
               <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-debt-invoice'].state&&scope.row.type===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">
                 开票
               </el-button>
               <template v-if="((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1">
-                <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-debt-edit'].state&&scope.row.caozuo===1">修改</el-button>
+                <!--<el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-debt-edit'].state&&scope.row.caozuo===1">修改</el-button>-->
                 <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)">作废</el-button>
               </template>
             </div>
@@ -557,9 +557,9 @@
           })
           return
         }
-        if (row.payStatus === '未付款'&&this.power['sign-cw-debt-edit'].state&&row.caozuo===1&&row.isDel===1&&((row.type===1&&row.billStatus&&row.billStatus.value===1)||row.type===2)) {
+        /*if (row.payStatus === '未付款'&&this.power['sign-cw-debt-edit'].state&&row.caozuo===1&&row.isDel===1&&((row.type===1&&row.billStatus&&row.billStatus.value===1)||row.type===2)) {
           this.btnOpera(row, 1)
-        } else {
+        } else {*/
           this.setPath(this.getPath.concat({name: row.type === 1 ? '收款详情' : '付款详情'}))
           this.$router.push({
             path: 'billDetails',
@@ -571,7 +571,7 @@
               bill: this.power['sign-cw-debt-invoice'].state
             }
           })
-        }
+        // }
       },
       btnOpera: function (row, type) {
         if (type === 1) {
