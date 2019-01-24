@@ -303,67 +303,9 @@
               </div>
               <div v-else>
                 <div v-for="item in scope.row.distributions">
-                  <div>
-                    <div v-if="item.roleType==1">
-                      <p>录入人</p>
+                    <div>
+                      <p>{{item.roleName}}</p>
                     </div>
-                    <div v-if="item.roleType==2">
-                      <p>维护人</p>
-                    </div>
-                    <div v-if="item.roleType==3">
-                      <p>独家人</p>
-                    </div>
-                    <div v-if="item.roleType==4">
-                      <p>房勘人</p>
-                    </div>
-                    <div v-if="item.roleType==5">
-                      <p>钥匙人</p>
-                    </div>
-                    <div v-if="item.roleType==15">
-                      <p>委托人</p>
-                    </div>
-                    <div v-if="item.roleType==16">
-                      <p>建盘人</p>
-                    </div>
-
-                    <div v-if="item.roleType==6">
-                      <p>主客方</p>
-                    </div>
-
-                    <div v-if="item.roleType==14">
-                      <p>签约人</p>
-                    </div>
-
-                    <div v-if="item.roleType==11">
-                      <p>A/M</p>
-                    </div>
-                    <div v-if="item.roleType==7">
-                      <p>协议分成人</p>
-                    </div>
-                    <div v-if="item.roleType==17">
-                      <p>协议分成人2</p>
-                    </div>
-
-                    <div v-if="item.roleType==8">
-                      <p>金融业绩分成人</p>
-                    </div>
-
-                    <div v-if="item.roleType==9">
-                      <p>其他业绩分成人</p>
-                    </div>
-
-                    <div v-if="item.roleType==12">
-                      <p>意向违约金</p>
-                    </div>
-
-                    <div v-if="item.roleType==13">
-                      <p>公共业绩</p>
-                    </div>
-
-                    <div v-if="item.roleType==10">
-                      <p>推荐人</p>
-                    </div>
-                  </div>
                 </div>
               </div>
 
