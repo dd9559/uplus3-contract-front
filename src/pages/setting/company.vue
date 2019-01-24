@@ -750,6 +750,7 @@
                   this.AddEditVisible = false
                   this.$message(res.message)
                   this.getCompanyList()
+                  this.delIds = []
                 }
               }).catch(error => {
                   this.$message({message:error})
