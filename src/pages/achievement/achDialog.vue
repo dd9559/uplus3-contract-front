@@ -1846,7 +1846,9 @@ export default {
                 this.houseArr = data.data.houseAgents;
               }
               // this.$emit("opens");
-              this.loading=false;
+              this. $nextTick(()=>{
+                this.loading=false;
+              })
               if (data.data.aId) {
                 this.backAId = data.data.aId;
               }

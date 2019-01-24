@@ -720,7 +720,10 @@
               if (res.data.status === 200) {
                 this.tableData = data.data
               }
-              this.loadingTable = false;
+              this.$nextTick(()=>{
+                this.loadingTable = false;
+              })
+              
 
             }).catch(error => {
                 this.$message({
@@ -795,7 +798,9 @@
           }
           this.$ajax.post("/api/settlement/examineSettlement", param)
           .then(res => {
-           this.fullscreenLoading=false
+           this.$nextTick(()=>{
+              this.fullscreenLoading=false
+            })
             if (res.data.status === 200) {
               this.dialogVisible = false
                 // 数据刷新
@@ -808,7 +813,9 @@
               }, 2000);
             }
           }).catch(error => {
-            this.fullscreenLoading=false
+            this.$nextTick(()=>{
+              this.fullscreenLoading=false
+            })
               this.$message({
                 message: error
               })
@@ -829,7 +836,9 @@
         }
         this.$ajax.post("/api/settlement/examineSettlement", param)
         .then(res => {
-          this.fullscreenLoading=false
+          this.$nextTick(()=>{
+              this.fullscreenLoading=false
+            })
           if (res.data.status === 200) {
 
             this.dialogVisible = false
@@ -844,7 +853,9 @@
           //   this.choseCheckPerson(this.myCheckId,'set')
           // }
         }).catch(error => {
-           this.fullscreenLoading=false
+           this.$nextTick(()=>{
+              this.fullscreenLoading=false
+            })
            if(error.status === 300 && error.data.bizId){
               // this.choseCheckPerson(error.data.bizId,'set')
               this.checkPerson.flowType=5   //调佣的流程类型为4

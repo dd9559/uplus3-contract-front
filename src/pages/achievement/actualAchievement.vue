@@ -1032,7 +1032,8 @@ export default {
       this.propForm.department=payload.depName*/
     },
     getData(ajaxParam) {
-     let _that=this;
+      this.loading=true;
+      let _that=this;
         this.$ajax
           .get("/api/achievement/selectAchievementList", ajaxParam)
           .then(res => {
@@ -1046,12 +1047,16 @@ export default {
               }else {
                    _that.countData = [0, 0, 0, 0];
             }
-
+             this. $nextTick(()=>{
+                this.loading=false;
+             })
             }
         }).catch(error => {
             this.$message({message:error})
+            this. $nextTick(()=>{
+               this.loading=false;
+            })
      });
-      this.loading=false;
     },
     // 导出功能
     getExcel(){
@@ -1156,7 +1161,10 @@ export default {
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;
-                this.loading2=false;
+                this. $nextTick(()=>{
+                  this.loading2=false;
+               })
+             
             }else{
               this.checkArr = [];
             }
