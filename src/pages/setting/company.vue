@@ -603,7 +603,9 @@
         this.companyBankList.push(row)
       },
       removeRow(index) {
-        this.delIds.push(JSON.stringify(this.companyBankList[index].id))
+        if(this.companyBankList[index].id) {
+          this.delIds.push(JSON.stringify(this.companyBankList[index].id))
+        }
         this.companyBankList.splice(index,1)
       },
       upload(obj) {

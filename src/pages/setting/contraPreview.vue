@@ -147,7 +147,9 @@ export default{
                 this.position2=false
                 this.saveBtn=false
                 this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:this.enableTemplateId}).then((res)=>{
+                    this.$nextTick(()=>{
                       this.loading=false
+                    })
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
                             this.showSed=true
@@ -503,7 +505,9 @@ export default{
               }
               this.$ajax.get('/api/setting/contractTemplate/checkTemplate',param).then(res=>{
               if(res.status==200){
-                  this.loading=false
+                  this.$nextTick(()=>{
+                      this.loading=false
+                    })
                   if(res.data.data.unPlaceholder!==''){
                       for( let i=0;i<res.data.data.unPlaceholder.length;i++){
                           if(res.data.data.unPlaceholder[i]!==null){
@@ -573,7 +577,9 @@ export default{
                     })
           
                     setTimeout(() => {
-                        this.loading=false
+                        this.$nextTick(()=>{
+                            this.loading=false
+                        })
                         this.$router.push({
                             path: "/contractTemplate",
                         });

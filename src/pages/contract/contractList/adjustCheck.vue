@@ -711,7 +711,9 @@
                 this.tableData = data.data
 
               }
-              this.loadingTable = false;
+              this.$nextTick(()=>{
+                this.loadingTable = false;
+              })
 
             }).catch(error => {
               this.$message({
@@ -791,7 +793,9 @@
           this.fullscreenLoading=true
           this.$ajax.get("/api/commission/updateReject", param)
           .then(res => {
-            this.fullscreenLoading=false
+            this.$nextTick(()=>{
+              this.fullscreenLoading=false
+            })
             if (res.data.status === 200) {
               this.dialogVisible = false
               // 数据刷新
@@ -802,7 +806,10 @@
 
             }
           }).catch(error => {
+            this.$nextTick(()=>{
               this.fullscreenLoading=false
+            })
+              
               this.$message({
                 message: error
               })
@@ -822,7 +829,9 @@
         }
         this.$ajax.get("/api/commission/update", param)
         .then(res => {
-          this.fullscreenLoading=false
+          this.$nextTick(()=>{
+              this.fullscreenLoading=false
+            })
           if (res.data.status === 200) {
             this.dialogVisible = false
               // 数据刷新
@@ -834,7 +843,9 @@
 
         }).catch(error => {
 
-            this.fullscreenLoading=false
+            this.$nextTick(()=>{
+              this.fullscreenLoading=false
+            })
             if(error.status === 300 && error.data.checkId){
               // this.choseCheckPerson(error.data.checkId,'set')
               this.checkPerson.flowType=4   //调佣的流程类型为4
