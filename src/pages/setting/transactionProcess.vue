@@ -375,6 +375,20 @@
           }
           this.ProcessStepVisible = false
         } else if(type === 'flow') {
+          function equar(a, b) {
+            if (a.length !== b.length) {
+                return false
+            } else {
+                for (let i = 0; i < a.length; i++) {
+                    if (a[i].id !== b[i].id || a[i].isSettle !== b[i].isSettle || a[i].settlePercent !== b[i].settlePercent) {
+                        return false
+                    }
+                }
+                return true;
+            }
+          }
+          let flag = equar(this.manageData,this.tempManage)
+
           let arr = []
           if(this.manageData.length) {
             this.manageData.forEach((item,index) => {
@@ -426,8 +440,12 @@
               this.dialogManageVisible = false
             }
           } else {
-            const url = "/api/flowmanage/updateFLowSteps"
-            this.flowManagePost(url,param)
+            if(!flag) {
+              const url = "/api/flowmanage/updateFLowSteps"
+              this.flowManagePost(url,param)
+            } else {
+              this.$message({message:'没有做任何修改'})
+            }
           }
         }
       },
