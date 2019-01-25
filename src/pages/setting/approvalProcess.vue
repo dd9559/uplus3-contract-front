@@ -345,6 +345,7 @@
                 })
             },
             clearDep: function (index) {
+                this.nodeList[index].depName = ""
                 this.$set(this.employeList,[index-1],[])
                 this.clearSelect()
             },
