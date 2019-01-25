@@ -316,7 +316,7 @@
         border-radius:4px;
         .el-table {
             height: calc(100% - 48px);
-            overflow-y: scroll;
+            overflow-y: auto;
         }
         /deep/ .el-table 
         th {
