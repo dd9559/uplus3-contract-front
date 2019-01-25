@@ -322,6 +322,10 @@
         th {
             background:#eef2fb;
         }
+        /deep/ td:last-child div {
+            height: 35.6px;
+            line-height: 35.6px;
+        }
         /deep/ td.is-center{
             background-color: #fefcf7;
         }
