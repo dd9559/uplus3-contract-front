@@ -63,7 +63,6 @@
                     <el-table-column align="center" label="操作">
                         <template slot-scope="scope">
                             <el-button type="text" size="medium" @click="operation('编辑',2,scope.row)" v-if="power['sign-set-verify'].state">编辑</el-button>
-                            <!-- <el-button type="text" size="medium" @click="delFlow(scope.row)">删除</el-button> -->
                         </template>
                     </el-table-column>
                 </el-table>
@@ -127,7 +126,7 @@
                         <li v-for="(item,index) in nodeList" :key="index">
                             <div class="node-body">
                                <el-input size="small" class="w152" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
-                                <el-select size="small" class="w152" v-model="item.type" @change="getType($event,index)">
+                                <el-select size="small" class="w152" v-model="item.type">
                                     <el-option label="请选择审批人类型" value=""></el-option>
                                     <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                 </el-select>
@@ -204,10 +203,7 @@
             personArr: [],
             depArr: [],
             roleArr: [],
-            choice: [],
-            // peopleTime: 1,
-            // depsTime: 1,
-            // rolesTime: 1
+            choice: []
         },
         {
             name: "",
@@ -277,8 +273,8 @@
                 employeList: [],
                 power: {
                     'sign-set-verify': {
-                    state: false,
-                    name: '查询'
+                        state: false,
+                        name: '查询'
                     }
                 }
             }
@@ -348,12 +344,8 @@
                     }
                 })
             },
-            getType(val,index) {
-                if(val === 1 || val === 2) {
-                    this.employeList[index-1] = []
-                }
-            },
             clearDep: function (index) {
+                this.nodeList[index].depName = ""
                 this.$set(this.employeList,[index-1],[])
                 this.clearSelect()
             },
@@ -437,28 +429,6 @@
                     this.tempNodeList = JSON.parse(JSON.stringify(array))
                 }
             },
-            // delFlow(row) {
-            //     let param = {
-            //         id: row.id
-            //     }
-            //     this.$confirm('是否删除该流程?', {
-            //         distinguishCancelAndClose: true,
-            //         confirmButtonText: '确定',
-            //         cancelButtonText: '取消'
-            //     }).then(() => {
-            //         this.$ajax.postJSON('/api/auditflow/operateFlow',param).then(res => {
-            //             res = res.data
-            //             if(res.status === 2013) {
-            //                 this.$message(res.message)
-            //             } else if(res.status === 200) {
-            //                 this.$message("删除成功")
-            //                 this.getData()
-            //             }
-            //         }).catch(error => {
-            //             this.$message({message:error})
-            //         })
-            //     })
-            // },
             setConditionList(val) {
                 switch(val) {
                     case 0:
@@ -820,9 +790,6 @@
             }
         },
         filters: {
-            getBranchName(val) {
-                return val.slice(-1)
-            },
             getTypeName(val) {
                 for(var i = 0; i < flowType.length; i++) {
                     if(val === i) {

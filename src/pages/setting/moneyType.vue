@@ -316,11 +316,15 @@
         border-radius:4px;
         .el-table {
             height: calc(100% - 48px);
-            overflow-y: scroll;
+            overflow-y: auto;
         }
         /deep/ .el-table 
         th {
             background:#eef2fb;
+        }
+        /deep/ td:last-child div {
+            height: 35.6px;
+            line-height: 35.6px;
         }
         /deep/ td.is-center{
             background-color: #fefcf7;

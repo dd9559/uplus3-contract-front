@@ -51,6 +51,7 @@ const contractPreview = () => import("@/pages/contract/contractList/contractPrev
 // const changeCancel = () => import("@/pages/contract/contractDialog/changeCancel");
 const routingRecord = () => import("@/pages/contract/contractList/routingRecord");
 const contractCheck = () => import("@/pages/contract/contractList/contractCheck");
+const routingRemitDetail = () => import("@/pages/contract/contractList/routingRemitDetail");
 
 const Login = () => import("@/login")
 
@@ -314,6 +315,11 @@ export default new Router({
           root: true,
           list: ['合同', '分账记录']
         }
+      },
+      //分账/打款详情
+      {
+        path: "routingRemitDetail",
+        component: routingRemitDetail
       },
       //合同审核
       {

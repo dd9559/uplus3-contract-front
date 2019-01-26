@@ -277,6 +277,7 @@ export default {
       },
       previewType:"none",
       imgWidth:650,
+      reduce:0,//合同页数是否减少 0无  1有
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -412,7 +413,8 @@ export default {
       if(value===3){//签章+打印
         let param = {
           id:this.id,
-          type:value
+          type:value,
+          reduce:this.reduce//合同页数是否减少 0无  1有
         }
         this.fullscreenLoading=true;
         //签章
@@ -423,6 +425,7 @@ export default {
             // debugger
             this.getUrl(pdfUrl);
             this.haveUrl=true;
+            this.fullscreenLoading=false;
             // setTimeout(()=>{
             //   this.dayin();
             //   this.fullscreenLoading=false;
@@ -599,6 +602,11 @@ export default {
         res = res.data
         if(res.status ===200){
           this.src = res.data;
+          res.data.forEach(element => {
+            if(element==="文件不存在"){
+              this.reduce=1;
+            }
+          });
         }
       })
     },

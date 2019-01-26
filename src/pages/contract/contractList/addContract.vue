@@ -939,7 +939,7 @@ export default {
                                     paramsOk=false;
                                     let item = this.contractForm.extendParams[i];
                                     // console.log(item);
-                                    if(item.type!=4){
+                                    if(item.type!=4){//type=4为时间选择器
                                       if(item.value){
                                         if(item.type===5){
                                           if(item.value.length>0){
@@ -970,8 +970,9 @@ export default {
                                         });
                                         break
                                       }
+                                    }else{
+                                      paramsOk=true
                                     }
-                                    
                                   }
                                   if(paramsOk){
                                     this.dialogSave = true;
@@ -1024,8 +1025,9 @@ export default {
                                         });
                                         break
                                       }
+                                    }else{
+                                      paramsOk=true
                                     }
-                                    
                                   }
                                   if(paramsOk){
                                     this.dialogSave = true;
