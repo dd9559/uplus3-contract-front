@@ -405,7 +405,7 @@
                                     <el-button class="blue" v-if="isUpBtnFn(scope.$index) && power['sign-qh-mgr-jd-move'].state" type="text" @click="upFn(scope)">上</el-button><el-button v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" class="blue" type="text" @click="downFn(scope)">下</el-button>
                                     <template v-if="!power['sign-qh-mgr-jd-move'].state">--</template>
                                 </template>
-                                <template v-else-if="scope.row.stepState.value === OPERATION.amend && layerShowData.statusLaterStage.label !== STATE.start">
+                                <template v-else-if="scope.row.stepState.value === OPERATION.amend">
                                     <el-button class="blue" type="text" @click="amendFn(scope.row)">{{showSeeFn('修改',scope.row)}}</el-button>
                                 </template>
                                 <template v-else>--</template>
