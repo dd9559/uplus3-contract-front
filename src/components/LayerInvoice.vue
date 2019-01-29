@@ -233,7 +233,7 @@
                     res = res.data
                     if(res.status === 200){
                         let obj ={};
-                        if(!res.data.printTimes || !res.data.printDate){
+                        if(res.data.printTimes || res.data.printDate){
                             obj = res.data;
                         }
                         this.paperInfoData = {
