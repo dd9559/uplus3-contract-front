@@ -276,7 +276,7 @@ export default {
             });
             for (let j = 0; j < res.data[i].details.length; j++) {
               list.push(res.data[i].details[j]);
-            }
+            }      
           }
           this.gridData1 = list;
         }
