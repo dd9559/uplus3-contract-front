@@ -238,7 +238,7 @@
   </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-    <layer-invoice ref="layerInvoice" :showBtn="btnPrint" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
@@ -303,7 +303,7 @@
       this.checkPerson.flowType=this.activeItem==='收款信息'?1:0
       this.billId = this.$route.query.id
       this.btnCheck = this.$route.query.power.toString()==='true'?true:false
-      this.btnPrint = this.$route.query.print.toString()==='true'?true:false
+      // this.btnPrint = this.$route.query.print.toString()==='true'?true:false
       this.btnBill = this.$route.query.bill.toString()==='true'?true:false
       this.tabs.unshift(this.activeItem)
       this.getData()

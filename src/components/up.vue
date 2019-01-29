@@ -95,6 +95,7 @@
             },
             UploadProgress: function(up, file) {
               // 上传操作进行中
+              // console.log(file.percent)
             },
             FileUploaded: function(up, file, info) {
               // 响应

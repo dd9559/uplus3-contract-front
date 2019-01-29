@@ -42,13 +42,6 @@
                   <div>{{scope.row.planDays||scope.row.planDays===0?scope.row.planDays:'--'}}</div>
                 </template>
               </el-table-column>
-              <!-- <el-table-column align="center" label="是否可以结算">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.isSettle" size="small" @change="isSettleChange(scope.$index,$event)">
-                    <el-option v-for="item in isSettleOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                  </el-select>
-                </template>
-              </el-table-column> -->
               <el-table-column align="center" label="结算百分比(%)">
                 <template slot-scope="scope">
                   <el-input class="percent" size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)"></el-input>
@@ -131,7 +124,6 @@
         AllSteps: [],
         inputMax: 30,
         flowName: "",
-        // tempName: "",
         tableHeight: 0,
         power: {
           'sign-set-hq': {
@@ -172,7 +164,6 @@
           this.processTitle = "编辑交易流程"
           this.processId = row.id
           this.addForm.name = row.name
-          // this.tempName = row.name
         } else if(type === 'init') {
           this.dialogManageVisible = true
           this.currentFlowId = row.id
@@ -228,10 +219,6 @@
             param = Object.assign({},this.addForm,param)
             this.processPost(param,msg)
           } else {
-            // if(this.tempName === this.addForm.name) {
-            //   this.$message({message:"没有做任何修改"})
-            //   return false
-            // }
             let param = {
               id: this.processId,
               cityId: this.cityId
@@ -298,17 +285,6 @@
           this.manageData.splice(index, 1)
         }
       },
-      // isSettleChange(index,bool) {
-      //   if(!this.manageData[index].isSettle) {
-      //     this.manageData[index].settlePercent = ""
-      //   }
-        // for(var i = 0; i < this.manageData.length; i++) {
-        //   this.manageData[i].isSettle = 0
-        //   this.manageData[i].settlePercent = ""
-        // }
-        // this.manageData[index].isSettle = bool
-        // this.manageData[this.manageData.length - 1].isSettle = bool
-      // },
       addBtn() {
         this.ProcessStepVisible = true
         this.StepsOption.forEach(item => {
@@ -414,55 +390,62 @@
           let flag = equar(this.manageData,this.tempManage)
 
           let arr = []
-          this.manageData.forEach((item,index) => {
-            if(this.flowCount === 0) {
-              arr.push({
-                transStepsId: item.transStepsId,
-                sort: item.sort,
-                isSettle: item.isSettle,
-                settlePercent: item.settlePercent===""?0:item.settlePercent
-              })
-            } else {
-              arr.push({
-                transStepsId: item.transStepsId,
-                sort: item.sort,
-                isSettle: item.isSettle,
-                id: item.id ? item.id : null,
-                settlePercent: item.settlePercent===""?0:item.settlePercent
-              })
+          if(this.manageData.length) {
+            this.manageData.forEach((item,index) => {
+              if(this.flowCount === 0) {
+                arr.push({
+                  transStepsId: item.transStepsId,
+                  sort: item.sort,
+                  isSettle: item.isSettle,
+                  settlePercent: item.settlePercent===""?0:item.settlePercent
+                })
+              } else {
+                arr.push({
+                  transStepsId: item.transStepsId,
+                  sort: item.sort,
+                  isSettle: item.isSettle,
+                  id: item.id ? item.id : null,
+                  settlePercent: item.settlePercent===""?0:item.settlePercent
+                })
+              }
+            })
+          }
+          if(arr.length) {
+            var num = 0
+            for(var i = 0; i < arr.length; i++) {
+              if(arr[i].settlePercent) {
+                num = arr[i].settlePercent
+              }
             }
-          })
-          var num = 0
-          for(var i = 0; i < arr.length; i++) {
-            if(arr[i].settlePercent) {
-              num = arr[i].settlePercent
+            if(!/^\d+(\.\d{0,2})?$/.test(num)||!/\d$/.test(num)) {
+              this.$message({message:"结算百分比输入格式不正确",type:'warning'})
+              return false
             }
-          }
-          if(!/^\d+(\.\d{0,2})?$/.test(num)||!/\d$/.test(num)) {
-            this.$message({message:"结算百分比输入格式不正确",type:'warning'})
-            return false
-          }
-          num = Number(num)
-          let param = {
-            transFlowId: this.currentFlowId,
-            transStepsList: arr
-          }
-          if(arr.length !== 0) {
+            num = Number(num)
             if(num > 100) {
               this.$message({message:"结算百分比不能超过100%",type:'warning'})
               return false
             }
-            if(this.flowCount === 0) {
+          }
+
+          let param = {
+            transFlowId: this.currentFlowId,
+            transStepsList: arr
+          }
+          if(!this.flowCount) {
+            if(arr.length) {
               const url = "/api/flowmanage/insertFLowSteps"
               this.flowManagePost(url,param)
-            } else if (this.flowCount !== 0 && !flag) {
-              const url = "/api/flowmanage/updateFLowSteps"
-              this.flowManagePost(url,param)
-            } else if (flag) {
-              this.$message("没有做任何修改")
+            } else {
+              this.dialogManageVisible = false
             }
           } else {
-            this.$message("没有绑定任何交易步骤")
+            if(!flag) {
+              const url = "/api/flowmanage/updateFLowSteps"
+              this.flowManagePost(url,param)
+            } else {
+              this.$message({message:'没有做任何修改'})
+            }
           }
         }
       },

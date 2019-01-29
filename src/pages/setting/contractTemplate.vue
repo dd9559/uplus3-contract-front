@@ -71,7 +71,7 @@
         </div>
       </template>
       <template v-if="template===3">
-        <el-table max-height="452" :data="rowData" class="contractType detail" ref='detail' @row-click="rowClick" :row-class-name='tableStyle' highlight-current-row >
+        <el-table  :data="rowData" class="contractType detail" ref='detail' @row-click="rowClick" :row-class-name='tableStyle' highlight-current-row >
           <el-table-column align="center" min-width="100px" label="合同版本号" prop="version"
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column align="center" min-width="100px" label="合同名称" prop="name"
@@ -508,6 +508,8 @@
     }
     .contractType{
       border:solid 1px rgba(237,236,240,1);
+      height: 453px;
+      overflow-y: auto;
       /deep/
         .has-gutter{
           th{

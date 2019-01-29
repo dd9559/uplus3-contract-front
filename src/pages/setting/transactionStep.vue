@@ -101,7 +101,7 @@
           </div>
           <div class="menu-table">
             <h4>附属信息:</h4>
-            <el-table border :data="tableForm" style="width: 100%">
+            <el-table border :data="tableForm" style="width: 100%" max-height="220">
               <el-table-column align="center" label="名称" min-width="150">
                 <template slot-scope="scope">
                   <el-input v-model="tableForm[scope.$index].title" maxlength="15" onkeyup="value=value.replace(/\s+/g,'')" size="small"></el-input>
@@ -373,7 +373,6 @@
                     this.$message(res.message)
                     this.stepsTypeDialog = false
                     this.getData()
-                    // this.firstCellLight()
                   }
                 }).catch(error => {
                     this.$message({message:error})
@@ -389,7 +388,6 @@
                     this.$message("修改成功")
                     this.stepsTypeDialog = false
                     this.getData()
-                    // this.firstCellLight()
                   }
                 }).catch(error => {
                     this.$message({message:error})
@@ -448,11 +446,12 @@
       },
       //添加和编辑交易步骤请求
       tradeStepsPost(url) {
-        this.tableForm.forEach(item => {
+        let arr = JSON.parse(JSON.stringify(this.tableForm))
+        arr.forEach(item => {
           item.isRequired = item.isRequired === "是" ? 1 : 0
         })
         let obj = {
-          transStepsAttach: JSON.stringify(this.tableForm)
+          transStepsAttach: JSON.stringify(arr)
         }
         let param = Object.assign({}, this.stepBusiness, obj)
         this.$ajax.post(url, param).then(res => {
@@ -461,7 +460,6 @@
             this.$message(res.message)
             this.tradeStepsDialog = false
             this.getData()
-            // this.firstCellLight()
           }
         }).catch(error => {
             this.$message({message:error})

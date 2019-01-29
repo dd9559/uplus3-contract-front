@@ -306,9 +306,9 @@
 </script>
 <style lang="less" scoped>
   @media print{
-    /deep/.red{
-      display: none;
-    }
+    // /deep/.red{
+    //   display: none;
+    // }
     /deep/.paper-info-child{
       margin:0 4.7mm;
       font-size: 12px;
