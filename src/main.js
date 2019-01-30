@@ -61,7 +61,11 @@ Vue.directive('loadmore', {
       const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight;
 
       if(CONDITION) {
-        binding.value();
+        let param = []
+        for(let item in binding.modifiers){
+          param.push(item)
+        }
+        binding.value(...new Set(param));
       }
     });
   }

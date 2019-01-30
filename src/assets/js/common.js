@@ -29,11 +29,11 @@ let TOOL = {
           path: 'contractCheck',
           code: 'sign-ht-htsh-query'
         },
-        // {
-        //   name: '分账记录',
-        //   path: 'routingRecord',
-        //   code: 'sign-ht-fz-query'
-        // },
+        {
+          name: '分账记录',
+          path: 'routingRecord',
+          code: 'sign-ht-fz-query'
+        },
       ]
     },
     {

@@ -7,47 +7,57 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="分账门店">
-          <el-select v-model="searchForm.outStoreAttr" placeholder="全部" :clearable="true" style="width:150px">
+          <el-select v-model="searchForm.outStoreAttr" placeholder="全部" :clearable="true" style="width:150px" @change="changeStoreAttr_out">
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select style="width:160px" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.outStoreId" placeholder="请选择">
-            <el-option class="drop-tree" value="">
-              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <!-- <el-form-item>
-          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.dealAgentId" placeholder="请选择">
+          <el-select
+            v-model="searchForm.outStoreId"
+            :multiple="false"
+            filterable
+            remote
+            placeholder="全部"
+            :remote-method="remoteMethod_out"
+            v-loadmore.out="moreDeps"
+            :clearable="true"
+            @clear="clearOutList('out')"
+            :loading="loading">
             <el-option
-              v-for="item in EmployeList"
-              :key="item.empId"
+              v-for="item in outStoreList"
+              :key="item.id"
               :label="item.name"
-              :value="item.empId">
+              :value="item.id">
             </el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="收账门店">
-          <el-select v-model="searchForm.inStoreAttr" placeholder="全部" :clearable="true" style="width:150px">
+          <el-select v-model="searchForm.inStoreAttr" placeholder="全部" :clearable="true" style="width:150px" @change="changeStoreAttr_in">
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select style="width:160px" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.inStoreId" placeholder="请选择">
-            <el-option class="drop-tree" value="">
-              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+          <el-select
+            v-model="searchForm.inStoreId"
+            :multiple="false"
+            filterable
+            remote
+            placeholder="全部"
+            :remote-method="remoteMethod_in"
+            v-loadmore.in="moreDeps"
+            :clearable="true"
+            @clear="clearOutList('in')"
+            :loading="loading">
+            <el-option
+              v-for="item in inStoreList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="打款状态">
-          <el-select v-model="searchForm.contractType" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
@@ -146,16 +156,22 @@ export default {
         inStoreId:'',//收款门店id
         inStoreAttr:''//收款门店属性
       },
+      outStoreList:[],//分账门店
+      inStoreList:[],//收款门店
+      currentPage_out:1,//分账
+      pageSize_:50,
+      currentPage_in:1,//收款
       signDate: [],
       tableData:[],
       currentPage:1,
       pageSize:10,
       total:0,
+      total_out:0,
+      total_in:0,
       loading:false,
       //部门选择列表
       options:[],
-      //经纪人列表
-      brokersList:[],
+      firstTotal:0,
       dictionary: {
         //数据字典
         "53": "", //合作方式
@@ -167,8 +183,12 @@ export default {
     };
   },
   created() {
-    // this.remoteMethod();//部门
     this.getDictionary();//字典
+    this.getDepList({
+        type:'G',
+        pageNum:this.currentPage_,
+        pageSize:this.pageSize_,
+      })
   },
   methods: {
     //获取分账记录列表
@@ -178,7 +198,7 @@ export default {
         pageSize:this.pageSize
       }
       param = Object.assign({}, param, this.searchForm);
-      if (this.signDate.length > 0) {
+      if (this.signDate&&this.signDate.length > 0) {
         param.startTime = this.signDate[0];
         param.endTime = this.signDate[1];
       };
@@ -209,51 +229,176 @@ export default {
     // 重置
     resetFormFn() {
       TOOL.clearForm(this.searchForm);
+      this.outStoreList=this.options//分账门店
+      this.inStoreList=this.options//收款门店
+      this.currentPage_out=1//分账
+      this.currentPage_in=1//收款
+      this.total_out=this.firstTotal
+      this.total_in=this.firstTotal
+      this.signDate=[]
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
-    //合同详情
-    // goContractDetail(value){
-    //   if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-    //     this.$router.push({
-    //       path: "/contractDetails",
-    //       query: {
-    //         id: value.contractId,//合同id
-    //         code: value.contractCode,//合同编号
-    //         contType: value.contType.value//合同类型
-    //       }
-    //     });
-    //   }else{
-    //     this.$router.push({
-    //     path: "/detailIntention",
-    //     query: {
-    //       id: value.contractId,
-    //       contType: value.contType.value
-    //     }
-    //   });
-    //   }
-    // },
-    //获取当前部门
-    initDepList:function (val) {
-      if(!val){
-        this.remoteMethod()
+    getDepList(param,first=true,type='out'){
+      this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          if(first){
+            this.outStoreList=res.data.list;
+            this.inStoreList=res.data.list;
+            this.options=res.data.list;
+            this.firstTotal=res.data.total;
+            this.total_out=res.data.total
+            this.total_in=res.data.total
+          }else{
+            if(type==='out'){
+              this.outStoreList=res.data.list;
+              this.total_out=res.data.total
+            }else{
+              this.inStoreList=res.data.list;
+              this.total_in=res.data.total
+            }
+          }
+        }
+      })
+    },
+    //搜索
+    remoteMethod_out(keyword){
+      if(keyword!==''){
+        this.currentPage_out=1;
+        let param = {
+          type:'G',
+          keyword:keyword,
+          pageSize:this.pageSize_,
+          pageNum:this.currentPage_out,
+          depAttr:''
+        }
+        if(this.searchForm.outStoreAttr===1){
+          param.depAttr='DIRECT'
+        }else if(this.searchForm.outStoreAttr===2){
+          param.depAttr='JOIN'
+        }
+        this.getDepList(param,false,'out')
       }
     },
-    clearDep:function () {
-      this.searchForm.dealAgentStoreId=''
-      this.searchForm.depName=''
-      // this.EmployeList=[]
-      this.searchForm.dealAgentId=''
-      this.clearSelect()
+    remoteMethod_in(keyword){
+      if(keyword!==''){
+        this.currentPage_in=1;
+        let param = {
+          type:'G',
+          keyword:keyword,
+          pageSize:this.pageSize_,
+          pageNum:this.currentPage_in,
+          depAttr:''
+        }
+        if(this.searchForm.inStoreAttr===1){
+          param.depAttr='DIRECT'
+        }else if(this.searchForm.inStoreAttr===2){
+          param.depAttr='JOIN'
+        }
+        this.getDepList(param,false,'in')
+      }
     },
-    depHandleClick(data) {
-      // this.getEmploye(data.depId)
-      this.searchForm.dealAgentStoreId=data.depId
-      this.searchForm.depName=data.name
-
-      this.handleNodeClick(data)
+    //门店下拉加载更多
+    moreDeps(type){
+      if(type==='out'){
+        if(this.total_out>this.outStoreList.length){
+          this.currentPage_out++;
+          let param = {
+            type:'G',
+            pageNum:this.currentPage_out,
+            pageSize:this.pageSize_
+          }
+          this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
+            res=res.data;
+            if(res.status===200){
+              this.outStoreList=this.outStoreList.concat(res.data.list);
+            }
+          })
+        }
+      }else{
+        if(this.total_in>this.inStoreList.length){
+          this.currentPage_in++;
+          let param = {
+            type:'G',
+            pageNum:this.currentPage_in,
+            pageSize:this.pageSize_
+          }
+          this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
+            res=res.data;
+            if(res.status===200){
+              this.inStoreList=this.inStoreList.concat(res.data.list);
+            }
+          })
+        }
+      }
     },
+    //改变门店类型
+    changeStoreAttr_out(value){
+      this.currentPage_out=1;
+      this.searchForm.outStoreId='';
+      let param = {
+        type:'G',
+        pageNum:this.currentPage_out,
+        pageSize:this.pageSize_,
+        depAttr:''
+      }
+      if(value===1){
+        param.depAttr='DIRECT'
+      }else if(value===2){
+        param.depAttr='JOIN'
+      }
+      this.getDepList(param,false,'out')
+    },
+    changeStoreAttr_in(value){
+      this.currentPage_in=1;
+      this.searchForm.inStoreId='';
+      let param = {
+        type:'G',
+        pageNum:this.currentPage_in,
+        pageSize:this.pageSize_,
+        depAttr:''
+      }
+      if(value===1){
+        param.depAttr='DIRECT'
+      }else if(value===2){
+        param.depAttr='JOIN'
+      }
+      this.getDepList(param,false,'in')
+    },
+    //清空选择的门店
+    clearOutList(type){
+      if(type==='out'){
+        this.currentPage_out=1;
+        let param = {
+          type:'G',
+          pageNum:this.currentPage_out,
+          pageSize:this.pageSize_,
+          depAttr:''
+        }
+        if(this.searchForm.outStoreAttr===1){
+          param.depAttr='DIRECT'
+        }else if(this.searchForm.outStoreAttr===2){
+          param.depAttr='JOIN'
+        }
+        this.getDepList(param,false,'out')
+      }else{
+        this.currentPage_in=1;
+        let param = {
+          type:'G',
+          pageNum:this.currentPage_in,
+          pageSize:this.pageSize_,
+          depAttr:''
+        }
+        if(this.searchForm.inStoreAttr===1){
+          param.depAttr='DIRECT'
+        }else if(this.searchForm.inStoreAttr===2){
+          param.depAttr='JOIN'
+        }
+        this.getDepList(param,false,'in')
+        }
+      },
     //确认收款
     toReceipt(item){
       this.dialogReceipt=true

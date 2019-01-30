@@ -4,7 +4,7 @@
       <el-table-column align="left" label="合同编号" prop="outStoreName" width="140">
         <template slot-scope="scope">
           <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
-          <span @click="toDetail(scope.row)">{{scope.row.code}}</span>
+          <span class="contractCode" @click="toDetail(scope.row)">{{scope.row.code}}</span>
         </template>
       </el-table-column>
       <el-table-column align="left" label="合同类型" prop="outBankCard">
@@ -12,7 +12,12 @@
           {{scope.row.contType.label}}
         </template>
       </el-table-column>
-      <el-table-column align="left" label="成交总价" prop="dealPrice">
+      <el-table-column align="left" label="成交总价">
+        <template slot-scope="scope">
+          <span v-if="scope.row.contType.value===1">{{scope.row.dealPrice}} 元</span>
+          <span v-else>{{scope.row.dealPrice}} 元 / {{scope.row.timeUnit}}</span>
+          <!-- {{scope.row.dealPrice}} -->
+        </template>
       </el-table-column>
       <el-table-column align="left" label="成交经纪人" prop="dealAgentName">
       </el-table-column>
@@ -25,7 +30,7 @@
           <span class="openAll" @click="openAll">当期成本(元)</span>
         </template>
         <template slot-scope="scope">
-          {{scope.row.serviceFee+scope.row.mortgageFee}}
+          {{scope.row.thisCost}}
         </template>
       </el-table-column>
       <el-table-column v-if="!isOpen">
@@ -79,7 +84,7 @@
           <span class="openAll" @click="openAll_">门店承担成本(元)</span>
         </template>
         <template slot-scope="scope">
-          {{scope.row.platformFee+scope.row.payCardFee}}
+          {{scope.row.storeCost}}
         </template>
       </el-table-column>
       <el-table-column v-if="!isOpen_">
@@ -121,7 +126,10 @@
 </template>
            
 <script>
+import { MIXINS } from "@/assets/js/mixins";
+
 export default {
+   mixins: [MIXINS],
   data(){
     return{
       tableData:[],
@@ -143,16 +151,23 @@ export default {
     this.ids = this.$route.query.ids;
     this.getAccountList(this.ids);
   },
+  beforeRouteEnter(to,from,next){
+    next(em=>{
+      if(from.path==='/contractDetails'){
+      em.setPath(em.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
+    }
+    })
+  },
   methods:{
     //合同详情页
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+        this.setPath(this.$tool.getRouter(['合同','分账记录','合同详情'],'routingRecord'));
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
           this.$router.push({
             path: "/contractDetails",
             query: {
-              id: value.id,//合同id
+              id: value.contId,//合同id
               code: value.code,//合同编号
               contType: value.contType.value//合同类型
             }
@@ -167,7 +182,10 @@ export default {
           });
         }
       }else{
-        this.noPower('合同详情查看')
+        this.$message({
+          message:'没有合同详情查看权限',
+          type:'warning'
+        })
       }
     },
     //分账明细列表
@@ -196,6 +214,10 @@ export default {
 
 .view-container{
   padding: 10px;
+}
+.contractCode{
+  cursor: pointer;
+  color: @color-blue;
 }
 /deep/.paper-box {
   padding-top: 10px !important;
