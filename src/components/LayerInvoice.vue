@@ -232,25 +232,22 @@
                 this.$ajax.post('/api/bills/print', obj).then(res => {
                     res = res.data
                     if(res.status === 200){
-                        let url = res.data;
-                        this.$ajax.get("/api/load/generateAccessURL",{
-                            url
-                        }).then(res=>{
-                            res = res.data
-                            if(res.status ===200){
-                                // this.pdfUrl = res.data.url;
-                                // this.$refs.pdfPrint.print();
-                                this.$emit("emitPaperSet");
-                                this.$refs.easyPrint.print();
-                                let that = this;
-                                setTimeout(()=>{
-                                    that.paperShow = false;
-                                },101)
-                            }
-                            this.layerLoading.close();
-                        }).catch(err=>{
-                            this.$message.error(err)
-                            this.layerLoading.close();
+                        let obj ={};
+                        if(res.data.printTimes || res.data.printDate){
+                            obj = res.data;
+                        }
+                        this.paperInfoData = {
+                            ...this.paperInfoData,
+                            ...obj
+                        }
+                        this.$nextTick(()=>{
+                            this.$emit("emitPaperSet");
+                            this.$refs.easyPrint.print();
+                            let that = this;
+                            setTimeout(()=>{
+                                this.layerLoading.close();
+                                that.paperShow = false;
+                            },101);
                         })
                     }
                 }).catch(err=>{
