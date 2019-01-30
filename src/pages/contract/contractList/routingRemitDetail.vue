@@ -1,49 +1,114 @@
 <template>
   <div class="view-container">
     <el-table :data="tableData" border>
-      <el-table-column align="left" label="合同编号" prop="outStoreName">
+      <el-table-column align="left" label="合同编号" prop="outStoreName" width="140">
         <template slot-scope="scope">
           <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
           <span @click="toDetail(scope.row)">{{scope.row.code}}</span>
         </template>
       </el-table-column>
       <el-table-column align="left" label="合同类型" prop="outBankCard">
+        <template slot-scope="scope">
+          {{scope.row.contType.label}}
+        </template>
       </el-table-column>
-      <el-table-column align="left" label="成交总价" prop="inStoreName">
+      <el-table-column align="left" label="成交总价" prop="dealPrice">
       </el-table-column>
-      <el-table-column align="left" label="成交经纪人" prop="inStoreName">
+      <el-table-column align="left" label="成交经纪人" prop="dealAgentName">
       </el-table-column>
-      <el-table-column align="left" label="当期实收(元)" prop="inStoreName">
+      <el-table-column align="left" label="当期实收(元)" prop="thisSettlement">
       </el-table-column>
-      <el-table-column align="left" label="结算比率" prop="inStoreName">
+      <el-table-column align="left" label="结算比率" prop="ratioSettlement">
       </el-table-column>
-      <el-table-column align="left" label="金融服务费(元)" prop="inStoreName">
+      <el-table-column>
+        <template slot="header" slot-scope="scope">
+          <span class="openAll" @click="openAll">当期成本(元)</span>
+        </template>
+        <template slot-scope="scope">
+          {{scope.row.serviceFee+scope.row.mortgageFee}}
+        </template>
       </el-table-column>
-      <el-table-column align="left" label="按揭手续费(元)" prop="inStoreName">
+      <el-table-column v-if="!isOpen">
+        <template slot="header" slot-scope="scope">
+          <span>金融服务费(元)</span>
+        </template>
+        <template slot-scope="scope">
+          {{scope.row.serviceFee}}
+        </template>
       </el-table-column>
-      <el-table-column align="left" label="实际结算" prop="inStoreName">
+      <el-table-column v-if="!isOpen">
+        <template slot="header" slot-scope="scope">
+          <span>按揭手续费(元)</span>
+        </template>
+        <template slot-scope="scope">
+          {{scope.row.mortgageFee}}
+        </template>
+      </el-table-column>
+
+      <!-- <el-table-column align="left" label="当期成本(元)" prop="serviceFee">
+        <template slot-scope="scope">
+          {{scope.row.serviceFee+scope.row.mortgageFee}}
+        </template>
+      </el-table-column> -->
+      <!-- <el-table-column align="left" label="金融服务费(元)" prop="serviceFee" v-if="!isOpen">
+      </el-table-column>
+      <el-table-column align="left" label="按揭手续费(元)" prop="mortgageFee" v-if="!isOpen">
+      </el-table-column> -->
+      <el-table-column align="left" label="实际结算" prop="actualSettlement">
+      </el-table-column>
+      <el-table-column align="left" label="分成人" min-width="120">
+        <template slot-scope="scope">
+          <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
+          <p v-for="(item,index) in scope.row.resultDetailsList" :key="index">{{item.disDeptName}} - {{item.disName}}</p>
+        </template>
       </el-table-column>
       <el-table-column align="left" label="分成角色">
         <template slot-scope="scope">
           <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
-          <span>{{scope.row.endTime}}</span>
+          <p v-for="(item,index) in scope.row.resultDetailsList" :key="index">{{item.roleType}}</p>
         </template>
       </el-table-column>
       <el-table-column align="left" label="分成比率">
         <template slot-scope="scope">
           <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
-          <span>{{scope.row.endTime}}</span>
+          <p v-for="(item,index) in scope.row.resultDetailsList" :key="index">{{item.disRatio}} %</p>
         </template>
       </el-table-column>
-      <el-table-column align="left" label="特许服务费(元)" prop="inStoreName">
+      <el-table-column width="130">
+        <template slot="header" slot-scope="scope">
+          <span class="openAll" @click="openAll_">门店承担成本(元)</span>
+        </template>
+        <template slot-scope="scope">
+          {{scope.row.platformFee+scope.row.payCardFee}}
+        </template>
       </el-table-column>
-      <el-table-column align="left" label="当期刷卡手续费(元)" prop="inStoreName">
+      <el-table-column v-if="!isOpen_">
+        <template slot="header" slot-scope="scope">
+          <span>特许服务费(元)</span>
+        </template>
+        <template slot-scope="scope">
+          {{scope.row.platformFee}}
+        </template>
       </el-table-column>
-      <el-table-column align="left" label="当期实收分成(元)" prop="inStoreName">
+      <el-table-column v-if="!isOpen_" width="140">
+        <template slot="header" slot-scope="scope">
+          <span>当期刷卡手续费(元)</span>
+        </template>
+        <template slot-scope="scope">
+          {{scope.row.payCardFee}}
+        </template>
+      </el-table-column>
+
+
+      <!-- <el-table-column align="left" label="特许服务费(元)" prop="platformFee">
+      </el-table-column>
+      <el-table-column align="left" label="当期刷卡手续费(元)" prop="payCardFee" width="140">
+      </el-table-column> -->
+      <el-table-column align="left" label="当期实收分成(元)" prop="disAmount" width="130">
       </el-table-column>
     </el-table>
     <!-- 固定滚动条 -->
-    <div class="pagination" v-if="tableData.length>0">
+    <!-- <div class="pagination" v-if="tableData.length>0">
       <el-pagination
         class="pagination-info"
         @current-change="handleCurrentChange"
@@ -51,7 +116,7 @@
         layout="total, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
-    </div>
+    </div> -->
   </div>
 </template>
            
@@ -60,9 +125,12 @@ export default {
   data(){
     return{
       tableData:[],
-      currentPage:1,
-      pageSize:10,
-      total:0,
+      // currentPage:1,
+      // pageSize:10,
+      // total:0,
+      ids:'',
+      isOpen:true,
+      isOpen_:true,
       power: {
         'sign-com-htdetail': {
           state: false,
@@ -72,7 +140,8 @@ export default {
     }
   },
   created() {
-    
+    this.ids = this.$route.query.ids;
+    this.getAccountList(this.ids);
   },
   methods:{
     //合同详情页
@@ -101,6 +170,24 @@ export default {
         this.noPower('合同详情查看')
       }
     },
+    //分账明细列表
+    getAccountList(ids){
+      let param = {
+        settleDetailsIds:ids
+      };
+      this.$ajax.get('/api/separate/account/details',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.tableData=res.data;
+        }
+      })
+    },
+    openAll(){
+      this.isOpen=!this.isOpen;
+    },
+    openAll_(){
+      this.isOpen_=!this.isOpen_;
+    }
   }
 };
 </script>
@@ -123,5 +210,8 @@ export default {
 }
 /deep/ .el-table th {
   background: @bg-th;
+}
+.openAll{
+  cursor: pointer;
 }
 </style>

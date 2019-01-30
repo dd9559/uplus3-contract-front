@@ -214,27 +214,26 @@ export default {
       console.log(`当前页: ${val}`);
     },
     //合同详情
-    goContractDetail(value){
-      // console.log('111')
-      if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-        this.$router.push({
-          path: "/contractDetails",
-          query: {
-            id: value.contractId,//合同id
-            code: value.contractCode,//合同编号
-            contType: value.contType.value//合同类型
-          }
-        });
-      }else{
-        this.$router.push({
-        path: "/detailIntention",
-        query: {
-          id: value.contractId,
-          contType: value.contType.value
-        }
-      });
-      }
-    },
+    // goContractDetail(value){
+    //   if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
+    //     this.$router.push({
+    //       path: "/contractDetails",
+    //       query: {
+    //         id: value.contractId,//合同id
+    //         code: value.contractCode,//合同编号
+    //         contType: value.contType.value//合同类型
+    //       }
+    //     });
+    //   }else{
+    //     this.$router.push({
+    //     path: "/detailIntention",
+    //     query: {
+    //       id: value.contractId,
+    //       contType: value.contType.value
+    //     }
+    //   });
+    //   }
+    // },
     //获取当前部门
     initDepList:function (val) {
       if(!val){
@@ -287,33 +286,21 @@ export default {
           type:'warning'
         })
       }
-      
     },
-    toDetail(){
+    //分账详情
+    toDetail(value){
       this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
       let newPage = this.$router.resolve({ 
         path: '/routingRemitDetail',
         query:{
-          objectType:1,
-          infoId:1
+          ids:value.settleDetailsIds
         }
       });
       window.open(newPage.href, '_blank');
       // this.$router.push({
       //   path: "/routingRemitDetail",
       // })
-    },
-     //分账详情
-    // toDetail(){
-    //   let newPage = this.$router.resolve({ 
-    //     path: '/contractList',
-    //     query:{
-    //       objectType:1,
-    //       infoId:1
-    //     }
-    //   });
-    //   window.open(newPage.href, '_blank');
-    // },
+    }
   },
   filters: {
     timeFormat_: function (val) {
