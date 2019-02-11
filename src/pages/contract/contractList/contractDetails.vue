@@ -90,8 +90,8 @@
                 </div>
                 <div class="one_">
                   <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
-                  <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
-                  <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
+                  <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerName?contractDetail.houseInfo.ShopOwnerName:'--'}}</span></p>
+                  <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerMobile?contractDetail.houseInfo.ShopOwnerMobile:'--'}}</span></p>
                 </div>
                 <div class="table">
                   <template>
@@ -984,26 +984,6 @@ export default {
           this.getVirtualNum(param,index,type);
         }
       }
-      // let param = {
-      //   id:value.pid,
-      //   contractCode:this.contCode,
-      //   sourceType:value.personType.value===1?0:1
-      // };
-      // this.canCall=false;
-      // this.$ajax.get('/api/record/virtualNum',param).then(res=>{
-      //   this.canCall=true;
-      //   res=res.data;
-      //   if(res.status===200){
-      //     this.callNumber=res.data.virtualNum;
-      //     this.dialogVisible = true;
-      //   }
-      // }).catch(error=>{
-      //   this.canCall=true;
-      //   this.$message({
-      //     message:error,
-      //     type: "error"
-      //   })
-      // })
     },
     //生成虚拟号码
     getVirtualNum(param,index,type){
@@ -1020,6 +1000,11 @@ export default {
           this.dialogVisible = true;
         }
       }).catch(error=>{
+        if(type==='owner'){
+          this.ownerData[index].time=''
+        }else if(type==='guest'){
+          this.clientrData[index].time=''
+        }
         this.canCall=true;
         this.$message({
           message:error,
@@ -1316,6 +1301,11 @@ export default {
             this.getContractBody();//获取合同主体
           }
         }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type:'error'
+        })
       });
     },
      //获取合同扩展参数

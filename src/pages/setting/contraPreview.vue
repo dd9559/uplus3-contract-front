@@ -541,7 +541,7 @@ export default{
                   if(this.tableDate.length!==0 && this.show==1 && this.flag==1){
                       this.modalDialog=true
                     }
-                 if(this.cityId==1 && (this.type==2||this.type==3)){
+                 if(this.cityId==1 && (this.type==2)){
                     this.showSed=true
                     // this.$refs.bigbox.$el.classList.add('bodycontainer')
                     this.position=false

@@ -29,8 +29,7 @@
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上传</el-button>
-            <el-button @click="rowOperation(scope.row,2,1)" type="text" size="small" v-if="scope.row.name!=='-'">预览
-            </el-button>
+            <el-button @click="rowOperation(scope.row,2,1)" type="text" size="small" v-if="scope.row.name!=='-'">预览</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -210,7 +209,6 @@
        * 上传
        */
       sureUp(){
-        // debugger
         if(this.trim(this.contraName).length==0){
           this.modal=true
           this.$message({
@@ -252,7 +250,6 @@
           id:this.id
         }
       });
-
       },
       /**
        * 启用
@@ -309,11 +306,10 @@
             this.id=row.id
             this.contraType=row.type.value
             this.titleStr='上传合同模板'
-            this.uploadType = (row.cityName==='武汉'&&(row.type.label==='买卖'||row.type.label==='代办'))
+            this.uploadType = (row.cityName==='武汉'&&(row.type.label==='买卖'))
         }
         //预览
         else if(type===2){
-          //合同预览
           this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
           this.template = 3
           this.$router.push({
@@ -428,7 +424,6 @@
       transform: translateY(-50%);
     }
   }
-
   .modal {
     > p {
       position: absolute;
@@ -481,9 +476,6 @@
             font-size: 12px;
             color: darkseagreen;
           }
-        }
-        p:nth-child(2){
-          // margin-top: 30px;
         }
         span{
           font-size:14px;

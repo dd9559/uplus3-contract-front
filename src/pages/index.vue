@@ -75,7 +75,7 @@
       }
     },
     created(){
-      this.Index=this.$store.state.path
+      this.Index=this.getPath
       this.activeIndex = this.Index.length>2?this.Index[1].path.split('/')[1]:''
       /*this.$ajax.get('/api/me').then(res=>{
         res=res.data
@@ -129,7 +129,7 @@
           })
           item.child=sliders
         })
-        this.Index=this.$store.state.path
+        this.Index=this.getPath
         this.activeIndex = this.Index[1].path.split('/')[1]
       }else {
         let arr=[]
@@ -221,6 +221,9 @@
           })
           item.child=sliders
         })
+      },
+      getPath:function(val){
+        this.Index=val
       }
     }
   }
