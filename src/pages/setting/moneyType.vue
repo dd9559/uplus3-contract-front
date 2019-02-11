@@ -5,7 +5,7 @@
             <p class="title">
                 <span>数据列表</span>
             </p>
-            <el-table :data="tableData" ref='onetable'   @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
+            <el-table :data="tableData" ref='onetable' border   @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
                 <el-table-column align="center" width="100px" label="序号" type="index"></el-table-column>
                 <el-table-column align="center" label="款类(大类)" prop="name"></el-table-column>
             </el-table>
@@ -134,10 +134,10 @@
                             this.tableData=res.data.data
                             this.moneyTypes=res.data.data[0].moneyTypes
                             this.bigName=res.data.data[0].name
+                            this.bigId=res.data.data[0].id
                         }else{
                             this.moneyTypes=res.data.data
                         }
-                            this.bigId=this.bigId==''?18:this.bigId
                     }
                 })
                 // }else{
@@ -288,19 +288,8 @@
                 border-color:transparent transparent transparent white; /* transparent 设置边框颜色透明 */
         }
         /deep/ .el-table{
-            // height: calc(100%-48px);
          th {
             background:rgba(242,243,248,1);
-            }
-        }
-        /deep/ .el-table th, 
-        /deep/ .el-table td {
-            &:nth-child(2) {
-                border-left: 1px solid rgba(232, 234, 246, 1);
-            }
-            &:nth-child(3) {
-                border-left: 1px solid rgba(232, 234, 246, 1);
-                border-right: 1px solid rgba(232, 234, 246, 1);
             }
         }
         .el-table {
@@ -310,17 +299,20 @@
     }
     .commission {
         min-width: 72%;
-        // padding: 15px 10px 0;
         background:rgba(254,252,247,1);
         box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
         border-radius:4px;
         .el-table {
             height: calc(100% - 48px);
-            overflow-y: scroll;
+            overflow-y: auto;
         }
         /deep/ .el-table 
         th {
             background:#eef2fb;
+        }
+        /deep/ td:last-child div {
+            height: 35.6px;
+            line-height: 35.6px;
         }
         /deep/ td.is-center{
             background-color: #fefcf7;

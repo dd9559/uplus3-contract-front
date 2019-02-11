@@ -265,7 +265,8 @@
         <el-button round size="medium" class="paper-btn paper-btn-blue" type="primary" @click="submitForm">确定</el-button>
       </p>
     </el-dialog>
-    <layer-invoice ref="layerInvoice" :showBtn="comPrint" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <!--  :showBtn="comPrint" -->
+    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
   </div>
 </template>
 
@@ -349,10 +350,10 @@
                 name:'开票',
                 state:false
             },
-            'sign-cw-bill-print':{
-                name:'打印',
-                state:false
-            },
+            // 'sign-cw-bill-print':{
+            //     name:'打印',
+            //     state:false
+            // },
             'sign-com-htdetail':{
                 name:'合同详情',
                 state:false
@@ -375,9 +376,9 @@
       comPaymentTime(){
         return this.$tool.dateFormat(this.paymentTime)
       },
-      comPrint(){
-        return this.power['sign-cw-bill-print'].state
-      }
+      // comPrint(){
+      //   return this.power['sign-cw-bill-print'].state
+      // }
     },
     mounted() {
       // 枚举类型数据获取
@@ -527,7 +528,7 @@
               id:row.proceedsId,
               tab:'收款信息',
               power:this.getUser.user.empId===row.auditId,
-              print:this.power['sign-cw-bill-print'].state,//打印权限
+              // print:this.power['sign-cw-bill-print'].state,//打印权限
               bill:this.power['sign-cw-bill-invoice'].state,//开票权限
             }
           })

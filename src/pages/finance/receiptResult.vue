@@ -47,7 +47,7 @@
         </el-table>
       </div>
       <p class="tool-bar" :class="[type!==1?'tool-bar-other':'']">
-        <el-button round class="make-bill" type="primary" v-if="type===1&&power['sign-cw-debt-invoice'].state" @click="toBill">开票</el-button>
+        <el-button round class="make-bill" type="primary" v-if="type===1&&power['sign-cw-bill-invoice'].state" @click="toBill">开票</el-button>
         <el-button round @click="goBack('contractList')" v-if="power['sign-ht-info-query'].state">返回合同列表</el-button>
         <el-button round @click="goBack('Bill')" v-if="power['sign-cw-debt-query'].state">返回收付款列表</el-button>
         <span class="btn-question" @click="answer" v-if="type===1">支付遇到问题？</span>
@@ -63,7 +63,7 @@
       <h4>400 112 5883</h4>
     </el-dialog>
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
-    <checkPerson :show="checkPerson.state" :showBtn="power['sign-cw-bill-print'].state" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -93,14 +93,14 @@
           flowType:1
         },
         power:{
-          'sign-cw-debt-invoice': {
+          'sign-cw-bill-invoice': {
             state: false,
             name: '开票'
           },
-          'sign-cw-bill-print':{
+          /*'sign-cw-bill-print':{
             state: false,
             name: '打印'
-          },
+          },*/
           'sign-ht-info-query':{
             state: false,
             name: '合同列表'
