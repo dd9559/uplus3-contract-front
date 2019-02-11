@@ -11,20 +11,20 @@
         </el-form-item>
 
         <el-form-item label="打款日期">
-          <el-date-picker v-model="adjustForm.signDate" type="daterange" unlink-panels start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
+          <el-date-picker v-model="adjustForm.signDate" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
 
         <el-form-item label="分账门店">
-          <el-select v-model="adjustForm.depAttr" placeholder="全部" class="width150" clearable>
+          <el-select v-model="adjustForm.outStoreAttr" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
                 
         <el-form-item label="部门"> 
-          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
+          <select-tree :data="DepList" :init="adjustForm.depName1" @checkCell="depHandleClick1" @clear="clearDep(1)" @search="searchDep1" class="fl"></select-tree>
+          <!-- <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="adjustForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
@@ -32,19 +32,19 @@
               :label="item.name"
               :value="item.empId">
             </el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
 
         <el-form-item label="收账门店">
-          <el-select v-model="adjustForm.depAttr" placeholder="全部" class="width150" clearable>
+          <el-select v-model="adjustForm.inStoreAttr" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
                 
         <el-form-item label="部门"> 
-          <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
+          <select-tree :data="DepList" :init="adjustForm.depName2" @checkCell="depHandleClick2" @clear="clearDep(2)" @search="searchDep2" class="fl"></select-tree>
+          <!-- <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
                      v-model="adjustForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
@@ -52,7 +52,7 @@
               :label="item.name"
               :value="item.empId">
             </el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>      
         
       </el-form>
@@ -64,61 +64,61 @@
 
         <el-table-column label="分账门店" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName + ' - ' + scope.row.dealAgentName}}</p>
+            <p>{{scope.row.outStoreName}}</p>
           </template>
         </el-table-column>
 
         <el-table-column label="分账门店账户" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName + ' - ' + scope.row.dealAgentName}}</p>
+            <p>{{scope.row.outBankCard}}</p>
           </template>
         </el-table-column>
 
          <el-table-column label="收款门店" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName + ' - ' + scope.row.dealAgentName}}</p>
+            <p>{{scope.row.inStoreName}}</p>
           </template>
         </el-table-column>
 
         <el-table-column label="收款门店账户" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName + ' - ' + scope.row.dealAgentName}}</p>
+            <p>{{scope.row.inBankCard}}</p>
           </template>
         </el-table-column>
 
          <el-table-column label="分账金额（元）" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.dealPrice}} 元</p> 
+            <p>{{scope.row.accountAmount}} 元</p> 
           </template>
         </el-table-column>
        
         <el-table-column label="分账周期">
           <template slot-scope="scope">
-            <p>{{scope.row.createTime | getDate}}</p>
+            <p>{{scope.row.startTime | getDate}} ~ {{scope.row.endTime | getDate}}</p>
           </template>
         </el-table-column>
 
         <el-table-column label="打款人" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.createByDepName + ' - ' + scope.row.createByName}}</p>
+            <p>{{scope.row.moneyOutDepName + ' - ' + scope.row.moneyOutByName}}</p>
           </template>
         </el-table-column>
         
-        <el-table-column label="打款日期">
+        <el-table-column label="打款日期" align="center">
           <template slot-scope="scope">
-            <p>{{scope.row.checkTime | getDate}}</p>
+            <p>{{scope.row.moneyOutTime | getDate}}</p>
           </template>
         </el-table-column>   
         
         <el-table-column label="打款备注" width="200">
           <template slot-scope="scope">
-              <span v-if="scope.row.checkRemark&&(scope.row.checkRemark).trim().length > 0">
+              <span v-if="scope.row.remark&&(scope.row.remark).trim().length > 0">
                 <el-popover trigger="hover" placement="top">
                   <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
-                    {{scope.row.checkRemark}}
+                    {{scope.row.remark}}
                   </div>
-                  <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.checkRemark.length<16}">
-                    {{scope.row.checkRemark}}
+                  <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remark.length<16}">
+                    {{scope.row.remark}}
                   </div>
                 </el-popover>
               </span>
@@ -143,29 +143,21 @@
       <div class="audit-box"  :style="{ height: clientHeight2() }">
         <!-- 表格 -->
         <div class="audit-col">
-          <el-table :data="layerAudit.settlementFroms" border style="width: 100%" class="table">
+          <el-table :data="layerAudit" border style="width: 100%" class="table">
             <el-table-column label="合同编号" width="120" fixed :formatter="nullFormatter" align="center">
               <template slot-scope="scope">
-                <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
+                <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</div>
               </template>
             </el-table-column>
 
-            <el-table-column label="合同类型" :formatter="nullFormatter" align="center">
-              <template slot-scope="scope">
-                <p v-if="scope.row.tradeType === 1">租赁</p>
-                <p v-if="scope.row.tradeType === 2">买卖</p>
-                <p v-if="scope.row.tradeType === 3">代办</p>
-                <p v-if="scope.row.tradeType === 4">意向</p>
-                <p v-if="scope.row.tradeType === 5">定金</p>
-              </template>    
-            </el-table-column>
+            <el-table-column label="合同类型" prop="contType.label" :formatter="nullFormatter" align="center"></el-table-column>
 
-            <el-table-column prop="serviceFee" label="物业地址"></el-table-column>
+            <el-table-column label="物业地址" prop="address"></el-table-column>
 
             <el-table-column label="成交总价" :formatter="nullFormatter" prop="dealPrice">
               <template slot-scope="scope">
                 <span>{{scope.row.dealPrice}} 元</span>
-                <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.tradeType===1"> / {{item.value}}</span>
+                <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
               </template>
             </el-table-column>
 
@@ -176,29 +168,56 @@
               </template>
             </el-table-column>
 
-            <el-table-column prop="serviceFee" label="当期实收（元）"></el-table-column>
+            <el-table-column prop="thisSettlement" label="当期实收（元）"></el-table-column>
 
-            <el-table-column prop="serviceFee" label="结算比例"></el-table-column>
+            <el-table-column prop="ratioSettlement" label="结算比例"></el-table-column>
 
             
-            <el-table-column prop="serviceFee" label="金融服务费（元）" v-if="!visiableColumn1"></el-table-column>
-            <el-table-column prop="serviceFee" label="按揭手续费（元）" v-if="!visiableColumn1"></el-table-column>
-            <el-table-column prop="serviceFee" label="当期成本（元）" @click="showColumn" v-if="visiableColumn1"></el-table-column>
+            <el-table-column prop="thisCost" label="当期成本（元）" align="center"></el-table-column>
+            <el-table-column prop="serviceFee" label="金融服务费（元）"></el-table-column>
+            <el-table-column prop="mortgageFee" label="按揭手续费（元）"></el-table-column>
 
 
-            <el-table-column prop="serviceFee" label="实际结算"></el-table-column>
+            <el-table-column prop="actualSettlement" label="实际结算"></el-table-column>
+            
 
-            <el-table-column prop="serviceFee" label="业绩分成比例"></el-table-column>
-            <el-table-column prop="serviceFee" label="分成角色"></el-table-column>
-            <el-table-column prop="serviceFee" label="分成比例"></el-table-column>
-            <el-table-column prop="serviceFee" label="分成角色"></el-table-column>
-            <el-table-column prop="serviceFee" label="分成比例"></el-table-column>
+            <el-table-column prop="achieveDisRatio" label="业绩分成比例" align="center">
+               
+            </el-table-column>
+            <el-table-column label="分成角色" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.resultDetailsList.length==0">
+                  <div>--</div>
+                </div>
+                <div v-else>
+                  <p v-for="item in scope.row.resultDetailsList">
+                    {{item.disDeptName + '-' + item.disName +  '-' + item.roleType}}
+                  </p>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="分成比例" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.resultDetailsList.length==0">
+                  <div>--</div>
+                </div>
+                <div v-else>
+                  <div v-for="item in scope.row.resultDetailsList">
+                    {{item.disRatio}}%
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
+           
 
-            <el-table-column prop="serviceFee" label="门店承担成本（元）"></el-table-column>
-            <el-table-column prop="serviceFee" label="特许服务费（元）"></el-table-column>
-            <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
+            <el-table-column prop="storeCost" label="门店承担成本（元）" align="center">
+             
+            </el-table-column>
+            <el-table-column prop="platformFee" label="特许服务费（元）"></el-table-column>
+            <el-table-column prop="payCardFee" label="当期刷卡手续费（元）"></el-table-column>
+           
 
-            <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
+            <el-table-column prop="disAmount" label="当期实收分成（元）"></el-table-column>
           </el-table>
         </div>
       </div>
@@ -223,9 +242,9 @@
       return{ 
 
         clientHei: document.documentElement.clientHeight, //窗体高度
-        loading:false,
-        loading2:false,
-        loadingTable:false,
+        // loading:false,
+        // loading2:false,
+        loadingTable:false, //列表的加载loading
         visiableColumn1:true,
         userMsg:{},
 
@@ -233,18 +252,21 @@
         pageNum: 1,
         pageSize: 50,
         total: 0,
+        
         // Form :{
         //   getDepName: '',
         //   getAgentName: ''
         // },
         adjustForm:{
           signDate: '', //发起日期
-          tradeType: '', //合同类型
-          depName:'',
-          depId: '',
-          empId: '',
-          checkState: '',  //审核状态
+          outStoreId: '',
+          inStoreId: '',
+          outStoreAttr: '',
+          inStoreAttr: '',
+          depName1:'',
+          depName2:'',
           keyWord: ''   //关键字
+          
 
         },
         dictionary: {
@@ -253,9 +275,8 @@
           "53": "" //合作方式
         },
       
-        layerAudit:{
-
-        },
+        layerAudit:[],
+        
 
         checkInfo:[],
 
@@ -311,7 +332,10 @@
   
     methods:{
       showColumn() {
+        debugger
+        // console.log("不想上班")
         return this.visiableColumn1 = false
+       
       },
      
       // 控制弹框body内容高度，超过显示滚动条
@@ -411,40 +435,38 @@
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
-          this.loadingTable = true;
-          let startTime = '';
-          let endTime = '';
+        this.loadingTable = true; 
+        // this.adjustForm.signDate = TOOL.dateFormat(this.adjustForm.signDate);
           
-          if(this.adjustForm.signDate.length === 2){
-              startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
-              endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
-          }
             let param = {
+              outStoreId:  this.adjustForm.outStoreId,
+              outStoreAttr: this.adjustForm.outStoreAttr,
+              inStoreId:  this.adjustForm.inStoreId,
+              inStoreAttr: this.adjustForm.inStoreAttr,
+              moneyOutTime:this.adjustForm.signDate,
               pageNum: this.pageNum,                 
-              pageSize: this.pageSize,          
-              deptId: this.adjustForm.depId,              
-              empId: this.adjustForm.empId,               
-              startTime,    
-              endTime,      
-              contractType: this.adjustForm.tradeType,           
-              checkState: this.adjustForm.checkState,                              
+              pageSize: this.pageSize,                                      
               keyword: this.adjustForm.keyWord             
             }
             //调整佣金审核列表
             this.$ajax         
-            .get("/api/commission/updateList", param)
+            .get("/api/separate/money/out/list", param)
             .then(res => {
+              this.$nextTick(() => {
+                this.loadingTable = false;
+              })
               let data = res.data;
               if (res.data.status === 200) {
                 this.tableData = data.data  
                           
               }
-              this.$nextTick(() => {
-                this.loadingTable = false;
-              })
+              
               
         
             }).catch(error => {
+              this.$nextTick(() => {
+                this.loadingTable = false;
+              })
               this.$message({
                 message: error
               })
@@ -457,32 +479,26 @@
 
       // 双击详情事件
       toDetail(e) {
-        if(this.power['sign-ht-maid-vdetail'].state){
+        // if(this.power['sign-ht-maid-vdetail'].state){
 
           this.dialogVisible2 = true
           let param = {
-            checkId: e.checkId,
-            contractCode: e.contractCode
+            settleDetailsIds: e.settleDetailsIds,
           }
-          this.$ajax.get("/api/commission/toCheck", param)
+          this.$ajax.get("/api/separate/money/out/details", param)
           .then(res => {
             let data = res.data;
             if (res.data.status === 200) {
-              console.log(data.data)
               this.layerAudit = data.data;
-              this.myCheckId = data.data.checkId;
-              this.uploadList = data.data.voucher;
-              this.checkInfo = data.data.list
-              console.log()
             }
           }).catch(error => {
               this.$message({
                 message: error
               })
           });
-        }else{
-          this.noPower(this.power['sign-ht-maid-vdetail'].name)
-        }
+        // }else{
+        //   this.noPower(this.power['sign-ht-maid-vdetail'].name)
+        // }
         
       },
 
@@ -512,25 +528,38 @@
 
 
 
-      depHandleClick(data) {
-        // this.getEmploye(data.depId)
-        this.adjustForm.depId=data.depId
-        this.adjustForm.depName=data.name
-        this.adjustForm.empId = ''
-
+      depHandleClick1(data) {
+        this.adjustForm.outStoreId=data.depId
+        this.adjustForm.depName1=data.name
         this.handleNodeClick(data)
       },
 
-      clearDep:function () {
-        this.adjustForm.depId=''
-        this.adjustForm.depName=''
-        // this.EmployeList=[]
-        this.adjustForm.empId=''
-        this.clearSelect()
+      depHandleClick2(data) {
+        this.adjustForm.inStoreId=data.depId
+        this.adjustForm.depName2=data.name
+        this.handleNodeClick(data)
       },
-      searchDep:function (payload) {
+
+      clearDep:function (type) {
+         console.log(type)
+        if(type ===1){
+            this.adjustForm.outStoreId=''
+            this.adjustForm.depName1=''
+            this.clearSelect()
+        }else{
+             this.adjustForm.inStoreId=''
+            this.adjustForm.depName2=''
+            this.clearSelect()
+        }
+       
+      },
+      searchDep1:function (payload) {
         this.DepList=payload.list
-        this.adjustForm.depName=payload.depName
+        this.adjustForm.depName1=payload.depName
+      },
+      searchDep2:function (payload) {
+        this.DepList=payload.list
+        this.adjustForm.depName2=payload.depName
       },
 
       initDepList: function (val) {

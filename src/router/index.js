@@ -339,8 +339,8 @@ export default new Router({
         {
           path: "login",
           component: Login
-        }
-      },
+        },
+      
       {
         path: "contraPreview",
         component: contraPreview
