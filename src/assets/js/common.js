@@ -33,6 +33,11 @@ let TOOL = {
           name: "打款记录",
           path: "debitRecord",
           code: "sign-ht-fz-query"
+        },
+        {
+          name: '分账记录',
+          path: 'routingRecord',
+          code: 'sign-ht-fz-query'
         }
       ]
     },
@@ -211,7 +216,7 @@ let TOOL = {
    * @param event
    * @returns {{x: number, y: number}}
    */
-  getMousePos: function(event) {
+  getMousePos: function (event) {
     var e = event || window.event;
     var scrollX =
       document.documentElement.scrollLeft || document.body.scrollLeft;
@@ -232,7 +237,7 @@ let TOOL = {
    * @param type     该列所有单元格是否合并为一个
    * @returns {*}
    */
-  collapseRow: function({ rowIndex, rowTotal, collapse, type }) {
+  collapseRow: function ({ rowIndex, rowTotal, collapse, type }) {
     // collapse=collapseMsg
     // debugger
     if (type === "all") {
@@ -312,7 +317,7 @@ let TOOL = {
    * 重置表单对象
    * @param form
    */
-  clearForm: function(form, num = false) {
+  clearForm: function (form, num = false) {
     for (let item in form) {
       let type = typeof form[item];
       switch (type) {
@@ -340,7 +345,7 @@ let TOOL = {
   /**
    * 表单校验 rule{'propName':{name:'label',type:'变量类型'}}
    */
-  checkForm: function(form, rule) {
+  checkForm: function (form, rule) {
     return new Promise((resolve, reject) => {
       for (let item in rule) {
         let val = form[item];
@@ -404,7 +409,7 @@ let TOOL = {
   },
 
   //数字转中文数字
-  toChineseNumber: function(money) {
+  toChineseNumber: function (money) {
     //汉字的数字
     var cnNums = new Array(
       "零",
@@ -499,7 +504,7 @@ let TOOL = {
     }
     return chineseStr;
   },
-  dateFormat: function(val, type = 1) {
+  dateFormat: function (val, type = 1) {
     if (!val) {
       return "--";
     } else {
@@ -512,7 +517,7 @@ let TOOL = {
         : `${y}/${M > 9 ? M : "0" + M}/${D > 9 ? D : "0" + D}`;
     }
   },
-  timeFormat: function(val) {
+  timeFormat: function (val) {
     if (!val) {
       return "--";
     } else {
@@ -525,10 +530,10 @@ let TOOL = {
       let s = time.getSeconds();
       return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
         h > 9 ? h : "0" + h
-      }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
+        }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
     }
   },
-  nullFormat: function(val) {
+  nullFormat: function (val) {
     if (!val && typeof val !== "number") {
       return "--";
     } else {
@@ -536,14 +541,14 @@ let TOOL = {
     }
   },
   //上传拼接
-  getFilePath: function(arr) {
+  getFilePath: function (arr) {
     let newArr = [];
     arr.forEach(item => {
       newArr.push(`${item.path}?${item.name}`);
     });
     return newArr;
   },
-  cutFilePath: function(arr) {
+  cutFilePath: function (arr) {
     let newArr = [];
     arr.forEach(item => {
       let cell = {
@@ -565,7 +570,7 @@ let TOOL = {
     return suffix;
   },
   //保留小数位
-  cutFloat: function({ val, max, num = 2 }) {
+  cutFloat: function ({ val, max, num = 2 }) {
     val = val
       .toString()
       .replace(/[^\d.]/g, "")
@@ -585,7 +590,7 @@ let TOOL = {
       return val;
     }
   },
-  textInput: function(val, type = 1) {
+  textInput: function (val, type = 1) {
     // debugger
     if (type === 1) {
       return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g, "").replace(/\s/g, "");
@@ -593,11 +598,11 @@ let TOOL = {
       return val.replace(/[^\d\a-zA-Z]/g, "").replace(/\s/g, "");
     }
   },
-  numberInput: function(val) {
+  numberInput: function (val) {
     return val.replace(/[^\d]/g, "");
   },
   //数组是否有重复元素
-  repeatCell: function(arr) {
+  repeatCell: function (arr) {
     // debugger
     let old = arr.length;
     let newArr = new Set(arr);
@@ -608,7 +613,7 @@ let TOOL = {
     }
   },
   //生成面包屑导航数组
-  getRouter: function(arr, root) {
+  getRouter: function (arr, root) {
     return arr.map(item => {
       return { name: item, path: root };
     });
