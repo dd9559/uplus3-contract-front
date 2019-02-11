@@ -32,7 +32,7 @@ let TOOL = {
         {
           name: "打款记录",
           path: "debitRecord",
-          code: "sign-ht-fz-query"
+          code: "sign-ht-dk-query"
         }
       ]
     },

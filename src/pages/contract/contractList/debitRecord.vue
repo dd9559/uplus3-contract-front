@@ -576,8 +576,8 @@
       this.queryFn();
       // this.getDepNameFn();
       this.getDictionary();
-      this.getAdmin();
-      this.remoteMethod()
+      // this.getAdmin();
+      // this.remoteMethod()
       
 
      
