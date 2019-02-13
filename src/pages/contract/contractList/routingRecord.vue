@@ -179,7 +179,13 @@ export default {
       dialogReceipt:false,
       receiptData:{},
       receiptReason:'',//备注
-      radio:''
+      radio:'',
+      power: {
+        'sign-ht-fz-pay': {
+          state: false,
+          name: '确认打款'
+        },
+      }
     };
   },
   created() {
@@ -403,8 +409,22 @@ export default {
       },
     //确认收款
     toReceipt(item){
-      this.dialogReceipt=true
-      this.receiptData=item;
+      if(this.power['sign-ht-fz-pay'].state){
+        if(item.inBank){
+          this.dialogReceipt=true
+          this.receiptData=item;
+        }else{
+          this.$message({
+            message:'没有收款门店账户',
+            type:'warning'
+          });
+        }
+      }else{
+        this.$message({
+          message:'没有确认打款权限',
+          type:'warning'
+        });
+      }
     },
     commit(){
       if(this.radio){
