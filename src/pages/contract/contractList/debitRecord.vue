@@ -16,43 +16,61 @@
         </el-form-item>
 
         <el-form-item label="分账门店">
-          <el-select v-model="adjustForm.outStoreAttr" placeholder="全部" class="width150" clearable>
+          <el-select v-model="adjustForm.outStoreAttr" placeholder="全部" class="width150" clearable @change="changeStoreAttr_out">
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
                 
         <el-form-item label="部门"> 
-          <select-tree :data="DepList" :init="adjustForm.depName1" @checkCell="depHandleClick1" @clear="clearDep(1)" @search="searchDep1" class="fl"></select-tree>
-          <!-- <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
-                     v-model="adjustForm.empId" placeholder="请选择">
+          <!-- <select-tree :data="DepList" :init="adjustForm.depName1" @checkCell="depHandleClick1" @clear="clearDep(1)" @search="searchDep1" class="fl"></select-tree> -->
+          <el-select
+            v-model="adjustForm.outStoreId"
+            :multiple="false"
+            filterable
+            remote
+            placeholder="全部"
+            :remote-method="remoteMethod_out"
+            v-loadmore.out="moreDeps"
+            :clearable="true"
+            @clear="clearOutList('out')"
+            :loading="loading">
             <el-option
-              v-for="item in EmployeList"
-              :key="item.empId"
+              v-for="item in outStoreList"
+              :key="item.id"
               :label="item.name"
-              :value="item.empId">
+              :value="item.id">
             </el-option>
-          </el-select> -->
+          </el-select>
         </el-form-item>
 
         <el-form-item label="收账门店">
-          <el-select v-model="adjustForm.inStoreAttr" placeholder="全部" class="width150" clearable>
+          <el-select v-model="adjustForm.inStoreAttr" placeholder="全部" class="width150" clearable @change="changeStoreAttr_in">
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
                 
         <el-form-item label="部门"> 
-          <select-tree :data="DepList" :init="adjustForm.depName2" @checkCell="depHandleClick2" @clear="clearDep(2)" @search="searchDep2" class="fl"></select-tree>
-          <!-- <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
-                     v-model="adjustForm.empId" placeholder="请选择">
+          <!-- <select-tree :data="DepList" :init="adjustForm.depName2" @checkCell="depHandleClick2" @clear="clearDep(2)" @search="searchDep2" class="fl"></select-tree> -->
+          <el-select
+            v-model="adjustForm.inStoreId"
+            :multiple="false"
+            filterable
+            remote
+            placeholder="全部"
+            :remote-method="remoteMethod_in"
+            v-loadmore.in="moreDeps"
+            :clearable="true"
+            @clear="clearOutList('in')"
+            :loading="loading">
             <el-option
-              v-for="item in EmployeList"
-              :key="item.empId"
+              v-for="item in inStoreList"
+              :key="item.id"
               :label="item.name"
-              :value="item.empId">
+              :value="item.id">
             </el-option>
-          </el-select> -->
+          </el-select>
         </el-form-item>      
         
       </el-form>
@@ -248,7 +266,7 @@
         visiableColumn1:true,
         userMsg:{},
 
-        // 分页
+        // 列表分页
         pageNum: 1,
         pageSize: 50,
         total: 0,
@@ -259,16 +277,27 @@
         // },
         adjustForm:{
           signDate: '', //发起日期
-          outStoreId: '',
-          inStoreId: '',
-          outStoreAttr: '',
-          inStoreAttr: '',
-          depName1:'',
-          depName2:'',
+          outStoreId: '', //分账门店id
+          inStoreId: '', //分账门店属性
+          outStoreAttr: '', //收款门店id
+          inStoreAttr: '', //收款门店属性
           keyWord: ''   //关键字
-          
-
         },
+
+        // 部门搜索分页
+        pageSize_:50,
+        outStoreList:[],//分账门店
+        inStoreList:[],//收款门店
+        currentPage_out:1,//分账    
+        currentPage_in:1,//收款
+        total_out:0,
+        total_in:0,
+        loading:false,
+        //部门选择列表
+        options:[],
+        currentPage_:1,
+        firstTotal:0,
+
         dictionary: {
           //数据字典
           "507": "", // 成交总价单位
@@ -349,85 +378,18 @@
       trim(str){
         return str.replace(/(^\s*)|(\s*$)/g, "")
       },
-      // 得到部门门店和经纪人信息
-      // getDepNameFn(e) {
-      //   this.loading = true;
-      //   this.$ajax.get("/api/access/deps", {keyword: e})
-      //   .then(res => {       
-      //     let data = res.data;         
-      //     if (res.data.status === 200) { 
-      //       this.loading = false; 
-      //       if(e === '' || !e){
-      //         this.adjustForm.getDepName = [{
-      //           name: "全部",
-      //           id: ""
-      //         },...data.data]
-      //       }else{
-      //         this.adjustForm.getDepName = data.data
-      //       } 
-             
-      //     }
-      //   }).catch(error => {
-      //     this.$message({
-      //       message: error
-      //     })
-      //   })
-      // },
-
-      // changeDepNameFn(e) {
-      //   if(e !== "" || !!e){
-      //     this.loading2 = true;
-      //     this.$ajax.get("/api/organize/employees",{
-      //       cityId:this.userMsg.cityId,
-      //       depId: e
-      //     })
-          
-      //     .then(res => {       
-                    
-      //       if (res.data.status === 200) {  
-      //         this.loading2 = false;
-      //         this.Form.getAgentName = ''; 
-      //         if(res.data.data.length > 0){ 
-                
-      //           this.adjustForm.getAgentName = [{
-      //             name: "全部",
-      //             empId: ""
-      //           },...res.data.data]
-      //         }
-      //         else{
-      //           this.adjustForm.getAgentName = res.data.data
-      //         }
-              
-      //       }
-
-      //     }).catch(error => {
-      //       this.$message({
-      //         message: error
-      //       })
-      //     })  
-      //   }else{    
-      //       this.Form.getAgentName = '';       
-      //       this.adjustForm.getAgentName = [{
-      //           name: "全部",
-      //           empId: ""
-      //       }]
-      //       // this.Form.getDepName = '全部'; 
-      //       this.Form.getDepName = ''; 
-      //       this.getDepNameFn('');
-      //   }
-      // },
-
-      
-      // 清除部门搜索
-      // clearDepNameFn(){
-      //     this.getDepNameFn('');
-      // }, 
 
 
       // 重置
       resetFormFn() {
           TOOL.clearForm(this.adjustForm);
-          this.pageNum = 1;      
+          this.pageNum = 1; 
+          this.outStoreList=this.options//分账门店
+          this.inStoreList=this.options//收款门店
+          this.currentPage_out=1//分账
+          this.currentPage_in=1//收款
+          this.total_out=this.firstTotal
+          this.total_in=this.firstTotal     
       },
 
       // 查询
@@ -526,49 +488,173 @@
         this.queryFn();
       },
 
-
-
-      depHandleClick1(data) {
-        this.adjustForm.outStoreId=data.depId
-        this.adjustForm.depName1=data.name
-        this.handleNodeClick(data)
-      },
-
-      depHandleClick2(data) {
-        this.adjustForm.inStoreId=data.depId
-        this.adjustForm.depName2=data.name
-        this.handleNodeClick(data)
-      },
-
-      clearDep:function (type) {
-         console.log(type)
-        if(type ===1){
-            this.adjustForm.outStoreId=''
-            this.adjustForm.depName1=''
-            this.clearSelect()
-        }else{
-             this.adjustForm.inStoreId=''
-            this.adjustForm.depName2=''
-            this.clearSelect()
+    
+    getDepList(param,first=true,type='out'){
+      this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          if(first){
+            this.outStoreList=res.data.list;
+            this.inStoreList=res.data.list;
+            this.options=res.data.list;
+            this.firstTotal=res.data.total;
+            this.total_out=res.data.total
+            this.total_in=res.data.total
+          }else{
+            if(type==='out'){
+              this.outStoreList=res.data.list;
+              this.total_out=res.data.total
+            }else{
+              this.inStoreList=res.data.list;
+              this.total_in=res.data.total
+            }
+          }
         }
-       
-      },
-      searchDep1:function (payload) {
-        this.DepList=payload.list
-        this.adjustForm.depName1=payload.depName
-      },
-      searchDep2:function (payload) {
-        this.DepList=payload.list
-        this.adjustForm.depName2=payload.depName
-      },
+      })
+    },
 
-      initDepList: function (val) {
-        if (!val) {
-          this.remoteMethod()
-        }else {
-
+       //搜索
+    remoteMethod_out(keyword){
+      if(keyword!==''){
+        this.currentPage_out=1;
+        let param = {
+          type:'G',
+          keyword:keyword,
+          pageSize:this.pageSize_,
+          pageNum:this.currentPage_out,
+          depAttr:''
+        }
+        if(this.adjustForm.outStoreAttr===1){
+          param.depAttr='DIRECT'
+        }else if(this.adjustForm.outStoreAttr===2){
+          param.depAttr='JOIN'
+        }
+        this.getDepList(param,false,'out')
+      }
+    },
+    remoteMethod_in(keyword){
+      if(keyword!==''){
+        this.currentPage_in=1;
+        let param = {
+          type:'G',
+          keyword:keyword,
+          pageSize:this.pageSize_,
+          pageNum:this.currentPage_in,
+          depAttr:''
+        }
+        if(this.adjustForm.inStoreAttr===1){
+          param.depAttr='DIRECT'
+        }else if(this.adjustForm.inStoreAttr===2){
+          param.depAttr='JOIN'
+        }
+        this.getDepList(param,false,'in')
+      }
+    },
+    //门店下拉加载更多
+    moreDeps(type){
+      if(type==='out'){
+        if(this.total_out>this.outStoreList.length){
+          this.currentPage_out++;
+          let param = {
+            type:'G',
+            pageNum:this.currentPage_out,
+            pageSize:this.pageSize_
+          }
+          this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
+            res=res.data;
+            if(res.status===200){
+              this.outStoreList=this.outStoreList.concat(res.data.list);
+            }
+          })
+        }
+      }else{
+        if(this.total_in>this.inStoreList.length){
+          this.currentPage_in++;
+          let param = {
+            type:'G',
+            pageNum:this.currentPage_in,
+            pageSize:this.pageSize_
+          }
+          this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
+            res=res.data;
+            if(res.status===200){
+              this.inStoreList=this.inStoreList.concat(res.data.list);
+            }
+          })
+        }
+      }
+    },
+    //改变门店类型
+    changeStoreAttr_out(value){
+      this.currentPage_out=1;
+      this.adjustForm.outStoreId='';
+      let param = {
+        type:'G',
+        pageNum:this.currentPage_out,
+        pageSize:this.pageSize_,
+        depAttr:''
+      }
+      if(value===1){
+        param.depAttr='DIRECT'
+      }else if(value===2){
+        param.depAttr='JOIN'
+      }
+      this.getDepList(param,false,'out')
+    },
+    changeStoreAttr_in(value){
+      this.currentPage_in=1;
+      this.adjustForm.inStoreId='';
+      let param = {
+        type:'G',
+        pageNum:this.currentPage_in,
+        pageSize:this.pageSize_,
+        depAttr:''
+      }
+      if(value===1){
+        param.depAttr='DIRECT'
+      }else if(value===2){
+        param.depAttr='JOIN'
+      }
+      this.getDepList(param,false,'in')
+    },
+    //清空选择的门店
+    clearOutList(type){
+      if(type==='out'){
+        this.currentPage_out=1;
+        let param = {
+          type:'G',
+          pageNum:this.currentPage_out,
+          pageSize:this.pageSize_,
+          depAttr:''
+        }
+        if(this.adjustForm.outStoreAttr===1){
+          param.depAttr='DIRECT'
+        }else if(this.adjustForm.outStoreAttr===2){
+          param.depAttr='JOIN'
+        }
+        this.getDepList(param,false,'out')
+      }else{
+        this.currentPage_in=1;
+        let param = {
+          type:'G',
+          pageNum:this.currentPage_in,
+          pageSize:this.pageSize_,
+          depAttr:''
+        }
+        if(this.adjustForm.inStoreAttr===1){
+          param.depAttr='DIRECT'
+        }else if(this.adjustForm.inStoreAttr===2){
+          param.depAttr='JOIN'
+        }
+        this.getDepList(param,false,'in')
         }
       },
+
+
+  
+      
+
+      
     
     },
 
@@ -576,6 +662,11 @@
       this.queryFn();
       // this.getDepNameFn();
       this.getDictionary();
+      this.getDepList({
+        type:'G',
+        pageNum:this.currentPage_,
+        pageSize:this.pageSize_,
+      })
       // this.getAdmin();
       // this.remoteMethod()
       
