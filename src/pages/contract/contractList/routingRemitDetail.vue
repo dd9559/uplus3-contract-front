@@ -28,7 +28,7 @@
       </el-table-column>
       <el-table-column align="left" label="当期实收(元)" prop="thisSettlement">
       </el-table-column>
-      <el-table-column align="left" label="结算比率" prop="ratioSettlement">
+      <el-table-column align="left" label="结算比率" prop="ratioSettlementStr">
       </el-table-column>
       <el-table-column>
         <template slot="header" slot-scope="scope">

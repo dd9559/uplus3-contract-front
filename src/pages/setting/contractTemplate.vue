@@ -30,6 +30,7 @@
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上传</el-button>
             <el-button @click="rowOperation(scope.row,2,1)" type="text" size="small" v-if="scope.row.name!=='-'">预览</el-button>
+            <el-button @click="rowOperation(scope.row,3)" type="text" size="small">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -311,12 +312,23 @@
         //预览
         else if(type===2){
           this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
-          this.template = 3
+          // this.template = 3
           this.$router.push({
             path: "/contraPreview",
             query: {
               enableTemplateId:showType==2?row.id:row.enableTemplateId,
               show:2,
+            }
+          });
+        }
+        else if(type==3){
+          console.log(row,'row');
+          this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板修改'],'contractTemplate'))
+           this.$router.push({
+            path: "/contraPreview",
+            query: {
+              enableTemplateId:row.enableTemplateId,
+              show:3,
             }
           });
         }
