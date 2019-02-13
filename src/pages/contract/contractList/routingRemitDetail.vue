@@ -1,25 +1,30 @@
 <template>
   <div class="view-container">
     <el-table :data="tableData" border>
-      <el-table-column align="left" label="合同编号" prop="outStoreName" width="140">
+      <el-table-column align="left" label="合同编号" width="140">
         <template slot-scope="scope">
           <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
           <span class="contractCode" @click="toDetail(scope.row)">{{scope.row.code}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="left" label="合同类型" prop="outBankCard">
+      <el-table-column align="left" label="合同类型">
         <template slot-scope="scope">
           {{scope.row.contType.label}}
         </template>
       </el-table-column>
+      <el-table-column align="left" prop="address" label="物业地址">
+      </el-table-column>
       <el-table-column align="left" label="成交总价">
         <template slot-scope="scope">
-          <span v-if="scope.row.contType.value===1">{{scope.row.dealPrice}} 元</span>
+          <span v-if="scope.row.contType.value!==1">{{scope.row.dealPrice}} 元</span>
           <span v-else>{{scope.row.dealPrice}} 元 / {{scope.row.timeUnit}}</span>
           <!-- {{scope.row.dealPrice}} -->
         </template>
       </el-table-column>
-      <el-table-column align="left" label="成交经纪人" prop="dealAgentName">
+      <el-table-column align="left" label="成交经纪人" min-width="120">
+        <template slot-scope="scope">
+          {{scope.row.dealAgentStoreName+' - '+scope.row.dealAgentName}}
+        </template>
       </el-table-column>
       <el-table-column align="left" label="当期实收(元)" prop="thisSettlement">
       </el-table-column>
@@ -59,7 +64,7 @@
       </el-table-column>
       <el-table-column align="left" label="按揭手续费(元)" prop="mortgageFee" v-if="!isOpen">
       </el-table-column> -->
-      <el-table-column align="left" label="实际结算" prop="actualSettlement">
+      <el-table-column align="left" label="实际结算(元)" prop="actualSettlement">
       </el-table-column>
       <el-table-column align="left" label="分成人" min-width="120">
         <template slot-scope="scope">
@@ -148,6 +153,7 @@ export default {
     }
   },
   created() {
+    this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
     this.ids = this.$route.query.ids;
     this.getAccountList(this.ids);
   },

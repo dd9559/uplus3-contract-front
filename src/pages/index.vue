@@ -42,7 +42,7 @@
           <ul>
             <li v-for="(item,index) in Index" :key="index" @click="toLink(item,index)">{{item.name}}</li>
           </ul>
-          <p class="operation" @click="goBack" v-if="Index.length>2">
+          <p class="operation" @click="goBack" v-if="Index.length>2&&$route.path!=='/routingRemitDetail'">
             <i class="iconfont icon-fanhui"></i>
             <span>返回</span>
           </p>
