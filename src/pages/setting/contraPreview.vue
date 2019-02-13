@@ -142,7 +142,7 @@ export default{
             this.divHeight=800
             if(this.show==1){
                this.getImgAdd(this.count)
-            }else{
+            }else if(this.show==2){
                 this.position=false
                 this.position2=false
                 this.saveBtn=false
@@ -182,7 +182,6 @@ export default{
                            this.imgSrc=resadd.img.url
                            this.total=res.data.data.img.count
                            this.signPositions=res.data.data.signPosition
-                           console.log(this.signPosition,'signPosition');
                            this.sigtureShow=false
                            for(let i=0;i<this.signPositions.length;i++){
                             if(this.count==this.signPositions[i].pageIndex){
@@ -198,6 +197,77 @@ export default{
                            htImg.style.width='620px'
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
+                     }
+                })
+            }else if(this.show==3){
+                this.$ajax.get('/api/setting/contractTemplate/updateShow',{enableTemplateId:this.enableTemplateId}).then(res=>{
+                    this.modalDialog=true
+                    this.tableDate=res.data.data.seats
+                    for(let i=0;i<this.tableDate.length;i++){
+                        this.tableDate[i].inputType=this.tableDate[i].inputType.value
+                        this.content.push(this.tableDate[i].checkboxCount)
+                        this.contents.push('该占位符需要输入'+this.tableDate[i].checkboxCount+'个值')
+                    }
+                    this.$nextTick(()=>{
+                      this.loading=false
+                    })
+                    console.log(this.tableDate)
+                    
+                     let resadd=res.data.data
+                     if(resadd.businessImg && resadd.businessImg!==''){
+                            this.showSed=true
+                            this.position=false
+                            this.divWidth=this.divWidth
+                            this.sigtureShow=false
+                            this.imgSrc=res.data.data.businessImg.url
+                            this.imgSrc2=res.data.data.residenceImg.url
+                            this.total=res.data.data.businessImg.count
+                            this.total2=res.data.data.residenceImg.count
+                            this.signPositions=res.data.data.signPosition
+                            this.sigtureShow2=false
+                            for(let i=0;i<this.signPositions.length;i++){
+                                if(this.count2==this.signPositions[i].pageIndex){
+                                this.sigtureShow2=true
+                                let dropbtn=document.getElementsByClassName('signaturetwo')[0]
+                                dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
+                                dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
+                                if(this.show==1||this.show==3){
+                                    this.tuozhuai(this.signPositions[i])
+                                }
+                              }
+                            }
+                            let htImg=document.getElementById('ht')
+                            let htImg2=document.getElementById('ht2')
+                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
+                            var newsrc2=this.imgSrc2.substr(0,this.imgSrc2.lastIndexOf('.'))+this.count2+this.imgSrc2.substr(this.imgSrc2.lastIndexOf('.'))
+                            this.autograph(htImg,newsrc)
+                            this.autograph(htImg2,newsrc2)
+                     }else{
+                           let btn=document.getElementsByClassName('ht-list')[0]
+                           btn.style.margin='0 auto'
+                           this.divWidth=this.divWidth
+                           this.imgSrc=resadd.img.url
+                           this.total=res.data.data.img.count
+                           this.signPositions=res.data.data.signPosition
+                           this.sigtureShow=false
+                           for(let i=0;i<this.signPositions.length;i++){
+                            if(this.count==this.signPositions[i].pageIndex){
+                             this.sigtureShow=true
+                             let dropbtn=document.getElementsByClassName('signatureone')[0]
+                             dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
+                             dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
+                             if(this.show==1||this.show==3){
+                                    this.tuozhuai(this.signPositions[i])
+                            }
+                           }
+                           }
+                           let htImg=document.getElementById('ht')
+                           let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
+                           bodycontainer.style.display='block'
+                           htImg.style.width='620px'
+                           var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
+                           this.autograph(htImg,newsrc)
+                        
                      }
                 })
             }
@@ -282,15 +352,12 @@ export default{
                             document.onmousemove = function(ev){
                             var l = ev.clientX-disX;
                             var t = ev.clientY-disY;
-                           
                             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
-                             console.log(l,oDiv.parentNode.offsetWidth-130);
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
                             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
                             sign.x=(l/620).toFixed(2)
                             sign.y=(t/800).toFixed(2)
-                            console.log(sign,'sign');
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
@@ -308,41 +375,65 @@ export default{
                         })
                         return
                 }
-                 let param={
-                  address:{
-                    address:this.mbanAddress==''?'':this.mbanAddress.path+'?'+this.mbanAddress.name,
-                    business:this.mmaiAddress==''?'':this.mmaiAddress.path+'?'+this.mmaiAddress.name,
-                    residence:this.jjianAddress==''?'':this.jjianAddress.path+'?'+this.jjianAddress.name
-                  },
-                  contractSeats:this.tableDate,
-                  type:this.type,
-                  cityName:this.cityName,
-                  name:this.contraName,
-                  signPositions:this.signPositions,
-                  imgAddress:{"business":this.showSed?this.imgSrc:'', "residence":this.showSed?this.imgSrc2:'',"address":!this.showSed?this.imgSrc:''},
-                  imgPage:{"business":this.showSed?this.total:0, "residence": this.showSed?this.total2:0,"count": !this.showSed?this.total:0},
-                  cityId:this.cityId,
-                  id:this.id
-                }
-                    // let saveAll=document.getElementsByClassName('saveAll')[0]
-                    // saveAll.disabled=true
-                    this.$ajax.postJSON('/api/setting/contractTemplate/insert',param).then(res=>{
-                    if(res.status==200){
-                            this.touch=false
-                            this.$router.push({
-                            path: "/contractTemplate",
-                        });
-                    }
-                }).catch(
-                        error=>this.$notify({
-                            type:'error',
-                            message: error,
-                            duration:3000,
+                if(this.show==1){
+                        let param={
+                        address:{
+                            address:this.mbanAddress==''?'':this.mbanAddress.path+'?'+this.mbanAddress.name,
+                            business:this.mmaiAddress==''?'':this.mmaiAddress.path+'?'+this.mmaiAddress.name,
+                            residence:this.jjianAddress==''?'':this.jjianAddress.path+'?'+this.jjianAddress.name
                         },
-                         this.modalDialog=true
-                        ),
-                   
-                )
+                        contractSeats:this.tableDate,
+                        type:this.type,
+                        cityName:this.cityName,
+                        name:this.contraName,
+                        signPositions:this.signPositions,
+                        imgAddress:{"business":this.showSed?this.imgSrc:'', "residence":this.showSed?this.imgSrc2:'',"address":!this.showSed?this.imgSrc:''},
+                        imgPage:{"business":this.showSed?this.total:0, "residence": this.showSed?this.total2:0,"count": !this.showSed?this.total:0},
+                        cityId:this.cityId,
+                        id:this.id
+                        }
+                            this.$ajax.postJSON('/api/setting/contractTemplate/insert',param).then(res=>{
+                            if(res.status==200){
+                                    this.touch=false
+                                    this.$router.push({
+                                    path: "/contractTemplate",
+                                });
+                            }
+                        }).catch(
+                                error=>this.$notify({
+                                    type:'error',
+                                    message: error,
+                                    duration:3000,
+                                },
+                                this.modalDialog=true
+                                ),
+                        
+                        )  
+                }else if(this.show==3){
+                    let param={
+                        id:this.enableTemplateId,
+                        signPositions:this.signPositions,
+                        seatsList:this.tableDate
+                    }
+                    console.log(param);
+                       this.$ajax.put('/api/setting/contractTemplate/update',param).then(res=>{
+                           if(res.status==200){
+                                    this.touch=false
+                                    this.$router.push({
+                                    path: "/contractTemplate",
+                                });
+                            }
+                        }).catch(
+                                error=>this.$notify({
+                                    type:'error',
+                                    message: error,
+                                    duration:3000,
+                                },
+                                this.modalDialog=true
+                                ),
+                        
+                        )
+                }
             },
             numSave(){
                 for(let i=0;i<this.tableDate.length;i++){
@@ -385,7 +476,7 @@ export default{
                              if(this.showSed){
                                   this.sigtureShow=false
                              }
-                             if(this.show==1){
+                             if(this.show==1||this.show==3){
                                     this.tuozhuai(this.signPositions[i])
                                 }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
@@ -406,7 +497,7 @@ export default{
                      for(let i=0;i<this.signPositions.length;i++){
                          if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
-                                if(this.show==1){
+                                if(this.show==1||this.show==3){
                                     this.tuozhuai(this.signPositions[i])
                                 }
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
@@ -434,7 +525,7 @@ export default{
                              if(this.showSed){
                                   this.sigtureShow=false
                              }
-                             if(this.show==1){
+                             if(this.show==1||this.show==3){
                                     this.tuozhuai(this.signPositions[i])
                                 }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
@@ -455,7 +546,7 @@ export default{
                     for(let i=0;i<this.signPositions.length;i++){
                         if(this.count2==this.signPositions[i].pageIndex){
                                 this.sigtureShow2=true
-                                if(this.show==1){
+                                if(this.show==1||this.show==3){
                                     this.tuozhuai(this.signPositions[i])
                                 }
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
@@ -545,7 +636,6 @@ export default{
                     this.showSed=true
                     // this.$refs.bigbox.$el.classList.add('bodycontainer')
                     this.position=false
-                    // console.log(res.data.data.businessImg.url,'imgsrc');
                     this.imgSrc=res.data.data.businessImg.url
                     this.imgSrc2=res.data.data.residenceImg.url
                     this.total=res.data.data.businessImg.count
@@ -594,7 +684,6 @@ export default{
 .view-container{
     display: flex;
     flex-wrap: wrap;
-    // justify-content: center;
     .title{
         height: 58px;
         display: flex;
@@ -706,7 +795,4 @@ export default{
 /deep/ .el-table::before{
     height: 0;
 }
-// .disabled{
-//     disabled:true
-// }
 </style>
