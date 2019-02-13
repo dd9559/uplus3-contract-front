@@ -97,7 +97,7 @@
         </el-table-column>
         <el-table-column align="left" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="toReceipt(scope.row)">确认收款</el-button>
+            <el-button type="text" size="medium" @click="toReceipt(scope.row)">确认打款</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -238,7 +238,9 @@ export default {
       this.signDate=[]
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.getProateNotes();
     },
     getDepList(param,first=true,type='out'){
       this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
@@ -434,7 +436,7 @@ export default {
     },
     //分账详情
     toDetail(value){
-      this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
+      // this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
       let newPage = this.$router.resolve({ 
         path: '/routingRemitDetail',
         query:{
