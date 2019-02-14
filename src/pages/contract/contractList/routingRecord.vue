@@ -111,8 +111,8 @@
          :total="total">
         </el-pagination>
       </div>
-      <iframe src="../static/aaa.html" frameborder="0" ref='iframeFirst'></iframe>
-      <span @click='getIframe'>click</span>
+      <!-- <iframe src="../static/aaa.html" frameborder="0" ref='iframeFirst'></iframe>
+      <span @click='getIframe'>click</span> -->
     </div>
 
     <!-- 确认收款 -->
@@ -199,11 +199,11 @@ export default {
       })
   },
   methods: {
-    getIframe:function(){
-      let iframebox=this.$refs.iframeFirst
-      // document.query
-      console.log(iframebox.contentWindow.document.querySelector('#txt1').value)
-    },
+    // getIframe:function(){
+    //   let iframebox=this.$refs.iframeFirst
+    //   // document.query
+    //   console.log(iframebox.contentWindow.document.querySelector('#txt1').value)
+    // },
     //获取分账记录列表
     getProateNotes(){
       let param = {
