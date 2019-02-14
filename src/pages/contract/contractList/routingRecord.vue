@@ -442,10 +442,12 @@ export default {
           res=res.data;
           if(res.status===200){
             this.$message({
-              message:'收款成功',
+              message:'打款成功',
               type:'success'
             });
             this.getProateNotes();
+            this.receiptReason='';
+            this.radio='';
             this.dialogReceipt=false;
           }
         }).catch(error=>{

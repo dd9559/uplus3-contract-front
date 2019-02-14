@@ -16,9 +16,10 @@
       </el-table-column>
       <el-table-column align="left" label="成交总价">
         <template slot-scope="scope">
-          <span v-if="scope.row.contType.value!==1">{{scope.row.dealPrice}} 元</span>
-          <span v-else>{{scope.row.dealPrice}} 元 / {{scope.row.timeUnit}}</span>
-          <!-- {{scope.row.dealPrice}} -->
+          <!-- <span v-if="scope.row.contType.value!==1">{{scope.row.dealPrice}} 元</span>
+          <span v-else>{{scope.row.dealPrice}} 元 / {{scope.row.timeUnit}}</span> -->
+          <span>{{scope.row.dealPrice}} 元</span>
+          <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
         </template>
       </el-table-column>
       <el-table-column align="left" label="成交经纪人" min-width="120">
@@ -145,6 +146,10 @@ export default {
       ids:'',
       isOpen:true,
       isOpen_:true,
+      dictionary: {
+        //数据字典
+        "507": ""
+      },
       power: {
         'sign-com-htdetail': {
           state: false,
@@ -154,6 +159,7 @@ export default {
     }
   },
   created() {
+    this.getDictionary();//字典
     this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
     this.ids = this.$route.query.ids;
     this.getAccountList(this.ids);
