@@ -190,19 +190,47 @@
 
             <el-table-column prop="ratioSettlement" label="结算比例"></el-table-column>
 
+            <el-table-column align="center">
+              <template slot="header" slot-scope="scope">
+                <span class="openAll" @click="openAll">当期成本(元)</span>
+              </template>
+              <template slot-scope="scope">
+                {{scope.row.thisCost}}
+              </template>
+            </el-table-column>
+
+            <el-table-column v-if="!isOpen">
+              <template slot="header" slot-scope="scope">
+                <span>金融服务费(元)</span>
+              </template>
+              <template slot-scope="scope">
+                {{scope.row.serviceFee}}
+              </template>
+            </el-table-column>
             
-            <el-table-column prop="thisCost" label="当期成本（元）" align="center"></el-table-column>
-            <el-table-column prop="serviceFee" label="金融服务费（元）"></el-table-column>
-            <el-table-column prop="mortgageFee" label="按揭手续费（元）"></el-table-column>
+            <el-table-column v-if="!isOpen">
+              <template slot="header" slot-scope="scope">
+                <span>按揭手续费(元)</span>
+              </template>
+              <template slot-scope="scope">
+                {{scope.row.mortgageFee}}
+              </template>
+            </el-table-column>
 
 
             <el-table-column prop="actualSettlement" label="实际结算"></el-table-column>
             
 
-            <el-table-column prop="achieveDisRatio" label="业绩分成比例" align="center">
-               
+            <el-table-column align="center">
+              <template slot="header" slot-scope="scope">
+                <span class="openAll" @click="openAll2">业绩分成比例</span>
+              </template>
+              <template slot-scope="scope">
+                {{scope.row.achieveDisRatio}}
+              </template>
             </el-table-column>
-            <el-table-column label="分成角色" align="center">
+
+            <el-table-column label="分成角色" align="center" v-if="!isOpen2">
               <template slot-scope="scope">
                 <div v-if="scope.row.resultDetailsList.length==0">
                   <div>--</div>
@@ -214,7 +242,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="分成比例" align="center">
+            <el-table-column label="分成比例" align="center" v-if="!isOpen2">
               <template slot-scope="scope">
                 <div v-if="scope.row.resultDetailsList.length==0">
                   <div>--</div>
@@ -228,11 +256,32 @@
             </el-table-column>
            
 
-            <el-table-column prop="storeCost" label="门店承担成本（元）" align="center">
-             
+            <el-table-column align="center">
+              <template slot="header" slot-scope="scope">
+                <span class="openAll" @click="openAll3">门店承担成本（元）</span>
+              </template>
+              <template slot-scope="scope">
+                {{scope.row.storeCost}}
+              </template>
             </el-table-column>
-            <el-table-column prop="platformFee" label="特许服务费（元）"></el-table-column>
-            <el-table-column prop="payCardFee" label="当期刷卡手续费（元）"></el-table-column>
+
+            <el-table-column v-if="!isOpen3">
+              <template slot="header" slot-scope="scope">
+                <span>特许服务费（元）</span>
+              </template>
+              <template slot-scope="scope">
+                {{scope.row.platformFee}}
+              </template>
+            </el-table-column>
+
+            <el-table-column v-if="!isOpen3">
+              <template slot="header" slot-scope="scope">
+                <span>当期刷卡手续费（元）</span>
+              </template>
+              <template slot-scope="scope">
+                {{scope.row.payCardFee}}
+              </template>
+            </el-table-column>
            
 
             <el-table-column prop="disAmount" label="当期实收分成（元）"></el-table-column>
@@ -258,6 +307,9 @@
     mixins: [FILTER,MIXINS],
     data(){
       return{ 
+        isOpen:true,
+        isOpen2:true,
+        isOpen3:true,
 
         clientHei: document.documentElement.clientHeight, //窗体高度
         // loading:false,
@@ -360,12 +412,16 @@
     },
   
     methods:{
-      showColumn() {
-        debugger
-        // console.log("不想上班")
-        return this.visiableColumn1 = false
-       
+      openAll(){
+        this.isOpen=!this.isOpen;
       },
+      openAll2(){
+        this.isOpen2=!this.isOpen2;
+      },
+      openAll3(){
+        this.isOpen3=!this.isOpen3;
+      },
+
      
       // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
