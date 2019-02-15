@@ -202,7 +202,11 @@ export default{
             }else if(this.show==3){
                 this.$ajax.get('/api/setting/contractTemplate/updateShow',{enableTemplateId:this.enableTemplateId}).then(res=>{
                     this.modalDialog=true
-                    this.tableDate=res.data.data.seats
+                    if(res.data.data.seats){
+                        this.tableDate=res.data.data.seats
+                    }else{
+                        this.modalDialog=false
+                    }
                     for(let i=0;i<this.tableDate.length;i++){
                         this.tableDate[i].inputType=this.tableDate[i].inputType.value
                         this.content.push(this.tableDate[i].checkboxCount)
@@ -274,7 +278,8 @@ export default{
         },
         methods:{
             handleClose(done) {
-                this.$confirm('是否放弃上传？')
+                if(this.show==1){
+                    this.$confirm('是否放弃上传？')
                 .then(() => {
                      this.$router.push({
                         path: "/contractTemplate",
@@ -282,6 +287,16 @@ export default{
                     done();
                 })
                 .catch(() => {});
+                }else if(this.show==3){
+                      this.$confirm('是否放弃编辑？')
+                .then(() => {
+                     this.$router.push({
+                        path: "/contractTemplate",
+                    });
+                    done();
+                })
+                .catch(() => {});
+                } 
             },
             showPos(){
                 // 根据this.sigtureShow判断执行创建或删除
@@ -419,6 +434,10 @@ export default{
                        this.$ajax.put('/api/setting/contractTemplate/update',param).then(res=>{
                            if(res.status==200){
                                     this.touch=false
+                                    this.$message({
+                                    type: 'success',
+                                    message: '修改成功'
+                                    })
                                     this.$router.push({
                                     path: "/contractTemplate",
                                 });
@@ -794,5 +813,8 @@ export default{
 }
 /deep/ .el-table::before{
     height: 0;
+}
+/deep/ .el-dialog .el-dialog__body{
+    padding:13px 13px;
 }
 </style>
