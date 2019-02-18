@@ -388,8 +388,8 @@
         companyBankList: [], //银行账户集合
         delIds: [],
         directInfo: {}, //直营属性证件信息
-        directSaleSelect: false,
-        directSaleOut: false,
+        // directSaleSelect: false,
+        // directSaleOut: false,
         dialogViewVisible: false, //查看弹出框
         creditCodeShow: false,
         icRegisterShow: false,
@@ -532,8 +532,8 @@
         this.AddEditVisible = true
         this.companyFormTitle = "添加企业信息"
         this.initFormList()
-        this.directSaleSelect = false
-        this.directSaleOut = false
+        // this.directSaleSelect = false
+        // this.directSaleOut = false
         this.companyForm.cityId = this.searchForm.cityId
         this.getStoreList(this.companyForm.cityId)
       },
@@ -551,7 +551,7 @@
       //合作方式选择
       cooModeChange(val) {
         if(val === 1) {
-          this.directSaleSelect = true
+          // this.directSaleSelect = true
           this.companyForm.lepName = this.directInfo.lepName
           this.companyForm.lepDocumentType = this.directInfo.lepDocumentType.value
           this.companyForm.lepDocumentCard = this.directInfo.lepDocumentCard
@@ -567,7 +567,7 @@
           this.documentCard = this.directInfo.documentCard
           this.companyBankList = [...this.directInfo.companyBankList]
         } else {
-          this.directSaleSelect = false
+          // this.directSaleSelect = false
           this.companyForm.lepName = ""
           this.companyForm.lepDocumentType = ""
           this.companyForm.lepDocumentCard = ""
@@ -724,7 +724,7 @@
                   res = res.data
                   if(res.status === 200) {
                     this.AddEditVisible = false
-                    this.directSaleSelect = false
+                    // this.directSaleSelect = false
                     this.$message(res.message)
                     this.getCompanyList()
                   }
@@ -766,13 +766,13 @@
         } else {
           this.AddEditVisible = true
           this.companyFormTitle = "编辑企业信息"
-          if(row.cooperationMode.value === 1) {
-            this.directSaleSelect = true
-            this.directSaleOut = true
-          } else {
-            this.directSaleSelect = false
-            this.directSaleOut = false
-          }
+          // if(row.cooperationMode.value === 1) {
+          //   this.directSaleSelect = true
+          //   this.directSaleOut = true
+          // } else {
+          //   this.directSaleSelect = false
+          //   this.directSaleOut = false
+          // }
         }
         if(row.documentType.value === 2) {
           this.icRegisterShow = true
