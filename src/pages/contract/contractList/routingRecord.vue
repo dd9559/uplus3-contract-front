@@ -111,7 +111,7 @@
          :total="total">
         </el-pagination>
       </div>
-      <!-- <iframe src="../static/aaa.html" frameborder="0" ref='iframeFirst'></iframe>
+      <!-- <iframe src="../static/dealContract.html" frameborder="0" ref='iframeFirst' style="width:900px;height:1000px"></iframe>
       <span @click='getIframe'>click</span> -->
     </div>
 
@@ -199,11 +199,13 @@ export default {
       })
   },
   methods: {
-    // getIframe:function(){
-    //   let iframebox=this.$refs.iframeFirst
-    //   // document.query
-    //   console.log(iframebox.contentWindow.document.querySelector('#txt1').value)
-    // },
+    getIframe:function(){
+      let iframebox=this.$refs.iframeFirst
+      // document.query
+      // console.log(iframebox.contentWindow.document.querySelector('#txt1').value)
+      iframebox.contentWindow.document.querySelector('#five_').click()
+
+    },
     //获取分账记录列表
     getProateNotes(){
       let param = {
@@ -465,17 +467,14 @@ export default {
     },
     //分账详情
     toDetail(value){
-      // this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
       let newPage = this.$router.resolve({ 
         path: '/routingRemitDetail',
         query:{
-          ids:value.settleDetailsIds
+          ids:value.settleDetailsIds,
+          type:1
         }
       });
       window.open(newPage.href, '_blank');
-      // this.$router.push({
-      //   path: "/routingRemitDetail",
-      // })
     }
   },
   filters: {

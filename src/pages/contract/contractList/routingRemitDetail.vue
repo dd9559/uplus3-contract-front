@@ -144,6 +144,7 @@ export default {
       // pageSize:10,
       // total:0,
       ids:'',
+      type:'',
       isOpen:true,
       isOpen_:true,
       dictionary: {
@@ -159,16 +160,25 @@ export default {
     }
   },
   created() {
-    this.getDictionary();//字典
-    this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
     this.ids = this.$route.query.ids;
+    this.type = parseInt(this.$route.query.type);
+    this.getDictionary();//字典
+    if(this.$route.query.type===1){
+      this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
+    }else if(this.$route.query.type===2){
+      this.setPath(this.$tool.getRouter(['合同','打款记录','打款明细'],'debitRecord'));
+    }
     this.getAccountList(this.ids);
   },
   beforeRouteEnter(to,from,next){
     next(em=>{
       if(from.path==='/contractDetails'){
-      em.setPath(em.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
-    }
+        if(em.type===1){
+          em.setPath(em.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
+        }else if(em.type===2){
+          em.setPath(em.$tool.getRouter(['合同','打款记录','打款明细'],'debitRecord'));
+        } 
+      }
     })
   },
   methods:{
@@ -206,7 +216,13 @@ export default {
       let param = {
         settleDetailsIds:ids
       };
-      this.$ajax.get('/api/separate/account/details',param).then(res=>{
+      let url;
+      if(this.type===1){
+        url='/api/separate/account/details';
+      }else if(this.type===2){
+        url='/api/separate/money/out/details'
+      }
+      this.$ajax.get(url,param).then(res=>{
         res=res.data;
         if(res.status===200){
           this.tableData=res.data;
