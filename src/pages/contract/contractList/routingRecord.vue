@@ -116,7 +116,7 @@
     </div>
 
     <!-- 确认收款 -->
-    <el-dialog title="确认打款" :visible.sync="dialogReceipt" width="600px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="确认打款" :visible.sync="dialogReceipt" width="600px" :closeOnClickModal="$tool.closeOnClickModal" @close="closeReceipt">
       <div class="receipt_one">
         <span class="tag">分账周期：<span class="text">{{receiptData.startTime|timeFormat_}} ~ {{receiptData.endTime|timeFormat_}}</span></span><span class="tag">收款门店：<span class="text">{{receiptData.inStoreName}}</span></span>
       </div>
@@ -193,7 +193,7 @@ export default {
   created() {
     this.getDictionary();//字典
     this.getDepList({
-        type:'G',
+        // type:'G',
         pageNum:this.currentPage_,
         pageSize:this.pageSize_,
       })
@@ -285,7 +285,7 @@ export default {
       if(keyword!==''){
         this.currentPage_out=1;
         let param = {
-          type:'G',
+          // type:'G',
           keyword:keyword,
           pageSize:this.pageSize_,
           pageNum:this.currentPage_out,
@@ -303,7 +303,7 @@ export default {
       if(keyword!==''){
         this.currentPage_in=1;
         let param = {
-          type:'G',
+          // type:'G',
           keyword:keyword,
           pageSize:this.pageSize_,
           pageNum:this.currentPage_in,
@@ -323,7 +323,7 @@ export default {
         if(this.total_out>this.outStoreList.length){
           this.currentPage_out++;
           let param = {
-            type:'G',
+            // type:'G',
             pageNum:this.currentPage_out,
             pageSize:this.pageSize_
           }
@@ -338,7 +338,7 @@ export default {
         if(this.total_in>this.inStoreList.length){
           this.currentPage_in++;
           let param = {
-            type:'G',
+            // type:'G',
             pageNum:this.currentPage_in,
             pageSize:this.pageSize_
           }
@@ -356,7 +356,7 @@ export default {
       this.currentPage_out=1;
       this.searchForm.outStoreId='';
       let param = {
-        type:'G',
+        // type:'G',
         pageNum:this.currentPage_out,
         pageSize:this.pageSize_,
         depAttr:''
@@ -372,7 +372,7 @@ export default {
       this.currentPage_in=1;
       this.searchForm.inStoreId='';
       let param = {
-        type:'G',
+        // type:'G',
         pageNum:this.currentPage_in,
         pageSize:this.pageSize_,
         depAttr:''
@@ -389,7 +389,7 @@ export default {
       if(type==='out'){
         this.currentPage_out=1;
         let param = {
-          type:'G',
+          // type:'G',
           pageNum:this.currentPage_out,
           pageSize:this.pageSize_,
           depAttr:''
@@ -403,7 +403,7 @@ export default {
       }else{
         this.currentPage_in=1;
         let param = {
-          type:'G',
+          // type:'G',
           pageNum:this.currentPage_in,
           pageSize:this.pageSize_,
           depAttr:''
@@ -464,6 +464,10 @@ export default {
           type:'warning'
         })
       }
+    },
+    closeReceipt(){
+      this.receiptReason='';
+      this.radio='';
     },
     //分账详情
     toDetail(value){

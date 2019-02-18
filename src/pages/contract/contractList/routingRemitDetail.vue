@@ -27,13 +27,13 @@
           {{scope.row.dealAgentStoreName+' - '+scope.row.dealAgentName}}
         </template>
       </el-table-column>
-      <el-table-column align="left" label="当期实收(元)" prop="thisSettlement">
+      <el-table-column align="left" label="当期实收(元)" prop="thisSettlement" min-width="90">
       </el-table-column>
       <el-table-column align="left" label="结算比率" prop="ratioSettlementStr">
       </el-table-column>
-      <el-table-column>
+      <el-table-column min-width="110">
         <template slot="header" slot-scope="scope">
-          <span class="openAll" @click="openAll">当期成本(元)</span>
+          <span class="openAll" @click="openAll">当期成本(元)<i class="iconfont icon-wenhao" style="padding-left: 5px;color: orange;"></i></span>
         </template>
         <template slot-scope="scope">
           {{scope.row.thisCost}}
@@ -85,9 +85,9 @@
           <p v-for="(item,index) in scope.row.resultDetailsList" :key="index">{{item.disRatio}} %</p>
         </template>
       </el-table-column>
-      <el-table-column width="130">
+      <el-table-column  min-width="140">
         <template slot="header" slot-scope="scope">
-          <span class="openAll" @click="openAll_">门店承担成本(元)</span>
+          <span class="openAll" @click="openAll_">门店承担成本(元)<i class="iconfont icon-wenhao" style="padding-left: 5px;color: orange;"></i></span>
         </template>
         <template slot-scope="scope">
           {{scope.row.storeCost}}
