@@ -157,9 +157,9 @@
      </el-pagination>
     </div>
     <!-- 打款详情 -->
-    <el-dialog title="打款明细" :visible.sync="dialogVisible2" width="1000px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
+    <!-- <el-dialog title="打款明细" :visible.sync="dialogVisible2" width="1000px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight2() }">
-        <!-- 表格 -->
+       
         <div class="audit-col">
           <el-table :data="layerAudit" border style="width: 100%" class="table">
             <el-table-column label="合同编号" width="120" fixed :formatter="nullFormatter" align="center">
@@ -288,7 +288,7 @@
           </el-table>
         </div>
       </div>
-    </el-dialog>
+    </el-dialog> -->
    
   </div>
 </template>
@@ -497,26 +497,30 @@
 
       // 双击详情事件
       toDetail(e) {
-        // if(this.power['sign-ht-maid-vdetail'].state){
+          // this.dialogVisible2 = true
+          // let param = {
+          //   settleDetailsIds: e.settleDetailsIds,
+          // }
+          // this.$ajax.get("/api/separate/money/out/details", param)
+          // .then(res => {
+          //   let data = res.data;
+          //   if (res.data.status === 200) {
+          //     this.layerAudit = data.data;
+          //   }
+          // }).catch(error => {
+          //     this.$message({
+          //       message: error
+          //     })
+          // });
 
-          this.dialogVisible2 = true
-          let param = {
-            settleDetailsIds: e.settleDetailsIds,
-          }
-          this.$ajax.get("/api/separate/money/out/details", param)
-          .then(res => {
-            let data = res.data;
-            if (res.data.status === 200) {
-              this.layerAudit = data.data;
+          let newPage = this.$router.resolve({ 
+            path: '/routingRemitDetail',
+            query:{
+              ids: e.settleDetailsIds,
+              type: 2
             }
-          }).catch(error => {
-              this.$message({
-                message: error
-              })
           });
-        // }else{
-        //   this.noPower(this.power['sign-ht-maid-vdetail'].name)
-        // }
+       
         
       },
 

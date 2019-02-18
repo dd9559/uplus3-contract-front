@@ -38,7 +38,7 @@
     <!-- 上传,预览,详情弹出框 -->
     <el-dialog class="modal"  :closeOnClickModal="$tool.closeOnClickModal" :title='titleStr' :visible.sync="modal" >
       <template v-if="template===1">
-        <div class="">
+        <div>
           <div class="modal-context">
             <label>合同名称：</label>
             <el-input placeholder="限制15个字符"  maxlength='15' v-model="contraName"></el-input>
@@ -113,7 +113,6 @@
         modal: false,
         template: '',//弹窗内容
         uploadType: false,//是否显示两个上传
-        fileList3: [],
         titleStr:'',
         contraName:'',
         cityName:'',
@@ -204,7 +203,7 @@
 
       },
       trim(str){
-                 return str.replace(/(^\s*)|(\s*$)/g, "")
+            return str.replace(/(^\s*)|(\s*$)/g, "")
       },
       /**
        * 上传
@@ -322,7 +321,6 @@
           });
         }
         else if(type==3){
-          console.log(row,'row');
           this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板修改'],'contractTemplate'))
            this.$router.push({
             path: "/contraPreview",
