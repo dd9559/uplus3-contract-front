@@ -497,6 +497,14 @@
 
       // 双击详情事件
       toDetail(e) {
+        let newPage = this.$router.resolve({ 
+            path: '/routingRemitDetail',
+            query:{
+              ids: e.settleDetailsIds,
+              type: 2
+            }
+          });
+          window.open(newPage.href, '_blank');
           // this.dialogVisible2 = true
           // let param = {
           //   settleDetailsIds: e.settleDetailsIds,
@@ -513,13 +521,7 @@
           //     })
           // });
 
-          let newPage = this.$router.resolve({ 
-            path: '/routingRemitDetail',
-            query:{
-              ids: e.settleDetailsIds,
-              type: 2
-            }
-          });
+          
        
         
       },
