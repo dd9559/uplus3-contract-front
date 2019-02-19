@@ -494,7 +494,7 @@
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
-        if (this.billMsg.inAccount&&(columnIndex <2||columnIndex>4)) {
+        if (this.billMsg.inAccount&&(columnIndex <2||columnIndex>3)) {
           if (rowIndex === 0) {
             return [this.billMsg&&this.billMsg.inAccount.length, 1]
           } else {
