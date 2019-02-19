@@ -224,8 +224,6 @@ export default {
             name:'first',
             dialogImageUrl: '',
             dialogVisible: false,
-            // preview:false,
-            // start:'',
             contState:'',
             detailData: {
                 signDate:'',
@@ -298,16 +296,7 @@ export default {
     },
     
     methods: {
-        //图片预览
-        // getPicture(value,index){
-        //     this.start=index;
-        //     let arr=[];
-        //     // console.log(value);
-        //     value.forEach(item =>{
-        //         arr.push(item.path)
-        //     })
-        //     this.fileSign(arr)
-        // },
+
 
         handleClick(tab, event) {
             this.name=tab.name;
@@ -349,22 +338,20 @@ export default {
             let arr = data.param;
             let num = Number(data.btnId.substring(data.btnId.length-1));
             let typeId = data.btnId.substring(0,data.btnId.length-1)
-            // console.log(typeId);
-            // console.log(num);
-            // console.log(this.sellerList[num].value);
             arr.forEach(element => {
                 let fileType = this.$tool.get_suffix(element.name);
                 element.fileType = fileType;
             });
             if(typeId==='seller'){
-                // this.sellerList[num].value.push(arr[0]);
+
                 this.sellerList[num].value=this.sellerList[num].value.concat(arr);
             }else if(typeId==='buyer'){
-                // this.buyerList[num].value.push(arr[0]);
+
                 this.buyerList[num].value=this.buyerList[num].value.concat(arr);
             }else if(typeId==='other'){
-                // this.otherList[num].value.push(arr[0]);
+
                 this.otherList[num].value=this.otherList[num].value.concat(arr);
+                console.log(this.otherList[num].value)
             }
         },
 
@@ -388,7 +375,6 @@ export default {
                     item.title=element.name;
                     item.isrequire=element.isNecessary;
                     this.buyerList.push(item);
-                    // console.log(item)
                     
                 }else if(element.type==="2"){
                     let item={};
@@ -405,6 +391,7 @@ export default {
                     item.title=element.name;
                     item.isrequire=element.isNecessary;
                     this.otherList.push(item);
+                    console.log(this.otherList)
                     
                 }
             });
@@ -436,25 +423,24 @@ export default {
                     if(element.kind==="1"){
                     this.buyerList.forEach(ele => {
                         if(element.title===ele.title){
-                        // let fileType = this.$tool.get_suffix(element.name)
                         ele.value=element.value
                         }
                     });
-                    // this.buyerDataList.push(element);
+
                     }else if(element.kind==="2"){
                     this.sellerList.forEach(ele => {
                         if(element.title===ele.title){
                         ele.value=element.value
                         }
                     });
-                    // this.sellerDataList.push(element);
+
                     }else if(element.kind==="3"){
                     this.otherList.forEach(ele => {
                         if(element.title===ele.title){
                         ele.value=element.value
                         }
                     });
-                    // this.otherDataList.push(element);
+
                     }
                 });
                 }
@@ -472,24 +458,21 @@ export default {
             for(let i=0;i<uploadContData.length;i++){
                 isOk = false;
                 if(uploadContData[i].isrequire&&uploadContData[i].value.length===0){
-                this.$message({
-                    message:`${uploadContData[i].title}不能为空`
-                });
-                break
+                    this.$message({
+                        message:`${uploadContData[i].title}不能为空`,
+                        type:'warning'
+                    });
+                    break
                 }else if(uploadContData[i].isrequire&&uploadContData[i].value.length>0){
-                uploadContData[i].value.forEach(element => {
-                    // delete element.fileType;
-                });
-                arr_.push(uploadContData[i]);
-                isOk = true;
+               
+                    arr_.push(uploadContData[i]);
+                    isOk = true;
                 }else if(!uploadContData[i].isrequire&&uploadContData[i].value.length>0){
-                uploadContData[i].value.forEach(element => {
-                    // delete element.fileType;
-                });
-                arr_.push(uploadContData[i]);
-                isOk = true;
+                
+                    arr_.push(uploadContData[i]);
+                     isOk = true;
                 }else{
-                isOk = true;
+                    isOk = true;
                 }
             }
             if(isOk){
@@ -517,6 +500,7 @@ export default {
 
         delectData(index,index_,type){
             console.log(index,index_,type);
+
             if(this.detailData.isHaveData){
                 if(type==="seller"){
                     if(this.sellerList[index].isrequire){
@@ -534,7 +518,7 @@ export default {
                         this.uploading('删除成功')
                     }
                 }else if(type==="buyer"){
-                // this.buyerList[index].value.splice(index_,1);
+
                     if(this.buyerList[index].isrequire){
                         if(this.buyerList[index].value.length>1){
                             this.buyerList[index].value.splice(index_,1);
@@ -550,7 +534,7 @@ export default {
                         this.uploading('删除成功')
                     }
                 }else if(type==="other"){
-                // this.otherList[index].value.splice(index_,1);
+
                 if(this.otherList[index].isrequire){
                         if(this.otherList[index].value.length>1){
                             this.otherList[index].value.splice(index_,1);
@@ -766,30 +750,7 @@ export default {
     .el-tabs__nav-scroll{
         padding: 0 30px;
     }
-    // 原来的上传样式
-    // .el-upload--picture-card{
-    //     background-color: #fff;
-    //     border: 2px dashed #DEDDE2;
-    //     border-radius: 6px;
-    //     line-height: 40px;
-    //     padding-top: 32px;
-    //     width: 140px;
-    //     height: 140px;
-    //     i{
-    //         color: #EEF2FB;
-    //         font-size: 56px;
-    //     }
-    //     span{
-    //         display: block;
-    //         text-align: center;
-    //         color: #32485F;
-    //     }
-    // }
-    // .el-upload-list--picture-card .el-upload-list__item{
-    //     margin: 0 20px 20px 0;
-    //     width: 140px;
-    //     height: 140px;
-    // }
+
       
     
     .detailbox{
@@ -917,7 +878,7 @@ export default {
             height: 80px;
             line-height: 80px;
             .btnbox{
-                // position: fixed;
+
                 bottom: 0;
                 display: flex;
                 justify-content: space-between;
