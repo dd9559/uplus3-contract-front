@@ -111,12 +111,12 @@
          :total="total">
         </el-pagination>
       </div>
-      <!-- <iframe src="../static/aaa.html" frameborder="0" ref='iframeFirst'></iframe>
+      <!-- <iframe src="../static/dealContract.html" frameborder="0" ref='iframeFirst' style="width:900px;height:1000px"></iframe>
       <span @click='getIframe'>click</span> -->
     </div>
 
     <!-- 确认收款 -->
-    <el-dialog title="确认打款" :visible.sync="dialogReceipt" width="600px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="确认打款" :visible.sync="dialogReceipt" width="600px" :closeOnClickModal="$tool.closeOnClickModal" @close="closeReceipt">
       <div class="receipt_one">
         <span class="tag">分账周期：<span class="text">{{receiptData.startTime|timeFormat_}} ~ {{receiptData.endTime|timeFormat_}}</span></span><span class="tag">收款门店：<span class="text">{{receiptData.inStoreName}}</span></span>
       </div>
@@ -193,17 +193,19 @@ export default {
   created() {
     this.getDictionary();//字典
     this.getDepList({
-        type:'G',
+        // type:'G',
         pageNum:this.currentPage_,
         pageSize:this.pageSize_,
       })
   },
   methods: {
-    // getIframe:function(){
-    //   let iframebox=this.$refs.iframeFirst
-    //   // document.query
-    //   console.log(iframebox.contentWindow.document.querySelector('#txt1').value)
-    // },
+    getIframe:function(){
+      let iframebox=this.$refs.iframeFirst
+      // document.query
+      // console.log(iframebox.contentWindow.document.querySelector('#txt1').value)
+      iframebox.contentWindow.document.querySelector('#five_').click()
+
+    },
     //获取分账记录列表
     getProateNotes(){
       let param = {
@@ -283,7 +285,7 @@ export default {
       if(keyword!==''){
         this.currentPage_out=1;
         let param = {
-          type:'G',
+          // type:'G',
           keyword:keyword,
           pageSize:this.pageSize_,
           pageNum:this.currentPage_out,
@@ -301,7 +303,7 @@ export default {
       if(keyword!==''){
         this.currentPage_in=1;
         let param = {
-          type:'G',
+          // type:'G',
           keyword:keyword,
           pageSize:this.pageSize_,
           pageNum:this.currentPage_in,
@@ -321,7 +323,7 @@ export default {
         if(this.total_out>this.outStoreList.length){
           this.currentPage_out++;
           let param = {
-            type:'G',
+            // type:'G',
             pageNum:this.currentPage_out,
             pageSize:this.pageSize_
           }
@@ -336,7 +338,7 @@ export default {
         if(this.total_in>this.inStoreList.length){
           this.currentPage_in++;
           let param = {
-            type:'G',
+            // type:'G',
             pageNum:this.currentPage_in,
             pageSize:this.pageSize_
           }
@@ -354,7 +356,7 @@ export default {
       this.currentPage_out=1;
       this.searchForm.outStoreId='';
       let param = {
-        type:'G',
+        // type:'G',
         pageNum:this.currentPage_out,
         pageSize:this.pageSize_,
         depAttr:''
@@ -370,7 +372,7 @@ export default {
       this.currentPage_in=1;
       this.searchForm.inStoreId='';
       let param = {
-        type:'G',
+        // type:'G',
         pageNum:this.currentPage_in,
         pageSize:this.pageSize_,
         depAttr:''
@@ -387,7 +389,7 @@ export default {
       if(type==='out'){
         this.currentPage_out=1;
         let param = {
-          type:'G',
+          // type:'G',
           pageNum:this.currentPage_out,
           pageSize:this.pageSize_,
           depAttr:''
@@ -401,7 +403,7 @@ export default {
       }else{
         this.currentPage_in=1;
         let param = {
-          type:'G',
+          // type:'G',
           pageNum:this.currentPage_in,
           pageSize:this.pageSize_,
           depAttr:''
@@ -463,19 +465,20 @@ export default {
         })
       }
     },
+    closeReceipt(){
+      this.receiptReason='';
+      this.radio='';
+    },
     //分账详情
     toDetail(value){
-      // this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
       let newPage = this.$router.resolve({ 
         path: '/routingRemitDetail',
         query:{
-          ids:value.settleDetailsIds
+          ids:value.settleDetailsIds,
+          type:1
         }
       });
       window.open(newPage.href, '_blank');
-      // this.$router.push({
-      //   path: "/routingRemitDetail",
-      // })
     }
   },
   filters: {

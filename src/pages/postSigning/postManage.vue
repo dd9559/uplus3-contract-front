@@ -153,7 +153,7 @@
                 </el-form-item>
                 <div class="in-block">
                     <el-form-item
-                    label="合同来源部门"
+                    label="部门"
                     prop="departmentS"
                     class="mr">
                         <select-tree :data="DepList" :init="propForm.departmentS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>

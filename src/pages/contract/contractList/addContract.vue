@@ -1187,7 +1187,7 @@ export default {
           })
         })
       }else if(this.type===2){//编辑
-        if(this.contractForm.type===1){
+        // if(this.contractForm.type===1){
           delete param.leaseCont.contChangeState;
           delete param.leaseCont.contState;
           delete param.leaseCont.contType;
@@ -1198,18 +1198,18 @@ export default {
           delete param.leaseCont.updateTime;
           delete param.leaseCont.distributableAchievement;
           delete param.leaseCont.achievementState;
-        }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
-          delete param.saleCont.contChangeState;
-          delete param.saleCont.contState;
-          delete param.saleCont.contType;
-          delete param.saleCont.laterStageState;
-          delete param.saleCont.toExamineState;
-          delete param.saleCont.previewImg;
-          delete param.saleCont.subscriptionTerm;
-          delete param.saleCont.updateTime;
-          delete param.saleCont.distributableAchievement;
-          delete param.saleCont.achievementState;
-        }
+        // }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
+        //   delete param.saleCont.contChangeState;
+        //   delete param.saleCont.contState;
+        //   delete param.saleCont.contType;
+        //   delete param.saleCont.laterStageState;
+        //   delete param.saleCont.toExamineState;
+        //   delete param.saleCont.previewImg;
+        //   delete param.saleCont.subscriptionTerm;
+        //   delete param.saleCont.updateTime;
+        //   delete param.saleCont.distributableAchievement;
+        //   delete param.saleCont.achievementState;
+        // }
         if(this.haveExamine===1){//编辑并提审
           var url = '/api/contract/updateContractAudit';
         }else{
