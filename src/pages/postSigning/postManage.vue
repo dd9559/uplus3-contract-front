@@ -43,10 +43,10 @@
                     prop="stepsMo"
                     label="交易步骤"
                     class="mr">
+                    <!-- @change="rulesStepsFn" -->
                         <el-select
                         v-model="propForm.stepsMo"
                         class="w110"
-                        @change="rulesStepsFn"
                         placeholder="状态">
                             <el-option
                             v-for="item in rules.stepsMo"
@@ -62,7 +62,7 @@
                         v-model="propForm.steps"
                         placeholder="交易步骤"
                         class="w110">
-                            <el-option v-for="item in rulesSteps"
+                            <el-option v-for="item in rules.steps"
                             :key="'steps'+item.id"
                             :label="item.name"
                             :value="item.id"></el-option>
@@ -766,6 +766,9 @@
                     }],
                     steps: [],
                     stepsMo: [{
+                        key:'',
+                        value:'全部'
+                    },{
                         key:1,
                         value:'已完成'
                     },{
@@ -791,7 +794,7 @@
                         value: ""
                     }],
                     range:[{
-                            value: "全部",
+                            value: "全部（不包含本角色负责的合同条件）",
                             key: ""
                         }],
                     termination:[{
@@ -1825,7 +1828,7 @@
                         },...newData[6]];
                 // 数据范围
                 this.rules.range = [{
-                            value: "全部",
+                            value: "全部（不包含本角色负责的合同条件）",
                             key: ""
                         },...newData[48]];
                 // 合作方式

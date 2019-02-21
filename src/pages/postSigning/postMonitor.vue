@@ -236,7 +236,7 @@
                     paper: '',
                     time: '',
                     late: '',
-                    lateName: 3,
+                    lateName: '',
                     depAttr:'',
                 },
                 // 筛选选项
@@ -259,6 +259,9 @@
                     }],
                     late: [],
                     lateName:[{
+                        key:'',
+                        value:'全部'
+                    },{
                         key:1,
                         value:'已完成'
                     },{
