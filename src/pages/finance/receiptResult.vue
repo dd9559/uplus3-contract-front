@@ -120,6 +120,7 @@
         this.checkPerson.state=true
         this.checkPerson.code=this.result.payCode
       }*/
+      this.getWebSocket()
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
@@ -134,6 +135,19 @@
       })
     },
     methods: {
+      getWebSocket:function () {
+        let url='http://192.168.1.96:9092'
+        let pathObj={}
+        let socket = io.connect(`${url}?mac=${this.result.payCode}`, pathObj)
+        let that=this
+        socket.on('connect',function () {
+          socket.on('messageevent', function(data) {
+            if(data){
+              that.goBack('Bill')
+            }
+          })
+        })
+      },
       goBack: function (page) {
         this.$router.push({
           path: page

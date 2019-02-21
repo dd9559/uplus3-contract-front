@@ -116,7 +116,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作">
               <template slot-scope="scope">
-                <el-button type="text" @click="getPaper('create')" v-if="btnBill&&billMsg.billStatus&&billMsg.isDel===1&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)">开票</el-button>
+                <el-button type="text" @click="getPaper('create')" v-if="btnBill&&billMsg.billStatus&&billMsg.isDel===1&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)&&scope.row.payStatusValue&&scope.row.payStatusValue!==4">开票</el-button>
                 <span v-else>--</span>
               </template>
             </el-table-column>
@@ -125,10 +125,20 @@
         <li v-if="activeItem==='收款信息'">
           <h4 class="f14">刷卡信息</h4>
           <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
-            <el-table-column align="center" prop="bankName" label="刷卡/转账银行"></el-table-column>
+            <el-table-column align="center" prop="bankName" label="刷卡/转账银行">
+              <template slot-scope="scope">
+                <span v-if="scope.row.bankName.length>0">{{scope.row.bankName}}</span>
+                <span v-else>--</span>
+              </template>
+            </el-table-column>
             <el-table-column align="center" prop="userName" label="户名"></el-table-column>
             <el-table-column align="center" prop="cardNumber" label="账户"></el-table-column>
-            <el-table-column align="center" prop="orderNo" label="订单编号"></el-table-column>
+            <el-table-column align="center" prop="orderNo" label="订单编号">
+              <template slot-scope="scope">
+                <span v-if="scope.row.orderNo.length>0">{{scope.row.orderNo}}</span>
+                <span v-else>--</span>
+              </template>
+            </el-table-column>
             <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
             <el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>
           </el-table>
@@ -211,7 +221,7 @@
       <div class="reasion-dialog">
         <label>备注：</label>
         <div class="input">
-          <el-input type="textarea" resize="none" placeholder="请输入同意/退回理由" :maxlength="invalidMax"
+          <el-input type="textarea" resize="none" placeholder="请输入同意/拒绝理由" :maxlength="invalidMax"
                     v-model="layer.reasion"
                     class="input-textarea" :class="[layer.reasion.length>0?'':'scroll-hidden']">
           </el-input>
@@ -314,23 +324,8 @@
       if(this.$route.query.type){
         this.receiptBill=parseInt(this.$route.query.type)
       }
-      if(this.activeItem==='收款信息'){
-        this.getWebSocket()
-      }
     },
     methods: {
-      getWebSocket:function () {
-        /*let url='http://192.168.1.96:9092'
-        let pathObj={}
-        let socket = io.connect(url+'?mac=SK1902151000', pathObj)
-        socket.on('connect',function () {
-
-        })
-        socket.on('messageevent', function(data) {
-          console.log(data)
-        })
-        socket.emit('messageevent',{msgContent:'SK1902151000'})*/
-      },
       previewImg:function () {
         let arr=[]
         this.files.forEach(item=>{
