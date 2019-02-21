@@ -1226,15 +1226,28 @@ export default {
     },
     skipContDel(value) {
      if(this.power['sign-com-htdetail'].state){
-       this.setPath(this.$tool.getRouter(['业绩','应收业绩','合同详情'],'actualAchievement'))
-        this.$router.push({
-          path: "/contractDetails",
-          query: {
-            id: value.id,
-            code: value.code,
-            contType: value.contType.value
-          }
+        let param={
+          code:value.code
+        }
+       this.$ajax
+        .get("/api/achievement/judgeContDetailsPower", param)
+        .then(res => {
+           console.log(res.data.data);
+           if(res.data.data){
+            this.setPath(this.$tool.getRouter(['业绩','应收业绩','合同详情'],'actualAchievement'))
+               this.$router.push({
+                 path: "/contractDetails",
+                 query: {
+                   id: value.id,
+                   code: value.code,
+                   contType: value.contType.value
+                 }
+               });
+           }else{
+                this.noPower('合同详情查看')
+           }
         });
+  
      }else{
        this.noPower('合同详情查看')
      }

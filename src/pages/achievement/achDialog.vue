@@ -1262,10 +1262,13 @@ export default {
     },
     // 弹框通过操作
     passAch() {
-      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
-        this.$message.error("分成人不满足最低人数要求");
+       if (this.houseArr.length == 0 && this.clientArr.length != 0) {
+        this.$message.error("房源至少保留一人");
         return false;
-      }
+       }else if(this.houseArr.length != 0 && this.clientArr.length == 0){
+         this.$message.error("客源至少保留一人");
+         return false;
+       }
       // 判断房源客源角色类型不一样
       // ====================================
       let arr = [],
@@ -1362,10 +1365,13 @@ export default {
     },
     //弹框驳回操作
     rejectAch() {
-      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
-        this.$message.error("分成人不满足最低人数要求");
+       if (this.houseArr.length == 0 && this.clientArr.length != 0) {
+        this.$message.error("房源至少保留一人");
         return false;
-      }
+       }else if(this.houseArr.length != 0 && this.clientArr.length == 0){
+         this.$message.error("客源至少保留一人");
+         return false;
+       }
 
       // 判断房源客源角色类型不一样
       // ====================================
@@ -1451,6 +1457,13 @@ export default {
     },
     // 反审核，编辑的保存
     keepAch(type, status,editStr) {
+      if (this.houseArr.length == 0 && this.clientArr.length != 0) {
+       this.$message.error("房源至少保留一人");
+       return false;
+      }else if(this.houseArr.length != 0 && this.clientArr.length == 0){
+        this.$message.error("客源至少保留一人");
+        return false;
+      }
       //resultArr表示房源客源加在一起之后组成的数组
       let resultArr = this.houseArr.concat(this.clientArr);
       let arr = [],
@@ -1458,10 +1471,6 @@ export default {
         flag = true,
         sum = 0,
         sumFlag = false;
-      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
-        this.$message.error("分成人不满足最低人数要求");
-        return false;
-      }
       // 判断房源客源角色类型不一样
       // ====================================
       for (var i = 0; i < this.houseArr.length; i++) {
@@ -1573,6 +1582,13 @@ export default {
     },
     // 业绩分成的保存
     keepAchDivide(type) {
+      if (this.houseArr.length == 0 && this.clientArr.length != 0) {
+       this.$message.error("房源至少保留一人");
+       return false;
+      }else if(this.houseArr.length != 0 && this.clientArr.length == 0){
+        this.$message.error("客源至少保留一人");
+        return false;
+      }
       // 判断房源客源角色类型不一样
       // ====================================
       let arr = [],
@@ -1580,10 +1596,6 @@ export default {
         flag = true,
         sum = 0,
         sumFlag = false;
-      if (this.houseArr.length == 0 || this.clientArr.length == 0) {
-        this.$message.error("分成人不满足最低人数要求");
-        return false;
-      }
       for (var i = 0; i < this.houseArr.length; i++) {
         let hRoleType = this.houseArr[i].roleType;
         if (arr.indexOf(hRoleType) == -1) {
