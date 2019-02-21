@@ -535,7 +535,6 @@
           res=res.data
           if(res.status===200){
             if(res.data){
-              debugger
               this.firstCreate.state=false
               this.firstCreate.content = Object.assign({},res.data)
               if(!this.firstCreate.content.showAccount){
