@@ -162,7 +162,7 @@
           </div>
         </li>
       </template>
-      <li ref="checkBox">
+      <li v-if="checkBoxShow" ref="checkBox">
         <h4 class="f14">审核信息</h4>
         <el-table border :data="checkList" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
@@ -196,6 +196,10 @@
           layout="total, prev, pager, next, jumper"
           :total="total">
         </el-pagination>-->
+      </li>
+      <li v-if="activeItem==='收款信息'">
+        <h4 class="f14">收款二维码</h4>
+        <img :src="billMsg.RQcode" alt="">
       </li>
     </ul>
     <el-dialog
@@ -310,8 +314,23 @@
       if(this.$route.query.type){
         this.receiptBill=parseInt(this.$route.query.type)
       }
+      if(this.activeItem==='收款信息'){
+        this.getWebSocket()
+      }
     },
     methods: {
+      getWebSocket:function () {
+        /*let url='http://192.168.1.96:9092'
+        let pathObj={}
+        let socket = io.connect(url+'?mac=SK1902151000', pathObj)
+        socket.on('connect',function () {
+
+        })
+        socket.on('messageevent', function(data) {
+          console.log(data)
+        })
+        socket.emit('messageevent',{msgContent:'SK1902151000'})*/
+      },
       previewImg:function () {
         let arr=[]
         this.files.forEach(item=>{

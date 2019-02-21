@@ -68,7 +68,7 @@
           </div>
           <input type="text" size="small" class="w400 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum(1)">
         </div>
-        <div class="input-group col" :class="[!firstCreate.state?'no-max':'']">
+        <div class="input-group col" :class="[!firstCreate.state?'no-max':'']" v-if="billStatus">
           <label class="form-label f14 margin-bottom-base">收账账户</label>
           <el-select size="small" class="w200" v-model="activeAdmin" placeholder="请选择" v-if="firstCreate.state">
             <el-option
@@ -767,6 +767,9 @@
         let cardTotal=0
         let checkTotal=0
         //收款信息验证
+        if(!this.billStatus){
+          delete param.admin
+        }
         arr.push(this.$tool.checkForm(param,rule))
         //支付信息验证
         if(this.billStatus){
