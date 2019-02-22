@@ -70,7 +70,7 @@
         </div>
         <div class="input-group col" :class="[!firstCreate.state?'no-max':'']" v-if="billStatus">
           <label class="form-label f14 margin-bottom-base">收账账户</label>
-          <el-select size="small" class="w200" v-model="activeAdmin" placeholder="请选择" v-if="firstCreate.state">
+          <el-select size="small" class="w200" v-model="activeAdmin" placeholder="请选择" v-if="firstCreate.state||firstCreate.content.showAccount">
             <el-option
               v-for="item in account"
               :key="item.id"
@@ -537,7 +537,9 @@
             if(res.data){
               this.firstCreate.state=false
               this.firstCreate.content = Object.assign({},res.data)
-              this.activeAdmin = res.data.account[0].accountId
+              if(!this.firstCreate.content.showAccount){
+                this.activeAdmin = res.data.account[0].accountId
+              }
               this.getEmploye(res.data.storeId)
             }else {
               console.log(this.getUser)
@@ -810,7 +812,7 @@
               param.outAccount = cardListStatus?[]:[].concat(this.cardList)
               param.inAccount = []
               this.payList.forEach(item=>{
-                if(this.firstCreate.state){
+                if(this.firstCreate.state||this.firstCreate.content.showAccount){
                   this.account.find(card => {
                     if (card.id === this.activeAdmin) {
                       let obj = {

@@ -369,8 +369,14 @@
 /deep/ .el-dialog__header {
     border: 1px solid rgba(232, 234, 246, 1);
 }
+/deep/ .el-table::before{
+    height: 0;
+}
 /deep/ .onetable tr.linestyle{
     background-color: #ECF5FF;
+}
+/deep/ .el-dialog .el-dialog__body {
+    padding: 10px 10px;
 }
 /deep/ .addform .input-group{
       &:nth-child(1) label::before{
