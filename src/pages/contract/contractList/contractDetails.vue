@@ -2,6 +2,9 @@
   <div class="view-container">
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'">
+          <dealReport :contractDetail="contractDetail" :id="id"></dealReport>
+        </el-tab-pane>
         <el-tab-pane label="合同详情" name="first">
           <div class="firstDetail" :style="{ height: clientHei }">
             <div class="msg">
@@ -720,6 +723,7 @@ import vueEasyPrint from "vue-easy-print";
 import checkPerson from '@/components/checkPerson';
 import LayerPrint from '@/components/LayerPrint';
 import flowAccount from "@/components/flowAccount";
+import dealReport from "../contractDialog/dealReport";
 
 export default {
   mixins: [MIXINS],
@@ -729,7 +733,8 @@ export default {
     vueEasyPrint,
     checkPerson,
     LayerPrint,
-    flowAccount
+    flowAccount,
+    dealReport
   },
   data() {
     return {
