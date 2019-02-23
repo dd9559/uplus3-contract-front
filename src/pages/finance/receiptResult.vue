@@ -136,8 +136,12 @@
     },
     methods: {
       getWebSocket:function () {
+        console.log(process.env.NODE_ENV)
         let url='http://192.168.1.96:9092'
         let pathObj={}
+        if(process.env.NODE_ENV==='production'){
+          url='localhost:28800'
+        }
         let socket = io.connect(`${url}?mac=${this.result.payCode}`, pathObj)
         let that=this
         socket.on('connect',function () {

@@ -236,7 +236,7 @@
                     paper: '',
                     time: '',
                     late: '',
-                    lateName: '',
+                    lateName: 3,
                     depAttr:'',
                 },
                 // 筛选选项
