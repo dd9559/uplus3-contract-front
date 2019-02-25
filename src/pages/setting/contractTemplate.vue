@@ -117,7 +117,7 @@
         contraName:'',
         cityName:'',
         citys:[],
-        mbrules:['doc','docx'],
+        mbrules:['html'],
         contraType:'',
         mmaiAddress:'',
         jjianAddress:'',
