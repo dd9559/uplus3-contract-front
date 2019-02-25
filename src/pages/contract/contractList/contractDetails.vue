@@ -40,7 +40,7 @@
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
                   </p>
-                  <p class="address">
+                  <p class="address" v-if="contType==='1'">
                     <span class="tag">交易流程：</span>
                     <span class="text" v-for="item in transFlowList" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span>
                   </p>
@@ -66,19 +66,19 @@
                 <div class="one_">
                   <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
                   <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
-                  <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p>
-                  <p v-if="contType!='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
+                  <!-- <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p> -->
+                  <!-- <p v-if="contType!='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p> -->
                 </div>
-                <div class="one_">
-                  <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p>
-                  <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p>
-                  <p style="width:500px" v-if="contType!='1'">
+                <!-- <div class="one_"> -->
+                  <!-- <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p> -->
+                  <!-- <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p> -->
+                  <!-- <p style="width:500px" v-if="contType!='1'">
                     <span class="tag">房产证号：</span>
                     <span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span>
-                  </p>
-                  <p v-if="contType==='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
-                </div>
-                <div class="one_" v-if="contType!='1'">
+                  </p> -->
+                  <!-- <p v-if="contType==='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p> -->
+                <!-- </div> -->
+                <!-- <div class="one_" v-if="contType!='1'">
                   <p>
                     <span class="tag">产权状态：</span>
                     <span class="text" v-for="item in dictionary['514']" :key="item.key" v-if="item.key===contractDetail.houseInfo.propertyRightStatus">{{item.value}}</span>
@@ -90,12 +90,12 @@
                     <span class="tag">按揭欠款：</span>
                     <span class="text dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span>
                   </p>
-                </div>
-                <div class="one_">
+                </div> -->
+                <!-- <div class="one_">
                   <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
                   <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerName?contractDetail.houseInfo.ShopOwnerName:'--'}}</span></p>
                   <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerMobile?contractDetail.houseInfo.ShopOwnerMobile:'--'}}</span></p>
-                </div>
+                </div> -->
                 <div class="table">
                   <template>
                     <el-table :data="ownerData" border header-row-class-name="theader-bg">
@@ -123,16 +123,16 @@
               <div class="content">
                 <div class="one_">
                   <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
-                  <p>
+                  <!-- <p>
                     <span class="tag">付款方式：</span>
                     <span class="text" v-for="item in dictionary['556']" :key="item.key" v-if="contractDetail.guestInfo.paymentMethod===item.key">{{item.value}}</span>
-                  </p>
+                  </p> -->
                 </div>
-                <div class="one_">
+                <!-- <div class="one_">
                   <p><span class="tag">客源方门店：</span><span class="text">{{contractDetail.guestInfo.GuestStoreName}}</span></p>
                   <p><span class="tag">店 长：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
                   <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
-                </div>
+                </div> -->
                 <div class="table">
                   <template>
                     <el-table :data="clientrData" border header-row-class-name="theader-bg">
