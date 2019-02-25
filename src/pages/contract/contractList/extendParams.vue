@@ -334,24 +334,26 @@ export default {
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
     this.clientHeight();
     this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
+    console.log(window.location.origin)
+    let http = window.location.origin
     
     if(this.Msg.type===1){
       //租赁
-      this.src1=`http://localhost:8080/api/contract/showHtml?id=${this.Msg.id}&type=address`
+      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
     }else if(this.Msg.type===2){
       //买卖
       this.isShowType=true;
-      this.src1=`http://localhost:8080/api/contract/showHtml?id=${this.Msg.id}&type=residence`//居间
-      this.src2=`http://localhost:8080/api/contract/showHtml?id=${this.Msg.id}&type=business`//买卖
+      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=residence`//居间
+      this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=business`//买卖
     }else if(this.Msg.type===3){
       //代办
-      this.src1=`http://localhost:8080/api/contract/showHtml?id=${this.Msg.id}&type=address`
+      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
     }else if(this.Msg.type===4){
       //意向
-      this.src1=`http://localhost:8080/api/contract/showHtml?id=${this.Msg.id}&type=address`
+      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
     }else if(this.Msg.type===5){
       //定金
-      this.src1=`http://localhost:8080/api/contract/showHtml?id=${this.Msg.id}&type=address`
+      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
     }
     // this.isHaveHtml=parseInt(this.$route.query.isHaveHtml);
 
