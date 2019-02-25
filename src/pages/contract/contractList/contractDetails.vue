@@ -2,6 +2,9 @@
   <div class="view-container">
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
+          <dealReport :contType="contType" :id="id"></dealReport>
+        </el-tab-pane>
         <el-tab-pane label="合同详情" name="first">
           <div class="firstDetail" :style="{ height: clientHei }">
             <div class="msg">
@@ -460,7 +463,7 @@
     <!-- <div class="functionTable" v-if="contractDetail.contChangeState.value!=2"> -->
     <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-com-bill'].state&&name==='first'" @click="runningWater">合同流水</el-button>
-      <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='first'" @click="printDemo">打印成交报告</el-button>
+      <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='deal-report'" @click="printDemo">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
       <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data-add'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
@@ -720,6 +723,7 @@ import vueEasyPrint from "vue-easy-print";
 import checkPerson from '@/components/checkPerson';
 import LayerPrint from '@/components/LayerPrint';
 import flowAccount from "@/components/flowAccount";
+import dealReport from "../contractDialog/dealReport";
 
 export default {
   mixins: [MIXINS],
@@ -729,7 +733,8 @@ export default {
     vueEasyPrint,
     checkPerson,
     LayerPrint,
-    flowAccount
+    flowAccount,
+    dealReport
   },
   data() {
     return {
@@ -914,6 +919,11 @@ export default {
     if (this.$route.query.type === "dataBank") {
       this.activeName = "third";
       this.name="third";
+    }
+    //默认显示 成交报告 判断
+    if(this.contType === '2' || this.contType === '3') {
+      this.activeName = "deal-report"
+      this.name = "deal-report"
     }
     this.getContractDetail();//合同详情
     this.getDictionary();//字典
