@@ -19,7 +19,7 @@
             <!-- <el-input :value="contractForm.dealPrice" type="text" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
           </el-form-item>
           <el-form-item v-if="contractForm.type===1">
-            <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:100px">
+            <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:105px">
               <el-option v-for="item in dictionary['507']" :key="item.key" :label="`元 / ${item.value}`" :value="item.key"></el-option>
             </el-select>
           </el-form-item>
@@ -30,25 +30,21 @@
           <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
             <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
             <i class="yuan">元</i>
-            <!-- <el-input v-model="contractForm.custEnsure" maxlength="13" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <el-form-item label="客户佣金：" class="width-250">
             <input type="text" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
-            <!-- <el-input v-model="contractForm.custCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
           <el-form-item label="业主佣金：" class="width-250">
             <input type="text" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
-            <!-- <el-input v-model="contractForm.ownerCommission" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
-          <br>
           <el-form-item label="佣金支付费：" class="width-250">
             <input type="text" v-model="contractForm.commissionPayment" @input="cutNumber('commissionPayment')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
-            <!-- <el-input v-model="contractForm.commissionPayment" maxlength="13" placeholder="请输入内容" style="width:140px"><i slot="suffix">元</i></el-input> -->
           </el-form-item>
-          <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right">
+          <br>
+          <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right" v-if="contractForm.type===1">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true" style="width:220px">
               <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
@@ -82,26 +78,21 @@
             <input type="text" v-model="contractForm.houseInfo.SquareUse" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
             <i class="yuan">㎡</i>
           </el-form-item>
-          <el-form-item label="房源方门店：" class="form-label" style="width:305px;text-align:right">
-            <!-- <el-select v-model="contractForm.houseInfo.HouseStoreCode" filterable placeholder="请选择" :clearable="true" @change="getShop" @clear="allClear('owner')">
-              <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </el-select> -->
-            
+          <!-- <el-form-item label="房源方门店：" class="form-label" style="width:310px;text-align:right">
             <span class="propertyAddress shopName" v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.HouseStoreName}}</span>
             <span class="propertyAddress color_ shopName" v-else>门店</span>
-          </el-form-item>
-          <el-form-item label="店长：">
+          </el-form-item> -->
+          <!-- <el-form-item label="店长：">
             {{contractForm.houseInfo.ShopOwnerName}} {{contractForm.houseInfo.ShopOwnerMobile}}
-          </el-form-item>
-          <br v-if="contractForm.type===2||contractForm.type===3">
-          <el-form-item label="产权状态：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
+          </el-form-item> -->
+          <!-- <br v-if="contractForm.type===2||contractForm.type===3"> -->
+          <!-- <el-form-item label="产权状态：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
             <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
               <el-option  label="无" :value="0"></el-option>
               <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item label="按揭银行：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
+          </el-form-item> -->
+          <!-- <el-form-item label="按揭银行：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
             <el-select v-model="contractForm.houseInfo.stagesBankName" placeholder="请选择银行" :disabled="type===2?true:false" style="width:140px" :clearable="true">
               <el-option label="中国工商银行" value="中国工商银行"></el-option>
               <el-option label="中国建设银行" value="中国建设银行"></el-option>
@@ -118,22 +109,21 @@
               <el-option label="平安银行" value="平安银行"></el-option>
               <el-option label="华夏银行" value="华夏银行"></el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item label="按揭欠款：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
-            <!-- <el-input v-model="contractForm.houseInfo.stagesArrears" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">元</i></el-input> -->
+          </el-form-item> -->
+          <!-- <el-form-item label="按揭欠款：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
             <input type="text" v-model="contractForm.houseInfo.stagesArrears" :disabled="type===2?true:false" @input="cutNumber('stagesArrears')" placeholder="请输入内容" class="dealPrice" :class="{'forbid':type===2}">
             <i class="yuan">元</i>
-          </el-form-item>
-          <el-form-item>
+          </el-form-item> -->
+          <!-- <el-form-item>
             <span class="chineseNum" v-if="contractForm.type===2||contractForm.type===3">{{contractForm.houseInfo.stagesArrears|moneyFormat}}</span>
-          </el-form-item>
-          <br v-if="contractForm.type===2||contractForm.type===3">
-          <el-form-item label="产权地址：" v-if="contractForm.type===2||contractForm.type===3" style="width:520px;text-align:right">
+          </el-form-item> -->
+          <!-- <br v-if="contractForm.type===2||contractForm.type===3"> -->
+          <!-- <el-form-item label="产权地址：" v-if="contractForm.type===2||contractForm.type===3" style="width:520px;text-align:right">
             <el-input v-model="contractForm.houseInfo.propertyRightAddr" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:416px"></el-input>
           </el-form-item>
-          <el-form-item label="房产证号：" v-if="contractForm.type===2||contractForm.type===3" :class="{'form-label':type===1}" style="width:289px;text-align:right">
+          <el-form-item label="房产证号：" v-if="contractForm.type===2||contractForm.type===3" :class="{'form-label':type===1}" style="width:300px;text-align:right">
             <el-input v-model="contractForm.propertyCard" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:200px"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <br>
           <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
@@ -167,23 +157,19 @@
             <span class="select" @click="showDialog('guest')" v-if="type===1">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
             <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
-          <el-form-item label="付款方式：" :class="{'form-label':type===1}">
+          <!-- <el-form-item label="付款方式：" :class="{'form-label':type===1}">
             <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
               <el-option v-for="item in dictionary['556']" :key="item.key" :label="item.value" :value="item.key">
               </el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item label="客源方门店：" class="form-label">
-            <!-- <el-select v-model="contractForm.guestInfo.GuestStoreCode" filterable placeholder="请选择" :clearable="true" @change="getShop_" @clear="allClear('guest')">
-              <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </el-select> -->
+          </el-form-item> -->
+          <!-- <el-form-item label="客源方门店：" class="form-label">
             <span class="propertyAddress shopName" v-if="contractForm.guestinfoCode">{{contractForm.guestInfo.GuestStoreName}}</span>
             <span class="propertyAddress color_ shopName" v-else>门店</span>
           </el-form-item>
           <el-form-item label="店长：">
             {{contractForm.guestInfo.ShopOwnerName}}{{contractForm.guestInfo.ShopOwnerMobile}}
-          </el-form-item>
+          </el-form-item> -->
           <br>
           <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
@@ -235,7 +221,7 @@
             <el-form-item label="联系方式：" class="width-250">
               <el-input v-model="contractForm.otherCooperationInfo.mobile" type="tel" maxlength="11" placeholder="请输入手机号" style="width:140px" @input="verifyMobile_(contractForm.otherCooperationInfo.mobile)"></el-input>
             </el-form-item>
-            <el-form-item label="身份证号：" style="width:300px;text-align:right">
+            <el-form-item label="身份证号：" style="width:310px;text-align:right">
               <el-input v-model="contractForm.otherCooperationInfo.identifyCode" maxlength="18" placeholder="请输入身份证号" @input="verifyIdcard(contractForm.otherCooperationInfo.identifyCode)"></el-input>
             </el-form-item>
             <br>
@@ -245,30 +231,30 @@
           </div>
         </div>
       </div>
-      <div class="houseMsg">
-        <p>扩展参数</p>
-        <!-- {{contractForm.extendParams}} -->
+      <!-- <div class="houseMsg">
+        <p>扩展参数</p> -->
+        <!-- {{contractForm.extendParams}}
         <div class="form-content" v-if="parameterList.length>0">
           <ul class="parameter">
-            <li v-for="(item,index) in parameterList" :key="index">
+            <li v-for="(item,index) in parameterList" :key="index"> -->
               <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
               
-              <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+              <!-- <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                 <span class="title" :class="{'form-label':item.inputType.value!=4}">{{item.name}}</span>
               </el-tooltip>
-              <span class="colon">: </span>
+              <span class="colon">: </span> -->
               <!-- class="form-label" -->
               <!-- 输入框 -->
-              <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1&&contractForm.extendParams[index]" size="small"></el-input>
+              <!-- <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1&&contractForm.extendParams[index]" size="small"></el-input> -->
               <!-- 下拉框 -->
-              <el-select v-model="contractForm.extendParams[index].value" :clearable="true" placeholder="请选择" style="width:140px" v-if="(item.inputType.value===2||item.inputType.value===3)&&contractForm.extendParams[index]" size="small">
+              <!-- <el-select v-model="contractForm.extendParams[index].value" :clearable="true" placeholder="请选择" style="width:140px" v-if="(item.inputType.value===2||item.inputType.value===3)&&contractForm.extendParams[index]" size="small">
                 <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
                 </el-option>
-              </el-select>
+              </el-select> -->
               <!-- 日期选择器 -->
-              <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.extendParams[index].value" style="width:140px" v-if="item.inputType.value===4&&contractForm.extendParams[index]" size="small"></el-date-picker>
+              <!-- <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.extendParams[index].value" style="width:140px" v-if="item.inputType.value===4&&contractForm.extendParams[index]" size="small"></el-date-picker> -->
               <!-- 下拉多选 -->
-              <el-select
+              <!-- <el-select
                 v-if="item.inputType.value===5&&contractForm.extendParams[index]"
                 size="small"
                 v-model="contractForm.extendParams[index].value"
@@ -287,7 +273,7 @@
             </li>
           </ul>
         </div>
-      </div>
+      </div> -->
     </el-form>
     <div class="btn">
         <div>
@@ -299,10 +285,11 @@
         </div>
         <div>
           <!-- 新增+提审 -->
-          <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button>
+          <!-- <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button> -->
           <!-- 编辑+提审 -->
-          <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button>
-          <el-button type="primary" round @click="isSave(0)">保存</el-button>
+          <!-- <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button> -->
+          <!-- <el-button type="primary" round @click="isSave(0)">保存</el-button> -->
+          <el-button type="primary" round @click="isSave(0)" v-if="hidBtn!==1" v-loading.fullscreen.lock="fullscreenLoading">保存并进入下一步</el-button>
         </div>
       </div>
 
@@ -310,13 +297,13 @@
     <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
     </houseGuest>
     <!-- 保存合同确认框 -->
-    <el-dialog title="提示" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+    <!-- <el-dialog title="提示" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <span>{{hintText}}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogSave = false">取 消</el-button>
         <el-button type="primary" @click="saveCont" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
     <!-- 删除人员确认框 -->
     <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <span>确定删除当前联系人吗？</span>
@@ -352,7 +339,7 @@ const rule = {
     type: "money"
   },
   transFlowCode: {
-    name: "交易流程"
+    name: "交易流程",
   },
   houseinfoCode: {
     name: "房源"
@@ -371,6 +358,7 @@ export default {
   data() {
     return {
       clientHei:'',
+      htType:'',
       contractForm: {
         // type: 2,
         houseinfoCode: "",
@@ -471,6 +459,7 @@ export default {
       },
       userMsg:{}, //当前登录人信息
       recordId:'',//合同创建人id
+      hidBtn:'',//隐藏保存按钮
       //权限配置
       power: {
         'sign-ht-info-toverify': {
@@ -504,7 +493,7 @@ export default {
     this.getDictionary();//字典
     this.getTransFlow();//交易类型
     this.getRelation();//人员关系
-    this.getExtendParams();//扩展参数
+    // this.getExtendParams();//扩展参数
     this.getShopList()//门店
     this.getAdmin();//获取当前登录人信息
   },
@@ -514,7 +503,7 @@ export default {
       this.clientHei= document.documentElement.clientHeight -160 + 'px'
     },
     addcommissionData() {
-      if (this.ownerList.length < 5) {
+      if (this.ownerList.length < 4) {
         this.ownerList.push({
           edit: true,
           type: 1,
@@ -536,7 +525,7 @@ export default {
     //   this.ownerList.splice(index, 1);
     // },
     addcommissionData1() {
-      if (this.guestList.length < 5) {
+      if (this.guestList.length < 4) {
         this.guestList.push({
           edit: true,
           type: 2,
@@ -683,20 +672,23 @@ export default {
     //验证合同信息
     isSave(value) {
       this.haveExamine=value;
-      if(value){
-        this.hintText='确定提审？'
-      }else{
-        this.hintText='确定保存合同？'
-      }
+      // if(value){
+      //   this.hintText='确定提审？'
+      // }else{
+      //   this.hintText='确定保存合同？'
+      // }
       //验证合同信息
+      if(this.contractForm.type!==1){
+        delete rule.transFlowCode
+      }
       this.$tool.checkForm(this.contractForm, rule).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
             if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
-              if (this.contractForm.houseInfo.HouseStoreCode) {
-                if(this.contractForm.propertyCard){
-                  this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
-                }
-                if(this.contractForm.propertyCard||this.contractForm.type===1){
+              // if (this.contractForm.houseInfo.HouseStoreCode) {
+                // if(this.contractForm.propertyCard){
+                //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
+                // }
+                // if(this.contractForm.propertyCard||this.contractForm.type===1){
                   //业主产权比
                 let ownerRightRatio = 0;
 
@@ -791,7 +783,7 @@ export default {
                 };
                 if (isOk) {
                   if (ownerRightRatio === 100||this.contractForm.type===1) {
-                    if (this.contractForm.guestInfo.paymentMethod) {
+                    // if (this.contractForm.guestInfo.paymentMethod) {
                       if (this.contractForm.guestInfo.GuestStoreCode) {
                         //客户产权比
                         let guestRightRatio = 0;
@@ -934,112 +926,105 @@ export default {
                                 };
                                 if(mobileOk&&IDcardOk){
                                   // 合同扩展参数验证
-                                  let paramsOk=true;
-                                  for(var i=0;i<this.contractForm.extendParams.length;i++){
-                                    paramsOk=false;
-                                    let item = this.contractForm.extendParams[i];
-                                    // console.log(item);
-                                    if(item.type!=4){//type=4为时间选择器
-                                      if(item.value){
-                                        if(item.type===5){
-                                          if(item.value.length>0){
-                                            paramsOk=true
-                                          }else{
-                                            this.$message({
-                                              message: `扩展参数-${item.name}不能为空`,
-                                              type: "warning"
-                                            });
-                                            break
-                                          }
-                                        }else{
-                                          item.value=item.value.replace(/\s/g,"");
-                                          if(item.value){
-                                            paramsOk=true
-                                          }else{
-                                            this.$message({
-                                              message: `扩展参数-${item.name}不能为空`,
-                                              type: "warning"
-                                            });
-                                            break
-                                          }
-                                        }
-                                      }else{
-                                        this.$message({
-                                          message: `扩展参数-${item.name}不能为空`,
-                                          type: "warning"
-                                        });
-                                        break
-                                      }
-                                    }else{
-                                      paramsOk=true
-                                    }
-                                  }
-                                  if(paramsOk){
-                                    this.dialogSave = true;
-                                  }
-                                  // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                                  // let paramsOk=true;
+                                  // for(var i=0;i<this.contractForm.extendParams.length;i++){
+                                  //   paramsOk=false;
+                                  //   let item = this.contractForm.extendParams[i];
+                                  //   if(item.type!=4){//type=4为时间选择器
+                                  //     if(item.value){
+                                  //       if(item.type===5){
+                                  //         if(item.value.length>0){
+                                  //           paramsOk=true
+                                  //         }else{
+                                  //           this.$message({
+                                  //             message: `扩展参数-${item.name}不能为空`,
+                                  //             type: "warning"
+                                  //           });
+                                  //           break
+                                  //         }
+                                  //       }else{
+                                  //         item.value=item.value.replace(/\s/g,"");
+                                  //         if(item.value){
+                                  //           paramsOk=true
+                                  //         }else{
+                                  //           this.$message({
+                                  //             message: `扩展参数-${item.name}不能为空`,
+                                  //             type: "warning"
+                                  //           });
+                                  //           break
+                                  //         }
+                                  //       }
+                                  //     }else{
+                                  //       this.$message({
+                                  //         message: `扩展参数-${item.name}不能为空`,
+                                  //         type: "warning"
+                                  //       });
+                                  //       break
+                                  //     }
+                                  //   }else{
+                                  //     paramsOk=true
+                                  //   }
+                                  // }
+                                  // if(paramsOk){
                                   //   this.dialogSave = true;
-                                  // }).catch(error => {
-                                  //     this.$message({
-                                  //       message: `扩展参数-${error.title}${error.msg}`,
-                                  //       type: "warning"
-                                  //     });
-                                  //   });
+                                  // }
 
+
+
+                                  // this.dialogSave = true;
+                                  this.addContract();
                                 }
                               }else{
                                 // 合同扩展参数验证
-                                let paramsOk=true;
-                                  for(var i=0;i<this.contractForm.extendParams.length;i++){
-                                    paramsOk=false;
-                                    let item = this.contractForm.extendParams[i];
-                                    // console.log(item);
-                                    if(item.type!=4){
-                                      if(item.value){
-                                        if(item.type===5){
-                                          if(item.value.length>0){
-                                            paramsOk=true
-                                          }else{
-                                            this.$message({
-                                              message: `扩展参数-${item.name}不能为空`,
-                                              type: "warning"
-                                            });
-                                            break
-                                          }
-                                        }else{
-                                          item.value=item.value.replace(/\s/g,"");
-                                          if(item.value){
-                                            paramsOk=true
-                                          }else{
-                                            this.$message({
-                                              message: `扩展参数-${item.name}不能为空`,
-                                              type: "warning"
-                                            });
-                                            break
-                                          }
-                                        }
-                                      }else{
-                                        this.$message({
-                                          message: `扩展参数-${item.name}不能为空`,
-                                          type: "warning"
-                                        });
-                                        break
-                                      }
-                                    }else{
-                                      paramsOk=true
-                                    }
-                                  }
-                                  if(paramsOk){
-                                    this.dialogSave = true;
-                                  }
-                                // this.$tool.checkForm(this.contractForm.extendParams, this.parameterRule).then(() => {
+                                // let paramsOk=true;
+                                // for(var i=0;i<this.contractForm.extendParams.length;i++){
+                                //   paramsOk=false;
+                                //   let item = this.contractForm.extendParams[i];
+                                //   // console.log(item);
+                                //   if(item.type!=4){
+                                //     if(item.value){
+                                //       if(item.type===5){
+                                //         if(item.value.length>0){
+                                //           paramsOk=true
+                                //         }else{
+                                //           this.$message({
+                                //             message: `扩展参数-${item.name}不能为空`,
+                                //             type: "warning"
+                                //           });
+                                //           break
+                                //         }
+                                //       }else{
+                                //         item.value=item.value.replace(/\s/g,"");
+                                //         if(item.value){
+                                //           paramsOk=true
+                                //         }else{
+                                //           this.$message({
+                                //             message: `扩展参数-${item.name}不能为空`,
+                                //             type: "warning"
+                                //           });
+                                //           break
+                                //         }
+                                //       }
+                                //     }else{
+                                //       this.$message({
+                                //         message: `扩展参数-${item.name}不能为空`,
+                                //         type: "warning"
+                                //       });
+                                //       break
+                                //     }
+                                //   }else{
+                                //     paramsOk=true
+                                //   }
+                                // }
+                                // if(paramsOk){
                                 //   this.dialogSave = true;
-                                // }).catch(error => {
-                                //     this.$message({
-                                //       message: `扩展参数-${error.title}${error.msg}`,
-                                //       type: "warning"
-                                //     });
-                                //   });
+                                // }
+
+
+
+
+                                // this.dialogSave = true;
+                                this.addContract();
                               }
                             }else{
                               this.$message({
@@ -1066,12 +1051,12 @@ export default {
                           type: "warning"
                         });
                       }
-                    } else {
-                      this.$message({
-                        message: "客源信息-付款方式不能为空",
-                        type: "warning"
-                      });
-                    }
+                    // } else {
+                    //   this.$message({
+                    //     message: "客源信息-付款方式不能为空",
+                    //     type: "warning"
+                    //   });
+                    // }
                   } else {
                     this.$message({
                       message: "房源信息-业主产权比和必须为100%",
@@ -1079,18 +1064,18 @@ export default {
                     });
                   }
                 }
-                }else{
-                  this.$message({
-                    message:'房源信息-房产证号不能为空',
-                    type: "warning"
-                  })
-                }
-              } else {
-                this.$message({
-                  message: "房源信息-房源方门店不能为空",
-                  type: "warning"
-                });
-              }
+                // }else{
+                //   this.$message({
+                //     message:'房源信息-房产证号不能为空',
+                //     type: "warning"
+                //   })
+                // }
+              // } else {
+              //   this.$message({
+              //     message: "房源信息-房源方门店不能为空",
+              //     type: "warning"
+              //   });
+              // }
             }else{
               this.$message({
                 message: "合同信息-总佣金不能大于成交总价",
@@ -1115,8 +1100,9 @@ export default {
       this.fullscreenLoading=true;
       this.addContract()
     },
-    // 新增合同
+    // 新增/编辑合同
     addContract(){
+      this.fullscreenLoading=true
       this.contractForm.contPersons=[];
       let ownerArr = this.ownerList.map(item=>Object.assign({},item));
       let guestArr = this.guestList.map(item=>Object.assign({},item));
@@ -1154,30 +1140,19 @@ export default {
         };
       }
       if(this.type===1){//新增
-        if(this.haveExamine===1){//新增并提审
-          var url = '/api/contract/addContractAudit';
-        }else{
-          var url = '/api/contract/addContract';
-        }
+        var url = '/api/contract/addContract';
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading=false;
-            this.dialogSave=false;
-            this.detailCode=res.data.code;
-            this.detailId=res.data.id;
-            if(res.data.isHaveNextAudit===1){
-              this.checkPerson.code=res.data.code;
-              this.checkPerson.state=true;
-              // this.checkPerson.type=res.data.auditType===0?"set":"init";
-              this.checkPerson.label=true;
-            }else{
-              this.$message({
-                message: "操作成功",
-                type: "success"
-              });
-              this.dialogSuccess=true;
-            }
+            let contractMsg = res.data
+            this.hidBtn=1
+            localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+
+            let newPage = this.$router.resolve({ 
+              path: '/extendParams'
+            });
+            window.open(newPage.href, '_blank');
           }
         }).catch(error => {
           this.fullscreenLoading=false;
@@ -1187,7 +1162,7 @@ export default {
           })
         })
       }else if(this.type===2){//编辑
-        // if(this.contractForm.type===1){
+        if(this.contractForm.type===1){
           delete param.leaseCont.contChangeState;
           delete param.leaseCont.contState;
           delete param.leaseCont.contType;
@@ -1198,6 +1173,93 @@ export default {
           delete param.leaseCont.updateTime;
           delete param.leaseCont.distributableAchievement;
           delete param.leaseCont.achievementState;
+        }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
+          delete param.saleCont.contChangeState;
+          delete param.saleCont.contState;
+          delete param.saleCont.contType;
+          delete param.saleCont.laterStageState;
+          delete param.saleCont.toExamineState;
+          delete param.saleCont.previewImg;
+          delete param.saleCont.subscriptionTerm;
+          delete param.saleCont.updateTime;
+          delete param.saleCont.distributableAchievement;
+          delete param.saleCont.achievementState;
+        }
+        var url = '/api/contract/updateContract';
+        this.$ajax.postJSON(url, param).then(res => {
+          res = res.data;
+          if (res.status === 200) {
+            this.fullscreenLoading=false;
+            let contractMsg = res.data
+            localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+            var isHaveHtml=1;//有html文件
+            if(this.type===2){
+              if(this.contractForm.htmlPath.address||this.contractForm.htmlPath.business||this.contractForm.htmlPath.residence){
+                localStorage.setItem("htmlPath", JSON.stringify(this.contractForm.htmlPath));
+              }else{
+                isHaveHtml=2
+              }
+            }
+            let newPage = this.$router.resolve({ 
+              path: '/extendParams'
+            });
+            window.open(newPage.href, '_blank');
+          }
+        }).catch(error => {
+          this.fullscreenLoading=false;
+          this.$message({
+            message:error,
+            type: "error"
+          })
+        })
+      }
+
+
+      // if(this.type===1){//新增
+      //   if(this.haveExamine===1){//新增并提审
+      //     var url = '/api/contract/addContractAudit';
+      //   }else{
+      //     var url = '/api/contract/addContract';
+      //   }
+      //   this.$ajax.postJSON(url, param).then(res => {
+      //     res = res.data;
+      //     if (res.status === 200) {
+      //       this.fullscreenLoading=false;
+      //       this.dialogSave=false;
+      //       this.detailCode=res.data.code;
+      //       this.detailId=res.data.id;
+      //       if(res.data.isHaveNextAudit===1){
+      //         this.checkPerson.code=res.data.code;
+      //         this.checkPerson.state=true;
+      //         // this.checkPerson.type=res.data.auditType===0?"set":"init";
+      //         this.checkPerson.label=true;
+      //       }else{
+      //         this.$message({
+      //           message: "操作成功",
+      //           type: "success"
+      //         });
+      //         this.dialogSuccess=true;
+      //       }
+      //     }
+      //   }).catch(error => {
+      //     this.fullscreenLoading=false;
+      //     this.$message({
+      //       message:error,
+      //       type: "error"
+      //     })
+      //   })
+      // }else if(this.type===2){//编辑
+        // if(this.contractForm.type===1){
+          // delete param.leaseCont.contChangeState;
+          // delete param.leaseCont.contState;
+          // delete param.leaseCont.contType;
+          // delete param.leaseCont.laterStageState;
+          // delete param.leaseCont.toExamineState;
+          // delete param.leaseCont.previewImg;
+          // delete param.leaseCont.subscriptionTerm;
+          // delete param.leaseCont.updateTime;
+          // delete param.leaseCont.distributableAchievement;
+          // delete param.leaseCont.achievementState;
         // }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
         //   delete param.saleCont.contChangeState;
         //   delete param.saleCont.contState;
@@ -1210,44 +1272,45 @@ export default {
         //   delete param.saleCont.distributableAchievement;
         //   delete param.saleCont.achievementState;
         // }
-        if(this.haveExamine===1){//编辑并提审
-          var url = '/api/contract/updateContractAudit';
-        }else{
-          var url = '/api/contract/updateContract';
-        }
-        this.$ajax.postJSON(url, param).then(res => {
-          res = res.data;
-          if (res.status === 200) {
-            this.fullscreenLoading=false;
-            this.dialogSave=false;
-            this.detailCode=res.data.code;
-            this.detailId=res.data.id;
-            //1 下一节点没有审批人 2 有
-            if(res.data.isHaveNextAudit===1){
-              this.checkPerson.code=res.data.code;
-              this.checkPerson.state=true;
-              // this.checkPerson.type=res.data.auditType===0?"set":"init";
-              this.checkPerson.label=true;
-            }else{
-              this.$message({
-                message: "操作成功",
-                type: "success"
-              });
-              if(this.type===2&&this.contractForm.isHaveData){
-                 this.$router.push('/contractList');
-              }else{
-                this.dialogSuccess=true;
-              }
-            }
-          }
-        }).catch(error => {
-          this.fullscreenLoading=false;
-          this.$message({
-            message:error,
-            type: "error"
-          })
-        })
-      }
+
+      //   if(this.haveExamine===1){//编辑并提审
+      //     var url = '/api/contract/updateContractAudit';
+      //   }else{
+      //     var url = '/api/contract/updateContract';
+      //   }
+      //   this.$ajax.postJSON(url, param).then(res => {
+      //     res = res.data;
+      //     if (res.status === 200) {
+      //       this.fullscreenLoading=false;
+      //       this.dialogSave=false;
+      //       this.detailCode=res.data.code;
+      //       this.detailId=res.data.id;
+      //       //1 下一节点没有审批人 2 有
+      //       if(res.data.isHaveNextAudit===1){
+      //         this.checkPerson.code=res.data.code;
+      //         this.checkPerson.state=true;
+      //         // this.checkPerson.type=res.data.auditType===0?"set":"init";
+      //         this.checkPerson.label=true;
+      //       }else{
+      //         this.$message({
+      //           message: "操作成功",
+      //           type: "success"
+      //         });
+      //         if(this.type===2&&this.contractForm.isHaveData){
+      //            this.$router.push('/contractList');
+      //         }else{
+      //           this.dialogSuccess=true;
+      //         }
+      //       }
+      //     }
+      //   }).catch(error => {
+      //     this.fullscreenLoading=false;
+      //     this.$message({
+      //       message:error,
+      //       type: "error"
+      //     })
+      //   })
+      // }
     },
     //创建成功提示
     toUpload(value){//上传合同资料库
@@ -1688,26 +1751,6 @@ export default {
           this.guestList=[];
           for (var i = 0; i < this.contractForm.contPersons.length; i++) {
             if (this.contractForm.contPersons[i].personType.value === 1) {
-              // if(this.ownerList.length>0){
-              //   this.ownerList.push({
-              //     name:this.contractForm.contPersons[i].name,
-              //     mobile:this.contractForm.contPersons[i].mobile,
-              //     relation:this.contractForm.contPersons[i].relation,
-              //     propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-              //     identifyCode:this.contractForm.contPersons[i].identifyCode,
-              //     type:1,
-              //     edit:true
-              //   });
-              // }else{
-              //   this.ownerList.push({
-              //     name:this.contractForm.contPersons[i].name,
-              //     mobile:this.contractForm.contPersons[i].mobile,
-              //     relation:this.contractForm.contPersons[i].relation,
-              //     propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-              //     identifyCode:this.contractForm.contPersons[i].identifyCode,
-              //     type:1,
-              //   });
-              // }
               let element = {
                 name:this.contractForm.contPersons[i].name,
                 mobile:this.contractForm.contPersons[i].mobile,
@@ -1727,26 +1770,6 @@ export default {
               let obj_ = Object.assign({}, element);
               this.ownerList_.push(obj_);
             } else if (this.contractForm.contPersons[i].personType.value === 2) {
-              // if(this.guestList.length>0){
-              //   this.guestList.push({
-              //     name:this.contractForm.contPersons[i].name,
-              //     mobile:this.contractForm.contPersons[i].mobile,
-              //     relation:this.contractForm.contPersons[i].relation,
-              //     propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-              //     identifyCode:this.contractForm.contPersons[i].identifyCode,
-              //     type:2,
-              //     edit:true
-              //   });
-              // }else{
-              //   this.guestList.push({
-              //     name:this.contractForm.contPersons[i].name,
-              //     mobile:this.contractForm.contPersons[i].mobile,
-              //     relation:this.contractForm.contPersons[i].relation,
-              //     propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
-              //     identifyCode:this.contractForm.contPersons[i].identifyCode,
-              //     type:2
-              //   });
-              // }
               let element = {
                 name:this.contractForm.contPersons[i].name,
                 mobile:this.contractForm.contPersons[i].mobile,
@@ -2065,7 +2088,7 @@ export default {
       margin-bottom: 10px;
       .merge {
         border: 1px solid #dcdfe6;
-        padding: 7px 0;
+        padding: 7px 2px;
         border-radius: 3px;
       }
       .shell{

@@ -15,7 +15,7 @@
                                 <el-input placeholder="意向金" :disabled="true" v-if="this.contractForm.type == 4"></el-input>
                                 <el-input placeholder="定金"  :disabled="true" v-if="this.contractForm.type == 5"></el-input>
                             </el-form-item>
-                            
+                            <br>
                             <el-form-item label="认购期限：" prop="subscriptionTerm">
                                 <el-date-picker v-model="contractForm.subscriptionTerm" value-format="yyyy/MM/dd" type="date" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
@@ -144,7 +144,7 @@
             
         </div>
         <div class="form-btn">                     
-                <el-button type="primary" round @click="checkRule('contractForm')">保 存</el-button>                  
+                <el-button type="primary" round @click="checkRule('contractForm')" v-if="hidBtn!==1">保存并进入下一步</el-button>                  
         </div>
         <!-- 房客源弹框 -->
         <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :choseHcode="choseHcode" :choseGcode="choseGcode"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
@@ -337,6 +337,7 @@ export default {
 
         // }
       },
+      hidBtn:'',//隐藏保存按钮
       //权限配置
       power: {
        
@@ -722,7 +723,12 @@ export default {
       }else{
         this.$refs[contractForm].validate(valid => {
           if (valid) {
-              this.dialogSure = true
+              // this.dialogSure = true
+              if(this.type===1){
+                this.onSubmit1()
+              }else if(this.type===2){
+                this.onSubmit2()
+              }
               return true           
             } else {
               return false;
@@ -786,20 +792,22 @@ export default {
           .then(res => {
             this.fullscreenLoading=false
             let tips = res.data.message;
-
             if (res.data.status === 200) {
-              this.detailId=res.data.data.id;
-              
-              this.$message({
-                type: "success",
-                message: "已保存!"
+              let contractMsg = res.data.data
+              this.hidBtn=1
+              localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              let newPage = this.$router.resolve({ 
+                path: '/extendParams'
               });
+              window.open(newPage.href, '_blank');
 
-              this.dialogSuccess=true;
-              // this.$router.push({
-              //   path: "/contractList"
+
+              // this.detailId=res.data.data.id;
+              // this.$message({
+              //   type: "success",
+              //   message: "已保存!"
               // });
-              
+              // this.dialogSuccess=true;
             } else {
               this.fullscreenLoading=false
               this.$message.error(tips);
@@ -922,17 +930,19 @@ export default {
             let tips = res.data.message;
 
             if (res.data.status === 200) {
-              
-              this.$message({
-                type: "success",
-                message: "已保存!"
+              let contractMsg = res.data.data
+              localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              let newPage = this.$router.resolve({ 
+                path: '/extendParams'
               });
-              this.$router.push({
-                path: "/contractList"
-                // query:{
-                //     id: this.id
-                // }
-              });
+              window.open(newPage.href, '_blank');
+              // this.$message({
+              //   type: "success",
+              //   message: "已保存!"
+              // });
+              // this.$router.push({
+              //   path: "/contractList"
+              // });
             } else {
               this.fullscreenLoading=false
               this.$message.error(tips);

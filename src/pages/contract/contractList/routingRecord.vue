@@ -97,7 +97,7 @@
         </el-table-column>
         <el-table-column align="left" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="toReceipt(scope.row)">确认打款</el-button>
+            <el-button type="text" size="medium" @click="toReceipt(scope.row)" v-if="power['sign-ht-fz-pay'].state">确认打款</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -130,7 +130,7 @@
       </div>
       <div class="receipt_three">
         <span class="tag">打款备注：</span>
-        <el-input type="textarea" :rows="6" placeholder="请输入核销理由，最多200字 " v-model="receiptReason" resize='none' style="width:460px;overflow-y:hidden" maxlength="200"></el-input>
+        <el-input type="textarea" :rows="6" placeholder="请输入打款备注，最多200字 " v-model="receiptReason" resize='none' style="width:460px;overflow-y:hidden" maxlength="200"></el-input>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogReceipt = false">取消</el-button>

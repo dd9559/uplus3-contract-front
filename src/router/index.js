@@ -53,6 +53,7 @@ const routingRecord = () => import("@/pages/contract/contractList/routingRecord"
 const contractCheck = () => import("@/pages/contract/contractList/contractCheck");
 const debitRecord = () => import("@/pages/contract/contractList/debitRecord");
 const routingRemitDetail = () => import("@/pages/contract/contractList/routingRemitDetail");
+const extendParams = () => import("@/pages/contract/contractList/extendParams");
 
 const Login = () => import("@/login")
 
@@ -589,6 +590,11 @@ export default new Router({
       {
         path: "routingRemitDetail",
         component: routingRemitDetail
+      },
+      //扩展参数
+      {
+        path: "extendParams",
+        component: extendParams
       },
       //合同审核
       {

@@ -189,12 +189,12 @@
               </div>
             </div>
 
-            <div class="msg" v-if="contractDetail.extendParams">
+            <!-- <div class="msg" v-if="contractDetail.extendParams">
               <div class="title">扩展参数</div>
               <div class="content">
-                <div class="one_ extendParams">
+                <div class="one_ extendParams"> -->
                   <!-- <p v-for="(item,index) in parameterList" :key="index" v-if="contractDetail.extendParams[item.name]"> -->
-                  <p v-for="(item,index) in contractDetail.extendParams" :key="index" v-if="item.value">
+                  <!-- <p v-for="(item,index) in contractDetail.extendParams" :key="index" v-if="item.value">
                     <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                       <span class="tag tagHidden">{{item.name}}</span>
                     </el-tooltip>
@@ -206,7 +206,7 @@
                   </p>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <div class="msg">
               <div class="title">业绩分成</div>
@@ -259,7 +259,7 @@
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0&&userMsg.empId===recordId" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)&&userMsg.empId===recordId" @click="goEdit">编辑</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&userMsg.empId===recordId" @click="isSubmitAudit=true">提交审核</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&userMsg.empId===recordId&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
               <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
@@ -512,7 +512,7 @@
       </span>
     </el-dialog>
     <!-- 回访录音添加备注弹窗 -->
-    <el-dialog title="添加备注" :visible.sync="showRemarks" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="添加备注" :visible.sync="showRemarks" width="740px" :closeOnClickModal="$tool.closeOnClickModal" @close="closeRemarks">
       <div class="top">
         <p class="form-label" style="width:50px"> 备注</p>
         <div class="reason">
@@ -1208,6 +1208,12 @@ export default {
         })
       }
     },
+    //关闭录音备注弹窗
+    closeRemarks(){
+      this.showRemarks=false;
+      this.recordRemarks='';
+      this.remarkId='';
+    },
     //播放录音
     playStop(index,recording){
       if(this.power['sign-ht-xq-ly-play'].state){
@@ -1274,13 +1280,15 @@ export default {
       this.$ajax.get("/api/contract/detail", param).then(res => {
         res = res.data;
         if (res.status === 200) {
+          // debugger
           this.contractDetail = res.data;
           this.recordId = res.data.recordId;
-          this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
+          // this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
           this.ownerData=[];
           this.clientrData=[];
           for (var i = 0; i < this.contractDetail.contPersons.length; i++) {
+            
             if (this.contractDetail.contPersons[i].personType.value === 1) {
               this.ownerData.push(this.contractDetail.contPersons[i]);
             } else if (
@@ -1289,11 +1297,11 @@ export default {
               this.clientrData.push(this.contractDetail.contPersons[i]);
             }
           }
-          this.contractDetail.extendParams.forEach(element => {
-            if(element.type===5){
-              element.value=element.value.join(',')
-            }
-          });
+          // this.contractDetail.extendParams.forEach(element => {
+          //   if(element.type===5){
+          //     element.value=element.value.join(',')
+          //   }
+          // });
           if(res.data.isHaveData){
             this.getContData()
           }
