@@ -131,8 +131,18 @@
                 <span v-else>--</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" prop="userName" label="户名"></el-table-column>
-            <el-table-column align="center" prop="cardNumber" label="账户"></el-table-column>
+            <el-table-column align="center" prop="userName" label="户名">
+              <template slot-scope="scope">
+                <span v-if="scope.row.userName.length>0">{{scope.row.userName}}</span>
+                <span v-else>--</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="cardNumber" label="账户">
+              <template slot-scope="scope">
+                <span v-if="scope.row.cardNumber.length>0">{{scope.row.cardNumber}}</span>
+                <span v-else>--</span>
+              </template>
+            </el-table-column>
             <el-table-column align="center" prop="orderNo" label="订单编号">
               <template slot-scope="scope">
                 <span v-if="scope.row.orderNo.length>0">{{scope.row.orderNo}}</span>
