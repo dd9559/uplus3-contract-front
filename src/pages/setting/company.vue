@@ -388,7 +388,7 @@
         companyBankList: [], //银行账户集合
         delIds: [],
         directInfo: {}, //直营属性证件信息
-        // directSaleSelect: false,
+        directSaleSelect: false,
         // directSaleOut: false,
         dialogViewVisible: false, //查看弹出框
         creditCodeShow: false,

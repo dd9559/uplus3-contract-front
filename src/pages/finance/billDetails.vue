@@ -116,7 +116,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作">
               <template slot-scope="scope">
-                <el-button type="text" @click="getPaper('create')" v-if="btnBill&&billMsg.billStatus&&billMsg.isDel===1&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)">开票</el-button>
+                <el-button type="text" @click="getPaper('create')" v-if="btnBill&&billMsg.billStatus&&billMsg.isDel===1&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)&&billMsg.payStatusValue!==4">开票</el-button>
                 <span v-else>--</span>
               </template>
             </el-table-column>
@@ -125,10 +125,30 @@
         <li v-if="activeItem==='收款信息'">
           <h4 class="f14">刷卡信息</h4>
           <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
-            <el-table-column align="center" prop="bankName" label="刷卡/转账银行"></el-table-column>
-            <el-table-column align="center" prop="userName" label="户名"></el-table-column>
-            <el-table-column align="center" prop="cardNumber" label="账户"></el-table-column>
-            <el-table-column align="center" prop="orderNo" label="订单编号"></el-table-column>
+            <el-table-column align="center" prop="bankName" label="刷卡/转账银行">
+              <template slot-scope="scope">
+                <span v-if="scope.row.bankName.length>0">{{scope.row.bankName}}</span>
+                <span v-else>--</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="userName" label="户名">
+              <template slot-scope="scope">
+                <span v-if="scope.row.userName.length>0">{{scope.row.userName}}</span>
+                <span v-else>--</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="cardNumber" label="账户">
+              <template slot-scope="scope">
+                <span v-if="scope.row.cardNumber.length>0">{{scope.row.cardNumber}}</span>
+                <span v-else>--</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="orderNo" label="订单编号">
+              <template slot-scope="scope">
+                <span v-if="scope.row.orderNo.length>0">{{scope.row.orderNo}}</span>
+                <span v-else>--</span>
+              </template>
+            </el-table-column>
             <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
             <el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>
           </el-table>
@@ -162,7 +182,7 @@
           </div>
         </li>
       </template>
-      <li ref="checkBox">
+      <li v-if="checkBoxShow" ref="checkBox">
         <h4 class="f14">审核信息</h4>
         <el-table border :data="checkList" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
@@ -197,6 +217,10 @@
           :total="total">
         </el-pagination>-->
       </li>
+      <li v-if="activeItem==='收款信息'">
+        <h4 class="f14">收款二维码</h4>
+        <img :src="billMsg.RQcode" alt="">
+      </li>
     </ul>
     <el-dialog
       title="审核"
@@ -207,7 +231,7 @@
       <div class="reasion-dialog">
         <label>备注：</label>
         <div class="input">
-          <el-input type="textarea" resize="none" placeholder="请输入同意/退回理由" :maxlength="invalidMax"
+          <el-input type="textarea" resize="none" placeholder="请输入同意/拒绝理由" :maxlength="invalidMax"
                     v-model="layer.reasion"
                     class="input-textarea" :class="[layer.reasion.length>0?'':'scroll-hidden']">
           </el-input>
@@ -494,7 +518,7 @@
       },
       //合并单元格
       collapseRow: function ({rowIndex, columnIndex}) {
-        if (this.billMsg.inAccount&&(columnIndex <2||columnIndex>4)) {
+        if (this.billMsg.inAccount&&(columnIndex <2||columnIndex>3)) {
           if (rowIndex === 0) {
             return [this.billMsg&&this.billMsg.inAccount.length, 1]
           } else {
