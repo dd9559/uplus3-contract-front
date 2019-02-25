@@ -105,7 +105,7 @@
                         <p>身份证：<span>{{firstBuyer.identifyCode}}</span></p>
                         <p>电话：<span>{{firstBuyer.mobile}}</span></p>
                     </div>
-                    <ul class="text gongyouren" v-if="buyerLength !== 1">
+                    <ul class="text gongyouren" v-if="buyerArr.length !== 1">
                         <li v-for="(item,index) in buyerArr" :key="index">
                             <p>共有人姓名：<span>{{item.name}}</span></p>
                             <p>电话：<span>{{item.mobile}}</span></p>
@@ -153,7 +153,7 @@
                         <p>身份证：<span>{{firstSeller.identifyCode}}</span></p>
                         <p>电话：<span>{{firstSeller.mobile}}</span></p>
                     </div>
-                    <ul class="text gongyouren" v-if="sellerLength !== 1">
+                    <ul class="text gongyouren" v-if="sellerArr.length !== 1">
                         <li v-for="(item,index) in sellerArr" :key="index">
                             <p>共有人姓名：<span>{{item.name}}</span></p>
                             <p>电话：<span>{{item.mobile}}</span></p>
@@ -334,14 +334,12 @@ export default {
                 mobile: ""
             },
             buyerArr: [],
-            buyerLength: 0,
             firstSeller: {
                 name: "",
                 identifyCode: "",
                 mobile: ""
             },
-            sellerArr: [],
-            sellerLength: 0
+            sellerArr: []
         }
     },
     created() {
@@ -374,16 +372,12 @@ export default {
                     this.dealBasicInfo.houseOwnerMobile = res.data.houseInfo.ShopOwnerMobile
                     this.buyerArr = res.data.contPersons.filter(item => item.personType.value === 2)
                     this.sellerArr = res.data.contPersons.filter(item => item.personType.value === 1)
-                    this.buyerLength = this.buyerArr.length
-                    this.sellerLength = this.sellerArr.length
                     this.firstBuyer.name = this.buyerArr[0].name
                     this.firstBuyer.identifyCode = this.buyerArr[0].identifyCode
                     this.firstBuyer.mobile = this.buyerArr[0].mobile
                     this.firstSeller.name = this.sellerArr[0].name
                     this.firstSeller.identifyCode = this.sellerArr[0].identifyCode
                     this.firstSeller.mobile = this.sellerArr[0].mobile
-                    delete this.buyerArr[0]
-                    delete this.sellerArr[0]
                 }
             }).catch(error => {
                 this.$message({
@@ -556,7 +550,10 @@ export default {
             display: flex;
             width: 50%;
             p {
-                margin-right: 10px;
+                margin-right: 20px;
+            }
+            &:first-child {
+                display: none;
             }
         }
     }
