@@ -7,7 +7,7 @@
                 <p>合同编号：<span style="color:#478DE3;font-weight:bold">{{dealBasicInfo.code}}</span></p>
                 <p>交易类型：<span>{{dealBasicInfo.contType}}</span></p>
                 <p>房屋总价：<span style="color:#FF9039;">{{dealBasicInfo.dealPrice}}元 <i>{{dealBasicInfo.dealPrice|moneyFormat}}</i></span></p>
-                <p>应收佣金：<span>{{dealBasicInfo.commissionPayment}}元</span></p>
+                <p>应收佣金：<span>{{dealBasicInfo.receivableCommission}}元</span></p>
             </div>
         </div>
         <div class="house-info border-b">
@@ -263,7 +263,7 @@ export default {
                 code: "",
                 contType: "",
                 dealPrice: "",
-                commissionPayment: "",
+                receivableCommission: "",
                 Square: "",
                 propertyAddr: "",
                 FloorAll: "",
@@ -360,7 +360,7 @@ export default {
                     this.dealBasicInfo.code = res.data.code
                     this.dealBasicInfo.contType = res.data.contType.label
                     this.dealBasicInfo.dealPrice = res.data.dealPrice
-                    this.dealBasicInfo.commissionPayment = res.data.commissionPayment
+                    this.dealBasicInfo.receivableCommission = res.data.receivableCommission
                     this.dealBasicInfo.Square = res.data.houseInfo.Square
                     this.dealBasicInfo.propertyAddr = res.data.propertyAddr
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
