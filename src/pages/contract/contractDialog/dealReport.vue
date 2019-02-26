@@ -16,19 +16,19 @@
                 <div class="item">
                     <div class="mark">
                         <span>两证情况：</span>
-                        <el-select size="small" v-model="report.cardSituation">
+                        <el-select size="small" v-model="report.cardSituation" :disabled="!saveBtnShow">
                             <el-option v-for="item in dictionary['611']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                     <div class="mark">
                         <span>抵押情况：</span>
-                        <el-select size="small" v-model="report.mortgageSituation">
+                        <el-select size="small" v-model="report.mortgageSituation" :disabled="!saveBtnShow">
                             <el-option v-for="item in dictionary['615']" :key="item.key" :label="item.value" :value="item.key"></el-option>                            
                         </el-select>
                     </div>
                     <div class="mark">
                         <span>提前还款：</span>
-                        <el-select size="small" v-model="report.isEarlyRepayment">
+                        <el-select size="small" v-model="report.isEarlyRepayment" :disabled="!saveBtnShow">
                             <el-option label="否" value="0"></el-option>
                             <el-option label="是" value="1"></el-option>
                         </el-select>
@@ -38,12 +38,12 @@
                     </div>
                     <div class="position">
                         <span class="use">土地使用权面积：</span>
-                        <el-input size="small" type="number" v-model="report.landUseArea"></el-input>
+                        <el-input size="small" type="number" v-model="report.landUseArea" :disabled="!saveBtnShow"></el-input>
                         <i>㎡</i>
                     </div>
                     <div>
                         <span>土地性质：</span>
-                        <el-select size="small" v-model="report.landNature">
+                        <el-select size="small" v-model="report.landNature" :disabled="!saveBtnShow">
                             <el-option v-for="item in dictionary['618']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
@@ -54,13 +54,13 @@
                     </div>
                     <div class="number mark">
                         <span>权属证号：</span>
-                        <el-input size="small" v-model="report.ownershipNumber"></el-input>
+                        <el-input size="small" v-model="report.ownershipNumber" :disabled="!saveBtnShow"></el-input>
                     </div>
                 </div>
                 <div class="item">
                     <div class="position">
                         <span>缴纳税费：</span>
-                        <el-input size="small" type="number" v-model="report.payTaxation"></el-input>
+                        <el-input size="small" type="number" v-model="report.payTaxation" :disabled="!saveBtnShow"></el-input>
                         <i>万元</i>
                     </div>
                     <div style="min-width:120px;">
@@ -68,65 +68,65 @@
                     </div>
                     <div>
                         <span>建筑结构：</span>
-                        <el-input size="small" v-model="report.buildingStructure"></el-input>
+                        <el-input size="small" v-model="report.buildingStructure" :disabled="!saveBtnShow"></el-input>
                     </div>
                     <div class="position">
                         <span>评估值：</span>
-                        <el-input size="small" type="number" v-model="report.evaluationValue"></el-input>
+                        <el-input size="small" type="number" v-model="report.evaluationValue" :disabled="!saveBtnShow"></el-input>
                         <i>万元</i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="house-from resource resource-info">
+        <div class="house-from resource">
             <div>
                 <p class="bold">客源方信息</p>
-                <div class="info text w33">
+                <div class="info text">
                     <p>店长：<span>{{dealBasicInfo.guestOwnerName}}</span></p>
-                    <p>门店：<span>{{dealBasicInfo.guestStoreName}}</span></p>
+                    <p style="margin:0 40px;">门店：<span>{{dealBasicInfo.guestStoreName}}</span></p>
                     <p>联系电话：<span>{{dealBasicInfo.guestOwnerMobile}}</span></p>
                 </div>
             </div>
             <div>
                 <p class="bold">房源方信息</p>
-                <div class="info text w33">
+                <div class="info text">
                     <p>店长：<span>{{dealBasicInfo.houseOwnerName}}</span></p>
-                    <p>门店：<span>{{dealBasicInfo.houseStoreName}}</span></p>
+                    <p style="margin:0 40px;">门店：<span>{{dealBasicInfo.houseStoreName}}</span></p>
                     <p>联系电话：<span>{{dealBasicInfo.houseOwnerMobile}}</span></p>
                 </div>
             </div>
         </div>
-        <div class="house-person resource resource-info">
+        <div class="house-person resource">
             <div>
                 <p class="bold">买方信息</p>
                 <div class="guest msg info">
-                    <div class="text w33">
-                        <p>姓名：<span>{{firstBuyer.name}}</span></p>
-                        <p>身份证：<span>{{firstBuyer.identifyCode}}</span></p>
-                        <p>电话：<span>{{firstBuyer.mobile}}</span></p>
+                    <div class="text mai-mai">
+                        <p><span>姓名：</span><span style="min-width:56px;">{{firstBuyer.name}}</span></p>
+                        <p><span style="min-width:56px;">身份证：</span><span>{{firstBuyer.identifyCode}}</span></p>
+                        <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
                         <li v-for="(item,index) in buyerArr" :key="index">
-                            <p>共有人姓名：<span>{{item.name}}</span></p>
-                            <p>电话：<span>{{item.mobile}}</span></p>
+                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
                         <p>
                             <span>付款方式：</span>
-                            <el-select size="small" v-model="report.buyerPaymentMethod">
+                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow">
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
                         <p style="margin:0 10px;">
                             <span>交易流程：</span>
-                            <el-select size="small" v-model="report.transFlowCode">
+                            <el-select size="small" v-model="report.transFlowCode" :disabled="!saveBtnShow">
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                         </p>
                         <p>
                             <span>按揭银行：</span>
-                            <el-select size="small" v-model="report.stagesBankName" filterable>
+                            <el-select size="small" v-model="report.stagesBankName" filterable :disabled="!saveBtnShow">
                                 <el-option v-for="item in bankList" :key="item.id" :label="item.name" :value="item.name"></el-option>
                             </el-select>
                         </p>
@@ -134,12 +134,12 @@
                     <div class="input">
                         <p>
                             <span>贷款金额：</span>
-                            <el-input size="small" type="number" v-model="report.loanAmount"></el-input>
+                            <el-input size="small" type="number" v-model="report.loanAmount" :disabled="!saveBtnShow"></el-input>
                             <span>万</span>
                         </p>
                         <p>
                             <span>贷款期限：</span>
-                            <el-input size="small" type="number" v-model="report.loanTerm"></el-input>
+                            <el-input size="small" type="number" v-model="report.loanTerm" :disabled="!saveBtnShow"></el-input>
                             <span>年</span>
                         </p>
                     </div>
@@ -148,28 +148,28 @@
             <div>
                 <p class="bold">卖方信息</p>
                 <div class="owner msg info">
-                    <div class="text w33">
-                        <p>姓名：<span>{{firstSeller.name}}</span></p>
-                        <p>身份证：<span>{{firstSeller.identifyCode}}</span></p>
-                        <p>电话：<span>{{firstSeller.mobile}}</span></p>
+                    <div class="text mai-mai">
+                        <p><span>姓名：</span><span style="min-width:56px;">{{firstSeller.name}}</span></p>
+                        <p><span style="min-width:56px;">身份证：</span><span>{{firstSeller.identifyCode}}</span></p>
+                        <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
                         <li v-for="(item,index) in sellerArr" :key="index">
-                            <p>共有人姓名：<span>{{item.name}}</span></p>
-                            <p>电话：<span>{{item.mobile}}</span></p>
+                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
                         <p class="mark" style="margin-right:10px;">
-                            <span>是否析产（继承）：</span>
-                            <el-select size="small" v-model="report.isExtend">
+                            <span style="min-width:126px;">是否析产（继承）：</span>
+                            <el-select size="small" v-model="report.isExtend" :disabled="!saveBtnShow">
                                 <el-option label="否" value="0"></el-option>
                                 <el-option label="是" value="1"></el-option>
                             </el-select>
                         </p>
                         <p>
-                            <span>婚姻状况：</span>
-                            <el-select size="small" v-model="report.maritalStatus">
+                            <span style="min-width:70px;">婚姻状况：</span>
+                            <el-select size="small" v-model="report.maritalStatus" :disabled="!saveBtnShow">
                                 <el-option v-for="item in dictionary['624']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
@@ -179,43 +179,42 @@
         </div>
         <div class="agent resource">
             <div>
-                <p class="bold">代理人信息</p>
+                <p class="bold">买方代理人信息</p>
                 <div class="agent-info info">
                     <p>
                         <span>代理人姓名：</span>
-                        <el-input size="small" class="w100" v-model="report.buyerAgentName"></el-input>
-                        <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)">
+                        <el-input size="small" class="w100" v-model="report.buyerAgentName" :disabled="!saveBtnShow"></el-input>
+                        <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)" :disabled="!saveBtnShow">
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
-                        <el-input size="small" maxlength="18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.buyerAgentCard"></el-input>
+                        <el-input size="small" maxlength="18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.buyerAgentCard" :disabled="!saveBtnShow"></el-input>
                     </p>
                     <p>
                         <span>电话：</span>
-                        <el-input size="small" type="number" class="w200" v-model="report.buyerAgentMobile"></el-input>
+                        <el-input size="small" type="number" class="w200" v-model="report.buyerAgentMobile" :disabled="!saveBtnShow"></el-input>
                     </p>
                 </div>
             </div>
             <div>
-                <p class="bold">代理人信息</p>
+                <p class="bold">卖方代理人信息</p>
                 <div class="agent-info info">
                     <p>
                         <span>代理人姓名：</span>
-                        <el-input size="small" class="w100" v-model="report.sellerAgentName"></el-input>
-                        <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)">
+                        <el-input size="small" class="w100" v-model="report.sellerAgentName" :disabled="!saveBtnShow"></el-input>
+                        <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)" :disabled="!saveBtnShow">
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
-                        <el-input size="small" maxlength="18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.sellerAgentCard"></el-input>
+                        <el-input size="small" maxlength="18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.sellerAgentCard" :disabled="!saveBtnShow"></el-input>
                     </p>
                     <p>
                         <span>电话：</span>
-                        <el-input size="small" type="number" class="w200" v-model="report.sellerAgentMobile"></el-input>
+                        <el-input size="small" type="number" class="w200" v-model="report.sellerAgentMobile" :disabled="!saveBtnShow"></el-input>
                     </p>
                 </div>
             </div>
         </div>
         <div slot="footer" class="dialog-footer">
-            <el-button class="confirmBtn" @click="saveFn">保存</el-button>
-            <el-button class="cancelBtn" @click="cancelFn">取消</el-button>
+            <el-button class="confirmBtn" @click="saveFn" v-if="saveBtnShow">保存</el-button>
         </div>
     </div>
 </template>
@@ -253,7 +252,8 @@ export default {
     mixins: [MIXINS],
     props: {
         id: Number,
-        contType: String
+        contType: String,
+        saveBtnShow: Boolean
     },
     data() {
         return {
@@ -464,6 +464,7 @@ export default {
                             type: "success"
                         })
                         this.getContractDetail()
+                        this.$emit("changeBtnStatus")
                     }
                 }).catch(error => {
                     this.$message({
@@ -474,9 +475,6 @@ export default {
             }).catch(error => {
                 this.$message({message:`${error.title}${error.msg}`})
             })
-        },
-        cancelFn() {
-            this.report = {...this.tempReport}
         }
     },
     filters: {
@@ -518,6 +516,16 @@ export default {
         span {
             color: @color-blank;
         }
+        &.mai-mai {
+            p {
+                margin-right: 43px;
+            }
+            p:nth-child(odd) {
+                span:first-child {
+                    min-width: 42px;
+                }
+            }
+        }
     }
     .text-long {
         min-width: 353px;
@@ -538,7 +546,6 @@ export default {
     }
     .position {
         i {
-            min-width: 28px;
             line-height: 32px;
         }
     }
@@ -549,17 +556,9 @@ export default {
         li {
             display: flex;
             width: 50%;
-            p {
-                margin-right: 20px;
-            }
             &:first-child {
                 display: none;
             }
-        }
-    }
-    .w33 {
-        p {
-            width: 33.33%;;
         }
     }
     /*去掉谷歌，火狐下的type="number"中的右边箭头*/
@@ -606,10 +605,10 @@ export default {
                     }
                 }
                 .el-select {
-                    max-width: 120px;
+                    width: 100px;
                 }
                 .el-input {
-                    max-width: 120px;
+                    width: 120px;
                 }
             }
         }
@@ -619,7 +618,7 @@ export default {
 .resource {
     display: flex;
     > div {
-        width: 35%;
+        min-width: 600px;
         border: 1px solid #ebeef5;
         margin-right: 10px;
         > p {
@@ -664,10 +663,10 @@ export default {
                 line-height: 32px;
             }
             .el-select {
-                max-width: 120px;
+                width: 120px;
             }
             .el-input {
-                max-width: 120px;
+                width: 120px;
             }
         }
     }
@@ -693,7 +692,7 @@ export default {
 }
 
 .dialog-footer {
-    width: 70%;
+    width: 1200px;
     margin-top: 20px;
     text-align: center;
 }
@@ -703,13 +702,5 @@ export default {
     border-radius: 18px;
     background-color: #478DE3;
     color: #fff;
-}
-.cancelBtn {
-    background-color: #fff;
-    width: 100px;
-    height: 38px;
-    border-radius: 18px;
-    border-color: #478DE3;
-    color: #478DE3;
 }
 </style>

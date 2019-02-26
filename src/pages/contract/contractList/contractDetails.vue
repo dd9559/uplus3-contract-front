@@ -3,7 +3,7 @@
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
-          <dealReport :contType="contType" :id="id"></dealReport>
+          <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" @changeBtnStatus="BtnShowFn"></dealReport>
         </el-tab-pane>
         <el-tab-pane label="合同详情" name="first">
           <div class="firstDetail" :style="{ height: clientHei }">
@@ -463,7 +463,8 @@
     <!-- <div class="functionTable" v-if="contractDetail.contChangeState.value!=2"> -->
     <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-com-bill'].state&&name==='first'" @click="runningWater">合同流水</el-button>
-      <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='deal-report'" @click="printDemo">打印成交报告</el-button>
+      <el-button round v-if="power['sign-com-bill'].state&&name==='deal-report'&&editBtnShow" style="background:#478DE3;color:white;" @click="editFn">编辑</el-button>
+      <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='deal-report'&&reportBtnShow" @click="printDemo">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
       <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
@@ -913,6 +914,10 @@ export default {
       },
       // url:`url(${require('@/assets/img/shuiyin.png')})`,
       url:`${require('@/assets/img/shuiyin.png')}`,
+      //成交报告
+      saveBtnShow: false,
+      editBtnShow: false,
+      reportBtnShow: false
     };
   },
   created() {
@@ -939,6 +944,16 @@ export default {
     this.getAdmin();//获取当前登录人信息
   },
   methods: {
+    //控制 编辑 打印成交报告 保存 按钮显示隐藏
+    editFn() {
+      this.saveBtnShow = !this.saveBtnShow
+      this.editBtnShow = !this.editBtnShow
+    },
+    BtnShowFn() {
+      this.saveBtnShow = false
+      this.editBtnShow = true
+      this.reportBtnShow = true
+    },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
       this.clientHei= document.documentElement.clientHeight -200 + 'px'
@@ -1322,6 +1337,9 @@ export default {
           if(res.data.contState.value===3){
             this.getContractBody();//获取合同主体
           }
+          this.saveBtnShow = !res.data.dealReport ? true : false
+          this.editBtnShow = res.data.dealReport ? true : false
+          this.reportBtnShow = res.data.dealReport ? true : false
         }
       }).catch(error=>{
         this.$message({
