@@ -5,8 +5,8 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="签约日期：" class="width-250" :class="{'form-label':type===1}">
-            <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" v-model="contractForm.signDate" :disabled="type===2?true:false" style="width:140px"></el-date-picker>
+          <el-form-item label="签约日期：" class="width-250">
+            <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" v-model="contractForm.signDate" style="width:140px" @clear="clearData"></el-date-picker>
           </el-form-item>
           <el-form-item label="合同类型：" class="width-250">
             <el-input placeholder="请输入内容" value="租赁" :disabled="true" style="width:140px" v-if="contractForm.type===1"></el-input>
@@ -132,12 +132,14 @@
                   <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'owner')" class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
                 </span>
-                <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
+                 <!-- :disabled="type===2&&!item.edit?true:false" -->
+                <el-select v-model="item.relation" placeholder="关系" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
-                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
-                <input v-model="item.encryptionCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.encryptionCode)">
+                 <!-- :class="{'disabled':type===2&&!item.edit}" -->
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight"></span>
+                <input v-model="item.encryptionCode" type="text" maxlength="18" placeholder="身份证号" class="idCard_" @input="verifyIdcard(item.encryptionCode)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -178,13 +180,12 @@
                   <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'guest')"  class="name_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
-                <el-select v-model="item.relation" placeholder="关系" class="relation_" :disabled="type===2&&!item.edit?true:false">
+                <el-select v-model="item.relation" placeholder="关系" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
-                <!-- <el-input v-model="item.propertyRightRatio" placeholder="产权比" class="rate_" @input="cutNumber_(index,'guest')" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"><i slot="suffix">%</i></el-input> -->
-                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}"></span>
-                <input v-model="item.encryptionCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" :disabled="type===2&&!item.edit?true:false" :class="{'disabled':type===2&&!item.edit}" @input="verifyIdcard(item.encryptionCode)">
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight"></span>
+                <input v-model="item.encryptionCode" maxlength="18" type="text" placeholder="身份证号" class="idCard_" @input="verifyIdcard(item.encryptionCode)">
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -322,6 +323,7 @@
     </el-dialog>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
+    <a id="add" href="" v-show="false" target="_blank"></a>
   </div>
 </template>
            
@@ -546,6 +548,9 @@ export default {
     // deleteRowcommissionData1(index) {
     //   this.guestList.splice(index, 1);
     // },
+    clearData(){
+      console.log('111')
+    },
     //删除联系人确认框
     delPeople(index,type){
       this.peopleIndex=index;
@@ -680,6 +685,9 @@ export default {
       //验证合同信息
       if(this.contractForm.type!==1){
         delete rule.transFlowCode
+      }
+      if(!this.contractForm.signDate){
+        this.contractForm.signDate=''
       }
       this.$tool.checkForm(this.contractForm, rule).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
@@ -1186,6 +1194,7 @@ export default {
           delete param.saleCont.achievementState;
         }
         var url = '/api/contract/updateContract';
+        // let page = window.open('','_blank');
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
@@ -1203,7 +1212,9 @@ export default {
             let newPage = this.$router.resolve({ 
               path: '/extendParams'
             });
-            window.open(newPage.href, '_blank');
+            // page.location=newPage.href
+            window.open(newPage.href,'_blank')
+
           }
         }).catch(error => {
           this.fullscreenLoading=false;

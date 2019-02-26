@@ -3,7 +3,7 @@
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
-          <dealReport :contType="contType" :id="id"></dealReport>
+          <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" @changeBtnStatus="BtnShowFn"></dealReport>
         </el-tab-pane>
         <el-tab-pane label="合同详情" name="first">
           <div class="firstDetail" :style="{ height: clientHei }">
@@ -259,10 +259,10 @@
             <div v-if="contractDetail.contChangeState.value!=2">
               <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
-              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0&&userMsg.empId===recordId" @click="invalid">撤单</el-button>
+              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)&&userMsg.empId===recordId" @click="goEdit">编辑</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&userMsg.empId===recordId&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
               <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
@@ -291,15 +291,15 @@
             </ul>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data-add'].state">
+        <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state">
           <!-- <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData"> -->
-          <div class="dataBank" v-if="power['sign-ht-xq-data-add'].state" :style="{ height: clientHei }">
+          <div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHei }">
             <div class="classify" v-if="sellerList.length>0">
               <p class="title">卖方</p>
-              <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
+              <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
-                  <li v-if="power['sign-ht-xq-data-add'].state">
+                  <li v-if="power['sign-ht-xq-data'].state">
                     <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
@@ -312,17 +312,17 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
                   </li>
                 </ul>
               </div>
             </div>
             <div class="classify" v-if="buyerList.length>0">
               <p class="title">买方</p>
-              <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
+              <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
-                  <li v-if="power['sign-ht-xq-data-add'].state">
+                  <li v-if="power['sign-ht-xq-data'].state">
                     <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
@@ -335,17 +335,17 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
                   </li>
                 </ul>
               </div>
             </div>
             <div class="classify" v-if="otherList.length>0">
               <p class="title">其他</p>
-              <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
+              <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
-                  <li v-if="power['sign-ht-xq-data-add'].state">
+                  <li v-if="power['sign-ht-xq-data'].state">
                     <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
@@ -358,7 +358,7 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
                   </li>
                 </ul>
               </div>
@@ -463,10 +463,11 @@
     <!-- <div class="functionTable" v-if="contractDetail.contChangeState.value!=2"> -->
     <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-com-bill'].state&&name==='first'" @click="runningWater">合同流水</el-button>
-      <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='deal-report'" @click="printDemo">打印成交报告</el-button>
+      <el-button round v-if="power['sign-com-bill'].state&&name==='deal-report'&&editBtnShow" style="background:#478DE3;color:white;" @click="editFn">编辑</el-button>
+      <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='deal-report'&&reportBtnShow" @click="printDemo">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
-      <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data-add'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
+      <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
       <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
     
@@ -882,14 +883,18 @@ export default {
           state: false,
           name: '下载合同主体'
         },
-        'sign-ht-xq-data-add': {
+        'sign-ht-xq-data': {
           state: false,
-          name: '编辑资料库'
+          name: '资料库权限'
         },
-        'sign-ht-xq-data-down': {
-          state: false,
-          name: '下载资料库'
-        },
+        // 'sign-ht-xq-data-add': {
+        //   state: false,
+        //   name: '编辑资料库'
+        // },
+        // 'sign-ht-xq-data-down': {
+        //   state: false,
+        //   name: '下载资料库'
+        // },
         'sign-ht-xq-ly-wmemo': {
           state: false,
           name: '添加录音备注'
@@ -909,6 +914,10 @@ export default {
       },
       // url:`url(${require('@/assets/img/shuiyin.png')})`,
       url:`${require('@/assets/img/shuiyin.png')}`,
+      //成交报告
+      saveBtnShow: false,
+      editBtnShow: false,
+      reportBtnShow: false
     };
   },
   created() {
@@ -935,6 +944,16 @@ export default {
     this.getAdmin();//获取当前登录人信息
   },
   methods: {
+    //控制 编辑 打印成交报告 保存 按钮显示隐藏
+    editFn() {
+      this.saveBtnShow = !this.saveBtnShow
+      this.editBtnShow = !this.editBtnShow
+    },
+    BtnShowFn() {
+      this.saveBtnShow = false
+      this.editBtnShow = true
+      this.reportBtnShow = true
+    },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
       this.clientHei= document.documentElement.clientHeight -200 + 'px'
@@ -1318,6 +1337,9 @@ export default {
           if(res.data.contState.value===3){
             this.getContractBody();//获取合同主体
           }
+          this.saveBtnShow = !res.data.dealReport ? true : false
+          this.editBtnShow = res.data.dealReport ? true : false
+          this.reportBtnShow = res.data.dealReport ? true : false
         }
       }).catch(error=>{
         this.$message({
