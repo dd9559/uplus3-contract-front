@@ -118,9 +118,9 @@
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
-                        <p style="margin:0 10px;">
+                        <p style="margin:0 10px;" class="mark">
                             <span>交易流程：</span>
-                            <el-select size="small" v-model="report.transFlowCode" :disabled="!saveBtnShow">
+                            <el-select size="small" v-model="report.transFlowCode" :disabled="transFlowEdit">
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                         </p>
@@ -244,6 +244,9 @@ const rule = {
     ownershipNumber: {
         name: "权属证号"
     },
+    transFlowCode: {
+        name: "交易流程"
+    },
     isExtend: {
         name: "是否析产（继承）"
     }
@@ -339,7 +342,8 @@ export default {
                 identifyCode: "",
                 mobile: ""
             },
-            sellerArr: []
+            sellerArr: [],
+            transFlowEdit: false
         }
     },
     created() {
@@ -363,6 +367,7 @@ export default {
                     this.dealBasicInfo.propertyAddr = res.data.propertyAddr
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
+                    this.transFlowEdit = res.data.dealReport ? true : false
                     this.tempReport = {...this.report}
                     this.dealBasicInfo.guestOwnerName = res.data.guestInfo.ShopOwnerName
                     this.dealBasicInfo.guestStoreName = res.data.guestInfo.GuestStoreName
