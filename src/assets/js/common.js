@@ -596,6 +596,8 @@ let TOOL = {
       return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g, "").replace(/\s/g, "");
     } else if (type === 2) {
       return val.replace(/[^\d\a-zA-Z]/g, "").replace(/\s/g, "");
+    }else if(type===3){
+      return val.replace(/[^\u4E00-\u9FA5]/g, "").replace(/\s/g, "");
     }
   },
   numberInput: function (val) {
