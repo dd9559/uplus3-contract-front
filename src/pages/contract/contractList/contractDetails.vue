@@ -553,6 +553,127 @@
       <LayerPrint ref="easyPrint" class="easyPrint_">
         <div class="printContent" style="width:900px;height:1270px">
           <div class="printHeader">
+            <span>成交报告</span>
+          </div>
+          <div class="printItem">
+            <p>合同基本信息</p>
+            <ul>
+              <li>
+                <p class="w25"><span>签约日期：</span><span></span></p>
+                <p class="w30"><span>合同编号：</span><span></span></p>
+                <p><span>交易类型：</span><span></span></p>
+              </li>
+              <li>
+                <p class="w25"><span>成交总价：</span><span></span></p>
+                <p><span>应收佣金：</span><span></span></p>
+              </li>
+            </ul>
+          </div>
+          <div class="printItem">
+            <p>房屋基本信息</p>
+            <ul>
+              <li>
+                <p class="w25"><span>两证情况：</span><span></span></p>
+                <p class="w30"><span>抵押情况：</span><span></span></p>
+                <p><span>提前还款：</span><span></span></p>
+              </li>
+              <li>
+                <p class="w25"><span>建筑面积：</span><span></span></p>
+                <p class="w30"><span>土地使用权面积：</span><span></span></p>
+                <p><span>土地性质：</span><span></span></p>
+              </li>
+              <li>
+                <p><span>物业地址：</span><span></span></p>
+              </li>
+              <li>
+                <p><span>权属证号：</span><span></span></p>
+              </li>
+              <li>
+                <p class="w25"><span>缴纳税费：</span><span></span></p>
+                <p class="w30"><span>房屋总楼层：</span><span></span></p>
+                <p class="w25"><span>建筑结构：</span><span></span></p>
+                <p><span>评估值：</span><span></span></p>
+              </li>
+            </ul>
+          </div>
+          <div class="resource">
+            <div class="guest">
+              <div class="title">客源方信息</div>
+              <div class="two-item">
+                <p class="line"><span>店长：</span><span></span></p>
+                <p><span>联系电话：</span><span></span></p>
+              </div>
+              <div><p>汉街二店</p></div>
+            </div>
+            <div class="house">
+              <div class="title">房源方信息</div>
+              <div class="two-item">
+                <p class="line"><span>店长：</span><span></span></p>
+                <p><span>联系电话：</span><span></span></p>
+              </div>
+              <div><p>汉街二店</p></div>
+            </div>
+          </div>
+          <div class="mai-mai resource">
+            <div class="guest">
+              <div class="title">买方信息</div>
+              <div class="two-item">
+                <p class="line"><span>姓名：</span><span></span></p>
+                <p><span>身份证：</span><span></span></p>
+              </div>
+              <div><p><span>电话：</span><span></span></p></div>
+              <div class="two-item no-bottom">
+                <p class="line"><span>共有人姓名：</span><span></span></p>
+                <p><span>电话：</span><span></span></p>
+              </div>
+              <div class="two-item no-bottom">
+                <p class="line"><span>付款方式：</span><span></span></p>
+                <p><span>交易流程：</span><span></span></p>
+              </div>
+              <div class="two-item">
+                <p class="line"><span>按揭银行：</span><span></span></p>
+                <p><span>贷款金额：</span><span></span></p>
+              </div>
+              <div>
+                <p><span>贷款期限：</span><span></span></p>
+              </div>
+            </div>
+            <div class="seller">
+              <div class="title">卖方信息</div>
+              <div class="two-item">
+                <p class="line"><span>姓名：</span><span></span></p>
+                <p><span>身份证：</span><span></span></p>
+              </div>
+              <div><p><span>电话：</span><span></span></p></div>
+              <div class="two-item no-bottom">
+                <p class="line"><span>共有人姓名：</span><span></span></p>
+                <p><span>电话：</span><span></span></p>
+              </div>
+              <div class="last-item" style="border-top:1px solid #dddee6;">
+                <p class="no-line"><span>是否析产（继承）：</span><span></span></p>
+                <p><span>婚姻状况：</span><span></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="resource">
+            <div class="guest">
+              <div class="title">买方代理人信息</div>
+              <div class="two-item">
+                <p class="line"><span>代理人姓名：</span><span></span></p>
+                <p><span>身份证：</span><span></span></p>
+              </div>
+              <div><p><span>电话：</span><span></span></p></div>
+            </div>
+            <div>
+              <div class="title">卖方代理人信息</div>
+              <div class="two-item">
+                <p class="line"><span>代理人姓名：</span><span></span></p>
+                <p><span>身份证：</span><span></span></p>
+              </div>
+              <div><p><span>电话：</span><span></span></p></div>
+            </div>
+          </div>
+          <!-- <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
           </div>
           <div class="printMsg">
@@ -595,10 +716,6 @@
               <p class="p_width">
                 <span class="printTag">物业地址：</span>
                 <span class="text">{{contractDetail.propertyAddr}}</span>
-                <!-- <span class="printTxt">{{contractDetail.houseInfo.EstateName}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.BuildingName}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.Unit}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.RoomNo}}</span> -->
               </p>
             </div>
             <div class="printItem">
@@ -632,11 +749,6 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="relation" label="关系" width="200"></el-table-column>
-                <!-- <el-table-column label="产权比" v-if="contType!='1'" width="149">
-                  <template slot-scope="scope">
-                    {{scope.row.propertyRightRatio+'%'}}
-                  </template>
-                </el-table-column> -->
                 <el-table-column prop="identifyCode" min-width="239" label="身份证号"></el-table-column>
               </el-table>
             </div>
@@ -664,11 +776,6 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="relation" label="关系" width="200"></el-table-column>
-                <!-- <el-table-column label="产权比" v-if="contType!='1'" width="149">
-                  <template slot-scope="scope">
-                    {{scope.row.propertyRightRatio+'%'}}
-                  </template>
-                </el-table-column> -->
                 <el-table-column prop="identifyCode" min-width="239" label="身份证号"></el-table-column>
               </el-table>
             </div>
@@ -706,8 +813,7 @@
                 <p v-else>暂无备注</p>
               </div>
             </div>
-          </div>
-          <!-- <div class="bgcImg" :style={backgroundImage:url}></div> -->
+          </div> -->
           <img class="bgcImg" :src="url" alt="">
         </div>
       </LayerPrint>
@@ -2221,7 +2327,7 @@ export default {
   position: relative;
   font-size: 16px;
   box-sizing: border-box;
-  padding: 40px 40px;
+  padding: 40px 30px;
   background: #fff;
   .bgcImg{
     position: absolute;
@@ -2235,68 +2341,156 @@ export default {
     opacity: 0.5;
     // background-image: url("../../../assets/img/shuiyin.png");
   }
-  p{
-    display: inline-block;
-    width: 240px;
-    padding: 5px 0;
-    >.dealPrice {
-      color: @color-yellow;
+  .printHeader {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 2px solid #f2f3f8;
+    padding-bottom: 20px;
+  }
+  .printItem {
+    margin: 10px 0;
+    > p {
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom: 10px;
     }
-  }
-  .p_width{
-    width: 400px;
-  }
-  .p_idcard{
-    width: 300px;
-  }
-  .printItem_{
-    border-right: 1px solid #ebeef5;
-    border-bottom: 1px solid #ebeef5;
-  }
-  .printTag{
-    padding-left: 0!important;
-    display: inline-block;
-    width: 96px;
-    text-align: right;
-    padding-left: 10px;
-    color:@color-6c;
-  }
-  .printTxt{
-    color: @color-233;
-  }
-  .contTitle{
-    padding: 10px 0;
-    color: @color-233;
-    font-size: 20px;
-    font-weight: bold;
-  }
-  .printCode{
-    color: @color-blue;
-    font-weight: bold;
-  }
-  .printHeader{
-    padding: 16px 0;
-    border-bottom: 1px solid @border-ED;
-  }
-  .printMsg{
-    padding: 0 12px;
-  }
-  .remark_{
-    margin-top: 10px;
-    display: flex;
-    .remarks{
-      color: @color-233;
-      padding: 0 10px;
-      box-sizing: border-box;
-      width: 700px;
-      height: 120px;
-      border: 1px solid #ebeef5;
-      border-radius: 4px;
-      >P{
-        width: 680px;
-        font-size: 14px;
+    li {
+      display: flex;
+      line-height: 40px;
+      .w25 {
+        width: 25%;
+      }
+      .w30 {
+        width: 30%;
+      }
+      span:first-child {
+        color:@color-6c;
+      }
+      span:last-child {
+        color: @color-233;
       }
     }
   }
+  .resource {
+    display: flex;
+    margin-bottom: 20px;
+    > div {
+      width: 445px;
+      border: 1px solid #dddee6;
+      &.guest {
+        margin-right: 10px;
+      }
+      div {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        &.title {
+          justify-content: center;
+          font-size: 18px;
+          background: #f2f3f8;
+        }
+        p {
+          padding-left: 5px;
+          span:first-child {
+            color:@color-6c;
+          }
+          span:last-child {
+            color: @color-233;
+          }
+        }
+      }
+      .two-item {
+        border-bottom: 1px solid #dddee6;
+        border-top: 1px solid #dddee6;
+        position: relative;
+        .line {
+          display: inline-block;
+          width: 170px;
+          &::before {
+            content: "";
+            width: 1px;
+            height: 40px;
+            position: absolute;
+            left: 175px;
+            top: 0;
+            background: #dddee6;
+          }
+        }
+        &.no-bottom {
+          border-bottom: none;
+        }
+      }
+      .last-item {
+        .no-line {
+          display: inline-block;
+          width: 170px;
+        }
+      }
+    }
+  }
+  // p{
+  //   display: inline-block;
+  //   width: 240px;
+  //   padding: 5px 0;
+  //   >.dealPrice {
+  //     color: @color-yellow;
+  //   }
+  // }
+  // .p_width{
+  //   width: 400px;
+  // }
+  // .p_idcard{
+  //   width: 300px;
+  // }
+  // .printItem_{
+  //   border-right: 1px solid #ebeef5;
+  //   border-bottom: 1px solid #ebeef5;
+  // }
+  // .printTag{
+  //   padding-left: 0!important;
+  //   display: inline-block;
+  //   width: 96px;
+  //   text-align: right;
+  //   padding-left: 10px;
+  //   color:@color-6c;
+  // }
+  // .printTxt{
+  //   color: @color-233;
+  // }
+  // .contTitle{
+  //   padding: 10px 0;
+  //   color: @color-233;
+  //   font-size: 20px;
+  //   font-weight: bold;
+  // }
+  // .printCode{
+  //   color: @color-blue;
+  //   font-weight: bold;
+  // }
+  // .printHeader{
+  //   padding: 16px 0;
+  //   border-bottom: 1px solid @border-ED;
+  // }
+  // .printMsg{
+  //   padding: 0 12px;
+  // }
+  // .remark_{
+  //   margin-top: 10px;
+  //   display: flex;
+  //   .remarks{
+  //     color: @color-233;
+  //     padding: 0 10px;
+  //     box-sizing: border-box;
+  //     width: 700px;
+  //     height: 120px;
+  //     border: 1px solid #ebeef5;
+  //     border-radius: 4px;
+  //     >P{
+  //       width: 680px;
+  //       font-size: 14px;
+  //     }
+  //   }
+  // }
 }
 </style>
