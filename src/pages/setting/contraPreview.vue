@@ -30,14 +30,14 @@
           </div>
         </div>
       </div>
-      <el-dialog class='expand'  title="请设置以下扩展参数" :closeOnClickModal="$tool.closeOnClickModal"  :before-close="handleClose" width="760px" :visible.sync="modalDialog" >
+      <!-- <el-dialog class='expand'  title="请设置以下扩展参数" :closeOnClickModal="$tool.closeOnClickModal"  :before-close="handleClose" width="760px" :visible.sync="modalDialog" >
           <p class='tip'>系统暂不支持以下合同参数，需要进行设置</p>
           <div class="ex-body">
               <p>温馨提示：选项值之间请用英文下的逗号隔开！</p>
                <el-table :data='tableDate' max-height="383px" style="width: 100%;overflow-y:auto" header-row-class-name="theader-bg">
                     <el-table-column type="index" width="50"></el-table-column>
                     <el-table-column align="center" label="参数名称" prop="name"></el-table-column>
-                    <!-- <el-table-column align="center" label="是否必填" min-width="150">
+                     <el-table-column align="center" label="是否必填" min-width="150">
                         <template slot-scope="scope">
                             <el-select v-model="scope.row.isRequired" placeholder="请选择信息类型">
                                 <el-option :value='1' label="是"></el-option>
@@ -45,7 +45,7 @@
                             </el-select>
                         </template>
                     </el-table-column> -->
-                    <el-table-column align="center" label="输入格式"  min-width="150">
+                    <!-- <el-table-column align="center" label="输入格式"  min-width="150">
                         <template slot-scope="scope">
                             <el-select v-model="scope.row.inputType" v-if="content[scope.$index]==0">
                                 <el-option :value=2 label="下拉框" v-show="content[scope.$index]==0"></el-option>
@@ -81,7 +81,7 @@
                     <el-button type="primary paper-btn" @click="numSave">保存</el-button>
                 </div>
           </div>
-      </el-dialog>
+      </el-dialog> --> 
     </div>
 </template>
 
@@ -207,11 +207,11 @@ export default{
                     }else{
                         this.modalDialog=false
                     }
-                    for(let i=0;i<this.tableDate.length;i++){
-                        this.tableDate[i].inputType=this.tableDate[i].inputType.value
-                        this.content.push(this.tableDate[i].checkboxCount)
-                        this.contents.push('该占位符需要输入'+this.tableDate[i].checkboxCount+'个值')
-                    }
+                    // for(let i=0;i<this.tableDate.length;i++){
+                    //     this.tableDate[i].inputType=this.tableDate[i].inputType.value
+                    //     this.content.push(this.tableDate[i].checkboxCount)
+                    //     this.contents.push('该占位符需要输入'+this.tableDate[i].checkboxCount+'个值')
+                    // }
                     this.$nextTick(()=>{
                       this.loading=false
                     })
@@ -618,42 +618,42 @@ export default{
                   this.$nextTick(()=>{
                       this.loading=false
                     })
-                  if(res.data.data.unPlaceholder!==''){
-                      for( let i=0;i<res.data.data.unPlaceholder.length;i++){
-                          if(res.data.data.unPlaceholder[i]!==null){
-                              for(let key in res.data.data.unPlaceholder[i]){
-                                if(key=='key'){
-                                    this.tableDate.push(res.data.data.unPlaceholder[i].key)
-                                }
-                                if(key=='value'){
-                                this.content.push(res.data.data.unPlaceholder[i].value) 
-                                    this.contents.push('该占位符需要输入'+res.data.data.unPlaceholder[i].value+'个值')
-                                }
-                              }   
+                 
+                //   if(res.data.data.unPlaceholder!==''){
+                //       for( let i=0;i<res.data.data.unPlaceholder.length;i++){
+                //           if(res.data.data.unPlaceholder[i]!==null){
+                //               for(let key in res.data.data.unPlaceholder[i]){
+                //                 if(key=='key'){
+                //                     this.tableDate.push(res.data.data.unPlaceholder[i].key)
+                //                 }
+                //                 if(key=='value'){
+                //                 this.content.push(res.data.data.unPlaceholder[i].value) 
+                //                     this.contents.push('该占位符需要输入'+res.data.data.unPlaceholder[i].value+'个值')
+                //                 }
+                //               }   
 
-                          }
-                      }
-                  }else{
-                        this.tableDate=null
-                  }
-                  var arr=[]
-                  for(let i=0;i<this.tableDate.length;i++){
-                      var obj={}
-                      obj['name']=this.tableDate[i]
-                    //   obj['isRequired']=1
-                      obj['inputType']=Number(this.content[i])!==0?3:1
-                      obj['checkboxCount']=this.content[i]
-                      obj['options']=''
-                      obj['unit']=''
-                      arr.push(obj)
-                  }
-                  this.tableDate=arr
-                  if(this.tableDate.length!==0 && this.show==1 && this.flag==1){
-                      this.modalDialog=true
-                    }
+                //           }
+                //       }
+                //   }else{
+                //         this.tableDate=null
+                //   }
+                //   var arr=[]
+                //   for(let i=0;i<this.tableDate.length;i++){
+                //       var obj={}
+                //       obj['name']=this.tableDate[i]
+                //     //   obj['isRequired']=1
+                //       obj['inputType']=Number(this.content[i])!==0?3:1
+                //       obj['checkboxCount']=this.content[i]
+                //       obj['options']=''
+                //       obj['unit']=''
+                //       arr.push(obj)
+                //   }
+                //   this.tableDate=arr
+                //   if(this.tableDate.length!==0 && this.show==1 && this.flag==1){
+                //       this.modalDialog=true
+                //     }
                  if(this.cityId==1 && (this.type==2)){
                     this.showSed=true
-                    // this.$refs.bigbox.$el.classList.add('bodycontainer')
                     this.position=false
                     this.imgSrc=res.data.data.businessImg.url
                     this.imgSrc2=res.data.data.residenceImg.url

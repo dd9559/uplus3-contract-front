@@ -215,7 +215,12 @@
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收付状态" prop="payStatus"></el-table-column>
+        <el-table-column align="center" label="收付状态" prop="payStatus">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus}}</span>
+            <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus}}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="结算信息">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
@@ -228,8 +233,8 @@
         </el-table-column>
         <el-table-column fixed="right" align="center" label="操作" min-width="160">
           <template slot-scope="scope">
-            <div v-if="(power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4))||(((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1&&(power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)))">
-              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.isDel===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)">
+            <div v-if="(power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&scope.row.payStatusValue!==4)||(((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1&&(power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)))">
+              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.isDel===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&scope.row.payStatusValue!==4">
                 开票
               </el-button>
               <template v-if="((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1">
@@ -516,6 +521,24 @@
           this.getEmployeByText()
         }
       },
+      /**
+       * 获取付款失败信息
+       */
+      getErrorMsg:function (data) {
+        this.$ajax.get('/api/payInfo/selectRetMsg',{payId:data.id}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.$message({
+              message:`付款失败：${res.data.msg}`
+            })
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            type:'warning'
+          })
+        })
+      },
       getData: function (type='init') {
         // debugger
         if(type==='search'){
@@ -699,6 +722,10 @@
         height: 1px;
       }
     }
+  }
+  .text-warning{
+    color: red;
+    cursor: pointer;
   }
 
   .margin-left-10 {

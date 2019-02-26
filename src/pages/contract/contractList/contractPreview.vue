@@ -19,9 +19,9 @@
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)&&userMsg.empId===recordId" @click="toEdit">编辑</el-button>
-        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0&&userMsg.empId===recordId" @click="dialogInvalid = true">撤单</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&userMsg.empId===recordId" @click="isSubmitAudit=true">提交审核</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
@@ -31,7 +31,7 @@
         <el-button round @click="showContData" v-if="power['sign-ht-xq-data-add'].state">资料库</el-button>
       </div>
       <div class="btn" v-else>
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&userMsg.empId===recordId" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state" @click="toEdit">编辑</el-button>
       </div>
     </div>
 
@@ -248,6 +248,7 @@ export default {
       canceldialogType:'',
       changeCancel_:'',
       changeCancelId:'',
+      isCanAudit:'',//html是否完整
       isSubmitAudit:false,
       //客源方门店id
       guestStoreId:'',
@@ -276,7 +277,7 @@ export default {
         label:false
       },
       previewType:"none",
-      imgWidth:650,
+      imgWidth:700,
       reduce:0,//合同页数是否减少 0无  1有
       power: {
         'sign-ht-info-edit': {
@@ -556,6 +557,7 @@ export default {
           this.contState=res.data.contState.value;
           this.contType=res.data.contType.value;
           this.recordId=res.data.recordId;
+          this.isCanAudit=res.data.isCanAudit;
           this.guestStoreId=res.data.guestStoreId;
           this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
@@ -1074,6 +1076,7 @@ export default {
       border: 1px solid #ccc;
       display: block;
       margin: 0 auto;
+      padding:0 2px;
     }
     .btnList{
       margin-left: 20px;
