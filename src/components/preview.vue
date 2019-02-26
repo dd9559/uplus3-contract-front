@@ -12,7 +12,7 @@
       <p class="tools btn-close" @click="chose('close')"><img :src="getImg('btn-close.png')" alt=""></p>
       <ul class="tools" v-if="getPreviewType==='contMain'||getPreviewType==='contData'">
         <li @click="opera(1)" v-if="getPreviewType==='contMain'&&power['sign-ht-xq-main-down'].state"><i class="iconfont icon-yuanjiaojuxing"></i></li>
-        <li @click="opera(1)" v-if="getPreviewType==='contData'&&power['sign-ht-xq-data-down'].state"><i class="iconfont icon-yuanjiaojuxing"></i></li>
+        <li @click="opera(1)" v-if="getPreviewType==='contData'&&power['sign-ht-xq-data'].state"><i class="iconfont icon-yuanjiaojuxing"></i></li>
         <li @click="opera(2)"><i class="iconfont icon-tubiao-12"></i></li>
         <li @click="opera(3)" v-if="getType==='img'"><i class="iconfont icon-icon-test3"></i></li>
         <li @click="opera(4)" v-if="getType==='img'"><i class="iconfont icon-yuanjiaojuxing1"></i></li>
@@ -70,7 +70,7 @@
             state: false,
             name: '下载合同主体'
           },
-          'sign-ht-xq-data-down': {
+          'sign-ht-xq-data': {
             state: false,
             name: '下载合同资料库'
           },

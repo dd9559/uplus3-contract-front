@@ -30,7 +30,8 @@
       <iframe :src="src2" frameborder="0" ref='iframeSecond' :style="{ height: clientHei }" v-show="isActive===2"></iframe>
       <div class="btn">
         <el-button round @click="isSave(1)" v-loading.fullscreen.lock="fullscreenLoading">保存</el-button><br>
-        <el-button type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button>
+        <el-button type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
+        <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
   </div>
@@ -333,8 +334,11 @@ export default {
   created(){
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
     this.clientHeight();
-    this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
-    console.log(window.location.origin)
+		this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
+		if (!window.location.origin) {
+			window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+		}
+		console.log(window.location.origin)
     let http = window.location.origin
     
     if(this.Msg.type===1){
@@ -390,7 +394,15 @@ export default {
       let iframebox=this.$refs.iframeSecond
       iframebox.contentWindow.document.querySelector(id).click()
 
-    },
+		},
+		//回到顶部
+		backTop(){
+			let iframebox1=this.$refs.iframeFirst;
+			let iframebox2=this.$refs.iframeSecond;
+			iframebox1.contentWindow.scrollTo(0,0)
+			iframebox2.contentWindow.scrollTo(0,0)
+		},
+		//保存
     isSave(operation){
 			// console.log(this.gethtml)
 			// debugger
@@ -1245,6 +1257,12 @@ export default {
       /deep/.is-round{
         margin-bottom: 20px;
       }
+    }
+    .huojian{
+			display: inline-block;
+			width: 75px;
+			text-align: center;
+			cursor: pointer;
     }
   }
 }
