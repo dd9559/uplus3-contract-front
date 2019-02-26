@@ -623,7 +623,7 @@ export default {
 .resource {
     display: flex;
     > div {
-        min-width: 600px;
+        min-width: 620px;
         border: 1px solid #ebeef5;
         margin-right: 10px;
         > p {
