@@ -326,7 +326,7 @@
        * 户名输入，只能输入中文、英文
        */
       inputOnly:function () {
-        this.list[0].userName=this.$tool.textInput(this.list[0].userName)
+        this.list[0].userName=this.$tool.textInput(this.list[0].userName,3)
       },
       clearData:function () {
         this.$tool.clearForm(this.form)

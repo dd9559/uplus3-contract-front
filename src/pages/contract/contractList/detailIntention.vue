@@ -116,7 +116,7 @@
                             <div class="small-col" v-for="(item,index) in sellerList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
-                                    <li v-if="power['sign-ht-xq-data-add'].state">
+                                    <li v-if="power['sign-ht-xq-data'].state">
                                         <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
@@ -129,7 +129,7 @@
                                                 <p>{{item_.name}}</p>                                              
                                             </div>
                                         </el-tooltip>
-                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
+                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
                                     </li>
                                 </ul>
                             </div>                           
@@ -141,7 +141,7 @@
                             <div class="small-col" v-for="(item,index) in buyerList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
-                                    <li v-if="power['sign-ht-xq-data-add'].state">
+                                    <li v-if="power['sign-ht-xq-data'].state">
                                         <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
@@ -155,7 +155,7 @@
                                                     <p>{{item_.name}}</p>   
                                                 </div>
                                             </el-tooltip>
-                                            <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>                                          
+                                            <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>                                          
                                         </li>
                                     
                                 </ul>
@@ -168,7 +168,7 @@
                             <div class="small-col" v-for="(item,index) in otherList" :key="index">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
-                                    <li v-if="power['sign-ht-xq-data-add'].state">
+                                    <li v-if="power['sign-ht-xq-data'].state">
                                         <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
@@ -181,7 +181,7 @@
                                                 <p>{{item_.name}}</p>    
                                             </div>                                         
                                         </el-tooltip>
-                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
+                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
                                     </li>
                                 </ul>
                             </div>                           
@@ -197,7 +197,7 @@
             <div class="functionTable">
                 
                 <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && (this.contState === 2 || this.contState === 3) && power['sign-ht-xq-main-add'].state">上传</el-button>  <!-- 合同主体上传 --> 
-                <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="name==='third' && power['sign-ht-xq-data-add'].state">上传</el-button>  <!-- 资料库上传 -->
+                <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="name==='third' && power['sign-ht-xq-data'].state">上传</el-button>  <!-- 资料库上传 -->
                 
             </div>
             
@@ -283,7 +283,7 @@ export default {
                     state: false,
                     name: '编辑合同主体'
                 },
-                'sign-ht-xq-data-add': {
+                'sign-ht-xq-data': {
                     state: false,
                     name: '编辑资料库'
                 },
@@ -417,8 +417,8 @@ export default {
                 console.log(address)
                 address.forEach(element => {
                     element.value.forEach(item => {
-                    let fileType = this.$tool.get_suffix(item.name);
-                    item.fileType=fileType
+                        let fileType = this.$tool.get_suffix(item.name);
+                        item.fileType=fileType
                     });
                     if(element.kind==="1"){
                     this.buyerList.forEach(ele => {

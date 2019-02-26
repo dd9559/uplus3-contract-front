@@ -569,7 +569,7 @@
       },
       inputOnly:function (index,type) {
         if(type==='userName'){
-          this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName)
+          this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName,3)
         }else {
           this.cardList[index].orderNo=this.$tool.textInput(this.cardList[index].orderNo,2)
         }
