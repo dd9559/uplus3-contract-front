@@ -129,7 +129,7 @@
         </div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
-        <el-table-column align="left" label="合同信息" width="240" fixed>
+        <el-table-column align="left" label="合同信息" width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -165,9 +165,9 @@
         </el-table-column>
         <el-table-column align="left" label="合同类型" prop="contType.label" width="100" fixed>
         </el-table-column>
-        <el-table-column align="left" label="物业地址" prop="propertyAddr" width="150" fixed>
+        <el-table-column align="left" label="物业地址" prop="propertyAddr" width="200" fixed>
         </el-table-column>
-        <el-table-column align="left" label="成交总价" prop="dealPrice" width="120" fixed>
+        <el-table-column align="left" label="成交总价" prop="dealPrice" width="150" fixed>
           <template slot-scope="scope">
             <span>{{scope.row.dealPrice}} 元</span>
             <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
@@ -180,7 +180,7 @@
             <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="成交经纪人" width="150">
+        <el-table-column align="left" label="成交经纪人" >
           <template slot-scope="scope">
             <p>{{scope.row.dealAgentStoreName}}</p>
             <p>{{scope.row.dealAgentName}}</p>
@@ -192,7 +192,7 @@
             {{Number(scope.row.signDate)|timeFormat_}}
           </template>
         </el-table-column>
-        <el-table-column align="left" label="可分配业绩 (元)" width="110">
+        <el-table-column align="left" label="可分配业绩 (元)" width="150">
           <template slot-scope="scope">
             <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
               <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
@@ -227,38 +227,6 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column align="left" label="当前审核人" width="200">
-          <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
-              <p>{{scope.row.auditName?scope.row.auditName:'-'}}</p>
-            </span>
-            <span v-else>-</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="下一步审核人" width="200">
-          <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
-              <p>{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
-            </span>
-            <span v-else>-</span>
-          </template>
-        </el-table-column> -->
-
-        <!-- <el-table-column align="left" label="备注" width="200">
-          <template slot-scope="scope">
-            <span v-if="scope.row.remarksExamine">
-              <el-popover trigger="hover" placement="top">
-                <div style="width:160px">
-                  {{scope.row.remarksExamine}}
-                </div>
-                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.remarksExamine.length<45}">
-                  {{scope.row.remarksExamine}}
-                </div>
-              </el-popover>
-            </span>
-            <span v-else>-</span>
-          </template>
-        </el-table-column> -->
         <el-table-column align="left" label="变更/解约" width="100">
           <template slot-scope="scope">
             <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>
@@ -286,7 +254,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="实收/应收(佣金)" width="120">
+        <el-table-column align="left" label="实收/应收(佣金)" width="150">
           <template slot-scope="scope">
             <!-- <div class="btn" @click="runningWater(scope.row)">流水</div> -->
             <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
@@ -311,9 +279,9 @@
             <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
               <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&scope.row.contState.value>1" @click="upload(scope.row)">上传</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
+              <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&userMsg&&scope.row.recordId===userMsg.empId" @click="goSave(scope.row)">提审</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</el-button>
               <!-- </span> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
             <!-- </div> -->

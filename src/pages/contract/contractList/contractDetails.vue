@@ -2,8 +2,8 @@
   <div class="view-container">
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'">
-          <dealReport :contType="contType" :id="id"></dealReport>
+        <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
+          <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" @changeBtnStatus="BtnShowFn"></dealReport>
         </el-tab-pane>
         <el-tab-pane label="合同详情" name="first">
           <div class="firstDetail" :style="{ height: clientHei }">
@@ -40,7 +40,7 @@
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
                   </p>
-                  <p class="address">
+                  <p class="address" v-if="contType==='1'">
                     <span class="tag">交易流程：</span>
                     <span class="text" v-for="item in transFlowList" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span>
                   </p>
@@ -66,19 +66,19 @@
                 <div class="one_">
                   <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
                   <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
-                  <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p>
-                  <p v-if="contType!='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
+                  <!-- <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p> -->
+                  <!-- <p v-if="contType!='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p> -->
                 </div>
-                <div class="one_">
-                  <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p>
-                  <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p>
-                  <p style="width:500px" v-if="contType!='1'">
+                <!-- <div class="one_"> -->
+                  <!-- <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p> -->
+                  <!-- <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p> -->
+                  <!-- <p style="width:500px" v-if="contType!='1'">
                     <span class="tag">房产证号：</span>
                     <span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span>
-                  </p>
-                  <p v-if="contType==='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p>
-                </div>
-                <div class="one_" v-if="contType!='1'">
+                  </p> -->
+                  <!-- <p v-if="contType==='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p> -->
+                <!-- </div> -->
+                <!-- <div class="one_" v-if="contType!='1'">
                   <p>
                     <span class="tag">产权状态：</span>
                     <span class="text" v-for="item in dictionary['514']" :key="item.key" v-if="item.key===contractDetail.houseInfo.propertyRightStatus">{{item.value}}</span>
@@ -90,12 +90,12 @@
                     <span class="tag">按揭欠款：</span>
                     <span class="text dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span>
                   </p>
-                </div>
-                <div class="one_">
+                </div> -->
+                <!-- <div class="one_">
                   <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
                   <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerName?contractDetail.houseInfo.ShopOwnerName:'--'}}</span></p>
                   <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerMobile?contractDetail.houseInfo.ShopOwnerMobile:'--'}}</span></p>
-                </div>
+                </div> -->
                 <div class="table">
                   <template>
                     <el-table :data="ownerData" border header-row-class-name="theader-bg">
@@ -123,16 +123,16 @@
               <div class="content">
                 <div class="one_">
                   <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
-                  <p>
+                  <!-- <p>
                     <span class="tag">付款方式：</span>
                     <span class="text" v-for="item in dictionary['556']" :key="item.key" v-if="contractDetail.guestInfo.paymentMethod===item.key">{{item.value}}</span>
-                  </p>
+                  </p> -->
                 </div>
-                <div class="one_">
+                <!-- <div class="one_">
                   <p><span class="tag">客源方门店：</span><span class="text">{{contractDetail.guestInfo.GuestStoreName}}</span></p>
                   <p><span class="tag">店 长：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
                   <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
-                </div>
+                </div> -->
                 <div class="table">
                   <template>
                     <el-table :data="clientrData" border header-row-class-name="theader-bg">
@@ -192,12 +192,12 @@
               </div>
             </div>
 
-            <div class="msg" v-if="contractDetail.extendParams">
+            <!-- <div class="msg" v-if="contractDetail.extendParams">
               <div class="title">扩展参数</div>
               <div class="content">
-                <div class="one_ extendParams">
+                <div class="one_ extendParams"> -->
                   <!-- <p v-for="(item,index) in parameterList" :key="index" v-if="contractDetail.extendParams[item.name]"> -->
-                  <p v-for="(item,index) in contractDetail.extendParams" :key="index" v-if="item.value">
+                  <!-- <p v-for="(item,index) in contractDetail.extendParams" :key="index" v-if="item.value">
                     <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                       <span class="tag tagHidden">{{item.name}}</span>
                     </el-tooltip>
@@ -209,7 +209,7 @@
                   </p>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <div class="msg">
               <div class="title">业绩分成</div>
@@ -259,10 +259,10 @@
             <div v-if="contractDetail.contChangeState.value!=2">
               <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
-              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0&&userMsg.empId===recordId" @click="invalid">撤单</el-button>
+              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)&&userMsg.empId===recordId" @click="goEdit">编辑</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&userMsg.empId===recordId" @click="isSubmitAudit=true">提交审核</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
               <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
@@ -291,15 +291,15 @@
             </ul>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data-add'].state">
+        <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state">
           <!-- <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData"> -->
-          <div class="dataBank" v-if="power['sign-ht-xq-data-add'].state" :style="{ height: clientHei }">
+          <div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHei }">
             <div class="classify" v-if="sellerList.length>0">
               <p class="title">卖方</p>
-              <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
+              <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
-                  <li v-if="power['sign-ht-xq-data-add'].state">
+                  <li v-if="power['sign-ht-xq-data'].state">
                     <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
@@ -312,17 +312,17 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
                   </li>
                 </ul>
               </div>
             </div>
             <div class="classify" v-if="buyerList.length>0">
               <p class="title">买方</p>
-              <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
+              <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
-                  <li v-if="power['sign-ht-xq-data-add'].state">
+                  <li v-if="power['sign-ht-xq-data'].state">
                     <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
@@ -335,17 +335,17 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
                   </li>
                 </ul>
               </div>
             </div>
             <div class="classify" v-if="otherList.length>0">
               <p class="title">其他</p>
-              <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data-add'].state||item.value.length>0">
+              <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
-                  <li v-if="power['sign-ht-xq-data-add'].state">
+                  <li v-if="power['sign-ht-xq-data'].state">
                     <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
@@ -358,7 +358,7 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data-add'].state&&isDelete===item.title+item_.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
                   </li>
                 </ul>
               </div>
@@ -463,10 +463,11 @@
     <!-- <div class="functionTable" v-if="contractDetail.contChangeState.value!=2"> -->
     <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-com-bill'].state&&name==='first'" @click="runningWater">合同流水</el-button>
-      <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='first'" @click="printDemo">打印成交报告</el-button>
+      <el-button round v-if="power['sign-com-bill'].state&&name==='deal-report'&&editBtnShow" style="background:#478DE3;color:white;" @click="editFn">编辑</el-button>
+      <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='deal-report'&&reportBtnShow" @click="printDemo">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
-      <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data-add'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
+      <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
       <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
     
@@ -515,7 +516,7 @@
       </span>
     </el-dialog>
     <!-- 回访录音添加备注弹窗 -->
-    <el-dialog title="添加备注" :visible.sync="showRemarks" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="添加备注" :visible.sync="showRemarks" width="740px" :closeOnClickModal="$tool.closeOnClickModal" @close="closeRemarks">
       <div class="top">
         <p class="form-label" style="width:50px"> 备注</p>
         <div class="reason">
@@ -552,6 +553,127 @@
       <LayerPrint ref="easyPrint" class="easyPrint_">
         <div class="printContent" style="width:900px;height:1270px">
           <div class="printHeader">
+            <span>成交报告</span>
+          </div>
+          <div class="printItem">
+            <p>合同基本信息</p>
+            <ul>
+              <li>
+                <p class="w25"><span>签约日期：</span><span></span></p>
+                <p class="w30"><span>合同编号：</span><span></span></p>
+                <p><span>交易类型：</span><span></span></p>
+              </li>
+              <li>
+                <p class="w25"><span>成交总价：</span><span></span></p>
+                <p><span>应收佣金：</span><span></span></p>
+              </li>
+            </ul>
+          </div>
+          <div class="printItem">
+            <p>房屋基本信息</p>
+            <ul>
+              <li>
+                <p class="w25"><span>两证情况：</span><span></span></p>
+                <p class="w30"><span>抵押情况：</span><span></span></p>
+                <p><span>提前还款：</span><span></span></p>
+              </li>
+              <li>
+                <p class="w25"><span>建筑面积：</span><span></span></p>
+                <p class="w30"><span>土地使用权面积：</span><span></span></p>
+                <p><span>土地性质：</span><span></span></p>
+              </li>
+              <li>
+                <p><span>物业地址：</span><span></span></p>
+              </li>
+              <li>
+                <p><span>权属证号：</span><span></span></p>
+              </li>
+              <li>
+                <p class="w25"><span>缴纳税费：</span><span></span></p>
+                <p class="w30"><span>房屋总楼层：</span><span></span></p>
+                <p class="w25"><span>建筑结构：</span><span></span></p>
+                <p><span>评估值：</span><span></span></p>
+              </li>
+            </ul>
+          </div>
+          <div class="resource">
+            <div class="guest">
+              <div class="title">客源方信息</div>
+              <div class="two-item">
+                <p class="line"><span>店长：</span><span></span></p>
+                <p><span>联系电话：</span><span></span></p>
+              </div>
+              <div><p>汉街二店</p></div>
+            </div>
+            <div class="house">
+              <div class="title">房源方信息</div>
+              <div class="two-item">
+                <p class="line"><span>店长：</span><span></span></p>
+                <p><span>联系电话：</span><span></span></p>
+              </div>
+              <div><p>汉街二店</p></div>
+            </div>
+          </div>
+          <div class="mai-mai resource">
+            <div class="guest">
+              <div class="title">买方信息</div>
+              <div class="two-item">
+                <p class="line"><span>姓名：</span><span></span></p>
+                <p><span>身份证：</span><span></span></p>
+              </div>
+              <div><p><span>电话：</span><span></span></p></div>
+              <div class="two-item no-bottom">
+                <p class="line"><span>共有人姓名：</span><span></span></p>
+                <p><span>电话：</span><span></span></p>
+              </div>
+              <div class="two-item no-bottom">
+                <p class="line"><span>付款方式：</span><span></span></p>
+                <p><span>交易流程：</span><span></span></p>
+              </div>
+              <div class="two-item">
+                <p class="line"><span>按揭银行：</span><span></span></p>
+                <p><span>贷款金额：</span><span></span></p>
+              </div>
+              <div>
+                <p><span>贷款期限：</span><span></span></p>
+              </div>
+            </div>
+            <div class="seller">
+              <div class="title">卖方信息</div>
+              <div class="two-item">
+                <p class="line"><span>姓名：</span><span></span></p>
+                <p><span>身份证：</span><span></span></p>
+              </div>
+              <div><p><span>电话：</span><span></span></p></div>
+              <div class="two-item no-bottom">
+                <p class="line"><span>共有人姓名：</span><span></span></p>
+                <p><span>电话：</span><span></span></p>
+              </div>
+              <div class="last-item" style="border-top:1px solid #dddee6;">
+                <p class="no-line"><span>是否析产（继承）：</span><span></span></p>
+                <p><span>婚姻状况：</span><span></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="resource">
+            <div class="guest">
+              <div class="title">买方代理人信息</div>
+              <div class="two-item">
+                <p class="line"><span>代理人姓名：</span><span></span></p>
+                <p><span>身份证：</span><span></span></p>
+              </div>
+              <div><p><span>电话：</span><span></span></p></div>
+            </div>
+            <div>
+              <div class="title">卖方代理人信息</div>
+              <div class="two-item">
+                <p class="line"><span>代理人姓名：</span><span></span></p>
+                <p><span>身份证：</span><span></span></p>
+              </div>
+              <div><p><span>电话：</span><span></span></p></div>
+            </div>
+          </div>
+          <!-- <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
           </div>
           <div class="printMsg">
@@ -594,10 +716,6 @@
               <p class="p_width">
                 <span class="printTag">物业地址：</span>
                 <span class="text">{{contractDetail.propertyAddr}}</span>
-                <!-- <span class="printTxt">{{contractDetail.houseInfo.EstateName}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.BuildingName}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.Unit}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.RoomNo}}</span> -->
               </p>
             </div>
             <div class="printItem">
@@ -631,11 +749,6 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="relation" label="关系" width="200"></el-table-column>
-                <!-- <el-table-column label="产权比" v-if="contType!='1'" width="149">
-                  <template slot-scope="scope">
-                    {{scope.row.propertyRightRatio+'%'}}
-                  </template>
-                </el-table-column> -->
                 <el-table-column prop="identifyCode" min-width="239" label="身份证号"></el-table-column>
               </el-table>
             </div>
@@ -663,11 +776,6 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="relation" label="关系" width="200"></el-table-column>
-                <!-- <el-table-column label="产权比" v-if="contType!='1'" width="149">
-                  <template slot-scope="scope">
-                    {{scope.row.propertyRightRatio+'%'}}
-                  </template>
-                </el-table-column> -->
                 <el-table-column prop="identifyCode" min-width="239" label="身份证号"></el-table-column>
               </el-table>
             </div>
@@ -705,8 +813,7 @@
                 <p v-else>暂无备注</p>
               </div>
             </div>
-          </div>
-          <!-- <div class="bgcImg" :style={backgroundImage:url}></div> -->
+          </div> -->
           <img class="bgcImg" :src="url" alt="">
         </div>
       </LayerPrint>
@@ -882,14 +989,18 @@ export default {
           state: false,
           name: '下载合同主体'
         },
-        'sign-ht-xq-data-add': {
+        'sign-ht-xq-data': {
           state: false,
-          name: '编辑资料库'
+          name: '资料库权限'
         },
-        'sign-ht-xq-data-down': {
-          state: false,
-          name: '下载资料库'
-        },
+        // 'sign-ht-xq-data-add': {
+        //   state: false,
+        //   name: '编辑资料库'
+        // },
+        // 'sign-ht-xq-data-down': {
+        //   state: false,
+        //   name: '下载资料库'
+        // },
         'sign-ht-xq-ly-wmemo': {
           state: false,
           name: '添加录音备注'
@@ -909,6 +1020,10 @@ export default {
       },
       // url:`url(${require('@/assets/img/shuiyin.png')})`,
       url:`${require('@/assets/img/shuiyin.png')}`,
+      //成交报告
+      saveBtnShow: false,
+      editBtnShow: false,
+      reportBtnShow: false
     };
   },
   created() {
@@ -920,6 +1035,11 @@ export default {
       this.activeName = "third";
       this.name="third";
     }
+    //默认显示 成交报告 判断
+    if(this.contType === '2' || this.contType === '3') {
+      this.activeName = "deal-report"
+      this.name = "deal-report"
+    }
     this.getContractDetail();//合同详情
     this.getDictionary();//字典
     this.getTransFlow();//交易类型
@@ -930,6 +1050,16 @@ export default {
     this.getAdmin();//获取当前登录人信息
   },
   methods: {
+    //控制 编辑 打印成交报告 保存 按钮显示隐藏
+    editFn() {
+      this.saveBtnShow = !this.saveBtnShow
+      this.editBtnShow = !this.editBtnShow
+    },
+    BtnShowFn() {
+      this.saveBtnShow = false
+      this.editBtnShow = true
+      this.reportBtnShow = true
+    },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
       this.clientHei= document.documentElement.clientHeight -200 + 'px'
@@ -1213,6 +1343,12 @@ export default {
         })
       }
     },
+    //关闭录音备注弹窗
+    closeRemarks(){
+      this.showRemarks=false;
+      this.recordRemarks='';
+      this.remarkId='';
+    },
     //播放录音
     playStop(index,recording){
       if(this.power['sign-ht-xq-ly-play'].state){
@@ -1279,13 +1415,15 @@ export default {
       this.$ajax.get("/api/contract/detail", param).then(res => {
         res = res.data;
         if (res.status === 200) {
+          // debugger
           this.contractDetail = res.data;
           this.recordId = res.data.recordId;
-          this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
+          // this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
           this.ownerData=[];
           this.clientrData=[];
           for (var i = 0; i < this.contractDetail.contPersons.length; i++) {
+            
             if (this.contractDetail.contPersons[i].personType.value === 1) {
               this.ownerData.push(this.contractDetail.contPersons[i]);
             } else if (
@@ -1294,17 +1432,20 @@ export default {
               this.clientrData.push(this.contractDetail.contPersons[i]);
             }
           }
-          this.contractDetail.extendParams.forEach(element => {
-            if(element.type===5){
-              element.value=element.value.join(',')
-            }
-          });
+          // this.contractDetail.extendParams.forEach(element => {
+          //   if(element.type===5){
+          //     element.value=element.value.join(',')
+          //   }
+          // });
           if(res.data.isHaveData){
             this.getContData()
           }
           if(res.data.contState.value===3){
             this.getContractBody();//获取合同主体
           }
+          this.saveBtnShow = !res.data.dealReport ? true : false
+          this.editBtnShow = res.data.dealReport ? true : false
+          this.reportBtnShow = res.data.dealReport ? true : false
         }
       }).catch(error=>{
         this.$message({
@@ -2190,7 +2331,7 @@ export default {
   position: relative;
   font-size: 16px;
   box-sizing: border-box;
-  padding: 40px 40px;
+  padding: 40px 30px;
   background: #fff;
   .bgcImg{
     position: absolute;
@@ -2204,68 +2345,156 @@ export default {
     opacity: 0.5;
     // background-image: url("../../../assets/img/shuiyin.png");
   }
-  p{
-    display: inline-block;
-    width: 240px;
-    padding: 5px 0;
-    >.dealPrice {
-      color: @color-yellow;
+  .printHeader {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 2px solid #f2f3f8;
+    padding-bottom: 20px;
+  }
+  .printItem {
+    margin: 10px 0;
+    > p {
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom: 10px;
     }
-  }
-  .p_width{
-    width: 400px;
-  }
-  .p_idcard{
-    width: 300px;
-  }
-  .printItem_{
-    border-right: 1px solid #ebeef5;
-    border-bottom: 1px solid #ebeef5;
-  }
-  .printTag{
-    padding-left: 0!important;
-    display: inline-block;
-    width: 96px;
-    text-align: right;
-    padding-left: 10px;
-    color:@color-6c;
-  }
-  .printTxt{
-    color: @color-233;
-  }
-  .contTitle{
-    padding: 10px 0;
-    color: @color-233;
-    font-size: 20px;
-    font-weight: bold;
-  }
-  .printCode{
-    color: @color-blue;
-    font-weight: bold;
-  }
-  .printHeader{
-    padding: 16px 0;
-    border-bottom: 1px solid @border-ED;
-  }
-  .printMsg{
-    padding: 0 12px;
-  }
-  .remark_{
-    margin-top: 10px;
-    display: flex;
-    .remarks{
-      color: @color-233;
-      padding: 0 10px;
-      box-sizing: border-box;
-      width: 700px;
-      height: 120px;
-      border: 1px solid #ebeef5;
-      border-radius: 4px;
-      >P{
-        width: 680px;
-        font-size: 14px;
+    li {
+      display: flex;
+      line-height: 40px;
+      .w25 {
+        width: 25%;
+      }
+      .w30 {
+        width: 30%;
+      }
+      span:first-child {
+        color:@color-6c;
+      }
+      span:last-child {
+        color: @color-233;
       }
     }
   }
+  .resource {
+    display: flex;
+    margin-bottom: 20px;
+    > div {
+      width: 445px;
+      border: 1px solid #dddee6;
+      &.guest {
+        margin-right: 10px;
+      }
+      div {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        &.title {
+          justify-content: center;
+          font-size: 18px;
+          background: #f2f3f8;
+        }
+        p {
+          padding-left: 5px;
+          span:first-child {
+            color:@color-6c;
+          }
+          span:last-child {
+            color: @color-233;
+          }
+        }
+      }
+      .two-item {
+        border-bottom: 1px solid #dddee6;
+        border-top: 1px solid #dddee6;
+        position: relative;
+        .line {
+          display: inline-block;
+          width: 170px;
+          &::before {
+            content: "";
+            width: 1px;
+            height: 40px;
+            position: absolute;
+            left: 175px;
+            top: 0;
+            background: #dddee6;
+          }
+        }
+        &.no-bottom {
+          border-bottom: none;
+        }
+      }
+      .last-item {
+        .no-line {
+          display: inline-block;
+          width: 170px;
+        }
+      }
+    }
+  }
+  // p{
+  //   display: inline-block;
+  //   width: 240px;
+  //   padding: 5px 0;
+  //   >.dealPrice {
+  //     color: @color-yellow;
+  //   }
+  // }
+  // .p_width{
+  //   width: 400px;
+  // }
+  // .p_idcard{
+  //   width: 300px;
+  // }
+  // .printItem_{
+  //   border-right: 1px solid #ebeef5;
+  //   border-bottom: 1px solid #ebeef5;
+  // }
+  // .printTag{
+  //   padding-left: 0!important;
+  //   display: inline-block;
+  //   width: 96px;
+  //   text-align: right;
+  //   padding-left: 10px;
+  //   color:@color-6c;
+  // }
+  // .printTxt{
+  //   color: @color-233;
+  // }
+  // .contTitle{
+  //   padding: 10px 0;
+  //   color: @color-233;
+  //   font-size: 20px;
+  //   font-weight: bold;
+  // }
+  // .printCode{
+  //   color: @color-blue;
+  //   font-weight: bold;
+  // }
+  // .printHeader{
+  //   padding: 16px 0;
+  //   border-bottom: 1px solid @border-ED;
+  // }
+  // .printMsg{
+  //   padding: 0 12px;
+  // }
+  // .remark_{
+  //   margin-top: 10px;
+  //   display: flex;
+  //   .remarks{
+  //     color: @color-233;
+  //     padding: 0 10px;
+  //     box-sizing: border-box;
+  //     width: 700px;
+  //     height: 120px;
+  //     border: 1px solid #ebeef5;
+  //     border-radius: 4px;
+  //     >P{
+  //       width: 680px;
+  //       font-size: 14px;
+  //     }
+  //   }
+  // }
 }
 </style>

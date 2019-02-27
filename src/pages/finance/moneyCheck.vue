@@ -211,7 +211,12 @@
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态" prop="payStatus"></el-table-column>
+        <el-table-column align="center" label="状态" prop="payStatus">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus}}</span>
+            <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus}}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="结算信息" v-if="activeView===1">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
@@ -473,6 +478,24 @@
         }
       },
       /**
+       * 获取付款失败信息
+       */
+      getErrorMsg:function (data) {
+        this.$ajax.get('/api/payInfo/selectRetMsg',{payId:data.id}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.$message({
+              message:`付款失败：${res.data.msg}`
+            })
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            type:'warning'
+          })
+        })
+      },
+      /**
        * 列表横行滚动
        */
       scroll:function () {
@@ -663,6 +686,10 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .text-warning{
+    color: red;
+    cursor: pointer;
+  }
   .btn-text-info{
     padding: 0;
     color: @color-blue;

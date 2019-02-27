@@ -190,11 +190,13 @@
             <el-button type="text" size="medium" v-else @click="goChangeCancel(scope.row)">{{scope.row.contChangeState.label}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="操作" width="100">
+        <el-table-column align="left" label="操作" width="200">
           <template slot-scope="scope">
             <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>
+              <!--<el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>-->
+            <span style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0">{{scope.row.auditName}}正在审核</span>
+            <el-button type="text"  v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&userMsg&&scope.row.auditId===userMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId<0&&userMsg&&(userMsg.roleId===20||userMsg.roleId===21)))" @click="goCheck(scope.row)">审核</el-button>
             <!-- </div> -->
           </template>
         </el-table-column>
@@ -385,19 +387,33 @@ export default {
     },
     //合同审核
     goCheck(item) {
-      if(this.power['sign-ht-info-view'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
-        this.$router.push({
-          path:'/contractPreview',
-          query:{
-            code:item.code,
-            id:item.id,
-            operationType:2
-          }
-        })
-      }else{
-        this.noPower('合同预览')
+      let param={
+        bizCode:item.code,
+        flowType:3
       }
+      this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
+        res = res.data
+        if(res.status===200){
+          if(this.power['sign-ht-info-view'].state){
+            this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
+            this.$router.push({
+              path:'/contractPreview',
+              query:{
+                code:item.code,
+                id:item.id,
+                operationType:2
+              }
+            })
+          }else{
+            this.noPower('合同预览')
+          }
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type: "error"
+        })
+      })
     },
     //合同详情
     toDetail(value) {
