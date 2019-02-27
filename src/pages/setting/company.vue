@@ -345,7 +345,7 @@
     lepPhone: "",
     documentType: "",
     contractSign: "",
-    financialSign: "",
+    financialSign: ""
   }
   let obj2 = {
     creditCode: "",
@@ -665,7 +665,9 @@
                   if(item.bankBranchName) {
                     if(that_.companyForm.contractSign) {
                       if(that_.companyForm.financialSign) {
-                        if(that_.companyBankList.length === 2) {
+                        if(that_.companyBankList.length === 1) {
+                          isOk = true
+                        } else if(that_.companyBankList.length === 2) {
                           if(that_.companyBankList[0].bankCard === that_.companyBankList[1].bankCard) {
                             that_.$message({message:"银行账户不能相同",type:"warning"})
                           } else {
@@ -734,7 +736,6 @@
             }
             param = Object.assign({},this.companyForm,obj,param)
             param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
-            
             if(this.companyFormTitle === "添加企业信息") {
               if(this.power['sign-set-gs'].state) {
                 this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
