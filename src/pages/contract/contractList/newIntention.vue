@@ -796,10 +796,13 @@ export default {
               let contractMsg = res.data.data
               this.hidBtn=1
               localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              let newPage = this.$router.resolve({ 
-                path: '/extendParams'
-              });
-              window.open(newPage.href, '_blank');
+              this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+              this.$router.replace({path: "/extendParams"});
+             
+              // let newPage = this.$router.resolve({ 
+              //   path: '/extendParams'
+              // });
+              // window.open(newPage.href, '_blank');
 
 
               // this.detailId=res.data.data.id;
@@ -932,10 +935,13 @@ export default {
             if (res.data.status === 200) {
               let contractMsg = res.data.data
               localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              let newPage = this.$router.resolve({ 
-                path: '/extendParams'
-              });
-              window.open(newPage.href, '_blank');
+              this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+              this.$router.replace({path: "/extendParams"});
+             
+              // let newPage = this.$router.resolve({ 
+              //   path: '/extendParams'
+              // });
+              // window.open(newPage.href, '_blank');
               // this.$message({
               //   type: "success",
               //   message: "已保存!"

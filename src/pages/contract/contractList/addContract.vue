@@ -1156,11 +1156,12 @@ export default {
             let contractMsg = res.data
             this.hidBtn=1
             localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-
-            let newPage = this.$router.resolve({ 
-              path: '/extendParams'
-            });
-            window.open(newPage.href, '_blank');
+            this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+            this.$router.replace({path: "/extendParams"});
+            // let newPage = this.$router.resolve({ 
+            //   path: '/extendParams'
+            // });
+            // window.open(newPage.href, '_blank');
           }
         }).catch(error => {
           this.fullscreenLoading=false;
@@ -1201,19 +1202,20 @@ export default {
             this.fullscreenLoading=false;
             let contractMsg = res.data
             localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            var isHaveHtml=1;//有html文件
-            if(this.type===2){
-              if(this.contractForm.htmlPath.address||this.contractForm.htmlPath.business||this.contractForm.htmlPath.residence){
-                localStorage.setItem("htmlPath", JSON.stringify(this.contractForm.htmlPath));
-              }else{
-                isHaveHtml=2
-              }
-            }
-            let newPage = this.$router.resolve({ 
-              path: '/extendParams'
-            });
-            // page.location=newPage.href
-            window.open(newPage.href,'_blank')
+            this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+            this.$router.replace({path: "/extendParams"});
+            // var isHaveHtml=1;//有html文件
+            // if(this.type===2){
+            //   if(this.contractForm.htmlPath.address||this.contractForm.htmlPath.business||this.contractForm.htmlPath.residence){
+            //     localStorage.setItem("htmlPath", JSON.stringify(this.contractForm.htmlPath));
+            //   }else{
+            //     isHaveHtml=2
+            //   }
+            // }
+            // let newPage = this.$router.resolve({ 
+            //   path: '/extendParams'
+            // });
+            // window.open(newPage.href,'_blank')
 
           }
         }).catch(error => {

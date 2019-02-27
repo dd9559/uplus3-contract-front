@@ -112,12 +112,12 @@
                 <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect" :disabled="storeNoChange">
                   <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="合作方式: ">
-                <!-- <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange" :disabled="directSaleOut">
+                <!-- <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange">
                   <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select> -->
                 <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input>
@@ -345,7 +345,7 @@
     lepPhone: "",
     documentType: "",
     contractSign: "",
-    financialSign: "",
+    financialSign: ""
   }
   let obj2 = {
     creditCode: "",
@@ -389,7 +389,6 @@
         delIds: [],
         directInfo: {}, //直营属性证件信息
         directSaleSelect: false,
-        // directSaleOut: false,
         dialogViewVisible: false, //查看弹出框
         creditCodeShow: false,
         icRegisterShow: false,
@@ -408,7 +407,8 @@
             state: false,
             name: '添加公司信息'
           }
-        }
+        },
+        storeNoChange: false //门店选择不可编辑
       }
     },
     created() {
@@ -531,9 +531,9 @@
       addCompany() {
         this.AddEditVisible = true
         this.companyFormTitle = "添加企业信息"
+        this.storeNoChange = false
         this.initFormList()
         // this.directSaleSelect = false
-        // this.directSaleOut = false
         this.companyForm.cityId = this.searchForm.cityId
         this.getStoreList(this.companyForm.cityId)
       },
@@ -665,7 +665,26 @@
                   if(item.bankBranchName) {
                     if(that_.companyForm.contractSign) {
                       if(that_.companyForm.financialSign) {
-                        isOk = true
+                        if(that_.companyBankList.length === 1) {
+                          isOk = true
+                        } else if(that_.companyBankList.length === 2) {
+                          if(that_.companyBankList[0].bankCard === that_.companyBankList[1].bankCard) {
+                            that_.$message({message:"银行账户不能相同",type:"warning"})
+                          } else {
+                            isOk = true
+                          }
+                        } else if(that_.companyBankList.length > 2) {
+                          let ar1 = []
+                          that_.companyBankList.forEach(item => {
+                            ar1.push(item.bankCard)
+                          })
+                          let ar2 = Array.from(new Set(ar1))
+                          if(ar1.length !== ar2.length) {
+                            that_.$message({message:"银行账户不能相同",type:"warning"})
+                          } else {
+                            isOk = true
+                          }
+                        }
                       } else {
                         that_.$message({message:"财务章上传不能为空"})
                       }
@@ -717,7 +736,6 @@
             }
             param = Object.assign({},this.companyForm,obj,param)
             param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
-            
             if(this.companyFormTitle === "添加企业信息") {
               if(this.power['sign-set-gs'].state) {
                 this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
@@ -766,12 +784,11 @@
         } else {
           this.AddEditVisible = true
           this.companyFormTitle = "编辑企业信息"
+          this.storeNoChange = true
           // if(row.cooperationMode.value === 1) {
           //   this.directSaleSelect = true
-          //   this.directSaleOut = true
           // } else {
           //   this.directSaleSelect = false
-          //   this.directSaleOut = false
           // }
         }
         if(row.documentType.value === 2) {
