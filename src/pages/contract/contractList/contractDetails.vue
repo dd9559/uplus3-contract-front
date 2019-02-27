@@ -375,7 +375,7 @@
           </div>
           <div class="record">
             <el-table :data="recordData" border style="width: 100%" header-row-class-name="theader-bg">
-              <el-table-column label="回访时间">
+              <el-table-column label="回访时间" width="200">
                 <template slot-scope="scope">
                   {{scope.row.startTime|formatTime}}
                 </template>
@@ -403,7 +403,7 @@
                     </span>
                   </div>
                   <span v-else>--</span>
-                  <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio>
+                  <audio :src="scope.row.recordSrc" :id="'audio'+scope.$index"></audio>
                 </template>
               </el-table-column>
               <el-table-column label="备注" width="320">
@@ -429,7 +429,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="审核记录" name="fifth">
-          <div class="record">
+          <div class="record" v-if="power['sign-com-htdetail'].state">
             <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
               <el-table-column label="时间">
                 <template slot-scope="scope">
@@ -945,6 +945,10 @@ export default {
       recordId:'',//合同创建人id
       //权限
       power: {
+        'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
         'sign-com-bill': {
           state: false,
           name: '流水'
@@ -1031,14 +1035,14 @@ export default {
     this.id = this.$route.query.id;
     this.waterId = Number(this.$route.query.id)
     this.contCode = this.$route.query.code;
-    if (this.$route.query.type === "dataBank") {
-      this.activeName = "third";
-      this.name="third";
-    }
     //默认显示 成交报告 判断
     if(this.contType === '2' || this.contType === '3') {
       this.activeName = "deal-report"
       this.name = "deal-report"
+    }
+    if (this.$route.query.type === "dataBank") {
+      this.activeName = "third";
+      this.name="third";
     }
     this.getContractDetail();//合同详情
     this.getDictionary();//字典
@@ -1234,6 +1238,7 @@ export default {
         }
       }).catch(error => {
           if(error.message==='下一节点审批人不存在'){
+            this.isSubmitAudit=false;
             this.checkPerson.code=this.contractDetail.code;
             this.checkPerson.state=true;
             // this.checkPerson.type=error.data.type===1?'set':'init';
@@ -1281,8 +1286,21 @@ export default {
       this.$ajax.get('/api/record/list', param).then(res=>{
         res=res.data;
         if(res.status===200){
-          this.recordData=res.data.list;
+          // this.recordData=res.data.list;
           this.total=res.data.total;
+          let recordList = res.data.list
+          recordList.forEach(element => {
+            if(element.recording){
+              if (!window.location.origin) {
+                window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+              }
+              console.log(window.location.origin)
+              let http = window.location.origin
+              let src = `${http}/api/record/download?recording=${element.recording}`
+              element.recordSrc=src
+            }
+          });
+          this.recordData=recordList
         }
       }).catch(error=>{
         this.$message({
@@ -1882,7 +1900,7 @@ export default {
       var m = Math.floor((result / 60 % 60)) < 10 ? '0' + Math.floor((result / 60 % 60)) : Math.floor((result / 60 % 60));
       var s = Math.floor((result % 60)) < 10 ? '0' + Math.floor((result % 60)) : Math.floor((result % 60));
       return result = h + ":" + m + ":" + s;
-    }
+    },
   }
 };
 </script>

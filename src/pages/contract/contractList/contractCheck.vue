@@ -72,7 +72,7 @@
         <!-- </span> -->
       <!-- </p> -->
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" border style="width: 100%"  @row-dblclick='toDetail' :max-height="tableNumberCom">
-        <el-table-column align="left" label="合同信息" width="250" fixed>
+        <el-table-column align="left" label="合同信息" width="300" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -128,7 +128,7 @@
             {{Number(scope.row.signDate)|timeFormat_}}
           </template>
         </el-table-column>
-        <el-table-column align="left" label="可分配业绩 (元)" width="110">
+        <el-table-column align="left" label="可分配业绩 (元)" width="150">
           <template slot-scope="scope">
             <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
               <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
@@ -391,29 +391,41 @@ export default {
         bizCode:item.code,
         flowType:3
       }
-      this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
-        res = res.data
-        if(res.status===200){
-          if(this.power['sign-ht-info-view'].state){
-            this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
-            this.$router.push({
-              path:'/contractPreview',
-              query:{
-                code:item.code,
-                id:item.id,
-                operationType:2
-              }
-            })
-          }else{
-            this.noPower('合同预览')
+      if(item.contType.value===1){
+        this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
+        this.$router.push({
+          path:'/contractPreview',
+          query:{
+            code:item.code,
+            id:item.id,
+            operationType:2
           }
-        }
-      }).catch(error=>{
-        this.$message({
-          message:error,
-          type: "error"
         })
-      })
+      }else{
+        this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
+          res = res.data
+          if(res.status===200){
+            if(this.power['sign-ht-info-view'].state){
+              this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
+              this.$router.push({
+                path:'/contractPreview',
+                query:{
+                  code:item.code,
+                  id:item.id,
+                  operationType:2
+                }
+              })
+            }else{
+              this.noPower('合同预览')
+            }
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            type: "error"
+          })
+        })
+      }
     },
     //合同详情
     toDetail(value) {

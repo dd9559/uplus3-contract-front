@@ -34,6 +34,14 @@
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
+		<!-- 创建合同成功提示框 -->
+    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="toContract">取 消</el-button>
+        <el-button type="primary" @click="toUpload">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -134,10 +142,10 @@ let Obj2 = {
         name:'zhizhao'
     },
     val6:'',
-    check2:{
-        name:'zhizhao2'
-    },
-    val13:'',
+    // check2:{
+    //     name:'zhizhao2'
+    // },
+    // val13:'',
     check3:{
         name:'zhizhao3'
     },
@@ -316,7 +324,10 @@ let Obj6 = {
 }
 let errorArr1=[]
 let errorArr2=[]
+
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+	mixins: [MIXINS],
   data(){
     return{
       clientHei:'',
@@ -329,17 +340,30 @@ export default {
       src2:'',
       html:'',
       fullscreenLoading:false,
-      navId:''
+			navId:'',
+			dialogSuccess:false,
+			//权限
+			power:{
+				'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
+				},
+				'sign-ht-xq-data': {
+          state: false,
+          name: '资料库权限'
+        },
+			}
     }
   },
   created(){
+		this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
     this.clientHeight();
 		this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
-		if (!window.location.origin) {
-			window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
-		}
-		console.log(window.location.origin)
+    if (!window.location.origin) {
+        window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+    }
+    // console.log(window.location.origin)
     let http = window.location.origin
     
     if(this.Msg.type===1){
@@ -368,11 +392,6 @@ export default {
 		// this.isSave(2)
   },
   methods: {
-    getHtml(param){
-      // this.$ajax.get('/api/contract/showHtml',param).then(res=>{
-
-      // })
-    },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
       this.clientHei= document.documentElement.clientHeight -150 + 'px'
@@ -402,6 +421,38 @@ export default {
         let iframebox2=this.$refs.iframeSecond;
         iframebox1.contentWindow.scrollTo(0,0)
         iframebox2.contentWindow.scrollTo(0,0)
+		},
+		//创建成功提示
+    toUpload(){//上传合同资料库
+      this.dialogSuccess=false;
+      if(this.power['sign-com-htdetail'].state){
+        if(this.power['sign-ht-xq-data'].state){
+          this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+          this.$router.replace({
+            path: "/contractDetails",
+            query: {
+              type: "dataBank",
+              id: this.Msg.id,//合同id
+              code: this.Msg.code,//合同编号
+              contType: this.Msg.type//合同类型
+            }
+          });
+        }else{
+          this.$message({
+            message:'没有资料库权限,无法跳转到资料库'
+          });
+          this.$router.push('/contractList');
+        }
+      }else{
+        this.$message({
+          message:'没有合同详情权限,无法跳转到资料库'
+        });
+        this.$router.push('/contractList');
+      }
+    },
+		toContract(){//回到合同列表
+      this.dialogSuccess=false;
+      this.$router.push('/contractList');
     },
 		//保存
     isSave(operation){
@@ -455,6 +506,7 @@ export default {
 				if(res.status===200){
 					this.fullscreenLoading=false
 					if(operation===1){
+						this.dialogSuccess=true
 						this.$message({
 							message:'保存成功',
 							type:'success'
@@ -575,7 +627,8 @@ export default {
             this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
                 res=res.data
                 if(res.status===200){
-                    this.fullscreenLoading=false
+										this.fullscreenLoading=false
+										this.dialogSuccess=true
                     this.$message({
                         message:'提审成功',
                         type:'success'
@@ -1181,25 +1234,24 @@ export default {
     }
 	},
 	destroyed(){
-		// this.isSave(2)
+		this.isSave(2)
 	},
   mounted(){
-    window.onresize = this.clientHeight;
-    var vibibleState ='';
-    var visibleChange ='';
-    if (typeof document.visibilityState !='undefined') {
-      visibleChange ='visibilitychange';
-      vibibleState ='visibilityState';
-    }else if (typeof document.webkitVisibilityState !='undefined') {
-      visibleChange ='webkitvisibilitychange';
-      vibibleState ='webkitVisibilityState';
-    }if (visibleChange) {
-			let that=this
-      document.addEventListener(visibleChange, function() {if (document[vibibleState] =='hidden') {
-				// that.isSave(2)
-				// alert('页面可见');
-				console.log(document[vibibleState])}})
-    }
+    // window.onresize = this.clientHeight;
+    // var vibibleState ='';
+    // var visibleChange ='';
+    // if (typeof document.visibilityState !='undefined') {
+    //   visibleChange ='visibilitychange';
+    //   vibibleState ='visibilityState';
+    // }else if (typeof document.webkitVisibilityState !='undefined') {
+    //   visibleChange ='webkitvisibilitychange';
+    //   vibibleState ='webkitVisibilityState';
+    // }if (visibleChange) {
+	  // let that=this
+    //   document.addEventListener(visibleChange, function() {if (document[vibibleState] =='hidden') {
+    //     that.isSave(2)
+    //     }})
+    // }
   },
   beforeUpdate() {
     this.clientHeight();
