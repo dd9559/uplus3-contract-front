@@ -124,7 +124,7 @@
         <p class="tag">收款门店账户选择：</p>
         <ul>
           <li v-for="(item,index) in receiptData.inBank" :key="index">
-            <el-radio v-model="radio" :label="item.bankCard"><span>银行账户：</span><span>{{item.bankCard}}</span></el-radio>
+            <el-radio v-model="radio" :label="item"><span>银行账户：</span><span>{{item.bankCard}}</span></el-radio>
           </li>
         </ul>
       </div>
@@ -438,8 +438,11 @@ export default {
     commit(){
       if(this.radio){
         this.receiptData.remark=this.receiptReason;
-        this.receiptData.inBankCard=this.radio;
+        this.receiptData.inBankCard=this.radio.bankCard;
+        this.receiptData.inBankAccountName=this.radio.bankAccountName;
+        this.receiptData
         let param = this.receiptData;
+        // debugger
         this.$ajax.postJSON('/api/separate/account/allotted',param).then(res=>{
           res=res.data;
           if(res.status===200){
