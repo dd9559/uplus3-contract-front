@@ -437,7 +437,7 @@
                   <span
                     @click.stop="chehui(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-retreat'].state&&(userMsg&&scope.row.arraignmentId===userMsg.empId)"
+                    v-if="power['sign-yj-rev-retreat'].state"
                   >撤回</span>
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
