@@ -579,8 +579,8 @@
               </li>
               <li>
                 <p class="w25"><span>建筑面积：</span><span>{{contractDetail.houseInfo.Square}}㎡</span></p>
-                <p class="w30"><span>土地使用权面积：</span><span>{{contractDetail.report.landUseArea}}</span></p>
-                <p><span>土地性质：</span><span>{{contractDetail.report.landNature}}</span></p>
+                <p class="w30"><span>土地使用权面积：</span><span>{{contractDetail.report.landUseArea?contractDetail.report.landUseArea+'㎡':'--'}}</span></p>
+                <p><span>土地性质：</span><span>{{contractDetail.report.landNature?contractDetail.report.landNature===1?'划拨':'出让':'--'}}</span></p>
               </li>
               <li>
                 <p><span>物业地址：</span><span>{{contractDetail.propertyAddr}}</span></p>
@@ -589,10 +589,10 @@
                 <p><span>权属证号：</span><span>{{contractDetail.report.ownershipNumber}}</span></p>
               </li>
               <li>
-                <p class="w25"><span>缴纳税费：</span><span>{{contractDetail.report.payTaxation}}</span></p>
+                <p class="w25"><span>缴纳税费：</span><span>{{contractDetail.report.payTaxation?contractDetail.report.payTaxation+'万元':'--'}}</span></p>
                 <p class="w30"><span>房屋总楼层：</span><span>{{contractDetail.houseInfo.FloorAll}}层</span></p>
-                <p class="w25"><span>建筑结构：</span><span>{{contractDetail.report.buildingStructure}}</span></p>
-                <p><span>评估值：</span><span>{{contractDetail.report.evaluationValue}}</span></p>
+                <p class="w25"><span>建筑结构：</span><span>{{contractDetail.report.buildingStructure?contractDetail.report.buildingStructure:'--'}}</span></p>
+                <p><span>评估值：</span><span>{{contractDetail.report.evaluationValue?contractDetail.report.evaluationValue+'万元':'--'}}</span></p>
               </li>
             </ul>
           </div>
@@ -627,15 +627,15 @@
                 <p><span>电话：</span><span>{{item.mobile}}</span></p>
               </div>
               <div class="two-item no-bottom">
-                <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod}}</span></p>
+                <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
                 <p><span>交易流程：</span><span>{{contractDetail.report.transFlowCode}}</span></p>
               </div>
               <div class="two-item">
-                <p class="line"><span>按揭银行：</span><span>{{contractDetail.report.stagesBankName}}</span></p>
-                <p><span>贷款金额：</span><span>{{contractDetail.report.loanAmount}}</span></p>
+                <p class="line"><span>按揭银行：</span><span>{{contractDetail.report.stagesBankName?contractDetail.report.stagesBankName:'--'}}</span></p>
+                <p><span>贷款金额：</span><span>{{contractDetail.report.loanAmount?contractDetail.report.loanAmount+'万':'--'}}</span></p>
               </div>
               <div>
-                <p><span>贷款期限：</span><span>{{contractDetail.report.loanTerm}}</span></p>
+                <p><span>贷款期限：</span><span>{{contractDetail.report.loanTerm?contractDetail.report.loanTerm+'年':'--'}}</span></p>
               </div>
             </div>
             <div class="seller">
@@ -651,7 +651,7 @@
               </div>
               <div class="last-item" style="border-top:1px solid #dddee6;">
                 <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend===0?'否':'是'}}</span></p>
-                <p><span>婚姻状况：</span><span>{{contractDetail.report.maritalStatus}}</span></p>
+                <p><span>婚姻状况：</span><span>{{contractDetail.report.maritalStatus?contractDetail.report.maritalStatus:'--'}}</span></p>
               </div>
             </div>
           </div>
@@ -659,18 +659,18 @@
             <div class="guest">
               <div class="title">买方代理人信息</div>
               <div class="two-item">
-                <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.buyerAgentName}}</span></p>
-                <p><span>身份证：</span><span>{{contractDetail.report.buyerAgentCard}}</span></p>
+                <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.buyerAgentName?contractDetail.report.buyerAgentName:'--'}}</span></p>
+                <p><span>身份证：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{contractDetail.report.buyerAgentMobile}}</span></p></div>
+              <div><p><span>电话：</span><span>{{contractDetail.report.buyerAgentMobile?contractDetail.report.buyerAgentMobile:'--'}}</span></p></div>
             </div>
             <div>
               <div class="title">卖方代理人信息</div>
               <div class="two-item">
-                <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.sellerAgentName}}</span></p>
-                <p><span>身份证：</span><span>{{contractDetail.report.sellerAgentCard}}</span></p>
+                <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.sellerAgentName?contractDetail.report.sellerAgentName:'--'}}</span></p>
+                <p><span>身份证：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile}}</span></p></div>
+              <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile?contractDetail.report.sellerAgentMobile:'--'}}</span></p></div>
             </div>
           </div>
           <!-- <div class="printHeader">
@@ -831,6 +831,13 @@ import checkPerson from '@/components/checkPerson';
 import LayerPrint from '@/components/LayerPrint';
 import flowAccount from "@/components/flowAccount";
 import dealReport from "../contractDialog/dealReport";
+const marriage = [
+  {id:1,type:"已婚"},
+  {id:2,type:"未婚"},
+  {id:3,type:"离异"},
+  {id:4,type:"再婚"},
+  {id:5,type:"丧偶"},
+  ]
 
 export default {
   mixins: [MIXINS],
@@ -1049,9 +1056,9 @@ export default {
       this.activeName = "third";
       this.name="third";
     }
+    this.getTransFlow();//交易类型
     this.getContractDetail();//合同详情
     this.getDictionary();//字典
-    this.getTransFlow();//交易类型
     this.getAchievement();//业绩分成
     this.getContDataType();//获取合同集料库类型
     // this.getExtendParams();//获取扩展参数
@@ -1439,7 +1446,6 @@ export default {
       this.$ajax.get("/api/contract/detail", param).then(res => {
         res = res.data;
         if (res.status === 200) {
-          // debugger
           this.contractDetail = res.data;
           this.recordId = res.data.recordId;
           //成交报告
@@ -1452,12 +1458,23 @@ export default {
           delete arr2[0]
           arr2.forEach(item => this.sellerInfo.push(item))
           this.contractDetail.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : {}
+          if(JSON.stringify(this.contractDetail.report) !== '{}') {
+            marriage.forEach(item => {
+              if(this.contractDetail.report.maritalStatus === item.id) {
+                this.contractDetail.report.maritalStatus = item.type
+              }
+            })
+            this.transFlowList.forEach(item => {
+              if(this.contractDetail.report.transFlowCode === item.id) {
+                this.contractDetail.report.transFlowCode = item.name
+              }
+            })
+          }
           // this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
           this.ownerData=[];
           this.clientrData=[];
           for (var i = 0; i < this.contractDetail.contPersons.length; i++) {
-            
             if (this.contractDetail.contPersons[i].personType.value === 1) {
               this.ownerData.push(this.contractDetail.contPersons[i]);
             } else if (
