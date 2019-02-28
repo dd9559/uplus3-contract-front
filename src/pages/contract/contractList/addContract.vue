@@ -1495,7 +1495,7 @@ export default {
           }else{
             this.contractForm.dealPrice = houseMsg.ListingPrice;
             // this.contractForm.timeUnit=2;
-            this.$set(this.contractForm,'timeUnit',2);
+            this.$set(this.contractForm,'timeUnit',1);
           }
           this.contractForm.houseInfo = houseMsg;
           if(houseMsg.OwnerInfoList.length>0){
