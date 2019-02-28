@@ -16,19 +16,19 @@
                 <div class="item">
                     <div class="mark">
                         <span>两证情况：</span>
-                        <el-select size="small" v-model="report.cardSituation" :disabled="!saveBtnShow">
+                        <el-select size="small" v-model="report.cardSituation" :disabled="!saveBtnShow" class="liangzheng">
                             <el-option v-for="item in dictionary['611']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                     <div class="mark">
                         <span>抵押情况：</span>
-                        <el-select size="small" v-model="report.mortgageSituation" :disabled="!saveBtnShow">
+                        <el-select size="small" v-model="report.mortgageSituation" :disabled="!saveBtnShow" class="diya">
                             <el-option v-for="item in dictionary['615']" :key="item.key" :label="item.value" :value="item.key"></el-option>                            
                         </el-select>
                     </div>
                     <div class="mark">
                         <span>提前还款：</span>
-                        <el-select size="small" v-model="report.isEarlyRepayment" :disabled="!saveBtnShow">
+                        <el-select size="small" v-model="report.isEarlyRepayment" :disabled="!saveBtnShow" class="huankuan">
                             <el-option label="否" value="0"></el-option>
                             <el-option label="是" value="1"></el-option>
                         </el-select>
@@ -38,7 +38,7 @@
                     </div>
                     <div class="position">
                         <span class="use">土地使用权面积：</span>
-                        <el-input size="small" type="number" v-model="report.landUseArea" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" v-model="report.landUseArea" :disabled="!saveBtnShow" @input="cutNumber('landUseArea')"></el-input>
                         <i>㎡</i>
                     </div>
                     <div>
@@ -54,13 +54,13 @@
                     </div>
                     <div class="number mark">
                         <span>权属证号：</span>
-                        <el-input size="small" v-model="report.ownershipNumber" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" v-model="report.ownershipNumber" :disabled="!saveBtnShow" class="quanshu"></el-input>
                     </div>
                 </div>
                 <div class="item">
                     <div class="position">
                         <span>缴纳税费：</span>
-                        <el-input size="small" type="number" v-model="report.payTaxation" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" v-model="report.payTaxation" :disabled="!saveBtnShow" @input="cutNumber('payTaxation')"></el-input>
                         <i>万元</i>
                     </div>
                     <div style="min-width:120px;">
@@ -72,7 +72,7 @@
                     </div>
                     <div class="position">
                         <span>评估值：</span>
-                        <el-input size="small" type="number" v-model="report.evaluationValue" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" v-model="report.evaluationValue" :disabled="!saveBtnShow" @input="cutNumber('evaluationValue')"></el-input>
                         <i>万元</i>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                         </p>
                         <p style="margin:0 10px;" class="mark">
                             <span>交易流程：</span>
-                            <el-select size="small" v-model="report.transFlowCode" :disabled="transFlowEdit">
+                            <el-select size="small" v-model="report.transFlowCode" :disabled="transFlowEdit" class="liucheng">
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                         </p>
@@ -134,12 +134,12 @@
                     <div class="input">
                         <p>
                             <span>贷款金额：</span>
-                            <el-input size="small" type="number" v-model="report.loanAmount" :disabled="!saveBtnShow"></el-input>
+                            <el-input size="small" v-model="report.loanAmount" :disabled="!saveBtnShow" @input="cutNumber('loanAmount')"></el-input>
                             <span>万</span>
                         </p>
                         <p>
                             <span>贷款期限：</span>
-                            <el-input size="small" type="number" v-model="report.loanTerm" :disabled="!saveBtnShow"></el-input>
+                            <el-input size="small" v-model="report.loanTerm" :disabled="!saveBtnShow" @input="cutNumber('loanTerm')"></el-input>
                             <span>年</span>
                         </p>
                     </div>
@@ -162,7 +162,7 @@
                     <div class="input">
                         <p class="mark" style="margin-right:10px;">
                             <span style="min-width:126px;">是否析产（继承）：</span>
-                            <el-select size="small" v-model="report.isExtend" :disabled="!saveBtnShow">
+                            <el-select size="small" v-model="report.isExtend" :disabled="!saveBtnShow" class="xichan">
                                 <el-option label="否" value="0"></el-option>
                                 <el-option label="是" value="1"></el-option>
                             </el-select>
@@ -231,24 +231,20 @@ let checkIdCard = function (str) {
 let checkPassPort = function (str) {
     return /^1[45][0-9]{7}$|(^[P|p|S|s]\d{7}$)|(^[S|s|G|g|E|e]\d{8}$)|(^[Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8}$)|(^[H|h|M|m]\d{8,10}$)/.test(str)
 }
-const rule = {
-    cardSituation: {
-        name: "两证情况"
-    },
-    mortgageSituation: {
-        name: "抵押情况"
-    },
-    isEarlyRepayment: {
-        name: "是否提前还款"
-    },
-    ownershipNumber: {
-        name: "权属证号"
-    },
-    transFlowCode: {
-        name: "交易流程"
-    },
-    isExtend: {
-        name: "是否析产（继承）"
+function addRedBorder(className) {
+    let obj = document.getElementsByClassName(className)
+    if(className === 'quanshu') {
+        obj[0].firstElementChild.style.borderColor = '#f56c6c'
+    } else {
+        obj[0].firstElementChild.firstElementChild.style.borderColor = '#f56c6c' 
+    }
+}
+function removeRedBorder(className) {
+    let obj = document.getElementsByClassName(className)
+    if(className === 'quanshu') {
+        obj[0].firstElementChild.style.borderColor = '#dcdfe6'
+    } else {
+        obj[0].firstElementChild.firstElementChild.style.borderColor = '#dcdfe6'  
     }
 }
 export default {
@@ -412,74 +408,130 @@ export default {
             }
         },
         saveFn() {
-            this.$tool.checkForm(this.report,rule).then(() => {
-                if(this.report.buyerAgentCardType) {
-                    if(this.report.buyerAgentCard) {
-                        let type = this.report.buyerAgentCardType
-                        let val = this.report.buyerAgentCard
-                        if(type === 1) {
-                            if(!checkIdCard(val)) {
-                                this.$message({message:'买方代理人身份证号不正确',type:'warning'})
+            if(this.report.cardSituation) {
+                if(this.report.mortgageSituation) {
+                    if(this.report.isEarlyRepayment) {
+                        if(this.report.ownershipNumber) {
+                            if(this.report.transFlowCode) {
+                                if(this.report.isExtend) {
+
+                                } else {
+                                    this.$message({message:"交易流程不能为空"})
+                                    addRedBorder('xichan')
+                                    return false
+                                }
+                            } else {
+                                this.$message({message:"交易流程不能为空"})
+                                addRedBorder('liucheng')
                                 return false
                             }
-                        } else if(type === 2) {
-                            if(!checkPassPort(val)) {
-                                this.$message({message:'买方代理人护照不正确',type:'warning'})
-                                return false
-                            }
-                        }
-                        if(!this.report.buyerAgentName) {
-                            this.$message("买方代理人姓名不能为空")
+                        } else {
+                            this.$message({message:"权属证号不能为空"})
+                            addRedBorder('quanshu')
                             return false
                         }
                     } else {
-                        this.$message("买方代理人证件号不能为空")
+                        this.$message({message:"是否提前还款不能为空"})
+                        addRedBorder('huankuan')
                         return false
                     }
+                } else {
+                    this.$message({message:"抵押情况不能为空"})
+                    addRedBorder('diya')
+                    return false
                 }
-                if(this.report.sellerAgentCardType) {
-                    if(this.report.sellerAgentCard) {
-                        let type = this.report.sellerAgentCardType
-                        let val = this.report.sellerAgentCard
-                        if(type === 1) {
-                            if(!checkIdCard(val)) {
-                                this.$message({message:'卖方代理人身份证号不正确',type:'warning'})
-                                return false
-                            }
-                        } else if(type === 2) {
-                            if(!checkPassPort(val)) {
-                                this.$message({message:'卖方代理人护照不正确',type:'warning'})
-                                return false
-                            }
-                        }
-                        if(!this.report.sellerAgentName) {
-                            this.$message("卖方代理人姓名不能为空")
+            } else {
+                this.$message({message:"两证情况不能为空"})
+                addRedBorder('liangzheng')
+                return false
+            }
+            if(this.report.buyerAgentCardType) {
+                if(this.report.buyerAgentCard) {
+                    let type = this.report.buyerAgentCardType
+                    let val = this.report.buyerAgentCard
+                    if(type === 1) {
+                        if(!checkIdCard(val)) {
+                            this.$message({message:'买方代理人身份证号不正确',type:'warning'})
                             return false
                         }
-                    } else {
-                        this.$message("卖方代理人证件号不能为空")
+                    } else if(type === 2) {
+                        if(!checkPassPort(val)) {
+                            this.$message({message:'买方代理人护照不正确',type:'warning'})
+                            return false
+                        }
+                    }
+                    if(!this.report.buyerAgentName) {
+                        this.$message("买方代理人姓名不能为空")
                         return false
                     }
+                } else {
+                    this.$message("买方代理人证件号不能为空")
+                    return false
                 }
-                this.$ajax.postJSON('/api/contract/updateReport',{report:this.report, id:this.id}).then(res => {
-                    res = res.data
-                    if(res.status === 200) {
-                        this.$message({
-                            message: "保存成功",
-                            type: "success"
-                        })
-                        this.getContractDetail()
-                        this.$emit("changeBtnStatus")
+            }
+            if(this.report.sellerAgentCardType) {
+                if(this.report.sellerAgentCard) {
+                    let type = this.report.sellerAgentCardType
+                    let val = this.report.sellerAgentCard
+                    if(type === 1) {
+                        if(!checkIdCard(val)) {
+                            this.$message({message:'卖方代理人身份证号不正确',type:'warning'})
+                            return false
+                        }
+                    } else if(type === 2) {
+                        if(!checkPassPort(val)) {
+                            this.$message({message:'卖方代理人护照不正确',type:'warning'})
+                            return false
+                        }
                     }
-                }).catch(error => {
+                    if(!this.report.sellerAgentName) {
+                        this.$message("卖方代理人姓名不能为空")
+                        return false
+                    }
+                } else {
+                    this.$message("卖方代理人证件号不能为空")
+                    return false
+                }
+            }
+            this.$ajax.postJSON('/api/contract/updateReport',{report:this.report, id:this.id}).then(res => {
+                res = res.data
+                if(res.status === 200) {
                     this.$message({
-                        message: error,
-                        type: "error"
+                        message: "保存成功",
+                        type: "success"
                     })
-                })
+                    this.transFlowEdit = true
+                    this.$emit("changeBtnStatus")
+                }
             }).catch(error => {
-                this.$message({message:`${error.title}${error.msg}`})
+                this.$message({
+                    message: error,
+                    type: "error"
+                })
             })
+        },
+        cutNumber(val) {
+            if(val==="landUseArea"){
+                this.$nextTick(()=>{
+                    this.report.landUseArea=this.$tool.cutFloat({val:this.report.landUseArea,max:999999999.99})
+                })
+            } else if(val==="payTaxation") {
+                this.$nextTick(()=>{
+                    this.report.payTaxation=this.$tool.cutFloat({val:this.report.payTaxation,max:999999999.99})
+                })
+            } else if(val==="evaluationValue") {
+                this.$nextTick(()=>{
+                    this.report.evaluationValue=this.$tool.cutFloat({val:this.report.evaluationValue,max:999999999.99})
+                })
+            } else if(val==="loanAmount") {
+                this.$nextTick(()=>{
+                    this.report.loanAmount=this.$tool.cutFloat({val:this.report.loanAmount,max:999999999.99})
+                })
+            } else if(val==="loanTerm") {
+                this.$nextTick(()=>{
+                    this.report.loanTerm=this.$tool.cutFloat({val:this.report.loanTerm,max:999999999.99})
+                })
+            }
         }
     },
     filters: {
@@ -488,6 +540,38 @@ export default {
                 return "零";
             } else {
                 return TOOL.toChineseNumber(val);
+            }
+        }
+    },
+    watch: {
+        'report.cardSituation'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('liangzheng')
+            }
+        },
+        'report.mortgageSituation'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('diya')
+            }
+        },
+        'report.isEarlyRepayment'(newVal,oldVal) {
+            if(newVal==='0'||newVal==='1') {
+                removeRedBorder('huankuan')
+            }
+        },
+        'report.ownershipNumber'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('quanshu')
+            }
+        },
+        'report.transFlowCode'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('liucheng')
+            }
+        },
+        'report.isExtend'(newVal,oldVal) {
+            if(newVal==='0'||newVal==='1') {
+                removeRedBorder('xichan')
             }
         }
     }
