@@ -559,13 +559,13 @@
             <p>合同基本信息</p>
             <ul>
               <li>
-                <p class="w25"><span>签约日期：</span><span></span></p>
-                <p class="w30"><span>合同编号：</span><span></span></p>
-                <p><span>交易类型：</span><span></span></p>
+                <p class="w25"><span>签约日期：</span><span>{{contractDetail.signDate}}</span></p>
+                <p class="w30"><span>合同编号：</span><span>{{contractDetail.code}}</span></p>
+                <p><span>交易类型：</span><span>{{contractDetail.contType.label}}</span></p>
               </li>
               <li>
-                <p class="w25"><span>成交总价：</span><span></span></p>
-                <p><span>应收佣金：</span><span></span></p>
+                <p class="w25"><span>成交总价：</span><span>{{contractDetail.dealPrice/10000}}万元</span></p>
+                <p><span>应收佣金：</span><span>{{contractDetail.receivableCommission}}元</span></p>
               </li>
             </ul>
           </div>
@@ -573,26 +573,26 @@
             <p>房屋基本信息</p>
             <ul>
               <li>
-                <p class="w25"><span>两证情况：</span><span></span></p>
-                <p class="w30"><span>抵押情况：</span><span></span></p>
-                <p><span>提前还款：</span><span></span></p>
+                <p class="w25"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':'不动产'}}</span></p>
+                <p class="w30"><span>抵押情况：</span><span>{{contractDetail.report.mortgageSituation===1?'有抵押':'无抵押'}}</span></p>
+                <p><span>提前还款：</span><span>{{contractDetail.report.isEarlyRepayment===0?'否':'是'}}</span></p>
               </li>
               <li>
-                <p class="w25"><span>建筑面积：</span><span></span></p>
-                <p class="w30"><span>土地使用权面积：</span><span></span></p>
-                <p><span>土地性质：</span><span></span></p>
+                <p class="w25"><span>建筑面积：</span><span>{{contractDetail.houseInfo.Square}}㎡</span></p>
+                <p class="w30"><span>土地使用权面积：</span><span>{{contractDetail.report.landUseArea}}</span></p>
+                <p><span>土地性质：</span><span>{{contractDetail.report.landNature}}</span></p>
               </li>
               <li>
-                <p><span>物业地址：</span><span></span></p>
+                <p><span>物业地址：</span><span>{{contractDetail.propertyAddr}}</span></p>
               </li>
               <li>
-                <p><span>权属证号：</span><span></span></p>
+                <p><span>权属证号：</span><span>{{contractDetail.report.ownershipNumber}}</span></p>
               </li>
               <li>
-                <p class="w25"><span>缴纳税费：</span><span></span></p>
-                <p class="w30"><span>房屋总楼层：</span><span></span></p>
-                <p class="w25"><span>建筑结构：</span><span></span></p>
-                <p><span>评估值：</span><span></span></p>
+                <p class="w25"><span>缴纳税费：</span><span>{{contractDetail.report.payTaxation}}</span></p>
+                <p class="w30"><span>房屋总楼层：</span><span>{{contractDetail.houseInfo.FloorAll}}层</span></p>
+                <p class="w25"><span>建筑结构：</span><span>{{contractDetail.report.buildingStructure}}</span></p>
+                <p><span>评估值：</span><span>{{contractDetail.report.evaluationValue}}</span></p>
               </li>
             </ul>
           </div>
@@ -600,58 +600,58 @@
             <div class="guest">
               <div class="title">客源方信息</div>
               <div class="two-item">
-                <p class="line"><span>店长：</span><span></span></p>
-                <p><span>联系电话：</span><span></span></p>
+                <p class="line"><span>店长：</span><span>{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
+                <p><span>联系电话：</span><span>{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
               </div>
-              <div><p>汉街二店</p></div>
+              <div><p>{{contractDetail.guestInfo.GuestStoreName}}</p></div>
             </div>
             <div class="house">
               <div class="title">房源方信息</div>
               <div class="two-item">
-                <p class="line"><span>店长：</span><span></span></p>
-                <p><span>联系电话：</span><span></span></p>
+                <p class="line"><span>店长：</span><span>{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
+                <p><span>联系电话：</span><span>{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
               </div>
-              <div><p>汉街二店</p></div>
+              <div><p>{{contractDetail.houseInfo.HouseStoreName}}</p></div>
             </div>
           </div>
           <div class="mai-mai resource">
             <div class="guest">
               <div class="title">买方信息</div>
               <div class="two-item">
-                <p class="line"><span>姓名：</span><span></span></p>
-                <p><span>身份证：</span><span></span></p>
+                <p class="line"><span>姓名：</span><span>{{buyerFirst.name}}</span></p>
+                <p><span>身份证：</span><span>{{buyerFirst.identifyCode}}</span></p>
               </div>
-              <div><p><span>电话：</span><span></span></p></div>
-              <div class="two-item no-bottom">
-                <p class="line"><span>共有人姓名：</span><span></span></p>
-                <p><span>电话：</span><span></span></p>
+              <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
+              <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
+                <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
+                <p><span>电话：</span><span>{{item.mobile}}</span></p>
               </div>
               <div class="two-item no-bottom">
-                <p class="line"><span>付款方式：</span><span></span></p>
-                <p><span>交易流程：</span><span></span></p>
+                <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod}}</span></p>
+                <p><span>交易流程：</span><span>{{contractDetail.report.transFlowCode}}</span></p>
               </div>
               <div class="two-item">
-                <p class="line"><span>按揭银行：</span><span></span></p>
-                <p><span>贷款金额：</span><span></span></p>
+                <p class="line"><span>按揭银行：</span><span>{{contractDetail.report.stagesBankName}}</span></p>
+                <p><span>贷款金额：</span><span>{{contractDetail.report.loanAmount}}</span></p>
               </div>
               <div>
-                <p><span>贷款期限：</span><span></span></p>
+                <p><span>贷款期限：</span><span>{{contractDetail.report.loanTerm}}</span></p>
               </div>
             </div>
             <div class="seller">
               <div class="title">卖方信息</div>
               <div class="two-item">
-                <p class="line"><span>姓名：</span><span></span></p>
-                <p><span>身份证：</span><span></span></p>
+                <p class="line"><span>姓名：</span><span>{{sellerFirst.name}}</span></p>
+                <p><span>身份证：</span><span>{{sellerFirst.identifyCode}}</span></p>
               </div>
-              <div><p><span>电话：</span><span></span></p></div>
-              <div class="two-item no-bottom">
-                <p class="line"><span>共有人姓名：</span><span></span></p>
-                <p><span>电话：</span><span></span></p>
+              <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
+              <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
+                <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
+                <p><span>电话：</span><span>{{item.mobile}}</span></p>
               </div>
               <div class="last-item" style="border-top:1px solid #dddee6;">
-                <p class="no-line"><span>是否析产（继承）：</span><span></span></p>
-                <p><span>婚姻状况：</span><span></span></p>
+                <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend===0?'否':'是'}}</span></p>
+                <p><span>婚姻状况：</span><span>{{contractDetail.report.maritalStatus}}</span></p>
               </div>
             </div>
           </div>
@@ -659,18 +659,18 @@
             <div class="guest">
               <div class="title">买方代理人信息</div>
               <div class="two-item">
-                <p class="line"><span>代理人姓名：</span><span></span></p>
-                <p><span>身份证：</span><span></span></p>
+                <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.buyerAgentName}}</span></p>
+                <p><span>身份证：</span><span>{{contractDetail.report.buyerAgentCard}}</span></p>
               </div>
-              <div><p><span>电话：</span><span></span></p></div>
+              <div><p><span>电话：</span><span>{{contractDetail.report.buyerAgentMobile}}</span></p></div>
             </div>
             <div>
               <div class="title">卖方代理人信息</div>
               <div class="two-item">
-                <p class="line"><span>代理人姓名：</span><span></span></p>
-                <p><span>身份证：</span><span></span></p>
+                <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.sellerAgentName}}</span></p>
+                <p><span>身份证：</span><span>{{contractDetail.report.sellerAgentCard}}</span></p>
               </div>
-              <div><p><span>电话：</span><span></span></p></div>
+              <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile}}</span></p></div>
             </div>
           </div>
           <!-- <div class="printHeader">
@@ -863,7 +863,8 @@ export default {
         contState: {},
         toExamineState: {},
         laterStageState:{},
-        contChangeState:{}
+        contChangeState:{},
+        report: {}
       },
       //业主信息
       ownerData: [],
@@ -1023,7 +1024,11 @@ export default {
       //成交报告
       saveBtnShow: false,
       editBtnShow: false,
-      reportBtnShow: false
+      reportBtnShow: false,
+      buyerInfo: [],
+      buyerFirst: {},
+      sellerInfo: [],
+      sellerFirst: {}
     };
   },
   created() {
@@ -1059,6 +1064,7 @@ export default {
       this.saveBtnShow = false
       this.editBtnShow = true
       this.reportBtnShow = true
+      this.getContractDetail()
     },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
@@ -1418,6 +1424,16 @@ export default {
           // debugger
           this.contractDetail = res.data;
           this.recordId = res.data.recordId;
+          //成交报告
+          let arr1 = res.data.contPersons.filter(item => item.personType.value === 2)
+          this.buyerFirst = arr1[0]
+          delete arr1[0]
+          arr1.forEach(item => this.buyerInfo.push(item))
+          let arr2 = res.data.contPersons.filter(item => item.personType.value === 1)
+          this.sellerFirst = arr2[0]
+          delete arr2[0]
+          arr2.forEach(item => this.sellerInfo.push(item))
+          this.contractDetail.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : {}
           // this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
           this.ownerData=[];
@@ -2331,7 +2347,7 @@ export default {
   position: relative;
   font-size: 16px;
   box-sizing: border-box;
-  padding: 40px 30px;
+  padding: 40px 25px;
   background: #fff;
   .bgcImg{
     position: absolute;
