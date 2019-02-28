@@ -573,7 +573,7 @@
             <p>房屋基本信息</p>
             <ul>
               <li>
-                <p class="w25"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':'不动产'}}</span></p>
+                <p class="w25"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':contractDetail.report.cardSituation===3?'不动产':'无'}}</span></p>
                 <p class="w30"><span>抵押情况：</span><span>{{contractDetail.report.mortgageSituation===1?'有抵押':'无抵押'}}</span></p>
                 <p><span>提前还款：</span><span>{{contractDetail.report.isEarlyRepayment===0?'否':'是'}}</span></p>
               </li>

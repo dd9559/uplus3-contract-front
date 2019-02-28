@@ -125,10 +125,10 @@
             </div>
             <div class="item">
               <el-form-item label="门店名称: ">
-                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字" @input="inputOnly(100,'name')"></el-input>
               </el-form-item>
               <el-form-item label="法人姓名: ">
-                <el-input size="mini" maxlength="15" v-model.trim="companyForm.lepName" :disabled="directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                <el-input size="mini" maxlength="15" v-model.trim="companyForm.lepName" :disabled="directSaleSelect" @input="inputOnly(999,'lepName')"></el-input>
               </el-form-item>
               <el-form-item label="证件类型: ">
                 <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="directSaleSelect" @change="idTypeChange">
@@ -138,7 +138,7 @@
             </div>
             <div class="item">
               <el-form-item label="证件号: " class="id-card">
-                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" @input="inputOnly(1000,'lepDocumentCard')"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: " class="phone-number">
                 <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" @keyup.native="getInt(2)"></el-input>
@@ -181,7 +181,7 @@
               <el-table-column width="260" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model.trim="companyBankList[scope.$index].bankAccountName" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                    <el-input size="mini" maxlength="15" v-model.trim="companyBankList[scope.$index].bankAccountName" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" @input="inputOnly(scope.$index,'bankAccountName')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -195,7 +195,7 @@
               <el-table-column align="center" label="" width="320">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model.trim="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                    <el-input size="mini" v-model.trim="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" @input="inputOnly(scope.$index,'bankBranchName')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -866,6 +866,29 @@
           this.companyForm.lepPhone = this.companyForm.lepPhone.replace(/[^\?\d]/g,'')
         } else if(num===3) {
           this.companyBankList[index].bankCard = this.companyBankList[index].bankCard.replace(/[^\?\d]/g,'')
+        }
+      },
+      inputOnly(index,type){
+        if(type==='bankAccountName'){
+          this.$nextTick(()=>{
+            this.companyBankList[index].bankAccountName=this.$tool.textInput(this.companyBankList[index].bankAccountName)
+          })
+        }else if(type==='bankBranchName'){
+          this.$nextTick(()=>{
+            this.companyBankList[index].bankBranchName=this.$tool.textInput(this.companyBankList[index].bankBranchName)            
+          })
+        } else if(type==='lepName') {
+          this.$nextTick(()=>{
+            this.companyForm.lepName=this.$tool.textInput(this.companyForm.lepName)            
+          })
+        } else if(type==='lepDocumentCard') {
+          this.$nextTick(()=>{
+            this.companyForm.lepDocumentCard=this.$tool.textInput(this.companyForm.lepDocumentCard,2)            
+          })
+        } else if(type==='name') {
+          this.$nextTick(()=>{
+            this.companyForm.name=this.$tool.textInput(this.companyForm.name)            
+          })
         }
       },
       idTypeChange() {
