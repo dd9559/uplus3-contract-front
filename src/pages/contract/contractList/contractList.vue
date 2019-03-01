@@ -129,7 +129,7 @@
         </div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
-        <el-table-column align="left" label="合同信息" width="250" fixed>
+        <el-table-column align="left" label="合同信息" width="300" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -163,9 +163,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="合同类型" prop="contType.label" width="100" fixed>
+        <el-table-column align="left" label="合同类型" prop="contType.label" width="120" fixed>
         </el-table-column>
-        <el-table-column align="left" label="物业地址" prop="propertyAddr" width="200" fixed>
+        <el-table-column align="left" label="物业地址" prop="propertyAddr" width="300" fixed>
         </el-table-column>
         <el-table-column align="left" label="成交总价" prop="dealPrice" width="150" fixed>
           <template slot-scope="scope">
@@ -186,7 +186,7 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="签约日期" width="100">
+        <el-table-column align="left" label="签约日期" width="200">
           <template slot-scope="scope">
             <!-- {{scope.row.signDate.substr(0, 10)}} -->
             {{Number(scope.row.signDate)|timeFormat_}}
@@ -199,7 +199,7 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="合同状态" width="100">
+        <el-table-column align="left" label="合同状态" width="150">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4">
               <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
@@ -227,13 +227,13 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="变更/解约" width="100">
+        <el-table-column align="left" label="变更/解约" width="150">
           <template slot-scope="scope">
             <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>
             <el-button type="text" size="medium" v-else @click="goChangeCancel(scope.row)">{{scope.row.contChangeState.label}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="后期状态" width="100">
+        <el-table-column align="left" label="后期状态" width="150">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4">
               <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>

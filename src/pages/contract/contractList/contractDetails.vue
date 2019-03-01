@@ -551,7 +551,7 @@
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
-        <div class="printContent" style="width:900px;height:1270px">
+        <div class="printContent" style="width:900px;height:1270px;position:relative;z-index:200">
           <div class="printHeader">
             <span>成交报告</span>
           </div>
@@ -673,6 +673,7 @@
               <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile?contractDetail.report.sellerAgentMobile:'--'}}</span></p></div>
             </div>
           </div>
+          
           <!-- <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
           </div>
