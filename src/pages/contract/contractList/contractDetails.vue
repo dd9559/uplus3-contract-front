@@ -628,7 +628,7 @@
               </div>
               <div class="two-item no-bottom">
                 <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
-                <p style="width:270px;"><span>交易流程：</span><span>{{contractDetail.report.transFlowCode}}</span></p>
+                <p style="width:220px;"><span>交易流程：</span><span>{{contractDetail.report.transFlowCode}}</span></p>
               </div>
               <div class="two-item">
                 <p class="line"><span>按揭银行：</span><span>{{contractDetail.report.stagesBankName?contractDetail.report.stagesBankName:'--'}}</span></p>
