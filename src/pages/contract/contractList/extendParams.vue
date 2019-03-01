@@ -30,10 +30,18 @@
       <iframe :src="src2" frameborder="0" ref='iframeSecond' :style="{ height: clientHei }" v-show="isActive===2"></iframe>
       <div class="btn">
         <el-button round @click="isSave(1)" v-loading.fullscreen.lock="fullscreenLoading">保存</el-button><br>
-        <el-button v-if="Msg.type===1||Msg.type===2||Msg.type===3" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
+        <el-button v-if="Msg.type===1||Msg.type===2||Msg.type===5" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
+		<!-- 合同提审弹窗 -->
+		<el-dialog title="提示" :visible.sync="dialogSub" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <span>确定合同填写无误并提交审核？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogSub = false">取 消</el-button>
+        <el-button type="primary" @click="toSubmit">确 定</el-button>
+      </span>
+    </el-dialog>
 		<!-- 创建合同成功提示框 -->
     <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
       <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
@@ -138,18 +146,6 @@ let Obj1={
 }
 //租赁
 let Obj2 = {
-    check1:{
-        name:'zhizhao'
-    },
-    val6:'',
-    // check2:{
-    //     name:'zhizhao2'
-    // },
-    // val13:'',
-    check3:{
-        name:'zhizhao3'
-    },
-    val21:'',
     val22:'',
     val25:'',
     val26:'',
@@ -161,10 +157,9 @@ let Obj2 = {
     val33:'',
     val34:'',
     check5:{
-        name:'zhizhao5'
+        name:'zhizhao5',
+        require:true
     },
-    val40:'',
-    val41:'',
     val42:'',
     check6:{
         name:'zhizhao6'
@@ -188,9 +183,6 @@ let Obj2 = {
     val64:'',
     val65:'',
     val66:'',
-    // check7:{
-    //     name:'zhizhao7'
-    // },
     val73:'',
     val74:'',
     check8:{
@@ -340,8 +332,10 @@ export default {
       src2:'',
       html:'',
       fullscreenLoading:false,
-			navId:'',
+      navId:'',
 			dialogSuccess:false,
+			dialogSub:false,
+			param:'',
 			//权限
 			power:{
 				'sign-com-htdetail': {
@@ -351,6 +345,14 @@ export default {
 				'sign-ht-xq-data': {
           state: false,
           name: '资料库权限'
+				},
+				'sign-ht-info-toverify': {
+          state: false,
+          name: '提交审核'//编辑+提审
+        },
+        'sign-ht-info-sverify': {
+          state: false,
+          name: '提交审核'//新增+提审
         },
 			}
     }
@@ -358,7 +360,7 @@ export default {
   created(){
 	this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
-    this.clientHeight();
+		this.clientHeight();
 		this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
     if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
@@ -384,12 +386,6 @@ export default {
       //定金
       this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
     }
-    // this.isHaveHtml=parseInt(this.$route.query.isHaveHtml);
-
-    // if(this.isHaveHtml===1){
-    //   this.htmlPath = JSON.parse(localStorage.getItem("htmlPath"));
-		// }
-		// this.isSave(2)
   },
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
@@ -411,16 +407,16 @@ export default {
     },
     //导航跳转
     goNav(id){
-        this.navId=id;
-        let iframebox=this.$refs.iframeSecond
-        iframebox.contentWindow.document.querySelector(id).click()
+			this.navId=id;
+			let iframebox=this.$refs.iframeSecond
+			iframebox.contentWindow.document.querySelector(id).click()
     },
     //回到顶部
     backTop(){
-        let iframebox1=this.$refs.iframeFirst;
-        let iframebox2=this.$refs.iframeSecond;
-        iframebox1.contentWindow.scrollTo(0,0)
-        iframebox2.contentWindow.scrollTo(0,0)
+			let iframebox1=this.$refs.iframeFirst;
+			let iframebox2=this.$refs.iframeSecond;
+			iframebox1.contentWindow.scrollTo(0,0)
+			iframebox2.contentWindow.scrollTo(0,0)
 		},
 		//创建成功提示
     toUpload(){//上传合同资料库
@@ -456,9 +452,9 @@ export default {
     },
 		//保存
     isSave(operation){
-			// console.log(this.gethtml)
-			// debugger
-			this.fullscreenLoading=true
+			if(operation===1){
+				this.fullscreenLoading=true
+			}
 			var param={};
 			var isFull=0;//合同是否填写完整
 			let iframebox1=this.$refs.iframeFirst
@@ -506,11 +502,11 @@ export default {
 				if(res.status===200){
 					this.fullscreenLoading=false
 					if(operation===1){
-						this.dialogSuccess=true
 						this.$message({
 							message:'保存成功',
 							type:'success'
 						})
+						this.$router.push('/contractList');
 					}
 				}
       }).catch(error=>{
@@ -522,564 +518,611 @@ export default {
 			})
     },
     submit(){
-        let iframebox1=this.$refs.iframeFirst;
-        let iframebox2=this.$refs.iframeSecond;
-        errorArr1=[]
-        errorArr2=[]
-        if(this.Msg.type===2){
-            let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
-            let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
-            if(this.isActive===1){
-                if(emptyInput1.length>0){
-                    this.$message({
-                        message:'合同信息未填写完整',
-                        type:'warning'
-                    })
-                    let inputHeight1=0
-                    if(emptyInput1[0].type){
-                        let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
-                        inputTag.classList.add("BODERRED")
-                        inputHeight1 = inputTag.offsetTop
-                    }else{
-                        inputHeight1 = iframebox1.contentWindow.document.querySelector(`input[name=${emptyInput1[0]}]`).offsetTop
-                    }
-                    iframebox1.contentWindow.scrollTo(0,inputHeight1)
-                }else if(emptyInput2.length>0){
-                    this.$message({
-                        message:'买卖合同信息未填写完整',
-                        type:'warning'
-                    })
-                }
-        }else{
-            if(emptyInput2.length>0){
-                this.$message({
-                    message:'合同信息未填写完整',
-                    type:'warning'
-                })
-                let inputHeight2=0
-                if(emptyInput2[0].type){
-                    let inputTag = iframebox2.contentWindow.document.querySelector(`input[extendparam=${emptyInput2[0].name}]`)
-                    inputTag.classList.add("BODERRED")
-                    inputHeight2 = inputTag.offsetTop
-                }else{
-                    inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
-                }
-                // let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
-                iframebox2.contentWindow.scrollTo(0,inputHeight2)
-            }else if(emptyInput1.length>0){
-                this.$message({
-                    message:'居间合同信息未填写完整',
-                    type:'warning'
-                })
-            }
-        }
-        }else{
-            let emptyInput1=0
-            if(this.Msg.type===1){//租赁
-                emptyInput1 = this.leaseCheck(iframebox1.contentWindow)
-            }else if(this.Msg.type===3){
-                emptyInput1 = this.commissionCheck(iframebox1.contentWindow)
-            }else if(this.Msg.type===4){
-                emptyInput1 = this.agreementCheck(iframebox1.contentWindow)
-            }else if(this.Msg.type===5){
-                emptyInput1 = this.depositAgreementCheck(iframebox1.contentWindow)
-            }
-            if(emptyInput1.length>0){
-                this.$message({
-                    message:'合同信息未填写完整',
-                    type:'warning'
-                })
-                let inputHeight1=0
-                if(emptyInput1[0].type){
-                    let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
-                    inputTag.classList.add("BODERRED")
-                    inputHeight1 = inputTag.offsetTop
-                }else{
-                    inputHeight1 = iframebox1.contentWindow.document.querySelector(`input[name=${emptyInput1[0]}]`).offsetTop
-                }
-                iframebox1.contentWindow.scrollTo(0,inputHeight1)
-            }
-        }
-      if(errorArr1.length===0&&errorArr2.length===0){
-            this.fullscreenLoading=true
-            let htmlTxt1=''
-            let htmlTxt2=''
-            let param = {}
-            if(this.Msg.type===2){
-                htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-                htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-                param = {
-                    id:this.Msg.id,
-                    html:{
-                        residence:htmlTxt1,
-                        business:htmlTxt2
-                    }
-                }
-            }else{
-                htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-                param = {
-                    id:this.Msg.id,
-                    html:{
-                        address:htmlTxt1
-                    }
-                }
-            }
-            this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
-                res=res.data
-                if(res.status===200){
-										this.fullscreenLoading=false
-										this.dialogSuccess=true
-                    this.$message({
-                        message:'提审成功',
-                        type:'success'
-                    })
-                }
-            }).catch(error=>{
-                this.fullscreenLoading=false
-                this.$message({
-                    message:error,
-                    type:'error'
-                })
-            })
-        }
-    },
+			let iframebox1=this.$refs.iframeFirst;
+			let iframebox2=this.$refs.iframeSecond;
+			errorArr1=[]
+			errorArr2=[]
+			if(this.Msg.type===2){
+				let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
+				let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+				if(this.isActive===1){
+					if(emptyInput1.length>0){
+						this.$message({
+							message:'合同信息未填写完整',
+							type:'warning'
+						})
+						let inputHeight1=0
+						if(emptyInput1[0].type){
+							let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
+							inputTag.classList.add("BODERRED")
+							inputHeight1 = inputTag.offsetTop
+						}else{
+							inputHeight1 = iframebox1.contentWindow.document.querySelector(`div[name=${emptyInput1[0]}]`).offsetTop
+						}
+						iframebox1.contentWindow.scrollTo(0,inputHeight1)
+					}else if(emptyInput2.length>0){
+						this.$message({
+							message:'买卖合同信息未填写完整',
+							type:'warning'
+						})
+					}
+			}else{
+				if(emptyInput2.length>0){
+					this.$message({
+						message:'合同信息未填写完整',
+						type:'warning'
+					})
+					let inputHeight2=0
+					if(emptyInput2[0].type){
+						let inputTag = iframebox2.contentWindow.document.querySelector(`input[extendparam=${emptyInput2[0].name}]`)
+						inputTag.classList.add("BODERRED")
+						inputHeight2 = inputTag.offsetTop
+					}else{
+						inputHeight2 = iframebox2.contentWindow.document.querySelector(`div[name=${emptyInput2[0]}]`).offsetTop
+					}
+					// let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
+					iframebox2.contentWindow.scrollTo(0,inputHeight2)
+				}else if(emptyInput1.length>0){
+					this.$message({
+						message:'居间合同信息未填写完整',
+						type:'warning'
+					})
+				}
+			}
+			}else{
+				let emptyInput1=0
+				if(this.Msg.type===1){//租赁
+					emptyInput1 = this.leaseCheck(iframebox1.contentWindow)
+				}else if(this.Msg.type===3){
+					emptyInput1 = this.commissionCheck(iframebox1.contentWindow)
+				}else if(this.Msg.type===4){
+					emptyInput1 = this.agreementCheck(iframebox1.contentWindow)
+				}else if(this.Msg.type===5){
+					emptyInput1 = this.depositAgreementCheck(iframebox1.contentWindow)
+				}
+				if(emptyInput1.length>0){
+					this.$message({
+						message:'合同信息未填写完整',
+						type:'warning'
+					})
+					let inputHeight1=0
+					if(emptyInput1[0].type){
+						let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
+						inputTag.classList.add("BODERRED")
+						inputHeight1 = inputTag.offsetTop
+					}else{
+						inputHeight1 = iframebox1.contentWindow.document.querySelector(`div[name=${emptyInput1[0]}]`).offsetTop
+					}
+					iframebox1.contentWindow.scrollTo(0,inputHeight1)
+				}
+			}
+		if(errorArr1.length===0&&errorArr2.length===0){
+			let htmlTxt1=''
+			let htmlTxt2=''
+			let param = {}
+			if(this.Msg.type===2){
+				htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+				htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+				param = {
+					id:this.Msg.id,
+					html:{
+						residence:htmlTxt1,
+						business:htmlTxt2
+					}
+				}
+			}else{
+				htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+				param = {
+					id:this.Msg.id,
+					html:{
+						address:htmlTxt1
+					}
+				}
+			}
+			this.param = param;
+			this.dialogSub=true
+			// this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
+			// 	res=res.data
+			// 	if(res.status===200){
+			// 		this.fullscreenLoading=false
+			// 		this.$message({
+			// 			message:'提审成功',
+			// 			type:'success'
+			// 		})
+			// 		if(this.Msg.isHaveData){
+			// 			this.$router.push('/contractList');
+			// 		}else{
+			// 			this.dialogSuccess=true
+			// 		}
+			// 	}
+			// }).catch(error=>{
+			// 	this.fullscreenLoading=false
+			// 	this.$message({
+			// 		message:error,
+			// 		type:'error'
+			// 	})
+			// })
+		}
+		},
+		//确定提审
+		toSubmit(){
+			this.fullscreenLoading=true
+			this.$ajax.postJSON('/api/contract/updateContractAudit', this.param).then(res => {
+				res=res.data
+				if(res.status===200){
+					this.fullscreenLoading=false
+					this.dialogSub=false
+					this.$message({
+						message:'提审成功',
+						type:'success'
+					})
+					if(this.Msg.isHaveData){
+						this.$router.push('/contractList');
+					}else{
+						this.dialogSuccess=true
+					}
+				}
+			}).catch(error=>{
+				this.fullscreenLoading=false
+				this.$message({
+					message:error,
+					type:'error'
+				})
+			})
+		},
+		//获取自定义勾选框选中状态
+		getCheckState(ele){
+			return	!!(ele.querySelector('p').getAttribute('checked'))
+		},
     //买卖校验
     dealCheck(iframe,obj=Obj1){
       for(let item in obj){
-            let itemType=Object.prototype.toString.call(obj[item])
-            if(itemType==='[object Object]'){
-                let state=false
-                if(obj[item].name==='textarea'){
-                    state=true
-                }else {
-                    let box=iframe.document.querySelectorAll(`input[name=${obj[item].name}]`)
-                    let arr=[...box]
-                    state = arr.every(function (tagItem) {
-                        return tagItem.checked===false
-                    })
-                }
-                if(state){
-                    if(obj[item].other){
-                        let otherState = obj[item].other.every(function (tip) {
-                            return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
-                        })
-                        if(otherState){
-                          errorArr2.push({
-                            type:'input',
-                            name:obj[item].other[0]
-                        })
-                            break
-                        }
-                    }else {
-                        // console.log(obj[item].name,iframe.document.querySelector(`input[name=${obj[item].name}]`).offsetTop,'请勾选')
-                        errorArr2.push(obj[item].name)
-                        break
-                    }
-                }else {
-                    //勾选后判断
-                    if(obj[item].require){
-                        let box=iframe.document.querySelectorAll(`input[name=${obj[item].name}]`)
-                        let detail={}
-                        switch (obj[item].name){
-                            case 'acquire':
-                                if(box[0].checked){
-                                    detail={
-                                        val12:'',
-                                        val13:''
-                                    }
-                                }else {
-                                    detail={
-                                        val15:'',
-                                        check:{
-                                            name:'trader'
-                                        }
-                                    }
-                                }
-                                break
-                            case 'hasRunsh':
-                                if(box[0].checked){
-                                    detail={
-                                        val19:''
-                                    }
-                                }
-                                break
-                            case 'setting':
-                                if(box[1].checked){
-                                    detail={
-                                        val33:'method1'
-                                    }
-                                }
-                                break
-                            case 'thirdparty':
-                                if(box[0].checked){
-                                    detail={
-                                        val35:'',
-                                        val36:'',
-                                        val37:''
-                                    }
-                                }
-                                break
-                            case 'cash':
-                                if(box[0].checked){
-                                    detail={
-                                        val40:'',
-                                        val41:'',
-                                        val42:''
-                                    }
-                                }
-                                break
-                            case 'pass':
-                                if(box[0].checked){
-                                    detail={
-                                        val45:'',
-                                        val46:'',
-                                        val47:''
-                                    }
-                                }else {
-                                    detail={
-                                        val49:''
-                                    }
-                                }
-                                break
-                            case 'furniture':
-                                if(box[0].checked){
-                                    detail={
-                                        val62:''
-                                    }
-                                }
-                                break
-                            case 'carport':
-                                if(box[0].checked){
-                                    detail={
-                                        check:{
-                                            name:'right'
-                                        },
-                                        val67:'',
-                                        val68:''
-                                    }
-                                }
-                                break
-                            case 'payb':
-                                if(box[0].checked){
-                                    detail={
-                                        val74:'',
-                                        val75:'',
-                                        val76:''
-                                    }
-                                }else{
-                                    detail={
-                                        val78:''
-                                    }
-                                }
-                                break
-                            case 'loanstype':
-                                if(box[2].checked){
-                                    detail={
-                                        val98:'',
-                                        val99:'method4'
-                                    }
-                                }
-                                break
-                            case 'check02':
-                                if(box[0].checked){
-                                    detail={
-                                        val107:''
-                                    }
-                                }else {
-                                    detail={
-                                        val109:''
-                                    }
-                                }
-                                break
-                        }
-                        this.dealCheck(iframe,detail)
-                    }
-                }
-            }else {
-                let methodDetail={}
-                let val=iframe.document.querySelector(`input[extendparam=${item}]`).value
-                iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
-                if(obj[item]==='method1'){
-                    switch (val.toLowerCase()){
-                        case 'a':
-                            methodDetail={
-                                check:{
-                                    name:'thirdparty',
-                                    require:true
-                                }
-                            }
-                            break
-                        case 'b':
-                            methodDetail={
-                                check:{
-                                    name:'cash',
-                                    require:true
-                                }
-                            }
-                            break
-                        case 'c':
-                            methodDetail={
-                                check:{
-                                    name:'pass',
-                                    require:true
-                                },
-                                val50:''
-                            }
-                            break
-                        default:
-                        errorArr2.push({
-                            type:'input',
-                            name:item
-                        })
-                    }
-                    this.dealCheck(iframe,methodDetail)
-                }else if(obj[item]==='method2'){
-                    switch (val.toLowerCase()){
-                        case 'a':
-                            break
-                        case 'b':
-                            methodDetail={
-                                check:{
-                                    name:'payb',
-                                    require:true
-                                },
-                                val79:'',
-                                val80:''
-                            }
-                            break
-                        case 'c':
-                            methodDetail={
-                                val81:'',
-                                val82:'',
-                                val83:'',
-                                val84:''
-                            }
-                            break
-                        case 'd':
-                            methodDetail={
-                                val85:'',
-                                val86:'',
-                                val87:'',
-                                val88:'',
-                                check1:{
-                                    name:'payd'
-                                },
-                                check2:{
-                                    name:'payd1'
-                                }
-                            }
-                            break
-                        default:
-                        errorArr2.push({
-                            type:'input',
-                            name:item
-                        })
-                            // reject(`请输入,${item}`)
-                    }
-                    this.dealCheck(iframe,methodDetail)
-                }else if(obj[item]==='method3'){
-                    switch (val.toLowerCase()){
-                        case 'a':
-                            break
-                        case 'b':
-                            methodDetail={
-                                check:{
-                                    name:'loanstype',
-                                    require:true
-                                }
-                            }
-                            break
-                        default:
-                        errorArr2.push({
-                            type:'input',
-                            name:item
-                        })
-                            // reject(`请输入,${item}`)
-                    }
-                    this.dealCheck(iframe,methodDetail)
-                }else if(obj[item]==='method4'){
-                    switch (val.toLowerCase()){
-                        case 'a':
-                            break
-                        case 'b':
-                            methodDetail={
-                                val100:'',
-                                val101:''
-                            }
-                            break
-                        case 'c':
-                            break
-                        default:
-                        errorArr2.push({
-                            type:'input',
-                            name:item
-                        })
-                            // reject(`请输入,${item}`)
-                    }
-                    this.dealCheck(iframe,methodDetail)
-                }else if(obj[item]==='method5'){
-                    switch (val.toLowerCase()){
-                        case 'a':
-                            methodDetail={
-                                val125:''
-                            }
-                            break
-                        case 'b':
-                            methodDetail={
-                                val126:''
-                            }
-                            break
-                        case 'c':
-                            methodDetail={
-                                val127:''
-                            }
-                            break
-                        default:
-                        errorArr2.push({
-                            type:'input',
-                            name:item
-                        })
-                    }
-                    this.dealCheck(iframe,methodDetail)
-                }else {
-                    if(val.length===0){
-                      errorArr2.push({
-                        type:'input',
-                        name:item
-                    })
-                        break
-                    }
-                }
-            }
+				let itemType=Object.prototype.toString.call(obj[item])
+				if(itemType==='[object Object]'){
+					let state=false
+					if(obj[item].name==='textarea'){
+							state=true
+					}else {
+						let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
+						let arr=[...box]
+						let that=this
+						state = arr.every(function (tagItem) {
+							// return tagItem.checked===false
+							return that.getCheckState(tagItem)===false
+						})
+					}
+					if(state){
+						if(obj[item].other){
+							let otherState = obj[item].other.every(function (tip) {
+								return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
+							})
+							if(otherState){
+								// errorArr2.push({
+								// 	type:'input',
+								// 	name:obj[item].other[0]
+								// })
+								errorArr2.push(obj[item].name)
+								break
+							}
+						}else {
+							// console.log(obj[item].name,iframe.document.querySelector(`input[name=${obj[item].name}]`).offsetTop,'请勾选')
+							errorArr2.push(obj[item].name)
+							break
+						}
+					}else {
+						//勾选后判断
+						if(obj[item].require){
+							let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
+							let detail={}
+							switch (obj[item].name){
+								case 'acquire':
+									if(this.getCheckState(box[0])){
+										detail={
+											val12:'',
+											val13:''
+										}
+									}else {
+										detail={
+											val15:'',
+											check:{
+												name:'trader'
+											}
+										}
+									}
+									break
+								case 'hasRunsh':
+									if(this.getCheckState(box[0])){
+										detail={
+											val19:''
+										}
+									}
+									break
+								case 'setting':
+									if(this.getCheckState(box[1])){
+										detail={
+											val33:'method1'
+										}
+									}
+									break
+								case 'thirdparty':
+									if(this.getCheckState(box[0])){
+										detail={
+											val35:'',
+											val36:'',
+											val37:''
+										}
+									}
+									break
+								case 'cash':
+									if(this.getCheckState(box[0])){
+										detail={
+											val40:'',
+											val41:'',
+											val42:''
+										}
+									}
+									break
+								case 'pass':
+									if(this.getCheckState(box[0])){
+										detail={
+											val45:'',
+											val46:'',
+											val47:''
+										}
+									}else {
+										detail={
+											val49:''
+										}
+									}
+									break
+								case 'furniture':
+									if(this.getCheckState(box[0])){
+										detail={
+											val62:''
+										}
+									}
+									break
+								case 'carport':
+									if(this.getCheckState(box[0])){
+										detail={
+											check:{
+												name:'right'
+											},
+											val67:'',
+											val68:''
+										}
+									}
+									break
+								case 'psecond':
+									if(this.getCheckState(box[0])){
+										detail={
+											val74:'',
+											val75:'',
+											val76:''
+										}
+									}else{
+										detail={
+											val78:''
+										}
+									}
+									break
+								case 'loanstype':
+									if(this.getCheckState(box[0])||this.getCheckState(box[1])||this.getCheckState(box[2])){
+										detail={
+											val98:'',
+											val99:'method4'
+										}
+									}
+									break
+								case 'check02':
+									if(this.getCheckState(box[0])){
+										detail={
+											val107:''
+										}
+									}else {
+										detail={
+											val109:''
+										}
+									}
+									break
+							}
+							this.dealCheck(iframe,detail)
+						}
+				}
+				}else {
+					let methodDetail={}
+					let val=iframe.document.querySelector(`input[extendparam=${item}]`).value
+					iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+					if(obj[item]==='method1'){
+						switch (val.toLowerCase()){
+							case 'a':
+								methodDetail={
+									check:{
+										name:'thirdparty',
+										require:true
+									}
+								}
+								break
+							case 'b':
+								methodDetail={
+									check:{
+										name:'cash',
+										require:true
+									}
+								}
+								break
+							case 'c':
+								methodDetail={
+									check:{
+										name:'pass',
+										require:true
+									},
+									val50:''
+								}
+								break
+							default:
+							errorArr2.push({
+									type:'input',
+									name:item
+							})
+						}
+						this.dealCheck(iframe,methodDetail)
+					}else if(obj[item]==='method2'){
+						switch (val.toLowerCase()){
+							case 'a':
+								break
+							case 'b':
+								methodDetail={
+									check:{
+										name:'psecond',
+										require:true
+									},
+									val79:'',
+									val80:''
+								}
+								break
+							case 'c':
+								methodDetail={
+									val81:'',
+									val82:'',
+									val83:'',
+									val84:''
+								}
+								break
+							case 'd':
+								methodDetail={
+									val85:'',
+									val86:'',
+									val87:'',
+									val88:'',
+									check1:{
+										name:'payd'
+									},
+									check2:{
+										name:'payd1'
+									}
+								}
+								break
+							default:
+							errorArr2.push({
+									type:'input',
+									name:item
+							})
+						}
+						this.dealCheck(iframe,methodDetail)
+					}else if(obj[item]==='method3'){
+						switch (val.toLowerCase()){
+							case 'a':
+								break
+							case 'b':
+								methodDetail={
+									check:{
+										name:'loanstype',
+										require:true
+									}
+								}
+								break
+							default:
+							errorArr2.push({
+									type:'input',
+									name:item
+							})
+										// reject(`请输入,${item}`)
+						}
+						this.dealCheck(iframe,methodDetail)
+					}else if(obj[item]==='method4'){
+						switch (val.toLowerCase()){
+							case 'a':
+								break
+							case 'b':
+								methodDetail={
+									val100:'',
+									val101:''
+								}
+								break
+							case 'c':
+								break
+							default:
+							errorArr2.push({
+								type:'input',
+								name:item
+							})
+									// reject(`请输入,${item}`)
+						}
+						this.dealCheck(iframe,methodDetail)
+					}else if(obj[item]==='method5'){
+						switch (val.toLowerCase()){
+							case 'a':
+								methodDetail={
+									val125:''
+								}
+								break
+							case 'b':
+								methodDetail={
+									val126:''
+								}
+								break
+							case 'c':
+								methodDetail={
+									val127:''
+								}
+								break
+							default:
+							errorArr2.push({
+									type:'input',
+									name:item
+							})
+						}
+						this.dealCheck(iframe,methodDetail)
+					}else {
+						if(val.length===0){
+							errorArr2.push({
+								type:'input',
+								name:item
+						})
+							break
+						}
+					}
+				}
       }
       return errorArr2
-    },
+		},
     //租赁校验
     leaseCheck(iframe,obj=Obj2){
-        for(let item in obj){
-            let itemType=Object.prototype.toString.call(obj[item])
-            if(itemType==='[object Object]'){
-                let state=false
-                if(obj[item].name==="textarea"){
-                    state=true
-                }else{
-                   let box=iframe.document.querySelectorAll(`input[name=${obj[item].name}]`)
-                   let arr=[...box]
-                   let list=['facility','zhizhao9','zhizhao10','zhizhao11','zhizhao12','zhizhao15','zhizhao16','remote']
-                   if(!list.includes(obj[item].name)){
-                        state = arr.every(function (item) {
-                            return item.checked===false
-                        })
-                   }
-                }
-                if(state){
-                    // debugger
-                    if(obj[item].other){
-                        let otherState = obj[item].other.every(function (tip) {
-                            return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
-                        })
-                        if(otherState){
-                            errorArr1.push({
-                                type:'input',
-                                name:obj[item].other[0]
-                            })
-                            break
-                        }
-                    }else {
-                        // console.log(obj[item].name,iframe.document.querySelector(`input[name=${obj[item].name}]`).offsetTop,'请勾选')
-                        errorArr1.push(obj[item].name)
-                        break
-                    }
-                }else{
-                    //勾选后判断
-                  if(obj[item].require){
-                      let box=iframe.document.querySelectorAll(`input[name=${obj[item].name}]`)
-                      let detail={}
-                      switch (obj[item].name){
-                          case 'zhizhao9':
-                            if(box[box.length-1].checked){
-                                detail={
-                                    val114:''
-                                }
-                            }
-                              break
-                          case 'zhizhao10':
-                          if(box[box.length-1].checked){
-                                detail={
-                                    val119:''
-                                }
-                            }
-                            break
-                        case 'facility':
-                          if(box[box.length-1].checked){
-                                detail={
-                                    val51:''
-                                }
-                            }
-                            break
-                        case 'zhizhao11':
-                          if(box[box.length-1].checked){
-                                detail={
-                                    val125:''
-                                }
-                            }
-                            break
-                        case 'zhizhao12':
-                          if(box[box.length-1].checked){
-                                detail={
-                                    val130:''
-                                }
-                            }
-                            break
-                        case 'zhizhao15':
-                          if(box[box.length-1].checked){
-                                detail={
-                                    val139:''
-                                }
-                            }
-                            break
-                        case 'zhizhao16':
-                          if(box[0].checked){
-                                detail={
-                                    val148:''
-                                }
-                            }
-                            break
-                        case 'remote':
-                          if(box[0].checked){
-                                detail.val141=''
-                            }
-                            if(box[1].checked){
-                                detail.val143=''
-                            }
-                            if(box[2].checked){
-                                detail.val145=''
-                            }
-                            break
-                        case 'zhizhao4':
-                        if(box[box.length-1].checked){
-                                detail={
-                                    val32:''
-                                }
-                            }
-                            break
-                      }
-                      this.leaseCheck(iframe,detail)
-                  }
-                }
-            }else {
-                obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
-                iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
-                if(obj[item].length===0){
-                    errorArr1.push({
-                        type:'input',
-                        name:item
-                    })
-                    break
-                }
-            }
-        }
-        return errorArr1
+			for(let item in obj){
+				let itemType=Object.prototype.toString.call(obj[item])
+				if(itemType==='[object Object]'){
+						let state=false
+						if(obj[item].name==="textarea"){
+								state=true
+						}else{
+								let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
+								let arr=[...box]
+								let list=['facility','zhizhao9','zhizhao10','zhizhao11','zhizhao12','zhizhao15','zhizhao16','remote']
+								let that=this
+								if(!list.includes(obj[item].name)){
+										state = arr.every(function (item) {
+												return that.getCheckState(item)===false
+										})
+								}
+						}
+						if(state){
+								// debugger
+								if(obj[item].other){
+										let otherState = obj[item].other.every(function (tip) {
+												return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
+										})
+										if(otherState){
+												errorArr1.push(obj[item].name)
+												break
+										}
+								}else {
+										// console.log(obj[item].name,iframe.document.querySelector(`input[name=${obj[item].name}]`).offsetTop,'请勾选')
+										errorArr1.push(obj[item].name)
+										break
+								}
+						}else{
+								//勾选后判断
+							if(obj[item].require){
+									let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
+									let detail={}
+									switch (obj[item].name){
+										case 'zhizhao9':
+											if(this.getCheckState(box[box.length-1])){
+												detail={
+													val114:''
+												}
+											}
+											break
+										case 'zhizhao10':
+											if(this.getCheckState(box[box.length-1])){
+												detail={
+													val119:''
+												}
+											}
+											break
+										case 'facility':
+											if(this.getCheckState(box[box.length-1])){
+												detail={
+													val51:''
+												}
+											}
+											break
+										case 'zhizhao11':
+											if(this.getCheckState(box[box.length-1])){
+												detail={
+													val125:''
+												}
+											}
+											break
+										case 'zhizhao12':
+											if(this.getCheckState(box[box.length-1])){
+												detail={
+													val130:''
+												}
+											}
+											break
+										case 'zhizhao15':
+											if(this.getCheckState(box[box.length-1])){
+												detail={
+													val139:''
+												}
+											}
+											break
+										case 'zhizhao16':
+											if(this.getCheckState(box[0])){
+												detail={
+													val148:''
+												}
+											}
+											break
+										case 'remote':
+											if(this.getCheckState(box[0])){
+													detail.val141=''
+											}
+											if(this.getCheckState(box[1])){
+												detail.val143=''
+											}
+											if(this.getCheckState(box[2])){
+												detail.val145=''
+											}
+											break
+										case 'zhizhao4':
+											if(this.getCheckState(box[box.length-1])){
+												detail={
+													val32:''
+												}
+											}
+											break
+										case 'zhizhao5':
+											if(this.getCheckState(box[0])){
+												detail={
+													val40:''
+												}
+											}
+											if(this.getCheckState(box[2])){
+												detail={
+													val41:''
+												}
+											}
+											break
+									}
+									this.leaseCheck(iframe,detail)
+							}
+						}
+				}else {
+					obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+					iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+					if(obj[item].length===0){
+						errorArr1.push({
+							type:'input',
+							name:item
+						})
+						break
+					}
+				}
+			}
+			return errorArr1
     },
     // 代办校验
     commissionCheck(iframe,obj=Obj3){
@@ -1087,14 +1130,15 @@ export default {
             let itemType=Object.prototype.toString.call(obj[item])
             // console.log(itemType)
             if(itemType==='[object Object]'){
-                let box=iframe.document.querySelectorAll(`input[name=${obj[item].name}]`)
+                let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
                 let arr=[...box]
                 let state = true
+                let that = this
                 if(obj[item].name==="owner"||obj[item].name==="guest"){
                     state=false
                 }else{
                     state = arr.every(function (item) {
-                    return item.checked===false
+                    return that.getCheckState(item)===false
                     })
                 }
                 if(state){
@@ -1117,25 +1161,31 @@ export default {
                 }else {
                   //勾选后判断
                   if(obj[item].require){
-                      let box=iframe.document.querySelectorAll(`input[name=${obj[item].name}]`)
+                      let box=[...(iframe.document.querySelectorAll(`div[name=${obj[item].name}]`))]
                       let detail={}
                       switch (obj[item].name){
                           case 'owner':
                             box.forEach(element => {
-                                if(element.checked){
+                                if(this.getCheckState(element)){
                                     let brother=element.parentElement.querySelector("input[type='text']")
                                     if(brother.value.length===0){
-                                        errorArr1.push(brother.getAttribute('extendparam'))
+                                        errorArr1.push({
+                                            type:'input',
+                                            name:brother.getAttribute('extendparam')
+                                        })
                                     }
                                 }
                             });
                               break
                           case 'guest':
                             box.forEach(element => {
-                                if(element.checked){
+                                if(this.getCheckState(element)){
                                     let brother=element.parentElement.querySelector("input[type='text']")
                                     if(brother.value.length===0){
-                                        errorArr1.push(brother.getAttribute('extendparam'))
+                                        errorArr1.push({
+                                            type:'input',
+                                            name:brother.getAttribute('extendparam')
+                                        })
                                     }
                                 }
                             });
@@ -1182,10 +1232,11 @@ export default {
                 if(obj[item].name==='textarea'){
                     state=true
                 }else {
-                    let box=iframe.document.querySelectorAll(`input[name=${obj[item].name}]`)
+                    let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
                     let arr=[...box]
+                    let that = this
                     state = arr.every(function (item) {
-                        return item.checked===false
+                        return that.getCheckState(item)===false
                     })
                 }
                 if(state){
@@ -1252,7 +1303,20 @@ export default {
     //   document.addEventListener(visibleChange, function() {if (document[vibibleState] =='hidden') {
     //     that.isSave(2)
     //     }})
-    // }
+		// }
+		var iframe1 = this.$refs.iframeFirst;
+		var iframe2 = this.$refs.iframeSecond;
+		var that = this
+		if(this.Msg.type===2){
+			iframe2.onload=function(){
+				that.isSave(2)
+			}
+		}else{
+			iframe1.onload=function(){
+				that.isSave(2)
+			}
+		}
+		
   },
   beforeUpdate() {
     this.clientHeight();
