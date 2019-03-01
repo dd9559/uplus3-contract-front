@@ -55,7 +55,7 @@
                     </div>
                     <div class="number mark">
                         <span>权属证号：</span>
-                        <el-input size="small" v-model="report.ownershipNumber" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
+                        <el-input size="small" v-model.trim="report.ownershipNumber" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
                     </div>
                 </div>
                 <div class="item">
@@ -136,7 +136,7 @@
                         <p>
                             <span>贷款金额：</span>
                             <el-input size="small" v-model="report.loanAmount" :disabled="!saveBtnShow" @input="cutNumber('loanAmount')"></el-input>
-                            <span>万</span>
+                            <span>万元</span>
                         </p>
                         <p>
                             <span>贷款期限：</span>

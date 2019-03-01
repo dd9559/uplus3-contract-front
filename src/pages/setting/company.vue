@@ -104,7 +104,7 @@
         <div class="company-info">
           <p>添加企业信息</p>
           <div class="info-content">
-            <div class="item">
+            <div class="item item-display">
               <el-form-item label="当前城市: ">
                 <!-- <el-select placeholder="请选择" size="mini" v-model="companyForm.cityId" filterable @change="getStoreList">
                   <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
@@ -123,44 +123,49 @@
                 <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input>
               </el-form-item>
             </div>
-            <div class="item">
-              <el-form-item label="门店名称: ">
-                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字" @input="inputOnly(100,'name')"></el-input>
+            <div class="item item-display">
+              <el-form-item label="门店特许费比例: " class="allow">
+                <el-input v-model="companyForm.franchiseRatio" size="mini"  :disabled="fourthStoreNoEdit" @input="cutNumber('franchiseRatio')"></el-input>%
+              </el-form-item>
+              <el-form-item label="门店名称: " class="store-name">
+                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字"  :disabled="fourthStoreNoEdit" @input="inputOnly(100,'name')"></el-input>
               </el-form-item>
               <el-form-item label="法人姓名: ">
-                <el-input size="mini" maxlength="15" v-model.trim="companyForm.lepName" :disabled="directSaleSelect" @input="inputOnly(999,'lepName')"></el-input>
+                <el-input size="mini" maxlength="15" v-model.trim="companyForm.lepName" :disabled="fourthStoreNoEdit" @input="inputOnly(999,'lepName')"></el-input>
               </el-form-item>
+            </div>
+            <div class="item item-display">
               <el-form-item label="证件类型: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="directSaleSelect" @change="idTypeChange">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="fourthStoreNoEdit" @change="idTypeChange">
                   <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item label="证件号: " class="id-card">
+                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="fourthStoreNoEdit" @input="inputOnly(1000,'lepDocumentCard')"></el-input>
+              </el-form-item>
+              <el-form-item label="法人手机号码: ">
+                <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="fourthStoreNoEdit" @keyup.native="getInt(2)"></el-input>
+              </el-form-item>
             </div>
             <div class="item">
-              <el-form-item label="证件号: " class="id-card">
-                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="directSaleSelect" @input="inputOnly(1000,'lepDocumentCard')"></el-input>
-              </el-form-item>
-              <el-form-item label="法人手机号码: " class="phone-number">
-                <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="directSaleSelect" @keyup.native="getInt(2)"></el-input>
-              </el-form-item>
               <el-form-item label="企业证件: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="directSaleSelect">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="fourthStoreNoEdit">
                   <el-option v-for="item in dictionary['38']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item label="统一社会信用代码: " v-if="creditCodeShow" class="tongyi">
+                <el-input size="mini" v-model.trim="documentCard.creditCode" :disabled="fourthStoreNoEdit"></el-input>
+              </el-form-item>
+              <el-form-item label="工商注册号: " v-if="icRegisterShow" class="gongshang">
+                <el-input size="mini" v-model.trim="documentCard.icRegisterCode" :disabled="fourthStoreNoEdit"></el-input>
+              </el-form-item>
+              <el-form-item label="组织机构代码: " v-if="icRegisterShow" class="zuzhi">
+                <el-input size="mini" v-model.trim="documentCard.organizationCode" :disabled="fourthStoreNoEdit"></el-input>
+              </el-form-item>
             </div>
-            <div class="item">
-              <el-form-item label="统一社会信用代码: " v-if="creditCodeShow">
-                <el-input size="mini" v-model.trim="documentCard.creditCode" :disabled="directSaleSelect"></el-input>
-              </el-form-item>
-              <el-form-item label="工商注册号: " v-if="icRegisterShow">
-                <el-input size="mini" v-model.trim="documentCard.icRegisterCode" :disabled="directSaleSelect"></el-input>
-              </el-form-item>
-              <el-form-item label="组织机构代码: " v-if="icRegisterShow">
-                <el-input size="mini" v-model.trim="documentCard.organizationCode" :disabled="directSaleSelect"></el-input>
-              </el-form-item>
+            <div class="item shuiwu">
               <el-form-item label="税务登记证: " v-if="icRegisterShow">
-                <el-input size="mini" v-model.trim="documentCard.taxRegisterCode" :disabled="directSaleSelect"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.taxRegisterCode" :disabled="fourthStoreNoEdit"></el-input>
               </el-form-item>
             </div>
             <div class="tip tip-top">
@@ -168,7 +173,8 @@
               <div class="message">
                 <p>1. 门店名称必须和营业执照证件上登记的名称一致；</p>
                 <p>2. 如个体工商户在营业执照上无企业名称的，请填“经营者”名字；</p>
-                <p>3. 三证合一企业证件，只需要填写“统一社会信用代码”；老三证，请分别填写工商注册号、组织机构代码、税务登记证</p>
+                <p>3. 三证合一企业证件，只需要填写“统一社会信用代码”；老三证，请分别填写工商注册号、组织机构代码、税务登记证；</p>
+                <p>4. 只支持设置三级门店公司信息</p>
               </div>
             </div>
           </div>
@@ -181,28 +187,28 @@
               <el-table-column width="260" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model.trim="companyBankList[scope.$index].bankAccountName" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" @input="inputOnly(scope.$index,'bankAccountName')"></el-input>
+                    <el-input size="mini" maxlength="15" v-model.trim="companyBankList[scope.$index].bankAccountName" :disabled="fourthStoreNoEdit" @input="inputOnly(scope.$index,'bankAccountName')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column width="310" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" oninput="if(value.length>19)value=value.slice(0,19)" v-model="companyBankList[scope.$index].bankCard" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" @keyup.native="getInt(3,scope.$index)"></el-input>
+                    <el-input size="mini" oninput="if(value.length>19)value=value.slice(0,19)" v-model="companyBankList[scope.$index].bankCard" :disabled="fourthStoreNoEdit" @keyup.native="getInt(3,scope.$index)"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="" width="320">
                 <template slot-scope="scope">
                   <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model.trim="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="scope.$index<directInfo.companyBankList.length&&directSaleSelect" @input="inputOnly(scope.$index,'bankBranchName')"></el-input>
+                    <el-input size="mini" v-model.trim="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="fourthStoreNoEdit" @input="inputOnly(scope.$index,'bankBranchName')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column label="" width="65">
                 <template slot-scope="scope">
-                  <span @click="addRow" class="button"><i class="icon el-icon-plus"></i></span>
-                  <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':scope.$index<directInfo.companyBankList.length&&directSaleSelect}"><i class="icon el-icon-minus"></i></span>
+                  <span @click="addRow" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-plus"></i></span>
+                  <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-minus"></i></span>
                 </template>
               </el-table-column>
             </el-table>
@@ -261,7 +267,7 @@
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitConfirm">确定</el-button>
+        <el-button type="primary" @click="submitConfirm" v-if="!confirmBtnShow">确定</el-button>
       </div>
       <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
@@ -322,6 +328,9 @@
     cooperationMode: {
       name: "合作方式"
     },
+    franchiseRatio: {
+      name: "门店特许费比例"
+    },
     name: {
       name: "门店名称"
     },
@@ -338,6 +347,7 @@
     storeId: "",
     storeName: "",
     cooperationMode: "",
+    franchiseRatio: "",
     name: "",
     lepName: "",
     lepDocumentType: "",
@@ -345,7 +355,8 @@
     lepPhone: "",
     documentType: "",
     contractSign: "",
-    financialSign: ""
+    financialSign: "",
+    level: ""
   }
   let obj2 = {
     creditCode: "",
@@ -388,7 +399,7 @@
         companyBankList: [], //银行账户集合
         delIds: [],
         directInfo: {}, //直营属性证件信息
-        directSaleSelect: false,
+        fourthStoreNoEdit: false,
         dialogViewVisible: false, //查看弹出框
         creditCodeShow: false,
         icRegisterShow: false,
@@ -408,7 +419,8 @@
             name: '添加公司信息'
           }
         },
-        storeNoChange: false //门店选择不可编辑
+        storeNoChange: false, //门店选择不可编辑
+        confirmBtnShow: false
       }
     },
     created() {
@@ -416,9 +428,8 @@
       this.getCompanyList()
       this.selectDirectInfo()
       this.initFormList()
-      this.getCityList()
       this.getDictionary()
-      this.getStoreList(this.searchForm.cityId)
+      this.getStoreList(1)
     },
     methods: {
       // 初始化表单 数组集合
@@ -448,21 +459,11 @@
             this.$message({message:error})
         })
       },
-      getCityList() {
-        this.$ajax.get('/api/organize/cities').then(res => {
-          res = res.data
-          if(res.status === 200) {
-            this.cityList = res.data
-          }
-        }).catch(error => {
-          this.$message({message:error})
-        })
-      },
       getStoreList(val) {
-        this.$ajax.get('/api/setting/company/queryAllStore', {cityId: val}).then(res => {
+        this.$ajax.get('/api/setting/company/queryAllStore', {type: val}).then(res => {
           res = res.data
           if(res.status === 200) {
-            if(this.companyFormTitle) {
+            if(val === 2) {
               this.storeList = res.data
             } else {
               this.homeStoreList = res.data
@@ -471,38 +472,38 @@
         }).catch(error => {
           this.$message({message:error})
         })
-        if(this.companyFormTitle) {
-          this.cityList.find(item => {
-            if(val === item.cityId) {
-              this.companyForm.cityName = item.name
-              this.companyForm.storeId = ""
-            }
-          })
-          this.companyForm.cooperationMode = ""
-          this.companyForm.name = ""
-          this.cooModeChange(2)
-          this.companyForm.contractSign = ""
-          this.companyForm.financialSign = ""
-        } else {
-          this.searchForm.storeId = ""
-        }
       },
       storeSelect(val) {
         this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
           res = res.data
           if(res.status === 200 && !res.message) {
+            let isCheck
             this.storeList.find(item => {
-              if(item.id === val) {
-                this.companyForm.storeName = item.name
-                this.companyForm.cooperationMode = ""
-                this.cooModeChange(2)
-                if(item.cooperationMode) {
-                  this.companyForm.cooperationMode = item.cooperationMode.label
-                  this.cooModeChange(item.cooperationMode.value)
-                }
+              if(val === item.id) {
+                isCheck = item.isCheck
               }
             })
+            if(isCheck) {
+              this.storeList.find(item => {
+                if(item.id === val) {
+                  this.companyForm.storeName = item.name
+                  this.companyForm.level = item.level
+                  if(item.cooperationMode) {
+                    this.companyForm.cooperationMode = item.cooperationMode.label
+                    this.cooModeChange(item.cooperationMode.value)
+                  }
+                }
+              })
+              this.fourthStoreNoEdit = false  
+            } else {
+              this.$message({message:"四级直营门店不能录入公司信息",type:"warning"})
+              this.companyForm.storeId = ""
+              this.companyForm.cooperationMode = ""
+              this.cooModeChange(2)
+              this.fourthStoreNoEdit = true
+            }
             this.companyForm.name = ""
+            this.companyForm.franchiseRatio = ""
             this.companyForm.contractSign = ""
             this.companyForm.financialSign = ""
           } else {
@@ -512,8 +513,12 @@
             }, 2000)
             if(this.companyFormTitle === "添加企业信息") {
               this.companyForm.storeId = ""
-              this.cooModeChange(2)
               this.companyForm.cooperationMode = ""
+              this.companyForm.franchiseRatio = ""
+              this.companyForm.name = ""
+              this.companyForm.contractSign = ""
+              this.companyForm.financialSign = ""
+              this.cooModeChange(2)
             }
           }
         }).catch(error => {
@@ -533,9 +538,13 @@
         this.companyFormTitle = "添加企业信息"
         this.storeNoChange = false
         this.initFormList()
-        // this.directSaleSelect = false
+        this.fourthStoreNoEdit = false
+        this.confirmBtnShow = false
         this.companyForm.cityId = this.searchForm.cityId
-        this.getStoreList(this.companyForm.cityId)
+        this.companyForm.cityName = localStorage.getItem('cityName')
+        if(!this.storeList.length) {
+          this.getStoreList(2)
+        }
       },
       //切换到直营属性时,自动带出证件信息
       selectDirectInfo() {
@@ -551,7 +560,6 @@
       //合作方式选择
       cooModeChange(val) {
         if(val === 1) {
-          // this.directSaleSelect = true
           this.companyForm.lepName = this.directInfo.lepName
           this.companyForm.lepDocumentType = this.directInfo.lepDocumentType.value
           this.companyForm.lepDocumentCard = this.directInfo.lepDocumentCard
@@ -567,7 +575,6 @@
           this.documentCard = this.directInfo.documentCard
           this.companyBankList = [...this.directInfo.companyBankList]
         } else {
-          // this.directSaleSelect = false
           this.companyForm.lepName = ""
           this.companyForm.lepDocumentType = ""
           this.companyForm.lepDocumentCard = ""
@@ -742,7 +749,6 @@
                   res = res.data
                   if(res.status === 200) {
                     this.AddEditVisible = false
-                    // this.directSaleSelect = false
                     this.$message(res.message)
                     this.getCompanyList()
                   }
@@ -776,20 +782,15 @@
       },
       //点击查看和编辑
       viewEditCompany(row, type) {
-        if(!this.storeList.length) {
-          this.getStoreList(row.cityId)
-        }
         if(type === 'init') {
           this.dialogViewVisible = true
         } else {
           this.AddEditVisible = true
           this.companyFormTitle = "编辑企业信息"
           this.storeNoChange = true
-          // if(row.cooperationMode.value === 1) {
-          //   this.directSaleSelect = true
-          // } else {
-          //   this.directSaleSelect = false
-          // }
+          if(!this.storeList.length) {
+            this.getStoreList(2)
+          }
         }
         if(row.documentType.value === 2) {
           this.icRegisterShow = true
@@ -817,9 +818,31 @@
           lepPhone: currentRow.lepPhone,
           documentType: currentRow.documentType.value,
           contractSign: currentRow.contractSign,
-          financialSign: currentRow.financialSign
+          financialSign: currentRow.financialSign,
+          level: "",
+          franchiseRatio: ""
         }
         this.companyForm = newForm
+        if(this.companyFormTitle) {
+          this.$ajax.get('/api/setting/company/updateShowFee',{storeId:this.companyForm.storeId}).then(res => {
+            res = res.data
+            if(res.status === 200) {
+              this.companyForm.franchiseRatio = res.data.franchiseRatio
+            }
+          }).catch(error => {
+            this.$message({
+                message: error,
+                type: "error"
+            })
+          })
+          this.homeStoreList.find(item => {
+            if(this.companyForm.storeId === item.id) {
+              this.fourthStoreNoEdit = item.level === 4&&item.cooperationMode.value===1 ? true : false
+              this.confirmBtnShow = item.level === 4&&item.cooperationMode.value===1 ? true : false
+              this.companyForm.level = item.level
+            }
+          })
+        }
       },
       getPicture(type) {
         this.imgList = []
@@ -890,6 +913,11 @@
             this.companyForm.name=this.$tool.textInput(this.companyForm.name)            
           })
         }
+      },
+      cutNumber(val) {
+        this.$nextTick(()=>{
+          this.companyForm.franchiseRatio=this.$tool.cutFloat({val:this.companyForm.franchiseRatio,max:100})
+        })
       },
       idTypeChange() {
         this.companyForm.lepDocumentCard = ""
@@ -989,7 +1017,9 @@
       .info-content {
         > .item {
           display: flex;
-          justify-content: space-between;
+          &-display {
+            justify-content: space-between;
+          }
           > .el-form-item {
             display: flex;
             margin-bottom: 0;
@@ -1000,13 +1030,32 @@
               }
             }
           }
+          &.shuiwu {
+            /deep/ .el-input {
+              width: 186px;
+            }
+          }
+          .allow {
+            /deep/ .el-input {
+              width: 158px;
+            }
+          }
+          .store-name {
+            margin-left: -12px;
+          }
+          .id-card {
+            margin-left: 42px;
+          }
+          .tongyi {
+            margin-left: 7px;
+          }
+          .gongshang {
+            margin-left: 49px;
+          }
+          .zuzhi {
+            margin-left: 34px;
+          }
         }
-      }
-      .id-card {
-        margin-left: 13px;
-      }
-      .phone-number {
-        margin-left: -27px;
       }
       /deep/ .notice {
         width: 342px;
@@ -1251,6 +1300,7 @@
     }
   }
   .dialog-footer {
+    height: 36px;
     .el-button {
       width:100px;
       height:36px;
