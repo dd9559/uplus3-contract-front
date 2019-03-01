@@ -503,6 +503,7 @@
               this.fourthStoreNoEdit = true
             }
             this.companyForm.name = ""
+            this.companyForm.franchiseRatio = ""
             this.companyForm.contractSign = ""
             this.companyForm.financialSign = ""
           } else {

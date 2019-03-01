@@ -603,7 +603,7 @@
                 <p class="line"><span>店长：</span><span>{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
                 <p><span>联系电话：</span><span>{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
               </div>
-              <div><p>{{contractDetail.guestInfo.GuestStoreName}}</p></div>
+              <div><p><span>门店：</span><span>{{contractDetail.guestInfo.GuestStoreName}}</span></p></div>
             </div>
             <div class="house">
               <div class="title">房源方信息</div>
@@ -611,7 +611,7 @@
                 <p class="line"><span>店长：</span><span>{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
                 <p><span>联系电话：</span><span>{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
               </div>
-              <div><p>{{contractDetail.houseInfo.HouseStoreName}}</p></div>
+              <div><p><span>门店：</span><span>{{contractDetail.houseInfo.HouseStoreName}}</span></p></div>
             </div>
           </div>
           <div class="mai-mai resource">
@@ -628,11 +628,11 @@
               </div>
               <div class="two-item no-bottom">
                 <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
-                <p><span>交易流程：</span><span>{{contractDetail.report.transFlowCode}}</span></p>
+                <p style="width:270px;"><span>交易流程：</span><span>{{contractDetail.report.transFlowCode}}</span></p>
               </div>
               <div class="two-item">
                 <p class="line"><span>按揭银行：</span><span>{{contractDetail.report.stagesBankName?contractDetail.report.stagesBankName:'--'}}</span></p>
-                <p><span>贷款金额：</span><span>{{contractDetail.report.loanAmount?contractDetail.report.loanAmount+'万':'--'}}</span></p>
+                <p><span>贷款金额：</span><span>{{contractDetail.report.loanAmount?contractDetail.report.loanAmount+'万元':'--'}}</span></p>
               </div>
               <div>
                 <p><span>贷款期限：</span><span>{{contractDetail.report.loanTerm?contractDetail.report.loanTerm+'年':'--'}}</span></p>

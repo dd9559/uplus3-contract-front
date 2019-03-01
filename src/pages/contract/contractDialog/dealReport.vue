@@ -136,7 +136,7 @@
                         <p>
                             <span>贷款金额：</span>
                             <el-input size="small" v-model="report.loanAmount" :disabled="!saveBtnShow" @input="cutNumber('loanAmount')"></el-input>
-                            <span>万</span>
+                            <span>万元</span>
                         </p>
                         <p>
                             <span>贷款期限：</span>
