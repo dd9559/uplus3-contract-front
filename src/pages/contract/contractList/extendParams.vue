@@ -30,7 +30,7 @@
       <iframe :src="src2" frameborder="0" ref='iframeSecond' :style="{ height: clientHei }" v-show="isActive===2"></iframe>
       <div class="btn">
         <el-button round @click="isSave(1)" v-loading.fullscreen.lock="fullscreenLoading">保存</el-button><br>
-        <el-button v-if="Msg.type===1||Msg.type===2||Msg.type===5" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
+        <el-button v-if="Msg.type===1||Msg.type===2||Msg.type===3" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
@@ -358,7 +358,8 @@ export default {
     }
   },
   created(){
-	this.getAdmin();//获取当前登录人信息
+		this.fullscreenLoading=true
+		this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
 		this.clientHeight();
 		this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
