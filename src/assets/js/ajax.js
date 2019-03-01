@@ -17,7 +17,6 @@ axios.interceptors.request.use((request)=>{
   return request
 })
 axios.interceptors.response.use((response)=>{
-  // debugger
   let res=response.data
   if(res.status===200){
     times = 0
@@ -40,7 +39,11 @@ axios.interceptors.response.use((response)=>{
     return Promise.reject(res.message)
   }
 },error => {
-  return Promise.reject(error)
+  if(window.navigator.onLine===false){
+    return Promise.reject('网络未正常连接')
+  }else {
+    return Promise.reject(error)
+  }
 })
 
 let api = {

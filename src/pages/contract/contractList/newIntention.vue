@@ -9,7 +9,7 @@
                         <div class="column-title">合同信息</div>
                         <div class="form-cont">
                             <el-form-item label="签约日期：" prop="signDate">
-                                <el-date-picker v-model="contractForm.signDate" type="date" value-format="yyyy/MM/dd" :disabled="this.$route.query.operateType==2?true:false" placeholder="选择日期"></el-date-picker>
+                                <el-date-picker v-model="contractForm.signDate" type="date" value-format="yyyy/MM/dd" placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="合同类型：">
                                 <el-input placeholder="意向金" :disabled="true" v-if="this.contractForm.type == 4"></el-input>
@@ -121,12 +121,12 @@
                                 <el-form-item v-if="this.$route.query.operateType==2">
                                     <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth" disabled></el-input>
                                 </el-form-item>
-                                <el-form-item prop="custIdentifyCode" v-if="this.type===1">
+                                <el-form-item prop="custIdentifyCode">
                                     <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号"  class="custwidth" maxlength=18></el-input>               
                                 </el-form-item>
-                                <el-form-item v-if="this.$route.query.operateType==2">
-                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="身份证号" class="custwidth" disabled></el-input>
-                                </el-form-item>
+                                <!-- <el-form-item prop="custIdentifyCode" v-if="this.$route.query.operateType==2">
+                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth"></el-input>
+                                </el-form-item> -->
                             </el-form-item>
                         </div>
                         <div class="form-cont mt30" v-if="this.contractForm.type == 4">
