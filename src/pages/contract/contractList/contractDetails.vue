@@ -1449,6 +1449,8 @@ export default {
           this.contractDetail = res.data;
           this.recordId = res.data.recordId;
           //成交报告
+          this.buyerInfo = []
+          this.sellerInfo = []
           let arr1 = res.data.contPersons.filter(item => item.personType.value === 2)
           this.buyerFirst = arr1[0]
           delete arr1[0]
