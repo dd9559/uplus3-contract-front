@@ -9,31 +9,39 @@
     <div class="contentBox">
       <div class="nav" :class="{'hid':isShowType&&isActive===2}">
         <ul>
-          <li><span @click="goNav('#one_')">第一条、房屋基本情况</span></li>
-          <li><span @click="goNav('#two_')">第二条、房屋交易流程</span></li>
-          <li><span @click="goNav('#three_')">第三条、房屋权属情况</span></li>
-          <li><span @click="goNav('#four_')">第四条、成交方式</span></li>
-          <li><span @click="goNav('#five_')">第五条、房产转让价格</span></li>
-          <li><span @click="goNav('#six_')">第六条、付款约定</span></li>
-          <li><span @click="goNav('#seven_')">第七条、房屋产权及具体状况的承诺</span></li>
-          <li><span @click="goNav('#eight_')">第八条、房产过户</span></li>
-          <li><span @click="goNav('#nine_')">第九条、房产交付</span></li>
-          <li><span @click="goNav('#ten_')">第十条、户口迁移及学籍、学位</span></li>
-          <li><span @click="goNav('#eleven_')">第十一条 、违约责任</span></li>
-          <li><span @click="goNav('#twelve_')">第十二条、不可抗力</span></li>
-          <li><span @click="goNav('#thirteen_')">第十三条、其他</span></li>
-          <li><span @click="goNav('#fourteen_')">第十四条、争议解决</span></li>
-          <li><span @click="goNav('#fifteen_')">第十五条、生效要件</span></li>
+          <li><span :class="{'navBlue':navId==='#one_'}" @click="goNav('#one_')">第一条、房屋基本情况</span></li>
+          <li><span :class="{'navBlue':navId==='#two_'}" @click="goNav('#two_')">第二条、房屋交易流程</span></li>
+          <li><span :class="{'navBlue':navId==='#three_'}" @click="goNav('#three_')">第三条、房屋权属情况</span></li>
+          <li><span :class="{'navBlue':navId==='#four_'}" @click="goNav('#four_')">第四条、成交方式</span></li>
+          <li><span :class="{'navBlue':navId==='#five_'}" @click="goNav('#five_')">第五条、房产转让价格</span></li>
+          <li><span :class="{'navBlue':navId==='#six_'}" @click="goNav('#six_')">第六条、付款约定</span></li>
+          <li><span :class="{'navBlue':navId==='#seven_'}" @click="goNav('#seven_')">第七条、房屋产权及具体状况的承诺</span></li>
+          <li><span :class="{'navBlue':navId==='#eight_'}" @click="goNav('#eight_')">第八条、房产过户</span></li>
+          <li><span :class="{'navBlue':navId==='#nine_'}" @click="goNav('#nine_')">第九条、房产交付</span></li>
+          <li><span :class="{'navBlue':navId==='#ten_'}" @click="goNav('#ten_')">第十条、户口迁移及学籍、学位</span></li>
+          <li><span :class="{'navBlue':navId==='#eleven_'}" @click="goNav('#eleven_')">第十一条 、违约责任</span></li>
+          <li><span :class="{'navBlue':navId==='#twelve_'}" @click="goNav('#twelve_')">第十二条、不可抗力</span></li>
+          <li><span :class="{'navBlue':navId==='#thirteen_'}" @click="goNav('#thirteen_')">第十三条、其他</span></li>
+          <li><span :class="{'navBlue':navId==='#fourteen_'}" @click="goNav('#fourteen_')">第十四条、争议解决</span></li>
+          <li><span :class="{'navBlue':navId==='#fifteen_'}" @click="goNav('#fifteen_')">第十五条、生效要件</span></li>
         </ul>
       </div>
       <iframe :src="src1" frameborder="0" ref='iframeFirst' :style="{ height: clientHei }" v-show="isActive===1"></iframe>
       <iframe :src="src2" frameborder="0" ref='iframeSecond' :style="{ height: clientHei }" v-show="isActive===2"></iframe>
       <div class="btn">
         <el-button round @click="isSave(1)" v-loading.fullscreen.lock="fullscreenLoading">保存</el-button><br>
-        <el-button type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
+        <el-button v-if="Msg.type===1||Msg.type===2||Msg.type===3" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
+		<!-- 创建合同成功提示框 -->
+    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="toContract">取 消</el-button>
+        <el-button type="primary" @click="toUpload">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -134,10 +142,10 @@ let Obj2 = {
         name:'zhizhao'
     },
     val6:'',
-    check2:{
-        name:'zhizhao2'
-    },
-    val13:'',
+    // check2:{
+    //     name:'zhizhao2'
+    // },
+    // val13:'',
     check3:{
         name:'zhizhao3'
     },
@@ -316,7 +324,10 @@ let Obj6 = {
 }
 let errorArr1=[]
 let errorArr2=[]
+
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+	mixins: [MIXINS],
   data(){
     return{
       clientHei:'',
@@ -327,18 +338,32 @@ export default {
       isActive: 1,
       src1:'',
       src2:'',
-			html:'',
-			fullscreenLoading:false
+      html:'',
+      fullscreenLoading:false,
+			navId:'',
+			dialogSuccess:false,
+			//权限
+			power:{
+				'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
+				},
+				'sign-ht-xq-data': {
+          state: false,
+          name: '资料库权限'
+        },
+			}
     }
   },
   created(){
+	this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
     this.clientHeight();
 		this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
-		if (!window.location.origin) {
-			window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
-		}
-		console.log(window.location.origin)
+    if (!window.location.origin) {
+        window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+    }
+    // console.log(window.location.origin)
     let http = window.location.origin
     
     if(this.Msg.type===1){
@@ -367,11 +392,6 @@ export default {
 		// this.isSave(2)
   },
   methods: {
-    getHtml(param){
-      // this.$ajax.get('/api/contract/showHtml',param).then(res=>{
-
-      // })
-    },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
       this.clientHei= document.documentElement.clientHeight -150 + 'px'
@@ -391,17 +411,49 @@ export default {
     },
     //导航跳转
     goNav(id){
-      let iframebox=this.$refs.iframeSecond
-      iframebox.contentWindow.document.querySelector(id).click()
-
+        this.navId=id;
+        let iframebox=this.$refs.iframeSecond
+        iframebox.contentWindow.document.querySelector(id).click()
+    },
+    //回到顶部
+    backTop(){
+        let iframebox1=this.$refs.iframeFirst;
+        let iframebox2=this.$refs.iframeSecond;
+        iframebox1.contentWindow.scrollTo(0,0)
+        iframebox2.contentWindow.scrollTo(0,0)
 		},
-		//回到顶部
-		backTop(){
-			let iframebox1=this.$refs.iframeFirst;
-			let iframebox2=this.$refs.iframeSecond;
-			iframebox1.contentWindow.scrollTo(0,0)
-			iframebox2.contentWindow.scrollTo(0,0)
-		},
+		//创建成功提示
+    toUpload(){//上传合同资料库
+      this.dialogSuccess=false;
+      if(this.power['sign-com-htdetail'].state){
+        if(this.power['sign-ht-xq-data'].state){
+          this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+          this.$router.replace({
+            path: "/contractDetails",
+            query: {
+              type: "dataBank",
+              id: this.Msg.id,//合同id
+              code: this.Msg.code,//合同编号
+              contType: this.Msg.type//合同类型
+            }
+          });
+        }else{
+          this.$message({
+            message:'没有资料库权限,无法跳转到资料库'
+          });
+          this.$router.push('/contractList');
+        }
+      }else{
+        this.$message({
+          message:'没有合同详情权限,无法跳转到资料库'
+        });
+        this.$router.push('/contractList');
+      }
+    },
+		toContract(){//回到合同列表
+      this.dialogSuccess=false;
+      this.$router.push('/contractList');
+    },
 		//保存
     isSave(operation){
 			// console.log(this.gethtml)
@@ -454,6 +506,7 @@ export default {
 				if(res.status===200){
 					this.fullscreenLoading=false
 					if(operation===1){
+						this.dialogSuccess=true
 						this.$message({
 							message:'保存成功',
 							type:'success'
@@ -469,119 +522,126 @@ export default {
 			})
     },
     submit(){
-      let iframebox1=this.$refs.iframeFirst;
-      let iframebox2=this.$refs.iframeSecond;
-      errorArr1=[]
-			errorArr2=[]
-			if(this.Msg.type===2){
-				let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
-        let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
-        if(this.isActive===1){
-					if(emptyInput1.length>0){
-						this.$message({
-							message:'合同信息未填写完整',
-							type:'warning'
-						})
-						let inputHeight1=0
-						if(emptyInput1[0].type){
-							inputHeight1 = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`).offsetTop
-						}else{
-							inputHeight1 = iframebox1.contentWindow.document.querySelector(`input[name=${emptyInput1[0]}]`).offsetTop
-						}
-						iframebox1.contentWindow.scrollTo(0,inputHeight1)
-					}else if(emptyInput2.length>0){
-						this.$message({
-							message:'买卖合同信息未填写完整',
-							type:'warning'
-						})
-					}
+        let iframebox1=this.$refs.iframeFirst;
+        let iframebox2=this.$refs.iframeSecond;
+        errorArr1=[]
+        errorArr2=[]
+        if(this.Msg.type===2){
+            let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
+            let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+            if(this.isActive===1){
+                if(emptyInput1.length>0){
+                    this.$message({
+                        message:'合同信息未填写完整',
+                        type:'warning'
+                    })
+                    let inputHeight1=0
+                    if(emptyInput1[0].type){
+                        let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
+                        inputTag.classList.add("BODERRED")
+                        inputHeight1 = inputTag.offsetTop
+                    }else{
+                        inputHeight1 = iframebox1.contentWindow.document.querySelector(`input[name=${emptyInput1[0]}]`).offsetTop
+                    }
+                    iframebox1.contentWindow.scrollTo(0,inputHeight1)
+                }else if(emptyInput2.length>0){
+                    this.$message({
+                        message:'买卖合同信息未填写完整',
+                        type:'warning'
+                    })
+                }
         }else{
-					if(emptyInput2.length>0){
-						this.$message({
-							message:'合同信息未填写完整',
-							type:'warning'
-						})
-						let inputHeight2=0
-						if(emptyInput2[0].type){
-							inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[extendparam=${emptyInput2[0].name}]`).offsetTop
-						}else{
-							inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
-						}
-						// let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
-						iframebox2.contentWindow.scrollTo(0,inputHeight2)
-					}else if(emptyInput1.length>0){
-						this.$message({
-							message:'居间合同信息未填写完整',
-							type:'warning'
-						})
-					}
-				}
-			}else{
-				let emptyInput1=0
-				if(this.Msg.type===1){//租赁
-					emptyInput1 = this.leaseCheck(iframebox1.contentWindow)
-				}else if(this.Msg.type===3){
-					emptyInput1 = this.commissionCheck(iframebox1.contentWindow)
-				}else if(this.Msg.type===4){
-					emptyInput1 = this.agreementCheck(iframebox1.contentWindow)
-				}else if(this.Msg.type===5){
-					emptyInput1 = this.depositAgreementCheck(iframebox1.contentWindow)
-				}
-				if(emptyInput1.length>0){
-					this.$message({
-						message:'合同信息未填写完整',
-						type:'warning'
-					})
-					let inputHeight1=0
-					if(emptyInput1[0].type){
-						inputHeight1 = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`).offsetTop
-					}else{
-						inputHeight1 = iframebox1.contentWindow.document.querySelector(`input[name=${emptyInput1[0]}]`).offsetTop
-					}
-					iframebox1.contentWindow.scrollTo(0,inputHeight1)
-				}
-			}
+            if(emptyInput2.length>0){
+                this.$message({
+                    message:'合同信息未填写完整',
+                    type:'warning'
+                })
+                let inputHeight2=0
+                if(emptyInput2[0].type){
+                    let inputTag = iframebox2.contentWindow.document.querySelector(`input[extendparam=${emptyInput2[0].name}]`)
+                    inputTag.classList.add("BODERRED")
+                    inputHeight2 = inputTag.offsetTop
+                }else{
+                    inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
+                }
+                // let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
+                iframebox2.contentWindow.scrollTo(0,inputHeight2)
+            }else if(emptyInput1.length>0){
+                this.$message({
+                    message:'居间合同信息未填写完整',
+                    type:'warning'
+                })
+            }
+        }
+        }else{
+            let emptyInput1=0
+            if(this.Msg.type===1){//租赁
+                emptyInput1 = this.leaseCheck(iframebox1.contentWindow)
+            }else if(this.Msg.type===3){
+                emptyInput1 = this.commissionCheck(iframebox1.contentWindow)
+            }else if(this.Msg.type===4){
+                emptyInput1 = this.agreementCheck(iframebox1.contentWindow)
+            }else if(this.Msg.type===5){
+                emptyInput1 = this.depositAgreementCheck(iframebox1.contentWindow)
+            }
+            if(emptyInput1.length>0){
+                this.$message({
+                    message:'合同信息未填写完整',
+                    type:'warning'
+                })
+                let inputHeight1=0
+                if(emptyInput1[0].type){
+                    let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
+                    inputTag.classList.add("BODERRED")
+                    inputHeight1 = inputTag.offsetTop
+                }else{
+                    inputHeight1 = iframebox1.contentWindow.document.querySelector(`input[name=${emptyInput1[0]}]`).offsetTop
+                }
+                iframebox1.contentWindow.scrollTo(0,inputHeight1)
+            }
+        }
       if(errorArr1.length===0&&errorArr2.length===0){
-				this.fullscreenLoading=true
-				let htmlTxt1=''
-				let htmlTxt2=''
-				let param = {}
-				if(this.Msg.type===2){
-					htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-					htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-					param = {
-						id:this.Msg.id,
-						html:{
-							residence:htmlTxt1,
-            	business:htmlTxt2
-						}
-					}
-				}else{
-					htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-					param = {
-						id:this.Msg.id,
-						html:{
-							address:htmlTxt1
-						}
-					}
-				}
-				this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
-					res=res.data
-					if(res.status===200){
-						this.fullscreenLoading=false
-						this.$message({
-							message:'提审成功',
-							type:'success'
-						})
-					}
-				}).catch(error=>{
-					this.fullscreenLoading=false
-					this.$message({
-						message:error,
-						type:'error'
-					})
-				})
-			}
+            this.fullscreenLoading=true
+            let htmlTxt1=''
+            let htmlTxt2=''
+            let param = {}
+            if(this.Msg.type===2){
+                htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+                htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+                param = {
+                    id:this.Msg.id,
+                    html:{
+                        residence:htmlTxt1,
+                        business:htmlTxt2
+                    }
+                }
+            }else{
+                htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+                param = {
+                    id:this.Msg.id,
+                    html:{
+                        address:htmlTxt1
+                    }
+                }
+            }
+            this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
+                res=res.data
+                if(res.status===200){
+										this.fullscreenLoading=false
+										this.dialogSuccess=true
+                    this.$message({
+                        message:'提审成功',
+                        type:'success'
+                    })
+                }
+            }).catch(error=>{
+                this.fullscreenLoading=false
+                this.$message({
+                    message:error,
+                    type:'error'
+                })
+            })
+        }
     },
     //买卖校验
     dealCheck(iframe,obj=Obj1){
@@ -605,9 +665,9 @@ export default {
                         })
                         if(otherState){
                           errorArr2.push({
-														type:'input',
-														name:obj[item].other[0]
-													})
+                            type:'input',
+                            name:obj[item].other[0]
+                        })
                             break
                         }
                     }else {
@@ -738,8 +798,9 @@ export default {
             }else {
                 let methodDetail={}
                 let val=iframe.document.querySelector(`input[extendparam=${item}]`).value
+                iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
                 if(obj[item]==='method1'){
-                    switch (val){
+                    switch (val.toLowerCase()){
                         case 'a':
                             methodDetail={
                                 check:{
@@ -767,13 +828,13 @@ export default {
                             break
                         default:
                         errorArr2.push({
-													type:'input',
-													name:item
-												})
+                            type:'input',
+                            name:item
+                        })
                     }
                     this.dealCheck(iframe,methodDetail)
                 }else if(obj[item]==='method2'){
-                    switch (val){
+                    switch (val.toLowerCase()){
                         case 'a':
                             break
                         case 'b':
@@ -810,14 +871,14 @@ export default {
                             break
                         default:
                         errorArr2.push({
-													type:'input',
-													name:item
-												})
+                            type:'input',
+                            name:item
+                        })
                             // reject(`请输入,${item}`)
                     }
                     this.dealCheck(iframe,methodDetail)
                 }else if(obj[item]==='method3'){
-                    switch (val){
+                    switch (val.toLowerCase()){
                         case 'a':
                             break
                         case 'b':
@@ -830,14 +891,14 @@ export default {
                             break
                         default:
                         errorArr2.push({
-													type:'input',
-													name:item
-												})
+                            type:'input',
+                            name:item
+                        })
                             // reject(`请输入,${item}`)
                     }
                     this.dealCheck(iframe,methodDetail)
                 }else if(obj[item]==='method4'){
-                    switch (val){
+                    switch (val.toLowerCase()){
                         case 'a':
                             break
                         case 'b':
@@ -850,14 +911,14 @@ export default {
                             break
                         default:
                         errorArr2.push({
-													type:'input',
-													name:item
-												})
+                            type:'input',
+                            name:item
+                        })
                             // reject(`请输入,${item}`)
                     }
                     this.dealCheck(iframe,methodDetail)
                 }else if(obj[item]==='method5'){
-                    switch (val){
+                    switch (val.toLowerCase()){
                         case 'a':
                             methodDetail={
                                 val125:''
@@ -875,17 +936,17 @@ export default {
                             break
                         default:
                         errorArr2.push({
-													type:'input',
-													name:item
-												})
+                            type:'input',
+                            name:item
+                        })
                     }
                     this.dealCheck(iframe,methodDetail)
                 }else {
                     if(val.length===0){
                       errorArr2.push({
-												type:'input',
-													name:item
-											})
+                        type:'input',
+                        name:item
+                    })
                         break
                     }
                 }
@@ -919,9 +980,9 @@ export default {
                         })
                         if(otherState){
                             errorArr1.push({
-															type:'input',
-															name:obj[item].other[0]
-														})
+                                type:'input',
+                                name:obj[item].other[0]
+                            })
                             break
                         }
                     }else {
@@ -1008,11 +1069,12 @@ export default {
                 }
             }else {
                 obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+                iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
                 if(obj[item].length===0){
                     errorArr1.push({
-											type:'input',
-											name:item
-										})
+                        type:'input',
+                        name:item
+                    })
                     break
                 }
             }
@@ -1042,9 +1104,9 @@ export default {
                         })
                         if(otherState){
                            errorArr1.push({
-														 type:'input',
-														 name:obj[item].other[0]
-													 })
+                                type:'input',
+                                name:obj[item].other[0]
+                            })
                             break
                         }
                     }else {
@@ -1083,11 +1145,12 @@ export default {
               }
             }else {
                 let val=iframe.document.querySelector(`input[extendparam=${item}]`).value
+                iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
                 if(val.length===0){
                     errorArr1.push({
-											type:'input',
-											name:item
-										})
+                        type:'input',
+                        name:item
+                    })
                     break
                 }
                 }
@@ -1098,11 +1161,12 @@ export default {
     agreementCheck(iframe,obj=Obj4){
          for (let item in obj) {
             obj[item] = iframe.document.querySelector(`input[extendparam=${item}]`).value
+            iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
             if (obj[item].length === 0) {
                 errorArr1.push({
-									type:'input',
-									name:item
-								})
+                    type:'input',
+                    name:item
+                })
                 break
             }
         }
@@ -1130,10 +1194,7 @@ export default {
                             return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
                         })
                         if(otherState){
-                            errorArr1.push({
-															type:'input',
-															name:obj[item].other[0]
-														})
+                            errorArr1.push(obj[item].name)
                             break
                         }
                     }else {
@@ -1144,11 +1205,12 @@ export default {
                 }
             }else {
                 obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+                iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
                 if(obj[item].length===0){
                     errorArr1.push({
-											type:'input',
-											name:item
-										})
+                        type:'input',
+                        name:item
+                    })
                     break
                 }
             }
@@ -1159,37 +1221,38 @@ export default {
     brokerageCheck(iframe,obj=Obj6){
         for(let item in obj){
             obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+            iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
             if(obj[item].length===0){
                 errorArr1.push({
-									type:'input',
-									name:item
-								})
+                    type:'input',
+                    name:item
+                })
                 break
             }
         }
         return errorArr1
     }
 	},
-	destroyed(){
-		// this.isSave(2)
-	},
+	// beforeDestroy(){
+	// 	console.log(document.body)
+	// 	this.isSave(2)
+	// },
   mounted(){
-    window.onresize = this.clientHeight;
-    var vibibleState ='';
-    var visibleChange ='';
-    if (typeof document.visibilityState !='undefined') {
-      visibleChange ='visibilitychange';
-      vibibleState ='visibilityState';
-    }else if (typeof document.webkitVisibilityState !='undefined') {
-      visibleChange ='webkitvisibilitychange';
-      vibibleState ='webkitVisibilityState';
-    }if (visibleChange) {
-			let that=this
-      document.addEventListener(visibleChange, function() {if (document[vibibleState] =='hidden') {
-				// that.isSave(2)
-				// alert('页面可见');
-				console.log(document[vibibleState])}})
-    }
+    // window.onresize = this.clientHeight;
+    // var vibibleState ='';
+    // var visibleChange ='';
+    // if (typeof document.visibilityState !='undefined') {
+    //   visibleChange ='visibilitychange';
+    //   vibibleState ='visibilityState';
+    // }else if (typeof document.webkitVisibilityState !='undefined') {
+    //   visibleChange ='webkitvisibilitychange';
+    //   vibibleState ='webkitVisibilityState';
+    // }if (visibleChange) {
+	  // let that=this
+    //   document.addEventListener(visibleChange, function() {if (document[vibibleState] =='hidden') {
+    //     that.isSave(2)
+    //     }})
+    // }
   },
   beforeUpdate() {
     this.clientHeight();
@@ -1239,8 +1302,16 @@ export default {
       text-align: left;
       font-size: 16px;
       visibility: hidden;
+      >ul{
+        padding: 10px;
+        border: 1px solid #ccc;
+      }
       span{
         cursor: pointer;
+        line-height: 1.6;
+      }
+      .navBlue{
+          color:@color-blue
       }
     }
     .hid{

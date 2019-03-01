@@ -10,8 +10,13 @@ let errorMsg = {
 let times = 0
 
 axios.defaults.headers.common['Cache-Control']='no-cache'
+axios.interceptors.request.use((request)=>{
+  if(window.navigator.onLine===false){
+    Vue.prototype.$message('网络未正常连接')
+  }
+  return request
+})
 axios.interceptors.response.use((response)=>{
-  // debugger
   let res=response.data
   if(res.status===200){
     times = 0
@@ -34,7 +39,11 @@ axios.interceptors.response.use((response)=>{
     return Promise.reject(res.message)
   }
 },error => {
-  return Promise.reject(error)
+  if(window.navigator.onLine===false){
+    return Promise.reject('网络未正常连接')
+  }else {
+    return Promise.reject(error)
+  }
 })
 
 let api = {

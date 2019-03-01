@@ -375,7 +375,7 @@
           </div>
           <div class="record">
             <el-table :data="recordData" border style="width: 100%" header-row-class-name="theader-bg">
-              <el-table-column label="回访时间">
+              <el-table-column label="回访时间" width="200">
                 <template slot-scope="scope">
                   {{scope.row.startTime|formatTime}}
                 </template>
@@ -403,7 +403,7 @@
                     </span>
                   </div>
                   <span v-else>--</span>
-                  <audio :src="scope.row.recording" :id="'audio'+scope.$index"></audio>
+                  <audio :src="scope.row.recordSrc" :id="'audio'+scope.$index"></audio>
                 </template>
               </el-table-column>
               <el-table-column label="备注" width="320">
@@ -429,7 +429,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="审核记录" name="fifth">
-          <div class="record">
+          <div class="record" v-if="power['sign-com-htdetail'].state">
             <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
               <el-table-column label="时间">
                 <template slot-scope="scope">
@@ -553,6 +553,127 @@
       <LayerPrint ref="easyPrint" class="easyPrint_">
         <div class="printContent" style="width:900px;height:1270px">
           <div class="printHeader">
+            <span>成交报告</span>
+          </div>
+          <div class="printItem">
+            <p>合同基本信息</p>
+            <ul>
+              <li>
+                <p class="w25"><span>签约日期：</span><span>{{contractDetail.signDate}}</span></p>
+                <p class="w30"><span>合同编号：</span><span>{{contractDetail.code}}</span></p>
+                <p><span>交易类型：</span><span>{{contractDetail.contType.label}}</span></p>
+              </li>
+              <li>
+                <p class="w25"><span>成交总价：</span><span>{{contractDetail.dealPrice/10000}}万元</span></p>
+                <p><span>应收佣金：</span><span>{{contractDetail.receivableCommission}}元</span></p>
+              </li>
+            </ul>
+          </div>
+          <div class="printItem">
+            <p>房屋基本信息</p>
+            <ul>
+              <li>
+                <p class="w25"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':contractDetail.report.cardSituation===3?'不动产':'无'}}</span></p>
+                <p class="w30"><span>抵押情况：</span><span>{{contractDetail.report.mortgageSituation===1?'有抵押':'无抵押'}}</span></p>
+                <p><span>提前还款：</span><span>{{contractDetail.report.isEarlyRepayment===0?'否':'是'}}</span></p>
+              </li>
+              <li>
+                <p class="w25"><span>建筑面积：</span><span>{{contractDetail.houseInfo.Square}}㎡</span></p>
+                <p class="w30"><span>土地使用权面积：</span><span>{{contractDetail.report.landUseArea?contractDetail.report.landUseArea+'㎡':'--'}}</span></p>
+                <p><span>土地性质：</span><span>{{contractDetail.report.landNature?contractDetail.report.landNature===1?'划拨':'出让':'--'}}</span></p>
+              </li>
+              <li>
+                <p><span>物业地址：</span><span>{{contractDetail.propertyAddr}}</span></p>
+              </li>
+              <li>
+                <p><span>权属证号：</span><span>{{contractDetail.report.ownershipNumber}}</span></p>
+              </li>
+              <li>
+                <p class="w25"><span>缴纳税费：</span><span>{{contractDetail.report.payTaxation?contractDetail.report.payTaxation+'万元':'--'}}</span></p>
+                <p class="w30"><span>房屋总楼层：</span><span>{{contractDetail.houseInfo.FloorAll}}层</span></p>
+                <p class="w25"><span>建筑结构：</span><span>{{contractDetail.report.buildingStructure?contractDetail.report.buildingStructure:'--'}}</span></p>
+                <p><span>评估值：</span><span>{{contractDetail.report.evaluationValue?contractDetail.report.evaluationValue+'万元':'--'}}</span></p>
+              </li>
+            </ul>
+          </div>
+          <div class="resource">
+            <div class="guest">
+              <div class="title">客源方信息</div>
+              <div class="two-item">
+                <p class="line"><span>店长：</span><span>{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
+                <p><span>联系电话：</span><span>{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
+              </div>
+              <div><p>{{contractDetail.guestInfo.GuestStoreName}}</p></div>
+            </div>
+            <div class="house">
+              <div class="title">房源方信息</div>
+              <div class="two-item">
+                <p class="line"><span>店长：</span><span>{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
+                <p><span>联系电话：</span><span>{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
+              </div>
+              <div><p>{{contractDetail.houseInfo.HouseStoreName}}</p></div>
+            </div>
+          </div>
+          <div class="mai-mai resource">
+            <div class="guest">
+              <div class="title">买方信息</div>
+              <div class="two-item">
+                <p class="line"><span>姓名：</span><span>{{buyerFirst.name}}</span></p>
+                <p><span>身份证：</span><span>{{buyerFirst.identifyCode}}</span></p>
+              </div>
+              <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
+              <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
+                <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
+                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+              </div>
+              <div class="two-item no-bottom">
+                <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
+                <p><span>交易流程：</span><span>{{contractDetail.report.transFlowCode}}</span></p>
+              </div>
+              <div class="two-item">
+                <p class="line"><span>按揭银行：</span><span>{{contractDetail.report.stagesBankName?contractDetail.report.stagesBankName:'--'}}</span></p>
+                <p><span>贷款金额：</span><span>{{contractDetail.report.loanAmount?contractDetail.report.loanAmount+'万':'--'}}</span></p>
+              </div>
+              <div>
+                <p><span>贷款期限：</span><span>{{contractDetail.report.loanTerm?contractDetail.report.loanTerm+'年':'--'}}</span></p>
+              </div>
+            </div>
+            <div class="seller">
+              <div class="title">卖方信息</div>
+              <div class="two-item">
+                <p class="line"><span>姓名：</span><span>{{sellerFirst.name}}</span></p>
+                <p><span>身份证：</span><span>{{sellerFirst.identifyCode}}</span></p>
+              </div>
+              <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
+              <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
+                <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
+                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+              </div>
+              <div class="last-item" style="border-top:1px solid #dddee6;">
+                <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend===0?'否':'是'}}</span></p>
+                <p><span>婚姻状况：</span><span>{{contractDetail.report.maritalStatus?contractDetail.report.maritalStatus:'--'}}</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="resource">
+            <div class="guest">
+              <div class="title">买方代理人信息</div>
+              <div class="two-item">
+                <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.buyerAgentName?contractDetail.report.buyerAgentName:'--'}}</span></p>
+                <p><span>身份证：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
+              </div>
+              <div><p><span>电话：</span><span>{{contractDetail.report.buyerAgentMobile?contractDetail.report.buyerAgentMobile:'--'}}</span></p></div>
+            </div>
+            <div>
+              <div class="title">卖方代理人信息</div>
+              <div class="two-item">
+                <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.sellerAgentName?contractDetail.report.sellerAgentName:'--'}}</span></p>
+                <p><span>身份证：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
+              </div>
+              <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile?contractDetail.report.sellerAgentMobile:'--'}}</span></p></div>
+            </div>
+          </div>
+          <!-- <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
           </div>
           <div class="printMsg">
@@ -595,10 +716,6 @@
               <p class="p_width">
                 <span class="printTag">物业地址：</span>
                 <span class="text">{{contractDetail.propertyAddr}}</span>
-                <!-- <span class="printTxt">{{contractDetail.houseInfo.EstateName}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.BuildingName}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.Unit}}</span>
-                <span class="printTxt">{{contractDetail.houseInfo.RoomNo}}</span> -->
               </p>
             </div>
             <div class="printItem">
@@ -632,11 +749,6 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="relation" label="关系" width="200"></el-table-column>
-                <!-- <el-table-column label="产权比" v-if="contType!='1'" width="149">
-                  <template slot-scope="scope">
-                    {{scope.row.propertyRightRatio+'%'}}
-                  </template>
-                </el-table-column> -->
                 <el-table-column prop="identifyCode" min-width="239" label="身份证号"></el-table-column>
               </el-table>
             </div>
@@ -664,11 +776,6 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="relation" label="关系" width="200"></el-table-column>
-                <!-- <el-table-column label="产权比" v-if="contType!='1'" width="149">
-                  <template slot-scope="scope">
-                    {{scope.row.propertyRightRatio+'%'}}
-                  </template>
-                </el-table-column> -->
                 <el-table-column prop="identifyCode" min-width="239" label="身份证号"></el-table-column>
               </el-table>
             </div>
@@ -706,8 +813,7 @@
                 <p v-else>暂无备注</p>
               </div>
             </div>
-          </div>
-          <!-- <div class="bgcImg" :style={backgroundImage:url}></div> -->
+          </div> -->
           <img class="bgcImg" :src="url" alt="">
         </div>
       </LayerPrint>
@@ -725,6 +831,13 @@ import checkPerson from '@/components/checkPerson';
 import LayerPrint from '@/components/LayerPrint';
 import flowAccount from "@/components/flowAccount";
 import dealReport from "../contractDialog/dealReport";
+const marriage = [
+  {id:1,type:"已婚"},
+  {id:2,type:"未婚"},
+  {id:3,type:"离异"},
+  {id:4,type:"再婚"},
+  {id:5,type:"丧偶"},
+  ]
 
 export default {
   mixins: [MIXINS],
@@ -757,7 +870,8 @@ export default {
         contState: {},
         toExamineState: {},
         laterStageState:{},
-        contChangeState:{}
+        contChangeState:{},
+        report: {}
       },
       //业主信息
       ownerData: [],
@@ -839,6 +953,10 @@ export default {
       recordId:'',//合同创建人id
       //权限
       power: {
+        'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
         'sign-com-bill': {
           state: false,
           name: '流水'
@@ -917,7 +1035,11 @@ export default {
       //成交报告
       saveBtnShow: false,
       editBtnShow: false,
-      reportBtnShow: false
+      reportBtnShow: false,
+      buyerInfo: [],
+      buyerFirst: {},
+      sellerInfo: [],
+      sellerFirst: {}
     };
   },
   created() {
@@ -925,18 +1047,18 @@ export default {
     this.id = this.$route.query.id;
     this.waterId = Number(this.$route.query.id)
     this.contCode = this.$route.query.code;
-    if (this.$route.query.type === "dataBank") {
-      this.activeName = "third";
-      this.name="third";
-    }
     //默认显示 成交报告 判断
     if(this.contType === '2' || this.contType === '3') {
       this.activeName = "deal-report"
       this.name = "deal-report"
     }
+    if (this.$route.query.type === "dataBank") {
+      this.activeName = "third";
+      this.name="third";
+    }
+    this.getTransFlow();//交易类型
     this.getContractDetail();//合同详情
     this.getDictionary();//字典
-    this.getTransFlow();//交易类型
     this.getAchievement();//业绩分成
     this.getContDataType();//获取合同集料库类型
     // this.getExtendParams();//获取扩展参数
@@ -953,6 +1075,7 @@ export default {
       this.saveBtnShow = false
       this.editBtnShow = true
       this.reportBtnShow = true
+      this.getContractDetail()
     },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
@@ -1128,6 +1251,7 @@ export default {
         }
       }).catch(error => {
           if(error.message==='下一节点审批人不存在'){
+            this.isSubmitAudit=false;
             this.checkPerson.code=this.contractDetail.code;
             this.checkPerson.state=true;
             // this.checkPerson.type=error.data.type===1?'set':'init';
@@ -1175,8 +1299,21 @@ export default {
       this.$ajax.get('/api/record/list', param).then(res=>{
         res=res.data;
         if(res.status===200){
-          this.recordData=res.data.list;
+          // this.recordData=res.data.list;
           this.total=res.data.total;
+          let recordList = res.data.list
+          recordList.forEach(element => {
+            if(element.recording){
+              if (!window.location.origin) {
+                window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+              }
+              console.log(window.location.origin)
+              let http = window.location.origin
+              let src = `${http}/api/record/download?recording=${element.recording}`
+              element.recordSrc=src
+            }
+          });
+          this.recordData=recordList
         }
       }).catch(error=>{
         this.$message({
@@ -1309,15 +1446,35 @@ export default {
       this.$ajax.get("/api/contract/detail", param).then(res => {
         res = res.data;
         if (res.status === 200) {
-          // debugger
           this.contractDetail = res.data;
           this.recordId = res.data.recordId;
+          //成交报告
+          let arr1 = res.data.contPersons.filter(item => item.personType.value === 2)
+          this.buyerFirst = arr1[0]
+          delete arr1[0]
+          arr1.forEach(item => this.buyerInfo.push(item))
+          let arr2 = res.data.contPersons.filter(item => item.personType.value === 1)
+          this.sellerFirst = arr2[0]
+          delete arr2[0]
+          arr2.forEach(item => this.sellerInfo.push(item))
+          this.contractDetail.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : {}
+          if(JSON.stringify(this.contractDetail.report) !== '{}') {
+            marriage.forEach(item => {
+              if(this.contractDetail.report.maritalStatus === item.id) {
+                this.contractDetail.report.maritalStatus = item.type
+              }
+            })
+            this.transFlowList.forEach(item => {
+              if(this.contractDetail.report.transFlowCode === item.id) {
+                this.contractDetail.report.transFlowCode = item.name
+              }
+            })
+          }
           // this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
           this.ownerData=[];
           this.clientrData=[];
           for (var i = 0; i < this.contractDetail.contPersons.length; i++) {
-            
             if (this.contractDetail.contPersons[i].personType.value === 1) {
               this.ownerData.push(this.contractDetail.contPersons[i]);
             } else if (
@@ -1776,7 +1933,7 @@ export default {
       var m = Math.floor((result / 60 % 60)) < 10 ? '0' + Math.floor((result / 60 % 60)) : Math.floor((result / 60 % 60));
       var s = Math.floor((result % 60)) < 10 ? '0' + Math.floor((result % 60)) : Math.floor((result % 60));
       return result = h + ":" + m + ":" + s;
-    }
+    },
   }
 };
 </script>
@@ -2225,7 +2382,7 @@ export default {
   position: relative;
   font-size: 16px;
   box-sizing: border-box;
-  padding: 40px 40px;
+  padding: 40px 25px;
   background: #fff;
   .bgcImg{
     position: absolute;
@@ -2239,68 +2396,156 @@ export default {
     opacity: 0.5;
     // background-image: url("../../../assets/img/shuiyin.png");
   }
-  p{
-    display: inline-block;
-    width: 240px;
-    padding: 5px 0;
-    >.dealPrice {
-      color: @color-yellow;
+  .printHeader {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 2px solid #f2f3f8;
+    padding-bottom: 20px;
+  }
+  .printItem {
+    margin: 10px 0;
+    > p {
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom: 10px;
     }
-  }
-  .p_width{
-    width: 400px;
-  }
-  .p_idcard{
-    width: 300px;
-  }
-  .printItem_{
-    border-right: 1px solid #ebeef5;
-    border-bottom: 1px solid #ebeef5;
-  }
-  .printTag{
-    padding-left: 0!important;
-    display: inline-block;
-    width: 96px;
-    text-align: right;
-    padding-left: 10px;
-    color:@color-6c;
-  }
-  .printTxt{
-    color: @color-233;
-  }
-  .contTitle{
-    padding: 10px 0;
-    color: @color-233;
-    font-size: 20px;
-    font-weight: bold;
-  }
-  .printCode{
-    color: @color-blue;
-    font-weight: bold;
-  }
-  .printHeader{
-    padding: 16px 0;
-    border-bottom: 1px solid @border-ED;
-  }
-  .printMsg{
-    padding: 0 12px;
-  }
-  .remark_{
-    margin-top: 10px;
-    display: flex;
-    .remarks{
-      color: @color-233;
-      padding: 0 10px;
-      box-sizing: border-box;
-      width: 700px;
-      height: 120px;
-      border: 1px solid #ebeef5;
-      border-radius: 4px;
-      >P{
-        width: 680px;
-        font-size: 14px;
+    li {
+      display: flex;
+      line-height: 40px;
+      .w25 {
+        width: 25%;
+      }
+      .w30 {
+        width: 30%;
+      }
+      span:first-child {
+        color:@color-6c;
+      }
+      span:last-child {
+        color: @color-233;
       }
     }
   }
+  .resource {
+    display: flex;
+    margin-bottom: 20px;
+    > div {
+      width: 445px;
+      border: 1px solid #dddee6;
+      &.guest {
+        margin-right: 10px;
+      }
+      div {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        &.title {
+          justify-content: center;
+          font-size: 18px;
+          background: #f2f3f8;
+        }
+        p {
+          padding-left: 5px;
+          span:first-child {
+            color:@color-6c;
+          }
+          span:last-child {
+            color: @color-233;
+          }
+        }
+      }
+      .two-item {
+        border-bottom: 1px solid #dddee6;
+        border-top: 1px solid #dddee6;
+        position: relative;
+        .line {
+          display: inline-block;
+          width: 170px;
+          &::before {
+            content: "";
+            width: 1px;
+            height: 40px;
+            position: absolute;
+            left: 175px;
+            top: 0;
+            background: #dddee6;
+          }
+        }
+        &.no-bottom {
+          border-bottom: none;
+        }
+      }
+      .last-item {
+        .no-line {
+          display: inline-block;
+          width: 170px;
+        }
+      }
+    }
+  }
+  // p{
+  //   display: inline-block;
+  //   width: 240px;
+  //   padding: 5px 0;
+  //   >.dealPrice {
+  //     color: @color-yellow;
+  //   }
+  // }
+  // .p_width{
+  //   width: 400px;
+  // }
+  // .p_idcard{
+  //   width: 300px;
+  // }
+  // .printItem_{
+  //   border-right: 1px solid #ebeef5;
+  //   border-bottom: 1px solid #ebeef5;
+  // }
+  // .printTag{
+  //   padding-left: 0!important;
+  //   display: inline-block;
+  //   width: 96px;
+  //   text-align: right;
+  //   padding-left: 10px;
+  //   color:@color-6c;
+  // }
+  // .printTxt{
+  //   color: @color-233;
+  // }
+  // .contTitle{
+  //   padding: 10px 0;
+  //   color: @color-233;
+  //   font-size: 20px;
+  //   font-weight: bold;
+  // }
+  // .printCode{
+  //   color: @color-blue;
+  //   font-weight: bold;
+  // }
+  // .printHeader{
+  //   padding: 16px 0;
+  //   border-bottom: 1px solid @border-ED;
+  // }
+  // .printMsg{
+  //   padding: 0 12px;
+  // }
+  // .remark_{
+  //   margin-top: 10px;
+  //   display: flex;
+  //   .remarks{
+  //     color: @color-233;
+  //     padding: 0 10px;
+  //     box-sizing: border-box;
+  //     width: 700px;
+  //     height: 120px;
+  //     border: 1px solid #ebeef5;
+  //     border-radius: 4px;
+  //     >P{
+  //       width: 680px;
+  //       font-size: 14px;
+  //     }
+  //   }
+  // }
 }
 </style>
