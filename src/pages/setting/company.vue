@@ -286,6 +286,7 @@
         <span>法人信息</span>
         <p><span>法人姓名: {{ companyForm.lepName }}</span><span>法人手机号码: {{ companyForm.lepPhone }}</span></p>
         <p><span>证件类型: {{ companyForm.lepDocumentType }}</span><span class="card-no">证件号: {{ companyForm.lepDocumentCard }}</span></p>
+        <p><span>门店特许费比例: {{companyForm.franchiseRatio}}%</span></p>
       </div>
       <div>
         <span>营业执照信息</span>
@@ -823,22 +824,22 @@
           franchiseRatio: ""
         }
         this.companyForm = newForm
-        if(this.companyFormTitle) {
-          this.$ajax.get('/api/setting/company/updateShowFee',{storeId:this.companyForm.storeId}).then(res => {
-            res = res.data
-            if(res.status === 200) {
-              this.companyForm.franchiseRatio = res.data.franchiseRatio
-            }
-          }).catch(error => {
-            this.$message({
-                message: error,
-                type: "error"
-            })
+        this.$ajax.get('/api/setting/company/updateShowFee',{storeId:this.companyForm.storeId}).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.companyForm.franchiseRatio = res.data.franchiseRatio
+          }
+        }).catch(error => {
+          this.$message({
+              message: error,
+              type: "error"
           })
+        })
+        if(this.companyFormTitle) {
           this.homeStoreList.find(item => {
             if(this.companyForm.storeId === item.id) {
               this.fourthStoreNoEdit = item.level === 4&&item.cooperationMode.value===1 ? true : false
-              this.confirmBtnShow = item.level === 4&&item.cooperationMode.value===1 ? true : false
+              this.confirmBtnShow = this.fourthStoreNoEdit
               this.companyForm.level = item.level
             }
           })
