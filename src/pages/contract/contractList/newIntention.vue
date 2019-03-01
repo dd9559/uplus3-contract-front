@@ -2,7 +2,7 @@
 <template>
     <div class="newintention" id="newIntention">
         <div class="formbox">
-            <el-form :inline="true" :model="contractForm" :rules="rules" :validate-on-rule-change="false" ref="contractForm" class="form-innnerbox">
+            <el-form :inline="true" :model="contractForm" :rules="rules" ref="contractForm" class="form-innnerbox">
                 <div class="form-content">
                 <!-- 合同信息 -->
                     <div class="column-form"> 
@@ -121,13 +121,15 @@
                                 <el-form-item v-if="this.$route.query.operateType==2">
                                     <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth" disabled></el-input>
                                 </el-form-item>
-                                <el-form-item prop="custIdentifyCode">
-                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号"  class="custwidth" maxlength=18></el-input>               
+                                
+                                <el-form-item prop="custIdentifyCode" v-if="this.type===1">
+                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
                                 </el-form-item>
-                                <!-- <el-form-item prop="custIdentifyCode" v-if="this.$route.query.operateType==2">
-                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth"></el-input>
-                                </el-form-item> -->
+                                <el-form-item v-if="this.$route.query.operateType==2">
+                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>               
+                                </el-form-item>
                             </el-form-item>
+                            
                         </div>
                         <div class="form-cont mt30" v-if="this.contractForm.type == 4">
                             <el-form-item label="意向备注：" class="disb textlengthbox">
@@ -186,6 +188,7 @@ export default {
     };
 
     var checkPrice = (rule, value, callback) => {
+      
       if (!value) {
         return callback(new Error("请输入价格"));
       } else {
@@ -200,16 +203,20 @@ export default {
 
     //身份证号验证规则
     var idCard = (rule, value, callback) => {
+      
       let idcard = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
-      if (!value) {
-        return callback(new Error("请输入客户身份证号"));
-      } else {
-        if (!idcard.test(value)) {
-          callback(new Error("请输入正确格式的身份证号"));
+       
+        if (!value) {
+           return callback(new Error("请输入客户身份证号"));
         } else {
-          callback();
+          if (!idcard.test(value)) {
+           
+            callback(new Error("请输入正确格式的身份证号"));
+          } else {
+            callback();
+          }
         }
-      }
+      
     };
 
     //手机号验证规则
@@ -326,16 +333,9 @@ export default {
         guestinfoCode: [
           { required: true, message: "请选择客源编号", trigger:'change'}
         ],
-        // guestInfo: {
-        //   GuestStoreName: [{ required: true, message: "请选择门店" }],
-        //   EmpName: [{ required: true, message: "请选择经纪人" }]
-        // },
-        custIdentifyCode: [{ validator: idCard,trigger:'change'}]
-        // contPersons:{
-        //     // name: '',
-        //     // mobile: '',
 
-        // }
+        custIdentifyCode: [{ required: true,validator: idCard,trigger:'change'}]
+
       },
       hidBtn:'',//隐藏保存按钮
       //权限配置
@@ -352,6 +352,32 @@ export default {
       }
     };
   },
+
+  // watch: {
+
+  //   'contractForm.custIdentifyCode': {
+      
+     
+  //       handler(newName, oldName) {
+        
+  //       console.log(newName)
+  //       console.log(oldName)
+  //       this.$nextTick(function() {   
+  //           debugger 
+  //             this.$refs.contractForm.validateField('custIdentifyCode'); 
+                      
+  //         })
+  //         this.contractForm.custIdentifyCode = newName
+  //       if(newName && newName !== ''){
+          
+  //       }    
+  //     },
+  //     immediate: true,
+ 
+      
+     
+  //   }
+  // },
 
   components: {
     houseGuest
@@ -428,6 +454,21 @@ export default {
         });
       }
     },
+
+    // cutIdentif(val) {
+    //   if(val === "custIdentifyCode") {
+
+    //       this.$nextTick(() => {  
+              
+    //              this.$refs['contractForm'].validate((valid,obj) => {
+                
+                  
+    //              })
+         
+    //       })                 
+         
+    //   }
+    // },
 
     //选择房源弹框
     toLayerHouse() {
@@ -563,13 +604,14 @@ export default {
                     res.data.contPersons[i].personType.value);
                 this.contractForm.custname = res.data.contPersons[i].name;
                 this.contractForm.custmobile = res.data.contPersons[i].mobile;
-                this.contractForm.custIdentifyCode = this.contractForm.contPersons[
-                  i
-                ].identifyCode;
+                this.contractForm.custIdentifyCode = res.data.contPersons[i].identifyCode;
               }
             }
+            
             // this.getEmployee()
           }
+
+
         })
         .catch(error => {
           this.$message({
@@ -715,12 +757,26 @@ export default {
     },
 
     checkRule(contractForm) {
+      let idcard = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
       if(this.contractForm.ownmobile !=='' &&this.contractForm.custmobile !== ''&&((this.contractForm.ownmobile).trim() === (this.contractForm.custmobile).trim())){
         this.$message({
           type: "warning",
           message: "业主手机号和客户手机号不能重复!"
         });
-      }else{
+      }else if(this.contractForm.custIdentifyCode == ''){
+         this.$message({
+          type: "warning",
+          message: "客户身份证号不能为空"
+        });
+      }
+      else if(!idcard.test(this.contractForm.custIdentifyCode)){
+         this.$message({
+            type: "warning",
+            message: "请输入正确格式的身份证号"
+          });
+      }
+      else{
+         
         this.$refs[contractForm].validate(valid => {
           if (valid) {
               // this.dialogSure = true
@@ -796,13 +852,10 @@ export default {
               let contractMsg = res.data.data
               this.hidBtn=1
               localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-              this.$router.replace({path: "/extendParams"});
-             
-              // let newPage = this.$router.resolve({ 
-              //   path: '/extendParams'
-              // });
-              // window.open(newPage.href, '_blank');
+              let newPage = this.$router.resolve({ 
+                path: '/extendParams'
+              });
+              window.open(newPage.href, '_blank');
 
 
               // this.detailId=res.data.data.id;
@@ -863,6 +916,12 @@ export default {
           igdCont: this.contractForm,
           type: this.type
         };
+        param.igdCont.contPersons[0].name = this.contractForm.ownname;
+        param.igdCont.contPersons[0].encryptionMobile = this.contractForm.ownmobile;
+        param.igdCont.contPersons[1].name = this.contractForm.custname;
+        param.igdCont.contPersons[1].encryptionMobile = this.contractForm.custmobile;
+        param.igdCont.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
+        param.igdCont.contPersons[1].encryptionCode = this.contractForm.custIdentifyCode;
         if (this.$route.query.operateType== 2) {
           delete param.igdCont.code;
           delete param.igdCont.contType;
@@ -926,6 +985,8 @@ export default {
         delete param.igdCont.custmobile;
         delete param.igdCont.custIdentifyCode;
 
+
+
         this.$ajax
           .postJSON("/api/contract/updateContract", param)
           .then(res => {
@@ -935,13 +996,10 @@ export default {
             if (res.data.status === 200) {
               let contractMsg = res.data.data
               localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-              this.$router.replace({path: "/extendParams"});
-             
-              // let newPage = this.$router.resolve({ 
-              //   path: '/extendParams'
-              // });
-              // window.open(newPage.href, '_blank');
+              let newPage = this.$router.resolve({ 
+                path: '/extendParams'
+              });
+              window.open(newPage.href, '_blank');
               // this.$message({
               //   type: "success",
               //   message: "已保存!"
