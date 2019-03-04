@@ -97,7 +97,8 @@
         </el-table-column>
         <el-table-column align="left" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="toReceipt(scope.row)" v-if="power['sign-ht-fz-pay'].state">确认打款</el-button>
+            <el-button type="text" size="medium" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
+             <!-- v-if="power['sign-ht-fz-pay'].state" -->
           </template>
         </el-table-column>
       </el-table>
@@ -182,6 +183,7 @@ export default {
       receiptData:{},
       receiptReason:'',//备注
       radio:'',
+      index:'',
       power: {
         'sign-ht-fz-pay': {
           state: false,
@@ -417,11 +419,12 @@ export default {
         }
       },
     //确认收款
-    toReceipt(item){
+    toReceipt(item,index){
       if(this.power['sign-ht-fz-pay'].state){
         if(item.inBank&&item.inBank.length>0){
           this.dialogReceipt=true
           this.receiptData=item;
+          this.index = index
         }else{
           this.$message({
             message:'没有收款门店账户',
@@ -437,12 +440,23 @@ export default {
     },
     commit(){
       if(this.radio){
-        this.receiptData.remark=this.receiptReason;
-        this.receiptData.inBankCard=this.radio.bankCard;
-        this.receiptData.inBankAccountName=this.radio.bankAccountName;
-        this.receiptData
-        let param = this.receiptData;
-        // debugger
+        // this.receiptData.remark=this.receiptReason;
+        // this.receiptData.inBankCard=this.radio.bankCard;
+        // this.receiptData.inBankAccountName=this.radio.bankAccountName;
+        // this.receiptData
+        // param.startTime = this.signDate[0];
+        // param.endTime = this.signDate[1];
+        let search_ = JSON.parse(JSON.stringify(this.searchForm))
+        search_.startTime=this.signDate[0]
+        search_.endTime=this.signDate[1]
+        let param = {
+          queryForm:search_,
+          pageNum:this.currentPage,
+          pageSize:this.pageSize,
+          index:this.index,
+          inBankCard:this.radio.bankCard,
+          inBankAccountName:this.radio.bankAccountName
+        };
         this.$ajax.postJSON('/api/separate/account/allotted',param).then(res=>{
           res=res.data;
           if(res.status===200){

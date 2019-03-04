@@ -1287,6 +1287,11 @@ export default {
     changeType(value) {
       this.isActive = value;
       this.currentPage=1;
+      let myAudios = document.getElementsByTagName('audio');
+      for(var i=0;i<myAudios.length;i++){
+        myAudios[i].pause();
+      }
+      this.playTime=0
       this.getRecordList();
     },
     //查询录音
