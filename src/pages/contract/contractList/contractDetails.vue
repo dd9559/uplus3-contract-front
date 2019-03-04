@@ -600,18 +600,18 @@
             <div class="guest">
               <div class="title">客源方信息</div>
               <div class="two-item">
-                <p class="line"><span>店长：</span><span>{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
-                <p><span>联系电话：</span><span>{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
+                <p class="line"><span>店长：</span><span>{{contractDetail.report.guestShopOwnerName}}</span></p>
+                <p><span>联系电话：</span><span>{{contractDetail.report.guestShopOwnerMobile}}</span></p>
               </div>
-              <div><p><span>门店：</span><span>{{contractDetail.guestInfo.GuestStoreName}}</span></p></div>
+              <div><p><span>门店：</span><span>{{contractDetail.report.guestStoreName}}</span></p></div>
             </div>
             <div class="house">
               <div class="title">房源方信息</div>
               <div class="two-item">
-                <p class="line"><span>店长：</span><span>{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
-                <p><span>联系电话：</span><span>{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
+                <p class="line"><span>店长：</span><span>{{contractDetail.report.houseShopOwnerName}}</span></p>
+                <p><span>联系电话：</span><span>{{contractDetail.report.houseShopOwnerMobile}}</span></p>
               </div>
-              <div><p><span>门店：</span><span>{{contractDetail.houseInfo.HouseStoreName}}</span></p></div>
+              <div><p><span>门店：</span><span>{{contractDetail.report.houseStoreName}}</span></p></div>
             </div>
           </div>
           <div class="mai-mai resource">
@@ -619,12 +619,12 @@
               <div class="title">买方信息</div>
               <div class="two-item">
                 <p class="line"><span>姓名：</span><span>{{buyerFirst.name}}</span></p>
-                <p><span>身份证：</span><span>{{buyerFirst.identifyCode}}</span></p>
+                <p><span>身份证：</span><span>{{buyerFirst.encryptionCode}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
+              <div><p><span>电话：</span><span>{{buyerFirst.encryptionMobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
                 <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                <p><span>电话：</span><span>{{item.encryptionMobile}}</span></p>
               </div>
               <div class="two-item no-bottom">
                 <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
@@ -642,12 +642,12 @@
               <div class="title">卖方信息</div>
               <div class="two-item">
                 <p class="line"><span>姓名：</span><span>{{sellerFirst.name}}</span></p>
-                <p><span>身份证：</span><span>{{sellerFirst.identifyCode}}</span></p>
+                <p><span>身份证：</span><span>{{sellerFirst.encryptionCode}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
+              <div><p><span>电话：</span><span>{{sellerFirst.encryptionMobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
                 <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                <p><span>电话：</span><span>{{item.encryptionMobile}}</span></p>
               </div>
               <div class="last-item" style="border-top:1px solid #dddee6;">
                 <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend==='0'?'否':'是'}}</span></p>
