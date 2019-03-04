@@ -575,7 +575,7 @@
               <li>
                 <p class="w25"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':contractDetail.report.cardSituation===3?'不动产':'无'}}</span></p>
                 <p class="w30"><span>抵押情况：</span><span>{{contractDetail.report.mortgageSituation===1?'有抵押':'无抵押'}}</span></p>
-                <p><span>提前还款：</span><span>{{contractDetail.report.isEarlyRepayment===0?'否':'是'}}</span></p>
+                <p><span>提前还款：</span><span>{{contractDetail.report.isEarlyRepayment==='0'?'否':'是'}}</span></p>
               </li>
               <li>
                 <p class="w25"><span>建筑面积：</span><span>{{contractDetail.houseInfo.Square}}㎡</span></p>
@@ -650,7 +650,7 @@
                 <p><span>电话：</span><span>{{item.mobile}}</span></p>
               </div>
               <div class="last-item" style="border-top:1px solid #dddee6;">
-                <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend===0?'否':'是'}}</span></p>
+                <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend==='0'?'否':'是'}}</span></p>
                 <p><span>婚姻状况：</span><span>{{contractDetail.report.maritalStatus?contractDetail.report.maritalStatus:'--'}}</span></p>
               </div>
             </div>
@@ -660,7 +660,7 @@
               <div class="title">买方代理人信息</div>
               <div class="two-item">
                 <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.buyerAgentName?contractDetail.report.buyerAgentName:'--'}}</span></p>
-                <p><span>身份证：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
+                <p><span>{{contractDetail.report.buyerAgentCardType===1||contractDetail.report.buyerAgentCardType===""?'身份证':'护照'}}：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{contractDetail.report.buyerAgentMobile?contractDetail.report.buyerAgentMobile:'--'}}</span></p></div>
             </div>
@@ -668,7 +668,7 @@
               <div class="title">卖方代理人信息</div>
               <div class="two-item">
                 <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.sellerAgentName?contractDetail.report.sellerAgentName:'--'}}</span></p>
-                <p><span>身份证：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
+                <p><span>{{contractDetail.report.sellerAgentCardType===1||contractDetail.report.sellerAgentCardType===""?'身份证':'护照'}}：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile?contractDetail.report.sellerAgentMobile:'--'}}</span></p></div>
             </div>

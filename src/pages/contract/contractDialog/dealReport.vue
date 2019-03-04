@@ -83,17 +83,17 @@
             <div>
                 <p class="bold">客源方信息</p>
                 <div class="info text">
-                    <p>店长：<span>{{dealBasicInfo.guestOwnerName}}</span></p>
-                    <p style="margin:0 40px;">门店：<span>{{dealBasicInfo.guestStoreName}}</span></p>
-                    <p>联系电话：<span>{{dealBasicInfo.guestOwnerMobile}}</span></p>
+                    <p><span>店长：</span><el-input size="small" v-model.trim="report.guestShopOwnerName" :disabled="!saveBtnShow" class="kezhang" @input="inputOnly('guestShopOwnerName')"></el-input></p>
+                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.guestStoreName" :disabled="!saveBtnShow" class="kedian" @input="inputOnly('guestStoreName')"></el-input></p>
+                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.guestShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="kelian"></el-input></p>
                 </div>
             </div>
             <div>
                 <p class="bold">房源方信息</p>
                 <div class="info text">
-                    <p>店长：<span>{{dealBasicInfo.houseOwnerName}}</span></p>
-                    <p style="margin:0 40px;">门店：<span>{{dealBasicInfo.houseStoreName}}</span></p>
-                    <p>联系电话：<span>{{dealBasicInfo.houseOwnerMobile}}</span></p>
+                    <p><span>店长：</span><el-input size="small" v-model.trim="report.houseShopOwnerName" :disabled="!saveBtnShow" class="fangzhang" @input="inputOnly('houseShopOwnerName')"></el-input></p>
+                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.houseStoreName" :disabled="!saveBtnShow" class="fangdian" @input="inputOnly('houseStoreName')"></el-input></p>
+                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.houseShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="fanglian"></el-input></p>
                 </div>
             </div>
         </div>
@@ -125,22 +125,22 @@
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                         </p>
-                        <p>
-                            <span>按揭银行：</span>
-                            <el-select size="small" v-model="report.stagesBankName" filterable :disabled="!saveBtnShow">
-                                <el-option v-for="item in bankList" :key="item.id" :label="item.name" :value="item.name"></el-option>
-                            </el-select>
-                        </p>
                     </div>
                     <div class="input">
                         <p>
+                            <span>按揭银行：</span>
+                            <el-select size="small" v-model="report.stagesBankName" :disabled="noStageBank||!saveBtnShow" filterable class="bank">
+                                <el-option v-for="item in bankList" :key="item.id" :label="item.name" :value="item.name"></el-option>
+                            </el-select>
+                        </p>
+                        <p style="margin:0 10px;">
                             <span>贷款金额：</span>
-                            <el-input size="small" v-model="report.loanAmount" :disabled="!saveBtnShow" @input="cutNumber('loanAmount')"></el-input>
-                            <span>万元</span>
+                            <el-input size="small" v-model="report.loanAmount" :disabled="noStageBank||!saveBtnShow" @input="cutNumber('loanAmount')"></el-input>
+                            <span style="min-width:20px;">万元</span>
                         </p>
                         <p>
                             <span>贷款期限：</span>
-                            <el-input size="small" v-model="report.loanTerm" :disabled="!saveBtnShow" @input="cutNumber('loanTerm')"></el-input>
+                            <el-input size="small" v-model="report.loanTerm" :disabled="noStageBank||!saveBtnShow" @input="cutNumber('loanTerm')"></el-input>
                             <span>年</span>
                         </p>
                     </div>
@@ -234,7 +234,8 @@ let checkPassPort = function (str) {
 }
 function addRedBorder(className) {
     let obj = document.getElementsByClassName(className)
-    if(className === 'quanshu') {
+    if(className === 'quanshu'||className === 'kezhang' ||className === 'kedian'||className === 'kelian'||
+        className === 'fangzhang'||className === 'fangdian'||className === 'fanglian') {
         obj[0].firstElementChild.style.borderColor = '#f56c6c'
     } else {
         obj[0].firstElementChild.firstElementChild.style.borderColor = '#f56c6c' 
@@ -242,7 +243,8 @@ function addRedBorder(className) {
 }
 function removeRedBorder(className) {
     let obj = document.getElementsByClassName(className)
-    if(className === 'quanshu') {
+    if(className === 'quanshu'||className === 'kezhang' ||className === 'kedian'||className === 'kelian'||
+        className === 'fangzhang'||className === 'fangdian'||className === 'fanglian') {
         obj[0].firstElementChild.style.borderColor = '#dcdfe6'
     } else {
         obj[0].firstElementChild.firstElementChild.style.borderColor = '#dcdfe6'  
@@ -266,13 +268,7 @@ export default {
                 receivableCommission: "",
                 Square: "",
                 propertyAddr: "",
-                FloorAll: "",
-                guestOwnerName: "",
-                guestStoreName: "",
-                guestOwnerMobile: "",
-                houseOwnerName: "",
-                houseStoreName: "",
-                houseOwnerMobile: ""
+                FloorAll: ""
             },
             report: {
                 cardSituation: "",
@@ -298,9 +294,14 @@ export default {
                 sellerAgentName: "",
                 sellerAgentCardType: "",
                 sellerAgentCard: "",
-                sellerAgentMobile: ""
+                sellerAgentMobile: "",
+                guestShopOwnerName: "",
+                guestStoreName: "",
+                guestShopOwnerMobile: "",
+                houseShopOwnerName: "",
+                houseStoreName: "",
+                houseShopOwnerMobile: ""
             },
-            tempReport: {},
             flowList: [], //交易流程
             //数据字典
             dictionary: {
@@ -340,7 +341,8 @@ export default {
                 mobile: ""
             },
             sellerArr: [],
-            transFlowEdit: false
+            transFlowEdit: false,
+            noStageBank: false
         }
     },
     created() {
@@ -365,13 +367,12 @@ export default {
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
                     this.transFlowEdit = res.data.dealReport ? true : false
-                    this.tempReport = {...this.report}
-                    this.dealBasicInfo.guestOwnerName = res.data.guestInfo.ShopOwnerName
-                    this.dealBasicInfo.guestStoreName = res.data.guestInfo.GuestStoreName
-                    this.dealBasicInfo.guestOwnerMobile = res.data.guestInfo.ShopOwnerMobile
-                    this.dealBasicInfo.houseOwnerName = res.data.houseInfo.ShopOwnerName
-                    this.dealBasicInfo.houseStoreName = res.data.houseInfo.HouseStoreName
-                    this.dealBasicInfo.houseOwnerMobile = res.data.houseInfo.ShopOwnerMobile
+                    this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
+                    this.report.guestStoreName = res.data.guestInfo.GuestStoreName
+                    this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
+                    this.report.houseShopOwnerName = res.data.houseInfo.ShopOwnerName
+                    this.report.houseStoreName = res.data.houseInfo.HouseStoreName
+                    this.report.houseShopOwnerMobile = res.data.houseInfo.ShopOwnerMobile
                     this.buyerArr = res.data.contPersons.filter(item => item.personType.value === 2)
                     this.sellerArr = res.data.contPersons.filter(item => item.personType.value === 1)
                     this.firstBuyer.name = this.buyerArr[0].name
@@ -413,17 +414,23 @@ export default {
                 if(this.report.mortgageSituation) {
                     if(this.report.isEarlyRepayment) {
                         if(this.report.ownershipNumber) {
-                            if(this.report.transFlowCode) {
-                                if(this.report.isExtend) {
+                            if(this.report.guestShopOwnerName) {
+                                if(this.report.guestStoreName) {
+                                    if(this.report.guestShopOwnerMobile) {
 
+                                    } else {
+                                        this.$message({message:"客源方联系电话不能为空"})
+                                        addRedBorder('kelian')
+                                        return false
+                                    }
                                 } else {
-                                    this.$message({message:"是否析产（继承）不能为空"})
-                                    addRedBorder('xichan')
+                                    this.$message({message:"客源方门店不能为空"})
+                                    addRedBorder('kedian')
                                     return false
                                 }
                             } else {
-                                this.$message({message:"交易流程不能为空"})
-                                addRedBorder('liucheng')
+                                this.$message({message:"客源方店长不能为空"})
+                                addRedBorder('kezhang')
                                 return false
                             }
                         } else {
@@ -444,6 +451,37 @@ export default {
             } else {
                 this.$message({message:"两证情况不能为空"})
                 addRedBorder('liangzheng')
+                return false
+            }
+            if(this.report.houseShopOwnerName) {
+                if(this.report.houseStoreName) {
+                    if(this.report.houseShopOwnerMobile) {
+                        if(this.report.transFlowCode) {
+                            if(this.report.isExtend) {
+
+                            } else {
+                                this.$message({message:"是否析产（继承）不能为空"})
+                                addRedBorder('xichan')
+                                return false
+                            }
+                        } else {
+                            this.$message({message:"交易流程不能为空"})
+                            addRedBorder('liucheng')
+                            return false
+                        }
+                    } else {
+                        this.$message({message:"房源方联系电话不能为空"})
+                        addRedBorder('fanglian')
+                        return false
+                    }
+                } else {
+                    this.$message({message:"房源方门店不能为空"})
+                    addRedBorder('fangdian')
+                    return false
+                }
+            } else {
+                this.$message({message:"房源方店长不能为空"})
+                addRedBorder('fangzhang')
                 return false
             }
             if(this.report.buyerAgentCardType) {
@@ -547,6 +585,22 @@ export default {
                 this.$nextTick(()=>{
                    this.report.sellerAgentName = this.$tool.textInput(this.report.sellerAgentName) 
                 })
+            } else if(val === 'guestShopOwnerName') {
+                this.$nextTick(()=>{
+                   this.report.guestShopOwnerName = this.$tool.textInput(this.report.guestShopOwnerName) 
+                })
+            } else if(val === 'guestStoreName') {
+                this.$nextTick(()=>{
+                   this.report.guestStoreName = this.$tool.textInput(this.report.guestStoreName) 
+                })
+            } else if(val === 'houseShopOwnerName') {
+                this.$nextTick(()=>{
+                   this.report.houseShopOwnerName = this.$tool.textInput(this.report.houseShopOwnerName) 
+                })
+            } else if(val === 'houseStoreName') {
+                this.$nextTick(()=>{
+                   this.report.houseStoreName = this.$tool.textInput(this.report.houseStoreName) 
+                })
             }
         }
     },
@@ -589,7 +643,47 @@ export default {
             if(newVal==='0'||newVal==='1') {
                 removeRedBorder('xichan')
             }
-        }
+        },
+        'report.buyerPaymentMethod'(newVal,oldVal) {
+            if(newVal === 1) {
+                this.noStageBank = true
+                this.report.stagesBankName = ""
+                this.report.loanAmount = ""
+                this.report.loanTerm = ""
+            } else {
+                this.noStageBank = false
+            }
+        },
+        'report.guestShopOwnerName'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('kezhang')
+            }
+        },
+        'report.guestStoreName'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('kedian')
+            }
+        },
+        'report.guestShopOwnerMobile'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('kelian')
+            }
+        },
+        'report.houseShopOwnerName'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('fangzhang')
+            }
+        },
+        'report.houseStoreName'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('fangdian')
+            }
+        },
+        'report.houseShopOwnerMobile'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('fanglian')
+            }
+        },
     }
 }
 </script>
@@ -742,6 +836,14 @@ export default {
     .info {
         display: flex;
     }
+    .el-input {
+        width: 120px;
+    }
+    .store {
+        .el-input {
+            width: 170px;
+        }
+    }
 }
 .house-person {
     margin: 10px 0;
@@ -768,12 +870,18 @@ export default {
                 line-height: 32px;
             }
             .el-select {
-                width: 120px;
+                width: 100px;
             }
             .el-input {
-                width: 120px;
+                width: 68px;
             }
         }
+    }
+    .liucheng {
+        width: 300px!important;
+    }
+    .bank {
+        width: 145px!important;
     }
 }
 
