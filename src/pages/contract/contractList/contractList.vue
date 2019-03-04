@@ -180,13 +180,13 @@
             <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="成交经纪人" >
+        <el-table-column align="left" label="成交经纪人" width="100">
           <template slot-scope="scope">
             <p>{{scope.row.dealAgentStoreName}}</p>
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="签约日期" width="200">
+        <el-table-column align="left" label="签约日期" width="150">
           <template slot-scope="scope">
             <!-- {{scope.row.signDate.substr(0, 10)}} -->
             {{Number(scope.row.signDate)|timeFormat_}}

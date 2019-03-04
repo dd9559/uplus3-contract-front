@@ -163,9 +163,9 @@ export default {
     this.ids = this.$route.query.ids;
     this.type = parseInt(this.$route.query.type);
     this.getDictionary();//字典
-    if(this.$route.query.type===1){
+    if(this.type===1){
       this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
-    }else if(this.$route.query.type===2){
+    }else if(this.type===2){
       this.setPath(this.$tool.getRouter(['合同','打款记录','打款明细'],'debitRecord'));
     }
     this.getAccountList(this.ids);
