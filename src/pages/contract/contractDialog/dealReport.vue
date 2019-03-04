@@ -417,7 +417,7 @@ export default {
                                 if(this.report.isExtend) {
 
                                 } else {
-                                    this.$message({message:"交易流程不能为空"})
+                                    this.$message({message:"是否析产（继承）不能为空"})
                                     addRedBorder('xichan')
                                     return false
                                 }
