@@ -852,18 +852,10 @@ export default {
               let contractMsg = res.data.data
               this.hidBtn=1
               localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              let newPage = this.$router.resolve({ 
-                path: '/extendParams'
+              this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+              this.$router.replace({
+                path: "/extendParams"
               });
-              window.open(newPage.href, '_blank');
-
-
-              // this.detailId=res.data.data.id;
-              // this.$message({
-              //   type: "success",
-              //   message: "已保存!"
-              // });
-              // this.dialogSuccess=true;
             } else {
               this.fullscreenLoading=false
               this.$message.error(tips);
@@ -995,18 +987,10 @@ export default {
 
             if (res.data.status === 200) {
               let contractMsg = res.data.data
-              localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              let newPage = this.$router.resolve({ 
-                path: '/extendParams'
+              this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+              this.$router.replace({
+                path: "/extendParams"
               });
-              window.open(newPage.href, '_blank');
-              // this.$message({
-              //   type: "success",
-              //   message: "已保存!"
-              // });
-              // this.$router.push({
-              //   path: "/contractList"
-              // });
             } else {
               this.fullscreenLoading=false
               this.$message.error(tips);
