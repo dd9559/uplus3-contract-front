@@ -11,7 +11,7 @@
         </el-form-item>
 
         <el-form-item label="打款日期">
-          <el-date-picker v-model="adjustForm.signDate" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
+          <el-date-picker v-model="adjustForm.signDate" type="daterange" unlink-panels start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
 
@@ -624,13 +624,19 @@
           // console.log(this.userMsg.empId)
         this.loadingTable = true; 
         // this.adjustForm.signDate = TOOL.dateFormat(this.adjustForm.signDate);
-          
+            let moneyOutStartTime = '';
+            let moneyOutEndTime = '';
+            if(this.adjustForm.signDate.length === 2){
+                moneyOutStartTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
+                moneyOutEndTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
+            }
             let param = {
               outStoreId:  this.adjustForm.outStoreId,
               outStoreAttr: this.adjustForm.outStoreAttr,
               inStoreId:  this.adjustForm.inStoreId,
               inStoreAttr: this.adjustForm.inStoreAttr,
-              moneyOutTime:this.adjustForm.signDate,
+              moneyOutStartTime,
+              moneyOutEndTime,
               pageNum: this.pageNum,                 
               pageSize: this.pageSize,                                      
               keyword: this.adjustForm.keyWord,
