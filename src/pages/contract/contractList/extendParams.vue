@@ -373,10 +373,17 @@ export default {
       //租赁
       this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
     }else if(this.Msg.type===2){
-      //买卖
-      this.isShowType=true;
-      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=residence`//居间
-      this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=business`//买卖
+			//买卖
+			if(this.Msg.isWuHanMM){//是否是武汉的买卖合同
+				this.isShowType=true;
+				this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=residence`//居间
+				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=business`//买卖
+			}else{
+				this.isShowType=false;
+				this.isActive=2;
+				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`//居间
+			}
+      
     }else if(this.Msg.type===3){
       //代办
       this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
@@ -466,15 +473,26 @@ export default {
 			errorArr1=[]
 			errorArr2=[]
 			if(this.Msg.type===2){
-				let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
-				let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
-				param = {
-					id:this.Msg.id,
-					html:{
-						residence:htmlTxt1,
-						business:htmlTxt2
-					},
-					isCanAudit:isFull//1.完整 0.否
+				if(this.Msg.isWuHanMM){
+					let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
+					let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+					param = {
+						id:this.Msg.id,
+						html:{
+							residence:htmlTxt1,
+							business:htmlTxt2
+						},
+						isCanAudit:isFull//1.完整 0.否
+					}
+				}else{
+					let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+					param = {
+						id:this.Msg.id,
+						html:{
+							address:htmlTxt2
+						},
+						isCanAudit:isFull//1.完整 0.否
+					}
 				}
 			}else{
 				let emptyInput1=[]
@@ -524,30 +542,56 @@ export default {
 			errorArr1=[]
 			errorArr2=[]
 			if(this.Msg.type===2){
-				let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
-				let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
-				if(this.isActive===1){
-					if(emptyInput1.length>0){
+				if(this.Msg.isWuHanMM){
+					let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
+					let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+					if(this.isActive===1){
+						if(emptyInput1.length>0){
+							this.$message({
+								message:'合同信息未填写完整',
+								type:'warning'
+							})
+							let inputHeight1=0
+							if(emptyInput1[0].type){
+								let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
+								inputTag.classList.add("BODERRED")
+								inputHeight1 = inputTag.offsetTop
+							}else{
+								inputHeight1 = iframebox1.contentWindow.document.querySelector(`div[name=${emptyInput1[0]}]`).offsetTop
+							}
+							iframebox1.contentWindow.scrollTo(0,inputHeight1)
+						}else if(emptyInput2.length>0){
+							this.$message({
+								message:'买卖合同信息未填写完整',
+								type:'warning'
+							})
+						}
+				}else{
+					if(emptyInput2.length>0){
 						this.$message({
 							message:'合同信息未填写完整',
 							type:'warning'
 						})
-						let inputHeight1=0
-						if(emptyInput1[0].type){
-							let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
+						let inputHeight2=0
+						if(emptyInput2[0].type){
+							let inputTag = iframebox2.contentWindow.document.querySelector(`input[extendparam=${emptyInput2[0].name}]`)
 							inputTag.classList.add("BODERRED")
-							inputHeight1 = inputTag.offsetTop
+							inputHeight2 = inputTag.offsetTop
 						}else{
-							inputHeight1 = iframebox1.contentWindow.document.querySelector(`div[name=${emptyInput1[0]}]`).offsetTop
+							inputHeight2 = iframebox2.contentWindow.document.querySelector(`div[name=${emptyInput2[0]}]`).offsetTop
 						}
-						iframebox1.contentWindow.scrollTo(0,inputHeight1)
-					}else if(emptyInput2.length>0){
+						// let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
+						iframebox2.contentWindow.scrollTo(0,inputHeight2)
+					}else if(emptyInput1.length>0){
 						this.$message({
-							message:'买卖合同信息未填写完整',
+							message:'居间合同信息未填写完整',
 							type:'warning'
 						})
 					}
-			}else{
+				}
+			}else{//非武汉买卖
+			// debugger
+				let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
 				if(emptyInput2.length>0){
 					this.$message({
 						message:'合同信息未填写完整',
@@ -563,13 +607,9 @@ export default {
 					}
 					// let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
 					iframebox2.contentWindow.scrollTo(0,inputHeight2)
-				}else if(emptyInput1.length>0){
-					this.$message({
-						message:'居间合同信息未填写完整',
-						type:'warning'
-					})
 				}
 			}
+				
 			}else{
 				let emptyInput1=0
 				if(this.Msg.type===1){//租赁
@@ -604,11 +644,20 @@ export default {
 			if(this.Msg.type===2){
 				htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 				htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-				param = {
-					id:this.Msg.id,
-					html:{
-						residence:htmlTxt1,
-						business:htmlTxt2
+				if(this.Msg.isWuHanMM){
+					param = {
+						id:this.Msg.id,
+						html:{
+							residence:htmlTxt1,
+							business:htmlTxt2
+						}
+					}
+				}else{
+					param = {
+						id:this.Msg.id,
+						html:{
+							address:htmlTxt2
+						}
 					}
 				}
 			}else{
@@ -1305,6 +1354,7 @@ export default {
     //     that.isSave(2)
     //     }})
 		// }
+
 		var iframe1 = this.$refs.iframeFirst;
 		var iframe2 = this.$refs.iframeSecond;
 		var that = this

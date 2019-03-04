@@ -166,7 +166,7 @@ export default {
       signDate: [],
       tableData:[],
       currentPage:1,
-      pageSize:10,
+      pageSize:50,
       total:0,
       total_out:0,
       total_in:0,
