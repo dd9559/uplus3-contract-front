@@ -1,6 +1,6 @@
 <!-- 打款记录 -->
 <template>
-  <div class="view-container" id="adjustcheck" ref="tableComView">
+  <div class="view-container" id="debitRecord" ref="tableComView">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini" ref="adjustCheckForm">
@@ -71,13 +71,21 @@
               :value="item.id">
             </el-option>
           </el-select>
-        </el-form-item>      
+        </el-form-item> 
+
+        <el-form-item label="支付状态">
+          <el-select v-model="adjustForm.status.value" placeholder="全部" class="width150" clearable>
+            <el-option v-for="item in dictionary['26']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>     
         
       </el-form>
     </ScreeningTop>
 
     <!-- 数据列表 -->
-    <div class="contract-list">     
+    <div class="contract-list"> 
+      <p style="color:#666;margin-bottom:10px;">温馨提示：支付失败原因为“收款人户名和银行卡号信息不匹配”时，需要去公司设置里面重新修改此门店的银行账户信息</p>    
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
 
         <el-table-column label="分账门店" :formatter="nullFormatter">
@@ -124,7 +132,20 @@
         
         <el-table-column label="打款日期" align="center">
           <template slot-scope="scope">
-            <p>{{scope.row.moneyOutTime | getDate}}</p>
+            <p>{{scope.row.moneyOutTime | getTime}}</p>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="支付状态" align="center">
+          <template slot-scope="scope">
+            <p v-if="scope.row.status&&(scope.row.status.value === 1 || scope.row.status.value === 3)">支付{{scope.row.status.label}}</p>
+            <p v-else-if="scope.row.status&&scope.row.status.value === 2" class="red">
+              <el-popover placement="top" width="200" trigger="click">
+                <span>{{failMsg}}</span>
+                <el-button slot="reference" type="text" class="curPointer2" @click="failReason(scope.row)">支付{{scope.row.status.label}}</el-button>
+              </el-popover>
+            </p>
+            <p v-else>--</p>
           </template>
         </el-table-column>   
         
@@ -143,6 +164,16 @@
               <span v-else>--</span>
           </template>
         </el-table-column>
+
+        <el-table-column label="操作" width="100" fixed="right" align="center">
+          <template slot-scope="scope">
+            <template v-if="scope.row.status&&scope.row.status.value === 2">
+              <el-button type="text" class="curPointer" @click="payAgain(scope.row)">重新打款</el-button>
+            </template>
+            <span v-else>--</span>
+          </template>
+
+        </el-table-column> 
                
        
       </el-table>
@@ -156,6 +187,29 @@
       >
      </el-pagination>
     </div>
+    <!-- 重新打款 -->
+    <el-dialog
+      title="重新打款"
+      :visible.sync="payVisiable"
+      width="600px">
+      <div class="paycontent">
+        <p>分账周期：<span>{{fenzhang1 | getDate}} ~ {{fenzhang2 | getDate}}</span></p>
+        <p>收款门店：<span>{{shoukuan}}</span></p>
+      </div>
+      <div class="paycontent">
+        <div class="paytitle">收款门店账户选择：</div>
+          <el-radio class="radio" v-for="(item,index) in payAgainInfo" :key="index" v-model="radio" :label="index" @change="changeRadio">开户名：{{item.bankAccountName}}<span style="margin-left:20px;">银行账户：{{item.bankCard}}</span></el-radio>
+        
+      </div>
+      <div class="textareabox">
+        <span>打款备注</span>
+        <el-input type="textarea" :rows="3"  v-model="payremark" class="textarea" maxlength=100></el-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="payVisiable = false">取 消</el-button>
+        <el-button type="primary" @click="payAgainSure()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
+      </span>
+    </el-dialog>
     <!-- 打款详情 -->
     <!-- <el-dialog title="打款明细" :visible.sync="dialogVisible2" width="1000px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight2() }">
@@ -307,9 +361,21 @@
     mixins: [FILTER,MIXINS],
     data(){
       return{ 
+        fullscreenLoading:false,//创建按钮防抖
+        fenzhang1: '',
+        fenzhang2: '',
+        shoukuan: '',
+        payId:'',
+        payremark:'',
+        inBankCard:'',
+        bankAccountName:'',
+        payAgainInfo: [],
+        radio: 0,
+        failMsg:'',
         isOpen:true,
         isOpen2:true,
         isOpen3:true,
+        payVisiable: false,
 
         clientHei: document.documentElement.clientHeight, //窗体高度
         // loading:false,
@@ -333,7 +399,11 @@
           inStoreId: '', //分账门店属性
           outStoreAttr: '', //收款门店id
           inStoreAttr: '', //收款门店属性
-          keyWord: ''   //关键字
+          keyWord: '',   //关键字
+          status:{
+            value:'',
+            label: ''
+          } //支付状态
         },
 
         // 部门搜索分页
@@ -353,7 +423,8 @@
         dictionary: {
           //数据字典
           "507": "", // 成交总价单位
-          "53": "" //合作方式
+          "53": "", //合作方式
+          "26": ""  // 支付状态   
         },
       
         layerAudit:[],
@@ -396,7 +467,7 @@
     },
 
     computed: {
-    
+      
     },
 
     filters: {
@@ -412,6 +483,104 @@
     },
   
     methods:{
+      
+      failReason(e){
+        let param = {
+          payId: e.payId
+        }
+        this.$ajax.get("/api/payInfo/selectRetMsg", param)
+        .then(res => {
+          if (res.data.status === 200) {
+            this.failMsg = res.data.data.msg
+          }
+        }).catch(error => {
+            this.$message({
+              message: error
+            })
+        });
+      },
+
+      payAgain(e) {
+        this.payVisiable = true
+        this.fenzhang1 = e.startTime
+        this.fenzhang2 = e.endTime
+        this.shoukuan = e.inStoreName
+        this.payId = e.payId
+        this.id = e.id
+         let param = {
+          storeId: e.inStoreId
+        }
+        this.$ajax.get("/api/separate/queryBank", param)
+        .then(res => {
+          if (res.data.status === 200) {
+            this.payAgainInfo = res.data.data
+            if(this.payAgainInfo.length > 0) {
+              this.inBankCard = this.payAgainInfo[0].bankCard
+              this.bankAccountName = this.payAgainInfo[0].bankAccountName
+            } 
+          }
+        }).catch(error => {
+            this.$message({
+              message: error
+            })
+        });
+      },
+
+      changeRadio(val){
+        console.log(val)
+        if(val){
+          this.$nextTick(() => {
+           
+           this.inBankCard = this.payAgainInfo[val].bankCard,
+           this.bankAccountName = this.payAgainInfo[val].bankAccountName
+          })
+        }
+        
+      },
+
+      payAgainSure(){
+        let radio = parseInt(this.radio.toString())
+        this.inBankCard = this.payAgainInfo[radio].bankCard,
+        this.bankAccountName = this.payAgainInfo[radio].bankAccountName
+
+        if(this.radio === ''){
+          this.$message({
+            message: '请您选择一个收款门店账户'
+          })
+        }else{
+            this.fullscreenLoading=true
+            let param = {
+              id: this.id,
+              remark: this.payremark,
+              inBankCard: this.inBankCard,
+              inBankAccountName: this.bankAccountName
+            }
+            this.$ajax.postJSON("/api/separate/payAgain", param)
+            .then(res => {
+              this.$nextTick(()=>{
+                this.fullscreenLoading=false
+              })
+              let data = res.data;
+              if (res.data.status === 200) {
+                this.payVisiable = false
+                  // 数据刷新
+                this.queryFn();
+                setTimeout(() => {
+                  this.$message('已重新打款');
+                }, 2000);
+              }
+            }).catch(error => {
+              this.$nextTick(()=>{
+                this.fullscreenLoading=false
+              })
+                this.$message({
+                  message: error
+                })
+            });
+        }
+       
+      },
+
       openAll(){
         this.isOpen=!this.isOpen;
       },
@@ -464,7 +633,8 @@
               moneyOutTime:this.adjustForm.signDate,
               pageNum: this.pageNum,                 
               pageSize: this.pageSize,                                      
-              keyword: this.adjustForm.keyWord             
+              keyword: this.adjustForm.keyWord,
+              status: this.adjustForm.status.value             
             }
             //调整佣金审核列表
             this.$ajax         
@@ -754,13 +924,64 @@
 
 @import "~@/assets/common.less";
 
-#adjustcheck{
+#debitRecord{
+  .paycontent{
+    margin-top: 25px;
+    clear: both;
+    overflow: hidden;
+    p{
+      float: left;
+      span{
+        color: #333;
+      }
+      &:first-child{
+        margin-right: 30px;
+      }
+    }
+    
+    .radio{
+      margin-top: 15px;
+      margin-left: 30px;
+      display: block;
+      
+    }
+  }
+
+  .textareabox{
+    margin: 30px 0 20px;
+    display: flex;
+    align-items: flex-start;
+    span{
+      width: 80px;
+     
+    }
+  }
   .btn-text-info{
     padding: 0;
     &.color-red{
       color: red;
     }
   }
+  .el-dialog .el-dialog__body{
+    padding: 0 20px;
+  }
+  .el-dialog__header{
+      border-bottom: 1px solid #EDECF0;
+      padding: 16px 20px 12px;
+      span{
+          color: #233241;
+          font-size: 18px;
+
+
+      }
+      .el-dialog__headerbtn{
+          top: 16px;
+          .el-dialog__close{
+              font-size: 20px;
+              color: #32485F;
+          }
+      }
+    }
   .el-textarea.is-disabled .el-textarea__inner{
         color:#233241;
     }
@@ -876,6 +1097,14 @@
   }
   .curPointer{
     cursor: pointer;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+  .curPointer2{
+    cursor: pointer;
+    color: @color-warning;
+    font-size: 12px;
     &:hover{
       text-decoration: underline;
     }
