@@ -85,7 +85,7 @@
                 <div class="info text">
                     <p><span>店长：</span><el-input size="small" v-model.trim="report.guestShopOwnerName" :disabled="!saveBtnShow" class="kezhang" @input="inputOnly('guestShopOwnerName')"></el-input></p>
                     <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.guestStoreName" :disabled="!saveBtnShow" class="kedian" @input="inputOnly('guestStoreName')"></el-input></p>
-                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.guestShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="kelian"></el-input></p>
+                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.guestShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="kelian" @mousewheel.native.prevent></el-input></p>
                 </div>
             </div>
             <div>
@@ -93,7 +93,7 @@
                 <div class="info text">
                     <p><span>店长：</span><el-input size="small" v-model.trim="report.houseShopOwnerName" :disabled="!saveBtnShow" class="fangzhang" @input="inputOnly('houseShopOwnerName')"></el-input></p>
                     <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.houseStoreName" :disabled="!saveBtnShow" class="fangdian" @input="inputOnly('houseStoreName')"></el-input></p>
-                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.houseShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="fanglian"></el-input></p>
+                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.houseShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="fanglian" @mousewheel.native.prevent></el-input></p>
                 </div>
             </div>
         </div>
@@ -103,13 +103,13 @@
                 <div class="guest msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="min-width:56px;">{{firstBuyer.name}}</span></p>
-                        <p><span style="min-width:56px;">身份证：</span><span>{{firstBuyer.identifyCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
+                        <p><span style="min-width:56px;">身份证：</span><span>{{firstBuyer.encryptionCode}}</span></p>
+                        <p><span>电话：</span><span>{{firstBuyer.encryptionMobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
                         <li v-for="(item,index) in buyerArr" :key="index">
                             <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.encryptionMobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
@@ -151,13 +151,13 @@
                 <div class="owner msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="min-width:56px;">{{firstSeller.name}}</span></p>
-                        <p><span style="min-width:56px;">身份证：</span><span>{{firstSeller.identifyCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
+                        <p><span style="min-width:56px;">身份证：</span><span>{{firstSeller.encryptionCode}}</span></p>
+                        <p><span>电话：</span><span>{{firstSeller.encryptionMobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
                         <li v-for="(item,index) in sellerArr" :key="index">
                             <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.encryptionMobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
@@ -192,7 +192,7 @@
                     </p>
                     <p>
                         <span>电话：</span>
-                        <el-input size="small" type="number" class="w200" v-model="report.buyerAgentMobile" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" type="number" class="w200" v-model="report.buyerAgentMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" @mousewheel.native.prevent></el-input>
                     </p>
                 </div>
             </div>
@@ -209,7 +209,7 @@
                     </p>
                     <p>
                         <span>电话：</span>
-                        <el-input size="small" type="number" class="w200" v-model="report.sellerAgentMobile" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" type="number" class="w200" v-model="report.sellerAgentMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" @mousewheel.native.prevent></el-input>
                     </p>
                 </div>
             </div>
@@ -224,7 +224,7 @@
 import { MIXINS } from "@/assets/js/mixins";
 import { TOOL } from "@/assets/js/common";
 let checkPhone = function (str) {
-    return /^1[345789]\d{9}$/.test(str)
+    return /^1[3456789]\d{9}$/.test(str)
 }
 let checkIdCard = function (str) {
     return /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/.test(str)
@@ -331,14 +331,14 @@ export default {
             ],
             firstBuyer: {
                 name: "",
-                identifyCode: "",
-                mobile: ""
+                encryptionCode: "",
+                encryptionMobile: ""
             },
             buyerArr: [],
             firstSeller: {
                 name: "",
-                identifyCode: "",
-                mobile: ""
+                encryptionCode: "",
+                encryptionMobile: ""
             },
             sellerArr: [],
             transFlowEdit: false,
@@ -367,20 +367,22 @@ export default {
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
                     this.transFlowEdit = res.data.dealReport ? true : false
-                    this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
-                    this.report.guestStoreName = res.data.guestInfo.GuestStoreName
-                    this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
-                    this.report.houseShopOwnerName = res.data.houseInfo.ShopOwnerName
-                    this.report.houseStoreName = res.data.houseInfo.HouseStoreName
-                    this.report.houseShopOwnerMobile = res.data.houseInfo.ShopOwnerMobile
+                    if(!JSON.parse(res.data.dealReport).guestShopOwnerName) {
+                        this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
+                        this.report.guestStoreName = res.data.guestInfo.GuestStoreName
+                        this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
+                        this.report.houseShopOwnerName = res.data.houseInfo.ShopOwnerName
+                        this.report.houseStoreName = res.data.houseInfo.HouseStoreName
+                        this.report.houseShopOwnerMobile = res.data.houseInfo.ShopOwnerMobile   
+                    }
                     this.buyerArr = res.data.contPersons.filter(item => item.personType.value === 2)
                     this.sellerArr = res.data.contPersons.filter(item => item.personType.value === 1)
                     this.firstBuyer.name = this.buyerArr[0].name
-                    this.firstBuyer.identifyCode = this.buyerArr[0].identifyCode
-                    this.firstBuyer.mobile = this.buyerArr[0].mobile
+                    this.firstBuyer.encryptionCode = this.buyerArr[0].encryptionCode
+                    this.firstBuyer.encryptionMobile = this.buyerArr[0].encryptionMobile
                     this.firstSeller.name = this.sellerArr[0].name
-                    this.firstSeller.identifyCode = this.sellerArr[0].identifyCode
-                    this.firstSeller.mobile = this.sellerArr[0].mobile
+                    this.firstSeller.encryptionCode = this.sellerArr[0].encryptionCode
+                    this.firstSeller.encryptionMobile = this.sellerArr[0].encryptionMobile
                 }
             }).catch(error => {
                 this.$message({
