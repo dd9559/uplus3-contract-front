@@ -136,13 +136,21 @@
     },
     methods: {
       getWebSocket:function () {
-        console.log(process.env.NODE_ENV)
-        let url='http://192.168.1.96:9092'
-        let pathObj={}
-        if(process.env.NODE_ENV==='production'){
-          url='http://sign2.jjw.com:28800'
+        let host=window.location.host
+        console.log(host)
+        let url=''
+        switch (host){
+          case "localhost:8080":
+            url="http://192.168.1.224:28800"
+                break
+          case "sign2.jjw.com:28879":
+            url="http://120.76.202.91:28800"
+                break
+          case "sign2.jjw.com":
+            url="http://119.23.137.131:28800"
+                break
         }
-        let socket = io.connect(`${url}?mac=${this.result.payCode}`, pathObj)
+        let socket = io.connect(`${url}?mac=${this.result.payCode}`)
         let that=this
         socket.on('connect',function () {
           socket.on('messageevent', function(data) {
