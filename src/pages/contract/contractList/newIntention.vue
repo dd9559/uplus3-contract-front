@@ -864,7 +864,8 @@ export default {
           .catch(error => {
             this.fullscreenLoading=false
             this.$message({
-              message: error
+              message: error,
+              type:"error"
             });
           });           
     },
@@ -999,7 +1000,8 @@ export default {
           .catch(error => {
             this.fullscreenLoading=false
             this.$message({
-              message: error
+              message: error,
+              type:"error"
             });
           });     
     },
