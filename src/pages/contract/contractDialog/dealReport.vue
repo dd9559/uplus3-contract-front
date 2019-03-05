@@ -55,21 +55,21 @@
                     </div>
                     <div class="number mark">
                         <span>权属证号：</span>
-                        <el-input size="small" v-model.trim="report.ownershipNumber" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
+                        <el-input size="small" v-model.trim="report.ownershipNumber" maxlength="25" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="position">
+                    <div class="position shui-fei">
                         <span>缴纳税费：</span>
                         <el-input size="small" v-model="report.payTaxation" :disabled="!saveBtnShow" @input="cutNumber('payTaxation')"></el-input>
                         <i>万元</i>
                     </div>
-                    <div style="min-width:120px;">
+                    <div style="min-width:152px;">
                         <span class="floor">房屋总楼层：<span>{{dealBasicInfo.FloorAll}}层</span></span>
                     </div>
                     <div>
                         <span>建筑结构：</span>
-                        <el-input size="small" v-model="report.buildingStructure" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" v-model="report.buildingStructure" maxlength="10" :disabled="!saveBtnShow" class="jianzhu" @input="inputOnly('buildingStructure')"></el-input>
                     </div>
                     <div class="position">
                         <span>评估值：</span>
@@ -83,17 +83,17 @@
             <div>
                 <p class="bold">客源方信息</p>
                 <div class="info text">
-                    <p><span>店长：</span><el-input size="small" v-model.trim="report.guestShopOwnerName" :disabled="!saveBtnShow" class="kezhang" @input="inputOnly('guestShopOwnerName')"></el-input></p>
-                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.guestStoreName" :disabled="!saveBtnShow" class="kedian" @input="inputOnly('guestStoreName')"></el-input></p>
-                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.guestShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="kelian"></el-input></p>
+                    <p><span>店长：</span><el-input size="small" v-model.trim="report.guestShopOwnerName" maxlength="10" :disabled="!saveBtnShow" class="kezhang" @input="inputOnly('guestShopOwnerName')"></el-input></p>
+                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.guestStoreName" maxlength="20" :disabled="!saveBtnShow" class="kedian" @input="inputOnly('guestStoreName')"></el-input></p>
+                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.guestShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="kelian" @mousewheel.native.prevent></el-input></p>
                 </div>
             </div>
             <div>
                 <p class="bold">房源方信息</p>
                 <div class="info text">
-                    <p><span>店长：</span><el-input size="small" v-model.trim="report.houseShopOwnerName" :disabled="!saveBtnShow" class="fangzhang" @input="inputOnly('houseShopOwnerName')"></el-input></p>
-                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.houseStoreName" :disabled="!saveBtnShow" class="fangdian" @input="inputOnly('houseStoreName')"></el-input></p>
-                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.houseShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="fanglian"></el-input></p>
+                    <p><span>店长：</span><el-input size="small" v-model.trim="report.houseShopOwnerName" maxlength="10" :disabled="!saveBtnShow" class="fangzhang" @input="inputOnly('houseShopOwnerName')"></el-input></p>
+                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.houseStoreName" maxlength="20" :disabled="!saveBtnShow" class="fangdian" @input="inputOnly('houseStoreName')"></el-input></p>
+                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.houseShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="fanglian" @mousewheel.native.prevent></el-input></p>
                 </div>
             </div>
         </div>
@@ -103,19 +103,19 @@
                 <div class="guest msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="min-width:56px;">{{firstBuyer.name}}</span></p>
-                        <p><span style="min-width:56px;">身份证：</span><span>{{firstBuyer.identifyCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
+                        <p><span style="min-width:56px;">身份证：</span><span>{{firstBuyer.encryptionCode}}</span></p>
+                        <p><span>电话：</span><span>{{firstBuyer.encryptionMobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
                         <li v-for="(item,index) in buyerArr" :key="index">
                             <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.encryptionMobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
                         <p>
                             <span>付款方式：</span>
-                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow">
+                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow" class="bank">
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
@@ -133,10 +133,10 @@
                                 <el-option v-for="item in bankList" :key="item.id" :label="item.name" :value="item.name"></el-option>
                             </el-select>
                         </p>
-                        <p style="margin:0 10px;">
+                        <p style="margin:0 15px;">
                             <span>贷款金额：</span>
                             <el-input size="small" v-model="report.loanAmount" :disabled="noStageBank||!saveBtnShow" @input="cutNumber('loanAmount')"></el-input>
-                            <span style="min-width:20px;">万元</span>
+                            <span style="min-width:28px;">万元</span>
                         </p>
                         <p>
                             <span>贷款期限：</span>
@@ -151,17 +151,17 @@
                 <div class="owner msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="min-width:56px;">{{firstSeller.name}}</span></p>
-                        <p><span style="min-width:56px;">身份证：</span><span>{{firstSeller.identifyCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
+                        <p><span style="min-width:56px;">身份证：</span><span>{{firstSeller.encryptionCode}}</span></p>
+                        <p><span>电话：</span><span>{{firstSeller.encryptionMobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
                         <li v-for="(item,index) in sellerArr" :key="index">
                             <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.encryptionMobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
-                        <p class="mark" style="margin-right:10px;">
+                        <p class="mark" style="margin-right:15px;">
                             <span style="min-width:126px;">是否析产（继承）：</span>
                             <el-select size="small" v-model="report.isExtend" :disabled="!saveBtnShow" class="xichan">
                                 <el-option label="否" value="0"></el-option>
@@ -184,7 +184,7 @@
                 <div class="agent-info info">
                     <p>
                         <span>代理人姓名：</span>
-                        <el-input size="small" class="w100" v-model="report.buyerAgentName" :disabled="!saveBtnShow" @input="inputOnly('buyerAgentName')"></el-input>
+                        <el-input size="small" class="w100" v-model="report.buyerAgentName" maxlength="10" :disabled="!saveBtnShow" @input="inputOnly('buyerAgentName')"></el-input>
                         <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)" :disabled="!saveBtnShow">
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
@@ -192,7 +192,7 @@
                     </p>
                     <p>
                         <span>电话：</span>
-                        <el-input size="small" type="number" class="w200" v-model="report.buyerAgentMobile" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" type="number" class="w200" v-model="report.buyerAgentMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" @mousewheel.native.prevent></el-input>
                     </p>
                 </div>
             </div>
@@ -201,7 +201,7 @@
                 <div class="agent-info info">
                     <p>
                         <span>代理人姓名：</span>
-                        <el-input size="small" class="w100" v-model="report.sellerAgentName" :disabled="!saveBtnShow" @input="inputOnly('sellerAgentName')"></el-input>
+                        <el-input size="small" class="w100" v-model="report.sellerAgentName" maxlength="10" :disabled="!saveBtnShow" @input="inputOnly('sellerAgentName')"></el-input>
                         <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)" :disabled="!saveBtnShow">
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
@@ -209,7 +209,7 @@
                     </p>
                     <p>
                         <span>电话：</span>
-                        <el-input size="small" type="number" class="w200" v-model="report.sellerAgentMobile" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" type="number" class="w200" v-model="report.sellerAgentMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" @mousewheel.native.prevent></el-input>
                     </p>
                 </div>
             </div>
@@ -224,7 +224,7 @@
 import { MIXINS } from "@/assets/js/mixins";
 import { TOOL } from "@/assets/js/common";
 let checkPhone = function (str) {
-    return /^1[345789]\d{9}$/.test(str)
+    return /^1[3456789]\d{9}$/.test(str)
 }
 let checkIdCard = function (str) {
     return /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/.test(str)
@@ -331,14 +331,14 @@ export default {
             ],
             firstBuyer: {
                 name: "",
-                identifyCode: "",
-                mobile: ""
+                encryptionCode: "",
+                encryptionMobile: ""
             },
             buyerArr: [],
             firstSeller: {
                 name: "",
-                identifyCode: "",
-                mobile: ""
+                encryptionCode: "",
+                encryptionMobile: ""
             },
             sellerArr: [],
             transFlowEdit: false,
@@ -367,20 +367,22 @@ export default {
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
                     this.transFlowEdit = res.data.dealReport ? true : false
-                    this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
-                    this.report.guestStoreName = res.data.guestInfo.GuestStoreName
-                    this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
-                    this.report.houseShopOwnerName = res.data.houseInfo.ShopOwnerName
-                    this.report.houseStoreName = res.data.houseInfo.HouseStoreName
-                    this.report.houseShopOwnerMobile = res.data.houseInfo.ShopOwnerMobile
+                    if(!JSON.parse(res.data.dealReport).guestShopOwnerName) {
+                        this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
+                        this.report.guestStoreName = res.data.guestInfo.GuestStoreName
+                        this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
+                        this.report.houseShopOwnerName = res.data.houseInfo.ShopOwnerName
+                        this.report.houseStoreName = res.data.houseInfo.HouseStoreName
+                        this.report.houseShopOwnerMobile = res.data.houseInfo.ShopOwnerMobile   
+                    }
                     this.buyerArr = res.data.contPersons.filter(item => item.personType.value === 2)
                     this.sellerArr = res.data.contPersons.filter(item => item.personType.value === 1)
                     this.firstBuyer.name = this.buyerArr[0].name
-                    this.firstBuyer.identifyCode = this.buyerArr[0].identifyCode
-                    this.firstBuyer.mobile = this.buyerArr[0].mobile
+                    this.firstBuyer.encryptionCode = this.buyerArr[0].encryptionCode
+                    this.firstBuyer.encryptionMobile = this.buyerArr[0].encryptionMobile
                     this.firstSeller.name = this.sellerArr[0].name
-                    this.firstSeller.identifyCode = this.sellerArr[0].identifyCode
-                    this.firstSeller.mobile = this.sellerArr[0].mobile
+                    this.firstSeller.encryptionCode = this.sellerArr[0].encryptionCode
+                    this.firstSeller.encryptionMobile = this.sellerArr[0].encryptionMobile
                 }
             }).catch(error => {
                 this.$message({
@@ -484,6 +486,14 @@ export default {
                 addRedBorder('fangzhang')
                 return false
             }
+            if(!checkPhone(this.report.guestShopOwnerMobile)) {
+                this.$message({message:"请输入11位正确的客源方联系电话",type:"warning"})
+                return false
+            }
+            if(!checkPhone(this.report.houseShopOwnerMobile)) {
+                this.$message({message:"请输入11位正确的房源方联系电话",type:"warning"})
+                return false
+            }
             if(this.report.buyerAgentCardType) {
                 if(this.report.buyerAgentCard) {
                     let type = this.report.buyerAgentCardType
@@ -575,7 +585,7 @@ export default {
         inputOnly(val) {
             if(val === 'ownershipNumber') {
                 this.$nextTick(()=>{
-                    this.report.ownershipNumber = this.$tool.textInput(this.report.ownershipNumber,2)
+                   this.report.ownershipNumber = this.report.ownershipNumber.replace(/[^\d\a-zA-Z\u4E00-\u9FA5]/g, "").replace(/\s/g, "")
                 })
             } else if(val === 'buyerAgentName') {
                 this.$nextTick(()=>{
@@ -600,6 +610,10 @@ export default {
             } else if(val === 'houseStoreName') {
                 this.$nextTick(()=>{
                    this.report.houseStoreName = this.$tool.textInput(this.report.houseStoreName) 
+                })
+            } else if(val === 'buildingStructure') {
+                this.$nextTick(()=>{
+                   this.report.buildingStructure = this.$tool.textInput(this.report.buildingStructure,3) 
                 })
             }
         }
@@ -690,7 +704,6 @@ export default {
 
 <style scoped lang="less">
 @import "~@/assets/common.less";
-
 .container {
     color: @color-6c;
     .bold {
@@ -717,7 +730,7 @@ export default {
         }
         &.mai-mai {
             p {
-                margin-right: 43px;
+                margin-right: 50px;
             }
             p:nth-child(odd) {
                 span:first-child {
@@ -727,15 +740,18 @@ export default {
         }
     }
     .text-long {
-        min-width: 353px;
+        min-width: 373px;
     }
     .number {
         .el-input {
-            min-width: 330px;
+            min-width: 352px;
         }
     }
     .square {
         min-width: 120px;
+    }
+    .jianzhu {
+        min-width: 160px;
     }
     .mark::before {
         content: "*";
@@ -746,6 +762,9 @@ export default {
     .position {
         i {
             line-height: 32px;
+        }
+        &.shui-fei {
+            margin-left: 6px!important;
         }
     }
     .gongyouren {
@@ -774,7 +793,7 @@ export default {
         flex-wrap: wrap;
         margin-bottom: 10px;
         p {
-            margin-right: 70px;
+            margin-right: 50px;
         }
     }
 }
@@ -788,7 +807,7 @@ export default {
             flex-wrap: wrap;
             > div {
                 display: flex;
-                margin: 0 20px 5px 0;
+                margin: 0 22px 5px 0;
                 > span {
                     min-width: 70px;
                     line-height: 32px;
@@ -807,7 +826,7 @@ export default {
                     width: 100px;
                 }
                 .el-input {
-                    width: 120px;
+                    width: 100px;
                 }
             }
         }
@@ -817,7 +836,7 @@ export default {
 .resource {
     display: flex;
     > div {
-        min-width: 620px;
+        min-width: 600px;
         border: 1px solid #ebeef5;
         margin-right: 10px;
         > p {
@@ -829,6 +848,9 @@ export default {
         .info {
             padding-left: 10px;
             margin-bottom: 10px;
+            span:first-child {
+                color: @color-6c;
+            }
         }
     }
 }
@@ -837,7 +859,7 @@ export default {
         display: flex;
     }
     .el-input {
-        width: 120px;
+        width: 110px;
     }
     .store {
         .el-input {
@@ -857,28 +879,21 @@ export default {
             }
         }
     }
-    .guest {
-        .input {
-            span {
-                min-width: 70px;
-            }
-        }
-    }
     .msg {
         .input {
             span {
                 line-height: 32px;
             }
             .el-select {
-                width: 100px;
+                width: 145px;
             }
             .el-input {
-                width: 68px;
+                width: 70px;
             }
         }
     }
     .liucheng {
-        width: 300px!important;
+        width: 253px!important;
     }
     .bank {
         width: 145px!important;
@@ -899,7 +914,7 @@ export default {
             margin-right: 10px;
         }
         .w200 {
-            width: 200px;
+            width: 210px!important;
         }
     }
 }
