@@ -367,7 +367,7 @@ export default {
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
                     this.transFlowEdit = res.data.dealReport ? true : false
-                    if(!JSON.parse(res.data.dealReport).guestShopOwnerName) {
+                    if(!this.report.guestShopOwnerName) {
                         this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
                         this.report.guestStoreName = res.data.guestInfo.GuestStoreName
                         this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
