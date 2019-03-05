@@ -154,18 +154,18 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="统一社会信用代码: " v-if="creditCodeShow" class="tongyi">
-                <el-input size="mini" v-model.trim="documentCard.creditCode" :disabled="fourthStoreNoEdit"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.creditCode" :disabled="fourthStoreNoEdit" @input="inputOnly(1,'creditCode')"></el-input>
               </el-form-item>
               <el-form-item label="工商注册号: " v-if="icRegisterShow" class="gongshang">
-                <el-input size="mini" v-model.trim="documentCard.icRegisterCode" :disabled="fourthStoreNoEdit"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.icRegisterCode" :disabled="fourthStoreNoEdit" @input="inputOnly(2,'icRegisterCode')"></el-input>
               </el-form-item>
               <el-form-item label="组织机构代码: " v-if="icRegisterShow" class="zuzhi">
-                <el-input size="mini" v-model.trim="documentCard.organizationCode" :disabled="fourthStoreNoEdit"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.organizationCode" :disabled="fourthStoreNoEdit" @input="inputOnly(3,'organizationCode')"></el-input>
               </el-form-item>
             </div>
             <div class="item shuiwu">
               <el-form-item label="税务登记证: " v-if="icRegisterShow">
-                <el-input size="mini" v-model.trim="documentCard.taxRegisterCode" :disabled="fourthStoreNoEdit"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.taxRegisterCode" :disabled="fourthStoreNoEdit" @input="inputOnly(4,'taxRegisterCode')"></el-input>
               </el-form-item>
             </div>
             <div class="tip tip-top">
@@ -893,13 +893,13 @@
         }
       },
       inputOnly(index,type){
-        if(type==='bankAccountName'){
+        if(type==='bankAccountName') {
           this.$nextTick(()=>{
-            this.companyBankList[index].bankAccountName=this.$tool.textInput(this.companyBankList[index].bankAccountName)
+            this.companyBankList[index].bankAccountName=this.$tool.textInput(this.companyBankList[index].bankAccountName,3)
           })
-        }else if(type==='bankBranchName'){
+        }else if(type==='bankBranchName') {
           this.$nextTick(()=>{
-            this.companyBankList[index].bankBranchName=this.$tool.textInput(this.companyBankList[index].bankBranchName)            
+            this.companyBankList[index].bankBranchName=this.$tool.textInput(this.companyBankList[index].bankBranchName,3)            
           })
         } else if(type==='lepName') {
           this.$nextTick(()=>{
@@ -912,6 +912,22 @@
         } else if(type==='name') {
           this.$nextTick(()=>{
             this.companyForm.name=this.$tool.textInput(this.companyForm.name)            
+          })
+        } else if(type==='creditCode') {
+          this.$nextTick(()=>{
+            this.documentCard.creditCode=this.$tool.textInput(this.documentCard.creditCode,2)            
+          })
+        } else if(type==='icRegisterCode') {
+          this.$nextTick(()=>{
+            this.documentCard.icRegisterCode=this.$tool.textInput(this.documentCard.icRegisterCode,2)            
+          })
+        } else if(type==='organizationCode') {
+          this.$nextTick(()=>{
+            this.documentCard.organizationCode=this.$tool.textInput(this.documentCard.organizationCode,2)            
+          })
+        } else if(type==='taxRegisterCode') {
+          this.$nextTick(()=>{
+            this.documentCard.taxRegisterCode=this.$tool.textInput(this.documentCard.taxRegisterCode,2)            
           })
         }
       },
