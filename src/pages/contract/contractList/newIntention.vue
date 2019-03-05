@@ -988,6 +988,7 @@ export default {
 
             if (res.data.status === 200) {
               let contractMsg = res.data.data
+              localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
               this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
               this.$router.replace({
                 path: "/extendParams"
