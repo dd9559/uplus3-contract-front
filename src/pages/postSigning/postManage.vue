@@ -354,6 +354,7 @@
                         </el-table-column>
                         <el-table-column
                         label="操作日期"
+                        min-width="90px"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.operationTime)}}</span>
@@ -368,6 +369,7 @@
                         </el-table-column>
                         <el-table-column
                         label="确定日期"
+                        min-width="90px"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.endDatetime)}}</span>
