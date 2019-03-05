@@ -59,12 +59,12 @@
                     </div>
                 </div>
                 <div class="item">
-                    <div class="position">
+                    <div class="position shui-fei">
                         <span>缴纳税费：</span>
                         <el-input size="small" v-model="report.payTaxation" :disabled="!saveBtnShow" @input="cutNumber('payTaxation')"></el-input>
                         <i>万元</i>
                     </div>
-                    <div style="min-width:120px;">
+                    <div style="min-width:152px;">
                         <span class="floor">房屋总楼层：<span>{{dealBasicInfo.FloorAll}}层</span></span>
                     </div>
                     <div>
@@ -115,7 +115,7 @@
                     <div class="input">
                         <p>
                             <span>付款方式：</span>
-                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow">
+                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow" class="bank">
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
@@ -133,10 +133,10 @@
                                 <el-option v-for="item in bankList" :key="item.id" :label="item.name" :value="item.name"></el-option>
                             </el-select>
                         </p>
-                        <p style="margin:0 10px;">
+                        <p style="margin:0 15px;">
                             <span>贷款金额：</span>
                             <el-input size="small" v-model="report.loanAmount" :disabled="noStageBank||!saveBtnShow" @input="cutNumber('loanAmount')"></el-input>
-                            <span style="min-width:20px;">万元</span>
+                            <span style="min-width:28px;">万元</span>
                         </p>
                         <p>
                             <span>贷款期限：</span>
@@ -161,7 +161,7 @@
                         </li>
                     </ul>
                     <div class="input">
-                        <p class="mark" style="margin-right:10px;">
+                        <p class="mark" style="margin-right:15px;">
                             <span style="min-width:126px;">是否析产（继承）：</span>
                             <el-select size="small" v-model="report.isExtend" :disabled="!saveBtnShow" class="xichan">
                                 <el-option label="否" value="0"></el-option>
@@ -692,7 +692,6 @@ export default {
 
 <style scoped lang="less">
 @import "~@/assets/common.less";
-
 .container {
     color: @color-6c;
     .bold {
@@ -719,7 +718,7 @@ export default {
         }
         &.mai-mai {
             p {
-                margin-right: 43px;
+                margin-right: 50px;
             }
             p:nth-child(odd) {
                 span:first-child {
@@ -729,11 +728,11 @@ export default {
         }
     }
     .text-long {
-        min-width: 353px;
+        min-width: 373px;
     }
     .number {
         .el-input {
-            min-width: 330px;
+            min-width: 292px;
         }
     }
     .square {
@@ -748,6 +747,9 @@ export default {
     .position {
         i {
             line-height: 32px;
+        }
+        &.shui-fei {
+            margin-left: 6px!important;
         }
     }
     .gongyouren {
@@ -776,7 +778,7 @@ export default {
         flex-wrap: wrap;
         margin-bottom: 10px;
         p {
-            margin-right: 70px;
+            margin-right: 50px;
         }
     }
 }
@@ -790,7 +792,7 @@ export default {
             flex-wrap: wrap;
             > div {
                 display: flex;
-                margin: 0 20px 5px 0;
+                margin: 0 22px 5px 0;
                 > span {
                     min-width: 70px;
                     line-height: 32px;
@@ -809,7 +811,7 @@ export default {
                     width: 100px;
                 }
                 .el-input {
-                    width: 120px;
+                    width: 100px;
                 }
             }
         }
@@ -819,7 +821,7 @@ export default {
 .resource {
     display: flex;
     > div {
-        min-width: 620px;
+        min-width: 600px;
         border: 1px solid #ebeef5;
         margin-right: 10px;
         > p {
@@ -831,6 +833,9 @@ export default {
         .info {
             padding-left: 10px;
             margin-bottom: 10px;
+            span:first-child {
+                color: @color-6c;
+            }
         }
     }
 }
@@ -839,7 +844,7 @@ export default {
         display: flex;
     }
     .el-input {
-        width: 120px;
+        width: 110px;
     }
     .store {
         .el-input {
@@ -859,28 +864,21 @@ export default {
             }
         }
     }
-    .guest {
-        .input {
-            span {
-                min-width: 70px;
-            }
-        }
-    }
     .msg {
         .input {
             span {
                 line-height: 32px;
             }
             .el-select {
-                width: 100px;
+                width: 145px;
             }
             .el-input {
-                width: 68px;
+                width: 70px;
             }
         }
     }
     .liucheng {
-        width: 300px!important;
+        width: 253px!important;
     }
     .bank {
         width: 145px!important;
@@ -901,7 +899,7 @@ export default {
             margin-right: 10px;
         }
         .w200 {
-            width: 200px;
+            width: 210px!important;
         }
     }
 }
