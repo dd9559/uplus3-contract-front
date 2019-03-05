@@ -575,7 +575,7 @@
               <li>
                 <p class="w25"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':contractDetail.report.cardSituation===3?'不动产':'无'}}</span></p>
                 <p class="w30"><span>抵押情况：</span><span>{{contractDetail.report.mortgageSituation===1?'有抵押':'无抵押'}}</span></p>
-                <p><span>提前还款：</span><span>{{contractDetail.report.isEarlyRepayment===0?'否':'是'}}</span></p>
+                <p><span>提前还款：</span><span>{{contractDetail.report.isEarlyRepayment==='0'?'否':'是'}}</span></p>
               </li>
               <li>
                 <p class="w25"><span>建筑面积：</span><span>{{contractDetail.houseInfo.Square}}㎡</span></p>
@@ -600,18 +600,18 @@
             <div class="guest">
               <div class="title">客源方信息</div>
               <div class="two-item">
-                <p class="line"><span>店长：</span><span>{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
-                <p><span>联系电话：</span><span>{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
+                <p class="line"><span>店长：</span><span>{{contractDetail.report.guestShopOwnerName}}</span></p>
+                <p><span>联系电话：</span><span>{{contractDetail.report.guestShopOwnerMobile}}</span></p>
               </div>
-              <div><p><span>门店：</span><span>{{contractDetail.guestInfo.GuestStoreName}}</span></p></div>
+              <div><p><span>门店：</span><span>{{contractDetail.report.guestStoreName}}</span></p></div>
             </div>
             <div class="house">
               <div class="title">房源方信息</div>
               <div class="two-item">
-                <p class="line"><span>店长：</span><span>{{contractDetail.houseInfo.ShopOwnerName}}</span></p>
-                <p><span>联系电话：</span><span>{{contractDetail.houseInfo.ShopOwnerMobile}}</span></p>
+                <p class="line"><span>店长：</span><span>{{contractDetail.report.houseShopOwnerName}}</span></p>
+                <p><span>联系电话：</span><span>{{contractDetail.report.houseShopOwnerMobile}}</span></p>
               </div>
-              <div><p><span>门店：</span><span>{{contractDetail.houseInfo.HouseStoreName}}</span></p></div>
+              <div><p><span>门店：</span><span>{{contractDetail.report.houseStoreName}}</span></p></div>
             </div>
           </div>
           <div class="mai-mai resource">
@@ -619,12 +619,12 @@
               <div class="title">买方信息</div>
               <div class="two-item">
                 <p class="line"><span>姓名：</span><span>{{buyerFirst.name}}</span></p>
-                <p><span>身份证：</span><span>{{buyerFirst.identifyCode}}</span></p>
+                <p><span>身份证：</span><span>{{buyerFirst.encryptionCode}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
+              <div><p><span>电话：</span><span>{{buyerFirst.encryptionMobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
                 <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                <p><span>电话：</span><span>{{item.encryptionMobile}}</span></p>
               </div>
               <div class="two-item no-bottom">
                 <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
@@ -642,15 +642,15 @@
               <div class="title">卖方信息</div>
               <div class="two-item">
                 <p class="line"><span>姓名：</span><span>{{sellerFirst.name}}</span></p>
-                <p><span>身份证：</span><span>{{sellerFirst.identifyCode}}</span></p>
+                <p><span>身份证：</span><span>{{sellerFirst.encryptionCode}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
+              <div><p><span>电话：</span><span>{{sellerFirst.encryptionMobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
                 <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                <p><span>电话：</span><span>{{item.encryptionMobile}}</span></p>
               </div>
               <div class="last-item" style="border-top:1px solid #dddee6;">
-                <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend===0?'否':'是'}}</span></p>
+                <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend==='0'?'否':'是'}}</span></p>
                 <p><span>婚姻状况：</span><span>{{contractDetail.report.maritalStatus?contractDetail.report.maritalStatus:'--'}}</span></p>
               </div>
             </div>
@@ -660,7 +660,7 @@
               <div class="title">买方代理人信息</div>
               <div class="two-item">
                 <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.buyerAgentName?contractDetail.report.buyerAgentName:'--'}}</span></p>
-                <p><span>身份证：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
+                <p><span>{{contractDetail.report.buyerAgentCardType===1||contractDetail.report.buyerAgentCardType===""?'身份证':'护照'}}：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{contractDetail.report.buyerAgentMobile?contractDetail.report.buyerAgentMobile:'--'}}</span></p></div>
             </div>
@@ -668,7 +668,7 @@
               <div class="title">卖方代理人信息</div>
               <div class="two-item">
                 <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.sellerAgentName?contractDetail.report.sellerAgentName:'--'}}</span></p>
-                <p><span>身份证：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
+                <p><span>{{contractDetail.report.sellerAgentCardType===1||contractDetail.report.sellerAgentCardType===""?'身份证':'护照'}}：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile?contractDetail.report.sellerAgentMobile:'--'}}</span></p></div>
             </div>

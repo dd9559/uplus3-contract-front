@@ -108,6 +108,7 @@
          class="pagination-info"
          @current-change="handleCurrentChange"
          :current-page="currentPage"
+         :page-size="50"
          layout="total, prev, pager, next, jumper"
          :total="total">
         </el-pagination>
@@ -162,7 +163,7 @@ export default {
       outStoreList:[],//分账门店
       inStoreList:[],//收款门店
       currentPage_out:1,//分账
-      pageSize_:50,
+      pageSize_:10,
       currentPage_in:1,//收款
       signDate: [],
       tableData:[],

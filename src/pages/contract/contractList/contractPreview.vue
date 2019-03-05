@@ -28,7 +28,7 @@
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
-        <el-button round @click="showContData" v-if="power['sign-ht-xq-data-add'].state">资料库</el-button>
+        <el-button round @click="showContData" v-if="power['sign-ht-xq-data'].state">资料库</el-button>
       </div>
       <div class="btn" v-else>
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state" @click="toEdit">编辑</el-button>
@@ -304,10 +304,14 @@ export default {
           state: false,
           name: '签章打印'
         },
-        'sign-ht-xq-data-add': {
+        'sign-ht-xq-data': {
           state: false,
-          name: '编辑资料库'
+          name: '资料库权限'
         },
+        // 'sign-ht-xq-data-add': {
+        //   state: false,
+        //   name: '编辑资料库'
+        // },
         'sign-ht-xq-main-down': {
             state: false,
             name: '下载合同主体'
