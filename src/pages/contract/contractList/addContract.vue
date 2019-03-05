@@ -1801,6 +1801,7 @@ export default {
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
                 identifyCode:this.contractForm.contPersons[i].identifyCode,
                 encryptionCode:this.contractForm.contPersons[i].encryptionCode,
+                cardType:this.contractForm.contPersons[i].cardType,
                 type:1,
                 edit:false,
                 isEncryption:true
@@ -1820,6 +1821,7 @@ export default {
                 propertyRightRatio:this.contractForm.contPersons[i].propertyRightRatio,
                 identifyCode:this.contractForm.contPersons[i].identifyCode,
                 encryptionCode:this.contractForm.contPersons[i].encryptionCode,
+                cardType:this.contractForm.contPersons[i].cardType,
                 type:2,
                 edit:false,
                 isEncryption:true
