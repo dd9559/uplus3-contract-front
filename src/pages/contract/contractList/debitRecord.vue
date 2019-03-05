@@ -138,7 +138,8 @@
 
         <el-table-column label="支付状态" align="center">
           <template slot-scope="scope">
-            <p v-if="scope.row.status&&(scope.row.status.value === 1 || scope.row.status.value === 3)">支付{{scope.row.status.label}}</p>
+            <p v-if="scope.row.status&&scope.row.status.value === 1">支付{{scope.row.status.label}}</p>
+            <p v-else-if="scope.row.status&&scope.row.status.value === 3">{{scope.row.status.label}}</p>
             <p v-else-if="scope.row.status&&scope.row.status.value === 2" class="red">
               <el-popover placement="top" width="200" trigger="click">
                 <span>{{failMsg}}</span>
