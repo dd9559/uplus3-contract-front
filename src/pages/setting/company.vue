@@ -827,7 +827,7 @@
         this.$ajax.get('/api/setting/company/updateShowFee',{storeId:this.companyForm.storeId}).then(res => {
           res = res.data
           if(res.status === 200) {
-            this.companyForm.franchiseRatio = res.data.franchiseRatio
+            this.companyForm.franchiseRatio = res.data.franchiseRatio.toString()
           }
         }).catch(error => {
           this.$message({
