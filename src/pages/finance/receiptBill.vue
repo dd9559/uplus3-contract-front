@@ -39,7 +39,7 @@
           </div>
           <div class="h32" v-else>{{dep.name}}-{{form.inObj}}</div>
         </div>
-        <div class="input-group col">
+        <div class="input-group col" v-if="billStatus">
           <label class="form-label no-width f14 margin-bottom-base">收款时间</label>
           <el-date-picker
             size="small"
@@ -771,6 +771,7 @@
         //收款信息验证
         if(!this.billStatus){
           delete param.admin
+          delete param.createTime
         }
         arr.push(this.$tool.checkForm(param,rule))
         //支付信息验证
