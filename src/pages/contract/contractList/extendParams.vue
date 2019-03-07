@@ -354,11 +354,13 @@ export default {
           state: false,
           name: '提交审核'//新增+提审
         },
-			}
+			},
+			iframe1State:false,
+			iframe2State:false
     }
   },
   created(){
-		this.fullscreenLoading=true
+		// this.fullscreenLoading=true
 		this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
 		this.clientHeight();
@@ -393,7 +395,7 @@ export default {
     }else if(this.Msg.type===5){
       //定金
       this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
-    }
+		}
   },
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
@@ -1366,18 +1368,32 @@ export default {
 		var that = this
 		if(this.Msg.type===2){
 			iframe2.onload=function(){
-				that.isSave(2)
+				that.iframe2State=true
+			}
+			iframe1.onload=function(){
+				that.iframe1State=true
 			}
 		}else{
 			iframe1.onload=function(){
 				that.isSave(2)
 			}
 		}
-		
   },
   beforeUpdate() {
     this.clientHeight();
-  }
+	},
+	computed:{
+		iframeState:function(val){
+			return this.iframe1State&&this.iframe2State
+		}
+	},
+	watch:{
+		iframeState:function(val){
+			if(val){
+				this.isSave(2)
+			}
+		}
+	}
 };
 </script>
 <style scoped lang="less">

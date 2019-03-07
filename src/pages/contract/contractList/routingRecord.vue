@@ -472,6 +472,7 @@ export default {
             this.dialogReceipt=false;
           }
         }).catch(error=>{
+          this.getProateNotes();
           this.$message({
             message:error,
             type:"error"
