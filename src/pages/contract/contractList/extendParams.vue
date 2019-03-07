@@ -360,7 +360,7 @@ export default {
     }
   },
   created(){
-		// this.fullscreenLoading=true
+		this.fullscreenLoading=true
 		this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
 		this.clientHeight();

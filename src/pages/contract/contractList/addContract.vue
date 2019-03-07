@@ -932,20 +932,43 @@ export default {
                             let mobileList = [];
                             //验证身份证是否重复
                             let IdCardList = [];
-                            // console.log(guestArr)
-                            // debugger
+                            //验证护照是否重复
+                            let passportList = [];
+                            //验证营业执照是否重复
+                            let businessList = [];
                             ownerArr.forEach(element => {
-                              IdCardList.push(element.encryptionCode);
+                              if(element.cardType===1){
+                                IdCardList.push(element.encryptionCode);
+                              }
+                              if(element.cardType===2){
+                                passportList.push(element.encryptionCode);
+                              }
+                              if(element.cardType===3){
+                                businessList.push(element.encryptionCode);
+                              }
                               mobileList.push(element.encryptionMobile);
                             });
                             guestArr.forEach(element => {
-                              IdCardList.push(element.encryptionCode);
+                              if(element.cardType===1){
+                                IdCardList.push(element.encryptionCode);
+                              }
+                              if(element.cardType===2){
+                                passportList.push(element.encryptionCode);
+                              }
+                              if(element.cardType===3){
+                                businessList.push(element.encryptionCode);
+                              }
                               mobileList.push(element.encryptionMobile);
                             });
                             let mobileList_= Array.from(new Set(mobileList));
                             let IdCardList_= Array.from(new Set(IdCardList));
+                            let passportList_= Array.from(new Set(passportList));
+                            let businessList_= Array.from(new Set(businessList));
                             if(mobileList.length===mobileList_.length){
+                              // debugger
                               if(IdCardList.length===IdCardList_.length){
+                              if(passportList.length===passportList_.length){
+                              if(businessList.length===businessList_.length){
                               //验证三方合作
                               if(this.contractForm.isHaveCooperation){
                                 let mobileOk=true;
@@ -1072,6 +1095,18 @@ export default {
                                 // }
 
                                 this.addContract();
+                              }
+                              }else{
+                                this.$message({
+                                  message:'营业执照重复',
+                                  type: "warning"
+                                })
+                              }
+                              }else{
+                                this.$message({
+                                  message:'护照重复',
+                                  type: "warning"
+                                })
                               }
                             }else{
                               this.$message({
