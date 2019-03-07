@@ -97,7 +97,8 @@
         </el-table-column>
         <el-table-column align="left" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
+            <el-button type="text" size="medium" v-if="power['sign-ht-fz-pay'].state" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
+            <span v-else>-</span>
              <!-- v-if="power['sign-ht-fz-pay'].state" -->
           </template>
         </el-table-column>

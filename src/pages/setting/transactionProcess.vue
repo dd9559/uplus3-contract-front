@@ -44,7 +44,7 @@
               </el-table-column>
               <el-table-column align="center" label="结算百分比(%)">
                 <template slot-scope="scope">
-                  <el-input class="percent" size="small" oninput="if(value.length>5)value=value.slice(0,5)" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)"></el-input>
+                  <el-input class="percent" size="small" v-model="scope.row.settlePercent" @keyup.native="getInt(scope.$index)"></el-input>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="操作">
@@ -410,23 +410,23 @@
               }
             })
           }
-          if(arr.length) {
-            var num = 0
-            for(var i = 0; i < arr.length; i++) {
-              if(arr[i].settlePercent) {
-                num = arr[i].settlePercent
-              }
-            }
-            if(!/^\d+(\.\d{0,2})?$/.test(num)||!/\d$/.test(num)) {
-              this.$message({message:"结算百分比输入格式不正确",type:'warning'})
-              return false
-            }
-            num = Number(num)
-            if(num > 100) {
-              this.$message({message:"结算百分比不能超过100%",type:'warning'})
-              return false
-            }
-          }
+          // if(arr.length) {
+          //   var num = 0
+          //   for(var i = 0; i < arr.length; i++) {
+          //     if(arr[i].settlePercent) {
+          //       num = arr[i].settlePercent
+          //     }
+          //   }
+          //   if(!/^\d+(\.\d{0,2})?$/.test(num)||!/\d$/.test(num)) {
+          //     this.$message({message:"结算百分比输入格式不正确",type:'warning'})
+          //     return false
+          //   }
+          //   num = Number(num)
+          //   if(num > 100) {
+          //     this.$message({message:"结算百分比不能超过100%",type:'warning'})
+          //     return false
+          //   }
+          // }
 
           let param = {
             transFlowId: this.currentFlowId,
@@ -493,7 +493,7 @@
       getInt:function (index) {
         for(var i = 0; i < this.manageData.length; i++) {
           if(i === index) {
-            this.manageData[i].settlePercent = this.manageData[index].settlePercent.replace(/[^\?\d.]/g,'')
+            this.manageData[i].settlePercent = this.$tool.cutFloat({val:this.manageData[index].settlePercent,max:100})
             this.$set(this.manageData[i],'isSettle',1)       
           } else {
             this.manageData[i].settlePercent = ""
