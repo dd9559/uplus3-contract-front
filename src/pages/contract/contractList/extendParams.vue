@@ -1366,12 +1366,19 @@ export default {
 		var iframe1 = this.$refs.iframeFirst;
 		var iframe2 = this.$refs.iframeSecond;
 		var that = this
+		debugger
 		if(this.Msg.type===2){
-			iframe2.onload=function(){
-				that.iframe2State=true
-			}
-			iframe1.onload=function(){
-				that.iframe1State=true
+			if(this.Msg.isWuHanMM){
+				iframe2.onload=function(){
+					that.iframe2State=true
+				}
+				iframe1.onload=function(){
+					that.iframe1State=true
+				}
+			}else{
+				iframe2.onload=function(){
+					that.isSave(2)
+				}
 			}
 		}else{
 			iframe1.onload=function(){

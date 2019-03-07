@@ -937,7 +937,7 @@ export default {
                             //验证营业执照是否重复
                             let businessList = [];
                             ownerArr.forEach(element => {
-                              if(element.cardType===1){
+                              if(element.cardType===1||this.contractForm.type!==1){
                                 IdCardList.push(element.encryptionCode);
                               }
                               if(element.cardType===2){
@@ -949,7 +949,7 @@ export default {
                               mobileList.push(element.encryptionMobile);
                             });
                             guestArr.forEach(element => {
-                              if(element.cardType===1){
+                              if(element.cardType===1||this.contractForm.type!==1){
                                 IdCardList.push(element.encryptionCode);
                               }
                               if(element.cardType===2){
