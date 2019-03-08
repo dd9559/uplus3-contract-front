@@ -283,7 +283,7 @@
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</el-button>
               <!-- </span> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1&&scope.row.laterStageState.value!=5" @click="toLayerAudit(scope.row)">调佣</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
             <!-- </div> -->
           </template>
         </el-table-column>

@@ -35,6 +35,8 @@ axios.interceptors.response.use((response)=>{
     return Promise.reject('请到U+客户端登录')
   }else if(res.status===300){
     return Promise.reject(res)
+  }else if(res.status===2001){
+    return Promise.reject(res)
   }else {
     return Promise.reject(res.message)
   }

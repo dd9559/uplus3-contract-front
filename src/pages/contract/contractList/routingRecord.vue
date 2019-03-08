@@ -127,7 +127,7 @@
         <p class="tag">收款门店账户选择：</p>
         <ul>
           <li v-for="(item,index) in receiptData.inBank" :key="index">
-            <el-radio v-model="radio" :label="item"><span>银行账户：</span><span>{{item.bankCard}}</span></el-radio>
+            <el-radio v-model="radio" :label="item"><span class="bankAccountName">开户名：{{item.bankAccountName}}</span>银行账户：{{item.bankCard}}</el-radio>
           </li>
         </ul>
       </div>
@@ -472,11 +472,18 @@ export default {
             this.dialogReceipt=false;
           }
         }).catch(error=>{
-          this.getProateNotes();
-          this.$message({
-            message:error,
-            type:"error"
-          })
+          if(error.status===2001){
+            this.getProateNotes();
+            this.$message({
+              message:error.message,
+              type:"error"
+            })
+          }else{
+            this.$message({
+              message:error,
+              type:"error"
+            })
+          }
         })
       }else{
         this.$message({
@@ -561,6 +568,11 @@ export default {
     top:10px;
     right: 10px;
   }
+}
+.bankAccountName{
+  display: inline-block;
+  padding-right: 10px;
+  width: 150px;
 }
 .tag{
   color: @color-6c; 
