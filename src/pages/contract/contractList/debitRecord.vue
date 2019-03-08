@@ -21,8 +21,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-                
-        <el-form-item label="部门"> 
+
+        <el-form-item label="部门">
           <!-- <select-tree :data="DepList" :init="adjustForm.depName1" @checkCell="depHandleClick1" @clear="clearDep(1)" @search="searchDep1" class="fl"></select-tree> -->
           <el-select
             v-model="adjustForm.outStoreId"
@@ -50,8 +50,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-                
-        <el-form-item label="部门"> 
+
+        <el-form-item label="部门">
           <!-- <select-tree :data="DepList" :init="adjustForm.depName2" @checkCell="depHandleClick2" @clear="clearDep(2)" @search="searchDep2" class="fl"></select-tree> -->
           <el-select
             v-model="adjustForm.inStoreId"
@@ -71,21 +71,21 @@
               :value="item.id">
             </el-option>
           </el-select>
-        </el-form-item> 
+        </el-form-item>
 
         <el-form-item label="支付状态">
           <el-select v-model="adjustForm.status.value" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['26']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
-        </el-form-item>     
-        
+        </el-form-item>
+
       </el-form>
     </ScreeningTop>
 
     <!-- 数据列表 -->
-    <div class="contract-list"> 
-      <p style="color:#666;margin-bottom:10px;">温馨提示：支付失败原因为“收款人户名和银行卡号信息不匹配”时，需要去公司设置里面重新修改此门店的银行账户信息</p>    
+    <div class="contract-list">
+      <p style="color:#666;margin-bottom:10px;">温馨提示：支付失败原因为“收款人户名和银行卡号信息不匹配”时，需要去公司设置里面重新修改此门店的银行账户信息</p>
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
 
         <el-table-column label="分账门店" :formatter="nullFormatter">
@@ -114,10 +114,10 @@
 
          <el-table-column label="分账金额（元）" :formatter="nullFormatter">
           <template slot-scope="scope">
-            <p>{{scope.row.accountAmount}} 元</p> 
+            <p>{{scope.row.accountAmount}} 元</p>
           </template>
         </el-table-column>
-       
+
         <el-table-column label="分账周期">
           <template slot-scope="scope">
             <p>{{scope.row.startTime | getDate}} ~ {{scope.row.endTime | getDate}}</p>
@@ -129,7 +129,7 @@
             <p>{{scope.row.moneyOutDepName + ' - ' + scope.row.moneyOutByName}}</p>
           </template>
         </el-table-column>
-        
+
         <el-table-column label="打款日期" align="center">
           <template slot-scope="scope">
             <p>{{scope.row.moneyOutTime | getTime}}</p>
@@ -147,8 +147,8 @@
             </p>
             <p v-else>--</p>
           </template>
-        </el-table-column>   
-        
+        </el-table-column>
+
         <el-table-column label="打款备注" width="200">
           <template slot-scope="scope">
               <span v-if="scope.row.remark&&(scope.row.remark).trim().length > 0">
@@ -173,9 +173,9 @@
             <span v-else>--</span>
           </template>
 
-        </el-table-column> 
-               
-       
+        </el-table-column>
+
+
       </el-table>
       <el-pagination
       @current-change="handleCurrentChange"
@@ -199,7 +199,7 @@
       <div class="paycontent">
         <div class="paytitle">收款门店账户选择：</div>
           <el-radio class="radio" v-for="(item,index) in payAgainInfo" :key="index" v-model="radio" :label="index" @change="changeRadio">开户名：{{item.bankAccountName}}<span style="margin-left:20px;">银行账户：{{item.bankCard}}</span></el-radio>
-        
+
       </div>
       <div class="textareabox">
         <span>打款备注</span>
@@ -213,7 +213,7 @@
     <!-- 打款详情 -->
     <!-- <el-dialog title="打款明细" :visible.sync="dialogVisible2" width="1000px" class="layer-audit" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
       <div class="audit-box"  :style="{ height: clientHeight2() }">
-       
+
         <div class="audit-col">
           <el-table :data="layerAudit" border style="width: 100%" class="table">
             <el-table-column label="合同编号" width="120" fixed :formatter="nullFormatter" align="center">
@@ -261,7 +261,7 @@
                 {{scope.row.serviceFee}}
               </template>
             </el-table-column>
-            
+
             <el-table-column v-if="!isOpen">
               <template slot="header" slot-scope="scope">
                 <span>按揭手续费(元)</span>
@@ -273,7 +273,7 @@
 
 
             <el-table-column prop="actualSettlement" label="实际结算"></el-table-column>
-            
+
 
             <el-table-column align="center">
               <template slot="header" slot-scope="scope">
@@ -308,7 +308,7 @@
                 </div>
               </template>
             </el-table-column>
-           
+
 
             <el-table-column align="center">
               <template slot="header" slot-scope="scope">
@@ -336,31 +336,31 @@
                 {{scope.row.payCardFee}}
               </template>
             </el-table-column>
-           
+
 
             <el-table-column prop="disAmount" label="当期实收分成（元）"></el-table-column>
           </el-table>
         </div>
       </div>
     </el-dialog> -->
-   
+
   </div>
 </template>
 
 
-      
+
 <script>
   import ScreeningTop from '@/components/ScreeningTop';
   import {FILTER} from "@/assets/js/filter";
   import {TOOL} from "@/assets/js/common";
   import { MIXINS } from "@/assets/js/mixins";
-  
+
   export default {
     name: "debit-record",
     // mixins: [FILTER],
     mixins: [FILTER,MIXINS],
     data(){
-      return{ 
+      return{
         fullscreenLoading:false,//创建按钮防抖
         fenzhang1: '',
         fenzhang2: '',
@@ -388,7 +388,7 @@
         pageNum: 1,
         pageSize: 50,
         total: 0,
-        
+
         // Form :{
         //   getDepName: '',
         //   getAgentName: ''
@@ -410,7 +410,7 @@
         pageSize_:50,
         outStoreList:[],//分账门店
         inStoreList:[],//收款门店
-        currentPage_out:1,//分账    
+        currentPage_out:1,//分账
         currentPage_in:1,//收款
         total_out:0,
         total_in:0,
@@ -424,11 +424,11 @@
           //数据字典
           "507": "", // 成交总价单位
           "53": "", //合作方式
-          "26": ""  // 支付状态   
+          "26": ""  // 支付状态
         },
-      
+
         layerAudit:[],
-        
+
 
         checkInfo:[],
 
@@ -442,7 +442,7 @@
         // 弹框里用到的
         dialogVisible2: false,
         // checked: false, //是否有解除协议
-       
+
         tableData:[],
 
         power: {
@@ -464,14 +464,14 @@
           }
         }
 
-        
 
-        
+
+
       }
     },
 
     computed: {
-      
+
     },
 
     filters: {
@@ -485,9 +485,9 @@
          return TOOL.timeFormat(val)
        }
     },
-  
+
     methods:{
-      
+
       failReason(e){
         let param = {
           payId: e.payId
@@ -523,7 +523,7 @@
                 if(this.payAgainInfo.length > 0) {
                   this.inBankCard = this.payAgainInfo[0].bankCard
                   this.bankAccountName = this.payAgainInfo[0].bankAccountName
-                } 
+                }
               }
             }).catch(error => {
                 this.$message({
@@ -536,19 +536,19 @@
             type:'warning'
           });
         }
-        
+
       },
 
       changeRadio(val){
         console.log(val)
         if(val){
           this.$nextTick(() => {
-           
+
            this.inBankCard = this.payAgainInfo[val].bankCard,
            this.bankAccountName = this.payAgainInfo[val].bankAccountName
           })
         }
-        
+
       },
 
       payAgainSure(){
@@ -583,13 +583,13 @@
                 }, 2000);
               }
             }).catch(error => {
-              
+
               this.$nextTick(()=>{
                 this.fullscreenLoading=false
               })
               this.payVisiable = false
               if(error.status === 2001){
-                
+
                   // 数据刷新
                 this.queryFn();
                 this.$message({
@@ -600,15 +600,14 @@
                   message: error.message
                 })
               }else{
-   
                  this.$message({
-                  message: error.message
+                  message: error
                 })
               }
-                
+
             });
         }
-       
+
       },
 
       openAll(){
@@ -621,13 +620,13 @@
         this.isOpen3=!this.isOpen3;
       },
 
-     
+
       // 控制弹框body内容高度，超过显示滚动条
-      clientHeight() {        
+      clientHeight() {
           return this.clientHei - 265 + 'px'
       },
 
-      clientHeight2() {        
+      clientHeight2() {
           return this.clientHei - 197 + 'px'
       },
       trim(str){
@@ -638,13 +637,13 @@
       // 重置
       resetFormFn() {
           TOOL.clearForm(this.adjustForm);
-          this.pageNum = 1; 
+          this.pageNum = 1;
           this.outStoreList=this.options//分账门店
           this.inStoreList=this.options//收款门店
           this.currentPage_out=1//分账
           this.currentPage_in=1//收款
           this.total_out=this.firstTotal
-          this.total_in=this.firstTotal     
+          this.total_in=this.firstTotal
       },
 
       // 查询
@@ -652,7 +651,7 @@
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
-        this.loadingTable = true; 
+        this.loadingTable = true;
         // this.adjustForm.signDate = TOOL.dateFormat(this.adjustForm.signDate);
             let moneyOutStartTime = '';
             let moneyOutEndTime = '';
@@ -667,13 +666,13 @@
               inStoreAttr: this.adjustForm.inStoreAttr,
               moneyOutStartTime,
               moneyOutEndTime,
-              pageNum: this.pageNum,                 
-              pageSize: this.pageSize,                                      
+              pageNum: this.pageNum,
+              pageSize: this.pageSize,
               keyword: this.adjustForm.keyWord,
-              status: this.adjustForm.status.value             
+              status: this.adjustForm.status.value
             }
             //调整佣金审核列表
-            this.$ajax         
+            this.$ajax
             .get("/api/separate/money/out/list", param)
             .then(res => {
               this.$nextTick(() => {
@@ -681,12 +680,12 @@
               })
               let data = res.data;
               if (res.data.status === 200) {
-                this.tableData = data.data  
-                          
+                this.tableData = data.data
+
               }
-              
-              
-        
+
+
+
             }).catch(error => {
               this.$nextTick(() => {
                 this.loadingTable = false;
@@ -698,12 +697,12 @@
         // }else{
         //   this.noPower(this.power['sign-ht-maid-query'].name)
         // }
-        
+
       },
 
       // 双击详情事件
       toDetail(e) {
-        let newPage = this.$router.resolve({ 
+        let newPage = this.$router.resolve({
             path: '/routingRemitDetail',
             query:{
               ids: e.settleDetailsIds,
@@ -727,15 +726,15 @@
           //     })
           // });
 
-          
-       
-        
+
+
+
       },
 
       //跳转合同详情页
       goContractDetail(value){
         if(this.power['sign-com-htdetail'].state){
-            
+
           // console.log(value)
           this.setPath(this.$tool.getRouter(['合同','调佣审核','合同详情'],'contractList'));
           this.$router.push({
@@ -750,13 +749,13 @@
            this.noPower(this.power['sign-com-htdetail'].name);
         }
       },
-      
+
       handleCurrentChange(e) {
         this.pageNum = e;
         this.queryFn();
       },
 
-    
+
     getDepList(param,first=true,type='out'){
       this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
         res=res.data;
@@ -919,11 +918,11 @@
       },
 
 
-  
-      
 
-      
-    
+
+
+
+
     },
 
     created() {
@@ -937,9 +936,9 @@
       })
       // this.getAdmin();
       // this.remoteMethod()
-      
 
-     
+
+
     },
 
     mounted() {
@@ -951,8 +950,8 @@
 
     components: {
           ScreeningTop,
-          
-         
+
+
       }
   };
 </script>
@@ -974,12 +973,12 @@
         margin-right: 30px;
       }
     }
-    
+
     .radio{
       margin-top: 15px;
       margin-left: 30px;
       display: block;
-      
+
     }
   }
 
@@ -989,7 +988,7 @@
     align-items: flex-start;
     span{
       width: 80px;
-     
+
     }
   }
   .btn-text-info{
@@ -1073,7 +1072,7 @@
       font-size: 14px;
       color: #233241;
       padding: 6px 0;
-      
+
       .mr8{
         margin-right: 8px;
       }
@@ -1092,7 +1091,7 @@
           }
         }
       }
-      
+
     }
   }
 
@@ -1157,8 +1156,8 @@
       span{
           color: #233241;
           font-size: 20px;
-          
-          
+
+
       }
       .el-dialog__headerbtn{
           top: 16px;
@@ -1166,7 +1165,7 @@
               font-size: 24px;
               color: #32485F;
           }
-      } 
+      }
     }
     .el-dialog__body{
           padding: 0;
@@ -1241,14 +1240,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-  
+
           }
           .width70{
             width: 72px;
             height: 28px;
             line-height: 28px;
             margin-right: 3px;
-           
+
           }
           .mr10{
             margin-right: 10px;
@@ -1280,9 +1279,9 @@
               color: #6C7986;
             }
           }
-        }       
+        }
         .ulData{
- 
+
             width: 100%;
             overflow: hidden;
             li{
@@ -1324,8 +1323,8 @@
         }
 
       }
-      
-    }   
+
+    }
     .bordernone{
       border-bottom: none;
     }
@@ -1355,7 +1354,7 @@
         background-color: #54D384;
         border-color: #54D384;
       }
-      
+
     }
   }
   .name-wrapper {
@@ -1370,7 +1369,7 @@
     word-break: break-all;
     word-wrap:break-word;
   }
-   
+
   .isFlex{
     display: flex;
     align-items: center;
