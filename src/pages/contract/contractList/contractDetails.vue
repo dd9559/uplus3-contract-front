@@ -112,7 +112,7 @@
                           {{scope.row.propertyRightRatio+'%'}}
                         </template>
                       </el-table-column>
-                      <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
+                      <el-table-column prop="identifyCode" min-width="150" label="证件号"></el-table-column>
                     </el-table>
                   </template>
                 </div>
@@ -149,7 +149,7 @@
                           {{scope.row.propertyRightRatio+'%'}}
                         </template>
                       </el-table-column>
-                      <el-table-column prop="identifyCode" min-width="150" label="身份证号"></el-table-column>
+                      <el-table-column prop="identifyCode" min-width="150" label="证件号"></el-table-column>
                     </el-table>
                   </template>
                 </div>

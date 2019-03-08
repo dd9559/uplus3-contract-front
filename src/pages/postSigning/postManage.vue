@@ -354,6 +354,7 @@
                         </el-table-column>
                         <el-table-column
                         label="操作日期"
+                        min-width="90px"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.operationTime)}}</span>
@@ -368,6 +369,7 @@
                         </el-table-column>
                         <el-table-column
                         label="确定日期"
+                        min-width="90px"
                         align="center">
                             <template slot-scope="scope">
                             <span :class="scope.row.isOvertime.value === ISOVERTIME?'red':'cl-2'">{{dateFormat(scope.row.endDatetime)}}</span>
@@ -492,6 +494,7 @@
                                             size="small"
                                             type="date"
                                             class="w160"
+                                            :picker-options="pickerOptions"
                                             placeholder="选择日期">
                                             </el-date-picker>
                                         </template>
@@ -546,32 +549,6 @@
                                             <div class="steps-see">{{item.val}}</div>
                                         </template>
                                         <template v-else>
-                                            <!-- <ul class="steps-img">
-                                                <li
-                                                class="steps-mp4-li"
-                                                v-for="(i,n) in item.val"
-                                                @click="clearFn(index,n)"
-                                                :key="i.name"
-                                                >
-                                                    <img
-                                                    class="icon-steps"
-                                                    v-if="item.type === STEPSINPUT.mp4"
-                                                    src="../../assets/img/icon-steps01.png">
-                                                    <img
-                                                    class="icon-steps"
-                                                    v-if="item.type === STEPSINPUT.excel"
-                                                    src="../../assets/img/icon-steps02.png">
-                                                    <img
-                                                    class="icon-steps"
-                                                    v-if="item.type === STEPSINPUT.word"
-                                                    src="../../assets/img/icon-steps03.png">
-                                                    <img
-                                                    class="icon-steps"
-                                                    v-if="item.type === STEPSINPUT.pdf"
-                                                    src="../../assets/img/icon-steps04.png">
-                                                    <span class="fl">{{i.name}}</span>
-                                                </li>
-                                            </ul> -->
                                             <ul class="steps-img">
                                                 <el-tooltip class="item" effect="dark" :content="i.name" placement="bottom"
                                                     v-for="(i,n) in item.val"
@@ -745,7 +722,7 @@
                     process:'',
                     timeout:'',
                     bank:'',
-                    range:'',
+                    range:1,
                     termination:'',
                     lateState:'',
                     commission:'',
@@ -890,7 +867,13 @@
                         state:false,
                     },
                 },
-                rulesSteps:[]
+                rulesSteps:[],
+                // 时间选择器
+                pickerOptions:{
+                    disabledDate(time) {
+                        return time.getTime() > Date.now();
+                    },
+                }
             }
         },
         computed:{

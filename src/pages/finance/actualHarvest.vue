@@ -129,10 +129,10 @@
         </el-table-column>
         <el-table-column align="center" label="应收款（元）" prop="receivableCommission" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="已收款（元）" prop="receivedCommission" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="待收款（元）" prop="useNum" :formatter="nullFormatter">
-          <template slot-scope="scope">
+        <el-table-column align="center" label="待收款（元）" prop="waitingForPay" :formatter="nullFormatter">
+          <!--<template slot-scope="scope">
             {{scope.row.receivableCommission-scope.row.receivedCommission|moneyFormatter}}
-          </template>
+          </template>-->
         </el-table-column>
         <el-table-column align="center" min-width="160" label="签约时间" prop="operation time">
           <template slot-scope="scope">

@@ -55,7 +55,7 @@
                     </div>
                     <div class="number mark">
                         <span>权属证号：</span>
-                        <el-input size="small" v-model.trim="report.ownershipNumber" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
+                        <el-input size="small" v-model.trim="report.ownershipNumber" maxlength="25" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
                     </div>
                 </div>
                 <div class="item">
@@ -69,7 +69,7 @@
                     </div>
                     <div>
                         <span>建筑结构：</span>
-                        <el-input size="small" v-model="report.buildingStructure" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" v-model="report.buildingStructure" maxlength="10" :disabled="!saveBtnShow" class="jianzhu" @input="inputOnly('buildingStructure')"></el-input>
                     </div>
                     <div class="position">
                         <span>评估值：</span>
@@ -83,16 +83,16 @@
             <div>
                 <p class="bold">客源方信息</p>
                 <div class="info text">
-                    <p><span>店长：</span><el-input size="small" v-model.trim="report.guestShopOwnerName" :disabled="!saveBtnShow" class="kezhang" @input="inputOnly('guestShopOwnerName')"></el-input></p>
-                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.guestStoreName" :disabled="!saveBtnShow" class="kedian" @input="inputOnly('guestStoreName')"></el-input></p>
+                    <p><span>店长：</span><el-input size="small" v-model.trim="report.guestShopOwnerName" maxlength="10" :disabled="!saveBtnShow" class="kezhang" @input="inputOnly('guestShopOwnerName')"></el-input></p>
+                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.guestStoreName" maxlength="20" :disabled="!saveBtnShow" class="kedian" @input="inputOnly('guestStoreName')"></el-input></p>
                     <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.guestShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="kelian" @mousewheel.native.prevent></el-input></p>
                 </div>
             </div>
             <div>
                 <p class="bold">房源方信息</p>
                 <div class="info text">
-                    <p><span>店长：</span><el-input size="small" v-model.trim="report.houseShopOwnerName" :disabled="!saveBtnShow" class="fangzhang" @input="inputOnly('houseShopOwnerName')"></el-input></p>
-                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.houseStoreName" :disabled="!saveBtnShow" class="fangdian" @input="inputOnly('houseStoreName')"></el-input></p>
+                    <p><span>店长：</span><el-input size="small" v-model.trim="report.houseShopOwnerName" maxlength="10" :disabled="!saveBtnShow" class="fangzhang" @input="inputOnly('houseShopOwnerName')"></el-input></p>
+                    <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.houseStoreName" maxlength="20" :disabled="!saveBtnShow" class="fangdian" @input="inputOnly('houseStoreName')"></el-input></p>
                     <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.houseShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="fanglian" @mousewheel.native.prevent></el-input></p>
                 </div>
             </div>
@@ -184,7 +184,7 @@
                 <div class="agent-info info">
                     <p>
                         <span>代理人姓名：</span>
-                        <el-input size="small" class="w100" v-model="report.buyerAgentName" :disabled="!saveBtnShow" @input="inputOnly('buyerAgentName')"></el-input>
+                        <el-input size="small" class="w100" v-model="report.buyerAgentName" maxlength="10" :disabled="!saveBtnShow" @input="inputOnly('buyerAgentName')"></el-input>
                         <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)" :disabled="!saveBtnShow">
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
@@ -201,7 +201,7 @@
                 <div class="agent-info info">
                     <p>
                         <span>代理人姓名：</span>
-                        <el-input size="small" class="w100" v-model="report.sellerAgentName" :disabled="!saveBtnShow" @input="inputOnly('sellerAgentName')"></el-input>
+                        <el-input size="small" class="w100" v-model="report.sellerAgentName" maxlength="10" :disabled="!saveBtnShow" @input="inputOnly('sellerAgentName')"></el-input>
                         <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)" :disabled="!saveBtnShow">
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
@@ -367,7 +367,7 @@ export default {
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
                     this.transFlowEdit = res.data.dealReport ? true : false
-                    if(!JSON.parse(res.data.dealReport).guestShopOwnerName) {
+                    if(!this.report.guestShopOwnerName) {
                         this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
                         this.report.guestStoreName = res.data.guestInfo.GuestStoreName
                         this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
@@ -486,6 +486,14 @@ export default {
                 addRedBorder('fangzhang')
                 return false
             }
+            if(!checkPhone(this.report.guestShopOwnerMobile)) {
+                this.$message({message:"请输入11位正确的客源方联系电话",type:"warning"})
+                return false
+            }
+            if(!checkPhone(this.report.houseShopOwnerMobile)) {
+                this.$message({message:"请输入11位正确的房源方联系电话",type:"warning"})
+                return false
+            }
             if(this.report.buyerAgentCardType) {
                 if(this.report.buyerAgentCard) {
                     let type = this.report.buyerAgentCardType
@@ -577,7 +585,7 @@ export default {
         inputOnly(val) {
             if(val === 'ownershipNumber') {
                 this.$nextTick(()=>{
-                    this.report.ownershipNumber = this.$tool.textInput(this.report.ownershipNumber,2)
+                   this.report.ownershipNumber = this.report.ownershipNumber.replace(/[^\d\a-zA-Z\u4E00-\u9FA5]/g, "").replace(/\s/g, "")
                 })
             } else if(val === 'buyerAgentName') {
                 this.$nextTick(()=>{
@@ -602,6 +610,10 @@ export default {
             } else if(val === 'houseStoreName') {
                 this.$nextTick(()=>{
                    this.report.houseStoreName = this.$tool.textInput(this.report.houseStoreName) 
+                })
+            } else if(val === 'buildingStructure') {
+                this.$nextTick(()=>{
+                   this.report.buildingStructure = this.$tool.textInput(this.report.buildingStructure,3) 
                 })
             }
         }
@@ -732,11 +744,14 @@ export default {
     }
     .number {
         .el-input {
-            min-width: 292px;
+            min-width: 352px;
         }
     }
     .square {
         min-width: 120px;
+    }
+    .jianzhu {
+        min-width: 160px;
     }
     .mark::before {
         content: "*";

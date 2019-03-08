@@ -354,7 +354,9 @@ export default {
           state: false,
           name: '提交审核'//新增+提审
         },
-			}
+			},
+			iframe1State:false,
+			iframe2State:false
     }
   },
   created(){
@@ -393,7 +395,7 @@ export default {
     }else if(this.Msg.type===5){
       //定金
       this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
-    }
+		}
   },
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
@@ -613,7 +615,9 @@ export default {
 			}else{
 				let emptyInput1=0
 				if(this.Msg.type===1){//租赁
+					// debugger
 					emptyInput1 = this.leaseCheck(iframebox1.contentWindow)
+					console.log(emptyInput1)
 				}else if(this.Msg.type===3){
 					emptyInput1 = this.commissionCheck(iframebox1.contentWindow)
 				}else if(this.Msg.type===4){
@@ -630,7 +634,11 @@ export default {
 					if(emptyInput1[0].type){
 						let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
 						inputTag.classList.add("BODERRED")
-						inputHeight1 = inputTag.offsetTop
+						if(inputTag.offsetParent.tagName==="TD"){
+							inputHeight1=inputTag.offsetParent.offsetTop + inputTag.offsetParent.offsetParent.offsetTop
+						}else{
+							inputHeight1 = inputTag.offsetTop
+						}
 					}else{
 						inputHeight1 = iframebox1.contentWindow.document.querySelector(`div[name=${emptyInput1[0]}]`).offsetTop
 					}
@@ -1057,7 +1065,6 @@ export default {
 								}
 						}
 						if(state){
-								// debugger
 								if(obj[item].other){
 										let otherState = obj[item].other.every(function (tip) {
 												return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
@@ -1073,6 +1080,7 @@ export default {
 								}
 						}else{
 								//勾选后判断
+								// debugger
 							if(obj[item].require){
 									let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
 									let detail={}
@@ -1128,7 +1136,7 @@ export default {
 											break
 										case 'remote':
 											if(this.getCheckState(box[0])){
-													detail.val141=''
+												detail.val141=''
 											}
 											if(this.getCheckState(box[1])){
 												detail.val143=''
@@ -1358,20 +1366,41 @@ export default {
 		var iframe1 = this.$refs.iframeFirst;
 		var iframe2 = this.$refs.iframeSecond;
 		var that = this
+		debugger
 		if(this.Msg.type===2){
-			iframe2.onload=function(){
-				that.isSave(2)
+			if(this.Msg.isWuHanMM){
+				iframe2.onload=function(){
+					that.iframe2State=true
+				}
+				iframe1.onload=function(){
+					that.iframe1State=true
+				}
+			}else{
+				iframe2.onload=function(){
+					that.isSave(2)
+				}
 			}
 		}else{
 			iframe1.onload=function(){
 				that.isSave(2)
 			}
 		}
-		
   },
   beforeUpdate() {
     this.clientHeight();
-  }
+	},
+	computed:{
+		iframeState:function(val){
+			return this.iframe1State&&this.iframe2State
+		}
+	},
+	watch:{
+		iframeState:function(val){
+			if(val){
+				this.isSave(2)
+			}
+		}
+	}
 };
 </script>
 <style scoped lang="less">
