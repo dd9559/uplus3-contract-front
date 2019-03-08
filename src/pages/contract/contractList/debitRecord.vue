@@ -506,7 +506,8 @@
         this.fenzhang2 = e.endTime
         this.shoukuan = e.inStoreName
         this.payId = e.payId
-        this.id = e.id
+        this.id = e.id,
+        this.payremark=""//清空备注
          let param = {
           storeId: e.inStoreId
         }
@@ -570,12 +571,29 @@
                 }, 2000);
               }
             }).catch(error => {
+              
               this.$nextTick(()=>{
                 this.fullscreenLoading=false
               })
+              this.payVisiable = false
+              if(error.status === 2001){
+                
+                  // 数据刷新
+                this.queryFn();
                 this.$message({
-                  message: error
+                  message: error.message
                 })
+              }else if(error.status === 400){
+                this.$message({
+                  message: error.message
+                })
+              }else{
+                debugger
+                 this.$message({
+                  message: error.message
+                })
+              }
+                
             });
         }
        
