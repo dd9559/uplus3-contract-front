@@ -167,7 +167,7 @@
 
         <el-table-column label="操作" width="100" fixed="right" align="center">
           <template slot-scope="scope">
-            <template v-if="scope.row.status&&scope.row.status.value === 2">
+            <template v-if="scope.row.status && scope.row.status.value === 2 && power['sign-ht-fz-pay'].state">
               <el-button type="text" class="curPointer" @click="payAgain(scope.row)">重新打款</el-button>
             </template>
             <span v-else>--</span>
@@ -458,6 +458,10 @@
               name:'合同详情',
               state:false,
           },
+          'sign-ht-fz-pay':{
+              name:'重新打款',
+              state:false,
+          }
         }
 
         
@@ -501,30 +505,38 @@
       },
 
       payAgain(e) {
-        this.payVisiable = true
-        this.fenzhang1 = e.startTime
-        this.fenzhang2 = e.endTime
-        this.shoukuan = e.inStoreName
-        this.payId = e.payId
-        this.id = e.id,
-        this.payremark=""//清空备注
-         let param = {
-          storeId: e.inStoreId
+         if(this.power['sign-ht-fz-pay'].state){
+            this.payVisiable = true
+            this.fenzhang1 = e.startTime
+            this.fenzhang2 = e.endTime
+            this.shoukuan = e.inStoreName
+            this.payId = e.payId
+            this.id = e.id,
+            this.payremark=""//清空备注
+            let param = {
+              storeId: e.inStoreId
+            }
+            this.$ajax.get("/api/separate/queryBank", param)
+            .then(res => {
+              if (res.data.status === 200) {
+                this.payAgainInfo = res.data.data
+                if(this.payAgainInfo.length > 0) {
+                  this.inBankCard = this.payAgainInfo[0].bankCard
+                  this.bankAccountName = this.payAgainInfo[0].bankAccountName
+                } 
+              }
+            }).catch(error => {
+                this.$message({
+                  message: error
+                })
+            });
+          }else{
+          this.$message({
+            message:'没有重新打款权限',
+            type:'warning'
+          });
         }
-        this.$ajax.get("/api/separate/queryBank", param)
-        .then(res => {
-          if (res.data.status === 200) {
-            this.payAgainInfo = res.data.data
-            if(this.payAgainInfo.length > 0) {
-              this.inBankCard = this.payAgainInfo[0].bankCard
-              this.bankAccountName = this.payAgainInfo[0].bankAccountName
-            } 
-          }
-        }).catch(error => {
-            this.$message({
-              message: error
-            })
-        });
+        
       },
 
       changeRadio(val){
@@ -588,7 +600,7 @@
                   message: error.message
                 })
               }else{
-                debugger
+   
                  this.$message({
                   message: error.message
                 })

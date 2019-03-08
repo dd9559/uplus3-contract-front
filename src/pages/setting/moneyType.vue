@@ -2,7 +2,7 @@
     <div class="view-container">
         <div class="data-list gap">
             <span class='sjx'></span>
-            <p class="title">
+            <p class="title">   
                 <span>数据列表</span>
             </p>
             <el-table :data="tableData" ref='onetable' border   @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
@@ -217,7 +217,7 @@
             },
             statusOp(param,message){
                 if(this.power['sign-set-kl-edit'].state){
-                    this.$ajax.get('/api/setting/moneyType/update',param)
+                    this.$ajax.put('/api/setting/moneyType/update',param,2)
                    .then((res)=>{
                         if (res.status === 200) {
                             this.$message({
@@ -244,7 +244,7 @@
                     return 'linestyle'
                 }
             },
-            //单击行事件    
+            //单击行事件
             rowClick(row, event, column) {
                 this.bigName=row.name
                 var paperBtn=document.getElementsByClassName('paper-btn')
