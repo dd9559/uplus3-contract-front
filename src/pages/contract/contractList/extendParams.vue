@@ -956,10 +956,10 @@ export default {
 									val87:'',
 									val88:'',
 									check1:{
-										name:'payd'
+										name:'pthird'
 									},
 									check2:{
-										name:'payd1'
+										name:'pfourth'
 									}
 								}
 								break
