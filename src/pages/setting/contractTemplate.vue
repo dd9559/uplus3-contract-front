@@ -311,7 +311,6 @@
         //预览
         else if(type===2){
           this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
-          // this.template = 3
           this.$router.push({
             path: "/contraPreview",
             query: {
@@ -336,7 +335,7 @@
 </script>
 
 <style scoped lang="less">
-  @import "~@/assets/common.less";
+ @import "~@/assets/common.less";
 .view-container{
   /deep/
   .el-form {

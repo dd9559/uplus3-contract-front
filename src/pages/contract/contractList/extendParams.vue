@@ -1,13 +1,13 @@
 <template>
   <div class="view-container">
-    <div class="top">
-      <div class="type" v-if="isShowType">
+    <div class="top" v-if="isShowType">
+      <div class="type">
         <div :class="{'active':isActive===1}" @click="changeType(1)">居间合同</div>
         <div :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</div>
       </div>
     </div>
     <div class="contentBox">
-      <div class="nav" :class="{'hid':isShowType&&isActive===2}">
+      <div class="nav" :class="{'hid':isActive===2}">
         <ul>
           <li><span :class="{'navBlue':navId==='#one_'}" @click="goNav('#one_')">第一条、房屋基本情况</span></li>
           <li><span :class="{'navBlue':navId==='#two_'}" @click="goNav('#two_')">第二条、房屋交易流程</span></li>
@@ -363,7 +363,7 @@ export default {
 		this.fullscreenLoading=true
 		this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
-		this.clientHeight();
+		// this.clientHeight();
 		this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
     if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
@@ -400,7 +400,9 @@ export default {
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -150 + 'px'
+			// this.clientHei= screen.height -300 + 'px'
+			// console.log('teddddddd')
+      this.clientHei= document.documentElement.clientHeight -130 + 'px'
     },
     //居间买卖切换
     changeType(value) {
@@ -645,62 +647,62 @@ export default {
 					iframebox1.contentWindow.scrollTo(0,inputHeight1)
 				}
 			}
-		if(errorArr1.length===0&&errorArr2.length===0){
-			let htmlTxt1=''
-			let htmlTxt2=''
-			let param = {}
-			if(this.Msg.type===2){
-				htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-				htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-				if(this.Msg.isWuHanMM){
-					param = {
-						id:this.Msg.id,
-						html:{
-							residence:htmlTxt1,
-							business:htmlTxt2
+			if(errorArr1.length===0&&errorArr2.length===0){
+				let htmlTxt1=''
+				let htmlTxt2=''
+				let param = {}
+				if(this.Msg.type===2){
+					htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+					htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+					if(this.Msg.isWuHanMM){
+						param = {
+							id:this.Msg.id,
+							html:{
+								residence:htmlTxt1,
+								business:htmlTxt2
+							}
+						}
+					}else{
+						param = {
+							id:this.Msg.id,
+							html:{
+								address:htmlTxt2
+							}
 						}
 					}
 				}else{
+					htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 					param = {
 						id:this.Msg.id,
 						html:{
-							address:htmlTxt2
+							address:htmlTxt1
 						}
 					}
 				}
-			}else{
-				htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-				param = {
-					id:this.Msg.id,
-					html:{
-						address:htmlTxt1
-					}
-				}
+				this.param = param;
+				this.dialogSub=true
+				// this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
+				// 	res=res.data
+				// 	if(res.status===200){
+				// 		this.fullscreenLoading=false
+				// 		this.$message({
+				// 			message:'提审成功',
+				// 			type:'success'
+				// 		})
+				// 		if(this.Msg.isHaveData){
+				// 			this.$router.push('/contractList');
+				// 		}else{
+				// 			this.dialogSuccess=true
+				// 		}
+				// 	}
+				// }).catch(error=>{
+				// 	this.fullscreenLoading=false
+				// 	this.$message({
+				// 		message:error,
+				// 		type:'error'
+				// 	})
+				// })
 			}
-			this.param = param;
-			this.dialogSub=true
-			// this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
-			// 	res=res.data
-			// 	if(res.status===200){
-			// 		this.fullscreenLoading=false
-			// 		this.$message({
-			// 			message:'提审成功',
-			// 			type:'success'
-			// 		})
-			// 		if(this.Msg.isHaveData){
-			// 			this.$router.push('/contractList');
-			// 		}else{
-			// 			this.dialogSuccess=true
-			// 		}
-			// 	}
-			// }).catch(error=>{
-			// 	this.fullscreenLoading=false
-			// 	this.$message({
-			// 		message:error,
-			// 		type:'error'
-			// 	})
-			// })
-		}
 		},
 		//确定提审
 		toSubmit(){
@@ -1347,26 +1349,9 @@ export default {
 	// 	this.isSave(2)
 	// },
   mounted(){
-    // window.onresize = this.clientHeight;
-    // var vibibleState ='';
-    // var visibleChange ='';
-    // if (typeof document.visibilityState !='undefined') {
-    //   visibleChange ='visibilitychange';
-    //   vibibleState ='visibilityState';
-    // }else if (typeof document.webkitVisibilityState !='undefined') {
-    //   visibleChange ='webkitvisibilitychange';
-    //   vibibleState ='webkitVisibilityState';
-    // }if (visibleChange) {
-	  // let that=this
-    //   document.addEventListener(visibleChange, function() {if (document[vibibleState] =='hidden') {
-    //     that.isSave(2)
-    //     }})
-		// }
-
 		var iframe1 = this.$refs.iframeFirst;
 		var iframe2 = this.$refs.iframeSecond;
 		var that = this
-		debugger
 		if(this.Msg.type===2){
 			if(this.Msg.isWuHanMM){
 				iframe2.onload=function(){
@@ -1385,6 +1370,7 @@ export default {
 				that.isSave(2)
 			}
 		}
+		window.onresize = this.clientHeight;
   },
   beforeUpdate() {
     this.clientHeight();

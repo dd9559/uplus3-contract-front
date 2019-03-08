@@ -5,7 +5,7 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="签约日期：" class="width-250">
+          <el-form-item label="签约日期：" class="width-250 form-label">
             <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" v-model="contractForm.signDate" style="width:140px" @clear="clearData"></el-date-picker>
           </el-form-item>
           <el-form-item label="合同类型：" class="width-250">
@@ -188,12 +188,12 @@
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
-                <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" v-if="contractForm.type===1">
+                <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')" v-if="contractForm.type===1">
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
                 <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight"></span>
-                <input v-model="item.encryptionCode" maxlength="18" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
+                <input id="guestCard" v-model="item.encryptionCode" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -625,6 +625,15 @@ export default {
           });
         }
       })
+    },
+    //证件类型切换
+    changeCadrType(value,index,type){
+      // console.log(value,index,type)
+      if(type==="guest"){
+        this.guestList[index].encryptionCode=''
+      }else{
+        this.ownerList[index].encryptionCode=''
+      }
     },
     //身份证验证
     verifyIdcard(value,type=1){
