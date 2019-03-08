@@ -183,7 +183,7 @@
                 this.users=''
                 this.departmentName=''
                 this.clearSelect()
-              this.EmployeList = []
+                this.EmployeList = []
             },
             // 查询
             queryFn(){
@@ -234,7 +234,7 @@
 .table-list {
     background-color: #fff;
     margin: 0 10px;
-  padding-top: 10px;
+    padding-top: 10px;
 }
 
 /deep/ .el-table th {
