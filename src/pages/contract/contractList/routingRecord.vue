@@ -473,6 +473,7 @@ export default {
           }
         }).catch(error=>{
           if(error.status===2001){
+            this.dialogReceipt=false
             this.getProateNotes();
             this.$message({
               message:error.message,

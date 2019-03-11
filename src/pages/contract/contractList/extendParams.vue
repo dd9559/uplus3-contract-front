@@ -129,7 +129,8 @@ let Obj1={
     val121:'',
     check18:{
         name:"check07"
-    },
+		},
+		val200:'',
     val124:'method5',
     val128:'',
     val129:'',
@@ -802,8 +803,6 @@ export default {
 									if(this.getCheckState(box[0])){
 										detail={
 											val35:'',
-											val36:'',
-											val37:''
 										}
 									}
 									break
@@ -811,8 +810,12 @@ export default {
 									if(this.getCheckState(box[0])){
 										detail={
 											val40:'',
-											val41:'',
-											val42:''
+											val45:''
+										}
+									}else{
+										detail={
+											val44:'',
+											val45:''
 										}
 									}
 									break
@@ -850,9 +853,7 @@ export default {
 								case 'psecond':
 									if(this.getCheckState(box[0])){
 										detail={
-											val74:'',
-											val75:'',
-											val76:''
+											val74:''
 										}
 									}else{
 										detail={
@@ -905,15 +906,6 @@ export default {
 									}
 								}
 								break
-							case 'c':
-								methodDetail={
-									check:{
-										name:'pass',
-										require:true
-									},
-									val50:''
-								}
-								break
 							default:
 							errorArr2.push({
 									type:'input',
@@ -938,16 +930,12 @@ export default {
 							case 'c':
 								methodDetail={
 									val81:'',
-									val82:'',
-									val83:'',
 									val84:''
 								}
 								break
 							case 'd':
 								methodDetail={
 									val85:'',
-									val86:'',
-									val87:'',
 									val88:'',
 									check1:{
 										name:'pthird'
