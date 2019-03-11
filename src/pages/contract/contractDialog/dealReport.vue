@@ -51,7 +51,7 @@
                 </div>
                 <div class="item">
                     <div class="text-long mark">
-                        <span class="text">物业地址：<span>{{dealBasicInfo.propertyAddr}}</span></span>
+                        <span class="text">产权地址：<span>{{dealBasicInfo.propertyRightAddr}}</span></span>
                     </div>
                     <div class="number mark">
                         <span>权属证号：</span>
@@ -104,12 +104,12 @@
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="min-width:56px;">{{firstBuyer.name}}</span></p>
                         <p><span style="min-width:56px;">身份证：</span><span>{{firstBuyer.encryptionCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstBuyer.encryptionMobile}}</span></p>
+                        <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
                         <li v-for="(item,index) in buyerArr" :key="index">
                             <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.encryptionMobile}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
@@ -152,12 +152,12 @@
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="min-width:56px;">{{firstSeller.name}}</span></p>
                         <p><span style="min-width:56px;">身份证：</span><span>{{firstSeller.encryptionCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstSeller.encryptionMobile}}</span></p>
+                        <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
                         <li v-for="(item,index) in sellerArr" :key="index">
                             <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.encryptionMobile}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
@@ -267,7 +267,7 @@ export default {
                 dealPrice: "",
                 receivableCommission: "",
                 Square: "",
-                propertyAddr: "",
+                propertyRightAddr: "",
                 FloorAll: ""
             },
             report: {
@@ -332,13 +332,13 @@ export default {
             firstBuyer: {
                 name: "",
                 encryptionCode: "",
-                encryptionMobile: ""
+                mobile: ""
             },
             buyerArr: [],
             firstSeller: {
                 name: "",
                 encryptionCode: "",
-                encryptionMobile: ""
+                mobile: ""
             },
             sellerArr: [],
             transFlowEdit: false,
@@ -363,7 +363,7 @@ export default {
                     this.dealBasicInfo.dealPrice = res.data.dealPrice
                     this.dealBasicInfo.receivableCommission = res.data.receivableCommission
                     this.dealBasicInfo.Square = res.data.houseInfo.Square
-                    this.dealBasicInfo.propertyAddr = res.data.propertyAddr
+                    this.dealBasicInfo.propertyRightAddr = res.data.propertyRightAddr
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
                     this.transFlowEdit = res.data.dealReport ? true : false
@@ -379,10 +379,10 @@ export default {
                     this.sellerArr = res.data.contPersons.filter(item => item.personType.value === 1)
                     this.firstBuyer.name = this.buyerArr[0].name
                     this.firstBuyer.encryptionCode = this.buyerArr[0].encryptionCode
-                    this.firstBuyer.encryptionMobile = this.buyerArr[0].encryptionMobile
+                    this.firstBuyer.mobile = this.buyerArr[0].mobile
                     this.firstSeller.name = this.sellerArr[0].name
                     this.firstSeller.encryptionCode = this.sellerArr[0].encryptionCode
-                    this.firstSeller.encryptionMobile = this.sellerArr[0].encryptionMobile
+                    this.firstSeller.mobile = this.sellerArr[0].mobile
                 }
             }).catch(error => {
                 this.$message({
