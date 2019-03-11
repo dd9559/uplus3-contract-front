@@ -86,15 +86,9 @@ let Obj1={
     },
     check11:{
         name:'rentout'
-    },
+	},
+	val46:'',
     val53:'',
-    val54:'',
-    val55:'',
-    val56:'',
-    val57:'',
-    val58:'',
-    val59:'',
-    val60:'',
     check4:{
         name:'furniture',
         require:true
