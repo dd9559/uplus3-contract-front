@@ -215,7 +215,7 @@ export default{
                     this.$nextTick(()=>{
                       this.loading=false
                     })
-                    console.log(this.tableDate)
+                    console.log(this.tableDate) 
                     
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
@@ -420,7 +420,7 @@ export default{
                                     message: error,
                                     duration:3000,
                                 },
-                                this.modalDialog=true
+                                    this.modalDialog=true
                                 ),
                         
                         )  
@@ -545,8 +545,8 @@ export default{
                                   this.sigtureShow=false
                              }
                              if(this.show==1||this.show==3){
-                                    this.tuozhuai(this.signPositions[i])
-                                }
+                                  this.tuozhuai(this.signPositions[i])
+                             }
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -666,16 +666,16 @@ export default{
                     this.autograph(htImg,newsrc)
                     this.autograph(htImg2,newsrc2)
                  }else{
-                  this.imgSrc=res.data.data.img.url  //一个的
-                  this.total=res.data.data.img.count
-                  let htImg=document.getElementById('ht')
-                  let btn=document.getElementsByClassName('ht-list')[0]
-                  btn.style.margin='0 auto'
-                  let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
-                  bodycontainer.style.display='block'
-                  htImg.style.width='706px'
-                  var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
-                  this.autograph(htImg,newsrc)
+                    this.imgSrc=res.data.data.img.url  //一个的
+                    this.total=res.data.data.img.count
+                    let htImg=document.getElementById('ht')
+                    let btn=document.getElementsByClassName('ht-list')[0]
+                    btn.style.margin='0 auto'
+                    let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
+                    bodycontainer.style.display='block'
+                    htImg.style.width='706px'
+                    var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
+                    this.autograph(htImg,newsrc)
                  }
               }
             }).catch(error=>{
@@ -806,7 +806,7 @@ export default{
     width:100%;
     .ht-list{
         img{
-            width:620px;
+            width:706px;
             height:993px;
         }
     }
