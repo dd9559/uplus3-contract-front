@@ -288,12 +288,16 @@ export default {
         }, 1500); 
       },
 
+      trim(str){
+        return str.replace(/(^\s*)|(\s*$)/g, "")
+      },
+
       //发起结算申请
       auditApply() {
         if(this.uploadList.length > 10){
             this.$message('结算凭证数量上限10个'); 
         }
-        else if(this.auditForm.textarea !== ""){
+        else if((this.auditForm.textarea).trim() !== ""){
             
             this.fullscreenLoading=true   
             let param = {
@@ -329,7 +333,7 @@ export default {
                   }
             })
         
-        }else if(this.auditForm.textarea === ""){
+        }else if((this.auditForm.textarea).trim() === ""){
         this.$message('请填写结算备注'); 
         }
             

@@ -341,7 +341,7 @@ export default {
           newCustCommission: this.auditForm.money2,
           newOtherCooperationCost: this.auditForm.money4
         }
-        if(this.auditForm.textarea !== ""){
+        if((this.auditForm.textarea).trim() !== ""){
           // if (this.auditForm.money1 !== null && this.auditForm.money2 !== null && this.auditForm.money3 !== null){            
             if(this.checked === true && this.uploadList.length <= 0){
               this.$message("请您上传协议或者去掉勾选'有解除协议'");           
@@ -396,7 +396,7 @@ export default {
           // }else{
           //     this.$message('调整后的金额不能为空');
           // }
-        }else if(this.auditForm.textarea === ""){
+        }else if((this.auditForm.textarea).trim() === ""){
            this.$message('请填写调整原因'); 
         }
        
