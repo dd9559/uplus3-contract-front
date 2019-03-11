@@ -138,8 +138,8 @@ export default{
             this.enableTemplateId=this.$route.query.enableTemplateId
         },
         mounted(){
-            this.divWidth=620
-            this.divHeight=800
+            this.divWidth=706
+            this.divHeight=993
             if(this.show==1){
                this.getImgAdd(this.count)
             }else if(this.show==2){
@@ -194,7 +194,7 @@ export default{
                            let htImg=document.getElementById('ht')
                            let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
                            bodycontainer.style.display='block'
-                           htImg.style.width='620px'
+                           htImg.style.width='706px'
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
                      }
@@ -268,7 +268,7 @@ export default{
                            let htImg=document.getElementById('ht')
                            let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
                            bodycontainer.style.display='block'
-                           htImg.style.width='620px'
+                           htImg.style.width='706px'
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
                         
@@ -371,8 +371,8 @@ export default{
                             l < 0 ? l = 0 : l
                             t < 0 ? t = 0 : t
                             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
-                            sign.x=(l/620).toFixed(2)
-                            sign.y=(t/800).toFixed(2)
+                            sign.x=(l/706).toFixed(2)
+                            sign.y=(t/993).toFixed(2)
                             oDiv.style.left = l+'px';
                             oDiv.style.top = t+'px';
                             };
@@ -673,7 +673,7 @@ export default{
                   btn.style.margin='0 auto'
                   let bodycontainer=document.getElementsByClassName('bodycontainer')[0]
                   bodycontainer.style.display='block'
-                  htImg.style.width='620px'
+                  htImg.style.width='706px'
                   var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                   this.autograph(htImg,newsrc)
                  }
@@ -717,10 +717,10 @@ export default{
         min-height: 500px;
         margin: 0 25px;
         position: relative;
-        width:620px;
-            height:800px;
+        width:706px;
+            height:993px;
         img{
-            width: 620px;
+            width: 706px;
         }
         .signature{
             position: absolute;
@@ -807,7 +807,7 @@ export default{
     .ht-list{
         img{
             width:620px;
-            height:800px;
+            height:993px;
         }
     }
 }
