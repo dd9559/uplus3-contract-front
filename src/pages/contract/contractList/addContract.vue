@@ -68,6 +68,10 @@
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
           <br>
+           <el-form-item label="产权地址：" class="form-label" style="width:605px;text-align:right">
+             <el-input v-model="contractForm.propertyRightAddr" maxlength="35" placeholder="请输入内容" style="width:500px"></el-input>
+          </el-form-item>
+          <br>
           <el-form-item label="建筑面积：" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
             <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
@@ -377,10 +381,11 @@ export default {
         transFlowCode: "",
         dealPrice: "",
         contPersons: [],
+        propertyRightAddr:'',
         houseInfo: {
           HouseStoreCode: "",
           ShopOwnerMobile:'',
-          ShopOwnerName:''
+          ShopOwnerName:'',
         },
         guestInfo: {
           ShopOwnerMobile:'',
@@ -729,7 +734,8 @@ export default {
       this.$tool.checkForm(this.contractForm, rule).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
             if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
-              // if (this.contractForm.houseInfo.HouseStoreCode) {
+              this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
+              if (this.contractForm.propertyRightAddr) {
                 // if(this.contractForm.propertyCard){
                 //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
                 // }
@@ -1164,12 +1170,12 @@ export default {
                     });
                   }
                 }
-                // }else{
-                //   this.$message({
-                //     message:'房源信息-房产证号不能为空',
-                //     type: "warning"
-                //   })
-                // }
+                }else{
+                  this.$message({
+                    message:'房源信息-产权地址不能为空',
+                    type: "warning"
+                  })
+                }
               // } else {
               //   this.$message({
               //     message: "房源信息-房源方门店不能为空",
