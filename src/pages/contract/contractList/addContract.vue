@@ -68,6 +68,10 @@
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
           <br>
+           <el-form-item label="产权地址：" class="form-label" style="width:605px;text-align:right">
+             <el-input v-model="contractForm.propertyRightAddr" maxlength="35" placeholder="请输入内容" style="width:500px"></el-input>
+          </el-form-item>
+          <br>
           <el-form-item label="建筑面积：" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
             <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
@@ -137,7 +141,7 @@
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
-                <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" v-if="contractForm.type===1">
+                <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'owner')" v-if="contractForm.type===1">
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
@@ -377,10 +381,11 @@ export default {
         transFlowCode: "",
         dealPrice: "",
         contPersons: [],
+        propertyRightAddr:'',
         houseInfo: {
           HouseStoreCode: "",
           ShopOwnerMobile:'',
-          ShopOwnerName:''
+          ShopOwnerName:'',
         },
         guestInfo: {
           ShopOwnerMobile:'',
@@ -637,10 +642,11 @@ export default {
     },
     //身份证验证
     verifyIdcard(value,type=1){
-      let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
+      // let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
+      // let reg = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/
       if(type===2){
         if(value.length===18){
-          if (!reg.test(value)) {
+          if (!this.isIdCardNo(value)) {
             this.$message({
               message:'身份证格式不正确',
               type: "warning"
@@ -649,7 +655,7 @@ export default {
         }
       }else{
         if(value.encryptionCode.length===18){
-          if (!reg.test(value.encryptionCode)&&value.cardType===1) {
+          if (!this.isIdCardNo(value.encryptionCode)&&value.cardType===1) {
             this.$message({
               message:'身份证格式不正确',
               type: "warning"
@@ -728,7 +734,8 @@ export default {
       this.$tool.checkForm(this.contractForm, rule).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
             if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
-              // if (this.contractForm.houseInfo.HouseStoreCode) {
+              this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
+              if (this.contractForm.propertyRightAddr) {
                 // if(this.contractForm.propertyCard){
                 //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
                 // }
@@ -765,8 +772,12 @@ export default {
                             }      
                             if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                               if (element.encryptionCode) {
-                                let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
-                                if ((this.contractForm.type===1&&(element.cardType===1&&reg.test(element.encryptionCode)||element.cardType!==1))||(this.contractForm.type!==1&&reg.test(element.encryptionCode))) {
+                                if(this.contractForm.type===1){
+                                  if(element.cardType!==1){
+                                    element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
+                                  }
+                                }
+                                if ((this.contractForm.type===1&&((element.cardType===1&&this.isIdCardNo(element.encryptionCode))||(element.cardType===2&&element.encryptionCode.length===9)||(element.cardType===3&&element.encryptionCode.length===20)))||(this.contractForm.type!==1&&this.isIdCardNo(element.encryptionCode))) {
                                   isOk = true;
                                   ownerRightRatio += element.propertyRightRatio - 0;
                                 }else{
@@ -867,8 +878,12 @@ export default {
                                   }      
                                 if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                                   if (element.encryptionCode) {
-                                    let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
-                                    if ((this.contractForm.type===1&&(element.cardType===1&&reg.test(element.encryptionCode)||element.cardType!==1))||(this.contractForm.type!==1&&reg.test(element.encryptionCode))) {
+                                    if(this.contractForm.type===1){
+                                      if(element.cardType!==1){
+                                        element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
+                                      }
+                                    }
+                                    if ((this.contractForm.type===1&&(element.cardType===1&&this.isIdCardNo(element.encryptionCode)||element.cardType===2&&element.encryptionCode.length===9||element.cardType===3&&element.encryptionCode.length===20))||(this.contractForm.type!==1&&this.isIdCardNo(element.encryptionCode))) {
                                       isOk_ = true;
                                       guestRightRatio += element.propertyRightRatio - 0;
                                     }else{
@@ -1155,12 +1170,12 @@ export default {
                     });
                   }
                 }
-                // }else{
-                //   this.$message({
-                //     message:'房源信息-房产证号不能为空',
-                //     type: "warning"
-                //   })
-                // }
+                }else{
+                  this.$message({
+                    message:'房源信息-产权地址不能为空',
+                    type: "warning"
+                  })
+                }
               // } else {
               //   this.$message({
               //     message: "房源信息-房源方门店不能为空",
@@ -1938,7 +1953,79 @@ export default {
     closeCheckPerson(){
       checkPerson.state=false;
       this.$router.push('/contractList');
-    }
+    },
+    //这个可以验证15位和18位的身份证，并且包含生日和校验位的验证。  
+    isIdCardNo(num) {
+      num = num.toUpperCase();
+      //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。            
+      if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(num))) {
+          // alert('输入的身份证号长度不对，或者号码不符合规定！\n15位号码应全为数字，18位号码末位可以为数字或X。');
+          return false;
+      }
+      //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
+      //下面分别分析出生日期和校验位 
+      var len, re;
+      len = num.length;
+      if (len == 15) {
+          re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
+          var arrSplit = num.match(re);
+          //检查生日日期是否正确
+          var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
+          var bGoodDay;
+          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2])) 
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+                      && (dtmBirth.getDate() == Number(arrSplit[4]));
+          if (!bGoodDay) {
+              // alert('输入的身份证号里出生日期不对！');
+              return false;
+          } else {
+              //将15位身份证转成18位 
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。          
+              var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+              var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+              var nTemp = 0, i;
+              num = num.substr(0, 6) + '19' + num.substr(6, num.length - 6);
+              for (i = 0; i < 17; i++) {
+                  nTemp += num.substr(i, 1) * arrInt[i];
+              }
+              num += arrCh[nTemp % 11];
+              return true;
+          }
+      }
+      if (len == 18) {
+          re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
+          var arrSplit = num.match(re);
+          //检查生日日期是否正确 
+          var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
+          var bGoodDay;
+          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2])) 
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+                      && (dtmBirth.getDate() == Number(arrSplit[4]));
+          if (!bGoodDay) {
+              // alert(dtmBirth.getYear());
+              // alert(arrSplit[2]);
+              // alert('输入的身份证号里出生日期不对！');
+              return false;
+          } else {
+              //检验18位身份证的校验码是否正确。 
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
+              // var valnum;
+              // var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+              // var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+              // var nTemp = 0, i;
+              // for (i = 0; i < 17; i++) {
+              //     nTemp += num.substr(i, 1) * arrInt[i];
+              // }
+              // valnum = arrCh[nTemp % 11];
+              // if (valnum != num.substr(17, 1)) {
+              //     // alert('18位身份证的校验码不正确！应该为：' + valnum);
+              //     return false;
+              // }
+              return true;
+          }
+      }
+      return false;
+  }
   },
    mounted(){
     window.onresize = this.clientHeight;

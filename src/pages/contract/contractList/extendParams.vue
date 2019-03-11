@@ -86,15 +86,9 @@ let Obj1={
     },
     check11:{
         name:'rentout'
-    },
+	},
+	val46:'',
     val53:'',
-    val54:'',
-    val55:'',
-    val56:'',
-    val57:'',
-    val58:'',
-    val59:'',
-    val60:'',
     check4:{
         name:'furniture',
         require:true
@@ -370,7 +364,7 @@ export default {
     }
     // console.log(window.location.origin)
     let http = window.location.origin
-    
+    let dayRandomTime=new Date().getTime()
     if(this.Msg.type===1){
       //租赁
       this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
@@ -378,8 +372,8 @@ export default {
 			//买卖
 			if(this.Msg.isWuHanMM){//是否是武汉的买卖合同
 				this.isShowType=true;
-				this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=residence`//居间
-				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=business`//买卖
+				this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=residence&dayRandomTime=${dayRandomTime}`//居间
+				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=business&dayRandomTime=${dayRandomTime+10}`//买卖
 			}else{
 				this.isShowType=false;
 				this.isActive=2;
@@ -956,10 +950,10 @@ export default {
 									val87:'',
 									val88:'',
 									check1:{
-										name:'payd'
+										name:'pthird'
 									},
 									check2:{
-										name:'payd1'
+										name:'pfourth'
 									}
 								}
 								break

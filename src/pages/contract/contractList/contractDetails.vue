@@ -64,6 +64,9 @@
                   </p>
                 </div>
                 <div class="one_">
+                   <p class="address"><span class="tag">产权地址：</span><span class="text">{{contractDetail.propertyRightAddr}}</span></p>
+                </div>
+                <div class="one_">
                   <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
                   <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
                   <!-- <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p> -->
@@ -583,7 +586,7 @@
                 <p><span>土地性质：</span><span>{{contractDetail.report.landNature?contractDetail.report.landNature===1?'划拨':'出让':'--'}}</span></p>
               </li>
               <li>
-                <p><span>物业地址：</span><span>{{contractDetail.propertyAddr}}</span></p>
+                <p><span>产权地址：</span><span>{{contractDetail.propertyRightAddr}}</span></p>
               </li>
               <li>
                 <p><span>权属证号：</span><span>{{contractDetail.report.ownershipNumber}}</span></p>
@@ -621,10 +624,10 @@
                 <p class="line"><span>姓名：</span><span>{{buyerFirst.name}}</span></p>
                 <p><span>身份证：</span><span>{{buyerFirst.encryptionCode}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{buyerFirst.encryptionMobile}}</span></p></div>
+              <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
                 <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.encryptionMobile}}</span></p>
+                <p><span>电话：</span><span>{{item.mobile}}</span></p>
               </div>
               <div class="two-item no-bottom">
                 <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
@@ -644,10 +647,10 @@
                 <p class="line"><span>姓名：</span><span>{{sellerFirst.name}}</span></p>
                 <p><span>身份证：</span><span>{{sellerFirst.encryptionCode}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{sellerFirst.encryptionMobile}}</span></p></div>
+              <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
                 <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.encryptionMobile}}</span></p>
+                <p><span>电话：</span><span>{{item.mobile}}</span></p>
               </div>
               <div class="last-item" style="border-top:1px solid #dddee6;">
                 <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend==='0'?'否':'是'}}</span></p>
@@ -1478,6 +1481,9 @@ export default {
               }
             })
           }
+          this.saveBtnShow = !res.data.dealReport ? true : false
+          this.editBtnShow = res.data.dealReport ? true : false
+          this.reportBtnShow = res.data.dealReport ? true : false
           // this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
           this.ownerData=[];
@@ -1502,9 +1508,6 @@ export default {
           if(res.data.contState.value===3){
             this.getContractBody();//获取合同主体
           }
-          this.saveBtnShow = !res.data.dealReport ? true : false
-          this.editBtnShow = res.data.dealReport ? true : false
-          this.reportBtnShow = res.data.dealReport ? true : false
         }
       }).catch(error=>{
         this.$message({
@@ -2388,9 +2391,9 @@ export default {
 .printContent{
   // width: 1000px;
   position: relative;
-  font-size: 16px;
+  font-size: 14px;
   box-sizing: border-box;
-  padding: 40px 25px;
+  padding: 40px 40px;
   background: #fff;
   .bgcImg{
     position: absolute;
@@ -2406,33 +2409,33 @@ export default {
   }
   .printHeader {
     text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border-bottom: 2px solid #f2f3f8;
+    font-size: 22px;
+    // font-weight: bold;
+    // border-bottom: 2px solid #f2f3f8;
     padding-bottom: 20px;
   }
   .printItem {
     margin: 10px 0;
     > p {
       font-weight: bold;
-      font-size: 20px;
+      font-size: 16px;
       margin-bottom: 10px;
     }
     li {
       display: flex;
-      line-height: 40px;
+      line-height: 35px;
       .w25 {
         width: 25%;
       }
       .w30 {
         width: 30%;
       }
-      span:first-child {
-        color:@color-6c;
-      }
-      span:last-child {
-        color: @color-233;
-      }
+      // span:first-child {
+      //   color:@color-6c;
+      // }
+      // span:last-child {
+      //   color: @color-233;
+      // }
     }
   }
   .resource {
@@ -2445,22 +2448,22 @@ export default {
         margin-right: 10px;
       }
       div {
-        height: 40px;
+        height: 35px;
         display: flex;
         align-items: center;
         &.title {
           justify-content: center;
-          font-size: 18px;
+          font-size: 16px;
           background: #f2f3f8;
         }
         p {
           padding-left: 5px;
-          span:first-child {
-            color:@color-6c;
-          }
-          span:last-child {
-            color: @color-233;
-          }
+          // span:first-child {
+          //   color:@color-6c;
+          // }
+          // span:last-child {
+          //   color: @color-233;
+          // }
         }
       }
       .two-item {
@@ -2473,7 +2476,7 @@ export default {
           &::before {
             content: "";
             width: 1px;
-            height: 40px;
+            height: 35px;
             position: absolute;
             left: 175px;
             top: 0;
