@@ -1395,6 +1395,10 @@ export default {
         let id = 'audio'+index;
         let myAudios = document.getElementsByTagName('audio');
         let myAudio = document.getElementById(id);
+        // myAudio.onloadedmetadata=function(){
+        //   debugger
+        //   console.log(myAudio)
+        // }
         if(index!=this.recordKey){
           this.playTime=0
         }

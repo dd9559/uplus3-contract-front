@@ -457,7 +457,8 @@ export default {
           pageSize:this.pageSize,
           index:this.index,
           inBankCard:this.radio.bankCard,
-          inBankAccountName:this.radio.bankAccountName
+          inBankAccountName:this.radio.bankAccountName,
+          remark:this.receiptReason
         };
         this.$ajax.postJSON('/api/separate/account/allotted',param).then(res=>{
           res=res.data;
