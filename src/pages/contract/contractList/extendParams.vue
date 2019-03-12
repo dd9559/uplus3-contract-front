@@ -142,88 +142,81 @@ let Obj1={
 //租赁
 let Obj2 = {
     val22:'',
-    val25:'',
-    val26:'',
-    val27:'',
-    check4:{
-        name:'zhizhao4',
-        require:true
-    },
-    val33:'',
-    val34:'',
-    check5:{
-        name:'zhizhao5',
-        require:true
-    },
-    val42:'',
-    check6:{
-        name:'zhizhao6'
-    },
-    check18:{
-        name:'facility',
-        require:true
-    },
-    val52:'',
-    val53:'',
-    val54:'',
-    val55:'',
-    val56:'',
-    val57:'',
-    val58:'',
-    val59:'',
-    val60:'',
-    val61:'',
-    val62:'',
-    val63:'',
-    val64:'',
-    val65:'',
-    val66:'',
-    val73:'',
-    val74:'',
-    check8:{
-        name:'zhizhao8'
-    },
-    val79:'',
-    val80:'',
-    val81:'',
-    val82:'',
-    val83:'',
-    val84:'',
-    val86:'',
-    val87:'',
-    val88:'',
-    val89:'',
-    val92:'',
-    val93:'',
-    val94:'',
-    check9:{
-        name:'zhizhao9',
-        require:true
-    },
-    check10:{
-        name:'zhizhao10',
-        require:true
-    },
-    check11:{
-        name:'zhizhao11',
-        require:true
-    },
-    check12:{
-        name:'zhizhao12',
-        require:true
-    },
-    check15:{
-        name:'zhizhao15',
-        require:true
-    },
-    check16:{
-        name:'remote',
-        require:true
-    },
-    check17:{
-        name:'zhizhao16',
-        require:true
-    },
+		val25:'',
+		val26:'',
+		val27:'',
+		check4:{
+				name:'zhizhao4',
+				require:true
+		},
+		val33:'',
+		val34:'',
+		check5:{
+				name:'zhizhao5',
+				require:true
+		},
+		val42:'',
+		check6:{
+				name:'zhizhao6'
+		},
+		check18:{
+				name:'facility',
+				require:true
+		},
+		val52:'',
+		val53:'',
+		val56:'',
+		val59:'',
+		val60:'',
+		val61:'',
+		val64:'',
+		val65:'',
+		val66:'',
+		// check7:{
+		//     name:'zhizhao7'
+		// },
+		val73:'',
+		check8:{
+				name:'zhizhao8'
+		},
+		val79:'',
+		val80:'',
+		val82:'',
+		val83:'',
+		val84:'',
+		val86:'',
+		val88:'',
+		val92:'',
+		val93:'',
+		val94:'',
+		check9:{
+				name:'zhizhao9',
+				require:true
+		},
+		check10:{
+				name:'zhizhao10',
+				require:true
+		},
+		check11:{
+				name:'zhizhao11',
+				require:true
+		},
+		check12:{
+				name:'zhizhao12',
+				require:true
+		},
+		check15:{
+				name:'zhizhao15',
+				require:true
+		},
+		check16:{
+				name:'remote',
+				require:true
+		},
+		check17:{
+				name:'zhizhao16',
+				require:true
+		},
 }
 //代办
 let Obj3 = {
@@ -260,54 +253,36 @@ let Obj4 = {
 //定金
 let Obj5 = {
     val5:'',
-    val6:'',
-    val7:'',
-    val8:'',
-    val9:'',
-    val10:'',
-    val11:'',
-    val12:'',
-    val13:'',
-    check1:{
-        name:'manage'
-    },
-    val16:'',
-    val17:'',
-    val18:'',
-    val19:'',
-    val20:'',
-    val21:'',
-    val22:'',
-    val23:'',
-    val24:'',
-    val25:'',
-    val26:'',
-    val27:'',
-    val28:'',
-    val29:'',
-    val30:'',
-    val31:'',
-    val32:'',
-    check2:{
-        name:'pay',
-        other:['val35','val36'],//勾选框的补充项
-    },
-    val37:'',
-    val38:'',
-    val39:'',
-    val40:'',
-    val41:'',
-    val42:'',
-    check3:{
-        name:'person'
-    }
+		textarea:{
+				name:'textarea',
+				other:['val6','val7'],//勾选框的补充项
+		},
+		val13:'',
+		check1:{
+				name:'manage'
+		},
+		val16:'',
+		val17:'',
+		val20:'',
+		val25:'',
+		check2:{
+				name:'pay',
+				other:['val35','val36'],//勾选框的补充项
+		},
+		val37:'',
+		check3:{
+				name:'person'
+		}
 }
 //居间
 let Obj6 = {
     val3:'',
-    val8:'',
-    val10:'',
-    val12:''
+		val5:'',
+		val6:'',
+		val7:'',
+		val8:'',
+		val9:'',
+		val10:''
 }
 let errorArr1=[]
 let errorArr2=[]
@@ -1287,7 +1262,14 @@ export default {
                             return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
                         })
                         if(otherState){
-                            errorArr1.push(obj[item].name)
+                            if(obj[item].name==='textarea'){
+                                errorArr1.push({
+                                    type:'input',
+                                    name:obj[item].other[0]
+                                })
+                            }else {
+                                errorArr1.push(obj[item].name)
+                            }
                             break
                         }
                     }else {
@@ -1312,9 +1294,9 @@ export default {
     },
     //居间校验
     brokerageCheck(iframe,obj=Obj6){
-        for(let item in obj){
-            obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
-            iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+				for(let item in obj){
+						obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+						iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
             if(obj[item].length===0){
                 errorArr1.push({
                     type:'input',
