@@ -163,17 +163,17 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="合同类型" prop="contType.label" width="120" fixed>
+        <el-table-column align="left" label="合同类型" prop="contType.label" width="120">
         </el-table-column>
-        <el-table-column align="left" label="物业地址" prop="propertyAddr" width="300" fixed>
+        <el-table-column align="left" label="物业地址" prop="propertyAddr" width="300">
         </el-table-column>
-        <el-table-column align="left" label="成交总价" prop="dealPrice" width="150" fixed>
+        <el-table-column align="left" label="成交总价" prop="dealPrice" width="150">
           <template slot-scope="scope">
             <span>{{scope.row.dealPrice}} 元</span>
             <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="财务收付" width="100" fixed>
+        <el-table-column align="left" label="财务收付" width="100">
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
             <div class="btn" @click="gathering(scope.row.id)">收款</div>
