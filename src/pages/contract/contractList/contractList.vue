@@ -283,7 +283,7 @@
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</el-button>
               <!-- </span> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1&&scope.row.laterStageState.value!=5" @click="toLayerAudit(scope.row)">调佣</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
             <!-- </div> -->
           </template>
         </el-table-column>
@@ -410,6 +410,7 @@ export default {
       blankPdf5:'',
       pdfUrl:'',
       haveUrl:false,
+      http:'',
       //业绩状态
       achStatuArr:[
         {
@@ -511,17 +512,22 @@ export default {
   //   })
   // },
   created() {
+    if (!window.location.origin) {
+      window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+    }
+    // console.log(window.location.origin)
+    this.http = window.location.origin
     this.getAdmin();//获取当前登录人信息
     this.getContractList();//合同列表
     this.getDictionary();//字典
     this.getHousePurpose();//用途
     // this.getBlankPdf();//空白合同pdf
     this.remoteMethod();//部门
-    setTimeout(() => {
-      if(this.power['sign-ht-info-print'].state){
-        this.getBlankPdf();//空白合同pdf
-      }
-    }, 1000);
+    // setTimeout(() => {
+    //   if(this.power['sign-ht-info-print'].state){
+    //     this.getBlankPdf();//空白合同pdf
+    //   }
+    // }, 1000);
   },
   methods: {
     //用途
@@ -933,66 +939,71 @@ export default {
     },
     //打印空白合同
     printCont(command){
-      this.pdfUrl='';
-      this.haveUrl=false;
-      if(command===1){
-        if(this.blankPdf1){
-          this.getUrl(this.blankPdf1);
-          // setTimeout(()=>{
-          //   this.$refs.pdfPrint.print();
-          // },1500)
-        }else{
-          this.$message({
-            message:'该类型合同模板未上传,请上传后再打印',
-            type: "warning"
-          })
-        }
-      }else if(command===2){
-        if(this.blankPdf2){
-          this.getUrl(this.blankPdf2);
-        }else{
-          this.$message({
-            message:'该类型合同模板未上传,请上传后再打印',
-            type: "warning"
-          })
-        }
-      }else if(command===3){
-        if(this.blankPdf3){
-          this.getUrl(this.blankPdf3);
-          // setTimeout(()=>{
-          //   this.$refs.pdfPrint.print();
-          // },2000)
-        }else{
-          this.$message({
-            message:'该类型合同模板未上传,请上传后再打印',
-            type: "warning"
-          })
-        }
-      }else if(command===4){
-        if(this.blankPdf4){
-          this.getUrl(this.blankPdf4);
-          // setTimeout(()=>{
-          //   this.$refs.pdfPrint.print();
-          // },2000)
-        }else{
-          this.$message({
-            message:'该类型合同模板未上传,请上传后再打印',
-            type: "warning"
-          })
-        }
-      }else if(command===5){
-        if(this.blankPdf5){
-          this.getUrl(this.blankPdf5);
-          // setTimeout(()=>{
-          //   this.$refs.pdfPrint.print();
-          // },2000)
-        }else{
-          this.$message({
-            message:'该类型合同模板未上传,请上传后再打印',
-            type: "warning"
-          })
-        }
+      // this.pdfUrl='';
+      // this.haveUrl=false;
+      let param = {
+        type:command
       }
+      this.$ajax.get("/api/setting/contractTemplate/checkBlankPdf",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          let dayRandomTime=new Date().getTime()
+          this.pdfUrl=`${this.http}/api/setting/contractTemplate/getBlankPdf?type=${command}&dayRandomTime=${dayRandomTime}`
+          this.haveUrl=true
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type:"error"
+        })
+      })
+     
+      // if(command===1){
+      //   if(this.blankPdf1){
+      //     this.getUrl(this.blankPdf1);
+      //   }else{
+      //     this.$message({
+      //       message:'该类型合同模板未上传,请上传后再打印',
+      //       type: "warning"
+      //     })
+      //   }
+      // }else if(command===2){
+      //   if(this.blankPdf2){
+      //     this.getUrl(this.blankPdf2);
+      //   }else{
+      //     this.$message({
+      //       message:'该类型合同模板未上传,请上传后再打印',
+      //       type: "warning"
+      //     })
+      //   }
+      // }else if(command===3){
+      //   if(this.blankPdf3){
+      //     this.getUrl(this.blankPdf3);
+      //   }else{
+      //     this.$message({
+      //       message:'该类型合同模板未上传,请上传后再打印',
+      //       type: "warning"
+      //     })
+      //   }
+      // }else if(command===4){
+      //   if(this.blankPdf4){
+      //     this.getUrl(this.blankPdf4);
+      //   }else{
+      //     this.$message({
+      //       message:'该类型合同模板未上传,请上传后再打印',
+      //       type: "warning"
+      //     })
+      //   }
+      // }else if(command===5){
+      //   if(this.blankPdf5){
+      //     this.getUrl(this.blankPdf5);
+      //   }else{
+      //     this.$message({
+      //       message:'该类型合同模板未上传,请上传后再打印',
+      //       type: "warning"
+      //     })
+      //   }
+      // }
     },
     //获取空白合同pdf
     getBlankPdf(){

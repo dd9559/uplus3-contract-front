@@ -789,7 +789,7 @@
           checkId: this.myCheckId,
           remark: this.auditForm.textarea
         }
-        if(this.auditForm.textarea !== ""){
+        if((this.auditForm.textarea).trim() !== ""){
           this.fullscreenLoading=true
           this.$ajax.get("/api/commission/updateReject", param)
           .then(res => {
@@ -814,7 +814,7 @@
                 message: error
               })
           });
-        }else{
+        }else if((this.auditForm.textarea).trim() === ""){
           this.$message('审核备注未填写！');
         }
 

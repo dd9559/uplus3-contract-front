@@ -1,13 +1,13 @@
 <template>
   <div class="view-container">
-    <div class="top">
-      <div class="type" v-if="isShowType">
+    <div class="top" v-if="isShowType">
+      <div class="type">
         <div :class="{'active':isActive===1}" @click="changeType(1)">居间合同</div>
         <div :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</div>
       </div>
     </div>
     <div class="contentBox">
-      <div class="nav" :class="{'hid':isShowType&&isActive===2}">
+      <div class="nav" :class="{'hid':isActive===2}">
         <ul>
           <li><span :class="{'navBlue':navId==='#one_'}" @click="goNav('#one_')">第一条、房屋基本情况</span></li>
           <li><span :class="{'navBlue':navId==='#two_'}" @click="goNav('#two_')">第二条、房屋交易流程</span></li>
@@ -86,15 +86,9 @@ let Obj1={
     },
     check11:{
         name:'rentout'
-    },
+	},
+	val46:'',
     val53:'',
-    val54:'',
-    val55:'',
-    val56:'',
-    val57:'',
-    val58:'',
-    val59:'',
-    val60:'',
     check4:{
         name:'furniture',
         require:true
@@ -135,7 +129,8 @@ let Obj1={
     val121:'',
     check18:{
         name:"check07"
-    },
+		},
+		val200:'',
     val124:'method5',
     val128:'',
     val129:'',
@@ -147,88 +142,81 @@ let Obj1={
 //租赁
 let Obj2 = {
     val22:'',
-    val25:'',
-    val26:'',
-    val27:'',
-    check4:{
-        name:'zhizhao4',
-        require:true
-    },
-    val33:'',
-    val34:'',
-    check5:{
-        name:'zhizhao5',
-        require:true
-    },
-    val42:'',
-    check6:{
-        name:'zhizhao6'
-    },
-    check18:{
-        name:'facility',
-        require:true
-    },
-    val52:'',
-    val53:'',
-    val54:'',
-    val55:'',
-    val56:'',
-    val57:'',
-    val58:'',
-    val59:'',
-    val60:'',
-    val61:'',
-    val62:'',
-    val63:'',
-    val64:'',
-    val65:'',
-    val66:'',
-    val73:'',
-    val74:'',
-    check8:{
-        name:'zhizhao8'
-    },
-    val79:'',
-    val80:'',
-    val81:'',
-    val82:'',
-    val83:'',
-    val84:'',
-    val86:'',
-    val87:'',
-    val88:'',
-    val89:'',
-    val92:'',
-    val93:'',
-    val94:'',
-    check9:{
-        name:'zhizhao9',
-        require:true
-    },
-    check10:{
-        name:'zhizhao10',
-        require:true
-    },
-    check11:{
-        name:'zhizhao11',
-        require:true
-    },
-    check12:{
-        name:'zhizhao12',
-        require:true
-    },
-    check15:{
-        name:'zhizhao15',
-        require:true
-    },
-    check16:{
-        name:'remote',
-        require:true
-    },
-    check17:{
-        name:'zhizhao16',
-        require:true
-    },
+		val25:'',
+		val26:'',
+		val27:'',
+		check4:{
+				name:'zhizhao4',
+				require:true
+		},
+		val33:'',
+		val34:'',
+		check5:{
+				name:'zhizhao5',
+				require:true
+		},
+		val42:'',
+		check6:{
+				name:'zhizhao6'
+		},
+		check18:{
+				name:'facility',
+				require:true
+		},
+		val52:'',
+		val53:'',
+		val56:'',
+		val59:'',
+		val60:'',
+		val61:'',
+		val64:'',
+		val65:'',
+		val66:'',
+		// check7:{
+		//     name:'zhizhao7'
+		// },
+		val73:'',
+		check8:{
+				name:'zhizhao8'
+		},
+		val79:'',
+		val80:'',
+		val82:'',
+		val83:'',
+		val84:'',
+		val86:'',
+		val88:'',
+		val92:'',
+		val93:'',
+		val94:'',
+		check9:{
+				name:'zhizhao9',
+				require:true
+		},
+		check10:{
+				name:'zhizhao10',
+				require:true
+		},
+		check11:{
+				name:'zhizhao11',
+				require:true
+		},
+		check12:{
+				name:'zhizhao12',
+				require:true
+		},
+		check15:{
+				name:'zhizhao15',
+				require:true
+		},
+		check16:{
+				name:'remote',
+				require:true
+		},
+		check17:{
+				name:'zhizhao16',
+				require:true
+		},
 }
 //代办
 let Obj3 = {
@@ -265,54 +253,36 @@ let Obj4 = {
 //定金
 let Obj5 = {
     val5:'',
-    val6:'',
-    val7:'',
-    val8:'',
-    val9:'',
-    val10:'',
-    val11:'',
-    val12:'',
-    val13:'',
-    check1:{
-        name:'manage'
-    },
-    val16:'',
-    val17:'',
-    val18:'',
-    val19:'',
-    val20:'',
-    val21:'',
-    val22:'',
-    val23:'',
-    val24:'',
-    val25:'',
-    val26:'',
-    val27:'',
-    val28:'',
-    val29:'',
-    val30:'',
-    val31:'',
-    val32:'',
-    check2:{
-        name:'pay',
-        other:['val35','val36'],//勾选框的补充项
-    },
-    val37:'',
-    val38:'',
-    val39:'',
-    val40:'',
-    val41:'',
-    val42:'',
-    check3:{
-        name:'person'
-    }
+		textarea:{
+				name:'textarea',
+				other:['val6','val7'],//勾选框的补充项
+		},
+		val13:'',
+		check1:{
+				name:'manage'
+		},
+		val16:'',
+		val17:'',
+		val20:'',
+		val25:'',
+		check2:{
+				name:'pay',
+				other:['val35','val36'],//勾选框的补充项
+		},
+		val37:'',
+		check3:{
+				name:'person'
+		}
 }
 //居间
 let Obj6 = {
     val3:'',
-    val8:'',
-    val10:'',
-    val12:''
+		val5:'',
+		val6:'',
+		val7:'',
+		val8:'',
+		val9:'',
+		val10:''
 }
 let errorArr1=[]
 let errorArr2=[]
@@ -354,21 +324,23 @@ export default {
           state: false,
           name: '提交审核'//新增+提审
         },
-			}
+			},
+			iframe1State:false,
+			iframe2State:false
     }
   },
   created(){
 		this.fullscreenLoading=true
 		this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
-		this.clientHeight();
+		// this.clientHeight();
 		this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
     if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
     }
     // console.log(window.location.origin)
     let http = window.location.origin
-    
+    let dayRandomTime=new Date().getTime()
     if(this.Msg.type===1){
       //租赁
       this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
@@ -376,8 +348,8 @@ export default {
 			//买卖
 			if(this.Msg.isWuHanMM){//是否是武汉的买卖合同
 				this.isShowType=true;
-				this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=residence`//居间
-				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=business`//买卖
+				this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=residence&dayRandomTime=${dayRandomTime}`//居间
+				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=business&dayRandomTime=${dayRandomTime+10}`//买卖
 			}else{
 				this.isShowType=false;
 				this.isActive=2;
@@ -393,12 +365,14 @@ export default {
     }else if(this.Msg.type===5){
       //定金
       this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
-    }
+		}
   },
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
-      this.clientHei= document.documentElement.clientHeight -150 + 'px'
+			// this.clientHei= screen.height -300 + 'px'
+			// console.log('teddddddd')
+      this.clientHei= document.documentElement.clientHeight -130 + 'px'
     },
     //居间买卖切换
     changeType(value) {
@@ -643,62 +617,62 @@ export default {
 					iframebox1.contentWindow.scrollTo(0,inputHeight1)
 				}
 			}
-		if(errorArr1.length===0&&errorArr2.length===0){
-			let htmlTxt1=''
-			let htmlTxt2=''
-			let param = {}
-			if(this.Msg.type===2){
-				htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-				htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-				if(this.Msg.isWuHanMM){
-					param = {
-						id:this.Msg.id,
-						html:{
-							residence:htmlTxt1,
-							business:htmlTxt2
+			if(errorArr1.length===0&&errorArr2.length===0){
+				let htmlTxt1=''
+				let htmlTxt2=''
+				let param = {}
+				if(this.Msg.type===2){
+					htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+					htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
+					if(this.Msg.isWuHanMM){
+						param = {
+							id:this.Msg.id,
+							html:{
+								residence:htmlTxt1,
+								business:htmlTxt2
+							}
+						}
+					}else{
+						param = {
+							id:this.Msg.id,
+							html:{
+								address:htmlTxt2
+							}
 						}
 					}
 				}else{
+					htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 					param = {
 						id:this.Msg.id,
 						html:{
-							address:htmlTxt2
+							address:htmlTxt1
 						}
 					}
 				}
-			}else{
-				htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-				param = {
-					id:this.Msg.id,
-					html:{
-						address:htmlTxt1
-					}
-				}
+				this.param = param;
+				this.dialogSub=true
+				// this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
+				// 	res=res.data
+				// 	if(res.status===200){
+				// 		this.fullscreenLoading=false
+				// 		this.$message({
+				// 			message:'提审成功',
+				// 			type:'success'
+				// 		})
+				// 		if(this.Msg.isHaveData){
+				// 			this.$router.push('/contractList');
+				// 		}else{
+				// 			this.dialogSuccess=true
+				// 		}
+				// 	}
+				// }).catch(error=>{
+				// 	this.fullscreenLoading=false
+				// 	this.$message({
+				// 		message:error,
+				// 		type:'error'
+				// 	})
+				// })
 			}
-			this.param = param;
-			this.dialogSub=true
-			// this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
-			// 	res=res.data
-			// 	if(res.status===200){
-			// 		this.fullscreenLoading=false
-			// 		this.$message({
-			// 			message:'提审成功',
-			// 			type:'success'
-			// 		})
-			// 		if(this.Msg.isHaveData){
-			// 			this.$router.push('/contractList');
-			// 		}else{
-			// 			this.dialogSuccess=true
-			// 		}
-			// 	}
-			// }).catch(error=>{
-			// 	this.fullscreenLoading=false
-			// 	this.$message({
-			// 		message:error,
-			// 		type:'error'
-			// 	})
-			// })
-		}
 		},
 		//确定提审
 		toSubmit(){
@@ -804,8 +778,6 @@ export default {
 									if(this.getCheckState(box[0])){
 										detail={
 											val35:'',
-											val36:'',
-											val37:''
 										}
 									}
 									break
@@ -813,8 +785,12 @@ export default {
 									if(this.getCheckState(box[0])){
 										detail={
 											val40:'',
-											val41:'',
-											val42:''
+											val45:''
+										}
+									}else{
+										detail={
+											val44:'',
+											val45:''
 										}
 									}
 									break
@@ -852,9 +828,7 @@ export default {
 								case 'psecond':
 									if(this.getCheckState(box[0])){
 										detail={
-											val74:'',
-											val75:'',
-											val76:''
+											val74:''
 										}
 									}else{
 										detail={
@@ -907,15 +881,6 @@ export default {
 									}
 								}
 								break
-							case 'c':
-								methodDetail={
-									check:{
-										name:'pass',
-										require:true
-									},
-									val50:''
-								}
-								break
 							default:
 							errorArr2.push({
 									type:'input',
@@ -940,22 +905,18 @@ export default {
 							case 'c':
 								methodDetail={
 									val81:'',
-									val82:'',
-									val83:'',
 									val84:''
 								}
 								break
 							case 'd':
 								methodDetail={
 									val85:'',
-									val86:'',
-									val87:'',
 									val88:'',
 									check1:{
-										name:'payd'
+										name:'pthird'
 									},
 									check2:{
-										name:'payd1'
+										name:'pfourth'
 									}
 								}
 								break
@@ -1301,7 +1262,14 @@ export default {
                             return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
                         })
                         if(otherState){
-                            errorArr1.push(obj[item].name)
+                            if(obj[item].name==='textarea'){
+                                errorArr1.push({
+                                    type:'input',
+                                    name:obj[item].other[0]
+                                })
+                            }else {
+                                errorArr1.push(obj[item].name)
+                            }
                             break
                         }
                     }else {
@@ -1326,9 +1294,9 @@ export default {
     },
     //居间校验
     brokerageCheck(iframe,obj=Obj6){
-        for(let item in obj){
-            obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
-            iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+				for(let item in obj){
+						obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+						iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
             if(obj[item].length===0){
                 errorArr1.push({
                     type:'input',
@@ -1345,39 +1313,44 @@ export default {
 	// 	this.isSave(2)
 	// },
   mounted(){
-    // window.onresize = this.clientHeight;
-    // var vibibleState ='';
-    // var visibleChange ='';
-    // if (typeof document.visibilityState !='undefined') {
-    //   visibleChange ='visibilitychange';
-    //   vibibleState ='visibilityState';
-    // }else if (typeof document.webkitVisibilityState !='undefined') {
-    //   visibleChange ='webkitvisibilitychange';
-    //   vibibleState ='webkitVisibilityState';
-    // }if (visibleChange) {
-	  // let that=this
-    //   document.addEventListener(visibleChange, function() {if (document[vibibleState] =='hidden') {
-    //     that.isSave(2)
-    //     }})
-		// }
-
 		var iframe1 = this.$refs.iframeFirst;
 		var iframe2 = this.$refs.iframeSecond;
 		var that = this
 		if(this.Msg.type===2){
-			iframe2.onload=function(){
-				that.isSave(2)
+			if(this.Msg.isWuHanMM){
+				iframe2.onload=function(){
+					that.iframe2State=true
+				}
+				iframe1.onload=function(){
+					that.iframe1State=true
+				}
+			}else{
+				iframe2.onload=function(){
+					that.isSave(2)
+				}
 			}
 		}else{
 			iframe1.onload=function(){
 				that.isSave(2)
 			}
 		}
-		
+		window.onresize = this.clientHeight;
   },
   beforeUpdate() {
     this.clientHeight();
-  }
+	},
+	computed:{
+		iframeState:function(val){
+			return this.iframe1State&&this.iframe2State
+		}
+	},
+	watch:{
+		iframeState:function(val){
+			if(val){
+				this.isSave(2)
+			}
+		}
+	}
 };
 </script>
 <style scoped lang="less">

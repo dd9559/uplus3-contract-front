@@ -789,7 +789,7 @@
       // 驳回操作
       refuseFn() {
 
-        if(this.auditForm.textarea !== ""){
+        if((this.auditForm.textarea).trim() !== ""){
           this.fullscreenLoading=true
           let param = {
             id: this.myCheckId,
@@ -820,7 +820,7 @@
                 message: error
               })
           });
-        }else{
+        }else if((this.auditForm.textarea).trim() === ""){
           this.$message('审核备注未填写！');
         }
 

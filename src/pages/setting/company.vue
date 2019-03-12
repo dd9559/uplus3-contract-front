@@ -194,7 +194,7 @@
               <el-table-column width="310" align="center" label="">
                 <template slot-scope="scope">
                   <el-form-item label="银行账户: ">
-                    <el-input size="mini" oninput="if(value.length>19)value=value.slice(0,19)" v-model="companyBankList[scope.$index].bankCard" :disabled="fourthStoreNoEdit" @keyup.native="getInt(3,scope.$index)"></el-input>
+                    <el-input size="mini" oninput="if(value.length>20)value=value.slice(0,20)" v-model="companyBankList[scope.$index].bankCard" :disabled="fourthStoreNoEdit" @keyup.native="getInt(3,scope.$index)"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
@@ -669,41 +669,45 @@
             that_.companyBankList.forEach(item => {
               isOk = false
               if(item.bankAccountName) {
-                if(item.bankCard.length === 16 || item.bankCard.length === 19) {
-                  if(item.bankBranchName) {
-                    if(that_.companyForm.contractSign) {
-                      if(that_.companyForm.financialSign) {
-                        if(that_.companyBankList.length === 1) {
-                          isOk = true
-                        } else if(that_.companyBankList.length === 2) {
-                          if(that_.companyBankList[0].bankCard === that_.companyBankList[1].bankCard) {
-                            that_.$message({message:"银行账户不能相同",type:"warning"})
-                          } else {
+                if(item.bankCard) {
+                  if(item.bankCard.length >= 16) {
+                    if(item.bankBranchName) {
+                      if(that_.companyForm.contractSign) {
+                        if(that_.companyForm.financialSign) {
+                          if(that_.companyBankList.length === 1) {
                             isOk = true
+                          } else if(that_.companyBankList.length === 2) {
+                            if(that_.companyBankList[0].bankCard === that_.companyBankList[1].bankCard) {
+                              that_.$message({message:"银行账户不能相同",type:"warning"})
+                            } else {
+                              isOk = true
+                            }
+                          } else if(that_.companyBankList.length > 2) {
+                            let ar1 = []
+                            that_.companyBankList.forEach(item => {
+                              ar1.push(item.bankCard)
+                            })
+                            let ar2 = Array.from(new Set(ar1))
+                            if(ar1.length !== ar2.length) {
+                              that_.$message({message:"银行账户不能相同",type:"warning"})
+                            } else {
+                              isOk = true
+                            }
                           }
-                        } else if(that_.companyBankList.length > 2) {
-                          let ar1 = []
-                          that_.companyBankList.forEach(item => {
-                            ar1.push(item.bankCard)
-                          })
-                          let ar2 = Array.from(new Set(ar1))
-                          if(ar1.length !== ar2.length) {
-                            that_.$message({message:"银行账户不能相同",type:"warning"})
-                          } else {
-                            isOk = true
-                          }
+                        } else {
+                          that_.$message({message:"财务章上传不能为空"})
                         }
                       } else {
-                        that_.$message({message:"财务章上传不能为空"})
+                        that_.$message({message:"合同章上传不能为空"})
                       }
                     } else {
-                      that_.$message({message:"合同章上传不能为空"})
+                      that_.$message({message: "开户行不能为空"})
                     }
                   } else {
-                    that_.$message({message: "开户行不能为空"})
+                    that_.$message({message: "请输入正确的银行账户"})
                   }
                 } else {
-                  that_.$message({message: "银行账户位数不正确"})
+                  that_.$message({message: "银行账户不能为空"})
                 }
               } else {
                 that_.$message({message: "开户名不能为空"})

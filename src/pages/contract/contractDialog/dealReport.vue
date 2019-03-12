@@ -51,7 +51,7 @@
                 </div>
                 <div class="item">
                     <div class="text-long mark">
-                        <span class="text">物业地址：<span>{{dealBasicInfo.propertyAddr}}</span></span>
+                        <span class="text">产权地址：<span>{{dealBasicInfo.propertyRightAddr}}</span></span>
                     </div>
                     <div class="number mark">
                         <span>权属证号：</span>
@@ -85,7 +85,7 @@
                 <div class="info text">
                     <p><span>店长：</span><el-input size="small" v-model.trim="report.guestShopOwnerName" maxlength="10" :disabled="!saveBtnShow" class="kezhang" @input="inputOnly('guestShopOwnerName')"></el-input></p>
                     <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.guestStoreName" maxlength="20" :disabled="!saveBtnShow" class="kedian" @input="inputOnly('guestStoreName')"></el-input></p>
-                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.guestShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="kelian" @mousewheel.native.prevent></el-input></p>
+                    <p><span>联系电话：</span><el-input size="small" v-model.trim="report.guestShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="kelian" @input="inputOnly('guestShopOwnerMobile')"></el-input></p>
                 </div>
             </div>
             <div>
@@ -93,7 +93,7 @@
                 <div class="info text">
                     <p><span>店长：</span><el-input size="small" v-model.trim="report.houseShopOwnerName" maxlength="10" :disabled="!saveBtnShow" class="fangzhang" @input="inputOnly('houseShopOwnerName')"></el-input></p>
                     <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.houseStoreName" maxlength="20" :disabled="!saveBtnShow" class="fangdian" @input="inputOnly('houseStoreName')"></el-input></p>
-                    <p><span>联系电话：</span><el-input size="small" type="number" v-model.trim="report.houseShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="fanglian" @mousewheel.native.prevent></el-input></p>
+                    <p><span>联系电话：</span><el-input size="small" v-model.trim="report.houseShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="fanglian" @input="inputOnly('houseShopOwnerMobile')"></el-input></p>
                 </div>
             </div>
         </div>
@@ -104,12 +104,12 @@
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="min-width:56px;">{{firstBuyer.name}}</span></p>
                         <p><span style="min-width:56px;">身份证：</span><span>{{firstBuyer.encryptionCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstBuyer.encryptionMobile}}</span></p>
+                        <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
                         <li v-for="(item,index) in buyerArr" :key="index">
                             <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.encryptionMobile}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
@@ -152,12 +152,12 @@
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="min-width:56px;">{{firstSeller.name}}</span></p>
                         <p><span style="min-width:56px;">身份证：</span><span>{{firstSeller.encryptionCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstSeller.encryptionMobile}}</span></p>
+                        <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
                         <li v-for="(item,index) in sellerArr" :key="index">
                             <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.encryptionMobile}}</span></p>
+                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
                     <div class="input">
@@ -192,7 +192,7 @@
                     </p>
                     <p>
                         <span>电话：</span>
-                        <el-input size="small" type="number" class="w200" v-model="report.buyerAgentMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" @mousewheel.native.prevent></el-input>
+                        <el-input size="small" class="w200" v-model="report.buyerAgentMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" @input="inputOnly('buyerAgentMobile')"></el-input>
                     </p>
                 </div>
             </div>
@@ -209,7 +209,7 @@
                     </p>
                     <p>
                         <span>电话：</span>
-                        <el-input size="small" type="number" class="w200" v-model="report.sellerAgentMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" @mousewheel.native.prevent></el-input>
+                        <el-input size="small" class="w200" v-model="report.sellerAgentMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" @input="inputOnly('sellerAgentMobile')"></el-input>
                     </p>
                 </div>
             </div>
@@ -232,19 +232,17 @@ let checkIdCard = function (str) {
 let checkPassPort = function (str) {
     return /^1[45][0-9]{7}$|(^[P|p|S|s]\d{7}$)|(^[S|s|G|g|E|e]\d{8}$)|(^[Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8}$)|(^[H|h|M|m]\d{8,10}$)/.test(str)
 }
-function addRedBorder(className) {
+function addRedBorder(className,type=1) {
     let obj = document.getElementsByClassName(className)
-    if(className === 'quanshu'||className === 'kezhang' ||className === 'kedian'||className === 'kelian'||
-        className === 'fangzhang'||className === 'fangdian'||className === 'fanglian') {
+    if(type===1) {
         obj[0].firstElementChild.style.borderColor = '#f56c6c'
     } else {
         obj[0].firstElementChild.firstElementChild.style.borderColor = '#f56c6c' 
     }
 }
-function removeRedBorder(className) {
+function removeRedBorder(className,type=1) {
     let obj = document.getElementsByClassName(className)
-    if(className === 'quanshu'||className === 'kezhang' ||className === 'kedian'||className === 'kelian'||
-        className === 'fangzhang'||className === 'fangdian'||className === 'fanglian') {
+    if(type===1) {
         obj[0].firstElementChild.style.borderColor = '#dcdfe6'
     } else {
         obj[0].firstElementChild.firstElementChild.style.borderColor = '#dcdfe6'  
@@ -267,7 +265,7 @@ export default {
                 dealPrice: "",
                 receivableCommission: "",
                 Square: "",
-                propertyAddr: "",
+                propertyRightAddr: "",
                 FloorAll: ""
             },
             report: {
@@ -332,13 +330,13 @@ export default {
             firstBuyer: {
                 name: "",
                 encryptionCode: "",
-                encryptionMobile: ""
+                mobile: ""
             },
             buyerArr: [],
             firstSeller: {
                 name: "",
                 encryptionCode: "",
-                encryptionMobile: ""
+                mobile: ""
             },
             sellerArr: [],
             transFlowEdit: false,
@@ -363,7 +361,7 @@ export default {
                     this.dealBasicInfo.dealPrice = res.data.dealPrice
                     this.dealBasicInfo.receivableCommission = res.data.receivableCommission
                     this.dealBasicInfo.Square = res.data.houseInfo.Square
-                    this.dealBasicInfo.propertyAddr = res.data.propertyAddr
+                    this.dealBasicInfo.propertyRightAddr = res.data.propertyRightAddr
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
                     this.transFlowEdit = res.data.dealReport ? true : false
@@ -379,10 +377,10 @@ export default {
                     this.sellerArr = res.data.contPersons.filter(item => item.personType.value === 1)
                     this.firstBuyer.name = this.buyerArr[0].name
                     this.firstBuyer.encryptionCode = this.buyerArr[0].encryptionCode
-                    this.firstBuyer.encryptionMobile = this.buyerArr[0].encryptionMobile
+                    this.firstBuyer.mobile = this.buyerArr[0].mobile
                     this.firstSeller.name = this.sellerArr[0].name
                     this.firstSeller.encryptionCode = this.sellerArr[0].encryptionCode
-                    this.firstSeller.encryptionMobile = this.sellerArr[0].encryptionMobile
+                    this.firstSeller.mobile = this.sellerArr[0].mobile
                 }
             }).catch(error => {
                 this.$message({
@@ -442,17 +440,17 @@ export default {
                         }
                     } else {
                         this.$message({message:"是否提前还款不能为空"})
-                        addRedBorder('huankuan')
+                        addRedBorder('huankuan',2)
                         return false
                     }
                 } else {
                     this.$message({message:"抵押情况不能为空"})
-                    addRedBorder('diya')
+                    addRedBorder('diya',2)
                     return false
                 }
             } else {
                 this.$message({message:"两证情况不能为空"})
-                addRedBorder('liangzheng')
+                addRedBorder('liangzheng',2)
                 return false
             }
             if(this.report.houseShopOwnerName) {
@@ -463,12 +461,12 @@ export default {
 
                             } else {
                                 this.$message({message:"是否析产（继承）不能为空"})
-                                addRedBorder('xichan')
+                                addRedBorder('xichan',2)
                                 return false
                             }
                         } else {
                             this.$message({message:"交易流程不能为空"})
-                            addRedBorder('liucheng')
+                            addRedBorder('liucheng',2)
                             return false
                         }
                     } else {
@@ -615,6 +613,22 @@ export default {
                 this.$nextTick(()=>{
                    this.report.buildingStructure = this.$tool.textInput(this.report.buildingStructure,3) 
                 })
+            } else if(val === 'guestShopOwnerMobile') {
+                this.$nextTick(()=>{
+                   this.report.guestShopOwnerMobile = this.$tool.numberInput(this.report.guestShopOwnerMobile) 
+                })
+            } else if(val === 'houseShopOwnerMobile') {
+                this.$nextTick(()=>{
+                   this.report.houseShopOwnerMobile = this.$tool.numberInput(this.report.houseShopOwnerMobile) 
+                })
+            } else if(val === 'buyerAgentMobile') {
+                this.$nextTick(()=>{
+                   this.report.buyerAgentMobile = this.$tool.numberInput(this.report.buyerAgentMobile) 
+                })
+            } else if(val === 'sellerAgentMobile') {
+                this.$nextTick(()=>{
+                   this.report.sellerAgentMobile = this.$tool.numberInput(this.report.sellerAgentMobile) 
+                })
             }
         }
     },
@@ -630,17 +644,17 @@ export default {
     watch: {
         'report.cardSituation'(newVal,oldVal) {
             if(newVal) {
-                removeRedBorder('liangzheng')
+                removeRedBorder('liangzheng',2)
             }
         },
         'report.mortgageSituation'(newVal,oldVal) {
             if(newVal) {
-                removeRedBorder('diya')
+                removeRedBorder('diya',2)
             }
         },
         'report.isEarlyRepayment'(newVal,oldVal) {
             if(newVal==='0'||newVal==='1') {
-                removeRedBorder('huankuan')
+                removeRedBorder('huankuan',2)
             }
         },
         'report.ownershipNumber'(newVal,oldVal) {
@@ -650,12 +664,12 @@ export default {
         },
         'report.transFlowCode'(newVal,oldVal) {
             if(newVal) {
-                removeRedBorder('liucheng')
+                removeRedBorder('liucheng',2)
             }
         },
         'report.isExtend'(newVal,oldVal) {
             if(newVal==='0'||newVal==='1') {
-                removeRedBorder('xichan')
+                removeRedBorder('xichan',2)
             }
         },
         'report.buyerPaymentMethod'(newVal,oldVal) {

@@ -120,7 +120,13 @@
         this.checkPerson.state=true
         this.checkPerson.code=this.result.payCode
       }*/
-      this.getWebSocket()
+    },
+    mounted(){
+      this.$nextTick(()=>{
+        if(this.type===1){
+          this.getMsg()
+        }
+      })
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
@@ -135,7 +141,19 @@
       })
     },
     methods: {
-      getWebSocket:function () {
+      getMsg:function () {
+        this.$ajax.get('/api/socket/generateCode',{payCode:this.result.payCode}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.getWebSocket(res.data)
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
+        })
+      },
+      getWebSocket:function (uid) {
         let host=window.location.host
         console.log(host)
         let url=''
@@ -150,7 +168,7 @@
             url="http://119.23.137.131:28800"
                 break
         }
-        let socket = io.connect(`${url}?mac=${this.result.payCode}`)
+        let socket = io.connect(`${url}?mac=${this.result.payCode}&auth=${uid}`)
         let that=this
         socket.on('connect',function () {
           socket.on('messageevent', function(data) {
@@ -161,9 +179,18 @@
         })
       },
       goBack: function (page) {
-        this.$router.push({
+        let param={
           path: page
-        })
+        }
+        /*if(page==='details'){
+          param.query={
+            id: this.result.id,
+            tab: '收款信息',
+            power: this.getUser.user.empId===row.auditBy,
+            bill: this.power['sign-cw-bill-invoice'].state
+          }
+        }*/
+        this.$router.push(param)
       },
       answer: function () {
         this.confirm = true
