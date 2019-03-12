@@ -370,7 +370,7 @@
         inBankCard:'',
         bankAccountName:'',
         payAgainInfo: [],
-        radio: 0,
+        radio:'',
         failMsg:'',
         isOpen:true,
         isOpen2:true,
@@ -506,7 +506,7 @@
 
       payAgain(e) {
          if(this.power['sign-ht-fz-pay'].state){
-            this.radio=0
+            this.radio=''
             this.payVisiable = true
             this.fenzhang1 = e.startTime
             this.fenzhang2 = e.endTime
@@ -553,15 +553,17 @@
       },
 
       payAgainSure(){
-        let radio = parseInt(this.radio.toString())
-        this.inBankCard = this.payAgainInfo[radio].bankCard,
-        this.bankAccountName = this.payAgainInfo[radio].bankAccountName
+        
 
         if(this.radio === ''){
           this.$message({
-            message: '请您选择一个收款门店账户'
+            message: '请您选择收款门店账户',
+            type: 'warning'
           })
         }else{
+          let radio = parseInt(this.radio.toString())
+          this.inBankCard = this.payAgainInfo[radio].bankCard,
+          this.bankAccountName = this.payAgainInfo[radio].bankAccountName
             this.fullscreenLoading=true
             let param = {
               id: this.id,
