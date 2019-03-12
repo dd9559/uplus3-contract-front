@@ -477,6 +477,7 @@
                                         <template v-if="item.type === STEPSINPUT.start">
                                             <el-input
                                             v-model="item.val"
+                                            @input="textChangeFn(index,$event)"
                                             size="small"
                                             ></el-input>
                                         </template>
@@ -1096,6 +1097,11 @@
             },
             inputFocusFn(){
                 this.inputFocus = false;
+            },
+            textChangeFn(i,e){
+                this.$nextTick(() => {
+                    this.stepsFrom.list[i].val = e.replace(/\s*/g,"");
+                })
             },
             numberChangeFn(i,e){
                 this.$nextTick(() => {

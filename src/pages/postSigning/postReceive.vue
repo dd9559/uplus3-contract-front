@@ -153,7 +153,8 @@
                                         :disabled="roleDisabledFn(scope.row)"
                                         @change="roleChangeFn(scope.$index,$event)"
                                         size="small"
-                                        class="w185">
+                                        class="w185"
+                                        :class="scope.row.classShow?'on':''">
                                             <el-option
                                             v-for="item in dealTableRule"
                                             :key="'fp'+item.key + scope.$index"
@@ -174,7 +175,8 @@
                                         :loading="loading4"
                                         @change="roleRemoteChangeFn($event,scope.$index)"
                                         size="small"
-                                        class="w185">
+                                        class="w185"
+                                        :class="scope.row.classShowCode?'on':''">
                                             <el-option
                                             v-for="item in scope.row.rules"
                                             :key="'zrr'+item.empId + scope.$index"
@@ -508,7 +510,7 @@
                                 name: e.personLiableName,
                                 empId: e.personLiableCode,
                             }]
-                               e.roleBool = true;
+                            e.roleBool = true;
                         })
                         this.dealTable = arr;
                         this.$nextTick(()=>{
@@ -570,6 +572,7 @@
                     res = res.data;
                     if(res.status === 200){
                         this.dealTable[i].personLiableCode = "";
+                        this.dealTable[i].classShowCode =true;
                         this.dealTable[i].rules = [...res.data];
                         this.dealTable[i].personLiableName = '';
                         this.dealTable[i].roleBool = false;
@@ -583,6 +586,7 @@
             roleRemoteChangeFn(e, i) {
                 let arr = this.dealTable[i];
                 arr.personLiableCode = e;
+                arr.classShowCode = false;
                 this.$set(this.dealTable, i, arr)
             },
             // 展示下拉列表的时候执行
@@ -661,7 +665,8 @@
                 }
                 let arr = [...this.dealTable];
                 let bool = true;
-                arr.map(e => {
+                // console.log(arr)
+                arr.map((e,i) => {
                     e.contractCode = this.receive.e.id;
                     e.rules.map(i => {
                         if (i.empId === e.personLiableCode) {
@@ -670,8 +675,11 @@
                     })
                     if (!e.personLiableName) {
                         bool = false;
+                        if(state === RECEIVE.haveReceive){
+                            e.classShowCode =true;
+                            this.$set(this.dealTable,i,e)
+                        }
                     }
-                    // e.rules = [];
                 })
                 if (state === RECEIVE.haveReceive && !bool) {
                     this.errMeFn('数据不能为空');
@@ -699,7 +707,7 @@
                 }
                 let arr = [...this.dealTable];
                 let bool = true;
-                arr.map(e => {
+                arr.map((e,i) => {
                     e.contractCode = this.receive.e.id;
                     e.rules.map(i => {
                         if (i.empId === e.personLiableCode) {
@@ -708,8 +716,9 @@
                     })
                     if (!e.personLiableName) {
                         bool = false;
+                        e.classShowCode =true;
+                        this.$set(this.dealTable,i,e);
                     }
-                    // e.rules = [];
                 })
                 if (!bool) {
                     this.errMeFn('请将交易步骤分配完，才能接收并开始办理后期');
@@ -987,4 +996,7 @@
 
 <style lang="less" scoped>
     @import "~@/assets/less/lsx.less";
+    /deep/.on .el-input__inner{
+        border-color: #FF3E3E;
+    }
 </style>
