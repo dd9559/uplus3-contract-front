@@ -506,6 +506,7 @@
 
       payAgain(e) {
          if(this.power['sign-ht-fz-pay'].state){
+            this.radio=0
             this.payVisiable = true
             this.fenzhang1 = e.startTime
             this.fenzhang2 = e.endTime
