@@ -123,7 +123,9 @@
     },
     mounted(){
       this.$nextTick(()=>{
-        this.getMsg()
+        if(this.type===1){
+          this.getMsg()
+        }
       })
     },
     beforeRouteEnter (to, from, next) {
