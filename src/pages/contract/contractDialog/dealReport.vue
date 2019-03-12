@@ -121,8 +121,8 @@
                         </p>
                         <p style="margin:0 10px;" class="mark">
                             <span>交易流程：</span>
-                            <el-select size="small" v-model="report.transFlowCode" :disabled="transFlowEdit" class="liucheng">
-                                <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            <el-select size="small" v-model="report.transFlowName" :disabled="transFlowEdit" class="liucheng" @change="transFlowSelect">
+                                <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.name"></el-option>
                             </el-select>
                         </p>
                     </div>
@@ -280,6 +280,7 @@ export default {
                 evaluationValue: "",
                 buyerPaymentMethod: "",
                 transFlowCode: "",
+                transFlowName: "",
                 stagesBankName: "",
                 loanAmount: "",
                 loanTerm: "",
@@ -402,6 +403,13 @@ export default {
                 })
             })
         },
+        transFlowSelect(val) {
+            this.flowList.find(item => {
+                if(item.name === val) {
+                    this.report.transFlowCode = item.id
+                }
+            })
+        },
         cardTypeChange(type) {
             if(type === 1) {
                 this.report.buyerAgentCard = ""
@@ -456,7 +464,7 @@ export default {
             if(this.report.houseShopOwnerName) {
                 if(this.report.houseStoreName) {
                     if(this.report.houseShopOwnerMobile) {
-                        if(this.report.transFlowCode) {
+                        if(this.report.transFlowName) {
                             if(this.report.isExtend) {
 
                             } else {
@@ -662,7 +670,7 @@ export default {
                 removeRedBorder('quanshu')
             }
         },
-        'report.transFlowCode'(newVal,oldVal) {
+        'report.transFlowName'(newVal,oldVal) {
             if(newVal) {
                 removeRedBorder('liucheng',2)
             }
