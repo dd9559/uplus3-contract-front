@@ -1321,6 +1321,7 @@ export default {
               let src = `${http}/api/record/download?recording=${element.recording}`
               element.recordSrc=src
               element.recordTime=0
+              element.secondTime=0
             }
           });
           this.recordData=recordList
@@ -1409,8 +1410,8 @@ export default {
             myAudios[i].pause();
             /*if(myAudios[i].id!=myAudio.id){
               if(myAudios[i].paused){
-                // this.playTime=0
-                // myAudios[i].load();
+                // row.recordTime=0;
+                myAudios[i].load();
               }
             }*/
           }
@@ -1423,7 +1424,7 @@ export default {
         var that=this
         myAudio.ontimeupdate = function (e) {
           // console.info('播放时间发生改变：'+myAudio.currentTime);
-          // console.log(myAudio.duration,myAudio.readyState,myAudio.networkState)
+          console.log(myAudio.duration,myAudio.readyState,myAudio.networkState)
           if(!myAudio.duration){
             this.$message({
               message:'音频正在缓冲...'
@@ -1433,6 +1434,8 @@ export default {
           let playTime_=(myAudio.currentTime/myAudio.duration)*100;
           if(playTime_){
             row.recordTime=playTime_
+            row.secondTime=myAudio.currentTime
+            // row.talkTime=myAudio.duration
           }
           // that.playTime=(myAudio.currentTime/myAudio.duration)*100?(myAudio.currentTime/myAudio.duration)*100;
         };
