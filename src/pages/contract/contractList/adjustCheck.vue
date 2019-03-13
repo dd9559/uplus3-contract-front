@@ -686,7 +686,7 @@
           let startTime = '';
           let endTime = '';
 
-          if(this.adjustForm.signDate.length === 2){
+          if(this.adjustForm.signDate && this.adjustForm.signDate.length === 2){
               startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
               endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
           }

@@ -658,7 +658,7 @@
         // this.adjustForm.signDate = TOOL.dateFormat(this.adjustForm.signDate);
             let moneyOutStartTime = '';
             let moneyOutEndTime = '';
-            if(this.adjustForm.signDate.length === 2){
+            if(this.adjustForm.signDate && this.adjustForm.signDate.length === 2){
                 moneyOutStartTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
                 moneyOutEndTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
             }
