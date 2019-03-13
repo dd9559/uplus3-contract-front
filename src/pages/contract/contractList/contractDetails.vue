@@ -88,7 +88,7 @@
                     <span class="text" v-if="contractDetail.houseInfo.propertyRightStatus===0">无</span>
                   </p>
                   <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
-                  
+
                   <p style="width:530px">
                     <span class="tag">按揭欠款：</span>
                     <span class="text dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span>
@@ -105,7 +105,7 @@
                       <el-table-column prop="name" label="业主姓名"></el-table-column>
                       <el-table-column label="电话">
                         <template slot-scope="scope">
-                          {{scope.row.mobile}} 
+                          {{scope.row.mobile}}
                           <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-ht-xq-ly-call'].state"></i>
                         </template>
                       </el-table-column>
@@ -142,7 +142,7 @@
                       <el-table-column prop="name" label="客户姓名"></el-table-column>
                       <el-table-column label="电话">
                         <template slot-scope="scope">
-                          {{scope.row.mobile}} 
+                          {{scope.row.mobile}}
                           <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
                         </template>
                       </el-table-column>
@@ -397,12 +397,13 @@
               <el-table-column prop="recording" label="录音" width="200">
                 <template slot-scope="scope">
                   <div class="recordPlay" v-if="scope.row.recording">
-                    <span class="playBtn" @click="playStop(scope.$index,scope.row.recording)">
-                      <i class="iconfont icon-tubiao_shiyong-17" :class="{'icon-tubiao_shiyong-19':(recordKey===scope.$index)&&isPlay}"></i> 
+                    <span class="playBtn" @click="playStop(scope.$index,scope.row)">
+                      <i class="iconfont icon-tubiao_shiyong-17" :class="{'icon-tubiao_shiyong-19':(recordKey===scope.$index)&&isPlay}"></i>
                     </span>
                     <span class="duration">
                       <span>{{scope.row.talkTime|SecondFormat}}</span>
-                      <el-progress :percentage="recordKey===scope.$index?playTime:0" :show-text="false"></el-progress>
+                      <!--<el-progress :percentage="recordKey===scope.$index?playTime:0" :show-text="false"></el-progress>-->
+                      <el-progress :show-text="false" :percentage="scope.row.recordTime"></el-progress>
                     </span>
                   </div>
                   <span v-else>--</span>
@@ -473,7 +474,7 @@
       <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
       <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  <!-- 合同主体上传 -->
     </div>
-    
+
     <!-- 拨号弹出框 -->
     <el-dialog title="提示" :visible.sync="dialogVisible" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <div>
@@ -676,7 +677,7 @@
               <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile?contractDetail.report.sellerAgentMobile:'--'}}</span></p></div>
             </div>
           </div>
-          
+
           <!-- <div class="printHeader">
             <div><span class="printTag">合同编号：</span><span class="printTxt">{{contractDetail.code}}</span></div>
           </div>
@@ -824,7 +825,7 @@
     <!-- </vue-easy-print> -->
   </div>
 </template>
-           
+
 <script>
 import achDialog from "./../../achievement/achDialog";
 import changeCancel from "../contractDialog/changeCancel";
@@ -1082,7 +1083,7 @@ export default {
       this.getContractDetail()
     },
     // 控制弹框body内容高度，超过显示滚动条
-    clientHeight() {        
+    clientHeight() {
       this.clientHei= document.documentElement.clientHeight -200 + 'px'
     },
     printDemo(){
@@ -1316,10 +1317,10 @@ export default {
               if (!window.location.origin) {
                 window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
               }
-              console.log(window.location.origin)
               let http = window.location.origin
               let src = `${http}/api/record/download?recording=${element.recording}`
               element.recordSrc=src
+              element.recordTime=0
             }
           });
           this.recordData=recordList
@@ -1390,7 +1391,7 @@ export default {
       this.remarkId='';
     },
     //播放录音
-    playStop(index,recording){
+    playStop(index,row){
       if(this.power['sign-ht-xq-ly-play'].state){
         let id = 'audio'+index;
         let myAudios = document.getElementsByTagName('audio');
@@ -1406,12 +1407,12 @@ export default {
         if (myAudio.paused){
           for(var i=0;i<myAudios.length;i++){
             myAudios[i].pause();
-            if(myAudios[i].id!=myAudio.id){
+            /*if(myAudios[i].id!=myAudio.id){
               if(myAudios[i].paused){
                 // this.playTime=0
-                myAudios[i].load();
+                // myAudios[i].load();
               }
-            }
+            }*/
           }
           myAudio.play();
           this.isPlay=true;
@@ -1422,21 +1423,28 @@ export default {
         var that=this
         myAudio.ontimeupdate = function (e) {
           // console.info('播放时间发生改变：'+myAudio.currentTime);
+          // console.log(myAudio.duration,myAudio.readyState,myAudio.networkState)
+          if(!myAudio.duration){
+            this.$message({
+              message:'音频正在缓冲...'
+            })
+            return
+          }
           let playTime_=(myAudio.currentTime/myAudio.duration)*100;
           if(playTime_){
-            that.playTime=playTime_
+            row.recordTime=playTime_
           }
           // that.playTime=(myAudio.currentTime/myAudio.duration)*100?(myAudio.currentTime/myAudio.duration)*100;
         };
         myAudio.onended=function(e){
-          that.playTime=0;
+          row.recordTime=0;
           that.isPlay=false;
           myAudio.pause();
         }
       }else{
         this.noPower('听取录音')
       }
-      
+
     },
 
     //下载录音
@@ -1856,7 +1864,7 @@ export default {
           this.otherList[index].value.splice(index_,1);
         }
       }
-      
+
     },
     //合同撤单弹窗
     invalid(){
@@ -1988,8 +1996,8 @@ export default {
     //     line-height: 60px;
     //   }
     // }
-  
- 
+
+
   padding-left: 20px;
   background: @bg-white;
   font-size: 14px;
@@ -2071,7 +2079,7 @@ export default {
             // text-overflow:ellipsis;
             text-overflow:ellipsis;
             white-space:nowrap;
-            overflow:hidden; 
+            overflow:hidden;
             display: inline-block;
           }
         }
@@ -2302,7 +2310,7 @@ export default {
       // text-overflow:ellipsis;
       text-overflow:ellipsis;
       white-space:nowrap;
-      overflow:hidden; 
+      overflow:hidden;
     }
     .noPower{
       width:300px;
