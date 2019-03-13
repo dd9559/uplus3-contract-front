@@ -689,12 +689,9 @@
           let beginDate;
           let endDate;
 
-          if(this.adjustForm.signDate.length === 2){
+          if(this.adjustForm.signDate && this.adjustForm.signDate.length === 2){
               beginDate = TOOL.dateFormat(this.adjustForm.signDate[0]);
               endDate = TOOL.dateFormat(this.adjustForm.signDate[1]);
-          }else if(this.adjustForm.signDate.length === 0){
-              beginDate = null
-              endDate = null
           }
           let param = {
             contResultVo: {
