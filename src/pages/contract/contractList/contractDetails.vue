@@ -555,7 +555,7 @@
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
-        <div class="printContent" style="position:relative;z-index:200">
+        <div class="printContent" style="width:1000px;position:relative;z-index:200">
           <div class="printHeader">
             <span>成交报告</span>
           </div>
@@ -2403,7 +2403,7 @@ export default {
   position: relative;
   font-size: 14px;
   box-sizing: border-box;
-  padding: 40px 40px;
+  padding: 60px 40px;
   background: #fff;
   .bgcImg{
     position: absolute;
