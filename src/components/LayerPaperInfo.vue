@@ -312,21 +312,12 @@
     /deep/.paper-info-child{
       margin:0 4.7mm;
       font-size: 12px;
-<<<<<<< HEAD
       margin-top: 10mm\9;
       margin-top: 10mm\0;
       margin-left: 1mm\9;
       margin-left: 1mm\0;
       margin-right: 1mm\9;
       margin-right: 1mm\9;
-=======
-      margin-top: 7mm\9;
-      margin-top: 7mm\0;
-      margin-left: 0\9;
-      margin-left: 0\0;
-      margin-right: 0\9;
-      margin-right: 0\9;
->>>>>>> 1ee3d34b54bc1033bdb3ab99d494220cd74ff258
     }
     /deep/.paper-info-child .paper-table-main{
       font-size: 12px;
