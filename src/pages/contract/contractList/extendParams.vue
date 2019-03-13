@@ -1182,27 +1182,44 @@ export default {
                           case 'owner':
                             box.forEach(element => {
                                 if(this.getCheckState(element)){
-																		let brother=element.parentElement.querySelector("input[type='text']")
-																		element.parentElement.querySelector("span").style.color="red"
-                                    if(brother.value.length===0){
-                                        errorArr1.push({
-                                            type:'input',
-                                            name:brother.getAttribute('extendparam')
-                                        })
-                                    }
+																	let brother=element.parentElement.querySelector("input[type='text']")
+																	let spanTag = element.parentElement.querySelector("span")
+																	if(spanTag){
+																		spanTag.classList.remove('WARNING')
+																	}else{
+																		brother.classList.remove('BODERRED')
+																	}
+																	if(brother.value.length===0){
+																		if(spanTag){
+																			spanTag.classList.add('WARNING')
+																		}
+																		errorArr1.push({
+																				type:'input',
+																				name:brother.getAttribute('extendparam')
+																		})
+																	}
                                 }
                             });
                               break
                           case 'guest':
                             box.forEach(element => {
                                 if(this.getCheckState(element)){
-                                    let brother=element.parentElement.querySelector("input[type='text']")
-                                    if(brother.value.length===0){
-                                        errorArr1.push({
-                                            type:'input',
-                                            name:brother.getAttribute('extendparam')
-                                        })
-                                    }
+																	let brother=element.parentElement.querySelector("input[type='text']")
+																	let spanTag = element.parentElement.querySelector("span")
+																	if(spanTag){
+																		spanTag.classList.remove('WARNING')
+																	}else{
+																		brother.classList.remove('BODERRED')
+																	}
+																	if(brother.value.length===0){
+																		if(spanTag){
+																			spanTag.classList.add('WARNING')
+																		}
+																		errorArr1.push({
+																				type:'input',
+																				name:brother.getAttribute('extendparam')
+																		})
+																	}
                                 }
                             });
                             break
