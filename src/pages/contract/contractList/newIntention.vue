@@ -77,6 +77,12 @@
                                 <el-form-item v-if="this.$route.query.operateType==2">
                                     <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth" disabled></el-input>
                                 </el-form-item>
+                                <el-form-item prop="ownIdentifyCode" v-if="this.type===1">
+                                    <el-input v-model="contractForm.ownIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
+                                </el-form-item>
+                                <el-form-item v-if="this.$route.query.operateType==2">
+                                    <el-input v-model="contractForm.ownIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>               
+                                </el-form-item>
                             </el-form-item>
                         </div>
                     </div>
@@ -207,7 +213,7 @@ export default {
       let idcard = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
        
         if (!value) {
-           return callback(new Error("请输入客户身份证号"));
+           return callback(new Error("请输入身份证号"));
         } else {
           if (!idcard.test(value)) {
            
@@ -291,6 +297,7 @@ export default {
         //业主信息
         ownname: "",
         ownmobile: "",
+        ownIdentifyCode:"",
 
         //客户信息
         custname: "",
@@ -334,7 +341,9 @@ export default {
           { required: true, message: "请选择客源编号", trigger:'change'}
         ],
 
-        custIdentifyCode: [{ required: true,validator: idCard,trigger:'change'}]
+        custIdentifyCode: [{ required: true,validator: idCard,trigger:'change'}],
+
+        ownIdentifyCode: [{ required: true,validator: idCard,trigger:'change'}]
 
       },
       hidBtn:'',//隐藏保存按钮
@@ -353,31 +362,7 @@ export default {
     };
   },
 
-  // watch: {
 
-  //   'contractForm.custIdentifyCode': {
-      
-     
-  //       handler(newName, oldName) {
-        
-  //       console.log(newName)
-  //       console.log(oldName)
-  //       this.$nextTick(function() {   
-  //           debugger 
-  //             this.$refs.contractForm.validateField('custIdentifyCode'); 
-                      
-  //         })
-  //         this.contractForm.custIdentifyCode = newName
-  //       if(newName && newName !== ''){
-          
-  //       }    
-  //     },
-  //     immediate: true,
- 
-      
-     
-  //   }
-  // },
 
   components: {
     houseGuest
@@ -455,20 +440,7 @@ export default {
       }
     },
 
-    // cutIdentif(val) {
-    //   if(val === "custIdentifyCode") {
 
-    //       this.$nextTick(() => {  
-              
-    //              this.$refs['contractForm'].validate((valid,obj) => {
-                
-                  
-    //              })
-         
-    //       })                 
-         
-    //   }
-    // },
 
     //选择房源弹框
     toLayerHouse() {
@@ -588,6 +560,7 @@ export default {
                   res.data.contPersons[i].personType.value;
                 this.contractForm.ownname = res.data.contPersons[i].name;
                 this.contractForm.ownmobile = res.data.contPersons[i].mobile;
+                this.contractForm.ownIdentifyCode = res.data.contPersons[i].identifyCode;
                 // this.contractForm.ownrelation = this.contractForm.contPersons[i].relation;
               } else if (
                 this.contractForm.contPersons[i].personType.value === 2
@@ -620,113 +593,6 @@ export default {
         });
     },
 
-    //获取门店
-    // getShopList(e) {
-    //   let param = {
-    //     keyword: e
-    //   };
-    //   this.$ajax
-    //     .get("/api/contract/getDepsByCityId", param)
-    //     .then(res => {
-    //       this.loading = true;
-    //       if (res.data.status === 200) {
-    //         this.loading = false;
-
-    //         if (res.data.data.length > 0) {
-    //           this.option2 = res.data.data;
-    //         }
-    //       }
-    //     })
-    //     .catch(error => {
-    //       this.$message({
-    //         message: error
-    //       });
-    //     });
-    // },
-
-    //获取经纪人
-    // getEmployee() {
-      
-    //   let id = this.contractForm.guestInfo.GuestStoreCode
-    //   if(id) {
-    //     let param = {
-    //       depId: id
-          
-    //     };
-    //     this.$ajax
-    //       .get("/api/organize/employees", param)
-    //       .then(res => {
-    //         if (res.data.status === 200) {
-    //           this.loading = false;
-
-    //           if (res.data.data.length > 0) {
-    //             this.option3 = res.data.data;
-    //           }
-    //         }
-    //       })
-    //       .catch(error => {
-    //         this.$message({
-    //           message: error
-    //         });
-    //       });
-    //   }
-      
-    // },
-
-    // changeAgent(val) {
-
-    //   let id = val.split(",")[0]
-    //   let name = val.split(",")[1]
-    //   this.$set(this.contractForm.guestInfo, "EmpCode", id);
-    //   this.$set(this.contractForm.guestInfo,'EmpName',name)
-    //   console.log(this.contractForm.guestInfo);
-    // },
-
-    // clearEmpName() {
-    //   this.contractForm.guestInfo.EmpName = "";
-    //   // this.contractForm.guestInfo.EmpCode = ''
-    // },
-
-    //获取门店更改时的
-    // getShop_(val) {
-    //   // if(id !== "" || !!id){
-
-    // this.loading2 = true;  
-    
-    //  let id = val.split(",")[0]
-    //  let name = val.split(",")[1]
-
-    //  let param = {
-    //     depId: id
-    //   };
-
-    //   this.$set(this.contractForm.guestInfo, "GuestStoreCode", id);
-    //   this.$set(this.contractForm.guestInfo,'GuestStoreName',name)
-
-    //   this.$ajax
-    //     .get("/api/organize/employees", param)
-    //     .then(res => {
-    //       if (res.data.status === 200) {
-    //         this.loading = false;
-
-    //         if (res.data.data.length > 0) {
-    //           this.option3 = res.data.data;
-    //         }
-    //       }
-    //     })
-    //     .catch(error => {
-    //       this.$message({
-    //         message: error
-    //       });
-    //     });
-    //   // debugger
-    //   this.clearEmpName();
-
-    //   // }
-    // },
-
-
-
     //关闭选择房源客源弹窗
     closeCommission(value,contractForm) {
       if (value) {
@@ -740,15 +606,7 @@ export default {
           this.getGuestDetail(value.selectCode);
           this.choseGcode=value.selectCode;
           this.isShowDialog = false;
-
-         
-
-         
-
-        
-        
-          
-          
+      
         }
       } else {
         this.isShowDialog = false;
@@ -757,40 +615,53 @@ export default {
     },
 
     checkRule(contractForm) {
-      let idcard = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
-      if(this.contractForm.ownmobile !=='' &&this.contractForm.custmobile !== ''&&((this.contractForm.ownmobile).trim() === (this.contractForm.custmobile).trim())){
-        this.$message({
-          type: "warning",
-          message: "业主手机号和客户手机号不能重复!"
-        });
-      }else if(this.contractForm.custIdentifyCode == ''){
-         this.$message({
-          type: "warning",
-          message: "客户身份证号不能为空"
-        });
-      }
-      else if(!idcard.test(this.contractForm.custIdentifyCode)){
-         this.$message({
-            type: "warning",
-            message: "请输入正确格式的身份证号"
-          });
-      }
-      else{
+     
+      
          
         this.$refs[contractForm].validate(valid => {
           if (valid) {
-              // this.dialogSure = true
-              if(this.type===1){
-                this.onSubmit1()
-              }else if(this.type===2){
-                this.onSubmit2()
-              }
+            let idcard = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
+            if(this.contractForm.ownmobile !=='' &&this.contractForm.custmobile !== ''&&((this.contractForm.ownmobile).trim() === (this.contractForm.custmobile).trim())){
+              this.$message({
+                type: "warning",
+                message: "业主手机号和客户手机号不能重复!"
+              });
+            }
+            else if(this.contractForm.custIdentifyCode !=='' &&this.contractForm.ownIdentifyCode !== ''&&((this.contractForm.ownIdentifyCode).trim() === (this.contractForm.custIdentifyCode).trim())){
+              this.$message({
+                type: "warning",
+                message: "业主身份证号和客户身份证号不能重复!"
+              });
+            }
+            else if(this.contractForm.custIdentifyCode == ''){
+              this.$message({
+                type: "warning",
+                message: "客户身份证号不能为空"
+              });
+            }
+            else if(this.contractForm.ownIdentifyCode == ''){
+              this.$message({
+                type: "warning",
+                message: "业主身份证号不能为空"
+              });
+            }
+            else if(!idcard.test(this.contractForm.custIdentifyCode) || !idcard.test(this.contractForm.ownIdentifyCode)){
+              this.$message({
+                  type: "warning",
+                  message: "请输入正确格式的身份证号"
+                });
+            } 
+            else if(this.type===1){
+              this.onSubmit1()
+            }else if(this.type===2){
+              this.onSubmit2()
+            }
               return true           
             } else {
               return false;
             }
-        });
-      }
+        })
+    
       
     },
 
@@ -798,14 +669,7 @@ export default {
     onSubmit1() {
       this.dialogSure = false
         this.fullscreenLoading=true
-        
-        // if (this.type === 1) {
-        //   this.contractForm.contPersons[0].name = this.contractForm.ownname;
-        //   this.contractForm.contPersons[0].mobile = this.contractForm.ownmobile;
-        //   this.contractForm.contPersons[1].name = this.contractForm.custname;
-        //   this.contractForm.contPersons[1].mobile = this.contractForm.custmobile;
-        //   this.contractForm.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
-        // }     
+         
         let param = {
           igdCont: {
             type: this.contractForm.type,
@@ -823,6 +687,7 @@ export default {
               {
                 name: this.contractForm.ownname,
                 encryptionMobile: this.contractForm.ownmobile,
+                encryptionCode: this.contractForm.ownIdentifyCode,
                 type: 1
               },
               //客户信息
@@ -837,11 +702,7 @@ export default {
           type: this.type
         };
        
-        // delete param.igdCont.ownname;
-        // delete param.igdCont.ownmobile;
-        // delete param.igdCont.custname;
-        // delete param.igdCont.custmobile;
-        // delete param.igdCont.custIdentifyCode;
+       
 
         this.$ajax
           .postJSON("/api/contract/addContract", param)
@@ -911,6 +772,8 @@ export default {
         };
         param.igdCont.contPersons[0].name = this.contractForm.ownname;
         param.igdCont.contPersons[0].encryptionMobile = this.contractForm.ownmobile;
+        param.igdCont.contPersons[0].identifyCode = this.contractForm.ownIdentifyCode;
+        param.igdCont.contPersons[0].encryptionCode = this.contractForm.ownIdentifyCode;
         param.igdCont.contPersons[1].name = this.contractForm.custname;
         param.igdCont.contPersons[1].encryptionMobile = this.contractForm.custmobile;
         param.igdCont.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
@@ -974,6 +837,7 @@ export default {
         }
         delete param.igdCont.ownname;
         delete param.igdCont.ownmobile;
+        delete param.igdCont.ownIdentifyCode;
         delete param.igdCont.custname;
         delete param.igdCont.custmobile;
         delete param.igdCont.custIdentifyCode;
