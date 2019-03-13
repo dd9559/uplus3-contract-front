@@ -147,7 +147,7 @@
                 </el-select>
                  <!-- :class="{'disabled':type===2&&!item.edit}" -->
                 <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight"></span>
-                <input v-model="item.encryptionCode" type="text" maxlength="18" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
+                <input v-model="item.encryptionCode" type="text" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -715,6 +715,7 @@ export default {
     },
     //验证合同信息
     isSave(value) {
+      var rule_ = JSON.parse(JSON.stringify(rule))
       this.haveExamine=value;
       // if(value){
       //   this.hintText='确定提审？'
@@ -723,7 +724,7 @@ export default {
       // }
       //验证合同信息
       if(this.contractForm.type!==1){
-        delete rule.transFlowCode
+        delete rule_.transFlowCode
       }
       if(!this.contractForm.signDate){
         this.contractForm.signDate=''
@@ -731,7 +732,7 @@ export default {
       if(!this.contractForm.transFlowCode){
         this.contractForm.transFlowCode=''
       }
-      this.$tool.checkForm(this.contractForm, rule).then(() => {
+      this.$tool.checkForm(this.contractForm, rule_).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
             if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
               this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
