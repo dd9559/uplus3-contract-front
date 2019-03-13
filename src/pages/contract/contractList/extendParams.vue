@@ -279,8 +279,6 @@ let Obj6 = {
     val3:'',
 		val5:'',
 		val6:'',
-		val7:'',
-		val8:'',
 		val9:'',
 		val10:''
 }
@@ -1184,7 +1182,8 @@ export default {
                           case 'owner':
                             box.forEach(element => {
                                 if(this.getCheckState(element)){
-                                    let brother=element.parentElement.querySelector("input[type='text']")
+																		let brother=element.parentElement.querySelector("input[type='text']")
+																		element.parentElement.querySelector("span").style.color="red"
                                     if(brother.value.length===0){
                                         errorArr1.push({
                                             type:'input',

@@ -554,7 +554,7 @@
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
-        <div class="printContent" style="width:900px;height:1270px;position:relative;z-index:200">
+        <div class="printContent" style="position:relative;z-index:200">
           <div class="printHeader">
             <span>成交报告</span>
           </div>
@@ -631,7 +631,7 @@
               </div>
               <div class="two-item no-bottom">
                 <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
-                <p style="width:220px;"><span>交易流程：</span><span>{{contractDetail.report.transFlowName}}</span></p>
+                <p style="width:240px;"><span>交易流程：</span><span>{{contractDetail.report.transFlowName}}</span></p>
               </div>
               <div class="two-item">
                 <p class="line"><span>按揭银行：</span><span>{{contractDetail.report.stagesBankName?contractDetail.report.stagesBankName:'--'}}</span></p>
@@ -652,7 +652,7 @@
                 <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
                 <p><span>电话：</span><span>{{item.mobile}}</span></p>
               </div>
-              <div class="last-item" style="border-top:1px solid #dddee6;">
+              <div class="last-item" style="border-top:1px solid #ebeef5;">
                 <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend==='0'?'否':'是'}}</span></p>
                 <p><span>婚姻状况：</span><span>{{contractDetail.report.maritalStatus?contractDetail.report.maritalStatus:'--'}}</span></p>
               </div>
@@ -1395,6 +1395,10 @@ export default {
         let id = 'audio'+index;
         let myAudios = document.getElementsByTagName('audio');
         let myAudio = document.getElementById(id);
+        // myAudio.onloadedmetadata=function(){
+        //   debugger
+        //   console.log(myAudio)
+        // }
         if(index!=this.recordKey){
           this.playTime=0
         }
@@ -2392,8 +2396,8 @@ export default {
   background: #fff;
   .bgcImg{
     position: absolute;
-    width: 900px;
-    height: 1270px;
+    width: 1000px;
+    // height: 1270px;
     z-index: 9999;
     top: 0;
     left: 0;
@@ -2438,7 +2442,7 @@ export default {
     margin-bottom: 20px;
     > div {
       width: 445px;
-      border: 1px solid #dddee6;
+      border: 1px solid #ebeef5;
       &.guest {
         margin-right: 10px;
       }
@@ -2449,7 +2453,6 @@ export default {
         &.title {
           justify-content: center;
           font-size: 16px;
-          background: #f2f3f8;
         }
         p {
           padding-left: 5px;
@@ -2462,21 +2465,24 @@ export default {
         }
       }
       .two-item {
-        border-bottom: 1px solid #dddee6;
-        border-top: 1px solid #dddee6;
+        border-bottom: 1px solid #ebeef5;
+        border-top: 1px solid #ebeef5;
         position: relative;
         .line {
           display: inline-block;
           width: 170px;
-          &::before {
-            content: "";
-            width: 1px;
-            height: 35px;
-            position: absolute;
-            left: 175px;
-            top: 0;
-            background: #dddee6;
-          }
+          height: 35px;
+          line-height: 35px;
+          border-right: 1px solid #ebeef5;
+          // &::before {
+          //   content: "";
+          //   width: 1px;
+          //   height: 35px;
+          //   position: absolute;
+          //   left: 175px;
+          //   top: 0;
+          //   background: #ebeef5;
+          // }
         }
         &.no-bottom {
           border-bottom: none;
