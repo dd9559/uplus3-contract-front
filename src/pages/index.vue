@@ -19,7 +19,7 @@
           @select="handleSelect"
           text-color="#333333"
           active-text-color="#478DE3">
-          <el-submenu :index="item.path" v-for="item in views" :key="item.id" v-if="item.child.length>0">
+          <el-submenu :index="item.path" :class="[collapse?'collapse-row':'']" v-for="item in views" :key="item.id" v-if="item.child.length>0">
             <template slot="title">
               <i class="iconfont" :class="item.icon"></i>
               <span>{{item.name}}</span>
@@ -237,6 +237,21 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  /deep/ .collapse-row{
+    .el-submenu__title{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      line-height: 1.6;
+      >span{
+        width: unset;
+        height: unset;
+        overflow: unset;
+        visibility: unset;
+      }
+    }
+  }
   .main {
     min-width: 1000px;
     position: relative;

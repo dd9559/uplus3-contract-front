@@ -44,7 +44,7 @@
                     </div>
                     <div>
                         <span>土地性质：</span>
-                        <el-select size="small" v-model="report.landNature" :disabled="!saveBtnShow">
+                        <el-select size="small" v-model="report.landNature" :disabled="!saveBtnShow" clearable>
                             <el-option v-for="item in dictionary['618']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
@@ -113,9 +113,9 @@
                         </li>
                     </ul>
                     <div class="input">
-                        <p>
+                        <p class="mark">
                             <span>付款方式：</span>
-                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow" class="bank">
+                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow" class="bank fukuan">
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
@@ -127,9 +127,9 @@
                         </p>
                     </div>
                     <div class="input">
-                        <p>
+                        <p style="margin-left:5px;">
                             <span>按揭银行：</span>
-                            <el-select size="small" v-model="report.stagesBankName" :disabled="noStageBank||!saveBtnShow" filterable class="bank">
+                            <el-select size="small" v-model="report.stagesBankName" :disabled="noStageBank||!saveBtnShow" filterable clearable class="bank">
                                 <el-option v-for="item in bankList" :key="item.id" :label="item.name" :value="item.name"></el-option>
                             </el-select>
                         </p>
@@ -170,7 +170,7 @@
                         </p>
                         <p>
                             <span style="min-width:70px;">婚姻状况：</span>
-                            <el-select size="small" v-model="report.maritalStatus" :disabled="!saveBtnShow">
+                            <el-select size="small" v-model="report.maritalStatus" :disabled="!saveBtnShow" clearable>
                                 <el-option v-for="item in dictionary['624']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
@@ -185,10 +185,10 @@
                     <p>
                         <span>代理人姓名：</span>
                         <el-input size="small" class="w100" v-model="report.buyerAgentName" maxlength="10" :disabled="!saveBtnShow" @input="inputOnly('buyerAgentName')"></el-input>
-                        <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)" :disabled="!saveBtnShow">
+                        <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)" :disabled="!saveBtnShow" clearable>
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
-                        <el-input size="small" maxlength="18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.buyerAgentCard" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" :maxlength="report.buyerAgentCardType===1?18:report.buyerAgentCardType===2?9:18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.buyerAgentCard" :disabled="!saveBtnShow"></el-input>
                     </p>
                     <p>
                         <span>电话：</span>
@@ -202,10 +202,10 @@
                     <p>
                         <span>代理人姓名：</span>
                         <el-input size="small" class="w100" v-model="report.sellerAgentName" maxlength="10" :disabled="!saveBtnShow" @input="inputOnly('sellerAgentName')"></el-input>
-                        <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)" :disabled="!saveBtnShow">
+                        <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)" :disabled="!saveBtnShow" clearable>
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
-                        <el-input size="small" maxlength="18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.sellerAgentCard" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" :maxlength="report.sellerAgentCardType===1?18:report.sellerAgentCardType===2?9:18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.sellerAgentCard" :disabled="!saveBtnShow"></el-input>
                     </p>
                     <p>
                         <span>电话：</span>
@@ -227,7 +227,7 @@ let checkPhone = function (str) {
     return /^1[3456789]\d{9}$/.test(str)
 }
 let checkIdCard = function (str) {
-    return /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/.test(str)
+    return /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/.test(str)
 }
 let checkPassPort = function (str) {
     return /^1[45][0-9]{7}$|(^[P|p|S|s]\d{7}$)|(^[S|s|G|g|E|e]\d{8}$)|(^[Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8}$)|(^[H|h|M|m]\d{8,10}$)/.test(str)
@@ -341,7 +341,7 @@ export default {
             },
             sellerArr: [],
             transFlowEdit: false,
-            noStageBank: false
+            noStageBank: true
         }
     },
     created() {
@@ -464,17 +464,23 @@ export default {
             if(this.report.houseShopOwnerName) {
                 if(this.report.houseStoreName) {
                     if(this.report.houseShopOwnerMobile) {
-                        if(this.report.transFlowName) {
-                            if(this.report.isExtend) {
+                        if(this.report.buyerPaymentMethod) {
+                            if(this.report.transFlowName) {
+                                if(this.report.isExtend) {
 
+                                } else {
+                                    this.$message({message:"是否析产（继承）不能为空"})
+                                    addRedBorder('xichan',2)
+                                    return false
+                                }
                             } else {
-                                this.$message({message:"是否析产（继承）不能为空"})
-                                addRedBorder('xichan',2)
+                                this.$message({message:"交易流程不能为空"})
+                                addRedBorder('liucheng',2)
                                 return false
                             }
                         } else {
-                            this.$message({message:"交易流程不能为空"})
-                            addRedBorder('liucheng',2)
+                            this.$message({message:"付款方式不能为空"})
+                            addRedBorder('fukuan',2)
                             return false
                         }
                     } else {
@@ -547,6 +553,14 @@ export default {
                     this.$message("卖方代理人证件号不能为空")
                     return false
                 }
+            }
+            if(this.report.buyerAgentMobile&&!this.report.buyerAgentName) {
+                this.$message("买方代理人姓名不能为空")
+                return false
+            }
+            if(this.report.sellerAgentMobile&&!this.report.sellerAgentName) {
+                this.$message("卖方代理人姓名不能为空")
+                return false
             }
             this.$ajax.postJSON('/api/contract/updateReport',{report:this.report, id:this.id}).then(res => {
                 res = res.data
@@ -681,6 +695,9 @@ export default {
             }
         },
         'report.buyerPaymentMethod'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('fukuan',2)
+            }
             if(newVal === 1) {
                 this.noStageBank = true
                 this.report.stagesBankName = ""
