@@ -113,9 +113,9 @@
                         </li>
                     </ul>
                     <div class="input">
-                        <p>
+                        <p class="mark">
                             <span>付款方式：</span>
-                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow" class="bank">
+                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow" class="bank fukuan">
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
@@ -127,7 +127,7 @@
                         </p>
                     </div>
                     <div class="input">
-                        <p>
+                        <p style="margin-left:5px;">
                             <span>按揭银行：</span>
                             <el-select size="small" v-model="report.stagesBankName" :disabled="noStageBank||!saveBtnShow" filterable class="bank">
                                 <el-option v-for="item in bankList" :key="item.id" :label="item.name" :value="item.name"></el-option>
@@ -185,7 +185,7 @@
                     <p>
                         <span>代理人姓名：</span>
                         <el-input size="small" class="w100" v-model="report.buyerAgentName" maxlength="10" :disabled="!saveBtnShow" @input="inputOnly('buyerAgentName')"></el-input>
-                        <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)" :disabled="!saveBtnShow">
+                        <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)" :disabled="!saveBtnShow" clearable>
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                         <el-input size="small" maxlength="18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.buyerAgentCard" :disabled="!saveBtnShow"></el-input>
@@ -202,7 +202,7 @@
                     <p>
                         <span>代理人姓名：</span>
                         <el-input size="small" class="w100" v-model="report.sellerAgentName" maxlength="10" :disabled="!saveBtnShow" @input="inputOnly('sellerAgentName')"></el-input>
-                        <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)" :disabled="!saveBtnShow">
+                        <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)" :disabled="!saveBtnShow" clearable>
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                         <el-input size="small" maxlength="18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.sellerAgentCard" :disabled="!saveBtnShow"></el-input>
@@ -464,17 +464,23 @@ export default {
             if(this.report.houseShopOwnerName) {
                 if(this.report.houseStoreName) {
                     if(this.report.houseShopOwnerMobile) {
-                        if(this.report.transFlowName) {
-                            if(this.report.isExtend) {
+                        if(this.report.buyerPaymentMethod) {
+                            if(this.report.transFlowName) {
+                                if(this.report.isExtend) {
 
+                                } else {
+                                    this.$message({message:"是否析产（继承）不能为空"})
+                                    addRedBorder('xichan',2)
+                                    return false
+                                }
                             } else {
-                                this.$message({message:"是否析产（继承）不能为空"})
-                                addRedBorder('xichan',2)
+                                this.$message({message:"交易流程不能为空"})
+                                addRedBorder('liucheng',2)
                                 return false
                             }
                         } else {
-                            this.$message({message:"交易流程不能为空"})
-                            addRedBorder('liucheng',2)
+                            this.$message({message:"付款方式不能为空"})
+                            addRedBorder('fukuan',2)
                             return false
                         }
                     } else {
@@ -681,6 +687,9 @@ export default {
             }
         },
         'report.buyerPaymentMethod'(newVal,oldVal) {
+            if(newVal) {
+                removeRedBorder('fukuan',2)
+            }
             if(newVal === 1) {
                 this.noStageBank = true
                 this.report.stagesBankName = ""
