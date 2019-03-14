@@ -64,13 +64,13 @@
     <div class="routing-list">
       <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
       <el-table :data="tableData" border @row-dblclick='toDetail'>
-        <el-table-column align="left" label="分账门店" prop="outStoreName">
+        <el-table-column align="center" label="分账门店" prop="outStoreName">
         </el-table-column>
-        <el-table-column align="left" label="分账门店账户" prop="outBankCard">
+        <el-table-column align="center" label="分账门店账户" prop="outBankCard">
         </el-table-column>
-        <el-table-column align="left" label="收款门店" prop="inStoreName">
+        <el-table-column align="center" label="收款门店" prop="inStoreName">
         </el-table-column>
-        <el-table-column align="left" label="收款门店账户">
+        <el-table-column align="center" label="收款门店账户">
           <template slot-scope="scope">
             <!-- <p v-for="item in scope.row.inBank" :key="item.bankCard">{{item.bankCard}}</p> -->
             <el-tooltip placement="top">
@@ -83,19 +83,19 @@
               </div>
               <div>
                 <p v-for="item in scope.row.inBank" :key="item.bankCard">{{item.bankCard}}</p>
-              </div> 
+              </div>
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="分账周期">
+        <el-table-column align="center" label="分账周期">
           <template slot-scope="scope">
             <span>{{scope.row.startTime|timeFormat_}}</span> ~
             <span>{{scope.row.endTime|timeFormat_}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="分账金额(元)" prop="accountAmount">
+        <el-table-column align="center" label="分账金额(元)" prop="accountAmount">
         </el-table-column>
-        <el-table-column align="left" label="操作">
+        <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" size="medium" v-if="power['sign-ht-fz-pay'].state" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
             <span v-else>-</span>
@@ -142,7 +142,7 @@
     </el-dialog>
   </div>
 </template>
-           
+
 <script>
 import ScreeningTop from "@/components/ScreeningTop";
 import { MIXINS } from "@/assets/js/mixins";
@@ -504,7 +504,7 @@ export default {
     },
     //分账详情
     toDetail(value){
-      let newPage = this.$router.resolve({ 
+      let newPage = this.$router.resolve({
         path: '/routingRemitDetail',
         query:{
           ids:value.settleDetailsIds,
@@ -581,7 +581,7 @@ export default {
   width: 150px;
 }
 .tag{
-  color: @color-6c; 
+  color: @color-6c;
   padding-left: 20px;
 }
 .text{

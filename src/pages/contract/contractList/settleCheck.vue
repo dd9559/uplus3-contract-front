@@ -67,49 +67,49 @@
     <div class="contract-list">
       <!-- <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>    -->
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
-        <el-table-column label="合同编号" width="150" fixed>
+        <el-table-column label="合同编号" align="center" width="120" fixed>
           <template slot-scope="scope">
             <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter" align="center">
+        <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter" align="center" width="60">
 
         </el-table-column>
 
-        <el-table-column label="成交总价" :formatter="nullFormatter" prop="dealPrice">
+        <el-table-column label="成交总价" :formatter="nullFormatter" prop="dealPrice" align="center" width="90">
           <template slot-scope="scope">
             <span>{{scope.row.dealPrice}} 元</span>
             <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="成交经纪人" :formatter="nullFormatter">
+        <el-table-column label="成交经纪人" :formatter="nullFormatter" align="center" width="120">
           <template slot-scope="scope">
             <p>{{scope.row.dealAgentStoreName}}</p>
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="发起日期" align="center" min-width="100">
+        <el-table-column label="发起日期" align="center" width="90">
           <template slot-scope="scope">
             <p>{{scope.row.sponsorTime | getDate}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="发起人" :formatter="nullFormatter">
+        <el-table-column label="发起人" :formatter="nullFormatter" align="center" width="120">
           <template slot-scope="scope">
             <p>{{scope.row.sponsorStoreName}}</p>
             <p>{{scope.row.sponsorName}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="实际结算" :formatter="nullFormatter">
+        <el-table-column label="实际结算" :formatter="nullFormatter" align="center" width="90">
           <template slot-scope="scope">
             <p>{{scope.row.amount}}元</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="审核状态">
+        <el-table-column label="审核状态" align="center" width="80">
           <template slot-scope="scope">
             <span class="blue" v-if="scope.row.examineState.value===0">审核中</span>
             <span class="green" v-if="scope.row.examineState.value===1">通过</span>
@@ -117,13 +117,13 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="审核日期" align="center" min-width="100">
+        <el-table-column label="审核日期" align="center" width="90">
           <template slot-scope="scope">
             <p>{{scope.row.examineTime | getDate}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="当前审核人" align="center" min-width="140">
+        <el-table-column label="当前审核人" align="center" width="120">
           <template slot-scope="scope">
 
             <span v-if="scope.row.auditorId>0&&scope.row.examineState.value===0">
@@ -134,7 +134,7 @@
             <p class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,userMsg.empId===scope.row.auditorId?2:1)">{{userMsg.empId===scope.row.auditorId?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="下一步审核人" min-width="140">
+        <el-table-column align="center" label="下一步审核人" width="120">
           <template slot-scope="scope">
             <span v-if="scope.row.nextAuditId>0">
               <p>{{scope.row.nextAuditStoreName}}</p>
@@ -144,7 +144,7 @@
             <p class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId&&scope.row.nextAuditId!==0)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
-        <el-table-column label="审核备注" width="200">
+        <el-table-column label="审核备注" align="center" width="120">
           <template slot-scope="scope">
             <span v-if="scope.row.remarks&&(scope.row.remarks).trim().length > 0">
               <el-popover trigger="hover" placement="top">
@@ -160,7 +160,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="100" fixed="right" align="center">
+        <el-table-column label="操作" min-width="120" fixed="right" align="center">
           <template slot-scope="scope">
             <template v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === userMsg.empId">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
@@ -720,7 +720,7 @@
               this.$nextTick(()=>{
                 this.loadingTable = false;
               })
-              
+
 
             }).catch(error => {
                 this.$message({
@@ -1018,13 +1018,13 @@
       th{
         background-color: #EEF2FB;
         &:first-child{
-          padding-left: 20px;
+          /*padding-left: 20px;*/
         }
       }
       tr{
         td{
           &:first-child{
-            padding-left: 20px;
+            /*padding-left: 20px;*/
           }
         }
       }

@@ -88,55 +88,55 @@
       <p style="color:#666;margin-bottom:10px;">温馨提示：支付失败原因为“收款人户名和银行卡号信息不匹配”时，需要去公司设置里面重新修改此门店的银行账户信息</p>
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
 
-        <el-table-column label="分账门店" :formatter="nullFormatter">
+        <el-table-column label="分账门店" :formatter="nullFormatter" align="center" min-width="80">
           <template slot-scope="scope">
             <p>{{scope.row.outStoreName}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="分账门店账户" :formatter="nullFormatter">
+        <el-table-column label="分账门店账户" :formatter="nullFormatter" align="center" min-width="120">
           <template slot-scope="scope">
             <p>{{scope.row.outBankCard}}</p>
           </template>
         </el-table-column>
 
-         <el-table-column label="收款门店" :formatter="nullFormatter">
+         <el-table-column label="收款门店" :formatter="nullFormatter" align="center" min-width="80">
           <template slot-scope="scope">
             <p>{{scope.row.inStoreName}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="收款门店账户" :formatter="nullFormatter">
+        <el-table-column label="收款门店账户" :formatter="nullFormatter" align="center" min-width="120">
           <template slot-scope="scope">
             <p>{{scope.row.inBankCard}}</p>
           </template>
         </el-table-column>
 
-         <el-table-column label="分账金额（元）" :formatter="nullFormatter">
+         <el-table-column label="分账金额（元）" :formatter="nullFormatter" align="center" min-width="80">
           <template slot-scope="scope">
             <p>{{scope.row.accountAmount}} 元</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="分账周期">
+        <el-table-column label="分账周期" align="center" min-width="100">
           <template slot-scope="scope">
             <p>{{scope.row.startTime | getDate}} ~ {{scope.row.endTime | getDate}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="打款人" :formatter="nullFormatter">
+        <el-table-column label="打款人" :formatter="nullFormatter" align="center" min-width="120">
           <template slot-scope="scope">
             <p>{{scope.row.moneyOutDepName + ' - ' + scope.row.moneyOutByName}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="打款日期" align="center">
+        <el-table-column label="打款日期" align="center" min-width="90">
           <template slot-scope="scope">
             <p>{{scope.row.moneyOutTime | getTime}}</p>
           </template>
         </el-table-column>
 
-        <el-table-column label="支付状态" align="center">
+        <el-table-column label="支付状态" align="center" min-width="80">
           <template slot-scope="scope">
             <p v-if="scope.row.status&&(scope.row.status.value === 1 || scope.row.status.value === 3)">{{scope.row.status.label}}</p>
             <p v-else-if="scope.row.status&&scope.row.status.value === 2" class="red">
@@ -149,7 +149,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="打款备注" width="200">
+        <el-table-column label="打款备注" align="center" min-width="90">
           <template slot-scope="scope">
               <span v-if="scope.row.remark&&(scope.row.remark).trim().length > 0">
                 <el-popover trigger="hover" placement="top">
@@ -165,7 +165,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="100" fixed="right" align="center">
+        <el-table-column label="操作" fixed="right" align="center" min-width="120">
           <template slot-scope="scope">
             <template v-if="scope.row.status && scope.row.status.value === 2 && power['sign-ht-fz-pay'].state">
               <el-button type="text" class="curPointer" @click="payAgain(scope.row)">重新打款</el-button>
@@ -553,7 +553,7 @@
       },
 
       payAgainSure(){
-        
+
 
         if(this.radio === ''){
           this.$message({
@@ -1084,13 +1084,13 @@
       th{
         background-color: #EEF2FB;
         &:first-child{
-          padding-left: 20px;
+          /*padding-left: 20px;*/
         }
       }
       tr{
         td{
           &:first-child{
-            padding-left: 20px;
+            /*padding-left: 20px;*/
           }
         }
       }

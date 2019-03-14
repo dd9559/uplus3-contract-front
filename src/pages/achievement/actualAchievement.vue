@@ -190,10 +190,7 @@
           border
         >
           <el-table-column
-            label="合同信息"
-            align="left"
-            width="220"
-          >
+            label="合同信息" align="left" min-width="200">
             <template slot-scope="scope">
               <p>合同：<span
                   class="blue"
@@ -206,9 +203,7 @@
           </el-table-column>
 
           <el-table-column
-            label="业绩状态"
-            width="90"
-          >
+            label="业绩状态" align="center" min-width="80">
             <template slot-scope="scope">
               <p
                 v-if="scope.row.achievementState==-1"
@@ -232,9 +227,7 @@
           </el-table-column>
 
           <el-table-column
-            label="合同类型"
-            width="90"
-          >
+            label="合同类型" align="center" min-width="60">
             <template slot-scope="scope">
               <p>{{scope.row.contType.label}}</p>
             </template>
@@ -242,15 +235,11 @@
 
           <el-table-column
             prop="propertyAddr"
-            label="物业地址"
-            width="240"
-          >
+            label="物业地址" align="center" min-width="120">
           </el-table-column>
 
           <el-table-column
-            label="成交经纪人"
-            width="180"
-          >
+            label="成交经纪人" align="center" min-width="120">
             <template slot-scope="scope">
               <p v-if="scope.row.dealName">{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
               <p v-else>暂无</p>
@@ -259,18 +248,14 @@
 
           <el-table-column
             prop="date"
-            label="签约日期"
-            width="110"
-          >
+            label="签约日期" align="center" min-width="90">
             <template slot-scope="scope">
               <p>{{scope.row.signDate|formatDate}}</p>
             </template>
           </el-table-column>
 
           <el-table-column
-            label="分成类型"
-            width="100"
-          >
+            label="分成类型" align="center" min-width="60">
             <template slot-scope="scope">
               <!-- 目前一期分成类型只有业绩，暂时写死 -->
               <p>业绩</p>
@@ -278,9 +263,7 @@
           </el-table-column>
 
           <el-table-column
-            label="分成人"
-            width="230"
-          >
+            label="分成人" align="center" min-width="200">
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
                 <div>--</div>
@@ -294,9 +277,7 @@
           </el-table-column>
 
           <el-table-column
-            label="角色类型"
-            width="100"
-          >
+            label="角色类型" align="center" min-width="90">
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
                 <div>--</div>
@@ -313,9 +294,7 @@
           </el-table-column>
 
           <el-table-column
-            label="分成比例"
-            width="80"
-          >
+            label="分成比例" align="center" min-width="60">
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
                 <div>--</div>
@@ -329,9 +308,7 @@
           </el-table-column>
 
           <el-table-column
-            label="应收分成金额（元）"
-            width="150"
-          >
+            label="应收分成金额（元）" align="center" min-width="90">
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
                 <div>--</div>
@@ -345,9 +322,7 @@
           </el-table-column>
 
           <el-table-column
-            label="当前审核人"
-            width="150"
-          >
+            label="当前审核人" align="center" min-width="120">
             <template slot-scope="scope">
                 <p  v-if="scope.row.achievementState==0">{{scope.row.auditDepName?scope.row.auditDepName:'-'}}-{{scope.row.auditName?scope.row.auditName:'-'}}</p>
                 <p v-else>-</p>
@@ -362,9 +337,7 @@
           </el-table-column>
 
          <el-table-column
-            label="下一步审核人"
-            width="150"
-          >
+            label="下一步审核人" align="center" min-width="120">
             <template slot-scope="scope">
                 <p v-if="scope.row.achievementState==0">{{scope.row.nextAuditDepName?scope.row.nextAuditDepName:'-'}}-{{scope.row.nextAuditName?scope.row.nextAuditName:'-'}}</p>
                 <p v-else>-</p>
@@ -380,9 +353,7 @@
           </el-table-column>
 
           <el-table-column
-            label="操作"
-            min-width="100"
-          >
+            label="操作" align="center" min-width="120">
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
                 <div
@@ -1106,7 +1077,7 @@ export default {
                 this. $nextTick(()=>{
                   this.loading2=false;
                })
-             
+
             }else{
               this.checkArr = [];
             }
@@ -1247,7 +1218,7 @@ export default {
                 this.noPower('合同详情查看')
            }
         });
-  
+
      }else{
        this.noPower('合同详情查看')
      }
