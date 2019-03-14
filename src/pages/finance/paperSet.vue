@@ -107,82 +107,82 @@
         <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
       </div>
       <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" class="paper-table" v-loading="loadingList">
-        <el-table-column align="center" label="序号" min-width="70">
+        <el-table-column align="center" label="序号" min-width="60">
           <template slot-scope="scope">
             <p class="tc">{{scope.$index + 1}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="合同编号" min-width="124">
+        <el-table-column label="合同编号" align="center" min-width="120">
           <template slot-scope="scope">
             <span class="blue" @click="cellOpera('contract',scope.row)">{{scope.row.contNo}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="票据编号" min-width="137">
+        <el-table-column label="票据编号" align="center" min-width="120">
           <template slot-scope="scope">
             <span class="blue" @click="cellOpera('paper',scope.row)">{{scope.row.billCode}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="收款ID" min-width="135">
+        <el-table-column label="收款ID" align="center" min-width="120">
           <template slot-scope="scope">
             <span class="blue" @click="cellOpera('bill',scope.row)">{{scope.row.proceedsCode}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="address" label="物业地址" min-width="124">
+        <el-table-column prop="address" label="物业地址" align="center" min-width="160">
         </el-table-column>
-        <el-table-column prop="cName" label="客户姓名" min-width="84">
+        <el-table-column prop="cName" label="客户姓名" align="center" min-width="80">
         </el-table-column>
-        <el-table-column prop="state" label="票据状态" min-width="84" :formatter="nullFormatter">
+        <el-table-column prop="state" label="票据状态" align="center" min-width="80" :formatter="nullFormatter">
         </el-table-column>
-        <el-table-column label="收款人" min-width="130">
+        <el-table-column label="收款人" align="center" min-width="120">
           <template slot-scope="scope">
               <p>{{nullFormatFn(scope.row.payeeStoreName)}}</p>
               <p>{{nullFormatFn(scope.row.payeeName)}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="开票人员" min-width="130">
+        <el-table-column label="开票人员" align="center" min-width="120">
           <template slot-scope="scope">
               <p>{{nullFormatFn(scope.row.drawerDepName)}}</p>
               <p>{{nullFormatFn(scope.row.drawerName)}}</p>
           </template>
         </el-table-column>
-        <el-table-column prop="drawerDepName" label="门店" min-width="85">
+        <el-table-column prop="drawerDepName" label="门店" align="center" min-width="80">
         </el-table-column>
-        <el-table-column prop="amount" label="开票金额（元）" min-width="122">
+        <el-table-column prop="amount" label="开票金额（元）" align="center" min-width="80">
         </el-table-column>
-        <el-table-column label="开票日期" min-width="90">
+        <el-table-column label="开票日期" align="center" min-width="90">
           <template slot-scope="scope">
             {{dateFormat(scope.row.createTime)}}
           </template>
         </el-table-column>
-        <el-table-column prop="printTimes" label="打印次数" min-width="85">
+        <el-table-column prop="printTimes" label="打印次数" align="center" min-width="60">
         </el-table-column>
-        <el-table-column prop="printByName" label="打印人" min-width="130">
+        <el-table-column prop="printByName" label="打印人" align="center" min-width="120">
           <template slot-scope="scope">
               <p>{{nullFormatFn(scope.row.printByStoreName)}}</p>
               <p>{{nullFormatFn(scope.row.printByName)}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="打印日期" min-width="90">
+        <el-table-column label="打印日期" align="center" min-width="90">
            <template slot-scope="scope">
             {{dateFormat(scope.row.printTime)}}
           </template>
         </el-table-column>
-        <el-table-column label="回收日期" min-width="90">
+        <el-table-column label="回收日期" align="center" min-width="90">
           <template slot-scope="scope">
             {{dateFormat(scope.row.recycleTime)}}
           </template>
         </el-table-column>
-        <el-table-column label="核销日期" min-width="90">
+        <el-table-column label="核销日期" align="center" min-width="90">
           <template slot-scope="scope">
             {{dateFormat(scope.row.cavTime)}}
           </template>
         </el-table-column>
-        <el-table-column label="作废日期" min-width="90">
+        <el-table-column label="作废日期" align="center" min-width="90">
           <template slot-scope="scope">
             {{dateFormat(scope.row.invalidTime)}}
           </template>
         </el-table-column>
-        <el-table-column prop="invalidReason" label="作废原因" min-width="100">
+        <el-table-column prop="invalidReason" label="作废原因" align="center" min-width="90">
           <template slot-scope="scope">
              <el-popover
               placement="top-start"
@@ -195,14 +195,14 @@
               <!-- <p class="norwap">{{scope.row.invalidReason}}</p> -->
           </template>
         </el-table-column>
-        <el-table-column label="操作人/时间" min-width="130">
+        <el-table-column label="操作人/时间" align="center" min-width="120">
           <template slot-scope="scope">
             <p>{{nullFormatFn(scope.row.updateByStoreName)}}</p>
             <p>{{nullFormatFn(scope.row.updateByName)}}</p>
             <p>{{dateFormat(scope.row.updateTime)}}</p>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" min-width="148">
+        <el-table-column fixed="right" label="操作" align="center" min-width="120">
           <template slot-scope="scope">
             <!-- 已开票 -->
             <template v-if="scope.row.state.value===2">

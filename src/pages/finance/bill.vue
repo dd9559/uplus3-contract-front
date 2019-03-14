@@ -171,8 +171,8 @@
           <el-button class="btn-info" round type="primary" size="small" @click="getExcel" v-if="power['sign-cw-debt-export'].state">导出</el-button>
         </p>
       </div>
-      <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" class="info-scrollbar" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
-        <el-table-column align="center" min-width="160" label="收付ID" prop="payCode"
+      <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" class="info-scrollbar" style="width: 100%" @row-dblclick="toDetails">
+        <el-table-column align="center" width="120" label="收付ID" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" width="200" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
@@ -185,53 +185,53 @@
         </el-table-column>
         <el-table-column align="center" min-width="160" label="物业地址" prop="address"
                          :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" min-width="160" label="收付方式">
+        <el-table-column align="center" width="60" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" width="80" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" width="80" label="收付方式">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="对象">
+        <el-table-column align="center" width="60" label="对象">
           <template slot-scope="scope">
             <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收款人" min-width="140">
+        <el-table-column align="center" label="收款人" width="120">
           <template slot-scope="scope">
             <span>{{scope.row.type===1?scope.row.inObjStore:scope.row.store}}</span>
             <p>{{scope.row.type===1?scope.row.inObjName:scope.row.createByName}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收付时间" prop="createTime" :formatter="nullFormatter" min-width="140">
+        <el-table-column align="center" width="80" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" width="60" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="收付时间" prop="createTime" :formatter="nullFormatter" width="90">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="入账时间" prop="toAccountTime" :formatter="nullFormatter" min-width="140">
+        <el-table-column align="center" label="入账时间" prop="toAccountTime" :formatter="nullFormatter" width="90">
           <template slot-scope="scope">
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收付状态" prop="payStatus">
+        <el-table-column align="center" width="80" label="收付状态" prop="payStatus">
           <template slot-scope="scope">
             <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus}}</span>
             <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="结算信息">
+        <el-table-column align="center" width="90" label="结算信息">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="票据状态">
+        <el-table-column align="center" width="80" label="票据状态">
           <template slot-scope="scope">
             {{scope.row|billState}}
           </template>
         </el-table-column>
-        <el-table-column fixed="right" align="center" label="操作" min-width="160">
+        <el-table-column fixed="right" align="center" label="操作" min-width="120">
           <template slot-scope="scope">
             <div v-if="(power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&scope.row.payStatusValue!==4)||(((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1&&(power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)))">
               <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.isDel===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&scope.row.payStatusValue!==4">
