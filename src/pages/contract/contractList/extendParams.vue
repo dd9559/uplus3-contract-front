@@ -441,6 +441,7 @@ export default {
 			var isFull=0;//合同是否填写完整
 			let iframebox1=this.$refs.iframeFirst
 			let iframebox2=this.$refs.iframeSecond
+			iframebox2.contentWindow.document.body.click()
 			let htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 			let htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 			
