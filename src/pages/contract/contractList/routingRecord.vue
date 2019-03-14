@@ -137,7 +137,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogReceipt = false">取消</el-button>
-        <el-button round type="primary" @click="commit">确定</el-button>
+        <el-button round type="primary" :disabled="canClick" @click="commit">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -186,6 +186,7 @@ export default {
       receiptReason:'',//备注
       radio:'',
       index:'',
+      canClick:false,
       power: {
         'sign-ht-fz-pay': {
           state: false,
@@ -460,9 +461,11 @@ export default {
           inBankAccountName:this.radio.bankAccountName,
           remark:this.receiptReason
         };
+        this.canClick=true
         this.$ajax.postJSON('/api/separate/account/allotted',param).then(res=>{
           res=res.data;
           if(res.status===200){
+            this.canClick=false
             this.$message({
               message:'打款成功',
               type:'success'
@@ -473,6 +476,7 @@ export default {
             this.dialogReceipt=false;
           }
         }).catch(error=>{
+          this.canClick=false
           if(error.status===2001){
             this.dialogReceipt=false
             this.getProateNotes();
