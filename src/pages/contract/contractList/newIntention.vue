@@ -209,9 +209,8 @@ export default {
 
     //身份证号验证规则
     var idCard = (rule, value, callback) => {
-      
-      value = value.toUpperCase();
-      let idcard = /(^\d{15}$)|(^\d{17}([0-9]|X)$)/;
+    
+      let idcard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
        
         if (!value) {
            return callback(new Error("请输入身份证号"));
@@ -621,7 +620,7 @@ export default {
          
         this.$refs[contractForm].validate(valid => {
           if (valid) {
-            let idcard = /(^\d{15}$)|(^\d{17}([0-9]|X)$)/;
+            let idcard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
             if(this.contractForm.ownmobile !=='' &&this.contractForm.custmobile !== ''&&((this.contractForm.ownmobile).trim() === (this.contractForm.custmobile).trim())){
               this.$message({
                 type: "warning",
