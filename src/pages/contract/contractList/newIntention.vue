@@ -48,11 +48,11 @@
                             <el-form-item>
                                 <el-form-item label="房源编号：" prop="houseno">
                                     <el-button type="primary" @click="toLayerHouse()" v-if="type===1">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</el-button>
-                                    <el-button type="text" v-if="this.$route.query.operateType==2">{{contractForm.houseinfoCode}}</el-button>
+                                    <el-button type="text" v-if="type==2">{{contractForm.houseinfoCode}}</el-button>
                                 </el-form-item>
                                 <el-form-item label="物业地址：" class="ml30">
                                     <div v-if="type===1">{{contractForm.houseInfo.EstateName}}</div>
-                                    <div v-if="this.$route.query.operateType==2">{{contractForm.propertyAddr}}</div>
+                                    <div v-if="type==2">{{contractForm.propertyAddr}}</div>
                                 </el-form-item>
                             </el-form-item>
                             
@@ -69,18 +69,18 @@
 
                             <el-form-item label="业主信息：" class="disb" required>
                                 <el-form-item prop="ownname">
-                                    <el-input v-model="contractForm.ownname" @input="cutText('ownname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false" maxlength=5></el-input>
+                                    <el-input v-model="contractForm.ownname" @input="cutText('ownname')" clearable placeholder="姓名" class="ownwidth" :disabled="type==2?true:false" maxlength=5></el-input>
                                 </el-form-item>
-                                <el-form-item prop="ownmobile" v-if="this.type===1">
+                                <el-form-item prop="ownmobile" v-if="type===1">
                                     <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth"></el-input>
                                 </el-form-item>
-                                <el-form-item v-if="this.$route.query.operateType==2">
+                                <el-form-item v-if="type==2">
                                     <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth" disabled></el-input>
                                 </el-form-item>
-                                <el-form-item prop="ownIdentifyCode" v-if="this.type===1">
+                                <el-form-item prop="ownIdentifyCode" v-if="type===1">
                                     <el-input v-model="contractForm.ownIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
                                 </el-form-item>
-                                <el-form-item v-if="this.$route.query.operateType==2">
+                                <el-form-item v-if="type==2">
                                     <el-input v-model="contractForm.ownIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>               
                                 </el-form-item>
                             </el-form-item>
@@ -96,7 +96,7 @@
                                 <el-form-item label="客源编号：" prop="guestinfoCode">
                                   <el-button-group v-model="contractForm.guestinfoCode">
                                         <el-button type="primary" @click="toLayerGuest()" v-if="type===1" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</el-button>
-                                        <el-button type="text" v-if="this.$route.query.operateType==2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
+                                        <el-button type="text" v-if="type==2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
                                         
                                   </el-button-group>
                                 </el-form-item>
@@ -119,25 +119,25 @@
                             </div>
                             <el-form-item label="客户信息：" class="disb" required>
                                 <el-form-item prop="custname">
-                                    <el-input v-model="contractForm.custname" @input="cutText('custname')" clearable placeholder="姓名" class="ownwidth" :disabled="this.$route.query.operateType==2?true:false" maxlength=5></el-input>
+                                    <el-input v-model="contractForm.custname" @input="cutText('custname')" clearable placeholder="姓名" class="ownwidth" :disabled="type==2?true:false" maxlength=5></el-input>
                                 </el-form-item>
-                                <el-form-item prop="custmobile" v-if="this.type===1">
+                                <el-form-item prop="custmobile" v-if="type===1">
                                     <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth"></el-input>
                                 </el-form-item>
-                                <el-form-item v-if="this.$route.query.operateType==2">
+                                <el-form-item v-if="type==2">
                                     <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth" disabled></el-input>
                                 </el-form-item>
                                 
-                                <el-form-item prop="custIdentifyCode" v-if="this.type===1">
+                                <el-form-item prop="custIdentifyCode" v-if="type===1">
                                     <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
                                 </el-form-item>
-                                <el-form-item v-if="this.$route.query.operateType==2">
+                                <el-form-item v-if="type==2">
                                     <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>               
                                 </el-form-item>
                             </el-form-item>
                             
                         </div>
-                        <div class="form-cont mt30" v-if="this.contractForm.type == 4">
+                        <div class="form-cont mt30" v-if="contractForm.type == 4">
                             <el-form-item label="意向备注：" class="disb textlengthbox">
                                 <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 5}"  placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth" maxlength=200></el-input>
                                 <span class="textLength">{{contractForm.remarks.length}}/200</span>
@@ -162,7 +162,7 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogSure = false">取 消</el-button>
                 <el-button v-if="type===1" type="primary" @click="onSubmit1()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
-                <el-button v-if="this.$route.query.operateType==2" type="primary" @click="onSubmit2()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
+                <el-button v-if="type==2" type="primary" @click="onSubmit2()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
             </span>
         </el-dialog>
         <!-- 创建合同成功提示框 -->
@@ -784,7 +784,7 @@ export default {
         param.igdCont.contPersons[1].encryptionMobile = this.contractForm.custmobile;
         param.igdCont.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
         param.igdCont.contPersons[1].encryptionCode = this.contractForm.custIdentifyCode;
-        if (this.$route.query.operateType== 2) {
+        if (this.type== 2) {
           delete param.igdCont.code;
           delete param.igdCont.contType;
           delete param.igdCont.recordName;
@@ -953,24 +953,33 @@ export default {
 
 
   created() {
-    // this.remoteMethod()
-    // this.getShopList();
-    this.contractForm.type = this.$route.query.contType //区分合同类型
-   
-    //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType
-    if (this.$route.query.operateType) {
-        this.type = this.$route.query.operateType
-      if(this.$route.query.operateType ==2 ){
-        this.type = this.$route.query.operateType;
-        this.id = this.$route.query.id;
-        this.getContractDetail();
-      }
-    }
-
-
+    let backMsg = JSON.parse(localStorage.getItem("backMsg"));
+    if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
+      let contMsg = JSON.parse(localStorage.getItem("contractMsg"));
+      this.contractForm.type=parseInt(contMsg.type);//合同类型
+      this.type=2
+      this.id=parseInt(contMsg.id)
+      this.getContractDetail();
+    }else{
+      // this.remoteMethod()
+      // this.getShopList();
+      this.contractForm.type = this.$route.query.contType //区分合同类型
     
+      //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType
+      if (this.$route.query.operateType) {
+          this.type = parseInt(this.$route.query.operateType)
+        if(this.$route.query.operateType ==2 ){
+          this.type = parseInt(this.$route.query.operateType);
+          this.id = this.$route.query.id;
+          this.getContractDetail();
+        }
+      }
 
-  }
+    }
+  },
+  beforeDestroy(){
+    localStorage.removeItem('backMsg')
+  },
 };
 </script>
 
