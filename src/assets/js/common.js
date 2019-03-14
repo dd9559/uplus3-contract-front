@@ -15,6 +15,11 @@ let TOOL = {
           code: "sign-ht-info-query"
         },
         {
+          name: "合同审核",
+          path: "contractCheck",
+          code: "sign-ht-htsh-query"
+        },
+        {
           name: "调佣审核",
           path: "adjustCheck",
           code: "sign-ht-maid-query"
@@ -25,19 +30,14 @@ let TOOL = {
           code: "sign-ht-js-query"
         },
         {
-          name: "合同审核",
-          path: "contractCheck",
-          code: "sign-ht-htsh-query"
+          name: '分账记录',
+          path: 'routingRecord',
+          code: 'sign-ht-fz-query'
         },
         {
           name: "打款记录",
           path: "debitRecord",
           code: "sign-ht-dk-query"
-        },
-        {
-          name: '分账记录',
-          path: 'routingRecord',
-          code: 'sign-ht-fz-query'
         }
       ]
     },
