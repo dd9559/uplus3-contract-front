@@ -174,7 +174,7 @@
       <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" class="info-scrollbar" style="width: 100%" header-row-class-name="theader-bg" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="160" label="收付ID" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
+        <el-table-column align="center" label="合同信息" width="200" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同:<span @click="toLink(scope.row,'cont')">{{scope.row.contCode}}</span></li>

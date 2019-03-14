@@ -239,10 +239,10 @@
       flex-direction: column;
       line-height: 1.6;
       >span{
-        width: unset;
-        height: unset;
-        overflow: unset;
-        visibility: unset;
+        width: auto;
+        height: auto;
+        overflow: auto;
+        visibility: visible;
       }
     }
   }
