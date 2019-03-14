@@ -197,7 +197,14 @@ export default {
       
       if (!value) {
         return callback(new Error("请输入价格"));
-      } else {
+      } 
+      else if(value == 0){
+        return callback(new Error("不能为零"));
+      }
+      else if(value > 0 && value.toString().indexOf(0) == "0"){
+        return callback(new Error("整数的第一位不能为0"));
+      }
+      else {
         if (value < 0 || value > 999999999.99) {
           callback(new Error("输入总价在0-999999999.99之间"));
         } else {
@@ -210,12 +217,11 @@ export default {
     //身份证号验证规则
     var idCard = (rule, value, callback) => {
     
-      let idcard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
        
         if (!value) {
            return callback(new Error("请输入身份证号"));
         } else {
-          if (!idcard.test(value)) {
+          if (!this.isIdCardNo(value)) {
            
             callback(new Error("请输入正确格式的身份证号"));
           } else {
@@ -620,7 +626,7 @@ export default {
          
         this.$refs[contractForm].validate(valid => {
           if (valid) {
-            let idcard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+           
             if(this.contractForm.ownmobile !=='' &&this.contractForm.custmobile !== ''&&((this.contractForm.ownmobile).trim() === (this.contractForm.custmobile).trim())){
               this.$message({
                 type: "warning",
@@ -645,7 +651,7 @@ export default {
                 message: "业主身份证号不能为空"
               });
             }
-            else if(!idcard.test(this.contractForm.custIdentifyCode) || !idcard.test(this.contractForm.ownIdentifyCode)){
+            else if(!this.isIdCardNo(this.contractForm.custIdentifyCode) || !this.isIdCardNo(this.contractForm.ownIdentifyCode)){
               this.$message({
                   type: "warning",
                   message: "请输入正确格式的身份证号"
@@ -871,12 +877,84 @@ export default {
           });     
     },
 
+    isIdCardNo(num) {
+      num = num.toUpperCase();
+      //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。            
+      if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(num))) {
+          // alert('输入的身份证号长度不对，或者号码不符合规定！\n15位号码应全为数字，18位号码末位可以为数字或X。');
+          return false;
+      }
+      //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
+      //下面分别分析出生日期和校验位 
+      var len, re;
+      len = num.length;
+      if (len == 15) {
+          re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
+          var arrSplit = num.match(re);
+          //检查生日日期是否正确
+          var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
+          var bGoodDay;
+          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2])) 
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+                      && (dtmBirth.getDate() == Number(arrSplit[4]));
+          if (!bGoodDay) {
+              // alert('输入的身份证号里出生日期不对！');
+              return false;
+          } else {
+              //将15位身份证转成18位 
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。          
+              var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+              var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+              var nTemp = 0, i;
+              num = num.substr(0, 6) + '19' + num.substr(6, num.length - 6);
+              for (i = 0; i < 17; i++) {
+                  nTemp += num.substr(i, 1) * arrInt[i];
+              }
+              num += arrCh[nTemp % 11];
+              return true;
+          }
+      }
+      if (len == 18) {
+          re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
+          var arrSplit = num.match(re);
+          //检查生日日期是否正确 
+          var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
+          var bGoodDay;
+          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2])) 
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+                      && (dtmBirth.getDate() == Number(arrSplit[4]));
+          if (!bGoodDay) {
+              // alert(dtmBirth.getYear());
+              // alert(arrSplit[2]);
+              // alert('输入的身份证号里出生日期不对！');
+              return false;
+          } else {
+              //检验18位身份证的校验码是否正确。 
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
+              // var valnum;
+              // var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+              // var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+              // var nTemp = 0, i;
+              // for (i = 0; i < 17; i++) {
+              //     nTemp += num.substr(i, 1) * arrInt[i];
+              // }
+              // valnum = arrCh[nTemp % 11];
+              // if (valnum != num.substr(17, 1)) {
+              //     // alert('18位身份证的校验码不正确！应该为：' + valnum);
+              //     return false;
+              // }
+              return true;
+          }
+      }
+      return false;
+    }
+
   },
 
 
   created() {
     let backMsg = JSON.parse(localStorage.getItem("backMsg"));
-    if(backMsg){
+    if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
       let contMsg = JSON.parse(localStorage.getItem("contractMsg"));
       this.contractForm.type=parseInt(contMsg.type);//合同类型
       this.type=2
