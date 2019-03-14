@@ -9,21 +9,21 @@
     <div class="contentBox">
       <div class="nav" :class="{'hid':isActive===2}">
         <ul>
-          <li><span :class="{'navBlue':navId==='#one_'}" @click="goNav('#one_')">第一条、房屋基本情况</span></li>
-          <li><span :class="{'navBlue':navId==='#two_'}" @click="goNav('#two_')">第二条、房屋交易流程</span></li>
-          <li><span :class="{'navBlue':navId==='#three_'}" @click="goNav('#three_')">第三条、房屋权属情况</span></li>
-          <li><span :class="{'navBlue':navId==='#four_'}" @click="goNav('#four_')">第四条、成交方式</span></li>
-          <li><span :class="{'navBlue':navId==='#five_'}" @click="goNav('#five_')">第五条、房产转让价格</span></li>
-          <li><span :class="{'navBlue':navId==='#six_'}" @click="goNav('#six_')">第六条、付款约定</span></li>
-          <li><span :class="{'navBlue':navId==='#seven_'}" @click="goNav('#seven_')">第七条、房屋产权及具体状况的承诺</span></li>
-          <li><span :class="{'navBlue':navId==='#eight_'}" @click="goNav('#eight_')">第八条、房产过户</span></li>
-          <li><span :class="{'navBlue':navId==='#nine_'}" @click="goNav('#nine_')">第九条、房产交付</span></li>
-          <li><span :class="{'navBlue':navId==='#ten_'}" @click="goNav('#ten_')">第十条、户口迁移及学籍、学位</span></li>
-          <li><span :class="{'navBlue':navId==='#eleven_'}" @click="goNav('#eleven_')">第十一条 、违约责任</span></li>
-          <li><span :class="{'navBlue':navId==='#twelve_'}" @click="goNav('#twelve_')">第十二条、不可抗力</span></li>
-          <li><span :class="{'navBlue':navId==='#thirteen_'}" @click="goNav('#thirteen_')">第十三条、其他</span></li>
-          <li><span :class="{'navBlue':navId==='#fourteen_'}" @click="goNav('#fourteen_')">第十四条、争议解决</span></li>
-          <li><span :class="{'navBlue':navId==='#fifteen_'}" @click="goNav('#fifteen_')">第十五条、生效要件</span></li>
+          <li><span :class="{'navBlue':navId==='#one'}" @click="goNav('#one')">第一条、房屋基本情况</span></li>
+          <li><span :class="{'navBlue':navId==='#two'}" @click="goNav('#two')">第二条、房屋交易流程</span></li>
+          <li><span :class="{'navBlue':navId==='#three'}" @click="goNav('#three')">第三条、房屋权属情况</span></li>
+          <li><span :class="{'navBlue':navId==='#four'}" @click="goNav('#four')">第四条、成交方式</span></li>
+          <li><span :class="{'navBlue':navId==='#five'}" @click="goNav('#five')">第五条、房产转让价格</span></li>
+          <li><span :class="{'navBlue':navId==='#six'}" @click="goNav('#six')">第六条、付款约定</span></li>
+          <li><span :class="{'navBlue':navId==='#seven'}" @click="goNav('#seven')">第七条、房屋产权及具体状况的承诺</span></li>
+          <li><span :class="{'navBlue':navId==='#eight'}" @click="goNav('#eight')">第八条、房产过户</span></li>
+          <li><span :class="{'navBlue':navId==='#nine'}" @click="goNav('#nine')">第九条、房产交付</span></li>
+          <li><span :class="{'navBlue':navId==='#ten'}" @click="goNav('#ten')">第十条、户口迁移及学籍、学位</span></li>
+          <li><span :class="{'navBlue':navId==='#eleven'}" @click="goNav('#eleven')">第十一条 、违约责任</span></li>
+          <li><span :class="{'navBlue':navId==='#twelve'}" @click="goNav('#twelve')">第十二条、不可抗力</span></li>
+          <li><span :class="{'navBlue':navId==='#thirteen'}" @click="goNav('#thirteen')">第十三条、其他</span></li>
+          <li><span :class="{'navBlue':navId==='#fourteen'}" @click="goNav('#fourteen')">第十四条、争议解决</span></li>
+          <li><span :class="{'navBlue':navId==='#fifteen'}" @click="goNav('#fifteen')">第十五条、生效要件</span></li>
         </ul>
       </div>
       <iframe :src="src1" frameborder="0" ref='iframeFirst' :style="{ height: clientHei }" v-show="isActive===1"></iframe>
@@ -374,7 +374,8 @@ export default {
     },
     //居间买卖切换
     changeType(value) {
-      this.isActive = value;
+			this.isActive = value;
+			this.navId='';
       if(value===1){
         // this.count=1;
         // this.showAddress=this.residence;
@@ -389,7 +390,8 @@ export default {
     goNav(id){
 			this.navId=id;
 			let iframebox=this.$refs.iframeSecond
-			iframebox.contentWindow.document.querySelector(id).click()
+			let navHeight = iframebox.contentWindow.document.querySelector(id).offsetTop+5
+			iframebox.contentWindow.scrollTo(0,navHeight)
     },
     //回到顶部
     backTop(){
@@ -497,7 +499,7 @@ export default {
 							message:'保存成功',
 							type:'success'
 						})
-						this.$router.push('/contractList');
+						// this.$router.push('/contractList');
 					}
 				}
       }).catch(error=>{

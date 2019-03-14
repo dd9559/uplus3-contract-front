@@ -1011,10 +1011,10 @@ export default {
                                     });
                                   }
                                 };
-                                if(this.contractForm.otherCooperationInfo.encryptionCode){
+                                if(this.contractForm.otherCooperationInfo.identifyCode){
                                   IDcardOk=false;
-                                  let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
-                                  if (reg.test(this.contractForm.otherCooperationInfo.encryptionCode)) {
+                                  // let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+                                  if (this.isIdCardNo(this.contractForm.otherCooperationInfo.identifyCode)) {
                                     IDcardOk=true;
                                   }else{
                                     this.$message({
@@ -1255,8 +1255,8 @@ export default {
             let contractMsg = res.data
             this.hidBtn=1
             localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-            this.$router.replace({
+            // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+            this.$router.push({
               path: "/extendParams"
             });
           }
@@ -1299,8 +1299,8 @@ export default {
             this.fullscreenLoading=false;
             let contractMsg = res.data
             localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-            this.$router.replace({
+            // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+            this.$router.push({
               path: "/extendParams"
             });
           }

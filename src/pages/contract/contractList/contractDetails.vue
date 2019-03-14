@@ -188,9 +188,10 @@
                   </p>
                 </div>
                 <div class="remark">
-                  <span>备注：</span>
-                  <p v-if="contractDetail.otherCooperationInfo.remarks">{{contractDetail.otherCooperationInfo.remarks}}</p>
-                  <p v-else>暂无备注</p>
+                  <span style="display:inline-block;width:50px">备注：</span>
+                  <!-- <p v-if="contractDetail.otherCooperationInfo.remarks">{{contractDetail.otherCooperationInfo.remarks}}</p> -->
+                  <el-input type="textarea" :rows="6" maxlength="200" disabled resize='none' v-model="contractDetail.otherCooperationInfo.remarks" placeholder="无备注内容"></el-input>
+                  <!-- <p v-else>暂无备注</p> -->
                 </div>
               </div>
             </div>
@@ -2125,6 +2126,9 @@ export default {
           border-radius: 4px;
           border: 1px solid rgba(236, 239, 242, 1);
           background: @bg-FA;
+        }
+        /deep/.el-textarea.is-disabled .el-textarea__inner{
+          color: #606266;
         }
       }
     }
