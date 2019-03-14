@@ -192,6 +192,12 @@
       },
       goBack:function () {
         // this.setPath(localStorage.getItem('router').split(',').substring(0,2))
+        if(this.$route.path==="/extendParams"){
+          let backMsg = {
+            type:2
+          }
+          localStorage.setItem("backMsg", JSON.stringify(backMsg));
+        }
         this.$router.go(-1)
       },
       ...mapMutations([

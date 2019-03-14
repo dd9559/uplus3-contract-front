@@ -302,7 +302,7 @@
           <!-- 编辑+提审 -->
           <!-- <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button> -->
           <!-- <el-button type="primary" round @click="isSave(0)">保存</el-button> -->
-          <el-button type="primary" round @click="isSave(0)" v-if="hidBtn!==1" v-loading.fullscreen.lock="fullscreenLoading">保存并进入下一步</el-button>
+          <el-button type="primary" round @click="isSave(0)" :disabled="canClick" v-loading.fullscreen.lock="fullscreenLoading">保存并进入下一步</el-button>
         </div>
       </div>
 
@@ -477,7 +477,7 @@ export default {
       },
       userMsg:{}, //当前登录人信息
       recordId:'',//合同创建人id
-      hidBtn:'',//隐藏保存按钮
+      canClick:false,
       //权限配置
       power: {
         'sign-ht-info-toverify': {
@@ -500,12 +500,21 @@ export default {
     };
   },
   created() {
-    this.contractForm.type = Number(this.$route.query.type);
-    if (this.$route.query.operateType) {
-      this.type = parseInt(this.$route.query.operateType);
-      if (this.type == 2) {
-        this.id=parseInt(this.$route.query.id)
-        this.getContractDetail();
+    let backMsg = JSON.parse(localStorage.getItem("backMsg"));
+    if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
+      let contMsg = JSON.parse(localStorage.getItem("contractMsg"));
+      this.contractForm.type = parseInt(contMsg.type);//合同类型
+      this.type=2;//编辑
+      this.id=parseInt(contMsg.id)
+      this.getContractDetail();
+    }else{
+      this.contractForm.type = Number(this.$route.query.type);
+      if (this.$route.query.operateType) {
+        this.type = parseInt(this.$route.query.operateType);
+        if (this.type == 2) {
+          this.id=parseInt(this.$route.query.id)
+          this.getContractDetail();
+        }
       }
     }
     this.getDictionary();//字典
@@ -1262,6 +1271,7 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
+          this.canClick=true
           this.$message({
             message:error,
             type: "error"
@@ -1842,7 +1852,7 @@ export default {
           this.recordId = res.data.recordId;
           this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
-          this.contractForm.extendParams=JSON.parse(res.data.extendParams);
+          // this.contractForm.extendParams=JSON.parse(res.data.extendParams);
           // this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
           // this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
           if(res.data.isHaveCooperation){
@@ -2033,6 +2043,9 @@ export default {
   },
   beforeUpdate() {
     this.clientHeight();
+  },
+  beforeDestroy(){
+    localStorage.removeItem('backMsg')
   },
   // watch:{
   //   ownerList:function(){

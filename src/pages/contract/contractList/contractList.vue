@@ -686,6 +686,7 @@ export default {
         this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
           res=res.data;
           if(res.status===200){
+            localStorage.removeItem('backMsg')
             this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
             if (command === 1 || command === 2 || command === 3) {
               this.$router.push({
