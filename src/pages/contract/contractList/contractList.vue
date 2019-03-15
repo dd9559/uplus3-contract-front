@@ -309,7 +309,7 @@
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
-    <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
+    <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
     <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
       <span>确定提审？</span>
@@ -332,7 +332,7 @@ import flowAccount from "@/components/flowAccount";
 import layerAudit from "../contractDialog/layerAudit";
 import layerSettle from "../contractDialog/layerSettle";
 import changeCancel from "../contractDialog/changeCancel";
-import LayerLateProgress from '@/components/LayerLateProgress';
+import lateProgress from '../contractDialog/lateProgress';
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import PdfPrint from '@/components/PdfPrint';
@@ -346,7 +346,7 @@ export default {
     layerAudit,
     layerSettle,
     changeCancel,
-    LayerLateProgress,
+    lateProgress,
     PdfPrint,
     checkPerson
   },
