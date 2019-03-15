@@ -29,7 +29,7 @@
       <iframe :src="src1" frameborder="0" ref='iframeFirst' :style="{ height: clientHei }" v-show="isActive===1"></iframe>
       <iframe :src="src2" frameborder="0" ref='iframeSecond' :style="{ height: clientHei }" v-show="isActive===2"></iframe>
       <div class="btn">
-        <el-button round @click="isSave(1)" v-loading.fullscreen.lock="fullscreenLoading">保存</el-button><br>
+        <el-button round @click="isSave(1)">保存</el-button><br>
         <el-button v-if="Msg.type===1||Msg.type===2||Msg.type===3" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
@@ -287,7 +287,7 @@ let Obj6 = {
 }
 let errorArr1=[]
 let errorArr2=[]
-
+let loading=null
 import { MIXINS } from "@/assets/js/mixins";
 export default {
 	mixins: [MIXINS],
@@ -331,7 +331,13 @@ export default {
     }
   },
   created(){
-		this.fullscreenLoading=true
+		// this.fullscreenLoading=true
+		loading=this.$loading({
+			lock: true,
+			text: 'Loading',
+			spinner: 'el-icon-loading',
+			background: 'rgba(0, 0, 0, 0.5)'
+		});
 		this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
 		// this.clientHeight();
@@ -438,7 +444,13 @@ export default {
 		//保存
     isSave(operation){
 			if(operation===1){
-				this.fullscreenLoading=true
+				// this.fullscreenLoading=true
+				loading=this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0.5)'
+				});
 			}
 			var param={};
 			var isFull=0;//合同是否填写完整
@@ -497,7 +509,8 @@ export default {
       this.$ajax.postJSON('/api/contract/updateHtml', param).then(res => {
 				res=res.data
 				if(res.status===200){
-					this.fullscreenLoading=false
+					// this.fullscreenLoading=false
+					loading.close()
 					if(operation===1){
 						this.$message({
 							message:'保存成功',
@@ -507,7 +520,8 @@ export default {
 					}
 				}
       }).catch(error=>{
-				this.fullscreenLoading=false
+				// this.fullscreenLoading=false
+				loading.close()
 				this.$message({
 					message:error,
 					type:'error'
@@ -680,11 +694,18 @@ export default {
 		},
 		//确定提审
 		toSubmit(){
-			this.fullscreenLoading=true
+			// this.fullscreenLoading=true
+			loading=this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0.5)'
+				});
 			this.$ajax.postJSON('/api/contract/updateContractAudit', this.param).then(res => {
 				res=res.data
 				if(res.status===200){
-					this.fullscreenLoading=false
+					// this.fullscreenLoading=false
+					loading.close()
 					this.dialogSub=false
 					this.$message({
 						message:'提审成功',
@@ -697,7 +718,8 @@ export default {
 					}
 				}
 			}).catch(error=>{
-				this.fullscreenLoading=false
+				// this.fullscreenLoading=false
+				loading.close()
 				this.$message({
 					message:error,
 					type:'error'

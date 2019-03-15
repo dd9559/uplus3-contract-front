@@ -127,7 +127,10 @@
         <p class="tag">收款门店账户选择：</p>
         <ul>
           <li v-for="(item,index) in receiptData.inBank" :key="index">
-            <el-radio v-model="radio" :label="item"><span class="bankAccountName">开户名：{{item.bankAccountName}}</span>银行账户：{{item.bankCard}}</el-radio>
+            <el-radio v-model="radio" :label="item">
+              <span class="bankAccountName">开户名：{{item.bankAccountName}}</span><br>
+              <span style="padding-left:25px">银行账户：{{item.bankCard}}</span>
+            </el-radio>
           </li>
         </ul>
       </div>

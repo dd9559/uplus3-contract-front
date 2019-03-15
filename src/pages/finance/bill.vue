@@ -171,7 +171,7 @@
           <el-button class="btn-info" round type="primary" size="small" @click="getExcel" v-if="power['sign-cw-debt-export'].state">导出</el-button>
         </p>
       </div>
-      <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" class="info-scrollbar" style="width: 100%" @row-dblclick="toDetails">
+      <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg" class="info-scrollbar" style="width: 100%" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="120" label="收付ID" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200" prop="cityName" :formatter="nullFormatter">
@@ -706,6 +706,12 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
   @import "~@/assets/less/lsx.less";
+
+  /deep/ .theader-bg{
+    >th>.cell{
+      white-space: normal !important;
+    }
+  }
 
   .row-scroll{
     position: fixed;
