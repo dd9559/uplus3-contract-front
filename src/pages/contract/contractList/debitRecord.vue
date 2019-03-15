@@ -198,8 +198,9 @@
       </div>
       <div class="paycontent">
         <div class="paytitle">收款门店账户选择：</div>
-          <el-radio class="radio" v-for="(item,index) in payAgainInfo" :key="index" v-model="radio" :label="index" @change="changeRadio">开户名：{{item.bankAccountName}}<span style="margin-left:20px;">银行账户：{{item.bankCard}}</span></el-radio>
-
+          <div v-for="(item,index) in payAgainInfo" :key="index">
+            <el-radio class="radio" v-model="radio" :label="index" @change="changeRadio"><span>开户名：{{item.bankAccountName}}</span><span style="margin-left:24px;margin-top:6px;white-space:normal;display:block;">银行账户：{{item.bankCard}}</span></el-radio>
+          </div>
       </div>
       <div class="textareabox">
         <span>打款备注</span>
@@ -964,9 +965,12 @@
 
 #debitRecord{
   .paycontent{
-    margin-top: 25px;
+    margin-top: 15px;
     clear: both;
     overflow: hidden;
+    .paytitle{
+      margin-bottom: 20px;
+    }
     p{
       float: left;
       span{
@@ -978,7 +982,7 @@
     }
 
     .radio{
-      margin-top: 15px;
+      margin-bottom: 8px;
       margin-left: 30px;
       display: block;
 
@@ -986,7 +990,7 @@
   }
 
   .textareabox{
-    margin: 30px 0 20px;
+    margin: 15px 0 20px;
     display: flex;
     align-items: flex-start;
     span{
