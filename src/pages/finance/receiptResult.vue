@@ -162,10 +162,10 @@
             url="http://192.168.1.224:28800"
                 break
           case "sign2.jjw.com:28879":
-            url="https://120.76.202.91:28800"
+            url="http://120.76.202.91:28800"
                 break
           case "sign2.jjw.com":
-            url="https://119.23.137.131:28800"
+            url="https://sign2.jjw.com"
                 break
         }
         let socket = io.connect(`${url}?mac=${this.result.payCode}&auth=${uid}`)
