@@ -970,7 +970,6 @@ export default {
                             let passportList = [];
                             //验证营业执照是否重复
                             let businessList = [];
-                            debugger
                             ownerArr.forEach(element => {
                               if(element.cardType===1||this.contractForm.type!==1){
                                 IdCardList.push(element.encryptionCode);

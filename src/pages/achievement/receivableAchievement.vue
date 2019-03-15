@@ -129,7 +129,7 @@
       <div class="data-list" v-loading="loading">
         <el-table :data="receivableList" style="width: 100%" @row-dblclick="dialogVisible = true"  ref="tableCom" :max-height="tableNumberCom" border>
           <!-- code -->
-          <el-table-column label="合同信息" width="150">
+          <el-table-column label="合同信息" align="center" min-width="120">
             <template slot-scope="scope">
               <p>
                 <span class="blue" @click="skipContDel(scope.row)"  style="cursor:pointer;">{{scope.row.code}}</span>
@@ -138,17 +138,17 @@
           </el-table-column>
 
           <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
-          <el-table-column label="合同类型" width="100">
+          <el-table-column label="合同类型" align="center" min-width="60">
             <template slot-scope="scope">
               <p>{{scope.row.contType.label}}</p>
             </template>
           </el-table-column>
 
           <!-- propertyAddr -->
-          <el-table-column prop="propertyAddr" label="物业地址" width="220"></el-table-column>
+          <el-table-column prop="propertyAddr" label="物业地址" align="center" min-width="120"></el-table-column>
 
           <!-- dealStorefront   dealName -->
-          <el-table-column prop="man" label="成交经纪人" width="150">
+          <el-table-column prop="man" label="成交经纪人" align="center" min-width="120">
             <template slot-scope="scope">
               <div v-if="scope.row.dealName">
                 <p>{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
@@ -160,36 +160,36 @@
           </el-table-column>
 
           <!-- signDate -->
-          <el-table-column prop="date" label="签约日期" width="100">
+          <el-table-column prop="date" label="签约日期" align="center" min-width="90">
             <template slot-scope="scope">
               <p>{{scope.row.signDate|formatDate}}</p>
             </template>
           </el-table-column>
 
 
-          <el-table-column prop="actualSettlement" label="结算金额（元）" width="120"></el-table-column>
+          <el-table-column prop="actualSettlement" label="结算金额（元）" align="center" min-width="80"></el-table-column>
 
-          <el-table-column  label="结算日期" width="100">
+          <el-table-column  label="结算日期" align="center" min-width="90">
                       <template slot-scope="scope">
                           <p>{{scope.row.settleTime|formatDate}}</p>
                       </template>
           </el-table-column>
 
-          <el-table-column label="分成人" width="180">
+          <el-table-column label="分成人" align="center" min-width="120">
                <template slot-scope="scope">
                           <p>{{scope.row.level4}}-{{scope.row.assignor}}</p>
                  </template>
           </el-table-column>
 
-          <el-table-column prop="roleName" label="角色类型" width="100"></el-table-column>
+          <el-table-column prop="roleName" label="角色类型" align="center" min-width="60"></el-table-column>
 
-          <el-table-column prop="ratio" label="分成比例（%）" width="120"></el-table-column>
+          <el-table-column prop="ratio" label="分成比例（%）" align="center" min-width="60"></el-table-column>
 
-          <el-table-column prop="agentReceipts" label="实收分成金额（元）" width="140"></el-table-column>
+          <el-table-column prop="agentReceipts" label="实收分成金额（元）" align="center" min-width="80"></el-table-column>
 
-          <el-table-column prop="agentPayFee" label="刷卡手续费（元）" width="130"></el-table-column>
+          <el-table-column prop="agentPayFee" label="刷卡手续费（元）" align="center" min-width="80"></el-table-column>
 
-          <el-table-column prop="agentPlatformFee" label="特许服务费（元）"></el-table-column>
+          <el-table-column prop="agentPlatformFee" label="特许服务费（元）" align="center" min-width="80"></el-table-column>
         </el-table>
          <el-pagination
              @size-change="handleSizeChange"
@@ -258,7 +258,7 @@ export default {
         'sign-yj-rec-export': {
           state: false,
           name: '导出'
-        }      
+        }
       },
       timeArr:[
         {
@@ -316,14 +316,14 @@ export default {
             this. $nextTick(()=>{
                this.loading=false;
             })
-          
+
           }
         }).catch(error => {
                this.$message({message:error})
                this. $nextTick(()=>{
                   this.loading=false;
                })
-        });; 
+        });;
     },
        //获取当前部门
     initDepList:function (val) {

@@ -62,7 +62,10 @@ let Obj1={
     check1:{
         name:'acquire',
         require:true
-    },
+		},
+		check120:{
+			name:'trader'
+		},
     check2:{
         name:'hasRunsh',
         require:true
@@ -105,9 +108,6 @@ let Obj1={
     check12:{
         name:'yes'
     },
-    check13:{
-        name:'check01'
-    },
     check6:{
         name:'check02',
         require:true
@@ -133,7 +133,10 @@ let Obj1={
 		val200:'',
     val124:'method5',
     val128:'',
-    val129:'',
+		val129:'',
+		check13:{
+        name:'check01'
+    },
     val130:'',
     val131:'',
     val132:'',
@@ -749,15 +752,11 @@ export default {
 								case 'acquire':
 									if(this.getCheckState(box[0])){
 										detail={
-											val12:'',
-											val13:''
+											val12:''
 										}
 									}else {
 										detail={
-											val15:'',
-											check:{
-												name:'trader'
-											}
+											val15:''
 										}
 									}
 									break
