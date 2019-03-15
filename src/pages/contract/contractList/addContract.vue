@@ -970,6 +970,7 @@ export default {
                             let passportList = [];
                             //验证营业执照是否重复
                             let businessList = [];
+
                             ownerArr.forEach(element => {
                               if(element.cardType===1||this.contractForm.type!==1){
                                 IdCardList.push(element.encryptionCode);
@@ -982,6 +983,7 @@ export default {
                               }
                               mobileList.push(element.encryptionMobile);
                             });
+
                             guestArr.forEach(element => {
                               if(element.cardType===1||this.contractForm.type!==1){
                                 IdCardList.push(element.encryptionCode);
@@ -994,10 +996,11 @@ export default {
                               }
                               mobileList.push(element.encryptionMobile);
                             });
-                            if(this.contractForm.otherCooperationInfo.mobile){
+
+                            if(this.contractForm.isHaveCooperation===1&&this.contractForm.otherCooperationInfo.mobile){
                               mobileList.push(this.contractForm.otherCooperationInfo.mobile)
                             }
-                            if(this.contractForm.otherCooperationInfo.identifyCode){
+                            if(this.contractForm.isHaveCooperation===1&&this.contractForm.otherCooperationInfo.identifyCode){
                               IdCardList.push(this.contractForm.otherCooperationInfo.identifyCode)
                             }
                             let mobileList_= Array.from(new Set(mobileList));
