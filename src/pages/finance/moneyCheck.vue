@@ -147,7 +147,7 @@
         </p>
       </div>
       <el-table class="info-scrollbar" ref="tableCom" :max-height="tableNumberCom" border :data="list" :key="activeView" style="width: 100%;max-height:500px;" @row-dblclick="toDetails">
-        <el-table-column align="center" width="120" :label="getView" prop="payCode"
+        <el-table-column align="center" min-width="120" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
@@ -158,16 +158,16 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="120" label="物业地址" prop="address"
+        <el-table-column align="center" min-width="120" label="物业地址" prop="address"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" min-width="60" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" width="60" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" width="80" label="收付方式">
+        <el-table-column align="center" min-width="60" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="80" label="收付方式">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="60" label="对象">
+        <el-table-column align="center" min-width="60" label="对象">
           <template slot-scope="scope">
             <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
           </template>
@@ -199,7 +199,7 @@
             <p class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="90" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="90" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
         <!--<el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>-->
         <el-table-column align="center" :label="activeView===1?'收款时间':'付款时间'" prop="createTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
@@ -211,18 +211,18 @@
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="80" label="状态" prop="payStatus">
+        <el-table-column align="center" min-width="80" label="状态" prop="payStatus">
           <template slot-scope="scope">
             <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus}}</span>
             <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="80" label="结算信息" v-if="activeView===1">
+        <el-table-column align="center" min-width="80" label="结算信息" v-if="activeView===1">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="80" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
+        <el-table-column align="center" min-width="80" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
         <el-table-column align="center" label="操作" fixed="right" min-width="120">
           <template slot-scope="scope">
             <template v-if="scope.row.auditButton||(((activeView===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||activeView===2)&&scope.row.isDel===1&&(scope.row.caozuo===1||scope.row.caozuo===2)&&power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state)">

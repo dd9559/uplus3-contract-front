@@ -129,7 +129,7 @@
         </div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
-        <el-table-column align="center" label="合同信息" width="200" fixed>
+        <el-table-column align="center" label="合同信息" min-width="200" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -163,43 +163,43 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合同类型" prop="contType.label" width="50">
+        <el-table-column align="center" label="合同类型" prop="contType.label" min-width="50">
         </el-table-column>
-        <el-table-column align="center" label="物业地址" prop="propertyAddr" width="160">
+        <el-table-column align="center" label="物业地址" prop="propertyAddr" min-width="160">
         </el-table-column>
-        <el-table-column align="center" label="成交总价" prop="dealPrice" width="90">
+        <el-table-column align="center" label="成交总价" prop="dealPrice" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.dealPrice}} 元</span>
             <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="财务收付" width="50">
+        <el-table-column align="center" label="财务收付" min-width="50">
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
             <div class="btn" @click="gathering(scope.row.id)">收款</div>
             <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="成交经纪人" width="120">
+        <el-table-column align="center" label="成交经纪人" min-width="120">
           <template slot-scope="scope">
             <p>{{scope.row.dealAgentStoreName}}</p>
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="签约日期" width="90">
+        <el-table-column align="center" label="签约日期" min-width="90">
           <template slot-scope="scope">
             <!-- {{scope.row.signDate.substr(0, 10)}} -->
             {{Number(scope.row.signDate)|timeFormat_}}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="可分配业绩 (元)" width="80">
+        <el-table-column align="center" label="可分配业绩 (元)" min-width="80">
           <template slot-scope="scope">
             <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
               <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
               <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合同状态" width="80">
+        <el-table-column align="center" label="合同状态" min-width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4">
               <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
@@ -215,7 +215,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="审核状态" prop="toExamineState.label" width="80">
+        <el-table-column align="center" label="审核状态" prop="toExamineState.label" min-width="80">
           <template slot-scope="scope">
             <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
               <span v-if="scope.row.contType.value<4">
@@ -227,13 +227,13 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="变更/解约" width="80">
+        <el-table-column align="center" label="变更/解约" min-width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>
             <el-button type="text" size="medium" v-else @click="goChangeCancel(scope.row)">{{scope.row.contChangeState.label}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="后期状态" width="80">
+        <el-table-column align="center" label="后期状态" min-width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4">
               <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
@@ -242,7 +242,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="后期进度" width="80">
+        <el-table-column align="center" label="后期进度" min-width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4">
               <span v-if="scope.row.stepInstanceName==='-'">-</span>
@@ -254,27 +254,27 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="实收/应收(佣金)" width="80">
+        <el-table-column align="center" label="实收/应收(佣金)" min-width="80">
           <template slot-scope="scope">
             <!-- <div class="btn" @click="runningWater(scope.row)">流水</div> -->
             <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="结算状态" width="80">
+        <el-table-column align="center" label="结算状态" min-width="80">
           <template slot-scope="scope">
             <el-button v-if="scope.row.contType.value<4" type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="业绩状态" width="80">
+        <el-table-column align="center" label="业绩状态" min-width="80">
           <template slot-scope="scope">
             <!-- {{scope.row.achievementState.label}} -->
             <span v-if="scope.row.contType.value<4">{{scope.row.achievementState.label}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="120">
+        <el-table-column align="center" label="操作" min-width="120">
           <template slot-scope="scope">
             <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>

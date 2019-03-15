@@ -201,7 +201,7 @@ export default {
       else if(value == 0){
         return callback(new Error("不能为零"));
       }
-      else if(value > 0 && value.toString().indexOf(0) == "0"){
+      else if(value > 0 && parseInt(value)==value && value.toString().charAt(0) == "0"){
         return callback(new Error("整数的第一位不能为0"));
       }
       else {
