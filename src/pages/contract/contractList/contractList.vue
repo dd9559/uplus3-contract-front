@@ -207,7 +207,7 @@
                 <div style="width:160px">
                   {{scope.row.delReason}}
                 </div>
-                <div slot="reference" class="name-wrapper isFlex">
+                <div slot="reference" class="name-wrapper">
                   {{scope.row.contState.label}}
                 </div>
               </el-popover>
@@ -1121,8 +1121,10 @@ export default {
     }
   }
   .name-wrapper {
-    min-width: 80px;
+    // min-width: 80px;
     height: 65px;
+    line-height: 65px;
+    text-align: center;
     display: -webkit-box;
     /*!autoprefixer: off */
     -webkit-box-orient: vertical;
