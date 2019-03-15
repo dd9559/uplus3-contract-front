@@ -123,12 +123,12 @@ let TOOL = {
       id: 5,
       name: "设置",
       path: "5",
-      icon: "icon-shezhi",
+      icon: "icon-huaban3",
       child: [
         {
           name: "公司设置",
           path: "company",
-          code: "icon-huaban3"
+          code: "sign-set-gs"
         },
         {
           name: "合同模板设置",

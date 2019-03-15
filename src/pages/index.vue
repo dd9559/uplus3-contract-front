@@ -242,9 +242,9 @@
   @import "~@/assets/common.less";
   /deep/ .collapse-row{
     &:first-of-type{
-      padding-top: 30px;
+      padding-top: 20px;
     }
-    padding-top: 40px;
+    padding-top: 30px;
     &.active{
       .el-submenu__title{
         >i{
@@ -260,9 +260,10 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      line-height: 1.2;
+      line-height: 1.4;
       height: auto;
       >i{
+        color: #BBC1CD;
         &.iconfont{
           font-size: 22px;
         }
@@ -272,6 +273,7 @@
         height: auto;
         overflow: auto;
         visibility: visible;
+        font-size: 12px;
       }
     }
   }
@@ -321,9 +323,12 @@
           width:160px;
            .el-submenu{
              /deep/.el-submenu__title{
-              >i:first-of-type{
-                font-size: 22px;
-              }
+               >i{
+                 color: #BBC1CD;
+                 &:first-of-type{
+                   font-size: 22px;
+                 }
+               }
             }
           }
         }
