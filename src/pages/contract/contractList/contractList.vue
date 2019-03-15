@@ -487,10 +487,6 @@ export default {
           state: false,
           name: '后期进度'
         },
-        'sign-ht-info-reject': {
-          state: false,
-          name: '已拒绝' //后期状态
-        },
         'sign-com-htdetail': {
           state: false,
           name: '合同详情'
@@ -653,7 +649,6 @@ export default {
       }
     },
     uploadData(value) {
-      if(this.power['sign-ht-info-reject'].state){
         if(this.power['sign-com-htdetail'].state){
           this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
           this.$router.push({
@@ -668,10 +663,6 @@ export default {
         }else{
           this.noPower('合同详情')
         }
-      }else{
-        this.noPower('后期状态')
-      }
-
     },
     handleCurrentChange(val) {
       this.currentPage = val;

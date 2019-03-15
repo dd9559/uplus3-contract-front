@@ -340,7 +340,7 @@ export default {
 		});
 		this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
-		// this.clientHeight();
+		this.clientHeight();
 		this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
     if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
