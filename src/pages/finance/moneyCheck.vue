@@ -146,7 +146,7 @@
           <el-button class="btn-info" round size="small" type="primary" @click="getExcel" v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)">导出</el-button>
         </p>
       </div>
-      <el-table class="info-scrollbar" ref="tableCom" :max-height="tableNumberCom" border :data="list" :key="activeView" style="width: 100%;max-height:500px;" @row-dblclick="toDetails">
+      <el-table class="info-scrollbar" ref="tableCom" :max-height="tableNumberCom" border :data="list" :key="activeView" header-row-class-name="theader-bg" style="width: 100%;max-height:500px;" @row-dblclick="toDetails">
         <el-table-column align="center" min-width="120" :label="getView" prop="payCode"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
@@ -686,6 +686,11 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  /deep/ .theader-bg{
+    >th>.cell{
+      white-space: normal !important;
+    }
+  }
   .text-warning{
     color: red;
     cursor: pointer;
