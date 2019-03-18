@@ -207,7 +207,7 @@
                 <div style="width:160px">
                   {{scope.row.delReason}}
                 </div>
-                <div slot="reference" class="name-wrapper isFlex">
+                <div slot="reference" class="name-wrapper">
                   {{scope.row.contState.label}}
                 </div>
               </el-popover>
@@ -309,7 +309,7 @@
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
-    <LayerLateProgress title="查看交易流程" ref="lateProgress"></LayerLateProgress>
+    <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
     <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
       <span>确定提审？</span>
@@ -332,7 +332,7 @@ import flowAccount from "@/components/flowAccount";
 import layerAudit from "../contractDialog/layerAudit";
 import layerSettle from "../contractDialog/layerSettle";
 import changeCancel from "../contractDialog/changeCancel";
-import LayerLateProgress from '@/components/LayerLateProgress';
+import lateProgress from '../contractDialog/lateProgress';
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import PdfPrint from '@/components/PdfPrint';
@@ -346,7 +346,7 @@ export default {
     layerAudit,
     layerSettle,
     changeCancel,
-    LayerLateProgress,
+    lateProgress,
     PdfPrint,
     checkPerson
   },
@@ -486,10 +486,6 @@ export default {
         'sign-com-hqstep': {
           state: false,
           name: '后期进度'
-        },
-        'sign-ht-info-reject': {
-          state: false,
-          name: '已拒绝' //后期状态
         },
         'sign-com-htdetail': {
           state: false,
@@ -653,7 +649,6 @@ export default {
       }
     },
     uploadData(value) {
-      if(this.power['sign-ht-info-reject'].state){
         if(this.power['sign-com-htdetail'].state){
           this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
           this.$router.push({
@@ -668,10 +663,6 @@ export default {
         }else{
           this.noPower('合同详情')
         }
-      }else{
-        this.noPower('后期状态')
-      }
-
     },
     handleCurrentChange(val) {
       this.currentPage = val;
@@ -1130,8 +1121,10 @@ export default {
     }
   }
   .name-wrapper {
-    min-width: 80px;
+    // min-width: 80px;
     height: 65px;
+    line-height: 65px;
+    text-align: center;
     display: -webkit-box;
     /*!autoprefixer: off */
     -webkit-box-orient: vertical;

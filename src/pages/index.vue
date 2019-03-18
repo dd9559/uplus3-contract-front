@@ -19,7 +19,7 @@
           @select="handleSelect"
           text-color="#333333"
           active-text-color="#478DE3">
-          <el-submenu :index="item.path" :class="[collapse?'collapse-row':'']" v-for="item in views" :key="item.id" v-if="item.child.length>0">
+          <el-submenu :index="item.path" :class="[collapse?'collapse-row':'',activeClass===item.id?'active':'']" v-for="item in views" :key="item.id" v-if="item.child.length>0">
             <template slot="title">
               <i class="iconfont" :class="item.icon"></i>
               <span>{{item.name}}</span>
@@ -71,7 +71,8 @@
         views:this.$tool.pathList.map(item=>Object.assign({},item)),
         Index:[],
         back:false,
-        collapse:true
+        collapse:true,
+        activeClass:''
       }
     },
     created(){
@@ -169,6 +170,8 @@
         }
       },
       handleSelect(key, keyPath) {
+        let tip = parseInt(keyPath[0])
+        this.activeClass=tip
         /*this.Index = []
         keyPath.forEach(item=>{
           var myRe = new RegExp(`"name":"([^"]*?)","path":"${item.replace('?','\\?')}"`)
@@ -238,17 +241,39 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
   /deep/ .collapse-row{
+    &:first-of-type{
+      padding-top: 20px;
+    }
+    padding-top: 30px;
+    &.active{
+      .el-submenu__title{
+        >i{
+          color: #478DE3;
+        }
+        >span{
+          color: #478DE3;
+        }
+      }
+    }
     .el-submenu__title{
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      line-height: 1.6;
+      line-height: 1.4;
+      height: auto;
+      >i{
+        color: #BBC1CD;
+        &.iconfont{
+          font-size: 22px;
+        }
+      }
       >span{
         width: auto;
         height: auto;
         overflow: auto;
         visibility: visible;
+        font-size: 12px;
       }
     }
   }
@@ -295,7 +320,17 @@
           border: 0px;
         }
         &.collapse-on{
-          width:160px
+          width:160px;
+           .el-submenu{
+             /deep/.el-submenu__title{
+               >i{
+                 color: #BBC1CD;
+                 &:first-of-type{
+                   font-size: 22px;
+                 }
+               }
+            }
+          }
         }
         &-bar-control{
           width: 56px;

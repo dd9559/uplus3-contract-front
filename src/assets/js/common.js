@@ -7,7 +7,7 @@ let TOOL = {
       id: 1,
       name: "合同",
       path: "1",
-      icon: "icon-hetong",
+      icon: "icon-huaban",
       child: [
         {
           name: "合同列表",
@@ -45,7 +45,7 @@ let TOOL = {
       id: 2,
       name: "财务",
       path: "2",
-      icon: "icon-caiwu",
+      icon: "icon-huaban1",
       child: [
         {
           name: "收付款单",
@@ -78,7 +78,7 @@ let TOOL = {
       id: 3,
       name: "业绩",
       path: "3",
-      icon: "icon-yeji",
+      icon: "icon-huaban4",
       child: [
         {
           name: "应收业绩",
@@ -100,7 +100,7 @@ let TOOL = {
       id: 4,
       name: "签后",
       path: "4",
-      icon: "icon-qianhou",
+      icon: "icon-huaban2",
       child: [
         {
           name: "后期接收",
@@ -122,8 +122,8 @@ let TOOL = {
     {
       id: 5,
       name: "设置",
-      path: "setting",
-      icon: "icon-shezhi",
+      path: "5",
+      icon: "icon-huaban3",
       child: [
         {
           name: "公司设置",
