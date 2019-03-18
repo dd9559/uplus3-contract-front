@@ -1295,9 +1295,10 @@ export default {
       let myAudios = document.getElementsByTagName('audio');
       for(var i=0;i<myAudios.length;i++){
         myAudios[i].pause();
-        myAudios[i].load();
+        // myAudios[i].load();
       }
       this.playTime=0
+      this.recordKey=''
       this.getRecordList();
     },
     //查询录音
@@ -1428,7 +1429,7 @@ export default {
           // console.info('播放时间发生改变：'+myAudio.currentTime);
           console.log(myAudio.duration,myAudio.readyState,myAudio.networkState)
           if(!myAudio.duration){
-            this.$message({
+            that.$message({
               message:'音频正在缓冲...'
             })
             return

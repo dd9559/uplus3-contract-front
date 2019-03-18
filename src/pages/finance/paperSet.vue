@@ -209,7 +209,7 @@
               <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-bill-delete'].state">核销</el-button>
               <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收</el-button>
               <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-void'].state">作废</el-button>
-              <template v-else>--</template>
+              <!-- <template v-else></template> -->
             </template>
             <!-- 已作废 -->
             <template v-else-if="scope.row.state.value===4">
