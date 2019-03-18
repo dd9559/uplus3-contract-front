@@ -47,8 +47,19 @@
               if(res.status===200){
                 this.$store.commit('setUser',res.data)
                 if(res.data.privileges.length>0){
+                  let arr=res.data.privileges
+                  let views=this.$tool.pathList.map(item=>Object.assign({},item))
+                  let sliders=[]
+
+                  views.forEach((item,index)=>{
+                    item.child.forEach(tip=>{
+                      if(arr.indexOf(tip.code)>-1){
+                        sliders.push(tip)
+                      }
+                    })
+                  })
                   this.$router.push({
-                    path:'contractList'
+                    path:sliders[0].path
                   })
                 }else {
                   this.$message({
