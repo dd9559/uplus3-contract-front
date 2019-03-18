@@ -165,7 +165,7 @@
             url="http://120.76.202.91:28800"
                 break
           case "sign2.jjw.com":
-            url="http://119.23.137.131:28800"
+            url="https://sign2.jjw.com"
                 break
         }
         let socket = io.connect(`${url}?mac=${this.result.payCode}&auth=${uid}`)

@@ -110,13 +110,13 @@
                         </ul>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="资料库" name="third" class="third-tab">
-                    <div class="dataBank">
+                <el-tab-pane label="资料库" name="third" class="third-tab" v-if="power['sign-ht-xq-data'].state">
+                    <div class="dataBank" v-if="power['sign-ht-xq-data'].state">
 
                         <!-- 卖方 -->
                         <div class="classify" v-if="this.sellerList.length>0">
                             <div class="ht-title">卖方</div>
-                            <div class="small-col" v-for="(item,index) in sellerList" :key="index">
+                            <div class="small-col" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li v-if="power['sign-ht-xq-data'].state">
@@ -141,7 +141,7 @@
                         <!-- 买方 -->
                         <div class="classify" v-if="this.buyerList.length>0">
                             <div class="ht-title">买方</div>
-                            <div class="small-col" v-for="(item,index) in buyerList" :key="index">
+                            <div class="small-col" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li v-if="power['sign-ht-xq-data'].state">
@@ -168,7 +168,7 @@
                         <!-- 其他 -->
                         <div class="classify" v-if="otherList.length>0">
                             <div class="ht-title">其他</div>
-                            <div class="small-col" v-for="(item,index) in otherList" :key="index">
+                            <div class="small-col" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data'].state">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li v-if="power['sign-ht-xq-data'].state">
