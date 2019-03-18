@@ -30,7 +30,7 @@
       <iframe :src="src2" frameborder="0" ref='iframeSecond' :style="{ height: clientHei }" v-show="isActive===2"></iframe>
       <div class="btn">
         <el-button round @click="isSave(1)">保存</el-button><br>
-        <el-button v-if="Msg.type===1||Msg.type===2||Msg.type===3" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
+        <el-button v-if="(Msg.type===1||Msg.type===2||Msg.type===3)&&power['sign-ht-info-toverify'].state" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
@@ -740,7 +740,7 @@ export default {
 							state=true
 					}else {
 						let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
-						let arr=[...box]
+						let arr=Array.from(box)
 						let that=this
 						state = arr.every(function (tagItem) {
 							// return tagItem.checked===false
@@ -1036,7 +1036,7 @@ export default {
 								state=true
 						}else{
 								let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
-								let arr=[...box]
+								let arr=Array.from(box)
 								let list=['facility','zhizhao9','zhizhao10','zhizhao11','zhizhao12','zhizhao15','zhizhao16','remote']
 								let that=this
 								if(!list.includes(obj[item].name)){
@@ -1170,7 +1170,7 @@ export default {
             // console.log(itemType)
             if(itemType==='[object Object]'){
                 let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
-                let arr=[...box]
+                let arr=Array.from(box)
                 let state = true
                 let that = this
                 if(obj[item].name==="owner"||obj[item].name==="guest"){
@@ -1200,7 +1200,7 @@ export default {
                 }else {
                   //勾选后判断
                   if(obj[item].require){
-                      let box=[...(iframe.document.querySelectorAll(`div[name=${obj[item].name}]`))]
+                      let box=Array.from(iframe.document.querySelectorAll(`div[name=${obj[item].name}]`))
                       let detail={}
                       switch (obj[item].name){
                           case 'owner':
@@ -1290,7 +1290,7 @@ export default {
                     state=true
                 }else {
                     let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
-                    let arr=[...box]
+                    let arr=Array.from(box)
                     let that = this
                     state = arr.every(function (item) {
                         return that.getCheckState(item)===false
