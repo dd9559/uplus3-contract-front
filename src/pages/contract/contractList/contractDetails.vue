@@ -1295,6 +1295,7 @@ export default {
       let myAudios = document.getElementsByTagName('audio');
       for(var i=0;i<myAudios.length;i++){
         myAudios[i].pause();
+        myAudios[i].load();
       }
       this.playTime=0
       this.getRecordList();
