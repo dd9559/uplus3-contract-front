@@ -745,6 +745,8 @@ export default {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
             if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
               this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
+              let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+              this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
               if (this.contractForm.propertyRightAddr) {
                 // if(this.contractForm.propertyCard){
                 //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");

@@ -320,7 +320,9 @@
     </el-dialog>
     <!-- 打印 -->
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
+    <!-- <iframe :src="pdfUrl" frameborder="0" style="width:100px" id="dayin"></iframe> -->
     <div class="printMaskLayer" v-if="haveUrl"></div>
+    <!-- <span @click="dayin">打印</span> -->
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
@@ -517,15 +519,13 @@ export default {
     this.getContractList();//合同列表
     this.getDictionary();//字典
     this.getHousePurpose();//用途
-    // this.getBlankPdf();//空白合同pdf
     this.remoteMethod();//部门
-    // setTimeout(() => {
-    //   if(this.power['sign-ht-info-print'].state){
-    //     this.getBlankPdf();//空白合同pdf
-    //   }
-    // }, 1000);
   },
   methods: {
+    dayin(){
+      debugger
+      document.querySelector('#dayin').contentWindow.print()
+    },
     //用途
     getHousePurpose(){
       let param = {
@@ -919,11 +919,6 @@ export default {
       }else{
         this.noPower('后期流程查看')
       }
-    },
-
-    dayin(){
-
-      // this.$refs.easyPrint.print();
     },
     closePrint(){
        this.pdfUrl='';
