@@ -76,7 +76,7 @@
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
-            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state">编辑</el-button>
+            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&!(scope.row.cooperationMode.value===1&&scope.row.level===4)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -267,7 +267,7 @@
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitConfirm" v-if="!confirmBtnShow">确定</el-button>
+        <el-button type="primary" @click="submitConfirm">确定</el-button>
       </div>
       <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
@@ -423,8 +423,7 @@
             name: '添加公司信息'
           }
         },
-        storeNoChange: false, //门店选择不可编辑
-        confirmBtnShow: false
+        storeNoChange: false //门店选择不可编辑
       }
     },
     created() {
@@ -543,7 +542,6 @@
         this.storeNoChange = false
         this.initFormList()
         this.fourthStoreNoEdit = false
-        this.confirmBtnShow = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = localStorage.getItem('cityName')
         if(!this.storeList.length) {
@@ -827,7 +825,7 @@
           documentType: currentRow.documentType.value,
           contractSign: currentRow.contractSign,
           financialSign: currentRow.financialSign,
-          level: "",
+          level: currentRow.level ? currentRow.level : "",
           franchiseRatio: ""
         }
         this.companyForm = newForm
@@ -842,11 +840,9 @@
               type: "error"
           })
         })
-        if(this.companyFormTitle) {
+        if(this.companyFormTitle&&!this.companyForm.level) {
           this.homeStoreList.find(item => {
             if(this.companyForm.storeId === item.id) {
-              this.fourthStoreNoEdit = item.level === 4&&item.cooperationMode.value===1 ? true : false
-              this.confirmBtnShow = this.fourthStoreNoEdit
               this.companyForm.level = item.level
             }
           })
