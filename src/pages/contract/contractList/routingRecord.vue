@@ -3,7 +3,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="45">
       <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
         <el-form-item label="结算日期">
-          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
+          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" :default-value="timeDefaultShow" style="width:330px">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="分账门店">
@@ -158,6 +158,7 @@ export default {
   },
   data() {
     return {
+      timeDefaultShow:'',//结算日期范围改为默认是前一个月和当月
       searchForm: {
         outStoreId:'',//分账门店id
         outStoreAttr:'',//分账门店属性
@@ -205,6 +206,9 @@ export default {
         pageNum:this.currentPage_,
         pageSize:this.pageSize_,
       })
+    //结算日期的默认范围改为前月和当月
+    this.timeDefaultShow = new Date();
+    this.timeDefaultShow.setMonth(new Date().getMonth() - 1);
   },
   methods: {
     getIframe:function(){
