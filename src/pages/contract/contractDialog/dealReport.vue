@@ -14,28 +14,28 @@
             <p class="bold">房屋基本信息</p>
             <div class="house-content">
                 <div class="item">
-                    <div class="mark">
-                        <span>两证情况：</span>
+                    <div>
+                        <span class="mark">两证情况：</span>
                         <el-select size="small" v-model="report.cardSituation" :disabled="!saveBtnShow" class="liangzheng">
                             <el-option v-for="item in dictionary['611']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             <el-option label="无" value="无"></el-option>
                         </el-select>
                     </div>
-                    <div class="mark">
-                        <span>抵押情况：</span>
+                    <div>
+                        <span class="mark">抵押情况：</span>
                         <el-select size="small" v-model="report.mortgageSituation" :disabled="!saveBtnShow" class="diya">
                             <el-option v-for="item in dictionary['615']" :key="item.key" :label="item.value" :value="item.key"></el-option>                            
                         </el-select>
                     </div>
-                    <div class="mark">
-                        <span>提前还款：</span>
+                    <div>
+                        <span class="mark">提前还款：</span>
                         <el-select size="small" v-model="report.isEarlyRepayment" :disabled="!saveBtnShow" class="huankuan">
                             <el-option label="否" value="0"></el-option>
                             <el-option label="是" value="1"></el-option>
                         </el-select>
                     </div>
-                    <div class="square mark">
-                        <span class="text">建筑面积：<span>{{dealBasicInfo.Square}}㎡</span></span>
+                    <div class="square">
+                        <span class="mark">建筑面积：<span>{{dealBasicInfo.Square}}㎡</span></span>
                     </div>
                     <div class="position">
                         <span class="use">土地使用权面积：</span>
@@ -50,11 +50,11 @@
                     </div>
                 </div>
                 <div class="item">
-                    <div class="text-long mark">
-                        <span class="text">产权地址：<span>{{dealBasicInfo.propertyRightAddr}}</span></span>
+                    <div class="text-long">
+                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr}}</span></span>
                     </div>
-                    <div class="number mark">
-                        <span>权属证号：</span>
+                    <div class="number">
+                        <span class="mark">权属证号：</span>
                         <el-input size="small" v-model.trim="report.ownershipNumber" maxlength="25" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
                     </div>
                 </div>
@@ -113,14 +113,14 @@
                         </li>
                     </ul>
                     <div class="input">
-                        <p class="mark">
-                            <span>付款方式：</span>
+                        <p>
+                            <span class="mark">付款方式：</span>
                             <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow" class="bank fukuan">
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
-                        <p style="margin:0 10px;" class="mark">
-                            <span>交易流程：</span>
+                        <p style="margin:0 10px;">
+                            <span class="mark">交易流程：</span>
                             <el-select size="small" v-model="report.transFlowName" :disabled="transFlowEdit" class="liucheng" @change="transFlowSelect">
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.name"></el-option>
                             </el-select>
@@ -161,8 +161,8 @@
                         </li>
                     </ul>
                     <div class="input">
-                        <p class="mark" style="margin-right:15px;">
-                            <span style="min-width:126px;">是否析产（继承）：</span>
+                        <p style="margin-right:15px;">
+                            <span style="min-width:126px;" class="mark">是否析产（继承）：</span>
                             <el-select size="small" v-model="report.isExtend" :disabled="!saveBtnShow" class="xichan">
                                 <el-option label="否" value="0"></el-option>
                                 <el-option label="是" value="1"></el-option>
@@ -796,7 +796,7 @@ export default {
         content: "*";
         color: red;
         position: relative;
-        top: 10px;
+        top: 3px;
     }
     .position {
         i {
