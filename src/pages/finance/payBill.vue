@@ -14,7 +14,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model.trim="form.inObj" maxlength="20" v-if="inputPerson">
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" v-model.trim="form.inObj" maxlength="20" @input="inputOnly(2)" v-if="inputPerson">
           </div>
         </div>
         <div class="input-group col">
@@ -122,7 +122,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" maxlength="6" v-model.trim="scope.row.userName" @input="inputOnly">
+            <input type="text" class="no-style" placeholder="请输入" maxlength="6" v-model.trim="scope.row.userName" @input="inputOnly(1)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户">
@@ -325,8 +325,12 @@
       /**
        * 户名输入，只能输入中文、英文
        */
-      inputOnly:function () {
-        this.list[0].userName=this.$tool.textInput(this.list[0].userName,3)
+      inputOnly:function (type=1) {
+        if(type!==1){
+          this.form.inObj=this.$tool.textInput(this.form.inObj)
+        }else {
+          this.list[0].userName=this.$tool.textInput(this.list[0].userName,3)
+        }
       },
       clearData:function () {
         this.$tool.clearForm(this.form)

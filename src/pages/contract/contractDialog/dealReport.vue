@@ -55,7 +55,7 @@
                     </div>
                     <div class="number">
                         <span class="mark">权属证号：</span>
-                        <el-input size="small" v-model.trim="report.ownershipNumber" maxlength="25" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
+                        <el-input size="small" v-model.trim="report.ownershipNumber" maxlength="40" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
                     </div>
                 </div>
                 <div class="item">
@@ -605,7 +605,7 @@ export default {
         inputOnly(val) {
             if(val === 'ownershipNumber') {
                 this.$nextTick(()=>{
-                   this.report.ownershipNumber = this.report.ownershipNumber.replace(/[^\d\a-zA-Z\u4E00-\u9FA5]/g, "").replace(/\s/g, "")
+                   this.report.ownershipNumber = this.report.ownershipNumber.replace(/[^\-\/\(\)\（\）\s\d\a-zA-Z\u4E00-\u9FA5]/g, "")
                 })
             } else if(val === 'buyerAgentName') {
                 this.$nextTick(()=>{
