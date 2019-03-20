@@ -3618,10 +3618,17 @@ function renderPage(activeServiceOnEntry, pdfDocument, pageNumber, size) {
   var scratchCanvas = activeService.scratchCanvas;
   var PRINT_RESOLUTION = 150;
   var PRINT_UNITS = PRINT_RESOLUTION / 72.0;
+  var userAgent = navigator.userAgent.toLowerCase()
+  console.log(userAgent)
+  var isIE = userAgent.indexOf("trident") > -1; //判断是否IE浏览器
   scratchCanvas.width = Math.floor(size.width * PRINT_UNITS);
   scratchCanvas.height = Math.floor(size.height * PRINT_UNITS);
   var width = Math.floor(size.width * _ui_utils.CSS_UNITS) + 'px';
   var height = Math.floor(size.height * _ui_utils.CSS_UNITS) + 'px';
+  if(isIE){
+    width = Math.floor(size.width * (121/72.0)) + 'px';
+    height = Math.floor(size.height * (121/72.0)) + 'px';
+  }
   var ctx = scratchCanvas.getContext('2d');
   ctx.save();
   ctx.fillStyle = 'rgb(255, 255, 255)';

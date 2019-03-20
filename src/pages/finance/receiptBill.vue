@@ -14,7 +14,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20" v-model.trim="form.outObj" v-if="inputPerson">
+            <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20" v-model.trim="form.outObj" @input="inputOnly('normal')" v-if="inputPerson">
           </div>
         </div>
         <div class="input-group col active-400">
@@ -288,7 +288,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index,'userName')">
+            <input type="text" v-model.trim="scope.row.userName" maxlength="6" class="no-style" placeholder="请输入" @input="inputOnly('userName',scope.$index)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="账户 ">
@@ -304,7 +304,7 @@
         </el-table-column>
         <el-table-column align="center" label="订单编号">
           <template slot-scope="scope">
-            <input type="text" v-model="scope.row.orderNo" maxlength="20" class="no-style" placeholder="请输入" @input="inputOnly(scope.$index,'orderNo')">
+            <input type="text" v-model="scope.row.orderNo" maxlength="20" class="no-style" placeholder="请输入" @input="inputOnly('orderNo',scope.$index)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="手续费（元）">
@@ -567,11 +567,13 @@
           val[item]=this.$tool.cutFloat({val:val[item],max:999999999.99})
         }
       },
-      inputOnly:function (index,type) {
+      inputOnly:function (type,index) {
         if(type==='userName'){
           this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName,3)
-        }else {
+        }else if(type==='orderNo') {
           this.cardList[index].orderNo=this.$tool.textInput(this.cardList[index].orderNo,2)
+        }else {
+          this.form.outObj=this.$tool.textInput(this.form.outObj)
         }
       },
       getPicture:function () {

@@ -442,8 +442,11 @@ export default {
     },
 		//保存
     isSave(operation){
+			var param={};
+			var isClick=0
 			if(operation===1){
 				// this.fullscreenLoading=true
+				isClick=1
 				loading=this.$loading({
 					lock: true,
 					text: 'Loading',
@@ -451,7 +454,6 @@ export default {
 					background: 'rgba(0, 0, 0, 0.5)'
 				});
 			}
-			var param={};
 			var isFull=0;//合同是否填写完整
 			let iframebox1=this.$refs.iframeFirst
 			let iframebox2=this.$refs.iframeSecond
@@ -467,6 +469,7 @@ export default {
 					let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
 					param = {
 						id:this.Msg.id,
+						isClick:isClick,
 						html:{
 							residence:htmlTxt1,
 							business:htmlTxt2
@@ -496,6 +499,7 @@ export default {
 				}
 				param = {
 					id:this.Msg.id,
+					isClick:isClick,
 					html:{
 						address:htmlTxt1
 					},
