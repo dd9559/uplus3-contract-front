@@ -399,7 +399,7 @@
                 <template slot-scope="scope">
                   <div class="recordPlay" v-if="scope.row.recording">
                     <span class="playBtn" @click="playStop(scope.$index,scope.row)">
-                      <i class="iconfont icon-tubiao_shiyong-17" :class="{'icon-tubiao_shiyong-19':(recordKey===scope.$index)&&isPlay}"></i>
+                      <i class="iconfont" :class="[(recordKey===scope.$index)&&isPlay&&!isReady?'icon-tubiao_shiyong-19':'icon-tubiao_shiyong-17',isReady?'icon-loading':'icon-tubiao_shiyong-17']"></i>
                     </span>
                     <span class="duration">
                       <span>{{scope.row.talkTime|SecondFormat}}</span>
@@ -957,6 +957,7 @@ export default {
       previewType:'none',
       userMsg:{}, //当前登录人信息
       recordId:'',//合同创建人id
+      isReady:false,
       //权限
       power: {
         'sign-com-htdetail': {
@@ -1299,6 +1300,7 @@ export default {
       }
       this.playTime=0
       this.recordKey=''
+      this.isReady=false
       this.getRecordList();
     },
     //查询录音
@@ -1427,12 +1429,15 @@ export default {
         var that=this
         myAudio.ontimeupdate = function (e) {
           // console.info('播放时间发生改变：'+myAudio.currentTime);
+          that.isReady=false
           console.log(myAudio.duration,myAudio.readyState,myAudio.networkState)
           if(!myAudio.duration){
-            that.$message({
-              message:'音频正在缓冲...'
-            })
-            return
+            if(myAudio.paused){
+              return
+            }else{
+              that.isReady=true
+              return
+            }
           }
           let playTime_=(myAudio.currentTime/myAudio.duration)*100;
           if(playTime_){
@@ -1972,6 +1977,9 @@ export default {
 </style>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.icon-loading:before {
+    content: "\e62b" !important;
+}
 
 .view-container {
   position: relative;
