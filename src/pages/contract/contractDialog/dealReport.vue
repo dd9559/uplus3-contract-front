@@ -108,7 +108,7 @@
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
                         <li v-for="(item,index) in buyerArr" :key="index">
-                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
+                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:70px;">{{item.name}}</span></p>
                             <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
@@ -156,7 +156,7 @@
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
                         <li v-for="(item,index) in sellerArr" :key="index">
-                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:56px;">{{item.name}}</span></p>
+                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:70px;">{{item.name}}</span></p>
                             <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
@@ -810,6 +810,7 @@ export default {
         display: flex;
         flex-wrap: wrap;
         margin-bottom: 10px;
+        max-width: 600px;
         li {
             display: flex;
             width: 50%;
@@ -875,7 +876,7 @@ export default {
 .resource {
     display: flex;
     > div {
-        min-width: 600px;
+        min-width: 620px;
         border: 1px solid #ebeef5;
         margin-right: 10px;
         > p {
