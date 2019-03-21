@@ -270,7 +270,7 @@
                         </template>
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="isOvertime.label" label="当前步骤是否超时" align="center" min-width="80">
+                <el-table-column :formatter="nullFormatterData" prop="isOvertime.label" label="当前步骤是否超时" align="center" min-width="90">
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="personLiableName" label="当前步骤责任人" align="center" min-width="90">
                 </el-table-column>
