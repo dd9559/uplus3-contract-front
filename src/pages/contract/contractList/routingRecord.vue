@@ -5,7 +5,7 @@
         <el-form-item label="结算日期">
           <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy/MM/dd" :picker-options="pickerBeginDateBefore" :default-value="timeDefaultShow" style="width:330px">
           </el-date-picker>
-          
+
         </el-form-item>
         <el-form-item label="分账门店">
           <el-select v-model="searchForm.outStoreAttr" placeholder="全部" :clearable="true" style="width:150px" @change="changeStoreAttr_out">
@@ -163,7 +163,7 @@ export default {
       pickerBeginDateBefore: {
         disabledDate: (time) => {
           return time.getTime() >= Date.now()
-          
+
           }
       },
       searchForm: {
@@ -214,8 +214,8 @@ export default {
         pageSize:this.pageSize_,
       })
     //结算日期的默认范围改为前月和当月
-    this.timeDefaultShow = new Date();
-    this.timeDefaultShow.setMonth(new Date().getMonth() - 1);
+    let date = new Date();
+    this.timeDefaultShow=new Date(date.getFullYear(),date.getMonth(),0)
   },
   methods: {
     getIframe:function(){
