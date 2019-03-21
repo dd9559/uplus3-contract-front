@@ -795,6 +795,9 @@
                             personLiableCode,
                             rules
                         })
+                      if(rules.length>0){
+                          obj.classShowCode=false
+                      }
                         this.$set(this.dealTable, i, obj)
                     }
                 }
