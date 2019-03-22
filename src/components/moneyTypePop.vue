@@ -1,5 +1,5 @@
 <template>
-  <el-popover ref="popover" placement="bottom" :value="visible">
+  <el-popover ref="popover" trigger="manual" placement="bottom" v-model="visible">
     <div class="select-tree">
       <ul>
         <li class="select-option" v-for="item in dataList">
@@ -10,10 +10,10 @@
         </li>
       </ul>
     </div>
-    <p class="tree-box w200" slot="reference" @click.capture="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
-      <el-input size="small" class="w200" ref="btn" readOnly placeholder="请选择" v-model="inputVal" @clear="opera('clear')">
+    <p class="tree-box w200" slot="reference" @click="opera('init')" @mouseenter="showClear" @mouseleave="clearVal=false">
+      <el-input size="small" class="w200" ref="btn" readOnly placeholder="请选择" v-model="inputVal">
       </el-input>
-      <span class="box-icon"><i class="el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i><i class="iconfont icon-tubiao-7" v-else  @click.stop="opera('clear')"></i></span>
+      <span class="box-icon"><i class="el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal" @click.stop="opera('init')"></i><i class="iconfont icon-tubiao-7" v-else @click.stop="opera('clear')"></i></span>
     </p>
   </el-popover>
 </template>
@@ -72,7 +72,7 @@
       },
       opera:function (type) {
         if(type==='init'){
-          this.visible=true
+          this.visible=!this.visible
           // this.$refs.popover.showPopper=true
           this.iconUp=!this.iconUp
         }else if(type==='clear') {

@@ -269,10 +269,10 @@
         }
       }
       >span{
-        width: auto;
-        height: auto;
-        overflow: auto;
-        visibility: visible;
+        width: auto !important;
+        height: auto !important;
+        overflow: auto !important;
+        visibility: visible !important;
         font-size: 12px;
       }
     }
