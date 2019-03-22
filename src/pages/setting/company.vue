@@ -141,7 +141,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="证件号: " class="id-card">
-                <el-input size="mini" maxlength="18" v-model.trim="companyForm.lepDocumentCard" :disabled="fourthStoreNoEdit" @input="inputOnly(1000,'lepDocumentCard')"></el-input>
+                <el-input size="mini" :maxlength="companyForm.lepDocumentType===1?18:companyForm.lepDocumentType===2?9:11" v-model.trim="companyForm.lepDocumentCard" :disabled="fourthStoreNoEdit" @input="inputOnly(1000,'lepDocumentCard')"></el-input>
               </el-form-item>
               <el-form-item label="法人手机号码: ">
                 <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="fourthStoreNoEdit" @keyup.native="getInt(2)"></el-input>
@@ -634,12 +634,14 @@
                 this.$message({message:'身份证号格式不正确',type:'warning'})
                 return false
               }
-            } else if(val&&type===2) {
-              if(!checkPassPort(val)) {
-                this.$message({message:'护照格式不正确',type:'warning'})
-                return false
-              }
-            } else if(val&&type===3) {
+            }
+            // else if(val&&type===2) {
+            //   if(!checkPassPort(val)) {
+            //     this.$message({message:'护照格式不正确',type:'warning'})
+            //     return false
+            //   }
+            // }
+            else if(val&&type===3) {
               if(!/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(val)) {
                 this.$message({message:'港澳通行证格式不正确',type:'warning'})
                 return false
