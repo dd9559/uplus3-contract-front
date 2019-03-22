@@ -1,8 +1,5 @@
 <template>
-  <el-popover
-    ref="popover"
-    placement="bottom"
-    v-model="visible">
+  <el-popover ref="popover" placement="bottom" :value="visible">
     <div class="select-tree">
       <ul>
         <li class="select-option" v-for="item in dataList">
@@ -49,6 +46,7 @@
         let that=this
         document.onmousedown=function (e) {
           if(that.$refs.popover&&!(that.$refs.popover.$refs.popper.innerHTML.indexOf(e.target.parentNode.innerHTML)>-1)&&!(e.target.parentNode===that.$refs.btn.$el)){
+            // debugger
             that.visible=false
           }
         }
@@ -75,11 +73,11 @@
       opera:function (type) {
         if(type==='init'){
           this.visible=true
-          this.$refs.popover.showPopper=true
+          // this.$refs.popover.showPopper=true
           this.iconUp=!this.iconUp
         }else if(type==='clear') {
           this.visible=false
-          this.$refs.popover.showPopper=false
+          // this.$refs.popover.showPopper=false
           /*if(this.init.length>0){
           }else {
             this.inputVal=''
@@ -87,6 +85,7 @@
           this.inputVal=''
           this.$emit('clear')
         }
+        console.log(this.visible)
       },
     },
     computed:{
@@ -99,6 +98,9 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  /*/deep/ .el-popover{
+    top: 200px;
+  }*/
   .tree-box{
     position: relative;
     .box-icon{

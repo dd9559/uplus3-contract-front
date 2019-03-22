@@ -32,8 +32,7 @@ module.exports = {
   externals: {
     'vue': 'Vue',
     'vuex': 'Vuex',
-    'vue-router': 'VueRouter',
-    'element-ui': 'ELEMENT'
+    'vue-router': 'VueRouter'
   },
   module: {
     rules: [

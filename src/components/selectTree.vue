@@ -4,7 +4,7 @@
     @hide="initList('hide')"
     ref="popover"
     placement="bottom"
-    v-model="visible">
+    :value="visible">
     <div class="select-tree">
       <el-tree accordion :data="list" :props="defaultProps" @node-click="depHandleClick"></el-tree>
     </div>
@@ -99,11 +99,11 @@
       opera: function (type, e) {
         if (type === 'init') {
           this.visible = true
-          this.$refs.popover.showPopper = true
+          // this.$refs.popover.showPopper = true
           this.iconUp = !this.iconUp
         } else if (type === 'clear') {
           this.visible = false
-          this.$refs.popover.showPopper = false
+          // this.$refs.popover.showPopper = false
           this.list = _list.map(item=>Object.assign({},item))
           /*if(this.init.length>0){
           }else {
