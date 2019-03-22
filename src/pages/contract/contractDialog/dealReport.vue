@@ -55,7 +55,7 @@
                     </div>
                     <div class="number">
                         <span class="mark">权属证号：</span>
-                        <el-input size="small" v-model.trim="report.ownershipNumber" maxlength="40" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
+                        <el-input size="small" v-model.trim="report.ownershipNumber" maxlength="45" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
                     </div>
                 </div>
                 <div class="item">
@@ -819,11 +819,6 @@ export default {
             }
         }
     }
-    /*去掉谷歌，火狐下的type="number"中的右边箭头*/
-    /deep/ input::-webkit-outer-spin-button, /deep/ input::-webkit-inner-spin-button {
-        -webkit-appearance: none !important;
-    }
-    /deep/ input[type="number"]{-moz-appearance:textfield;}
 }
 
 .cont-info {
