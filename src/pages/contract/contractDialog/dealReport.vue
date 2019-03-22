@@ -429,37 +429,37 @@ export default {
                                     } else {
                                         this.$message({message:"客源方联系电话不能为空"})
                                         addRedBorder('kelian')
-                                        return false
+                                        return
                                     }
                                 } else {
                                     this.$message({message:"客源方门店不能为空"})
                                     addRedBorder('kedian')
-                                    return false
+                                    return
                                 }
                             } else {
                                 this.$message({message:"客源方店长不能为空"})
                                 addRedBorder('kezhang')
-                                return false
+                                return
                             }
                         } else {
                             this.$message({message:"权属证号不能为空"})
                             addRedBorder('quanshu')
-                            return false
+                            return
                         }
                     } else {
                         this.$message({message:"是否提前还款不能为空"})
                         addRedBorder('huankuan',2)
-                        return false
+                        return
                     }
                 } else {
                     this.$message({message:"抵押情况不能为空"})
                     addRedBorder('diya',2)
-                    return false
+                    return
                 }
             } else {
                 this.$message({message:"两证情况不能为空"})
                 addRedBorder('liangzheng',2)
-                return false
+                return
             }
             if(this.report.houseShopOwnerName) {
                 if(this.report.houseStoreName) {
@@ -471,40 +471,40 @@ export default {
                                 } else {
                                     this.$message({message:"是否析产（继承）不能为空"})
                                     addRedBorder('xichan',2)
-                                    return false
+                                    return
                                 }
                             } else {
                                 this.$message({message:"交易流程不能为空"})
                                 addRedBorder('liucheng',2)
-                                return false
+                                return
                             }
                         } else {
                             this.$message({message:"付款方式不能为空"})
                             addRedBorder('fukuan',2)
-                            return false
+                            return
                         }
                     } else {
                         this.$message({message:"房源方联系电话不能为空"})
                         addRedBorder('fanglian')
-                        return false
+                        return
                     }
                 } else {
                     this.$message({message:"房源方门店不能为空"})
                     addRedBorder('fangdian')
-                    return false
+                    return
                 }
             } else {
                 this.$message({message:"房源方店长不能为空"})
                 addRedBorder('fangzhang')
-                return false
+                return
             }
             if(!checkPhone(this.report.guestShopOwnerMobile)) {
                 this.$message({message:"请输入11位正确的客源方联系电话",type:"warning"})
-                return false
+                return
             }
             if(!checkPhone(this.report.houseShopOwnerMobile)) {
                 this.$message({message:"请输入11位正确的房源方联系电话",type:"warning"})
-                return false
+                return
             }
             if(this.report.buyerAgentCardType) {
                 if(this.report.buyerAgentCard) {
@@ -513,21 +513,22 @@ export default {
                     if(type === 1) {
                         if(!checkIdCard(val)) {
                             this.$message({message:'买方代理人身份证号不正确',type:'warning'})
-                            return false
-                        }
-                    } else if(type === 2) {
-                        if(!checkPassPort(val)) {
-                            this.$message({message:'买方代理人护照不正确',type:'warning'})
-                            return false
+                            return
                         }
                     }
+                    // else if(type === 2) {
+                    //     if(!checkPassPort(val)) {
+                    //         this.$message({message:'买方代理人护照不正确',type:'warning'})
+                    //         return
+                    //     }
+                    // }
                     if(!this.report.buyerAgentName) {
                         this.$message("买方代理人姓名不能为空")
-                        return false
+                        return
                     }
                 } else {
                     this.$message("买方代理人证件号不能为空")
-                    return false
+                    return
                 }
             }
             if(this.report.sellerAgentCardType) {
@@ -537,30 +538,31 @@ export default {
                     if(type === 1) {
                         if(!checkIdCard(val)) {
                             this.$message({message:'卖方代理人身份证号不正确',type:'warning'})
-                            return false
-                        }
-                    } else if(type === 2) {
-                        if(!checkPassPort(val)) {
-                            this.$message({message:'卖方代理人护照不正确',type:'warning'})
-                            return false
+                            return
                         }
                     }
+                    // else if(type === 2) {
+                    //     if(!checkPassPort(val)) {
+                    //         this.$message({message:'卖方代理人护照不正确',type:'warning'})
+                    //         return
+                    //     }
+                    // }
                     if(!this.report.sellerAgentName) {
                         this.$message("卖方代理人姓名不能为空")
-                        return false
+                        return
                     }
                 } else {
                     this.$message("卖方代理人证件号不能为空")
-                    return false
+                    return
                 }
             }
             if(this.report.buyerAgentMobile&&!this.report.buyerAgentName) {
                 this.$message("买方代理人姓名不能为空")
-                return false
+                return
             }
             if(this.report.sellerAgentMobile&&!this.report.sellerAgentName) {
                 this.$message("卖方代理人姓名不能为空")
-                return false
+                return
             }
             this.$ajax.postJSON('/api/contract/updateReport',{report:this.report, id:this.id}).then(res => {
                 res = res.data
