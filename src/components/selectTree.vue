@@ -77,7 +77,7 @@
     },
     methods: {
       bodyClick:function (e) {
-        if(this.$refs.popover&&!(this.$refs.popover.$refs.popper.innerHTML.indexOf(e.target.parentNode.innerHTML)>-1)&&!(e.target.parentNode===this.$refs.btn.$el)){
+        if(this.$refs.popover&&!(this.$refs.popover.$refs.popper.innerHTML.indexOf(e.target.parentNode.innerHTML)>-1)&&!(e.target.parentNode===this.$refs.btn.$el||e.target.parentNode===document.querySelector('.box-icon'))){
           this.visible=false
         }
       },
