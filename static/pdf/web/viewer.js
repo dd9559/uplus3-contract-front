@@ -3621,13 +3621,20 @@ function renderPage(activeServiceOnEntry, pdfDocument, pageNumber, size) {
   var userAgent = navigator.userAgent.toLowerCase()
   console.log(userAgent)
   var isIE = userAgent.indexOf("trident") > -1; //判断是否IE浏览器
-  scratchCanvas.width = Math.floor(size.width * PRINT_UNITS);
-  scratchCanvas.height = Math.floor(size.height * PRINT_UNITS);
-  var width = Math.floor(size.width * _ui_utils.CSS_UNITS) + 'px';
-  var height = Math.floor(size.height * _ui_utils.CSS_UNITS) + 'px';
+  scratchCanvas.width = Math.floor(595 * PRINT_UNITS);
+  scratchCanvas.height = Math.floor(842 * PRINT_UNITS);
+  var width = Math.floor(595 * _ui_utils.CSS_UNITS) + 'px';
+  var height = Math.floor(842 * _ui_utils.CSS_UNITS) + 'px';
+  /**
+   * xu
+   scratchCanvas.width = Math.floor(size.width * PRINT_UNITS);
+   scratchCanvas.height = Math.floor(size.height * PRINT_UNITS);
+   var width = Math.floor(size.width * _ui_utils.CSS_UNITS) + 'px';
+   var height = Math.floor(size.height * _ui_utils.CSS_UNITS) + 'px';
+   */
   if(isIE){
-    width = Math.floor(size.width * (121/72.0)) + 'px';
-    height = Math.floor(size.height * (121/72.0)) + 'px';
+    width = Math.floor(595 * (121/72.0)) + 'px';
+    height = Math.floor(842 * (121/72.0)) + 'px';
   }
   var ctx = scratchCanvas.getContext('2d');
   ctx.save();
@@ -8813,7 +8820,7 @@ var PDFViewer = function () {
     key: 'getPagesOverview',
     value: function getPagesOverview() {
       var pagesOverview = this._pages.map(function (pageView) {
-        var viewport = pageView.pdfPage.getViewport(1);
+        var viewport = pageView.pdfPage.getViewport(1);//xu
         return {
           width: viewport.width,
           height: viewport.height,
