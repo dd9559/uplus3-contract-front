@@ -68,8 +68,8 @@
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
           <br>
-           <el-form-item label="产权地址：" class="form-label" style="width:605px;text-align:right">
-             <el-input v-model="contractForm.propertyRightAddr" maxlength="35" placeholder="请输入内容" style="width:500px"></el-input>
+           <el-form-item label="产权地址：" class="form-label" style="width:805px;text-align:right">
+             <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input>
           </el-form-item>
           <br>
           <el-form-item label="建筑面积：" class="width-250">
@@ -789,7 +789,7 @@ export default {
                                     element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                                   }
                                 }
-                                if ((this.contractForm.type===1&&((element.cardType===1&&this.isIdCardNo(element.encryptionCode))||(element.cardType===2&&element.encryptionCode.length===9)||(element.cardType===3&&element.encryptionCode.length===20)))||(this.contractForm.type!==1&&this.isIdCardNo(element.encryptionCode))) {
+                                if ((this.contractForm.type===1&&((element.cardType===1&&this.isIdCardNo(element.encryptionCode))||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)))||(this.contractForm.type!==1&&this.isIdCardNo(element.encryptionCode))) {
                                   isOk = true;
                                   ownerRightRatio += element.propertyRightRatio - 0;
                                 }else{

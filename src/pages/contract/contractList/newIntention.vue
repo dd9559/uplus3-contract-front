@@ -57,7 +57,7 @@
                             </el-form-item>
                             
                             <el-form-item label="产权地址：" class="disb">
-                                <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength=30></el-input>
+                                <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength="70"></el-input>
                             </el-form-item>
 
                             <el-form-item label="房源总价：" class="disb">

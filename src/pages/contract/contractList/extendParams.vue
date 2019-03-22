@@ -57,15 +57,16 @@
 //买卖
 let Obj1={
     check0:{
-        name:'prove'
+				name:'prove',
+				require:true
     },
     check1:{
         name:'acquire',
         require:true
 		},
-		check120:{
-			name:'trader'
-		},
+		// check120:{
+		// 	name:'trader'
+		// },
     check2:{
         name:'hasRunsh',
         require:true
@@ -774,6 +775,15 @@ export default {
 							let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
 							let detail={}
 							switch (obj[item].name){
+								case 'prove':
+									if(this.getCheckState(box[1])){
+										detail={
+											check:{
+												name:'trader'
+											},
+										}
+									}
+									break
 								case 'acquire':
 									if(this.getCheckState(box[0])){
 										detail={
