@@ -55,7 +55,7 @@
 
 <script>
 //买卖
-let Obj1={
+/*let Obj1={
     check0:{
 				name:'prove',
 				require:true
@@ -141,7 +141,7 @@ let Obj1={
     val131:'',
     val132:'',
     val138:'',
-}
+}*/
 //租赁
 let Obj2 = {
     val22:'',
@@ -289,8 +289,10 @@ let errorArr1=[]
 let errorArr2=[]
 let loading=null
 import { MIXINS } from "@/assets/js/mixins";
+import {MIXINS_MM} from "../mixins/MM.js";
+
 export default {
-	mixins: [MIXINS],
+	mixins: [MIXINS,MIXINS_MM],
   data(){
     return{
       clientHei:'',
@@ -362,7 +364,7 @@ export default {
 				this.isActive=2;
 				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`//居间
 			}
-      
+
     }else if(this.Msg.type===3){
       //代办
       this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
@@ -376,7 +378,7 @@ export default {
   },
   methods: {
     // 控制弹框body内容高度，超过显示滚动条
-    clientHeight() {        
+    clientHeight() {
 			// this.clientHei= screen.height -300 + 'px'
 			// console.log('teddddddd')
       this.clientHei= document.documentElement.clientHeight -130 + 'px'
@@ -461,7 +463,7 @@ export default {
 			iframebox2.contentWindow.document.body.click()
 			let htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 			let htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
-			
+
 			errorArr1=[]
 			errorArr2=[]
 			if(this.Msg.type===2){
@@ -605,7 +607,7 @@ export default {
 					iframebox2.contentWindow.scrollTo(0,inputHeight2)
 				}
 			}
-				
+
 			}else{
 				let emptyInput1=0
 				if(this.Msg.type===1){//租赁
@@ -735,7 +737,7 @@ export default {
 			return	!!(ele.querySelector('p').getAttribute('checked'))
 		},
     //买卖校验
-    dealCheck(iframe,obj=Obj1){
+    /*dealCheck(iframe,obj=Obj1){
       for(let item in obj){
 				let itemType=Object.prototype.toString.call(obj[item])
 				if(itemType==='[object Object]'){
@@ -1038,7 +1040,7 @@ export default {
 				}
       }
       return errorArr2
-		},
+		},*/
     //租赁校验
     leaseCheck(iframe,obj=Obj2){
 			for(let item in obj){
