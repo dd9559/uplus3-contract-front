@@ -64,7 +64,7 @@
                   </p>
                 </div>
                 <div class="one_">
-                   <p class="address"><span class="tag">产权地址：</span><span class="text">{{contractDetail.propertyRightAddr}}</span></p>
+                   <p style="width:1000px"><span class="tag">产权地址：</span><span class="text">{{contractDetail.propertyRightAddr}}</span></p>
                 </div>
                 <div class="one_">
                   <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>

@@ -554,36 +554,27 @@ export default {
 
             for (let i = 0; i < res.data.contPersons.length; i++) {
               if (res.data.contPersons[i].personType.value === 1) {
-                this.contractForm.contPersons[0].name =
-                  res.data.contPersons[i].name;
-                this.contractForm.contPersons[0].mobile =
-                  res.data.contPersons[i].mobile;
-                this.contractForm.contPersons[0].relation =
-                  res.data.contPersons[i].relation;
-                this.contractForm.contPersons[0].identifyCode =
-                  res.data.contPersons[i].identifyCode;
-                this.contractForm.contPersons[0].type =
-                  res.data.contPersons[i].personType.value;
                 this.contractForm.ownname = res.data.contPersons[i].name;
                 this.contractForm.ownmobile = res.data.contPersons[i].mobile;
                 this.contractForm.ownIdentifyCode = res.data.contPersons[i].identifyCode;
+                this.contractForm.contPersons[0].name = res.data.contPersons[i].name;
+                // this.contractForm.contPersons[0].mobile = res.data.contPersons[i].mobile;
+                this.contractForm.contPersons[0].relation = res.data.contPersons[i].relation;
+                this.contractForm.contPersons[0].identifyCode = res.data.contPersons[i].identifyCode;
+                this.contractForm.contPersons[0].type = res.data.contPersons[i].personType.value;
                 // this.contractForm.ownrelation = this.contractForm.contPersons[i].relation;
               } else if (
                 this.contractForm.contPersons[i].personType.value === 2
               ) {
-                this.contractForm.contPersons[1].name =
-                  res.data.contPersons[i].name;
-                this.contractForm.contPersons[1].mobile =
-                  res.data.contPersons[i].mobile;
-                this.contractForm.contPersons[1].relation =
-                  res.data.contPersons[i].relation;
-                (this.contractForm.contPersons[1].identifyCode =
-                  res.data.contPersons[i].identifyCode),
-                  (this.contractForm.contPersons[1].type =
-                    res.data.contPersons[i].personType.value);
                 this.contractForm.custname = res.data.contPersons[i].name;
                 this.contractForm.custmobile = res.data.contPersons[i].mobile;
                 this.contractForm.custIdentifyCode = res.data.contPersons[i].identifyCode;
+                this.contractForm.contPersons[1].name = res.data.contPersons[i].name;
+                // this.contractForm.contPersons[1].mobile = res.data.contPersons[i].mobile;
+                this.contractForm.contPersons[1].relation = res.data.contPersons[i].relation;
+                this.contractForm.contPersons[1].identifyCode = res.data.contPersons[i].identifyCode;
+                this.contractForm.contPersons[1].type = res.data.contPersons[i].personType.value;
+                
               }
             }
             
@@ -777,11 +768,11 @@ export default {
           type: this.type
         };
         param.igdCont.contPersons[0].name = this.contractForm.ownname;
-        param.igdCont.contPersons[0].encryptionMobile = this.contractForm.ownmobile;
+        // param.igdCont.contPersons[0].encryptionMobile = this.contractForm.ownmobile;
         param.igdCont.contPersons[0].identifyCode = this.contractForm.ownIdentifyCode;
         param.igdCont.contPersons[0].encryptionCode = this.contractForm.ownIdentifyCode;
         param.igdCont.contPersons[1].name = this.contractForm.custname;
-        param.igdCont.contPersons[1].encryptionMobile = this.contractForm.custmobile;
+        // param.igdCont.contPersons[1].encryptionMobile = this.contractForm.custmobile;
         param.igdCont.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
         param.igdCont.contPersons[1].encryptionCode = this.contractForm.custIdentifyCode;
         if (this.type== 2) {
