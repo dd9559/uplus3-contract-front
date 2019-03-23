@@ -1,0 +1,56 @@
+<template>
+  <div class="iframe-context">
+    <iframe :src="getUrl" frameborder="0" width="795" height="600" id="iframe"></iframe>
+    <span id="checkBtn" @click="check">校验</span>
+  </div>
+</template>
+
+<script>
+  import {MIXINS_MM} from "../contract/mixins/MM";
+
+  export default {
+    name: "iframe-test",
+    mixins: [MIXINS_MM],
+    data(){
+      return{
+        src:'买卖.html'
+      }
+    },
+    methods:{
+      check:function () {
+        let iframe=document.querySelector('#iframe')
+        this.dealCheck(iframe.contentWindow)
+      }
+    },
+    computed:{
+      getUrl:function () {
+        return `/static/html/${this.src}`
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  .iframe-context{
+    height: 100%;
+    position: relative;
+  }
+  #checkBtn{
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    display: inline-block;
+    width: 60px;
+    line-height: 2;
+    text-align: center;
+    background-color: #3a8ee6;
+    color: #FFFFFF;
+  }
+#iframe{
+  margin-top: 60px;
+  position: absolute;
+  /*top: 50%;*/
+  left: 50%;
+  transform: translateX(-50%);
+}
+</style>
