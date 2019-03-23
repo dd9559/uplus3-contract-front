@@ -54,8 +54,8 @@
 </template>
 
 <script>
-let errorArr1=[]
-let errorArr2=[]
+let emptyInput1=[]
+let emptyInput2=[]
 let loading=null
 import { MIXINS } from "@/assets/js/mixins";
 import {MIXINS_MM} from "../mixins/MM.js";
@@ -238,12 +238,10 @@ export default {
 			let htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 			let htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 
-			errorArr1=[]
-			errorArr2=[]
 			if(this.Msg.type===2){
 				if(this.Msg.isWuHanMM){
-					let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
-					let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+					emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
+					emptyInput2 = this.dealCheck(iframebox2.contentWindow)
 					param = {
 						id:this.Msg.id,
 						isClick:isClick,
@@ -283,7 +281,7 @@ export default {
 					isCanAudit:isFull//1.完整 0.否
 				}
 			}
-      if(errorArr1.length===0&&errorArr2.length===0){
+      if(emptyInput1.length===0&&emptyInput2.length===0){
 				param.isCanAudit=1
 			}
       this.$ajax.postJSON('/api/contract/updateHtml', param).then(res => {
@@ -311,12 +309,10 @@ export default {
     submit(){
 			let iframebox1=this.$refs.iframeFirst;
 			let iframebox2=this.$refs.iframeSecond;
-			errorArr1=[]
-			errorArr2=[]
 			if(this.Msg.type===2){
 				if(this.Msg.isWuHanMM){
-					let emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
-					let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+					emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
+					emptyInput2 = this.dealCheck(iframebox2.contentWindow)
 					if(this.isActive===1){
 						if(emptyInput1.length>0){
 							this.$message({
@@ -415,7 +411,7 @@ export default {
 					iframebox1.contentWindow.scrollTo(0,inputHeight1)
 				}
 			}
-			if(errorArr1.length===0&&errorArr2.length===0){
+			if(emptyInput1.length===0&&emptyInput2.length===0){
 				let htmlTxt1=''
 				let htmlTxt2=''
 				let param = {}

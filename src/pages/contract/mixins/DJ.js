@@ -1,24 +1,21 @@
 let Obj5 = {
   val5:'',
-  textarea:{
-    name:'textarea',
-    other:['val6','val7'],//勾选框的补充项
-  },
+  val7:'',
   val13:'',
   check1:{
-    name:'manage'
+      name:'manage'
   },
   val16:'',
   val17:'',
   val20:'',
   val25:'',
   check2:{
-    name:'pay',
-    other:['val35','val36'],//勾选框的补充项
+      name:'pay',
+      other:['val35'],//勾选框的补充项
   },
   val37:'',
   check3:{
-    name:'person'
+      name:'person'
   }
 }
 let errorArr1=[]
@@ -54,7 +51,7 @@ const MIXINS_DJ={
           if(state){
             if(obj[item].other){
               let otherState = obj[item].other.every(function (tip) {
-                return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
+                return iframe.document.querySelector(`span[extendparam=${tip}]`).innerHTML.length===0
               })
               if(otherState){
                 if(obj[item].name==='textarea'){
@@ -74,8 +71,16 @@ const MIXINS_DJ={
             }
           }
         }else {
-          obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
-          iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+          let classList = Array.from(iframe.document.querySelector(`*[extendparam=${item}]`).classList)
+          if(classList.includes('dropdown-item')||classList.includes('calendar-item')){
+              obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+              iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+          }else{
+              obj[item]=iframe.document.querySelector(`span[extendparam=${item}]`).innerHTML
+              iframe.document.querySelector(`span[extendparam=${item}]`).classList.remove('BODERRED')
+          }
+          // obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+          // iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
           if(obj[item].length===0){
             errorArr1.push({
               type:'input',
