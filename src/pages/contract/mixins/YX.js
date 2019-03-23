@@ -7,7 +7,7 @@ let Obj4 = {
   val16: '',
 }
 let errorArr1=[]
-const MIXINS_DB={
+const MIXINS_YX={
   data(){
     return{
 
@@ -38,5 +38,5 @@ const MIXINS_DB={
   }
 }
 export {
-  MIXINS_DB
+  MIXINS_YX
 }
