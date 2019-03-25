@@ -94,9 +94,14 @@
       dom.setAttribute('disabled',"disabled")
     }
     let domType = dom.getAttribute('type')
-    if(domType==='text'||domType==='number'){
-      dom.value=''
-      dom.removeAttribute("value")
+    let domType1 = dom.getAttribute('tag')
+    if(domType==='text'||domType==='number'||domType1==='input-auto'){
+      if(dom.tagName.toLocaleLowerCase()==='input'){
+        dom.value=''
+        dom.removeAttribute("value")
+      }else{
+        dom.innerHTML=''
+      }
     }else{
       dom.querySelector('p').removeAttribute('checked')
     }
@@ -241,7 +246,7 @@
   owner_.removeAttribute("value")
   guest_.removeAttribute("value")
   for(let readonlyItem in msg){
-    let onlyReadDom = Array.from(document.querySelectorAll(`input[systemparam=${readonlyItem}]`));
+    let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
     if(readonlyItem==='signDate'){
       let time = new Date(msg.signDate)
@@ -260,24 +265,8 @@
       onlyReadDom.forEach((element,index) => {
         if(readonlyItem==='signDate'){
           element.setAttribute('value', arr[index])
-        }else if(readonlyItem==='propertyAddr'){
-            let addr1 = document.querySelector(`*[systemparam='propertyAddr']`);
-            let addr2 = document.querySelector('input[extendParam="val777"]')
-            addr1.value=''
-            addr2.value=''
-            addr1.setAttribute('value','')
-            addr2.setAttribute('value','')
-            if(msg["propertyAddr"].length>=25){
-                let propertyAddr1=msg["propertyAddr"].substring(0,25);
-                let propertyAddr2=msg["propertyAddr"].substring(25);
-                addr1.setAttribute('value',propertyAddr1)
-                addr2.setAttribute('value',propertyAddr2)
-                addr1.value=propertyAddr1
-                addr2.value=propertyAddr2
-              }else{
-                element.setAttribute('value', msg[readonlyItem])
-                element.value=msg[readonlyItem]
-              }
+        }else if(readonlyItem==='propertyAddr'||readonlyItem==='square'){
+          element.innerHTML=msg[readonlyItem]
         }else{
           element.value=msg[readonlyItem]
           element.setAttribute('value', msg[readonlyItem])
@@ -404,4 +393,66 @@
             chineseStr += cnInteger;
         }
         return chineseStr.split('元')[0];
+    }
+    //输入自适应
+    let inputAutoBoxs = document.querySelectorAll("span[tag='input-auto']")
+    for(let i=0;i<inputAutoBoxs.length;i++){
+      if(inputAutoBoxs[i].getAttribute('systemParam')){
+        continue
+    }
+        inputAutoBoxs[i].onclick=function (tip) {
+            //获取span标签的基本配置属性
+            let initVal=tip.target.innerHTML
+            let type=tip.target.getAttribute('listen')
+            let max=tip.target.getAttribute('max')
+
+            let inputArea=document.querySelector('.alert-viwer')
+            inputArea.style.display='block'
+            //获取文本框，并赋初值
+            let textArea=document.getElementById('inputArea')
+            textArea.focus()
+            textArea.value=initVal
+            if(max){//监听max属性，判断文本框是有有输入长度限制
+                textArea.setAttribute('maxLength',parseInt(max))
+            }else {
+                textArea.removeAttribute('maxLength')
+            }
+            textArea.oninput=function (ev) {
+                //监听listen属性，判断是否有输入类型限制
+                let spanAttr=tip.target.getAttribute('listen')
+                if(spanAttr==='number'){
+                    ev.target.value=ev.target.value.replace(/[^\d]/g, "")
+                }
+                if(spanAttr==='chinese'){
+                    ev.target.value=ev.target.value.replace(/[^\d]/g, "")
+                    if(ev.target.value.length>0){
+                        let str = toChineseNumber(ev.target.value)
+                        let value=str.split('元')[0]
+                        tip.target.innerHTML=value
+                    }
+                }else {
+                    tip.target.innerHTML=ev.target.value
+                }
+                tip.target.classList.remove('input-before')
+                if(ev.target.value.length===0){
+                    tip.target.classList.add('input-before')
+                }
+            }
+            document.querySelector('.control-btn').onclick=function (e) {
+                let btn=e.target.innerHTML
+                if(btn==='取消'){
+                    if(initVal.length>0){
+                        tip.target.innerHTML=initVal
+                        tip.target.classList.remove('input-before')
+                    }else {
+                        tip.target.innerHTML=''
+                        tip.target.classList.add('input-before')
+                    }
+                }else if(btn==='保存'){
+
+                }
+                inputArea.style.display='none'
+                textArea.value=''
+            }
+        }
     }
