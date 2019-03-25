@@ -34,6 +34,7 @@ const MIXINS_DB={
     },
     // 代办校验
     commissionCheck(iframe,obj=Obj3){
+      // debugger
       errorArr1=[]
       for(let item in obj){
         let itemType=Object.prototype.toString.call(obj[item])
@@ -53,7 +54,7 @@ const MIXINS_DB={
           if(state){
             if(obj[item].other){
               let otherState = obj[item].other.every(function (tip) {
-                return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
+                return iframe.document.querySelector(`span[extendparam=${tip}]`).innerHTML.length===0
               })
               if(otherState){
                 errorArr1.push({
@@ -121,9 +122,17 @@ const MIXINS_DB={
             }
           }
         }else {
-          let val=iframe.document.querySelector(`input[extendparam=${item}]`).value
-          iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
-          if(val.length===0){
+          let classList = Array.from(iframe.document.querySelector(`*[extendparam=${item}]`).classList)
+          if(classList.includes('dropdown-item')||classList.includes('calendar-item')){
+              obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+              iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+          }else{
+              obj[item]=iframe.document.querySelector(`span[extendparam=${item}]`).innerHTML
+              iframe.document.querySelector(`span[extendparam=${item}]`).classList.remove('BODERRED')
+          }
+          // let val=iframe.document.querySelector(`input[extendparam=${item}]`).value
+          // iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+          if(obj[item].length===0){
             errorArr1.push({
               type:'input',
               name:item

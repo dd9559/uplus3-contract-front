@@ -1,25 +1,30 @@
 <template>
   <div class="iframe-context">
-    <iframe :src="getUrl" frameborder="0" width="795" height="600" id="iframe"></iframe>
+    <iframe :src="getUrl" frameborder="0" width="870" height="600" id="iframe"></iframe>
     <span id="checkBtn" @click="check">校验</span>
   </div>
 </template>
 
 <script>
   import {MIXINS_MM} from "../contract/mixins/MM";
+import {MIXINS_JJ} from "../contract/mixins/JJ.js";
+import {MIXINS_ZL} from "../contract/mixins/ZL.js";
+import {MIXINS_DB} from "../contract/mixins/DB.js";
+import {MIXINS_YX} from "../contract/mixins/YX.js";
+import {MIXINS_DJ} from "../contract/mixins/DJ.js";
 
   export default {
     name: "iframe-test",
-    mixins: [MIXINS_MM],
+    mixins: [MIXINS_YX,MIXINS_DB, MIXINS_DJ],
     data(){
       return{
-        src:'买卖.html'
+        src:'代办.html'
       }
     },
     methods:{
       check:function () {
         let iframe=document.querySelector('#iframe')
-        this.dealCheck(iframe.contentWindow)
+        this.commissionCheck(iframe.contentWindow)
       }
     },
     computed:{

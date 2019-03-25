@@ -22,8 +22,12 @@ const MIXINS_YX={
     agreementCheck(iframe,obj=Obj4){
       errorArr1=[]
       for (let item in obj) {
-        obj[item] = iframe.document.querySelector(`input[extendparam=${item}]`).value
-        iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+        iframe.document.querySelector(`*[extendparam=${item}]`).classList.remove('BODERRED')
+        if(item==="val3"){
+          obj[item] = iframe.document.querySelector(`input[extendparam=${item}]`).value
+        }else{
+          obj[item] = iframe.document.querySelector(`span[extendparam=${item}]`).innerHTML
+        }
         if (obj[item].length === 0) {
           errorArr1.push({
             type:'input',
