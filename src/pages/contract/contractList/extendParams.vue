@@ -262,7 +262,6 @@ export default {
 					}
 				}
 			}else{
-				let emptyInput1=[]
 				if(this.Msg.type===1){//租赁
 					emptyInput1 = this.leaseCheck(iframebox1.contentWindow)
 				}else if(this.Msg.type===3){
@@ -379,9 +378,7 @@ export default {
 			}
 
 			}else{
-				let emptyInput1=0
 				if(this.Msg.type===1){//租赁
-					// debugger
 					emptyInput1 = this.leaseCheck(iframebox1.contentWindow)
 					console.log(emptyInput1)
 				}else if(this.Msg.type===3){

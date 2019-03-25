@@ -90,6 +90,7 @@ const MIXINS_ZL={
     },
     //租赁校验
     leaseCheck(iframe,obj=Obj2){
+      debugger
       errorArr1=[]
       for(let item in obj){
         let itemType=Object.prototype.toString.call(obj[item])
