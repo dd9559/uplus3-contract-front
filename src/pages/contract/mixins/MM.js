@@ -35,7 +35,6 @@ let Obj1={
     name:'rentout'
   },
   val46:'',
-  val53:'',
   check4:{
     name:'furniture',
     require:true
@@ -118,7 +117,7 @@ const MIXINS_MM={
           if(state){
             if(obj[item].other){
               let otherState = obj[item].other.every(function (tip) {
-                return iframe.document.querySelector(`input[extendparam=${tip}]`).value.length===0
+                return iframe.document.querySelector(`span[extendparam=${tip}]`).innerHTML.length===0
               })
               if(otherState){
                 // errorArr2.push({
@@ -260,8 +259,14 @@ const MIXINS_MM={
           }
         }else {
           let methodDetail={}
-          let val=iframe.document.querySelector(`input[extendparam=${item}]`).value
-          iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+          let val
+          let classList =  Array.from(iframe.document.querySelector(`*[extendparam=${item}]`).classList)
+          if(classList.includes('dropdown-item')||classList.includes('calendar-item')){
+            val=iframe.document.querySelector(`input[extendparam=${item}]`).value
+          }else{
+            val=iframe.document.querySelector(`span[extendparam=${item}]`).innerHTML
+          }
+          iframe.document.querySelector(`*[extendparam=${item}]`).classList.remove('BODERRED')
           if(obj[item]==='method1'){
             switch (val.toLowerCase()){
               case 'a':
@@ -286,7 +291,7 @@ const MIXINS_MM={
                   name:item
                 })
             }
-            this.dealCheck(iframe,methodDetail)
+            // this.dealCheck(iframe,methodDetail)
           }else if(obj[item]==='method2'){
             switch (val.toLowerCase()){
               case 'a':
@@ -325,7 +330,7 @@ const MIXINS_MM={
                   name:item
                 })
             }
-            this.dealCheck(iframe,methodDetail)
+            // this.dealCheck(iframe,methodDetail)
           }else if(obj[item]==='method3'){
             switch (val.toLowerCase()){
               case 'a':
@@ -345,7 +350,7 @@ const MIXINS_MM={
                 })
               // reject(`请输入,${item}`)
             }
-            this.dealCheck(iframe,methodDetail)
+            // this.dealCheck(iframe,methodDetail)
           }else if(obj[item]==='method4'){
             switch (val.toLowerCase()){
               case 'a':
@@ -365,7 +370,7 @@ const MIXINS_MM={
                 })
               // reject(`请输入,${item}`)
             }
-            this.dealCheck(iframe,methodDetail)
+            // this.dealCheck(iframe,methodDetail)
           }else if(obj[item]==='method5'){
             switch (val.toLowerCase()){
               case 'a':
@@ -389,7 +394,7 @@ const MIXINS_MM={
                   name:item
                 })
             }
-            this.dealCheck(iframe,methodDetail)
+            // this.dealCheck(iframe,methodDetail)
           }else {
             if(val.length===0){
               errorArr2.push({
@@ -398,6 +403,9 @@ const MIXINS_MM={
               })
               break
             }
+          }
+          if(errorArr2.length===0){
+            this.dealCheck(iframe,methodDetail)
           }
         }
       }

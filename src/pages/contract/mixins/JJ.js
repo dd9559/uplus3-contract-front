@@ -21,15 +21,23 @@ const MIXINS_JJ={
     brokerageCheck(iframe,obj=Obj6){
       errorArr1=[]
       for(let item in obj){
-        obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
-        iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
-        if(obj[item].length===0){
-          errorArr1.push({
-            type:'input',
-            name:item
-          })
-          break
-        }
+        let classList = Array.from(iframe.document.querySelector(`*[extendparam=${item}]`).classList)
+          if(classList.includes('dropdown-item')||classList.includes('calendar-item')){
+              obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+              iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+          }else{
+              obj[item]=iframe.document.querySelector(`span[extendparam=${item}]`).innerHTML
+              iframe.document.querySelector(`span[extendparam=${item}]`).classList.remove('BODERRED')
+          }
+          // obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+          // iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+          if(obj[item].length===0){
+            errorArr1.push({
+              type:'input',
+              name:item
+            })
+            break
+          }
       }
       console.log(errorArr1)
       return errorArr1
