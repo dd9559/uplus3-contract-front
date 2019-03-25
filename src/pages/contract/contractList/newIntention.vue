@@ -5,7 +5,7 @@
             <el-form :inline="true" :model="contractForm" :rules="rules" ref="contractForm" class="form-innnerbox">
                 <div class="form-content">
                 <!-- 合同信息 -->
-                    <div class="column-form"> 
+                    <div class="column-form">
                         <div class="column-title">合同信息</div>
                         <div class="form-cont">
                             <el-form-item label="签约日期：" prop="signDate">
@@ -24,12 +24,12 @@
                                     <i slot="suffix" class="yuan">元</i>
                                 </el-input>
                             </el-form-item>
-                            
+
                             <el-form-item label="意向金金额：" prop="dealPrice" v-if="this.contractForm.type == 4">
                                 <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
                                     <i slot="suffix" class="yuan">元</i>
                                     <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
-                                </el-input> 
+                                </el-input>
                             </el-form-item>
 
                             <el-form-item label="定金金额：" prop="dealPrice" v-if="this.contractForm.type == 5">
@@ -42,7 +42,7 @@
                     </div>
 
                     <!-- 房源信息 -->
-                    <div class="column-form"> 
+                    <div class="column-form">
                         <div class="column-title">房源信息</div>
                         <div class="form-cont">
                             <el-form-item>
@@ -55,7 +55,7 @@
                                     <div v-if="type==2">{{contractForm.propertyAddr}}</div>
                                 </el-form-item>
                             </el-form-item>
-                            
+
                             <el-form-item label="产权地址：" class="disb">
                                 <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength="70"></el-input>
                             </el-form-item>
@@ -81,14 +81,14 @@
                                     <el-input v-model="contractForm.ownIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
                                 </el-form-item>
                                 <el-form-item v-if="type==2">
-                                    <el-input v-model="contractForm.ownIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>               
+                                    <el-input v-model="contractForm.contPersons[0].encryptionCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
                                 </el-form-item>
                             </el-form-item>
                         </div>
                     </div>
 
                     <!-- 客源信息 -->
-                    <div class="column-form"> 
+                    <div class="column-form">
                         <div class="column-title">客源信息</div>
                         <div class="form-cont">
                             <div>
@@ -97,7 +97,7 @@
                                   <el-button-group v-model="contractForm.guestinfoCode">
                                         <el-button type="primary" @click="toLayerGuest()" v-if="type===1" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</el-button>
                                         <el-button type="text" v-if="type==2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
-                                        
+
                                   </el-button-group>
                                 </el-form-item>
 
@@ -114,7 +114,7 @@
                                         </el-select> -->
                                          <el-input v-model="contractForm.guestInfo.EmpName" placeholder="请选择经纪人" :disabled=true></el-input>
                                     </el-form-item>
-                                    
+
                                 </el-form-item>
                             </div>
                             <el-form-item label="客户信息：" class="disb" required>
@@ -127,15 +127,15 @@
                                 <el-form-item v-if="type==2">
                                     <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth" disabled></el-input>
                                 </el-form-item>
-                                
+
                                 <el-form-item prop="custIdentifyCode" v-if="type===1">
                                     <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
                                 </el-form-item>
                                 <el-form-item v-if="type==2">
-                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>               
+                                    <el-input v-model="contractForm.contPersons[1].encryptionCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
                                 </el-form-item>
                             </el-form-item>
-                            
+
                         </div>
                         <div class="form-cont mt30" v-if="contractForm.type == 4">
                             <el-form-item label="意向备注：" class="disb textlengthbox">
@@ -145,14 +145,14 @@
                         </div>
                     </div>
                 </div>
-                
+
             </el-form>
 
 
-            
+
         </div>
-        <div class="form-btn">                     
-                <el-button type="primary" round @click="checkRule('contractForm')" v-if="hidBtn!==1">保存并进入下一步</el-button>                  
+        <div class="form-btn">
+                <el-button type="primary" round @click="checkRule('contractForm')" v-if="hidBtn!==1">保存并进入下一步</el-button>
         </div>
         <!-- 房客源弹框 -->
         <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :choseHcode="choseHcode" :choseGcode="choseGcode"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
@@ -173,9 +173,9 @@
             <el-button type="primary" @click="toUpload">确 定</el-button>
           </span>
         </el-dialog>
-          
+
     </div>
-    
+
 </template>
 
 <script>
@@ -194,10 +194,10 @@ export default {
     };
 
     var checkPrice = (rule, value, callback) => {
-      
+
       if (!value) {
         return callback(new Error("请输入价格"));
-      } 
+      }
       else if(value == 0){
         return callback(new Error("不能为零"));
       }
@@ -212,23 +212,23 @@ export default {
         }
       }
     };
-    
+
 
     //身份证号验证规则
     var idCard = (rule, value, callback) => {
-    
-       
+
+
         if (!value) {
            return callback(new Error("请输入身份证号"));
         } else {
           if (!this.isIdCardNo(value)) {
-           
+
             callback(new Error("请输入正确格式的身份证号"));
           } else {
             callback();
           }
         }
-      
+
     };
 
     //手机号验证规则
@@ -355,7 +355,7 @@ export default {
       hidBtn:'',//隐藏保存按钮
       //权限配置
       power: {
-       
+
         'sign-com-htdetail': {
           state: false,
           name: '合同详情'
@@ -415,11 +415,11 @@ export default {
 
     cutText(val) {
       // console.log(val)
-      if (val === "ownname") {  
+      if (val === "ownname") {
          this.$nextTick(() => {
            this.contractForm.ownname = this.$tool.textInput(this.contractForm.ownname);
          })
-        
+
       } else if (val === "custname") {
         this.$nextTick(() => {
          this.contractForm.custname = this.$tool.textInput(this.contractForm.custname);
@@ -453,7 +453,7 @@ export default {
       this.isShowDialog = true;
       this.dialogType = "house";
     },
-    trim(str){  
+    trim(str){
       return str.replace(/(^\s*)|(\s*$)/g, "")
     },
 
@@ -511,12 +511,12 @@ export default {
             this.contractForm.custname = guestMsg.OwnerInfo.CustName;
             this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
 
-            this.$nextTick(function() {    
+            this.$nextTick(function() {
               if(this.contractForm.guestinfoCode !==''){
                 this.$refs.contractForm.validateField('guestinfoCode');
               }
             })
-             
+
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
           }
           // this.getEmployee()
@@ -566,7 +566,7 @@ export default {
                   res.data.contPersons[i].personType.value;
                 this.contractForm.ownname = res.data.contPersons[i].name;
                 this.contractForm.ownmobile = res.data.contPersons[i].mobile;
-                this.contractForm.ownIdentifyCode = res.data.contPersons[i].identifyCode;
+                this.contractForm.ownIdentifyCode = res.data.contPersons[i].encryptionCode;
                 // this.contractForm.ownrelation = this.contractForm.contPersons[i].relation;
               } else if (
                 this.contractForm.contPersons[i].personType.value === 2
@@ -583,10 +583,10 @@ export default {
                     res.data.contPersons[i].personType.value);
                 this.contractForm.custname = res.data.contPersons[i].name;
                 this.contractForm.custmobile = res.data.contPersons[i].mobile;
-                this.contractForm.custIdentifyCode = res.data.contPersons[i].identifyCode;
+                this.contractForm.custIdentifyCode = res.data.contPersons[i].encryptionCode;
               }
             }
-            
+
             // this.getEmployee()
           }
 
@@ -603,79 +603,85 @@ export default {
     closeCommission(value,contractForm) {
       if (value) {
         if (value.dialogType === "house") {
-          
+
           this.getHousedetail(value.selectCode);
           this.choseHcode=value.selectCode;
           this.isShowDialog = false;
         } else if (value.dialogType === "guest") {
-          
+
           this.getGuestDetail(value.selectCode);
           this.choseGcode=value.selectCode;
           this.isShowDialog = false;
-      
+
         }
       } else {
         this.isShowDialog = false;
-        
+
       }
     },
 
     checkRule(contractForm) {
-     
-      
-         
+
+
+
         this.$refs[contractForm].validate(valid => {
           if (valid) {
-           
+
             if(this.contractForm.ownmobile !=='' &&this.contractForm.custmobile !== ''&&((this.contractForm.ownmobile).trim() === (this.contractForm.custmobile).trim())){
               this.$message({
                 type: "warning",
                 message: "业主手机号和客户手机号不能重复!"
               });
             }
-            else if(this.contractForm.custIdentifyCode !=='' &&this.contractForm.ownIdentifyCode !== ''&&((this.contractForm.ownIdentifyCode).trim() === (this.contractForm.custIdentifyCode).trim())){
+            else if(this.type == 1 && this.contractForm.ownIdentifyCode !=='' &&this.contractForm.custIdentifyCode !== ''&&((this.contractForm.ownIdentifyCode).trim() === (this.contractForm.custIdentifyCode).trim())){
               this.$message({
                 type: "warning",
-                message: "业主身份证号和客户身份证号不能重复!"
+                message: "新增业主手机号和客户手机号不能重复!"
               });
             }
-            else if(this.contractForm.custIdentifyCode == ''){
+            else if(this.type == 2 && this.contractForm.contPersons[0].encryptionCode !=='' &&this.contractForm.contPersons[1].encryptionCode !== ''&&(this.contractForm.contPersons[0].encryptionCode === this.contractForm.contPersons[1].encryptionCode)){
+              this.$message({
+                type: "warning",
+                message: "编辑业主身份证号和客户身份证号不能重复!"
+              });
+            }
+            else if(this.contractForm.contPersons[1].encryptionCode == ''){
               this.$message({
                 type: "warning",
                 message: "客户身份证号不能为空"
               });
             }
-            else if(this.contractForm.ownIdentifyCode == ''){
+            else if(this.contractForm.contPersons[0].encryptionCode == ''){
               this.$message({
                 type: "warning",
                 message: "业主身份证号不能为空"
               });
             }
-            else if(!this.isIdCardNo(this.contractForm.custIdentifyCode) || !this.isIdCardNo(this.contractForm.ownIdentifyCode)){
+            else if(this.type == 2 && !this.isIdCardNo(this.contractForm.contPersons[0].encryptionCode) || this.type == 2 && !this.isIdCardNo(this.contractForm.contPersons[1].encryptionCode)){
               this.$message({
                   type: "warning",
                   message: "请输入正确格式的身份证号"
                 });
-            } 
+            }
             else if(this.type===1){
               this.onSubmit1()
             }else if(this.type===2){
               this.onSubmit2()
             }
-              return true           
+              return true
             } else {
               return false;
             }
         })
-    
-      
+
+
     },
 
     // 新增意向金接口（post）
     onSubmit1() {
       this.dialogSure = false
         this.fullscreenLoading=true
-         
+
         let param = {
           igdCont: {
             type: this.contractForm.type,
@@ -688,7 +694,7 @@ export default {
             remarks: this.contractForm.remarks,
             houseInfo:this.contractForm.houseInfo,
             guestInfo:this.contractForm.guestInfo,
-            contPersons: [ 
+            contPersons: [
               //业主信息
               {
                 name: this.contractForm.ownname,
@@ -702,13 +708,13 @@ export default {
                 encryptionMobile: this.contractForm.custmobile,
                 encryptionCode: this.contractForm.custIdentifyCode,
                 type: 2,
-               
-              }] 
+
+              }]
           },
           type: this.type
         };
-       
-       
+
+
 
         this.$ajax
           .postJSON("/api/contract/addContract", param)
@@ -734,7 +740,7 @@ export default {
               message: error,
               type:"error"
             });
-          });           
+          });
     },
     //创建成功提示
     toUpload(value){//上传合同资料库
@@ -768,7 +774,7 @@ export default {
       this.$router.push('/contractList');
     },
     // 编辑意向金接口
-    onSubmit2() {    
+    onSubmit2() {
         this.dialogSure = false
         this.fullscreenLoading=true
 
@@ -874,18 +880,18 @@ export default {
               message: error,
               type:"error"
             });
-          });     
+          });
     },
 
     isIdCardNo(num) {
-      num = num.toUpperCase();
-      //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。            
-      if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(num))) {
+      // num = num.toUpperCase();
+      //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。
+      if (!(/(^\d{15}$)|(^\d{17}([0-9]|X|x)$)/.test(num))) {
           // alert('输入的身份证号长度不对，或者号码不符合规定！\n15位号码应全为数字，18位号码末位可以为数字或X。');
           return false;
       }
-      //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
-      //下面分别分析出生日期和校验位 
+      //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+      //下面分别分析出生日期和校验位
       var len, re;
       len = num.length;
       if (len == 15) {
@@ -894,15 +900,15 @@ export default {
           //检查生日日期是否正确
           var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
           var bGoodDay;
-          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2])) 
-                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2]))
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
                       && (dtmBirth.getDate() == Number(arrSplit[4]));
           if (!bGoodDay) {
               // alert('输入的身份证号里出生日期不对！');
               return false;
           } else {
-              //将15位身份证转成18位 
-              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。          
+              //将15位身份证转成18位
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
               var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
               var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
               var nTemp = 0, i;
@@ -917,11 +923,11 @@ export default {
       if (len == 18) {
           re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
           var arrSplit = num.match(re);
-          //检查生日日期是否正确 
+          //检查生日日期是否正确
           var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
           var bGoodDay;
-          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2])) 
-                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2]))
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
                       && (dtmBirth.getDate() == Number(arrSplit[4]));
           if (!bGoodDay) {
               // alert(dtmBirth.getYear());
@@ -929,8 +935,8 @@ export default {
               // alert('输入的身份证号里出生日期不对！');
               return false;
           } else {
-              //检验18位身份证的校验码是否正确。 
-              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
+              //检验18位身份证的校验码是否正确。
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
               // var valnum;
               // var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
               // var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
@@ -964,7 +970,7 @@ export default {
       // this.remoteMethod()
       // this.getShopList();
       this.contractForm.type = this.$route.query.contType //区分合同类型
-    
+
       //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType
       if (this.$route.query.operateType) {
           this.type = parseInt(this.$route.query.operateType)
@@ -989,7 +995,7 @@ export default {
    .myconfirm{
         /deep/.el-dialog{
             width: 420px;
-    
+
             .el-dialog__header {
                 border-bottom: 1px solid #edecf0;
                 padding: 15px 20px 10px;
@@ -1011,7 +1017,7 @@ export default {
             }
             .dialog-footer{
                 text-align: center;
-                
+
                 .el-button{
                     padding: 11px 30px;
                     border-radius: 30px;
@@ -1020,7 +1026,7 @@ export default {
                     margin-left: 16px;
                 }
             }
-            
+
         }
     }
 
@@ -1102,7 +1108,7 @@ export default {
         padding-bottom: 30px;
       }
     }
-    
+
   }
   .textlengthbox {
     position: relative;
