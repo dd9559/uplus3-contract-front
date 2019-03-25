@@ -44,7 +44,7 @@
     </el-dialog>
 		<!-- 创建合同成功提示框 -->
     <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
-      <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
+      <span>{{Msg.type===1?'请上传资料库':'是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）'}}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="toContract">取 消</el-button>
         <el-button type="primary" @click="toUpload">确 定</el-button>
@@ -395,7 +395,7 @@ export default {
 					})
 					let inputHeight1=0
 					if(emptyInput1[0].type){
-						let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
+						let inputTag = iframebox1.contentWindow.document.querySelector(`*[extendparam=${emptyInput1[0].name}]`)
 						inputTag.classList.add("BODERRED")
 						if(inputTag.offsetParent.tagName==="TD"){
 							inputHeight1=inputTag.offsetParent.offsetTop + inputTag.offsetParent.offsetParent.offsetTop
