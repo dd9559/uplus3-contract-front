@@ -155,7 +155,7 @@ export default {
     clientHeight() {
 			// this.clientHei= screen.height -300 + 'px'
 			// console.log('teddddddd')
-      this.clientHei= document.documentElement.clientHeight -130 + 'px'
+      this.clientHei= document.documentElement.clientHeight -150 + 'px'
     },
     //居间买卖切换
     changeType(value) {
@@ -320,7 +320,7 @@ export default {
 							})
 							let inputHeight1=0
 							if(emptyInput1[0].type){
-								let inputTag = iframebox1.contentWindow.document.querySelector(`input[extendparam=${emptyInput1[0].name}]`)
+								let inputTag = iframebox1.contentWindow.document.querySelector(`*[extendparam=${emptyInput1[0].name}]`)
 								inputTag.classList.add("BODERRED")
 								inputHeight1 = inputTag.offsetTop
 							}else{
@@ -341,7 +341,7 @@ export default {
 						})
 						let inputHeight2=0
 						if(emptyInput2[0].type){
-							let inputTag = iframebox2.contentWindow.document.querySelector(`input[extendparam=${emptyInput2[0].name}]`)
+							let inputTag = iframebox2.contentWindow.document.querySelector(`*[extendparam=${emptyInput2[0].name}]`)
 							inputTag.classList.add("BODERRED")
 							inputHeight2 = inputTag.offsetTop
 						}else{
