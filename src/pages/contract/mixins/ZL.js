@@ -89,7 +89,8 @@ const MIXINS_ZL={
       return	!!(ele.querySelector('p').getAttribute('checked'))
     },
     //租赁校验
-    leaseCheck(iframe,obj=Obj2){
+    commissionCheck(iframe,obj=Obj2){
+      
       errorArr1=[]
       for(let item in obj){
         let itemType=Object.prototype.toString.call(obj[item])
@@ -209,12 +210,18 @@ const MIXINS_ZL={
                   }
                   break
               }
-              this.leaseCheck(iframe,detail)
+              this.commissionCheck(iframe,detail)
             }
           }
         }else {
-          obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
-          iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+          let classList = Array.from(iframe.document.querySelector(`*[extendparam=${item}]`).classList)
+          if(classList.includes('dropdown-item')||classList.includes('calendar-item')){
+              obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
+              iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+          }else{
+              obj[item]=iframe.document.querySelector(`span[extendparam=${item}]`).innerHTML
+              iframe.document.querySelector(`span[extendparam=${item}]`).classList.remove('BODERRED')
+          }
           if(obj[item].length===0){
             errorArr1.push({
               type:'input',
