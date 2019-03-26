@@ -624,17 +624,17 @@
             <div class="guest">
               <div class="title">买方信息</div>
               <div class="two-item">
-                <p class="line"><span>姓名：</span><span>{{buyerFirst.name}}</span></p>
+                <p class="line"><span style="min-width:42px;">姓名：</span><span>{{buyerFirst.name}}</span></p>
                 <p><span>身份证：</span><span>{{buyerFirst.encryptionCode}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
-                <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
+                <p class="line"><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
                 <p><span>电话：</span><span>{{item.mobile}}</span></p>
               </div>
               <div class="two-item no-bottom">
                 <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
-                <p style="width:240px;"><span>交易流程：</span><span>{{contractDetail.report.transFlowName}}</span></p>
+                <p style="width:210px;"><span>交易流程：</span><span>{{contractDetail.report.transFlowName}}</span></p>
               </div>
               <div class="two-item">
                 <p class="line"><span>按揭银行：</span><span>{{contractDetail.report.stagesBankName?contractDetail.report.stagesBankName:'--'}}</span></p>
@@ -647,12 +647,12 @@
             <div class="seller">
               <div class="title">卖方信息</div>
               <div class="two-item">
-                <p class="line"><span>姓名：</span><span>{{sellerFirst.name}}</span></p>
+                <p class="line"><span style="min-width:42px;">姓名：</span><span>{{sellerFirst.name}}</span></p>
                 <p><span>身份证：</span><span>{{sellerFirst.encryptionCode}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
-                <p class="line"><span>共有人姓名：</span><span>{{item.name}}</span></p>
+                <p class="line"><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
                 <p><span>电话：</span><span>{{item.mobile}}</span></p>
               </div>
               <div class="last-item" style="border-top:1px solid #ebeef5;">
@@ -2477,7 +2477,7 @@ export default {
         margin-right: 10px;
       }
       div {
-        height: 35px;
+        min-height: 40px;
         display: flex;
         align-items: center;
         &.title {
@@ -2497,22 +2497,12 @@ export default {
       .two-item {
         border-bottom: 1px solid #ebeef5;
         border-top: 1px solid #ebeef5;
-        position: relative;
         .line {
-          display: inline-block;
-          width: 170px;
-          height: 35px;
-          line-height: 35px;
+          display: flex;
+          align-items: center;
+          width: 220px;
+          min-height: 40px;
           border-right: 1px solid #ebeef5;
-          // &::before {
-          //   content: "";
-          //   width: 1px;
-          //   height: 35px;
-          //   position: absolute;
-          //   left: 175px;
-          //   top: 0;
-          //   background: #ebeef5;
-          // }
         }
         &.no-bottom {
           border-bottom: none;
@@ -2521,7 +2511,7 @@ export default {
       .last-item {
         .no-line {
           display: inline-block;
-          width: 170px;
+          width: 220px;
         }
       }
     }

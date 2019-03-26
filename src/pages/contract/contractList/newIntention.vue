@@ -34,8 +34,8 @@
 
                             <el-form-item label="定金金额：" prop="dealPrice" v-if="this.contractForm.type == 5">
                                 <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
-                                    <i slot="suffix" class="yuan">元</i>
-                                    <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
+                                    <i slot="suffix" class="yuan">万元</i>
+                                    <template slot="append">{{contractForm.dealPrice*10000 | moneyFormat}}</template>
                                 </el-input>
                             </el-form-item>
                         </div>
@@ -60,29 +60,39 @@
                                 <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength="70"></el-input>
                             </el-form-item>
 
-                            <el-form-item label="房源总价：" class="disb">
-                                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable disabled>
-                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt == 2">万元</i>
-                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt == 3">元/月</i>
+                            <el-form-item label="房源总价：" class="disb" v-if="contractForm.houseInfo.TradeInt">
+                                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable>
+                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">万元</i>
+                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 3">元/月</i>
+                                </el-input>
+                            </el-form-item>
+
+                            <el-form-item label="房源总价：" :prop="'houseInfo.ListingPrice'" class="error-item" :rules="{validator: housePrice, trigger: 'change'}"  v-if="!contractForm.houseInfo.TradeInt" >
+                                <el-input v-model="contractForm.houseInfo.ListingPrice" type="text" clearable>
+                                    
                                 </el-input>
                             </el-form-item>
 
                             <el-form-item label="业主信息：" class="disb" required>
-                                <el-form-item prop="ownname">
-                                    <el-input v-model="contractForm.ownname" @input="cutText('ownname')" clearable placeholder="姓名" class="ownwidth" :disabled="type==2?true:false" maxlength=5></el-input>
+
+                                <el-form-item :prop="'contPersons[' + 0 + '].name'" :rules="{required: true, message: '请输入业主姓名', trigger: 'change'}">
+                                    <el-input v-model="contractForm.contPersons[0].name" clearable placeholder="姓名" class="namewidth" maxlength=20></el-input>
                                 </el-form-item>
-                                <el-form-item prop="ownmobile" v-if="type===1">
-                                    <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth"></el-input>
+
+                                <el-form-item :prop="'contPersons[' + 0 + '].encryptionMobile'" :rules="{validator: telPhone, trigger:'change'}">
+                                    <el-input v-model="contractForm.contPersons[0].encryptionMobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth"></el-input>
                                 </el-form-item>
-                                <el-form-item v-if="type==2">
-                                    <el-input v-model="contractForm.ownmobile" type="tel" maxlength=11 clearable placeholder="手机号"  class="ownwidth" disabled></el-input>
+                                
+                                <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
+                                  <el-select v-model="contractForm.contPersons[0].cardType" placeholder="证件类型" style="width:120px;">
+                                    <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                                  </el-select>
+                                </el-form-item>                               
+
+                                <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{validator: idCard, trigger:'change'}">
+                                    <el-input v-model="contractForm.contPersons[0].identifyCode" clearable placeholder="证件号" class="custwidth" maxlength=18></el-input>
                                 </el-form-item>
-                                <el-form-item prop="ownIdentifyCode" v-if="type===1">
-                                    <el-input v-model="contractForm.ownIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
-                                </el-form-item>
-                                <el-form-item v-if="type==2">
-                                    <el-input v-model="contractForm.contPersons[0].encryptionCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
-                                </el-form-item>
+
                             </el-form-item>
                         </div>
                     </div>
@@ -118,22 +128,25 @@
                                 </el-form-item>
                             </div>
                             <el-form-item label="客户信息：" class="disb" required>
-                                <el-form-item prop="custname">
-                                    <el-input v-model="contractForm.custname" @input="cutText('custname')" clearable placeholder="姓名" class="ownwidth" :disabled="type==2?true:false" maxlength=5></el-input>
-                                </el-form-item>
-                                <el-form-item prop="custmobile" v-if="type===1">
-                                    <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth"></el-input>
-                                </el-form-item>
-                                <el-form-item v-if="type==2">
-                                    <el-input v-model="contractForm.custmobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth" disabled></el-input>
+
+                                <el-form-item :prop="'contPersons[' + 1 + '].name'" :rules="{required: true, message: '请输入客户姓名', trigger: 'change'}">
+                                    <el-input v-model="contractForm.contPersons[1].name" clearable placeholder="姓名" class="namewidth" maxlength=20></el-input>
                                 </el-form-item>
 
-                                <el-form-item prop="custIdentifyCode" v-if="type===1">
-                                    <el-input v-model="contractForm.custIdentifyCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
+                                <el-form-item :prop="'contPersons[' + 1 + '].encryptionMobile'" :rules="{validator: telPhone,trigger:'change'}">
+                                    <el-input v-model="contractForm.contPersons[1].encryptionMobile" clearable placeholder="手机号" class="ownwidth" maxlength=11></el-input>
                                 </el-form-item>
-                                <el-form-item v-if="type==2">
-                                    <el-input v-model="contractForm.contPersons[1].encryptionCode" clearable placeholder="身份证号" class="custwidth" maxlength=18></el-input>
+
+                                <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
+                                  <el-select v-model="contractForm.contPersons[1].cardType" placeholder="证件类型" style="width:120px;">
+                                      <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                                  </el-select>
                                 </el-form-item>
+
+                                <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard, trigger:'change'}">     
+                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" maxlength=18></el-input>
+                                </el-form-item>
+
                             </el-form-item>
 
                         </div>
@@ -187,6 +200,8 @@ export default {
   mixins: [MIXINS],
   data() {
     // 表单正则
+
+
     var checkNull = (rule, value, callback) => {
       if (!value || value !=='') {
         return callback(new Error());
@@ -215,35 +230,9 @@ export default {
 
 
     //身份证号验证规则
-    var idCard = (rule, value, callback) => {
+    
 
 
-        if (!value) {
-           return callback(new Error("请输入身份证号"));
-        } else {
-          if (!this.isIdCardNo(value)) {
-
-            callback(new Error("请输入正确格式的身份证号"));
-          } else {
-            callback();
-          }
-        }
-
-    };
-
-    //手机号验证规则
-    var telPhone = (rule, value, callback) => {
-      let myreg = /^[1][0-9]{10}$/;
-      if (!value) {
-        return callback(new Error("请输入手机号"));
-      } else {
-        if (!myreg.test(value)) {
-          callback(new Error("请输入1开头的11位手机号码"));
-        } else {
-          callback();
-        }
-      }
-    };
 
     return {
       choseHcode:0,//选择的房源编号
@@ -259,6 +248,11 @@ export default {
       id: "",
       //创建合同成功后的id
       detailId:'',
+       dictionary: {
+          //数据字典
+          "633": "", //证件类型
+       
+        },
       contractForm: {
         type: '',
         signDate: "",
@@ -287,6 +281,8 @@ export default {
           {
             name: "",
             encryptionMobile: "",
+            encryptionCode: "",
+            cardType:'',
             // identifyCode: '',
             type: 1
             // relation: ''
@@ -296,19 +292,12 @@ export default {
             name: "",
             encryptionMobile: "",
             encryptionCode: "",
+            cardType:'',
             type: 2,
             relation: ""
           }
         ],
-        //业主信息
-        ownname: "",
-        ownmobile: "",
-        ownIdentifyCode:"",
 
-        //客户信息
-        custname: "",
-        custmobile: "",
-        custIdentifyCode: ""
       },
 
       //门店选择列表
@@ -337,19 +326,14 @@ export default {
         ],
         subscriptionPrice: [{required: true, validator: checkPrice,trigger:'change' }],
         dealPrice: [{ required: true, validator: checkPrice,trigger:'change' }],
-        ownname: [{ required: true, message: "请输入业主姓名",trigger:'change' }],
-        ownmobile: [{ validator: telPhone,trigger:'change' }],
 
-        custname: [{ required: true, message: "请输入客户姓名",trigger:'change' }],
-        custmobile: [{ validator: telPhone,trigger:'change' }],
+
 
         guestinfoCode: [
           { required: true, message: "请选择客源编号", trigger:'change'}
         ],
 
-        custIdentifyCode: [{ required: true,validator: idCard,trigger:'change'}],
 
-        ownIdentifyCode: [{ required: true,validator: idCard,trigger:'change'}]
 
       },
       hidBtn:'',//隐藏保存按钮
@@ -387,45 +371,65 @@ export default {
   },
 
   methods: {
-    // depHandleClick(data) {
-    //   // this.getEmploye(data.depId)
-    //   this.contractForm.guestInfo.GuestStoreCode=data.depId
-    //   this.contractForm.guestInfo.GuestStoreName=data.name
-    //   this.contractForm.guestInfo.EmpCode = ''
-    //   this.contractForm.guestInfo.EmpName = ''
 
-    //   this.handleNodeClick(data)
-    // },
+    housePrice (rule, value, callback) {
+      let myprice = /(^[1-9][0-9]{0,8}(['万元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['万元']{2}|['元/月']{3})$)/;
+      if(value){
+         if (!myprice.test(value)) {
+          callback(new Error("提示：输入总价在0-999999999.99之间，不能等于0。必须带上单位，出租类型单位为'元/月',出售类型单位为'万元'，例子：'3000元/月'或者'300万元'，小数点只保留后两位。"));
+        } 
+        else if(parseFloat(value) <= 0 || parseFloat(value) > 999999999.99){
+          callback(new Error("输入总价在0-999999999.99之间，不能等于0"));
+        }
+        else {
+          callback();
+        }  
+      }
+      
+    },
 
-    // clearDep:function () {
-    //   this.contractForm.guestInfo.GuestStoreCode=''
-    //   this.contractForm.guestInfo.GuestStoreName=''
-    //   // this.EmployeList=[]
-    //   this.contractForm.guestInfo.EmpCode=''
-    //   this.contractForm.guestInfo.EmpName = ''
-    //   this.clearSelect()
-    // },
+    idCard (rule, value, callback) {
+        if (!value) {
+           return callback(new Error("请输入证件号"));
+        } else {
+          if (!this.isIdCardNo(value)) {
 
-    // initDepList:function (val) {
-    //   if(!val){
-    //     this.remoteMethod()
+            callback(new Error("请输入正确格式的证件号"));
+          } else {
+            callback();
+          }
+        }
+
+    },
+
+    telPhone (rule, value, callback) {
+      let myreg = /^[1][0-9]{10}$/;
+        if (!value) {
+            return callback(new Error("请输入手机号"));
+      
+        } else {
+          if (!myreg.test(value)) {
+            callback(new Error("请输入1开头的11位手机号码"));
+          } else {
+            callback();
+          }
+        }
+      
+    },
+
+    // cutText(val) {
+    //   // console.log(val)
+    //   if (val === "contractForm.contPersons[0].name") {
+    //      this.$nextTick(() => {
+    //        this.contractForm.contPersons[0].name = this.$tool.textInput(this.contractForm.contPersons[0].name);
+    //      })
+
+    //   } else if (val === "contractForm.contPersons[1].name") {
+    //     this.$nextTick(() => {
+    //       this.contractForm.contPersons[1].name = this.$tool.textInput(this.contractForm.contPersons[1].name);
+    //     })
     //   }
     // },
-
-
-    cutText(val) {
-      // console.log(val)
-      if (val === "ownname") {
-         this.$nextTick(() => {
-           this.contractForm.ownname = this.$tool.textInput(this.contractForm.ownname);
-         })
-
-      } else if (val === "custname") {
-        this.$nextTick(() => {
-         this.contractForm.custname = this.$tool.textInput(this.contractForm.custname);
-         })
-      }
-    },
 
     cutNumber(val) {
       // console.log(val)
@@ -436,7 +440,8 @@ export default {
             max: 999999999.99
           });
         });
-      } else if (val === "dealPrice") {
+      } 
+      else if (val === "dealPrice") {
         this.$nextTick(() => {
           this.contractForm.dealPrice = this.$tool.cutFloat({
             val: this.contractForm.dealPrice,
@@ -444,6 +449,24 @@ export default {
           });
         });
       }
+      //  else if (val === "housePrice") {
+        
+      //   this.$nextTick(() => {
+      //     this.contractForm.houseInfo.ListingPrice = this.$tool.cutFloat({
+      //       val: parseFloat(this.contractForm.houseInfo.ListingPrice),
+      //       max: 999999999.99
+      //     });
+
+      //   // if(this.contractForm.houseInfo.ListingPrice.contains('万元')){
+      //   //   let afterText = this.contractForm.houseInfo.ListingPrice.indexOf('万元')
+      //   //   console.log(afterText)
+         
+      //   //   this.contractForm.houseInfo.ListingPrice = 'prevalue' + '万元'
+      //   // }
+         
+      //   });
+      // }
+      
     },
 
 
@@ -502,19 +525,18 @@ export default {
             console.log(guestMsg);
             this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
             this.contractForm.guestInfo = guestMsg;
-            this.contractForm.contPersons[1] = {
-              name: guestMsg.OwnerInfo.CustName,
-              mobile: guestMsg.OwnerInfo.CustMobile,
-              relation: guestMsg.OwnerInfo.CustRelation,
-              type: 2
-            };
-            this.contractForm.custname = guestMsg.OwnerInfo.CustName;
-            this.contractForm.custmobile = guestMsg.OwnerInfo.CustMobile;
+            this.contractForm.contPersons[1].name = guestMsg.OwnerInfo.CustName;
+            this.contractForm.contPersons[1].encryptionMobile = guestMsg.OwnerInfo.CustMobile;
+            this.contractForm.contPersons[1].relation = guestMsg.OwnerInfo.CustRelation;
+            this.contractForm.contPersons[1].type = 2;
+
 
             this.$nextTick(function() {
               if(this.contractForm.guestinfoCode !==''){
                 this.$refs.contractForm.validateField('guestinfoCode');
-              }
+                this.$refs.contractForm.validateField('contPersons[1].encryptionMobile');
+                this.$refs.contractForm.validateField('contPersons[1].name');             
+              }        
             })
 
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
@@ -556,7 +578,7 @@ export default {
               if (res.data.contPersons[i].personType.value === 1) {
                 this.contractForm.contPersons[0].name =
                   res.data.contPersons[i].name;
-                this.contractForm.contPersons[0].mobile =
+                this.contractForm.contPersons[0].encryptionMobile =
                   res.data.contPersons[i].mobile;
                 this.contractForm.contPersons[0].relation =
                   res.data.contPersons[i].relation;
@@ -564,16 +586,14 @@ export default {
                   res.data.contPersons[i].identifyCode;
                 this.contractForm.contPersons[0].type =
                   res.data.contPersons[i].personType.value;
-                this.contractForm.ownname = res.data.contPersons[i].name;
-                this.contractForm.ownmobile = res.data.contPersons[i].mobile;
-                this.contractForm.ownIdentifyCode = res.data.contPersons[i].encryptionCode;
-                // this.contractForm.ownrelation = this.contractForm.contPersons[i].relation;
+
+
               } else if (
                 this.contractForm.contPersons[i].personType.value === 2
               ) {
                 this.contractForm.contPersons[1].name =
                   res.data.contPersons[i].name;
-                this.contractForm.contPersons[1].mobile =
+                this.contractForm.contPersons[1].encryptionMobile =
                   res.data.contPersons[i].mobile;
                 this.contractForm.contPersons[1].relation =
                   res.data.contPersons[i].relation;
@@ -581,9 +601,7 @@ export default {
                   res.data.contPersons[i].identifyCode),
                   (this.contractForm.contPersons[1].type =
                     res.data.contPersons[i].personType.value);
-                this.contractForm.custname = res.data.contPersons[i].name;
-                this.contractForm.custmobile = res.data.contPersons[i].mobile;
-                this.contractForm.custIdentifyCode = res.data.contPersons[i].encryptionCode;
+
               }
             }
 
@@ -623,47 +641,22 @@ export default {
 
     checkRule(contractForm) {
 
-
-
         this.$refs[contractForm].validate(valid => {
           if (valid) {
 
-            if(this.contractForm.ownmobile !=='' &&this.contractForm.custmobile !== ''&&((this.contractForm.ownmobile).trim() === (this.contractForm.custmobile).trim())){
+            if(this.contractForm.contPersons[0].encryptionMobile !=='' &&this.contractForm.contPersons[1].encryptionMobile !== ''&&((this.contractForm.contPersons[0].encryptionMobile).trim() === (this.contractForm.contPersons[1].encryptionMobile).trim())){
               this.$message({
                 type: "warning",
                 message: "业主手机号和客户手机号不能重复!"
               });
             }
-            else if(this.type == 1 && this.contractForm.ownIdentifyCode !=='' &&this.contractForm.custIdentifyCode !== ''&&((this.contractForm.ownIdentifyCode).trim() === (this.contractForm.custIdentifyCode).trim())){
+            else if(this.contractForm.contPersons[0].identifyCode !=='' &&this.contractForm.contPersons[1].identifyCode !== ''&&(this.contractForm.contPersons[0].identifyCode === this.contractForm.contPersons[1].identifyCode)){
               this.$message({
                 type: "warning",
-                message: "新增业主手机号和客户手机号不能重复!"
+                message: "业主证件号和客户证件号不能重复!"
               });
             }
-            else if(this.type == 2 && this.contractForm.contPersons[0].encryptionCode !=='' &&this.contractForm.contPersons[1].encryptionCode !== ''&&(this.contractForm.contPersons[0].encryptionCode === this.contractForm.contPersons[1].encryptionCode)){
-              this.$message({
-                type: "warning",
-                message: "编辑业主身份证号和客户身份证号不能重复!"
-              });
-            }
-            else if(this.contractForm.contPersons[1].encryptionCode == ''){
-              this.$message({
-                type: "warning",
-                message: "客户身份证号不能为空"
-              });
-            }
-            else if(this.contractForm.contPersons[0].encryptionCode == ''){
-              this.$message({
-                type: "warning",
-                message: "业主身份证号不能为空"
-              });
-            }
-            else if(this.type == 2 && !this.isIdCardNo(this.contractForm.contPersons[0].encryptionCode) || this.type == 2 && !this.isIdCardNo(this.contractForm.contPersons[1].encryptionCode)){
-              this.$message({
-                  type: "warning",
-                  message: "请输入正确格式的身份证号"
-                });
-            }
+
             else if(this.type===1){
               this.onSubmit1()
             }else if(this.type===2){
@@ -698,16 +691,18 @@ export default {
             contPersons: [
               //业主信息
               {
-                name: this.contractForm.ownname,
-                encryptionMobile: this.contractForm.ownmobile,
-                encryptionCode: this.contractForm.ownIdentifyCode,
+                name: this.contractForm.contPersons[0].name,
+                encryptionMobile: this.contractForm.contPersons[0].encryptionMobile,
+                encryptionCode: this.contractForm.contPersons[0].identifyCode,
+                cardType: this.contractForm.contPersons[0].cardType,
                 type: 1
               },
               //客户信息
               {
-                name: this.contractForm.custname,
-                encryptionMobile: this.contractForm.custmobile,
-                encryptionCode: this.contractForm.custIdentifyCode,
+                name: this.contractForm.contPersons[1].name,
+                encryptionMobile: this.contractForm.contPersons[1].encryptionMobile,
+                encryptionCode: this.contractForm.contPersons[1].identifyCode,
+                cardType: this.contractForm.contPersons[1].cardType,
                 type: 2,
 
               }]
@@ -783,14 +778,7 @@ export default {
           igdCont: this.contractForm,
           type: this.type
         };
-        param.igdCont.contPersons[0].name = this.contractForm.ownname;
-        // param.igdCont.contPersons[0].encryptionMobile = this.contractForm.ownmobile;
-        param.igdCont.contPersons[0].identifyCode = this.contractForm.ownIdentifyCode;
-        param.igdCont.contPersons[0].encryptionCode = this.contractForm.ownIdentifyCode;
-        param.igdCont.contPersons[1].name = this.contractForm.custname;
-        // param.igdCont.contPersons[1].encryptionMobile = this.contractForm.custmobile;
-        param.igdCont.contPersons[1].identifyCode = this.contractForm.custIdentifyCode;
-        param.igdCont.contPersons[1].encryptionCode = this.contractForm.custIdentifyCode;
+
         if (this.type== 2) {
           delete param.igdCont.code;
           delete param.igdCont.contType;
@@ -848,12 +836,7 @@ export default {
 
           delete param.igdCont.achievementState;
         }
-        delete param.igdCont.ownname;
-        delete param.igdCont.ownmobile;
-        delete param.igdCont.ownIdentifyCode;
-        delete param.igdCont.custname;
-        delete param.igdCont.custmobile;
-        delete param.igdCont.custIdentifyCode;
+
 
 
 
@@ -960,6 +943,7 @@ export default {
 
 
   created() {
+     this.getDictionary();
     let backMsg = JSON.parse(localStorage.getItem("backMsg"));
     if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
       let contMsg = JSON.parse(localStorage.getItem("contractMsg"));
@@ -1031,7 +1015,14 @@ export default {
         }
     }
 
-
+  .error-item{
+    /deep/.el-form-item__error{
+      top: 0 !important;
+      left: 220px !important;
+      width: 500px;
+      line-height: 18px;
+    }
+  }
 
 #newIntention {
   /deep/.el-input-group__append {
@@ -1093,6 +1084,9 @@ export default {
         }
         .ownwidth {
           width: 140px;
+        }
+        .namewidth {
+          width: 200px;
         }
         .custwidth {
           width: 190px;
