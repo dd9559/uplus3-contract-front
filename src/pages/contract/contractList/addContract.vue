@@ -783,7 +783,7 @@ export default {
                               }
                             }      
                             if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                              if (element.encryptionCode) {
+                              if (element.encryptionCode.replace(/\s/g,"")) {
                                 // if(this.contractForm.type===1){
                                   if(element.cardType!==1){
                                     element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
@@ -889,7 +889,7 @@ export default {
                                     }
                                   }      
                                 if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                                  if (element.encryptionCode) {
+                                  if (element.encryptionCode.replace(/\s/g,"")) {
                                     if(this.contractForm.type===1){
                                       if(element.cardType!==1){
                                         element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")

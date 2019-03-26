@@ -4,8 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <link rel="stylesheet" href="#"/>
   <title>买卖合同</title>
-  <link rel="stylesheet" href="https://sign2.jjw.com/datepicker.css"/>
   <style>
       body{
         font-family: SimHei;
@@ -42,7 +42,7 @@
         padding: 0;
       }
       .BODERRED{
-          border-color: red;
+          border-color: red !important;
       }
       .fontsmall{
         font-size: 12px;
@@ -227,9 +227,10 @@
           page-break-before: always;
         }
         span[tag='input-auto']{
-            border-bottom: 1px solid;
+            border-bottom: 1px solid gray;
             padding: 2px 10px;
             word-break: break-all;
+            word-wrap: break-word;
         }
         span[tag='input-auto'].input-before:before{
             content:'请输入';
@@ -237,28 +238,37 @@
             color: #a1a1a1;
         }
         .alert-viwer{
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-            padding: 10px;
-            border-radius: 4px;
-            background: #e3e3e3;
-            z-index: 999;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%,-50%);
+          padding: 10px;
+          border-radius: 4px;
+          background: #fff;
+          z-index: 999;
+          box-shadow: 0 1px 3px rgba(0,0,0,.3);
         }
         .alert-viwer>textarea{
-            background: #f5f5f5;
+          background: #fff;
+          border: 1px solid #dcdfe6;
         }
         .alert-viwer>p{
-            text-align: right;
-            margin: 0;
-            padding: 0;
+          text-align: right;
+          margin: 6px 0 0;
+          padding: 0;
+          line-height: normal;
         }
         .alert-viwer>p>span{
-            background: #6d95bd;
-            line-height: 2;
-            padding: 4px 10px;
-            color: #FFFFFF;
+          display: inline-block;
+          background: #409eff;
+          padding: 6px 12px;
+          color: #FFFFFF;
+          border-radius: 4px;
+        }
+        .alert-viwer>p>span:last-of-type{
+          background: #fff;
+          color: #606266;
+          border: 1px solid #dcdfe6;
         }
   </style>
 </head>
@@ -316,19 +326,19 @@
           <p>出卖人与买受人通过<input type="text" class="input-before text-limit dropdown-item" max="25" extendParam="val46"/>居间介绍成交。</p>
           <p id="five" class="fontBold">第五条、房产转让价格</p>
           <p>（一）该房产转让价格为按套转让，转让价格为人民币（大写）<span tag="input-auto" systemParam="dealPriceUpper"></span>圆整。此转让价：</p>
-          <div class="lingH18">1、<div class="info-checkbox" extendParam="val61" name="furniture" checkmodel="furniture"><p type="check"></p><span class="fontBold">包含</span>该房屋家具、家电、装饰装修及配套设施设备</div>（以房屋移交清单为准），买卖双方协商一致，认定该房屋家具、家电、装饰装修及配套设施设备等价值为：人民币（大写）<span tag="input-auto" listen="chinese" class="text-limit input-before" extendParam="val62"></span>圆整。出卖人应当保证自本合同签订之日起至该房屋验收交接完成，对各项房屋附属设施设备及其装饰装修保持良好的状况。</div>
+          <div class="lingH18">1、<div class="info-checkbox" extendParam="val61" name="furniture" checkmodel="furniture"><p type="check"></p><span class="fontBold">包含</span>该房屋家具、家电、装饰装修及配套设施设备</div>（以房屋移交清单为准），买卖双方协商一致，认定该房屋家具、家电、装饰装修及配套设施设备等价值为：人民币（大写）<span tag="input-auto" listen="chinese" max="12" class="text-limit input-before" extendParam="val62"></span>圆整。出卖人应当保证自本合同签订之日起至该房屋验收交接完成，对各项房屋附属设施设备及其装饰装修保持良好的状况。</div>
           <div class="lingH18 padL25"><div class="info-checkbox" extendParam="val63" name="furniture" checkmodel="furniture"><p type="check"></p><span class="fontBold">不包含</span></div>该房屋家具、家电、装饰装修及配套设施设备。</div>
           <div class="lingH18">2、<div class="info-checkbox" extendParam="val64" name="carport" checkmodel="carport"><p type="check"></p><span class="fontBold">包含车位</span>，</div><div class="info-checkbox" extendParam="val65" name="right"><p type="check"></p>使用权</div><div class="info-checkbox" extendParam="val66" name="right"><p type="check"></p>所有权，</div>车位号为：<span tag="input-auto" class="text-limit input-before" extendParam="val67"></span> ，买卖双方在办理房屋所有权转移登记手续当天一并办理车位所有权转移登记手续或使用权变更手续，税、费由<span tag="input-auto" class="text-limit input-before" extendParam="val68"></span>方全部承担。</div>
           <div class="lingH18 padL25"><div class="info-checkbox" extendParam="val69" name="carport" checkmodel="carport"><p type="check"></p><span class="fontBold">不包含车位</span></div>。</div>
           <p>（二）若该房屋在交易时暂未取得房屋所有权证或不动产权证书的，后期房屋登记机构颁发的不动产权证书所记载的房屋地址、面积（无论增加或减少）等信息与买卖双方已签署的合同中记载不一致的，买卖双方一致同意放弃异议的权利，并按照双方共同签署的合同继续履行，不因此追究他方的任何责任。 </p>
           <p id="six" class="fontBold">第六条、付款约定</p>
-          <p>（一）<span class="fontBold">定金</span>人民币（大写）<span tag="input-auto" listen="chinese" class="text-limit input-before" extendParam="val70"></span>圆整，买受人应于本合同签订当日将定金支付给出卖人。</p>
-          <p>（二）买受人<span class="fontBold">首付款</span>（不包含定金）人民币（大写）<span tag="input-auto" listen="chinese" class="text-limit input-before" extendParam="val71"></span>圆整，以下列第<input type="text" class="text-limit dropdown-item" list="A,B,C,D" style="width:50px" extendParam="val72" readonly="readonly" inputmethod="pay"/>种方式支付：</p>
+          <p>（一）<span class="fontBold">定金</span>人民币（大写）<span tag="input-auto" listen="chinese" max="12" class="text-limit input-before" extendParam="val70"></span>圆整，买受人应于本合同签订当日将定金支付给出卖人。</p>
+          <p>（二）买受人<span class="fontBold">首付款</span>（不包含定金）人民币（大写）<span tag="input-auto" listen="chinese" max="12" class="text-limit input-before" extendParam="val71"></span>圆整，以下列第<input type="text" class="text-limit dropdown-item" list="A,B,C,D" style="width:50px" extendParam="val72" readonly="readonly" inputmethod="pay"/>种方式支付：</p>
           <p name="pay">A.于办理房屋所有权转移登记手续当日，见到已是买受人名下房屋不动产证收件单后当日内，由买受人打入出卖人指定账户；</p>
-          <div class="lingH18" name="pay">B.买受人应当于<div class="info-checkbox" extendParam="val73" name="psecond" checkmodel="psecond"><p type="check"></p></div><input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val74"/>内<div class="info-checkbox" extendParam="val77" name="psecond" checkmodel="psecond"><p type="check"></p>贷款审批通过后</div><span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val78"></span>日内，将首付款人民币（大写）<span tag="input-auto" listen="chinese" class="text-limit input-before" extendParam="val79"></span>圆整支付给出卖人用于提前结清贷款，剩余首付款人民币（大写）<span tag="input-auto" listen="chinese" class="text-limit input-before" extendParam="val80"></span>圆整买受人应在办理房屋所有权转移登记手续当日见到已是买受人名下房屋不动产证收件单后当日内打入出卖人指定账户；</div>
-          <p name="pay">C.买受人应于<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val81"/>内，将首付款人民币（大写）<span tag="input-auto" listen="chinese" class="text-limit input-before" extendParam="val84"></span>圆整打入出卖人指定账户。</p>
-          <div class="lingH18" name="pay">D.买受人应于<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val85"/>内，将首付款人民币（大写）<span tag="input-auto" listen="chinese" class="text-limit input-before" extendParam="val88"></span>圆整打入<div class="info-checkbox" extendParam="val89" name="pthird"><p type="check"></p>居间方监管账户</div><div class="info-checkbox" extendParam="val90" name="pthird"><p type="check"></p>银行监管账户。</div>办理房屋所有权转移登记手续当日<div class="info-checkbox" extendParam="val91" name="pfourth"><p type="check"></p>居间方</div><div class="info-checkbox" extendParam="val92" name="pfourth"><p type="check"></p>监管银行</div>见到已是买受人名下不动产证收件单后当日内将首付款打入出卖人指定账户。</div>
-          <p><span class="fontBold">（三）尾款人民币</span>（大写）<span tag="input-auto" listen="chinese" class="text-limit input-before" extendParam="val93"></span><span class="fontBold">圆整，买受人以下列</span><input type="text" class="text-limit dropdown-item" list="A,B" style="width:50px" extendParam="val94" readonly="readonly" inputmethod="loans1"/><span class="fontBold">种方式支付：</span></p>
+          <div class="lingH18" name="pay">B.买受人应当于<div class="info-checkbox" extendParam="val73" name="psecond" checkmodel="psecond"><p type="check"></p></div><input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val74"/>内<div class="info-checkbox" extendParam="val77" name="psecond" checkmodel="psecond"><p type="check"></p>贷款审批通过后</div><span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val78"></span>日内，将首付款人民币（大写）<span tag="input-auto" listen="chinese" max="12" class="text-limit input-before" extendParam="val79"></span>圆整支付给出卖人用于提前结清贷款，剩余首付款人民币（大写）<span tag="input-auto" listen="chinese" max="12" class="text-limit input-before" extendParam="val80"></span>圆整买受人应在办理房屋所有权转移登记手续当日见到已是买受人名下房屋不动产证收件单后当日内打入出卖人指定账户；</div>
+          <p name="pay">C.买受人应于<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val81"/>内，将首付款人民币（大写）<span tag="input-auto" listen="chinese" max="12" class="text-limit input-before" extendParam="val84"></span>圆整打入出卖人指定账户。</p>
+          <div class="lingH18" name="pay">D.买受人应于<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val85"/>内，将首付款人民币（大写）<span tag="input-auto" listen="chinese" max="12" class="text-limit input-before" extendParam="val88"></span>圆整打入<div class="info-checkbox" extendParam="val89" name="pthird"><p type="check"></p>居间方监管账户</div><div class="info-checkbox" extendParam="val90" name="pthird"><p type="check"></p>银行监管账户。</div>办理房屋所有权转移登记手续当日<div class="info-checkbox" extendParam="val91" name="pfourth"><p type="check"></p>居间方</div><div class="info-checkbox" extendParam="val92" name="pfourth"><p type="check"></p>监管银行</div>见到已是买受人名下不动产证收件单后当日内将首付款打入出卖人指定账户。</div>
+          <p><span class="fontBold">（三）尾款人民币</span>（大写）<span tag="input-auto" listen="chinese" max="12" class="text-limit input-before" extendParam="val93"></span><span class="fontBold">圆整，买受人以下列</span><input type="text" class="text-limit dropdown-item" list="A,B" style="width:50px" extendParam="val94" readonly="readonly" inputmethod="loans1"/><span class="fontBold">种方式支付：</span></p>
           <p name="loans1"><span class="fontBold">A.</span>于办理房屋所有权转移登记手续当日，见到已是买受人名下房屋不动产证收件单后当日内，由买受人打入出卖人指定账户；</p>
           <div class="lingH18" name="loans1"><span class="fontBold">B.</span>买受人以申请<div class="info-checkbox" extendParam="val95" name="loanstype"><p type="check"></p>商业贷款　</div><div class="info-checkbox" extendParam="val96" name="loanstype"><p type="check"></p>公积金贷款　</div><div class="info-checkbox" extendParam="val97" name="loanstype"><p type="check"></p>组合贷款　</div>方式支付；</div>
           <p name="loans1">买卖双方应于<input type="text" class="text-limit calendar-item" readonly="readonly" style="width:130px" extendParam="val98"/>内前往贷款机构办理贷款申请手续，<span>递交真实、有效、齐全且符合贷款机构要求的相关文件并支付相关费用。</span>申请贷款的条件及申请贷款所需要的资料由贷款机构决定，居间方提供的贷款相关信息仅供参考，不作为贷款批复的依据。贷款的具体金额及放款时间以贷款机构为准。<span>若买受人在贷款过程中提出终止贷款行为，则买受人需补齐所差房款，继续履行本合同。</span></p>
@@ -388,7 +398,7 @@
         <div class="lingH18">4、房屋维修基金由<div class="info-checkbox" extendParam="val122" name="check07"><p type="check"></p>买受人缴纳</div><div class="info-checkbox" extendParam="val123" name="check07"><p type="check"></p>出卖人缴纳，</div>出卖人同意将其缴纳的该房屋专项维修资金（公共维修基金）的账面余额在办理房屋所有权转移登记当日转移给买受人。</div>
 
         <p class="bold" id="nine">第九条、房屋交付</p>
-        <p>（一）交房保证金：买卖双方一致同意，买受人从本协议约定的购房款中留存人民币（大写）<span tag="input-auto" listen="chinese" class="text-limit input-before" extendParam="val200"></span>圆整作为交房保证金。买卖双方办理物业交割当日由买受人自行支付给出卖人。</p> 
+        <p>（一）交房保证金：买卖双方一致同意，买受人从本协议约定的购房款中留存人民币（大写）<span tag="input-auto" listen="chinese" max="12" class="text-limit input-before" extendParam="val200"></span>圆整作为交房保证金。买卖双方办理物业交割当日由买受人自行支付给出卖人。</p> 
         <p>（二）出卖人应当按照下列第<input type="text" value="" class="text-limit dropdown-item" list="A,B,C" style="width:50px" extendParam="val124" readonly="readonly" inputmethod="delivery"/>种约定将该房屋交付给买受人。</p>
         <p name="delivery">A.办理完毕该房屋所有权转移登记手续后<span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val125"></span>个工作日内将该房屋交付给买受人；</p>
         <p name="delivery">B.出卖人收到买受人全部定金及首付款（不含交房保证金）后<span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val126"></span>个工作日内将该房屋交付给买受人；</p>
@@ -401,7 +411,7 @@
       </div>
     
       <div class="paragraph" name="text-indent">
-        <p>（一）出卖人承诺房屋内无户口，如有户口，出卖人应当在<span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val129"></span>办理原有户口迁出手续。如出卖人未按期将户口迁出的，自逾期之日起出卖人应当按日计算向买受人支付房屋总价款万分之五的违约金。</p>
+        <p>（一）出卖人承诺房屋内无户口，如有户口，出卖人应当在<span tag="input-auto" class="text-limit input-before" extendParam="val129"></span>办理原有户口迁出手续。如出卖人未按期将户口迁出的，自逾期之日起出卖人应当按日计算向买受人支付房屋总价款万分之五的违约金。</p>
       </div>
     
       <div class="paragraph" name="text-indent">
@@ -496,9 +506,38 @@
         
     </div>
 </body>
-<script src="https://sign2.jjw.com/browser-polyfill.min.js"></script>
-<script src="https://sign2.jjw.com/browser.min.js"></script>
-<script src="https://sign2.jjw.com/datepicker.js"></script>
-<script src="https://sign2.jjw.com/dropdown.js"></script>
-<script src="./MM.js" test_src="http://sign2.jjw.com:28879/js/bundle_mm20190322.js"></script>
+<script>
+    (function () {
+      var scriptList = document.getElementsByTagName("script")
+      console.log(scriptList)
+      if(!scriptList[0].src){
+        var host='https://sign2.jjw.com'
+        var host_other="http://sign2.jjw.com:28879"
+        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_mm20190325.js","datepicker.css"]
+        for (let i = 0; i < addrList.length; i++) {
+          if(window.location.host==='localhost:8080'){
+            if(addrList[i].indexOf('bundle')>-1){
+              addrList[i]=host_other+'/'+addrList[i]
+            }else{
+              addrList[i]=host+'/'+addrList[i]
+            }
+          }else{
+            addrList[i]='/'+addrList[i]
+          }
+            if(addrList[i].indexOf('.css')>-1){
+              var hm = document.createElement("link");
+              hm.rel="stylesheet"
+              hm.href = addrList[i];
+              var s = document.getElementsByTagName("link")[0];
+              s.parentNode.appendChild(hm);
+            }else{
+              var hm = document.createElement("script");
+              hm.src = addrList[i];
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.appendChild(hm);
+            }
+          }
+        }
+    })();
+</script>
 </html>
