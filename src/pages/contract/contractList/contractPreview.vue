@@ -31,6 +31,10 @@
         <el-button round @click="showContData" v-if="power['sign-ht-xq-data'].state">资料库</el-button>
       </div>
       <div class="btn" v-else>
+        <el-button-group>
+          <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
+          <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
+        </el-button-group>
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state" @click="toEdit">编辑</el-button>
       </div>
     </div>

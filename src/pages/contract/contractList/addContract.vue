@@ -1155,7 +1155,7 @@ export default {
                               }
                             }else{
                               this.$message({
-                                message:'身份证号码重复',
+                                message:'证件号重复',
                                 type: "warning"
                               })
                             }
