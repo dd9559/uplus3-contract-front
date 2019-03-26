@@ -624,7 +624,7 @@
               <div class="title">买方信息</div>
               <div class="two-item">
                 <p class="line"><span style="min-width:42px;">姓名：</span><span>{{buyerFirst.name}}</span></p>
-                <p><span>身份证：</span><span>{{buyerFirst.encryptionCode}}</span></p>
+                <p><span>{{buyerFirst.cardType===1?"身份证":buyerFirst.cardType===2?"护照":"营业执照"}}：</span><span>{{buyerFirst.encryptionCode}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
@@ -647,7 +647,7 @@
               <div class="title">卖方信息</div>
               <div class="two-item">
                 <p class="line"><span style="min-width:42px;">姓名：</span><span>{{sellerFirst.name}}</span></p>
-                <p><span>身份证：</span><span>{{sellerFirst.encryptionCode}}</span></p>
+                <p><span>{{sellerFirst.cardType===1?"身份证":sellerFirst.cardType===2?"护照":"营业执照"}}：</span><span>{{sellerFirst.encryptionCode}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
