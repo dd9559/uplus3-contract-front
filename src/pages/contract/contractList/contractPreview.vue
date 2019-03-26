@@ -20,13 +20,12 @@
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
-        <el-button type="primary" round @click="showPos" v-show='position'>签章位置</el-button>
-        <el-button type="primary" round @click="savePos">保存</el-button>
+        <el-button type="primary" round v-if="examineState===1&&contState===1&&isActive===1" @click="showPos">签章位置</el-button>
         <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
         <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
-        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&signPositions.length>0" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
@@ -379,7 +378,9 @@ export default {
                   return sign.y>0.85*index&&sign.y<1*index
                 })
                 if(state){
-                  sign.y=Number((0.85+sign.pageIndex-1).toFixed(2))
+                  sign.y=0.85
+                }else{
+                  sign.y=(sign.y-(sign.pageIndex-1)).toFixed(2)
                 }
                 document.onmousemove=null;
                 document.onmouseup=null;
@@ -400,28 +401,28 @@ export default {
               })
             }
     },
-    savePos(){
-      for(let i=0;i<this.signPositions.length;i++){
-        delete this.signPositions[i].index
-      }
+    // savePos(){
+    //   for(let i=0;i<this.signPositions.length;i++){
+    //     delete this.signPositions[i].index
+    //   }
       
-      let param={
-        id:this.id,
-        type:3,
-        signPosition:JSON.stringify(this.signPositions)
-      }
-      console.log(param,'ppp');
-      this.$ajax.post('/api/contract/signture',param).then(res=>{
-        let url=res.data.data
-        debugger
-        console.log(url,'url');
-        this.$ajax.get('/api/load/generateAccessURL',{'url':url}).then(res=>{
-          console.log(res);
-          this.pdfUrl = res.data.data.url
-          this.haveUrl=true;
-        })
-      })
-    },
+    //   let param={
+    //     id:this.id,
+    //     type:3,
+    //     signPosition:JSON.stringify(this.signPositions)
+    //   }
+    //   console.log(param,'ppp');
+    //   this.$ajax.post('/api/contract/signture',param).then(res=>{
+    //     let url=res.data.data
+    //     debugger
+    //     console.log(url,'url');
+    //     this.$ajax.get('/api/load/generateAccessURL',{'url':url}).then(res=>{
+    //       console.log(res);
+    //       this.pdfUrl = res.data.data.url
+    //       this.haveUrl=true;
+    //     })
+    //   })
+    // },
     showPos(){
       let signturn=document.createElement('div')
       signturn.setAttribute('class','signature')
@@ -519,10 +520,16 @@ export default {
     //签章
     signature(value){
       if(value===3){//签章+打印
+      //   let param={
+    //     id:this.id,
+    //     type:3,
+    //     signPosition:JSON.stringify(this.signPositions)
+    //   }
         let param = {
           id:this.id,
           type:value,
-          reduce:this.reduce//合同页数是否减少 0无  1有
+          signPosition:JSON.stringify(this.signPositions)
+          // reduce:this.reduce//合同页数是否减少 0无  1有
         }
         this.fullscreenLoading=true;
         //签章
@@ -531,14 +538,21 @@ export default {
           if(res.status===200){
             let pdfUrl=res.data;
             // debugger
+            this.fullscreenLoading=false;
+            this.getContImg()
+            // debugger
+            let pictureList = Array.from(document.getElementsByClassName('signature'))
+            console.log(pictureList)
+            pictureList.forEach(element => {
+              element.style.display="none"
+            });
             this.getUrl(pdfUrl);
             this.haveUrl=true;
-            this.fullscreenLoading=false;
             // setTimeout(()=>{
             //   this.dayin();
             //   this.fullscreenLoading=false;
             // },2000);
-            this.getContImg()
+            
           }
         }).catch(error =>{
           this.fullscreenLoading=false;
