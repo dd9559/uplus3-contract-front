@@ -33,6 +33,10 @@
       picSize:{
         type:Boolean,
         default:false
+      },
+      scane:{
+        type:Number,
+        default:1
       }
     },
     data(){
@@ -145,12 +149,23 @@
        */
       up:function () {
         // console.log(uploader)
-        let path = 'picture/'
+        let path = ''
+        switch (this.scane){
+          case 1:
+            path='picture/'
+                break;
+          case 2:
+            path='template/html/'
+                break;
+        }
         let maxSize = 1024
         if(this.uploader.files.length!==0){
           let type=get_suffix(this.uploader.files[0].name)
           if(this.fileType.includes(type)){
             // maxSize=10
+
+
+
             if(this.picSize) {
               if(this.uploader.files[0].size>5*1024*1024){
                 this.$message({
