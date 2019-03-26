@@ -67,11 +67,17 @@
                                 </el-input>
                             </el-form-item>
 
-                            <el-form-item label="房源总价：" :prop="'houseInfo.ListingPrice'" class="error-item" :rules="{validator: housePrice, trigger: 'change'}"  v-if="!contractForm.houseInfo.TradeInt" >
-                                <el-input v-model="contractForm.houseInfo.ListingPrice" type="text" clearable>
-                                    
+                            <!-- <el-form-item label="房源总价：" class="item3" v-if="!contractForm.houseInfo.TradeInte&&contractForm.houseInfo.ListingPrice == ''">
+                                <el-input v-model="contractForm.houseInfo.ListingPrice" type="text" clearable>                                    
+                                </el-input>
+                            </el-form-item> -->
+
+                            <el-form-item label="房源总价：" class="error-item" :prop="'houseInfo.ListingPrice'" :rules="{validator: housePrice, trigger: 'change'}"  v-if="!contractForm.houseInfo.TradeInt" >
+                                <el-input v-model="contractForm.houseInfo.ListingPrice" type="text" clearable v-if="!contractForm.houseInfo.TradeInt">                                    
                                 </el-input>
                             </el-form-item>
+
+                            
 
                             <el-form-item label="业主信息：" class="disb" required>
 
@@ -143,7 +149,7 @@
                                   </el-select>
                                 </el-form-item>
 
-                                <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard, trigger:'change'}">     
+                                <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard, trigger:'change',type:1}">     
                                     <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" maxlength=18></el-input>
                                 </el-form-item>
 
@@ -267,7 +273,8 @@ export default {
           EstateName: "",
           BuildingName: "",
           Unit: "",
-          RoomNo: ""
+          RoomNo: "",
+          ListingPrice:""
         },
         guestInfo: {
           GuestStoreCode: "",
@@ -372,10 +379,11 @@ export default {
 
   methods: {
 
+
     housePrice (rule, value, callback) {
       let myprice = /(^[1-9][0-9]{0,8}(['万元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['万元']{2}|['元/月']{3})$)/;
       if(value){
-         if (!myprice.test(value)) {
+        if (!myprice.test(value)) {
           callback(new Error("提示：输入总价在0-999999999.99之间，不能等于0。必须带上单位，出租类型单位为'元/月',出售类型单位为'万元'，例子：'3000元/月'或者'300万元'，小数点只保留后两位。"));
         } 
         else if(parseFloat(value) <= 0 || parseFloat(value) > 999999999.99){
@@ -384,6 +392,8 @@ export default {
         else {
           callback();
         }  
+      }else{
+        callback();
       }
       
     },
@@ -391,7 +401,7 @@ export default {
     idCard (rule, value, callback) {
         if (!value) {
            return callback(new Error("请输入证件号"));
-        } else {
+        } else{
           if (!this.isIdCardNo(value)) {
 
             callback(new Error("请输入正确格式的证件号"));
@@ -868,6 +878,7 @@ export default {
     },
 
     isIdCardNo(num) {
+
       // num = num.toUpperCase();
       //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。
       if (!(/(^\d{15}$)|(^\d{17}([0-9]|X|x)$)/.test(num))) {
@@ -944,6 +955,7 @@ export default {
 
   created() {
      this.getDictionary();
+     console.log(this.contractForm.houseInfo.ListingPrice)
     let backMsg = JSON.parse(localStorage.getItem("backMsg"));
     if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
       let contMsg = JSON.parse(localStorage.getItem("contractMsg"));

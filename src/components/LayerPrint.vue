@@ -98,7 +98,7 @@
                     link.setAttribute("rel", "stylesheet");
                     if (styles[i].type) link.setAttribute("type", styles[i].type);
                     else link.setAttribute("type", 'text/css');
-                    link.setAttribute("href", styles[i].href);
+                    link.setAttribute("href", `${styles[i].href}?time=${new Date().getTime()}`);
                     link.setAttribute('media', 'all');
                     printI.contentDocument.head.appendChild(link);
                 }
