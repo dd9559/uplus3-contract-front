@@ -538,19 +538,21 @@ export default {
           if(res.status===200){
             let pdfUrl=res.data;
             // debugger
+            this.fullscreenLoading=false;
+            this.getContImg()
+            // debugger
+            let pictureList = Array.from(document.getElementsByClassName('signature'))
+            console.log(pictureList)
+            pictureList.forEach(element => {
+              element.style.display="none"
+            });
             this.getUrl(pdfUrl);
             this.haveUrl=true;
-            this.fullscreenLoading=false;
-            // debugger
-            // let pictureList = document.getElementsByClassName('el-icon-close')
-            // pictureList.forEach(element => {
-            //   element.click()
-            // });
             // setTimeout(()=>{
             //   this.dayin();
             //   this.fullscreenLoading=false;
             // },2000);
-            this.getContImg()
+            
           }
         }).catch(error =>{
           this.fullscreenLoading=false;

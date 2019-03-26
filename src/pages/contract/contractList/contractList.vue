@@ -636,13 +636,21 @@ export default {
             }
           });
         }else{
-          this.$router.push({
+          // this.$router.push({
+          //   path: "/detailIntention",
+          //   query: {
+          //     id: value.id,
+          //     contType: value.contType.value
+          //   }
+          // });
+          let newPage = this.$router.resolve({
             path: "/detailIntention",
             query: {
               id: value.id,
               contType: value.contType.value
             }
           });
+          window.open(newPage.href, '_blank');
         }
       }else{
         this.noPower('合同详情查看')
