@@ -46,7 +46,7 @@
                                 <li>
                                     <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
                                     <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>                                 
-                                    <div><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 1">营业执照：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
+                                    <div><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
                                 </li>
                             </ul>
                         </ul>
@@ -61,7 +61,7 @@
                                 <li>
                                     <div class="div1"><span>客户姓名：</span>{{custInfo[0].name | nullData}}</div>
                                     <div class="div2"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
-                                    <div><span>身份证号：</span>{{custInfo[0].identifyCode | nullData}}</div>
+                                    <div><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span>{{custInfo[0].identifyCode | nullData}}</div>
                                 </li>
                             </ul>
                         </ul>
