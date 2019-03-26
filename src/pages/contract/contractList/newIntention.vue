@@ -61,7 +61,7 @@
                             </el-form-item>
 
                             <el-form-item label="房源总价：" class="disb" v-if="contractForm.houseInfo.TradeInt">
-                                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable>
+                                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable type="number">
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">万元</i>
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 3">元/月</i>
                                 </el-input>
