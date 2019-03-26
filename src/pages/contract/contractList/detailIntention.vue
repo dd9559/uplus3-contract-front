@@ -37,8 +37,7 @@
                                     
                                     <div><span>用途：</span>{{detailData.houseInfo.HousePurpose | nullData}}</div>
                                 </li>
-                                <li>
-                                    
+                                <li>   
                                     <div class="div1"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
                                     <div class="div2"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
                                     <div><span>产权地址：</span>{{detailData.houseInfo.propertyRightAddr | nullData}}</div>
@@ -47,7 +46,7 @@
                                 <li>
                                     <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
                                     <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>                                 
-                                    <div><span>身份证号：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
+                                    <div><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 1">营业执照：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
                                 </li>
                             </ul>
                         </ul>
