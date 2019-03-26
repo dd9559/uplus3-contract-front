@@ -30,6 +30,7 @@
                                     <div class="div22"><span>物业地址：</span>{{detailData.propertyAddr | nullData}}</div>
                                 </li>
                                 <li>
+                                    <div class="div1" v-if="detailData.houseInfo.TradeInt == 0"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}</div>
                                     <div class="div1" v-if="detailData.houseInfo.TradeInt == 2"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}万元</div>
                                     <div class="div1" v-if="detailData.houseInfo.TradeInt == 3"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元/月</div>
                                     <div class="div1"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
