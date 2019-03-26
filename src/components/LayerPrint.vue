@@ -68,7 +68,7 @@
                     } catch (e) {
                         f.contentWindow.print();
                     }
-                },100)
+                },150)
             },
             PageSetup_Null() {
                     var hkey_root, hkey_path, hkey_key;
@@ -98,7 +98,8 @@
                     link.setAttribute("rel", "stylesheet");
                     if (styles[i].type) link.setAttribute("type", styles[i].type);
                     else link.setAttribute("type", 'text/css');
-                    link.setAttribute("href", `${styles[i].href}?time=${new Date().getTime()}`);
+                    // link.setAttribute("href", `${styles[i].href}?time=${new Date().getTime()}`);
+                    link.setAttribute("href", styles[i].href);
                     link.setAttribute('media', 'all');
                     printI.contentDocument.head.appendChild(link);
                 }
