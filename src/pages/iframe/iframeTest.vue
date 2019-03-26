@@ -15,16 +15,16 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
 
   export default {
     name: "iframe-test",
-    mixins: [MIXINS_YX,MIXINS_DB, MIXINS_DJ],
+    mixins: [MIXINS_JJ],
     data(){
       return{
-        src:'代办.html'
+        src:'居间.html'
       }
     },
     methods:{
       check:function () {
         let iframe=document.querySelector('#iframe')
-        this.commissionCheck(iframe.contentWindow)
+        this.dealCheck(iframe.contentWindow)
       }
     },
     computed:{

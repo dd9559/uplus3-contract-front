@@ -13,7 +13,7 @@
             <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
-          <el-form-item label="成交总价：" class="form-label width-250">
+          <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
             <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan" v-if="contractForm.type!==1">元</i>
             <!-- <el-input :value="contractForm.dealPrice" type="text" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
@@ -27,10 +27,10 @@
             <span class="chineseNum">{{contractForm.dealPrice|moneyFormat}}</span>
           </el-form-item>
           <br>
-          <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
+          <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
             <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
             <i class="yuan">元</i>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="客户佣金：" class="width-250">
             <input type="text" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
@@ -133,7 +133,7 @@
             <ul class="peopleMsg">
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'owner')" class="name_">
+                  <input v-model="item.name" placeholder="姓名" maxlength="20" @input="inputOnly(index,'owner')" class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                  <!-- :disabled="type===2&&!item.edit?true:false" -->
@@ -141,12 +141,12 @@
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
-                <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'owner')" v-if="contractForm.type===1">
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight"></span>
+                <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'owner')">
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
                  <!-- :class="{'disabled':type===2&&!item.edit}" -->
-                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight"></span>
                 <input v-model="item.encryptionCode" type="text" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
@@ -185,18 +185,18 @@
             <ul class="peopleMsg">
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="6" @input="inputOnly(index,'guest')"  class="name_">
+                  <input v-model="item.name" placeholder="姓名" maxlength="20" @input="inputOnly(index,'guest')"  class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
-                <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')" v-if="contractForm.type===1">
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight"></span>
+                <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
-                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight"></span>
                 <input id="guestCard" v-model="item.encryptionCode" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
@@ -784,12 +784,12 @@ export default {
                             }      
                             if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                               if (element.encryptionCode) {
-                                if(this.contractForm.type===1){
+                                // if(this.contractForm.type===1){
                                   if(element.cardType!==1){
                                     element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                                   }
-                                }
-                                if ((this.contractForm.type===1&&((element.cardType===1&&this.isIdCardNo(element.encryptionCode))||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)))||(this.contractForm.type!==1&&this.isIdCardNo(element.encryptionCode))) {
+                                // }
+                                if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)) {
                                   isOk = true;
                                   ownerRightRatio += element.propertyRightRatio - 0;
                                 }else{
@@ -895,7 +895,7 @@ export default {
                                         element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                                       }
                                     }
-                                    if ((this.contractForm.type===1&&(element.cardType===1&&this.isIdCardNo(element.encryptionCode)||element.cardType===2&&element.encryptionCode.length===9||element.cardType===3&&element.encryptionCode.length===20))||(this.contractForm.type!==1&&this.isIdCardNo(element.encryptionCode))) {
+                                    if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)) {
                                       isOk_ = true;
                                       guestRightRatio += element.propertyRightRatio - 0;
                                     }else{
@@ -2311,7 +2311,7 @@ export default {
       }
     }
     .name_ {
-      width: 60px;
+      width: 250px;
       padding-left: 5px;
       border: none;
       border-right: 1px solid #dcdfe6;

@@ -102,13 +102,13 @@
                 <p class="bold">买方信息</p>
                 <div class="guest msg info">
                     <div class="text mai-mai">
-                        <p><span>姓名：</span><span style="min-width:56px;">{{firstBuyer.name}}</span></p>
-                        <p><span style="min-width:56px;">身份证：</span><span>{{firstBuyer.encryptionCode}}</span></p>
+                        <p><span>姓名：</span><span style="width:150px;word-wrap:break-word;">{{firstBuyer.name}}</span></p>
+                        <p><span style="min-width:56px;">{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":"营业执照"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
                         <li v-for="(item,index) in buyerArr" :key="index">
-                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:70px;">{{item.name}}</span></p>
+                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:260px;">{{item.name}}</span></p>
                             <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
@@ -150,13 +150,13 @@
                 <p class="bold">卖方信息</p>
                 <div class="owner msg info">
                     <div class="text mai-mai">
-                        <p><span>姓名：</span><span style="min-width:56px;">{{firstSeller.name}}</span></p>
-                        <p><span style="min-width:56px;">身份证：</span><span>{{firstSeller.encryptionCode}}</span></p>
+                        <p><span>姓名：</span><span style="width:150px;word-wrap:break-word;">{{firstSeller.name}}</span></p>
+                        <p><span style="min-width:56px;">{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":"营业执照"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
                         <li v-for="(item,index) in sellerArr" :key="index">
-                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:70px;">{{item.name}}</span></p>
+                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:260px;">{{item.name}}</span></p>
                             <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
                         </li>
                     </ul>
@@ -331,13 +331,15 @@ export default {
             firstBuyer: {
                 name: "",
                 encryptionCode: "",
-                mobile: ""
+                mobile: "",
+                cardType: ""
             },
             buyerArr: [],
             firstSeller: {
                 name: "",
                 encryptionCode: "",
-                mobile: ""
+                mobile: "",
+                cardType: ""
             },
             sellerArr: [],
             transFlowEdit: false,
@@ -379,9 +381,11 @@ export default {
                     this.firstBuyer.name = this.buyerArr[0].name
                     this.firstBuyer.encryptionCode = this.buyerArr[0].encryptionCode
                     this.firstBuyer.mobile = this.buyerArr[0].mobile
+                    this.firstBuyer.cardType = this.buyerArr[0].cardType
                     this.firstSeller.name = this.sellerArr[0].name
                     this.firstSeller.encryptionCode = this.sellerArr[0].encryptionCode
                     this.firstSeller.mobile = this.sellerArr[0].mobile
+                    this.firstSeller.cardType = this.sellerArr[0].cardType
                 }
             }).catch(error => {
                 this.$message({
@@ -771,7 +775,7 @@ export default {
         }
         &.mai-mai {
             p {
-                margin-right: 50px;
+                margin-right: 20px;
             }
             p:nth-child(odd) {
                 span:first-child {
@@ -809,13 +813,12 @@ export default {
         }
     }
     .gongyouren {
-        display: flex;
+        // display: flex;
         flex-wrap: wrap;
         margin-bottom: 10px;
         max-width: 600px;
         li {
             display: flex;
-            width: 50%;
             &:first-child {
                 display: none;
             }
@@ -842,6 +845,7 @@ export default {
         .item {
             display: flex;
             flex-wrap: wrap;
+            width: 1200px;
             > div {
                 display: flex;
                 margin: 0 22px 5px 0;
