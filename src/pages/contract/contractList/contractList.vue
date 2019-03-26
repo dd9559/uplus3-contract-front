@@ -627,7 +627,15 @@ export default {
       if(this.power['sign-com-htdetail'].state){
         this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-          this.$router.push({
+          // this.$router.push({
+          //   path: "/contractDetails",
+          //   query: {
+          //     id: value.id,//合同id
+          //     code: value.code,//合同编号
+          //     contType: value.contType.value//合同类型
+          //   }
+          // });
+          let newPage = this.$router.resolve({
             path: "/contractDetails",
             query: {
               id: value.id,//合同id
@@ -635,6 +643,7 @@ export default {
               contType: value.contType.value//合同类型
             }
           });
+          window.open(newPage.href, '_blank');
         }else{
           // this.$router.push({
           //   path: "/detailIntention",
