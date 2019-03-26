@@ -141,12 +141,12 @@
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight"></span>
                 <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'owner')">
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
                  <!-- :class="{'disabled':type===2&&!item.edit}" -->
-                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight"></span>
                 <input v-model="item.encryptionCode" type="text" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
@@ -192,11 +192,11 @@
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight"></span>
                 <el-select v-model="item.cardType" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
-                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight"></span>
                 <input id="guestCard" v-model="item.encryptionCode" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData1" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
@@ -783,7 +783,7 @@ export default {
                               }
                             }      
                             if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                              if (element.encryptionCode) {
+                              if (element.encryptionCode.replace(/\s/g,"")) {
                                 // if(this.contractForm.type===1){
                                   if(element.cardType!==1){
                                     element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
@@ -889,7 +889,7 @@ export default {
                                     }
                                   }      
                                 if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                                  if (element.encryptionCode) {
+                                  if (element.encryptionCode.replace(/\s/g,"")) {
                                     if(this.contractForm.type===1){
                                       if(element.cardType!==1){
                                         element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")

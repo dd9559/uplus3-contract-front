@@ -20,6 +20,8 @@
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round @click="showPos" v-show='position'>签章位置</el-button>
+        <el-button type="primary" round @click="savePos">保存</el-button>
         <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
         <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
@@ -37,7 +39,14 @@
 
     <div class="yulan" :style="{ height: clientHei }">
       <div class="content">
-        <img v-for="(item,index) in src" :key="index" :src="item" alt="" :style="{width:getWidth}">
+        <div class="signaturewrap">
+            <img v-for="(item,index) in src" :key="index" :src="item" alt="" :style="{width:getWidth}">
+            <!-- <div class="signature">
+                <img src="../../../assets/img/yz.png" class="yuanzhang" alt="">
+                <i class="el-icon-close"></i>
+            </div> -->
+
+        </div>
         <!-- <div class="btnList">
           <el-button class="paging iconfont icon-tubiao_shiyong-20" @click="del"></el-button>
           <div class="tally"><span>{{count}}</span>/<span>{{showTotal}}</span></div>
@@ -279,6 +288,8 @@ export default {
       previewType:"none",
       imgWidth:700,
       reduce:0,//合同页数是否减少 0无  1有
+      position:true,
+      signPositions:[],
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -320,7 +331,8 @@ export default {
           state: false,
           name: '下载合同资料库'
         },
-      }
+      },
+      count:0,//创建拖拽元素个数
     };
   },
   created() {
@@ -335,6 +347,93 @@ export default {
     
   },
   methods: {
+    tuozhuai(sign,count){
+        var oDiv=document.getElementsByClassName('signature')[count]
+        console.log(oDiv)
+        var that=this
+            oDiv.onmousedown = function(ev){
+              // debugger
+                var disX = ev.clientX -oDiv.offsetLeft;
+                var disY = ev.clientY - oDiv.offsetTop;
+                document.onmousemove = function(ev){
+                var l = ev.clientX-disX;
+                var t = ev.clientY-disY;
+                l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
+                l < 0 ? l = 0 : l
+                t < 0 ? t = 0 : t
+                t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
+                let pageindex=parseInt(ev.target.offsetTop/992)+1
+                sign.x=Number((l/706).toFixed(2))-0.02
+                sign.y=Number((t/993).toFixed(2))-0.01
+                sign.pageIndex=Number(pageindex)
+                oDiv.style.left = l+'px';
+                oDiv.style.top = t+'px';
+                };
+                document.onmouseup = function(){
+                  // debugger
+                  let state=that.src.some((item,index)=>{
+                  return sign.y>0.85*index&&sign.y<1*index
+                })
+                if(state){
+                  sign.y=Number((0.85+sign.pageIndex-1).toFixed(2))
+                }
+                document.onmousemove=null;
+                document.onmouseup=null;
+                };
+            };
+            // console.log(document.getElementsByClassName('el-icon-close')[count]);
+            document.getElementsByClassName('el-icon-close')[count].onclick=function(ev){
+              that.signPositions.forEach((item,index)=>{
+                if(item.index==ev.target.getAttribute('index')){
+                  that.signPositions.splice(index,1)
+                  console.log(ev.target.parentNode,'parent');
+                  // console.log(document.getElementsByClassName('signature')[count],'zhongji');
+                  // let obj=document.getElementsByClassName('signature')[that.index]
+                 ev.target.parentNode.style.display="none"
+                  // ev.target.parentNode.parentNode.removeChild(obj)
+                  // that.count=that.count-1
+                }
+              })
+            }
+    },
+    savePos(){
+      for(let i=0;i<this.signPositions.length;i++){
+        delete this.signPositions[i].index
+      }
+      
+      let param={
+        id:this.id,
+        type:3,
+        signPosition:JSON.stringify(this.signPositions)
+      }
+      console.log(param,'ppp');
+      this.$ajax.post('/api/contract/signture',param).then(res=>{
+        let url=res.data.data
+        debugger
+        console.log(url,'url');
+        this.$ajax.get('/api/load/generateAccessURL',{'url':url}).then(res=>{
+          console.log(res);
+          this.pdfUrl = res.data.data.url
+          this.haveUrl=true;
+        })
+      })
+    },
+    showPos(){
+      let signturn=document.createElement('div')
+      signturn.setAttribute('class','signature')
+      signturn.innerHTML =`
+                <img src="../../../assets/img/yz.png" class="yuanzhang" alt="">
+                <i class="el-icon-close" @click="delsign" index="${this.count}"></i>
+                `
+      signturn.querySelector('img').src=require("../../../assets/img/yz.png")
+      var signaturewrap=document.getElementsByClassName('signaturewrap')[0]
+      signaturewrap.appendChild(signturn)
+      var sign={x:0,y:0,pageIndex:1,index:this.count}
+      this.signPositions.push(sign)
+      this.tuozhuai(sign,this.count++)
+      console.log(this.signPositions);
+
+    },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
       this.clientHei= document.documentElement.clientHeight -140 + 'px'
@@ -1073,15 +1172,64 @@ export default {
   .content{
     padding-top: 20px;
     padding-bottom: 10px;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    // text-align: center;
-    img{
-      border: 1px solid #ccc;
-      display: block;
-      margin: 0 auto;
-      padding:0 2px;
+    display: flex;
+    justify-content: center;
+    .signaturewrap{
+          position: relative;
+      /deep/ .signature{
+        width:130px;
+        height: 130px;
+        position: absolute;
+        box-sizing: 130px;
+        box-sizing: border-box;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 9;
+        &::before{
+              content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9;
+        }
+        i{
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            background-color: #9B9B9B;
+            position: absolute;
+            border-radius: 50%;
+            font-size: 10px;
+            color: #fff;
+            top: 0px;
+            z-index: 999;
+            right: 0px;
+            display: none;
+            cursor: pointer;
+        }
+        &:hover i{
+              display: block;
+            }
+         img{
+           border: none;
+           width:130px;
+           height: 130px;
+           padding: 0px;
+         }
+          
+      }
+      img{
+            border: 1px solid #ccc;
+            display: block;
+            margin: 0 auto;
+            padding:0 2px;
+          }
+      
     }
     .btnList{
       margin-left: 20px;

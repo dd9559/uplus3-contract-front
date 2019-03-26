@@ -17,7 +17,7 @@
                                     <div class="div1"><span>合同类型：</span>{{detailData.contType.label | nullData}}</div>
                                     <div class="div2"><span>认购总价：</span>{{detailData.subscriptionPrice | nullData}}元</div>
                                     <div v-if="this.detailData.contType.value == 4"><span>意向金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice | moneyFormat}}</span></div>
-                                    <div v-if="this.detailData.contType.value == 5"><span>定金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice | moneyFormat}}</span></div>
+                                    <div v-if="this.detailData.contType.value == 5"><span>定金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}万元</span><span class="chinesemoney yellow">{{detailData.dealPrice*10000 | moneyFormat}}</span></div>
                                 </li>
                             </ul>
                         </ul>
@@ -30,6 +30,7 @@
                                     <div class="div22"><span>物业地址：</span>{{detailData.propertyAddr | nullData}}</div>
                                 </li>
                                 <li>
+                                    <div class="div1" v-if="detailData.houseInfo.TradeInt == 0"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}</div>
                                     <div class="div1" v-if="detailData.houseInfo.TradeInt == 2"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}万元</div>
                                     <div class="div1" v-if="detailData.houseInfo.TradeInt == 3"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元/月</div>
                                     <div class="div1"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
@@ -37,8 +38,7 @@
                                     
                                     <div><span>用途：</span>{{detailData.houseInfo.HousePurpose | nullData}}</div>
                                 </li>
-                                <li>
-                                    
+                                <li>   
                                     <div class="div1"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
                                     <div class="div2"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
                                     <div><span>产权地址：</span>{{detailData.houseInfo.propertyRightAddr | nullData}}</div>
@@ -47,7 +47,7 @@
                                 <li>
                                     <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
                                     <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>                                 
-                                    <div><span>身份证号：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
+                                    <div><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
                                 </li>
                             </ul>
                         </ul>
@@ -62,7 +62,7 @@
                                 <li>
                                     <div class="div1"><span>客户姓名：</span>{{custInfo[0].name | nullData}}</div>
                                     <div class="div2"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
-                                    <div><span>身份证号：</span>{{custInfo[0].identifyCode | nullData}}</div>
+                                    <div><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span>{{custInfo[0].identifyCode | nullData}}</div>
                                 </li>
                             </ul>
                         </ul>
