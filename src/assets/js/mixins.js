@@ -242,7 +242,7 @@ const MIXINS = {
                 this.noPower('合同主体下载');
               }
             }else if(downType===3){
-              if(this.power['sign-ht-xq-data-down'].state){
+              if(this.power['sign-ht-xq-data'].state){
                 this.fileSign([].concat(arr[i].path),'download');
               }else{
                 this.noPower('合同资料库下载');

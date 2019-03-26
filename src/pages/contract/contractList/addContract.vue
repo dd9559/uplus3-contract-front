@@ -783,7 +783,7 @@ export default {
                               }
                             }      
                             if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                              if (element.encryptionCode) {
+                              if (element.encryptionCode.replace(/\s/g,"")) {
                                 // if(this.contractForm.type===1){
                                   if(element.cardType!==1){
                                     element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
@@ -889,7 +889,7 @@ export default {
                                     }
                                   }      
                                 if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
-                                  if (element.encryptionCode) {
+                                  if (element.encryptionCode.replace(/\s/g,"")) {
                                     if(this.contractForm.type===1){
                                       if(element.cardType!==1){
                                         element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
@@ -1155,7 +1155,7 @@ export default {
                               }
                             }else{
                               this.$message({
-                                message:'身份证号码重复',
+                                message:'证件号重复',
                                 type: "warning"
                               })
                             }

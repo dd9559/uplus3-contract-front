@@ -22,7 +22,7 @@
                     <span class="text" v-if="contractDetail.contType.value===5">定金</span>
                   </p>
                   <p style="width:530px">
-                    <span class="tag">成交总价：</span>
+                    <span class="tag">{{contractDetail.contType.value===1?'租金：':'成交总价：'}}</span>
                     <span class="dealPrice">{{contractDetail.dealPrice}} 元
                       <i v-for="item in dictionary['507']" :key="item.key" v-if="item.key===contractDetail.timeUnit&&contractDetail.contType.value===1"> / {{item.value}}</i>
                       <i>{{contractDetail.dealPrice|moneyFormat}}</i>
@@ -290,7 +290,8 @@
                     <p>{{item.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.title+item.path"></i>
+                 <!-- v-if="isDelete===item.title+item.path" -->
+                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow':isDelete===item.title+item.path}"></i>
               </li>
             </ul>
           </div>
@@ -316,7 +317,7 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                   </li>
                 </ul>
               </div>
@@ -339,7 +340,7 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                   </li>
                 </ul>
               </div>
@@ -362,7 +363,7 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                   </li>
                 </ul>
               </div>
@@ -2187,6 +2188,9 @@ export default {
       white-space: nowrap;
     }
   }
+  .deleteShow{
+    display: block !important;
+  }
   //资料库
   .ulData{
     display: flex;
@@ -2196,6 +2200,7 @@ export default {
       position: relative;
       margin-bottom: 10px;
       > i{
+        display: none;
         position: absolute;
         top: 5px;
         right: 5px;
