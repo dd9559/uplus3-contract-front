@@ -135,7 +135,7 @@
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="isDelete===item.title+item_.path"></i>
+                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':isDelete===item.title+item_.path}"></i>
               </li>
             </ul>
           </div>
@@ -158,7 +158,7 @@
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="isDelete===item.title+item_.path"></i>
+                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':isDelete===item.title+item_.path}"></i>
               </li>
             </ul>
           </div>
@@ -181,7 +181,7 @@
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="isDelete===item.title+item_.path"></i>
+                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':isDelete===item.title+item_.path}"></i>
               </li>
             </ul>
           </div>
@@ -293,6 +293,7 @@ export default {
       reduce:0,//合同页数是否减少 0无  1有
       position:true,
       signPositions:[],
+      companySigns:[],//印章
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -685,6 +686,7 @@ export default {
           this.auditId=res.data.auditId;
           this.isSign=res.data.isRisk;
           this.isHaveData=res.data.isHaveData;
+          this.companySigns=res.data.companySigns
           if(res.data.isRisk){
             this.textarea=res.data.remarksExamine;
           }
@@ -1385,6 +1387,7 @@ export default {
         position: relative;
         margin-bottom: 10px;
         > i{
+          display: none;
           position: absolute;
           top: 2px;
           right: 2px;
@@ -1392,6 +1395,9 @@ export default {
           font-size: 20px;
           cursor: pointer;
         }
+      }
+      .deleteShow{
+        display: block !important;
       }
       .uploadSubject {
         display: inline-block;
