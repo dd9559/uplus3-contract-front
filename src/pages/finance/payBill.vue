@@ -122,7 +122,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" maxlength="6" v-model.trim="scope.row.userName" @input="inputOnly(1)">
+            <input type="text" class="no-style" placeholder="请输入" v-model.trim="scope.row.userName" @input="inputOnly(1)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户">
@@ -148,7 +148,7 @@
           <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
           <ul class="upload-list">
             <li>
-              <file-up class="upload-context" @getUrl="getFiles">
+              <file-up class="upload-context" @getUrl="getFiles" scane="2">
                 <i class="iconfont icon-shangchuan"></i>
                 <span>点击上传</span>
               </file-up>

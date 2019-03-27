@@ -17,7 +17,7 @@
 					<div class="uploadbtn">
 						<ul>
 							<li>
-								<file-up class="uploadSubject" @getUrl="uploadSubject" id="change_">
+								<file-up class="uploadSubject" scane="1" @getUrl="uploadSubject" id="change_">
 									<i class="iconfont icon-shangchuan"></i>
 									<p>点击上传</p>
 								</file-up>
@@ -85,7 +85,7 @@
 					<div class="uploadbtn">
 						<ul>
 							<li>
-								<file-up class="uploadSubject" @getUrl="uploadSubject" id="cancel_">
+								<file-up class="uploadSubject" scane="1" @getUrl="uploadSubject" id="cancel_">
 									<i class="iconfont icon-shangchuan"></i>
 									<p>点击上传</p>
 								</file-up>
@@ -141,7 +141,7 @@
 					<div class="uploadbtn">
 						<ul>
 							<li>
-								<file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+								<file-up class="uploadSubject" scane="1" @getUrl="uploadSubject" id="zhuti_">
 									<i class="iconfont icon-shangchuan"></i>
 									<p>点击上传</p>
 								</file-up>
