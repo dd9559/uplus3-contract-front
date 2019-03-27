@@ -434,8 +434,14 @@ export default {
       var signaturewrap=document.getElementsByClassName('signaturewrap')[0]
       signaturewrap.appendChild(signturn)
       var sign={x:0,y:0,pageIndex:1,index:this.count}
-      this.signPositions.push(sign)
-      this.tuozhuai(sign,this.count++)
+      // debugger
+      this.signPositions.push(JSON.parse(JSON.stringify(sign)))
+      this.signPositions.forEach((item,index)=>{
+        if(item.index==this.count){
+          this.tuozhuai(this.signPositions[index],this.count++)
+        }
+      })
+      //  this.tuozhuai(sign,this.count++)
       console.log(this.signPositions);
 
     },
@@ -538,19 +544,21 @@ export default {
           if(res.status===200){
             let pdfUrl=res.data;
             // debugger
+            this.fullscreenLoading=false;
+            this.getContImg()
+            // debugger
+            let pictureList = Array.from(document.getElementsByClassName('signature'))
+            console.log(pictureList)
+            pictureList.forEach(element => {
+              element.style.display="none"
+            });
             this.getUrl(pdfUrl);
             this.haveUrl=true;
-            this.fullscreenLoading=false;
-            // debugger
-            // let pictureList = document.getElementsByClassName('el-icon-close')
-            // pictureList.forEach(element => {
-            //   element.click()
-            // });
             // setTimeout(()=>{
             //   this.dayin();
             //   this.fullscreenLoading=false;
             // },2000);
-            this.getContImg()
+            
           }
         }).catch(error =>{
           this.fullscreenLoading=false;

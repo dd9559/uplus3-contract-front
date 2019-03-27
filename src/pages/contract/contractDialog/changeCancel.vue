@@ -29,7 +29,7 @@
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
-								<i class="iconfont icon-tubiao-6" @click="delectData(index)" v-if="isDelete===item.title+item.path"></i>
+								<i class="iconfont icon-tubiao-6" @click="delectData(index)" :class="{'deleteShow':isDelete===item.title+item.path}"></i>
 							</li>
 						</ul>
 					</div>
@@ -97,7 +97,7 @@
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
-								<i class="iconfont icon-tubiao-6" @click="delectData(index)" v-if="isDelete===item.title+item.path"></i>
+								<i class="iconfont icon-tubiao-6" @click="delectData(index)" :class="{'deleteShow':isDelete===item.title+item.path}"></i>
 							</li>
 						</ul>
 					</div>
@@ -153,7 +153,7 @@
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
-								<i class="iconfont icon-tubiao-6" @click="delectData(index)" v-if="isDelete===item.title+item.path"></i>
+								<i class="iconfont icon-tubiao-6" @click="delectData(index)"  :class="{'deleteShow':isDelete===item.title+item.path}"></i>
 							</li>
 						</ul>
 					</div>
@@ -561,6 +561,9 @@ export default {
 						background: skyblue;
 						border: 2px solid @border-DE;
 					}
+					.deleteShow{
+						display: block !important;
+					}
 					ul{
 						display: flex;
 						flex-wrap:wrap;
@@ -569,6 +572,7 @@ export default {
 							margin-bottom: 10px;
 							position: relative;
 							> i{
+								display: none;
 								position: absolute;
 								top: 5px;
 								right: 5px;

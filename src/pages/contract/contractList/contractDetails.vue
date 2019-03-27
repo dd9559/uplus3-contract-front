@@ -30,7 +30,6 @@
                   </p>
                 </div>
                 <div class="one_">
-                  <p v-if="contType!='1'"><span class="tag">客户保证金：</span><span class="text">{{contractDetail.custEnsure}} 元</span></p>
                   <p><span class="tag">客户佣金：</span><span class="text">{{contractDetail.custCommission}} 元</span></p>
                   <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
                   <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p>
@@ -115,7 +114,12 @@
                           {{scope.row.propertyRightRatio+'%'}}
                         </template>
                       </el-table-column>
-                      <el-table-column prop="identifyCode" min-width="150" label="证件号"></el-table-column>
+                      <el-table-column min-width="150" label="证件号码">
+                        <!-- cardType -->
+                        <template slot-scope="scope">
+                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':'营业执照：'}}{{scope.row.identifyCode}}
+                        </template>
+                      </el-table-column>
                     </el-table>
                   </template>
                 </div>
@@ -152,7 +156,11 @@
                           {{scope.row.propertyRightRatio+'%'}}
                         </template>
                       </el-table-column>
-                      <el-table-column prop="identifyCode" min-width="150" label="证件号"></el-table-column>
+                      <el-table-column min-width="150" label="证件号码">
+                        <template slot-scope="scope">
+                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':'营业执照：'}}{{scope.row.identifyCode}}
+                        </template>
+                      </el-table-column>
                     </el-table>
                   </template>
                 </div>

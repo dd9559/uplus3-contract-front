@@ -3,10 +3,10 @@ let Obj1={
     name:'prove',
     require:true
   },
-  check1:{
-    name:'acquire',
-    require:true
-  },
+  // check1:{
+  //   name:'acquire',
+  //   require:true
+  // },
   // check120:{
   // 	name:'trader'
   // },
@@ -139,25 +139,31 @@ const MIXINS_MM={
               let detail={}
               switch (obj[item].name){
                 case 'prove':
-                  if(this.getCheckState(box[1])){
-                    detail={
-                      check:{
-                        name:'trader'
-                      },
-                    }
-                  }
-                  break
-                case 'acquire':
                   if(this.getCheckState(box[0])){
+                    debugger
                     detail={
                       val12:''
                     }
-                  }else {
+                  }else{
                     detail={
-                      val15:''
+                      val15:'',
+                      check919:{
+                        name:'trader'
+                      }
                     }
                   }
                   break
+                // case 'acquire':
+                //   if(this.getCheckState(box[0])){
+                //     detail={
+                //       val12:''
+                //     }
+                //   }else {
+                //     detail={
+                //       val15:''
+                //     }
+                //   }
+                //   break
                 case 'hasRunsh':
                   if(this.getCheckState(box[0])){
                     detail={

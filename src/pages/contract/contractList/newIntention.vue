@@ -61,23 +61,16 @@
                             </el-form-item>
 
                             <el-form-item label="房源总价：" class="disb" v-if="contractForm.houseInfo.TradeInt">
-                                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable type="number">
+                                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable @input="cutNumber('editHousePrice')">
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">万元</i>
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 3">元/月</i>
                                 </el-input>
                             </el-form-item>
 
-                            <!-- <el-form-item label="房源总价：" class="item3" v-if="!contractForm.houseInfo.TradeInte&&contractForm.houseInfo.ListingPrice == ''">
-                                <el-input v-model="contractForm.houseInfo.ListingPrice" type="text" clearable>                                    
-                                </el-input>
-                            </el-form-item> -->
-
                             <el-form-item label="房源总价：" class="error-item" :prop="'houseInfo.ListingPrice'" :rules="{validator: housePrice, trigger: 'change'}"  v-if="!contractForm.houseInfo.TradeInt" >
                                 <el-input v-model="contractForm.houseInfo.ListingPrice" type="text" clearable v-if="!contractForm.houseInfo.TradeInt">                                    
                                 </el-input>
                             </el-form-item>
-
-                            
 
                             <el-form-item label="业主信息：" class="disb" required>
 
@@ -86,7 +79,7 @@
                                 </el-form-item>
 
                                 <el-form-item :prop="'contPersons[' + 0 + '].encryptionMobile'" :rules="{validator: telPhone, trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[0].encryptionMobile" clearable placeholder="手机号" type="tel" maxlength=11 class="ownwidth"></el-input>
+                                    <el-input v-model="contractForm.contPersons[0].encryptionMobile" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="editPhone1"></el-input>
                                 </el-form-item>
                                 
                                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
@@ -140,7 +133,7 @@
                                 </el-form-item>
 
                                 <el-form-item :prop="'contPersons[' + 1 + '].encryptionMobile'" :rules="{validator: telPhone,trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[1].encryptionMobile" clearable placeholder="手机号" class="ownwidth" maxlength=11></el-input>
+                                    <el-input v-model="contractForm.contPersons[1].encryptionMobile" clearable placeholder="手机号" class="ownwidth" maxlength=11 @input="editPhone2"></el-input>
                                 </el-form-item>
 
                                 <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
@@ -378,6 +371,21 @@ export default {
   },
 
   methods: {
+    editPhone1(val){
+      if (val){
+        this.$nextTick(() => {
+          this.contractForm.contPersons[0].encryptionMobile = val.toString().replace(/\D/g,"")
+        })
+      }  
+    },
+
+    editPhone2(val){
+      if (val){
+        this.$nextTick(() => {
+          this.contractForm.contPersons[1].encryptionMobile = val.toString().replace(/\D/g,"")
+        })
+      }  
+    },
 
 
     housePrice (rule, value, callback) {
@@ -413,33 +421,31 @@ export default {
     },
 
     telPhone (rule, value, callback) {
+      
       let myreg = /^[1][0-9]{10}$/;
+      let myreg2 = /(^[1][0-9]{10}$)|(^[1][0-9]{2}\*{4}[0-9]{4}$)/;
+
         if (!value) {
             return callback(new Error("请输入手机号"));
+            
+        }else if(this.type == 1){
       
-        } else {
-          if (!myreg.test(value)) {
-            callback(new Error("请输入1开头的11位手机号码"));
-          } else {
-            callback();
-          }
+              if (!myreg.test(value)) {
+                callback(new Error("请输入1开头的11位手机号码"));
+              } else {
+                callback();
+              }
+            
+        }else if(this.type==2){
+            if (!myreg2.test(value)) {
+              callback(new Error("编辑时请输入1开头的11位手机号码"));
+            } else {
+              callback();
+            }
         }
       
+  
     },
-
-    // cutText(val) {
-    //   // console.log(val)
-    //   if (val === "contractForm.contPersons[0].name") {
-    //      this.$nextTick(() => {
-    //        this.contractForm.contPersons[0].name = this.$tool.textInput(this.contractForm.contPersons[0].name);
-    //      })
-
-    //   } else if (val === "contractForm.contPersons[1].name") {
-    //     this.$nextTick(() => {
-    //       this.contractForm.contPersons[1].name = this.$tool.textInput(this.contractForm.contPersons[1].name);
-    //     })
-    //   }
-    // },
 
     cutNumber(val) {
       // console.log(val)
@@ -459,24 +465,14 @@ export default {
           });
         });
       }
-      //  else if (val === "housePrice") {
-        
-      //   this.$nextTick(() => {
-      //     this.contractForm.houseInfo.ListingPrice = this.$tool.cutFloat({
-      //       val: parseFloat(this.contractForm.houseInfo.ListingPrice),
-      //       max: 999999999.99
-      //     });
-
-      //   // if(this.contractForm.houseInfo.ListingPrice.contains('万元')){
-      //   //   let afterText = this.contractForm.houseInfo.ListingPrice.indexOf('万元')
-      //   //   console.log(afterText)
-         
-      //   //   this.contractForm.houseInfo.ListingPrice = 'prevalue' + '万元'
-      //   // }
-         
-      //   });
-      // }
-      
+      else if (val === "editHousePrice") {
+        this.$nextTick(() => {
+          this.contractForm.houseInfo.ListingPrice = this.$tool.cutFloat({
+            val: this.contractForm.houseInfo.ListingPrice,
+            max: 999999999.99
+          });
+        });
+      }  
     },
 
 
