@@ -473,8 +473,7 @@ export default {
           // debugger
           callback(new Error("请输入正确格式的证件号"));
         } 
-        else{
-           
+        else{         
           callback()
         }
       }
@@ -502,9 +501,8 @@ export default {
           // debugger
           callback(new Error("请输入正确格式的证件号"));
         } 
-        else{
-           
-card2          callback()
+        else{         
+          callback()
         }
       }
     },
