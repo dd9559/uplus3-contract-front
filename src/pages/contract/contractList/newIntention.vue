@@ -75,7 +75,7 @@
                             <el-form-item label="业主信息：" class="disb" required>
 
                                 <el-form-item :prop="'contPersons[' + 0 + '].name'" :rules="{required: true, message: '请输入业主姓名', trigger: 'change'}">
-                                    <el-input v-model="contractForm.contPersons[0].name" clearable placeholder="姓名" class="namewidth" maxlength=20></el-input>
+                                    <el-input v-model="contractForm.contPersons[0].name" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="name1"></el-input>
                                 </el-form-item>
 
                                 <el-form-item :prop="'contPersons[' + 0 + '].mobile'" :rules="{validator: telPhone, trigger:'change'}">
@@ -130,7 +130,7 @@
                             <el-form-item label="客户信息：" class="disb" required>
 
                                 <el-form-item :prop="'contPersons[' + 1 + '].name'" :rules="{required: true, message: '请输入客户姓名', trigger: 'change'}">
-                                    <el-input v-model="contractForm.contPersons[1].name" clearable placeholder="姓名" class="namewidth" maxlength=20></el-input>
+                                    <el-input v-model="contractForm.contPersons[1].name" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="name2"></el-input>
                                 </el-form-item>
 
                                 <el-form-item :prop="'contPersons[' + 1 + '].mobile'" :rules="{validator: telPhone,trigger:'change'}">
@@ -430,7 +430,21 @@ export default {
       }  
     },
 
+     name1(val){
+      if (val){
+        this.$nextTick(() => {
+          this.contractForm.contPersons[0].name = val.toString().replace(/\s/g,"")
+        })
+      }  
+    },
 
+    name2(val){
+      if (val){
+        this.$nextTick(() => {
+          this.contractForm.contPersons[1].name = val.toString().replace(/\s/g,"")
+        })
+      }  
+    },
 
     housePrice (rule, value, callback) {
       let myprice = /(^[1-9][0-9]{0,8}(['万元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['万元']{2}|['元/月']{3})$)/;
