@@ -89,7 +89,7 @@
                                 </el-form-item>                               
 
                                 <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard, trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[0].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[0].cardType===1?18:this.contractForm.contPersons[0].cardType===2?9:this.contractForm.contPersons[0].cardType===3?20:18" @clear="clearIdentify"></el-input>
+                                    <el-input v-model="contractForm.contPersons[0].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[0].cardType===1?18:this.contractForm.contPersons[0].cardType===2?9:this.contractForm.contPersons[0].cardType===3?20:18" @clear="clearIdentify" @input="card1"></el-input>
                                 </el-form-item>
 
 
@@ -144,7 +144,7 @@
                                 </el-form-item>                               
 
                                 <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard1, trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[1].cardType===1?18:this.contractForm.contPersons[1].cardType===2?9:this.contractForm.contPersons[1].cardType===3?20:18" @clear="clearIdentify2"></el-input>
+                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[1].cardType===1?18:this.contractForm.contPersons[1].cardType===2?9:this.contractForm.contPersons[1].cardType===3?20:18" @clear="clearIdentify2" @input="card2">></el-input>
                                 </el-form-item>
 
                             </el-form-item>
@@ -414,6 +414,23 @@ export default {
       }  
     },
 
+    card1(val){
+      if (val){
+        this.$nextTick(() => {
+          this.contractForm.contPersons[0].identifyCode = val.toString().replace(/\s/g,"")
+        })
+      }  
+    },
+
+    card2(val){
+      if (val){
+        this.$nextTick(() => {
+          this.contractForm.contPersons[1].identifyCode = val.toString().replace(/\s/g,"")
+        })
+      }  
+    },
+
+
 
     housePrice (rule, value, callback) {
       let myprice = /(^[1-9][0-9]{0,8}(['万元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['万元']{2}|['元/月']{3})$)/;
@@ -435,6 +452,7 @@ export default {
 
     idCard (rule, value, callback) {
 
+      let passport = /[^\s*]/
       if(!this.contractForm.contPersons[0].cardType){        
           callback(new Error("请先选择证件类型"));
       }else if(this.contractForm.contPersons[0].cardType == 1){   
@@ -448,10 +466,14 @@ export default {
           callback();
         }
       }else if(this.contractForm.contPersons[0].cardType == 2 || this.contractForm.contPersons[0].cardType == 3){
-        if (!value || value == '') {
-         
+        if (!value || value == '') {       
            return callback(new Error("请输入证件号"));
-        } else{
+        } 
+        else if (!passport.test(value)) {
+          // debugger
+          callback(new Error("请输入正确格式的证件号"));
+        } 
+        else{
            
           callback()
         }
@@ -459,7 +481,7 @@ export default {
     },
 
     idCard1 (rule, value, callback) {
-      
+      let passport = /[^\s*]/
       if(!this.contractForm.contPersons[1].cardType){        
           callback(new Error("请先选择证件类型"));
       }else if(this.contractForm.contPersons[1].cardType == 1){   
@@ -475,8 +497,13 @@ export default {
       }else if(this.contractForm.contPersons[1].cardType == 2 || this.contractForm.contPersons[1].cardType == 3){
         if (!value || value == '') {
            return callback(new Error("请输入证件号"));
-        } else{
-          
+        } 
+        else if (!passport.test(value)) {
+          // debugger
+          callback(new Error("请输入正确格式的证件号"));
+        } 
+        else{
+           
           callback()
         }
       }
