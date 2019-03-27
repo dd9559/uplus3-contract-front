@@ -83,14 +83,15 @@
                                 </el-form-item>
                                 
                                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                                  <el-select v-model="contractForm.contPersons[0].cardType" placeholder="证件类型" style="width:120px;">
+                                  <el-select v-model="contractForm.contPersons[0].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType1()">
                                     <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                   </el-select>
                                 </el-form-item>                               
 
-                                <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{validator: idCard, trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[0].identifyCode" clearable placeholder="证件号" class="custwidth" maxlength=18></el-input>
+                                <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard, trigger:'change'}">
+                                    <el-input v-model="contractForm.contPersons[0].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[0].cardType===1?18:this.contractForm.contPersons[0].cardType===2?9:this.contractForm.contPersons[0].cardType===3?20:18" @clear="clearIdentify"></el-input>
                                 </el-form-item>
+
 
                             </el-form-item>
                         </div>
@@ -136,14 +137,14 @@
                                     <el-input v-model="contractForm.contPersons[1].encryptionMobile" clearable placeholder="手机号" class="ownwidth" maxlength=11 @input="editPhone2"></el-input>
                                 </el-form-item>
 
-                                <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                                  <el-select v-model="contractForm.contPersons[1].cardType" placeholder="证件类型" style="width:120px;">
-                                      <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                                 <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
+                                  <el-select v-model="contractForm.contPersons[1].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType2()">
+                                    <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                   </el-select>
-                                </el-form-item>
+                                </el-form-item>                               
 
-                                <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard, trigger:'change',type:1}">     
-                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" maxlength=18></el-input>
+                                <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard1, trigger:'change'}">
+                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[1].cardType===1?18:this.contractForm.contPersons[1].cardType===2?9:this.contractForm.contPersons[1].cardType===3?20:18" @clear="clearIdentify2"></el-input>
                                 </el-form-item>
 
                             </el-form-item>
@@ -371,6 +372,30 @@ export default {
   },
 
   methods: {
+    clearIdentify(){
+     this.$nextTick(() => {
+       this.$set(this.contractForm.contPersons,0,Object.assign({},this.contractForm.contPersons[0],{identifyCode:''}))
+     })
+    },
+     clearIdentify2(){
+     this.$nextTick(() => {
+       this.$set(this.contractForm.contPersons,1,Object.assign({},this.contractForm.contPersons[1],{identifyCode:''}))
+     })
+    },
+    changeCardType1(val){      
+        this.$nextTick(() => {    
+          this.clearIdentify()
+          this.$refs.contractForm.validateField('contPersons[0].identifyCode');
+        })      
+    },
+
+     changeCardType2(val){
+       this.$nextTick(() => {
+           this.clearIdentify2()
+          this.$refs.contractForm.validateField('contPersons[1].identifyCode');
+        })
+    },
+
     editPhone1(val){
       if (val){
         this.$nextTick(() => {
@@ -407,18 +432,54 @@ export default {
     },
 
     idCard (rule, value, callback) {
-        if (!value) {
+
+      if(!this.contractForm.contPersons[0].cardType){        
+          callback(new Error("请先选择证件类型"));
+      }else if(this.contractForm.contPersons[0].cardType == 1){   
+        if (!value || value == '') {
+          
+           return callback(new Error("请输入证件号"));
+        } else if (!this.isIdCardNo(value)) {
+          // debugger
+          callback(new Error("请输入正确格式的证件号"));
+        } else {
+          callback();
+        }
+      }else if(this.contractForm.contPersons[0].cardType == 2 || this.contractForm.contPersons[0].cardType == 3){
+        if (!value || value == '') {
+         
+           return callback(new Error("请输入证件号"));
+        } else{
+           
+          callback()
+        }
+      }
+    },
+
+    idCard1 (rule, value, callback) {
+      
+      if(!this.contractForm.contPersons[1].cardType){        
+          callback(new Error("请先选择证件类型"));
+      }else if(this.contractForm.contPersons[1].cardType == 1){   
+        if (!value || value == '') {
            return callback(new Error("请输入证件号"));
         } else{
           if (!this.isIdCardNo(value)) {
-
             callback(new Error("请输入正确格式的证件号"));
           } else {
             callback();
           }
         }
-
+      }else if(this.contractForm.contPersons[1].cardType == 2 || this.contractForm.contPersons[1].cardType == 3){
+        if (!value || value == '') {
+           return callback(new Error("请输入证件号"));
+        } else{
+          
+          callback()
+        }
+      }
     },
+   
 
     telPhone (rule, value, callback) {
       
@@ -944,7 +1005,7 @@ export default {
           }
       }
       return false;
-    }
+    },
 
   },
 

@@ -435,8 +435,14 @@ export default {
       var signaturewrap=document.getElementsByClassName('signaturewrap')[0]
       signaturewrap.appendChild(signturn)
       var sign={x:0,y:0,pageIndex:1,index:this.count}
-      this.signPositions.push(sign)
-      this.tuozhuai(sign,this.count++)
+      // debugger
+      this.signPositions.push(JSON.parse(JSON.stringify(sign)))
+      this.signPositions.forEach((item,index)=>{
+        if(item.index==this.count){
+          this.tuozhuai(this.signPositions[index],this.count++)
+        }
+      })
+      //  this.tuozhuai(sign,this.count++)
       console.log(this.signPositions);
 
     },
