@@ -150,13 +150,25 @@
       up:function () {
         // console.log(uploader)
         let path = ''
-        switch (this.scane){
+        switch (parseInt(this.scane)){
           case 1:
-            path='picture/'
+            path='contract/picture/'
                 break;
           case 2:
-            path='template/html/'
+            path='bill/picture/'
                 break;
+          case 3:
+            path='grade/picture/'
+            break;
+          case 4:
+            path='sign/picture/'
+            break;
+          case 5:
+            path='setting/picture/'
+            break;
+          case 6:
+            path='template/html/'
+            break;
         }
         let maxSize = 1024
         if(this.uploader.files.length!==0){

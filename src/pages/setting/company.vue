@@ -223,7 +223,7 @@
                 <span class="point">上传电子签章图片：</span>
                 <ul>
                   <li>
-                    <fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true><i>+</i></fileUp>
+                    <fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true scane="5"><i>+</i></fileUp>
                     <p class="text">点击上传</p>
                   </li>
                   <el-tooltip effect="dark" :content="contractName" placement="bottom">
@@ -242,7 +242,7 @@
                 <span class="point">上传电子签章图片：</span>
                 <ul>
                   <li>
-                    <fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true><i>+</i></fileUp>
+                    <fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true scane="5"><i>+</i></fileUp>
                     <p class="text">点击上传</p>
                   </li>
                   <el-tooltip effect="dark" :content="financialName" placement="bottom">
