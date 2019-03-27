@@ -33,8 +33,6 @@
                   <p><span class="tag">客户佣金：</span><span class="text">{{contractDetail.custCommission}} 元</span></p>
                   <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
                   <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p>
-                </div>
-                <div class="one_">
                   <p v-if="contType!='1'">
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
@@ -43,9 +41,11 @@
                     <span class="tag">交易流程：</span>
                     <span class="text" v-for="item in transFlowList" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span>
                   </p>
-                  <!-- <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
-                  <p><span class="tag">按揭员：</span><span class="text">夏雨天</span></p> -->
                 </div>
+                <!-- <div class="one_">
+                  <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
+                  <p><span class="tag">按揭员：</span><span class="text">夏雨天</span></p>
+                </div> -->
               </div>
             </div>
             <div class="msg">

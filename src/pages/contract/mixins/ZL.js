@@ -25,11 +25,9 @@ let Obj2 = {
   val53:'',
   val56:'',
   // val59:'',
-  val300:'',
-  val301:'',
   val60:'',
   val61:'',
-  val64:'',
+  // val64:'',
   val65:'',
   val66:'',
   // check7:{
@@ -39,6 +37,7 @@ let Obj2 = {
   check8:{
     name:'zhizhao8'
   },
+  val300:'',
   val79:'',
   val80:'',
   val82:'',
@@ -49,6 +48,7 @@ let Obj2 = {
   val92:'',
   val93:'',
   val94:'',
+  val301:'',
   check9:{
     name:'zhizhao9',
     require:true

@@ -140,7 +140,6 @@ const MIXINS_MM={
               switch (obj[item].name){
                 case 'prove':
                   if(this.getCheckState(box[0])){
-                    debugger
                     detail={
                       val12:''
                     }
