@@ -518,6 +518,7 @@
                                                 :id="'fileUp'+index"
                                                 :rules="stepsTypeImg(item.type,1)"
                                                 @getUrl="imgBtnFn"
+                                                scane="4"
                                                 class="fileUp">
                                                     <el-button
                                                     class="paper-btn paper-btn-blue"
