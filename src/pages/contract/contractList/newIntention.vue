@@ -504,7 +504,7 @@ export default {
         } 
         else{
            
-          callback()
+card2          callback()
         }
       }
     },
