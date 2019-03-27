@@ -43,8 +43,6 @@ let Obj2 = {
   val82:'',
   val83:'',
   val84:'',
-  val86:'',
-  val88:'',
   val92:'',
   val93:'',
   val94:'',
