@@ -51,7 +51,7 @@
                   <fileUp @getUrl='getAdd("mmai",arguments)' scane="6" :more="false" :rules="mbrules" id='mmai' class='fileup'>买卖</fileUp>
                   <span v-show="mmaiAddress!==''">上传成功！  {{mmaiAddress.name}}</span>
                 </p>
-                <p>
+                <p> 
                    <fileUp id='jjian' :rules="mbrules" :more="false"  scane="6"  @getUrl='getAdd("jjian",arguments)' class='fileup' >居间</fileUp>
                    <span v-show="jjianAddress!==''">上传成功！  {{jjianAddress.name}}</span>
                 </p>
