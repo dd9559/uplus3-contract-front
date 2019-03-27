@@ -15,10 +15,10 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
 
   export default {
     name: "iframe-test",
-    mixins: [MIXINS_ZL],
+    mixins: [MIXINS_MM],
     data(){
       return{
-        src:'租赁.html'
+        src:'买卖.html'
       }
     },
     methods:{
