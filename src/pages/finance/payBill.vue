@@ -122,7 +122,7 @@
         </el-table-column>
         <el-table-column align="center" label="户名">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" maxlength="6" v-model.trim="scope.row.userName" @input="inputOnly(1)">
+            <input type="text" class="no-style" placeholder="请输入" v-model.trim="scope.row.userName" @input="inputOnly(1)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="收款账户">
