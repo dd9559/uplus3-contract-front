@@ -33,8 +33,6 @@
                   <p><span class="tag">客户佣金：</span><span class="text">{{contractDetail.custCommission}} 元</span></p>
                   <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
                   <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p>
-                </div>
-                <div class="one_">
                   <p v-if="contType!='1'">
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
@@ -43,9 +41,11 @@
                     <span class="tag">交易流程：</span>
                     <span class="text" v-for="item in transFlowList" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span>
                   </p>
-                  <!-- <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
-                  <p><span class="tag">按揭员：</span><span class="text">夏雨天</span></p> -->
                 </div>
+                <!-- <div class="one_">
+                  <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
+                  <p><span class="tag">按揭员：</span><span class="text">夏雨天</span></p>
+                </div> -->
               </div>
             </div>
             <div class="msg">
@@ -286,7 +286,7 @@
             <ul class="ulData">
               <!-- <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2"> -->
               <li v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
-                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                <file-up class="uploadSubject" @getUrl="uploadSubject" scane="1" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -313,7 +313,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" scane="1" :id="'seller'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -336,7 +336,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" scane="1" :id="'buyer'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -359,7 +359,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" scane="1" :id="'other'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>

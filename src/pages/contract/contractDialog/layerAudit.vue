@@ -90,7 +90,7 @@
 
             <ul class="ulData">
                 <li>
-                    <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                    <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" scane="1">
                         <i class="iconfont icon-shangchuan"></i>
                         <p>点击上传</p>
                     </file-up>
@@ -102,7 +102,7 @@
                         <p>{{item.name}}</p>
                     </div>
                   </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                    <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow':isDelete===item.title+item.path}"></i>
                 </li>
             </ul>
 
@@ -558,7 +558,9 @@ export default {
         }       
 
         .ulData{
- 
+            .deleteShow{
+              display: block !important;
+            }
             width: 100%;
             overflow: hidden;
             li{
@@ -570,6 +572,7 @@ export default {
                   margin-right: 0;
                 }
                 > i{
+                    display: none;
                     position: absolute;
                     top: 5px;
                     right: 5px;
