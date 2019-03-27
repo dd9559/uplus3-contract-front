@@ -335,7 +335,7 @@ export default {
           name: '下载合同资料库'
         },
       },
-      count:0,//创建拖拽元素个数
+      countnum:0,//创建拖拽元素个数
     };
   },
   created() {
@@ -350,8 +350,8 @@ export default {
     
   },
   methods: {
-    tuozhuai(sign,count){
-        var oDiv=document.getElementsByClassName('signature')[count]
+    tuozhuai(sign,countnum){
+        var oDiv=document.getElementsByClassName('signature')[countnum]
         console.log(oDiv)
         var that=this
             oDiv.onmousedown = function(ev){
@@ -365,9 +365,9 @@ export default {
                 l < 0 ? l = 0 : l
                 t < 0 ? t = 0 : t
                 t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
-                let pageindex=parseInt(ev.target.offsetTop/992)+1
-                sign.x=Number((l/706).toFixed(2))-0.02
-                sign.y=Number((t/993).toFixed(2))-0.01
+                let pageindex=parseInt(ev.target.offsetTop/993)+1
+                sign.x=Number((l/706).toFixed(2))
+                sign.y=Number((t/ev.target.querySelector('img').offsetHeight).toFixed(2))
                 sign.pageIndex=Number(pageindex)
                 oDiv.style.left = l+'px';
                 oDiv.style.top = t+'px';
@@ -387,7 +387,7 @@ export default {
                 };
             };
             // console.log(document.getElementsByClassName('el-icon-close')[count]);
-            document.getElementsByClassName('el-icon-close')[count].onclick=function(ev){
+            document.getElementsByClassName('el-icon-close')[countnum].onclick=function(ev){
               that.signPositions.forEach((item,index)=>{
                 if(item.index==ev.target.getAttribute('index')){
                   that.signPositions.splice(index,1)
@@ -424,21 +424,23 @@ export default {
     //   })
     // },
     showPos(){
+      var content=document.getElementsByClassName('yulan')[0]
       let signturn=document.createElement('div')
       signturn.setAttribute('class','signature')
       signturn.innerHTML =`
                 <img src="../../../assets/img/yz.png" class="yuanzhang" alt="">
-                <i class="el-icon-close" @click="delsign" index="${this.count}"></i>
+                <i class="el-icon-close" @click="delsign" index="${this.countnum}"></i>
                 `
       signturn.querySelector('img').src=require("../../../assets/img/yz.png")
       var signaturewrap=document.getElementsByClassName('signaturewrap')[0]
       signaturewrap.appendChild(signturn)
-      var sign={x:0,y:0,pageIndex:1,index:this.count}
-      // debugger
+      var sign={x:0,y:content.scrollTop,pageIndex:1,index:this.countnum}
+      let obj=document.getElementsByClassName('signature')[this.countnum]
+      obj.style.top=sign.y+'px'
       this.signPositions.push(JSON.parse(JSON.stringify(sign)))
       this.signPositions.forEach((item,index)=>{
-        if(item.index==this.count){
-          this.tuozhuai(this.signPositions[index],this.count++)
+        if(item.index==this.countnum){
+          this.tuozhuai(this.signPositions[index],this.countnum++)
         }
       })
       //  this.tuozhuai(sign,this.count++)
@@ -454,11 +456,20 @@ export default {
       this.isActive = value;
       if(value===1){
         this.count=1;
+        let signatures=document.getElementsByClassName('signature')
+
+        for(let i=0;i<signatures.length;i++){
+          signatures[i].style.opacity=1
+        }
         this.showAddress=this.residence;
         this.setSrc(this.showAddress,this.total_r);
         // this.showTotal=this.total_r
       }else{
         this.count=1;
+        var signatures=document.getElementsByClassName('signature')
+        for(let i=0;i<signatures.length;i++){
+          signatures[i].style.opacity=0
+        }
         this.showAddress=this.business;
         this.setSrc(this.showAddress,this.total_b);
         // this.showTotal=this.total_b;

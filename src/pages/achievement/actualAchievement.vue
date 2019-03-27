@@ -1072,8 +1072,8 @@ export default {
           if (res.status === 200) {
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
-            if(data.data.achievements){
-                this.checkArr = data.data.achievements;
+            if(data.data.achievements){  
+                this.checkArr = data.data.achievements;  //详情的审核信息
                 this. $nextTick(()=>{
                   this.loading2=false;
                })
@@ -1160,7 +1160,7 @@ export default {
       }
       this.shows = true;
     },
-    editAch(value,index) {
+    editAch(value,index) {            //编辑时触发
         this.beginData = true;
         this.code2 =  value.code;
         this.aId =  value.aId;
@@ -1195,7 +1195,7 @@ export default {
       this.currentPage=val;
       this.getData(this.ajaxParam);
     },
-    skipContDel(value) {
+    skipContDel(value) {      //进入合同详情
      if(this.power['sign-com-htdetail'].state){
         let param={
           code:value.code

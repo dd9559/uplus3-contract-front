@@ -15,16 +15,16 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
 
   export default {
     name: "iframe-test",
-    mixins: [MIXINS_ZL],
+    mixins: [MIXINS_ZL,MIXINS_DJ],
     data(){
       return{
-        src:'租赁.html'
+        src:'定金.html'
       }
     },
     methods:{
       check:function () {
         let iframe=document.querySelector('#iframe')
-        this.dealCheck(iframe.contentWindow)
+        this.depositAgreementCheck(iframe.contentWindow)
       }
     },
     computed:{
