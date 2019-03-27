@@ -286,7 +286,7 @@
             <ul class="ulData">
               <!-- <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2"> -->
               <li v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
-                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                <file-up class="uploadSubject" @getUrl="uploadSubject" scane="1" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -313,7 +313,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" scane="1" :id="'seller'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -336,7 +336,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" scane="1" :id="'buyer'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -359,7 +359,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" scane="1" :id="'other'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
