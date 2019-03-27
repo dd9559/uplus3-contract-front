@@ -78,8 +78,8 @@
                                     <el-input v-model="contractForm.contPersons[0].name" clearable placeholder="姓名" class="namewidth" maxlength=20></el-input>
                                 </el-form-item>
 
-                                <el-form-item :prop="'contPersons[' + 0 + '].encryptionMobile'" :rules="{validator: telPhone, trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[0].encryptionMobile" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="editPhone1"></el-input>
+                                <el-form-item :prop="'contPersons[' + 0 + '].mobile'" :rules="{validator: telPhone, trigger:'change'}">
+                                    <el-input v-model="contractForm.contPersons[0].mobile" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="editPhone1"></el-input>
                                 </el-form-item>
                                 
                                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
@@ -133,8 +133,8 @@
                                     <el-input v-model="contractForm.contPersons[1].name" clearable placeholder="姓名" class="namewidth" maxlength=20></el-input>
                                 </el-form-item>
 
-                                <el-form-item :prop="'contPersons[' + 1 + '].encryptionMobile'" :rules="{validator: telPhone,trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[1].encryptionMobile" clearable placeholder="手机号" class="ownwidth" maxlength=11 @input="editPhone2"></el-input>
+                                <el-form-item :prop="'contPersons[' + 1 + '].mobile'" :rules="{validator: telPhone,trigger:'change'}">
+                                    <el-input v-model="contractForm.contPersons[1].mobile" clearable placeholder="手机号" class="ownwidth" maxlength=11 @input="editPhone2"></el-input>
                                 </el-form-item>
 
                                  <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
@@ -282,6 +282,7 @@ export default {
           {
             name: "",
             encryptionMobile: "",
+            mobile:'',
             encryptionCode: "",
             cardType:'',
             // identifyCode: '',
@@ -292,6 +293,7 @@ export default {
           {
             name: "",
             encryptionMobile: "",
+            mobile:'',
             encryptionCode: "",
             cardType:'',
             type: 2,
@@ -399,7 +401,7 @@ export default {
     editPhone1(val){
       if (val){
         this.$nextTick(() => {
-          this.contractForm.contPersons[0].encryptionMobile = val.toString().replace(/\D/g,"")
+          this.contractForm.contPersons[0].mobile = val.toString().replace(/\D/g,"")
         })
       }  
     },
@@ -407,7 +409,7 @@ export default {
     editPhone2(val){
       if (val){
         this.$nextTick(() => {
-          this.contractForm.contPersons[1].encryptionMobile = val.toString().replace(/\D/g,"")
+          this.contractForm.contPersons[1].mobile = val.toString().replace(/\D/g,"")
         })
       }  
     },
@@ -594,6 +596,7 @@ export default {
             this.contractForm.guestInfo = guestMsg;
             this.contractForm.contPersons[1].name = guestMsg.OwnerInfo.CustName;
             this.contractForm.contPersons[1].encryptionMobile = guestMsg.OwnerInfo.CustMobile;
+            this.contractForm.contPersons[1].mobile = guestMsg.OwnerInfo.CustMobile;
             this.contractForm.contPersons[1].relation = guestMsg.OwnerInfo.CustRelation;
             this.contractForm.contPersons[1].type = 2;
 
@@ -601,7 +604,7 @@ export default {
             this.$nextTick(function() {
               if(this.contractForm.guestinfoCode !==''){
                 this.$refs.contractForm.validateField('guestinfoCode');
-                this.$refs.contractForm.validateField('contPersons[1].encryptionMobile');
+                this.$refs.contractForm.validateField('contPersons[1].mobile');
                 this.$refs.contractForm.validateField('contPersons[1].name');             
               }        
             })
@@ -643,31 +646,23 @@ export default {
 
             for (let i = 0; i < res.data.contPersons.length; i++) {
               if (res.data.contPersons[i].personType.value === 1) {
-                this.contractForm.contPersons[0].name =
-                  res.data.contPersons[i].name;
-                this.contractForm.contPersons[0].encryptionMobile =
-                  res.data.contPersons[i].mobile;
-                this.contractForm.contPersons[0].relation =
-                  res.data.contPersons[i].relation;
-                this.contractForm.contPersons[0].identifyCode =
-                  res.data.contPersons[i].identifyCode;
-                this.contractForm.contPersons[0].type =
-                  res.data.contPersons[i].personType.value;
+                this.contractForm.contPersons[0].name = res.data.contPersons[i].name;
+                this.contractForm.contPersons[0].encryptionMobile = res.data.contPersons[i].mobile;
+                this.contractForm.contPersons[0].mobile = res.data.contPersons[i].mobile;
+                this.contractForm.contPersons[0].relation = res.data.contPersons[i].relation;
+                this.contractForm.contPersons[0].identifyCode =  res.data.contPersons[i].identifyCode;
+                this.contractForm.contPersons[0].type = res.data.contPersons[i].personType.value;
 
 
               } else if (
                 this.contractForm.contPersons[i].personType.value === 2
               ) {
-                this.contractForm.contPersons[1].name =
-                  res.data.contPersons[i].name;
-                this.contractForm.contPersons[1].encryptionMobile =
-                  res.data.contPersons[i].mobile;
-                this.contractForm.contPersons[1].relation =
-                  res.data.contPersons[i].relation;
-                (this.contractForm.contPersons[1].identifyCode =
-                  res.data.contPersons[i].identifyCode),
-                  (this.contractForm.contPersons[1].type =
-                    res.data.contPersons[i].personType.value);
+                this.contractForm.contPersons[1].name = res.data.contPersons[i].name;
+                this.contractForm.contPersons[1].encryptionMobile = res.data.contPersons[i].mobile;
+                this.contractForm.contPersons[1].mobile = res.data.contPersons[i].mobile;
+                this.contractForm.contPersons[1].relation = res.data.contPersons[i].relation;
+                this.contractForm.contPersons[1].identifyCode = res.data.contPersons[i].identifyCode,
+                this.contractForm.contPersons[1].type = res.data.contPersons[i].personType.value;
 
               }
             }
@@ -711,7 +706,7 @@ export default {
         this.$refs[contractForm].validate(valid => {
           if (valid) {
 
-            if(this.contractForm.contPersons[0].encryptionMobile !=='' &&this.contractForm.contPersons[1].encryptionMobile !== ''&&((this.contractForm.contPersons[0].encryptionMobile).trim() === (this.contractForm.contPersons[1].encryptionMobile).trim())){
+            if(this.contractForm.contPersons[0].mobile !=='' &&this.contractForm.contPersons[1].mobile !== ''&&((this.contractForm.contPersons[0].mobile).trim() === (this.contractForm.contPersons[1].mobile).trim())){
               this.$message({
                 type: "warning",
                 message: "业主手机号和客户手机号不能重复!"
@@ -759,7 +754,8 @@ export default {
               //业主信息
               {
                 name: this.contractForm.contPersons[0].name,
-                encryptionMobile: this.contractForm.contPersons[0].encryptionMobile,
+                encryptionMobile: this.contractForm.contPersons[0].mobile,
+                mobile:this.contractForm.contPersons[0].mobile,
                 encryptionCode: this.contractForm.contPersons[0].identifyCode,
                 cardType: this.contractForm.contPersons[0].cardType,
                 type: 1
@@ -767,7 +763,8 @@ export default {
               //客户信息
               {
                 name: this.contractForm.contPersons[1].name,
-                encryptionMobile: this.contractForm.contPersons[1].encryptionMobile,
+                encryptionMobile: this.contractForm.contPersons[1].mobile,
+                mobile: this.contractForm.contPersons[1].mobile,
                 encryptionCode: this.contractForm.contPersons[1].identifyCode,
                 cardType: this.contractForm.contPersons[1].cardType,
                 type: 2,
@@ -845,7 +842,8 @@ export default {
           igdCont: this.contractForm,
           type: this.type
         };
-
+        param.igdCont.contPersons[0].encryptionMobile = param.igdCont.contPersons[0].mobile;
+        param.igdCont.contPersons[1].encryptionMobile = param.igdCont.contPersons[1].mobile;
         if (this.type== 2) {
           delete param.igdCont.code;
           delete param.igdCont.contType;
