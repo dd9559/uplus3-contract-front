@@ -59,7 +59,7 @@
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>
               </div>
               <div v-else>
-                <p>
+                <p> 
                   <fileUp id='mban' :rules="mbrules" @getUrl='getAdd("mban",arguments)' scane="6" :more="false"  class='fileup'>模板</fileUp>
                   <span v-show="mbanAddress!==''">上传成功！  {{mbanAddress.name}}</span>
                 </p>
