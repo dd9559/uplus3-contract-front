@@ -93,7 +93,7 @@
                     <div class="contractSubject">
                         <ul class="ulData">
                             <li v-if="power['sign-ht-xq-main-add'].state">
-                                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_">
+                                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" scane="1">
                                     <i class="iconfont icon-shangchuan"></i>
                                     <p>点击上传</p>
                                 </file-up>
@@ -120,7 +120,7 @@
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li v-if="power['sign-ht-xq-data'].state">
-                                        <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
+                                        <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject" scane="1">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
                                         </file-up>
@@ -145,7 +145,7 @@
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li v-if="power['sign-ht-xq-data'].state">
-                                        <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
+                                        <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject" scane="1">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
                                         </file-up>
@@ -172,7 +172,7 @@
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li v-if="power['sign-ht-xq-data'].state">
-                                        <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
+                                        <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject" scane="1">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
                                         </file-up>
