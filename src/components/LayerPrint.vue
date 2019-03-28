@@ -34,15 +34,15 @@
                 this.getStyle(f,printCallBack);
 
             },
-            PageSetup_Null() {
-                    var hkey_root, hkey_path, hkey_key;
-                    hkey_path = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
-                    try {
-                        var RegWsh = new ActiveXObject("WScript.Shell");
-                        RegWsh.RegWrite(hkey_path + "header", "");
-                        RegWsh.RegWrite(hkey_path + "footer", "");
-                    } catch (e) {}
-            },
+            // PageSetup_Null() {
+            //         var hkey_root, hkey_path, hkey_key;
+            //         hkey_path = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+            //         try {
+            //             var RegWsh = new ActiveXObject("WScript.Shell");
+            //             RegWsh.RegWrite(hkey_path + "header", "");
+            //             RegWsh.RegWrite(hkey_path + "footer", "");
+            //         } catch (e) {}
+            // },
             getStyle(printI,printCallBack) {
                 var str = "",
                     styles1 = document.querySelectorAll("style");
@@ -58,10 +58,14 @@
                     // chrome 正常，firefox不正常，能执行到，但是添加没结果
                     let link = document.createElement("link");
                     link.setAttribute("rel", "stylesheet");
-                    if (styles[i].type) link.setAttribute("type", styles[i].type);
-                    else link.setAttribute("type", 'text/css');
-                    link.setAttribute("href", `${styles[i].href}?time=${new Date().getTime()}`);
+                    if (styles[i].type){
+                        link.setAttribute("type", styles[i].type)
+                    }else{
+                        link.setAttribute("type", 'text/css')
+                    };
+                    // link.setAttribute("href", `${styles[i].href}?time=${new Date().getTime()}`);
                     // link.setAttribute("href", styles[i].href);
+                    link.setAttribute("href", styles[i].href);
                     link.setAttribute('media', 'all');
                     printI.contentDocument.head.appendChild(link);
                     if(styles.length-1 === i){
@@ -69,9 +73,9 @@
                     }
                 }
                 this.loadCss(lastLink,()=>{
-                    window.frames['printf'].focus();
-                    printI.contentDocument.close();
-                    var explorer = window.navigator.userAgent ;
+                    // window.frames['printf'].focus();
+                    // printI.contentDocument.close();
+                    // var explorer = window.navigator.userAgent ;
                     try {
                         window.frames['printf'].print();
                     } catch (e) {
@@ -108,7 +112,7 @@
                     
                     if (isLoaded) {
                         // give time to render.
-                        setTimeout(callback, 1);
+                        setTimeout(callback, 100);
                     } else {
                         setTimeout(function () {
                             poll(node, callback);
