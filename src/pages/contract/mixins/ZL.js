@@ -11,7 +11,8 @@ let Obj2 = {
   val34:'',
   check5:{
     name:'zhizhao5',
-    require:true
+    require:true,
+    // other:['val40','val41']
   },
   val42:'',
   check6:{
@@ -99,6 +100,7 @@ const MIXINS_ZL={
           if(obj[item].name==="textarea"){
             state=true
           }else{
+            // debugger
             let box=iframe.document.querySelectorAll(`div[name=${obj[item].name}]`)
             let arr=Array.from(box)
             let list=['facility','zhizhao9','zhizhao10','zhizhao11','zhizhao12','zhizhao15','zhizhao16','remote']
@@ -202,12 +204,20 @@ const MIXINS_ZL={
                     detail={
                       val40:''
                     }
-                  }
-                  if(this.getCheckState(box[2])){
+                  }else{
+                   let value40 = iframe.document.querySelector(`span[extendparam="val40"]`).innerHTML
+                   let value41 = iframe.document.querySelector(`span[extendparam="val41"]`).innerHTML
+                   if(!value40&&!value41){
                     detail={
-                      val41:''
+                      val40:''
                     }
+                   }
                   }
+                  // if(this.getCheckState(box[2])){
+                  //   detail={
+                  //     val41:''
+                  //   }
+                  // }
                   break
               }
               this.leaseCheck(iframe,detail)
