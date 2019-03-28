@@ -20,7 +20,16 @@
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
-        <el-button type="primary" round v-if="examineState===1&&contState===1&&isActive===1" @click="showPos">签章位置</el-button>
+        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1" @mouseover="showList" @mouseout="closeList">
+          <!-- <el-button type="primary" round v-if="examineState===1&&contState===1&&isActive===1" @click="showPos" @mouseover.native="showList" @mouseout="closeList">签章位置</el-button> -->
+          <span class="signAddr" @click="showList_">签章位置</span>
+          <div class="signList">
+            <ul>
+              <li v-for="item in companySigns" :key="item.storeId" @click="chooseSign(item)">{{item.name}}</li>
+            </ul>
+          </div>
+        </div>
+        <!-- <el-button type="primary" round v-if="examineState===1&&contState===1&&isActive===1" @click="showPos">签章位置</el-button> -->
         <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
         <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
@@ -61,7 +70,7 @@
         </div> -->
       </div>
     </div>
-    
+
     <!-- 合同撤单弹窗 -->
     <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
@@ -123,7 +132,7 @@
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
               <li>
-                <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject">
+                <file-up class="uploadSubject" scane="1" :id="'seller'+index" @getUrl="addSubject">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -146,7 +155,7 @@
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
               <li>
-                <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject">
+                <file-up class="uploadSubject" scane="1" :id="'buyer'+index" @getUrl="addSubject">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -169,7 +178,7 @@
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
               <li>
-                <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject">
+                <file-up class="uploadSubject" scane="1" :id="'other'+index" @getUrl="addSubject">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -196,7 +205,7 @@
     </el-dialog>
   </div>
 </template>
-           
+
 <script>
 import changeCancel from "../contractDialog/changeCancel";
 import PdfPrint from '@/components/PdfPrint';
@@ -294,6 +303,9 @@ export default {
       position:true,
       signPositions:[],
       companySigns:[],//印章
+      storeId:'',//印章id
+      signImg:'',
+      showSignList:false,
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -336,7 +348,7 @@ export default {
           name: '下载合同资料库'
         },
       },
-      count:0,//创建拖拽元素个数
+      countnum:0,//创建拖拽元素个数
     };
   },
   created() {
@@ -348,98 +360,165 @@ export default {
     this.getContDataType();//获取合同集料库类型
     this.getContImg();
     this.getAdmin();//获取当前登录人信息
-    
+
   },
   methods: {
-    tuozhuai(sign,count){
-        var oDiv=document.getElementsByClassName('signature')[count]
+      tuozhuai(sign,countnum){
+        var oDiv=document.getElementsByClassName('signature')[countnum]
         console.log(oDiv)
         var that=this
-            oDiv.onmousedown = function(ev){
-              // debugger
-                var disX = ev.clientX -oDiv.offsetLeft;
-                var disY = ev.clientY - oDiv.offsetTop;
-                document.onmousemove = function(ev){
-                var l = ev.clientX-disX;
-                var t = ev.clientY-disY;
-                l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
-                l < 0 ? l = 0 : l
-                t < 0 ? t = 0 : t
-                t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
-                let pageindex=parseInt(ev.target.offsetTop/992)+1
-                sign.x=Number((l/706).toFixed(2))-0.02
-                sign.y=Number((t/993).toFixed(2))-0.01
-                sign.pageIndex=Number(pageindex)
-                oDiv.style.left = l+'px';
-                oDiv.style.top = t+'px';
-                };
-                document.onmouseup = function(){
-                  // debugger
-                  let state=that.src.some((item,index)=>{
-                  return sign.y>0.85*index&&sign.y<1*index
-                })
-                if(state){
-                  sign.y=0.85
-                }else{
-                  sign.y=(sign.y-(sign.pageIndex-1)).toFixed(2)
-                }
-                document.onmousemove=null;
-                document.onmouseup=null;
-                };
-            };
-            // console.log(document.getElementsByClassName('el-icon-close')[count]);
-            document.getElementsByClassName('el-icon-close')[count].onclick=function(ev){
-              that.signPositions.forEach((item,index)=>{
-                if(item.index==ev.target.getAttribute('index')){
-                  that.signPositions.splice(index,1)
-                  console.log(ev.target.parentNode,'parent');
-                  // console.log(document.getElementsByClassName('signature')[count],'zhongji');
-                  // let obj=document.getElementsByClassName('signature')[that.index]
-                 ev.target.parentNode.style.display="none"
-                  // ev.target.parentNode.parentNode.removeChild(obj)
-                  // that.count=that.count-1
-                }
-              })
+        oDiv.onmousedown = function(ev){
+          // debugger
+            var disX = ev.clientX -oDiv.offsetLeft;
+            var disY = ev.clientY - oDiv.offsetTop;
+            document.onmousemove = function(ev){
+            var l = ev.clientX-disX;
+            var t = ev.clientY-disY;
+            l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
+            l < 0 ? l = 0 : l
+            t < 0 ? t = 0 : t
+            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
+            let pageindex=parseInt(ev.target.offsetTop/992)+1
+            sign.x=Number((l/706).toFixed(2))-0.02
+            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))+0.002*(pageindex-1)
+            if(sign.y>1){
+              sign.y=sign.y-1*(pageindex-1)
             }
+            sign.pageIndex=Number(pageindex)
+            oDiv.style.left = l+'px';
+            oDiv.style.top = t+'px';
+            };
+
+            document.onmouseup = function(){
+              // debugger
+              let state=that.src.some((item,index)=>{
+              return sign.y>0.85*index&&sign.y<1*index
+            })
+            if(state){
+              sign.y=0.85
+            }else{
+              sign.y=parseFloat(sign.y).toFixed(4)
+            }
+            document.onmousemove=null;
+            document.onmouseup=null;
+            };
+        };
+        // console.log(document.getElementsByClassName('el-icon-close')[count]);
+        document.getElementsByClassName('el-icon-close')[countnum].onclick=function(ev){
+          that.signPositions.forEach((item,index)=>{
+            if(item.index==ev.target.getAttribute('index')){
+              that.signPositions.splice(index,1)
+              console.log(ev.target.parentNode,'parent');
+              // console.log(document.getElementsByClassName('signature')[count],'zhongji');
+              // let obj=document.getElementsByClassName('signature')[that.index]
+              ev.target.parentNode.style.display="none"
+              // ev.target.parentNode.parentNode.removeChild(obj)
+              // that.count=that.count-1
+            }
+          })
+        }
     },
-    // savePos(){
-    //   for(let i=0;i<this.signPositions.length;i++){
-    //     delete this.signPositions[i].index
-    //   }
-      
-    //   let param={
-    //     id:this.id,
-    //     type:3,
-    //     signPosition:JSON.stringify(this.signPositions)
-    //   }
-    //   console.log(param,'ppp');
-    //   this.$ajax.post('/api/contract/signture',param).then(res=>{
-    //     let url=res.data.data
-    //     debugger
-    //     console.log(url,'url');
-    //     this.$ajax.get('/api/load/generateAccessURL',{'url':url}).then(res=>{
-    //       console.log(res);
-    //       this.pdfUrl = res.data.data.url
-    //       this.haveUrl=true;
-    //     })
-    //   })
+    // tuozhuai(sign,count){
+    //     var oDiv=document.getElementsByClassName('signature')[count]
+    //     console.log(oDiv)
+    //     var that=this
+    //         oDiv.onmousedown = function(ev){
+    //           // debugger
+    //             var disX = ev.clientX -oDiv.offsetLeft;
+    //             var disY = ev.clientY - oDiv.offsetTop;
+    //             document.onmousemove = function(ev){
+    //             var l = ev.clientX-disX;
+    //             var t = ev.clientY-disY;
+    //             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
+    //             l < 0 ? l = 0 : l
+    //             t < 0 ? t = 0 : t
+    //             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
+    //             let pageindex=parseInt(ev.target.offsetTop/992)+1
+    //             sign.x=Number((l/706).toFixed(2))-0.02
+    //             sign.y=Number((t/993).toFixed(2))-0.01
+    //             sign.pageIndex=Number(pageindex)
+    //             oDiv.style.left = l+'px';
+    //             oDiv.style.top = t+'px';
+    //             };
+    //             document.onmouseup = function(){
+    //               // debugger
+    //               let state=that.src.some((item,index)=>{
+    //               return sign.y>0.85*index&&sign.y<1*index
+    //             })
+    //             if(state){
+    //               sign.y=0.85
+    //             }else{
+    //               sign.y=(sign.y-(sign.pageIndex-1)).toFixed(2)
+    //             }
+    //             document.onmousemove=null;
+    //             document.onmouseup=null;
+    //             };
+    //         };
+    //         // console.log(document.getElementsByClassName('el-icon-close')[count]);
+    //         document.getElementsByClassName('el-icon-close')[count].onclick=function(ev){
+    //           that.signPositions.forEach((item,index)=>{
+    //             if(item.index==ev.target.getAttribute('index')){
+    //               that.signPositions.splice(index,1)
+    //               console.log(ev.target.parentNode,'parent');
+    //               // console.log(document.getElementsByClassName('signature')[count],'zhongji');
+    //               // let obj=document.getElementsByClassName('signature')[that.index]
+    //              ev.target.parentNode.style.display="none"
+    //               // ev.target.parentNode.parentNode.removeChild(obj)
+    //               // that.count=that.count-1
+    //             }
+    //           })
+    //         }
     // },
+    //显示印章下拉框
+    showList(){
+      if(this.companySigns.length>1){
+        document.querySelector('.signList').style.display="block"
+      }
+    },
+    closeList(){
+      document.querySelector('.signList').style.display="none"
+    },
+    showList_(){
+      if(this.storeId){
+        this.showPos()
+      }else{
+        this.$message({
+          message:'请选择印章',
+          type:'warning'
+        })
+      }
+    },
+    chooseSign(item){
+      let imgDoms = Array.from(document.getElementsByClassName('signature'))
+      imgDoms.forEach(element => {
+        element.querySelector('img').src=item.contractSign;
+      });
+      this.storeId=item.storeId;
+      this.signImg=item.contractSign;
+      this.showSignList=false;
+      this.showPos()
+    },
     showPos(){
+      var content=document.getElementsByClassName('yulan')[0]
       let signturn=document.createElement('div')
       signturn.setAttribute('class','signature')
       signturn.innerHTML =`
-                <img src="../../../assets/img/yz.png" class="yuanzhang" alt="">
-                <i class="el-icon-close" @click="delsign" index="${this.count}"></i>
+                <img src="" class="yuanzhang" alt="">
+                <i class="el-icon-close" @click="delsign" index="${this.countnum}"></i>
                 `
-      signturn.querySelector('img').src=require("../../../assets/img/yz.png")
+      // signturn.querySelector('img').src=require("../../../assets/img/yz.png")
+      signturn.querySelector('img').src=this.signImg
       var signaturewrap=document.getElementsByClassName('signaturewrap')[0]
       signaturewrap.appendChild(signturn)
-      var sign={x:0,y:0,pageIndex:1,index:this.count}
+      // var sign={x:0,y:0,pageIndex:1,index:this.count}
       // debugger
+      var sign={x:0,y:content.scrollTop,pageIndex:1,index:this.countnum}
+      let obj=document.getElementsByClassName('signature')[this.countnum]
+      obj.style.top=sign.y+'px'
       this.signPositions.push(JSON.parse(JSON.stringify(sign)))
       this.signPositions.forEach((item,index)=>{
-        if(item.index==this.count){
-          this.tuozhuai(this.signPositions[index],this.count++)
+        if(item.index==this.countnum){
+          this.tuozhuai(this.signPositions[index],this.countnum++)
         }
       })
       //  this.tuozhuai(sign,this.count++)
@@ -447,7 +526,7 @@ export default {
 
     },
     // 控制弹框body内容高度，超过显示滚动条
-    clientHeight() {        
+    clientHeight() {
       this.clientHei= document.documentElement.clientHeight -140 + 'px'
     },
     //居间买卖切换
@@ -457,12 +536,21 @@ export default {
         this.count=1;
         this.showAddress=this.residence;
         this.setSrc(this.showAddress,this.total_r);
+        let signatures=document.getElementsByClassName('signature')
+
+        for(let i=0;i<signatures.length;i++){
+          signatures[i].style.opacity=1
+        }
         // this.showTotal=this.total_r
       }else{
         this.count=1;
         this.showAddress=this.business;
         this.setSrc(this.showAddress,this.total_b);
         // this.showTotal=this.total_b;
+        var signatures=document.getElementsByClassName('signature')
+        for(let i=0;i<signatures.length;i++){
+          signatures[i].style.opacity=0
+        }
       }
     },
     //放大缩小
@@ -535,7 +623,8 @@ export default {
         let param = {
           id:this.id,
           type:value,
-          signPosition:JSON.stringify(this.signPositions)
+          signPosition:JSON.stringify(this.signPositions),
+          storeId:this.storeId
           // reduce:this.reduce//合同页数是否减少 0无  1有
         }
         this.fullscreenLoading=true;
@@ -559,7 +648,7 @@ export default {
             //   this.dayin();
             //   this.fullscreenLoading=false;
             // },2000);
-            
+
           }
         }).catch(error =>{
           this.fullscreenLoading=false;
@@ -692,6 +781,10 @@ export default {
           this.auditId=res.data.auditId;
           this.isSign=res.data.isRisk;
           this.isHaveData=res.data.isHaveData;
+          if(res.data.companySigns&&res.data.companySigns.length===1){
+            this.storeId=res.data.companySigns[0].storeId
+            this.signImg=res.data.companySigns[0].contractSign
+          }
           this.companySigns=res.data.companySigns
           if(res.data.isRisk){
             this.textarea=res.data.remarksExamine;
@@ -703,7 +796,7 @@ export default {
             this.business=res.data.imgAddress.business;
             this.total_b=res.data.imgCount.business;
             //居间
-            this.residence=res.data.imgAddress.residence; 
+            this.residence=res.data.imgAddress.residence;
             this.total_r=res.data.imgCount.residence;
             this.showAddress=res.data.imgAddress.residence;
             // this.showTotal=res.data.imgCount.residence;
@@ -764,7 +857,7 @@ export default {
           }
         });
       }
-      
+
     },
      //提审
     submitAudit(){
@@ -1090,7 +1183,7 @@ export default {
           this.otherList[index].value.splice(index_,1);
         }
       }
-      
+
     },
   },
   mounted(){
@@ -1184,6 +1277,45 @@ export default {
       /deep/.el-button.is-round {
         padding: 10px 23px;
       }
+      .showPosBox{
+        display: inline-block;
+        position: relative;
+        margin-right: 10px;
+        .signAddr{
+          cursor: pointer;
+          display: inline-block;
+          // width: 100px;
+          text-align: center;
+          padding: 8px 20px;
+          font-size: 14px;
+          color: #fff;
+          border-radius: 20px;
+          background: #409EFF;
+        }
+        .signList{
+          display: none;
+          transition: display 2s;
+          white-space: nowrap;
+          position: absolute;
+          top:30px;
+          padding-top: 10px;
+          left: 0;
+          z-index: 99;
+          ul{
+            background: #fff;
+            padding: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+          li{
+            padding: 3px 10px;
+            cursor: pointer;
+            &:hover{
+              background: #f1f1f1;
+            }
+          }
+        }
+      }
     }
     /deep/.el-button-group{
       margin-right: 10px;
@@ -1247,7 +1379,7 @@ export default {
            height: 130px;
            padding: 0px;
          }
-          
+
       }
       img{
             border: 1px solid #ccc;
@@ -1255,7 +1387,7 @@ export default {
             margin: 0 auto;
             padding:0 2px;
           }
-      
+
     }
     .btnList{
       margin-left: 20px;
