@@ -397,7 +397,7 @@ export default {
             if(state){
               sign.y=0.85
             }else{
-              sign.y=(sign.y).toFixed(2)
+              sign.y=parseFloat(sign.y).toFixed(2)
             }
             document.onmousemove=null;
             document.onmouseup=null;
