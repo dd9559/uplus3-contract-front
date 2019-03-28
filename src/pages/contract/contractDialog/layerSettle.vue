@@ -65,7 +65,7 @@
                                         <p>{{item.name}}</p>
                                     </div>
                                 </el-tooltip>
-                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i>
+                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
                             </li>
                         </ul>
                     </div>     
@@ -469,7 +469,9 @@ export default {
                 }       
                 
                 .ulData{
- 
+                    .deleteShow{
+                        display: block !important;
+                    }
                     width: 100%;
                     overflow: hidden;
                     li{
@@ -481,6 +483,7 @@ export default {
                         margin-right: 0;
                         }
                         > i{
+                            display: none;
                             position: absolute;
                             top: 5px;
                             right: 5px;
