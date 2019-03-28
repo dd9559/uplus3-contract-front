@@ -22,6 +22,19 @@
           <p class="text-height" v-if="userMsg&&!inObjPerson.state">{{userMsg.depName}} - {{userMsg.name}}</p>
           <p class="text-height" v-else>{{inObjPerson.dep}} - {{inObjPerson.emp}}</p>
         </div>
+        <div class="input-group col">
+          <label class="form-label no-width f14">银行账户属性</label>
+          <div class="flex-box">
+            <el-select size="small" class="w200" v-model="form.accountProperties  " placeholder="请选择">
+              <el-option
+                v-for="item in bankType"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </div>
       </li>
       <li>
 
@@ -261,6 +274,7 @@
           moneyType:'',
           moneyTypePid:'',
           amount:'',
+          accountProperties:''
         },
         moneyType: [],
         moneyTypeName: '',
@@ -304,7 +318,17 @@
           dep:'',
           emp:'',
           state:false
-        }
+        },
+        bankType:[
+          {
+            label:'对私',
+            value:0
+          },
+          {
+            label:'对公',
+            value:1
+          }
+        ]
       }
     },
     created(){
@@ -314,6 +338,7 @@
       this.getDropdown()
       this.getMoneyType()
       this.getAdmin()
+      this.getBanks()
 
       let type = this.$route.query.edit
       if (type) {
@@ -322,6 +347,16 @@
       }
     },
     methods:{
+      /**
+       * 获取银行列表
+       */
+      getBanks:function () {
+        this.$ajax.get('/api/system/selectBankName').then(res=>{
+
+        }).catch(error=>{
+
+        })
+      },
       /**
        * 户名输入，只能输入中文、英文
        */
