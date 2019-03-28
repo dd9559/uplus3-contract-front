@@ -1655,34 +1655,9 @@
       manSure(type) {
         let addhouseArr = [];
         if (this.type == 1) {
-          addhouseArr = this.houseArr.concat(this.addManList);
+          this.houseArr= this.houseArr.concat(this.addManList);
         } else {
-          addhouseArr = this.clientArr.concat(this.addManList);
-        }
-        let resultArr = [];
-        // 相关人员和房源客源数组去重
-        for (var i = 0; i < addhouseArr.length; i++) {
-          var flag = true;
-          for (var j = 0; j < resultArr.length; j++) {
-            if (
-              // addhouseArr[i].assignorId == resultArr[j].assignorId &&
-            addhouseArr[i].roleType == resultArr[j].roleType
-            // addhouseArr[i].id == resultArr[j].id
-            ) {
-              flag = false;
-            }
-          }
-          if (flag) {
-            resultArr.push(addhouseArr[i]);
-          } else {
-            this.$message.error("请勿重复添加同一角色");
-            return false;
-          }
-        }
-        if (this.type == 1) {
-          this.houseArr = resultArr;
-        } else {
-          this.clientArr = resultArr;
+          this.clientArr = this.clientArr.concat(this.addManList);
         }
         this.showTips1 = false;
       },
