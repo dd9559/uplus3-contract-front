@@ -70,7 +70,7 @@
         </div> -->
       </div>
     </div>
-    
+
     <!-- 合同撤单弹窗 -->
     <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
@@ -205,7 +205,7 @@
     </el-dialog>
   </div>
 </template>
-           
+
 <script>
 import changeCancel from "../contractDialog/changeCancel";
 import PdfPrint from '@/components/PdfPrint';
@@ -360,7 +360,7 @@ export default {
     this.getContDataType();//获取合同集料库类型
     this.getContImg();
     this.getAdmin();//获取当前登录人信息
-    
+
   },
   methods: {
       tuozhuai(sign,countnum){
@@ -380,7 +380,7 @@ export default {
             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
             let pageindex=parseInt(ev.target.offsetTop/992)+1
             sign.x=Number((l/706).toFixed(2))-0.02
-            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))+0.003*(pageindex-1)
+            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))+0.002*(pageindex-1)
             if(sign.y>1){
               sign.y=sign.y-1*(pageindex-1)
             }
@@ -388,7 +388,7 @@ export default {
             oDiv.style.left = l+'px';
             oDiv.style.top = t+'px';
             };
-            
+
             document.onmouseup = function(){
               // debugger
               let state=that.src.some((item,index)=>{
@@ -397,7 +397,7 @@ export default {
             if(state){
               sign.y=0.85
             }else{
-              sign.y=parseFloat(sign.y).toFixed(2)
+              sign.y=parseFloat(sign.y).toFixed(4)
             }
             document.onmousemove=null;
             document.onmouseup=null;
@@ -526,7 +526,7 @@ export default {
 
     },
     // 控制弹框body内容高度，超过显示滚动条
-    clientHeight() {        
+    clientHeight() {
       this.clientHei= document.documentElement.clientHeight -140 + 'px'
     },
     //居间买卖切换
@@ -648,7 +648,7 @@ export default {
             //   this.dayin();
             //   this.fullscreenLoading=false;
             // },2000);
-            
+
           }
         }).catch(error =>{
           this.fullscreenLoading=false;
@@ -796,7 +796,7 @@ export default {
             this.business=res.data.imgAddress.business;
             this.total_b=res.data.imgCount.business;
             //居间
-            this.residence=res.data.imgAddress.residence; 
+            this.residence=res.data.imgAddress.residence;
             this.total_r=res.data.imgCount.residence;
             this.showAddress=res.data.imgAddress.residence;
             // this.showTotal=res.data.imgCount.residence;
@@ -857,7 +857,7 @@ export default {
           }
         });
       }
-      
+
     },
      //提审
     submitAudit(){
@@ -1183,7 +1183,7 @@ export default {
           this.otherList[index].value.splice(index_,1);
         }
       }
-      
+
     },
   },
   mounted(){
@@ -1379,7 +1379,7 @@ export default {
            height: 130px;
            padding: 0px;
          }
-          
+
       }
       img{
             border: 1px solid #ccc;
@@ -1387,7 +1387,7 @@ export default {
             margin: 0 auto;
             padding:0 2px;
           }
-      
+
     }
     .btnList{
       margin-left: 20px;

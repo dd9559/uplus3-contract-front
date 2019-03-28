@@ -116,7 +116,6 @@
       })
     },
     beforeRouteUpdate(to,from,next){
-      // console.log(this.getUser)
       if(to.path!=='/login'){
         let arr=this.getUser.privileges
         this.views=this.$tool.pathList.map(item=>Object.assign({},item))
