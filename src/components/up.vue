@@ -35,7 +35,7 @@
         default:false
       },
       scane:{
-        type:Number,
+        type:[String,Number],
         default:1
       }
     },

@@ -25,7 +25,7 @@
         <div class="input-group col">
           <label class="form-label no-width f14">银行账户属性</label>
           <div class="flex-box">
-            <el-select size="small" class="w200" v-model="form.accountProperties  " placeholder="请选择">
+            <el-select size="small" class="w200" v-model="form.accountProperties" @change="getAccountType" placeholder="请选择">
               <el-option
                 v-for="item in bankType"
                 :key="item.value"
@@ -130,7 +130,21 @@
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
         <el-table-column align="center" label="收款银行">
           <template slot-scope="scope">
-            <span>{{scope.row.bankName|formatNull}}</span>
+            <!--<span>{{scope.row.bankName|formatNull}}</span>-->
+            <span v-if="form.accountProperties===0">{{scope.row.bankName|formatNull}}</span>
+            <el-select size="small" v-model="scope.row.bankName" placeholder="请选择" filterable v-else>
+              <el-option
+                v-for="item in adminBanks"
+                :key="item.id"
+                :label="item.bankName"
+                :value="item.bankName">
+              </el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="收款银行支行" v-if="form.accountProperties===1">
+          <template slot-scope="scope">
+            <input type="text" class="no-style" placeholder="请输入" v-model.trim="scope.row.bankBranch" @input="inputOnly(3)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="户名">
@@ -209,6 +223,7 @@
         <p>收款账户</p>
         <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" key="layer-table-second">
           <el-table-column align="center" label="收款银行" prop="bankName"></el-table-column>
+          <el-table-column align="center" label="收款支行" prop="bankBranch" v-if="form.accountProperties===1"></el-table-column>
           <el-table-column align="center" label="户名" prop="userName"></el-table-column>
           <el-table-column align="center" label="收款账户 " prop="cardNumber"></el-table-column>
           <el-table-column align="center" label="金额（元）">
@@ -242,15 +257,15 @@
       name:'付款金额',
       type:'money'
     },
+    bankName:{
+      name:'刷卡银行'
+    },
     userName:{
       name:'户名',
     },
     cardNumber:{
       name:'收账账户',
       type:'bankCard'
-    },
-    bankName:{
-      name:'刷卡银行'
     },
     filePath:{
       name:'付款凭证',
@@ -274,13 +289,15 @@
           moneyType:'',
           moneyTypePid:'',
           amount:'',
-          accountProperties:''
+          accountProperties:0
         },
         moneyType: [],
         moneyTypeName: '',
         list:[
           {
             bankName:'',
+            bankBranch:'',
+            bankCode:'',
             userName:'',
             cardNumber:'',
             amount:''
@@ -321,14 +338,15 @@
         },
         bankType:[
           {
-            label:'对私',
+            label:'个人账户',
             value:0
           },
           {
-            label:'对公',
+            label:'企业账户',
             value:1
           }
-        ]
+        ],
+        adminBanks:[]
       }
     },
     created(){
@@ -352,7 +370,10 @@
        */
       getBanks:function () {
         this.$ajax.get('/api/system/selectBankName').then(res=>{
-
+          res=res.data
+          if(res.status===200){
+            this.adminBanks=res.data
+          }
         }).catch(error=>{
 
         })
@@ -360,11 +381,13 @@
       /**
        * 户名输入，只能输入中文、英文
        */
-      inputOnly:function (type=1) {
-        if(type!==1){
+      inputOnly:function (type) {
+        if(type===2){
           this.form.inObj=this.$tool.textInput(this.form.inObj)
-        }else {
+        }else if(type===1) {
           this.list[0].userName=this.$tool.textInput(this.list[0].userName,3)
+        }else if(type===3) {
+          this.list[0].bankBranch=this.$tool.textInput(this.list[0].bankBranch,3)
         }
       },
       clearData:function () {
@@ -513,7 +536,7 @@
         let param = {
           cardNumber:row.cardNumber
         }
-        if(param.cardNumber.length>=16&&param.cardNumber.length<=20){
+        if(param.cardNumber.length>=16&&param.cardNumber.length<=20&&this.form.accountProperties===0){
           this.$ajax.get('/api/system/selectBankNameByCard',param).then(res=>{
             res=res.data
             if(res.status===200){
@@ -545,6 +568,15 @@
         }
       },
       /**
+       * 获取银行属性
+       */
+      getAccountType:function (item) {
+        if(item===0){
+          this.getBank(this.list[0])
+          this.list[0].bankBranch=''
+        }
+      },
+      /**
        * 获取下拉框选择对象
        * @param item
        */
@@ -573,7 +605,22 @@
         this.list[0].amount = param.amount
         param.inAccount = [].concat(this.list)
 
-        let promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
+        let promiseArr=[]
+        if(this.form.accountProperties===0){
+          promiseArr=[this.$tool.checkForm(param,rule),this.$tool.checkForm(this.list[0],rule)]
+        }else {
+          let rule_other=JSON.parse(JSON.stringify(rule))
+          let obj={
+            accountProperties:{
+              name:'银行账户属性'
+            },
+            bankBranch:{
+              name:'银行支行'
+            }
+          }
+          rule_other=Object.assign({},rule_other,obj)
+          promiseArr=[this.$tool.checkForm(param,rule_other),this.$tool.checkForm(this.list[0],rule_other)]
+        }
 
         Promise.all(promiseArr).then(res=>{
           if(this.showAmount){
@@ -603,12 +650,19 @@
                 this.layer.content[0].inObj=`${this.layer.content[0].inObj}-${this.form.inObj}`
               }
             }
+            if(this.form.accountProperties===1){
+              this.adminBanks.find(item=>{
+                if(item.bankName===this.list[0].bankName){
+                  this.list[0].bankCode=item.bankId
+                }
+              })
+            }
             param.filePath = [].concat(this.files)
             this.layer.form=Object.assign({},param)
           }
         }).catch(error=>{
           this.$message({
-            message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
+            message:error.title==='刷卡银行'?this.form.accountProperties===0?'银行卡号输入有误':'请选择收款银行':`${error.title}${error.msg}`
           })
         })
       },
