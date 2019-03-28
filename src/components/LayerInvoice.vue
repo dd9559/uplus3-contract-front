@@ -242,12 +242,14 @@
                         }
                         this.$nextTick(()=>{
                             this.$emit("emitPaperSet");
-                            this.$refs.easyPrint.print();
                             let that = this;
-                            setTimeout(()=>{
-                                this.layerLoading.close();
+                            this.$refs.easyPrint.print(()=>{
+                                // setTimeout(()=>{
+                                that.layerLoading.close();
                                 that.paperShow = false;
-                            },101);
+                            // },101);
+                            });
+                            
                         })
                     }
                 }).catch(err=>{
