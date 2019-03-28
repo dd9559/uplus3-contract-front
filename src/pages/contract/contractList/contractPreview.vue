@@ -380,11 +380,15 @@ export default {
             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
             let pageindex=parseInt(ev.target.offsetTop/992)+1
             sign.x=Number((l/706).toFixed(2))-0.02
-            sign.y=Number((t/993).toFixed(2))-0.01
+            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))+0.003*(pageindex-1)
+            if(sign.y>1){
+              sign.y=sign.y-1*(pageindex-1)
+            }
             sign.pageIndex=Number(pageindex)
             oDiv.style.left = l+'px';
             oDiv.style.top = t+'px';
             };
+            
             document.onmouseup = function(){
               // debugger
               let state=that.src.some((item,index)=>{
@@ -393,7 +397,7 @@ export default {
             if(state){
               sign.y=0.85
             }else{
-              sign.y=(sign.y-(sign.pageIndex-1)).toFixed(2)
+              sign.y=(sign.y).toFixed(2)
             }
             document.onmousemove=null;
             document.onmouseup=null;
