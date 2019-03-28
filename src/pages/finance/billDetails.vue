@@ -156,14 +156,14 @@
         <li v-if="activeItem==='付款信息'">
           <h4 class="f14">账户信息</h4>
           <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
+            <el-table-column align="center" prop="userName" label="户名"></el-table-column>
+            <el-table-column align="center" prop="cardNumber" label="银行卡号"></el-table-column>
             <el-table-column align="center" prop="bankName" label="收款银行">
               <template slot-scope="scope">
                 <span v-if="scope.row.bankBranch.length>0">{{scope.row.bankName}}-{{scope.row.bankBranch}}</span>
                 <span v-else>{{scope.row.bankName}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" prop="userName" label="户名"></el-table-column>
-            <el-table-column align="center" prop="cardNumber" label="收款账户"></el-table-column>
             <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
           </el-table>
         </li>
