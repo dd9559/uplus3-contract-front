@@ -1298,6 +1298,7 @@ export default {
           top:30px;
           padding-top: 10px;
           left: 0;
+          z-index: 99;
           ul{
             background: #fff;
             padding: 5px 0;
