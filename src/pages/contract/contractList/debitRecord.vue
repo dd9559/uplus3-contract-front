@@ -80,6 +80,13 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="账户类型">
+          <el-select v-model="adjustForm.type" placeholder="全部" class="width150" clearable>
+            <el-option label="个人账户" value="0"></el-option>
+            <el-option label="企业账户" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+
       </el-form>
     </ScreeningTop>
 
@@ -425,7 +432,8 @@
           status:{
             value:'',
             label: ''
-          } //支付状态
+          }, //支付状态
+          type:'' //账户类型
         },
 
         // 部门搜索分页
@@ -694,7 +702,8 @@
               pageNum: this.pageNum,
               pageSize: this.pageSize,
               keyword: this.adjustForm.keyWord,
-              status: this.adjustForm.status.value
+              status: this.adjustForm.status.value,
+              type:  this.adjustForm.type
             }
             //调整佣金审核列表
             this.$ajax
