@@ -128,7 +128,17 @@
     <div class="input-group col-other">
       <p class="txt-title"><label class="form-label f14">收款账户</label></p>
       <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg">
-        <el-table-column align="center" label="收款银行">
+        <el-table-column align="center" label="开户名">
+          <template slot-scope="scope">
+            <input type="text" class="no-style" placeholder="请输入" v-model.trim="scope.row.userName" @input="inputOnly(1)">
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="银行卡号">
+          <template slot-scope="scope">
+            <input type="text" class="no-style" placeholder="请输入" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="银行">
           <template slot-scope="scope">
             <!--<span>{{scope.row.bankName|formatNull}}</span>-->
             <span v-if="form.accountProperties===0">{{scope.row.bankName|formatNull}}</span>
@@ -142,19 +152,9 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收款银行支行" v-if="form.accountProperties===1">
+        <el-table-column align="center" label="支行" v-if="form.accountProperties===1">
           <template slot-scope="scope">
             <input type="text" class="no-style" placeholder="请输入" v-model.trim="scope.row.bankBranch" @input="inputOnly(3)">
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="户名">
-          <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-model.trim="scope.row.userName" @input="inputOnly(1)">
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="收款账户">
-          <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" maxlength="20" v-model="scope.row.cardNumber" @input="getBank(scope.row)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -222,10 +222,10 @@
         </el-table>
         <p>收款账户</p>
         <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" key="layer-table-second">
-          <el-table-column align="center" label="收款银行" prop="bankName"></el-table-column>
-          <el-table-column align="center" label="收款支行" prop="bankBranch" v-if="form.accountProperties===1"></el-table-column>
           <el-table-column align="center" label="户名" prop="userName"></el-table-column>
-          <el-table-column align="center" label="收款账户 " prop="cardNumber"></el-table-column>
+          <el-table-column align="center" label="银行卡号 " prop="cardNumber"></el-table-column>
+          <el-table-column align="center" label="银行" prop="bankName"></el-table-column>
+          <el-table-column align="center" label="支行" prop="bankBranch" v-if="form.accountProperties===1"></el-table-column>
           <el-table-column align="center" label="金额（元）">
             <template slot-scope="scope">
               <span>{{form.amount}}</span>
@@ -257,15 +257,15 @@
       name:'付款金额',
       type:'money'
     },
-    bankName:{
-      name:'刷卡银行'
-    },
     userName:{
-      name:'户名',
+      name:'开户名',
     },
     cardNumber:{
-      name:'收账账户',
+      name:'银行卡号',
       type:'bankCard'
+    },
+    bankName:{
+      name:'银行'
     },
     filePath:{
       name:'付款凭证',
@@ -289,7 +289,7 @@
           moneyType:'',
           moneyTypePid:'',
           amount:'',
-          accountProperties:0
+          accountProperties:1
         },
         moneyType: [],
         moneyTypeName: '',
@@ -573,7 +573,7 @@
       getAccountType:function (item) {
         if(item===0){
           this.getBank(this.list[0])
-          this.list[0].bankBranch=''
+          // this.list[0].bankBranch=''
         }
       },
       /**
@@ -615,7 +615,7 @@
               name:'银行账户属性'
             },
             bankBranch:{
-              name:'银行支行'
+              name:'支行'
             }
           }
           rule_other=Object.assign({},rule_other,obj)
@@ -656,13 +656,16 @@
                   this.list[0].bankCode=item.bankId
                 }
               })
+            }else {
+              this.list[0].bankBranch=''
+              this.list[0].bankCode=''
             }
             param.filePath = [].concat(this.files)
             this.layer.form=Object.assign({},param)
           }
         }).catch(error=>{
           this.$message({
-            message:error.title==='刷卡银行'?this.form.accountProperties===0?'银行卡号输入有误':'请选择收款银行':`${error.title}${error.msg}`
+            message:error.title==='银行'?this.form.accountProperties===0?'银行卡号输入有误':'请选择银行':`${error.title}${error.msg}`
           })
         })
       },

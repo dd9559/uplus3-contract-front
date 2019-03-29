@@ -380,7 +380,7 @@ export default {
             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
             let pageindex=parseInt(ev.target.offsetTop/992)+1
             sign.x=Number((l/706).toFixed(2))-0.02
-            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))+0.002*(pageindex-1)
+            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))
             if(sign.y>1){
               sign.y=sign.y-1*(pageindex-1)
             }
@@ -481,12 +481,13 @@ export default {
     showList_(){
       if(this.storeId){
         this.showPos()
-      }else{
-        this.$message({
-          message:'请选择印章',
-          type:'warning'
-        })
       }
+      // else{
+      //   this.$message({
+      //     message:'请选择印章',
+      //     type:'warning'
+      //   })
+      // }
     },
     chooseSign(item){
       let imgDoms = Array.from(document.getElementsByClassName('signature'))
