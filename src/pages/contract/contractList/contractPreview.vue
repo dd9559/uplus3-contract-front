@@ -481,12 +481,13 @@ export default {
     showList_(){
       if(this.storeId){
         this.showPos()
-      }else{
-        this.$message({
-          message:'请选择印章',
-          type:'warning'
-        })
       }
+      // else{
+      //   this.$message({
+      //     message:'请选择印章',
+      //     type:'warning'
+      //   })
+      // }
     },
     chooseSign(item){
       let imgDoms = Array.from(document.getElementsByClassName('signature'))
