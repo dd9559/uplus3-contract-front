@@ -80,6 +80,13 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="账户类型">
+          <el-select v-model="adjustForm.type" placeholder="全部" class="width150" clearable>
+            <el-option label="个人账户" value="0"></el-option>
+            <el-option label="企业账户" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+
       </el-form>
     </ScreeningTop>
 
@@ -121,6 +128,14 @@
         <el-table-column label="分账周期" align="center" min-width="100">
           <template slot-scope="scope">
             <p>{{scope.row.startTime | getDate}} ~ {{scope.row.endTime | getDate}}</p>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="账户类型" :formatter="nullFormatter" align="center" min-width="80">
+          <template slot-scope="scope">
+            <p v-if="scope.row.type == 0">个人账户</p>
+            <p v-else-if="scope.row.type == 1">企业账户</p>
+            <p v-else>--</p>
           </template>
         </el-table-column>
 
@@ -198,8 +213,21 @@
       </div>
       <div class="paycontent">
         <div class="paytitle">收款门店账户选择：</div>
-          <div v-for="(item,index) in payAgainInfo" :key="index">
-            <el-radio class="radio" v-model="radio" :label="index" @change="changeRadio"><span>开户名：{{item.bankAccountName}}</span><span style="margin-left:24px;margin-top:6px;white-space:normal;display:block;">银行账户：{{item.bankCard}}</span></el-radio>
+          <div v-for="(item,index) in payAgainInfo" :key="index" class="radiodiv">
+            <el-radio class="radio" v-model="radio" :label="index" @change="changeRadio">
+              <div class="innerdiv">
+                <p>
+                  <span class="blue" v-if="item.type==0">账户类型：个人账户</span>
+                  <span class="blue" v-if="item.type==1">账户类型：企业账户</span>
+                  <span class="blue">开户名：{{item.bankAccountName}}</span>
+                </p>
+                <p>
+                  <span class="blue">银行卡号：{{item.bankCard}}</span>
+                  <span class="blue">银行：{{item.bankName}}</span>
+                </p>
+                <p v-if="item.type == 1"><span class="blue">支行:{{item.bankBranchName}}</span></p>
+              </div>
+            </el-radio>
           </div>
       </div>
       <div class="textareabox">
@@ -404,7 +432,8 @@
           status:{
             value:'',
             label: ''
-          } //支付状态
+          }, //支付状态
+          type:'' //账户类型
         },
 
         // 部门搜索分页
@@ -673,7 +702,8 @@
               pageNum: this.pageNum,
               pageSize: this.pageSize,
               keyword: this.adjustForm.keyWord,
-              status: this.adjustForm.status.value
+              status: this.adjustForm.status.value,
+              type:  this.adjustForm.type
             }
             //调整佣金审核列表
             this.$ajax
@@ -983,8 +1013,8 @@
 
     .radio{
       margin-bottom: 8px;
-      margin-left: 30px;
-      display: block;
+      margin-left: 20px;
+      display: flex;
 
     }
   }
@@ -1380,6 +1410,34 @@
   .isFlex{
     display: flex;
     align-items: center;
+  }
+  
+  .radiodiv{
+    overflow: hidden;
+    .innerdiv{
+      overflow: hidden;
+      p{
+        margin-bottom: 12px;
+        clear: both;
+        span.blue{
+          display: inline-block;
+        }
+        span.blue:nth-child(1){
+          width: 220px;
+          margin-right: 30px;
+        
+        }
+        
+      }
+      
+    }
+    > .is-checked{
+      .el-radio__label{
+        p span.blue{
+          color:#409EFF;
+        }
+      }
+    }
   }
 
 
