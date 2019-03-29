@@ -49,9 +49,19 @@
         </el-table-column>
         <el-table-column align="center" label="门店" prop="storeName">
         </el-table-column>
-        <el-table-column align="center" label="开户行">
+        <el-table-column align="center" label="账户类型">
           <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankBranchName }}</p>
+            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.type===0?'个人账户':'企业账户' }}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="银行">
+          <template slot-scope="scope">
+            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankName }}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支行">
+          <template slot-scope="scope">
+            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankBranchName==='—'?'--':item.bankBranchName }}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="开户名">
@@ -59,7 +69,7 @@
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="银行账户">
+        <el-table-column align="center" label="银行卡号">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard|formatBankCard }}</p>
           </template>
@@ -97,7 +107,7 @@
     :close-on-press-escape="$tool.closeOnClickModal"
     :title="companyFormTitle"
     :visible.sync="AddEditVisible"
-    width="1000px"
+    width="1180px"
     :before-close="handleClose"
     class="dialog-info">
       <el-form :model="companyForm" label-position='right'>
@@ -184,28 +194,46 @@
           <p>添加企业银行账户</p>
           <div class="info-content">
             <el-table style="width: 100%" :data="companyBankList" class="addBankRow">
-              <el-table-column width="260" align="center" label="">
+              <el-table-column align="center" label="" width="170">
+                <template slot-scope="scope">
+                  <el-form-item label="账户类型: ">
+                    <el-select size="small" v-model="companyBankList[scope.$index].type" class="property">
+                      <el-option v-for="item in bankType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="" width="260">
                 <template slot-scope="scope">
                   <el-form-item label="开户名: ">
-                    <el-input size="mini" maxlength="15" v-model.trim="companyBankList[scope.$index].bankAccountName" :disabled="fourthStoreNoEdit" @input="inputOnly(scope.$index,'bankAccountName')"></el-input>
+                    <el-input size="small" class="card-owner" maxlength="30" v-model.trim="companyBankList[scope.$index].bankAccountName" :disabled="fourthStoreNoEdit" @input="inputOnly(scope.$index,'bankAccountName')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column width="310" align="center" label="">
+              <el-table-column align="center" label="" width="238">
                 <template slot-scope="scope">
-                  <el-form-item label="银行账户: ">
-                    <el-input size="mini" oninput="if(value.length>20)value=value.slice(0,20)" v-model="companyBankList[scope.$index].bankCard" :disabled="fourthStoreNoEdit" @keyup.native="getInt(3,scope.$index)"></el-input>
+                  <el-form-item label="银行卡号: ">
+                    <el-input size="small" oninput="if(value.length>20)value=value.slice(0,20)" v-model="companyBankList[scope.$index].bankCard" :disabled="fourthStoreNoEdit" @keyup.native="getInt(3,scope.$index)"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="" width="320">
+              <el-table-column align="center" label="" width="215">
                 <template slot-scope="scope">
-                  <el-form-item label="开户行: ">
-                    <el-input size="mini" v-model.trim="companyBankList[scope.$index].bankBranchName" placeholder="请精确到支行信息" :disabled="fourthStoreNoEdit" @input="inputOnly(scope.$index,'bankBranchName')"></el-input>
+                  <el-form-item label="银行: ">
+                    <el-select size="small" v-model="companyBankList[scope.$index].bankId" filterable>
+                      <el-option v-for="item in adminBanks" :key="item.id" :label="item.bankName" :value="item.bankId"></el-option>
+                    </el-select>
                   </el-form-item>
                 </template>
               </el-table-column>
-              <el-table-column label="" width="65">
+              <el-table-column align="center" label="" width="192">
+                <template slot-scope="scope" v-if="companyBankList[scope.$index].type===1">
+                  <el-form-item label="支行: ">
+                    <el-input size="small" class="bank-branch" v-model.trim="companyBankList[scope.$index].bankBranchName" :disabled="fourthStoreNoEdit" @input="inputOnly(scope.$index,'bankBranchName')"></el-input>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column label="" width="64">
                 <template slot-scope="scope">
                   <span @click="addRow" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-plus"></i></span>
                   <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-minus"></i></span>
@@ -267,7 +295,7 @@
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitConfirm">确定</el-button>
+        <el-button type="primary" @click="submitConfirm">确 定</el-button>
       </div>
       <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
@@ -372,7 +400,9 @@
     {
       bankBranchName: '',
       bankAccountName: '',
-      bankCard: ''
+      bankCard: '',
+      type: 1,
+      bankId: ''
     }
   ]
   export default {
@@ -416,6 +446,16 @@
         contractName: "",
         financialName: "",
         imgList: [],
+        bankType:[
+          {
+            label:'个人账户',
+            value:0
+          },
+          {
+            label:'企业账户',
+            value:1
+          }
+        ],
         //权限配置
         power: {
           'sign-set-gs': {
@@ -423,7 +463,8 @@
             name: '添加公司信息'
           }
         },
-        storeNoChange: false //门店选择不可编辑
+        storeNoChange: false, //门店选择不可编辑
+        adminBanks:[]
       }
     },
     created() {
@@ -433,8 +474,22 @@
       this.initFormList()
       this.getDictionary()
       this.getStoreList(1)
+      this.getBanks()
     },
     methods: {
+      /**
+       * 获取银行列表
+       */
+      getBanks:function () {
+        this.$ajax.get('/api/system/selectBankName').then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.adminBanks=res.data
+          }
+        }).catch(error=>{
+
+        })
+      },
       // 初始化表单 数组集合
       initFormList() {
         this.companyForm = JSON.parse(JSON.stringify(obj1))
@@ -602,7 +657,9 @@
         let row = {
           bankName: '',
           bankAccountName: '',
-          bankCard: ''
+          bankCard: '',
+          type: 1,
+          bankId: ''
         }
         this.companyBankList.push(row)
       },
@@ -674,43 +731,53 @@
               if(item.bankAccountName) {
                 if(item.bankCard) {
                   if(item.bankCard.length >= 16) {
-                    if(item.bankBranchName) {
-                      if(that_.companyForm.contractSign) {
-                        if(that_.companyForm.financialSign) {
-                          if(that_.companyBankList.length === 1) {
-                            isOk = true
-                          } else if(that_.companyBankList.length === 2) {
-                            if(that_.companyBankList[0].bankCard === that_.companyBankList[1].bankCard) {
-                              that_.$message({message:"银行账户不能相同",type:"warning"})
-                            } else {
+                    if(item.bankId) {
+                      if(item.bankId) {
+                        if(item.type === 1 && !item.bankBranchName) {
+                          that_.$message({message:"支行不能为空"})
+                          return
+                        } else if(item.type === 0) {
+                          item.bankBranchName = ""
+                        }
+                        if(that_.companyForm.contractSign) {
+                          if(that_.companyForm.financialSign) {
+                            if(that_.companyBankList.length === 1) {
                               isOk = true
+                            } else if(that_.companyBankList.length === 2) {
+                              if(that_.companyBankList[0].bankCard === that_.companyBankList[1].bankCard) {
+                                that_.$message({message:"银行卡号不能相同",type:"warning"})
+                              } else {
+                                isOk = true
+                              }
+                            } else if(that_.companyBankList.length > 2) {
+                              let ar1 = []
+                              that_.companyBankList.forEach(item => {
+                                ar1.push(item.bankCard)
+                              })
+                              let ar2 = Array.from(new Set(ar1))
+                              if(ar1.length !== ar2.length) {
+                                that_.$message({message:"银行卡号不能相同",type:"warning"})
+                              } else {
+                                isOk = true
+                              }
                             }
-                          } else if(that_.companyBankList.length > 2) {
-                            let ar1 = []
-                            that_.companyBankList.forEach(item => {
-                              ar1.push(item.bankCard)
-                            })
-                            let ar2 = Array.from(new Set(ar1))
-                            if(ar1.length !== ar2.length) {
-                              that_.$message({message:"银行账户不能相同",type:"warning"})
-                            } else {
-                              isOk = true
-                            }
+                          } else {
+                            that_.$message({message:"财务章上传不能为空"})
                           }
                         } else {
-                          that_.$message({message:"财务章上传不能为空"})
+                          that_.$message({message:"合同章上传不能为空"})
                         }
                       } else {
-                        that_.$message({message:"合同章上传不能为空"})
+                        that_.$message({message: "银行名称不能为空"})
                       }
                     } else {
-                      that_.$message({message: "开户行不能为空"})
+                      that_.$message({message: "银行不能为空"})
                     }
                   } else {
                     that_.$message({message: "请输入正确的银行账户"})
                   }
                 } else {
-                  that_.$message({message: "银行账户不能为空"})
+                  that_.$message({message: "银行卡号不能为空"})
                 }
               } else {
                 that_.$message({message: "开户名不能为空"})
@@ -809,6 +876,11 @@
         }
         this.documentCard = JSON.parse(JSON.stringify(row.documentCard))
         this.companyBankList = JSON.parse(JSON.stringify(row.companyBankList))
+        this.companyBankList.forEach(item=>{
+          if(item.type === 0) {
+            item.bankBranchName = ""
+          }
+        })
         let currentRow = JSON.parse(JSON.stringify(row))
         this.contractName = currentRow.contractSign.split('?')[1]
         this.financialName = currentRow.financialSign.split('?')[1]
@@ -1031,9 +1103,6 @@
         color: #CD6D6D;
         i { font-weight: bold; color: #D56868; }
       }
-      &-top {
-        margin-top: 10px;
-      }
     }
     &:first-child {
       .info-content {
@@ -1069,13 +1138,13 @@
             margin-left: 42px;
           }
           .tongyi {
-            margin-left: 7px;
+            margin-left: 97px;
           }
           .gongshang {
-            margin-left: 49px;
+            margin-left: 139px;
           }
           .zuzhi {
-            margin-left: 34px;
+            margin-left: 124px;
           }
         }
       }
@@ -1107,8 +1176,11 @@
       }
       .el-table__row {
         .el-form-item {
-          display: flex;
+          // display: flex;
           margin-bottom: 0;
+          /deep/ .el-form-item__label{
+            padding: 0;
+          }
         }
       }
       .addBankRow {
@@ -1131,9 +1203,17 @@
           display: none;
         }
         /deep/ .el-input {
-          height: 32px;
-          .el-input__inner {
-            height: 32px;
+          width: 168px;
+        }
+        /deep/ .card-owner {
+          width: 200px;
+        }
+        /deep/ .bank-branch {
+          width: 150px!important;
+        }
+        /deep/ .property {
+          .el-input {
+            width: 95px!important;
           }
         }
         &.el-table {
@@ -1144,16 +1224,6 @@
           }
           /deep/ .cell {
             padding: 0;
-          }
-          tr td:nth-child(2) {
-              .el-input {
-                width: 200px;
-              }
-          }
-          tr td:nth-child(3) {
-              .el-input {
-                width: 249px;
-              }
           }
         }
       }
@@ -1335,6 +1405,7 @@
 }
 /deep/ .el-dialog__footer {
   padding-top: 0;
+  padding-bottom: 10px;
 }
 /deep/ .el-table th {
   background:rgba(238,242,251,1);
