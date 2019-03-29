@@ -129,11 +129,11 @@
         <ul>
           <li v-for="(item,index) in receiptData.inBank" :key="index">
             <el-radio v-model="radio" :label="item">
-              <span class="accountType">账户类型：{{item.type===1?'个人账户':'企业账户'}}</span>
+              <span class="accountType">账户类型：{{item.type===1?'企业账户':'个人账户'}}</span>
               <span>银行：{{item.bankName}}</span><br>
               <span class="bankAccountName">开户名：{{item.bankAccountName}}</span><br>
               <span class="bankName">银行账户：{{item.bankCard}}</span><br>
-              <span class="bankBranchName" v-if="item.type===2">支行：{{item.bankBranchName}}</span>
+              <span class="bankBranchName" v-if="item.type===1">支行：{{item.bankBranchName}}</span>
             </el-radio>
           </li>
         </ul>

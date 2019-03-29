@@ -56,7 +56,7 @@
         </el-table-column>
         <el-table-column align="center" label="银行">
           <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankId }}</p>
+            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankName }}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="支行">
