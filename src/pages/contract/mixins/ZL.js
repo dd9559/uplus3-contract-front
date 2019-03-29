@@ -205,6 +205,8 @@ const MIXINS_ZL={
                       val40:''
                     }
                   }else{
+                   iframe.document.querySelector(`span[extendparam="val40"]`).classList.remove('BODERRED')
+                   iframe.document.querySelector(`span[extendparam="val41"]`).classList.remove('BODERRED')
                    let value40 = iframe.document.querySelector(`span[extendparam="val40"]`).innerHTML
                    let value41 = iframe.document.querySelector(`span[extendparam="val41"]`).innerHTML
                    if(!value40&&!value41){

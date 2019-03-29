@@ -900,7 +900,7 @@ export default {
         display: flex;
     }
     .el-input {
-        width: 110px;
+        width: 115px;
     }
     .store {
         .el-input {
