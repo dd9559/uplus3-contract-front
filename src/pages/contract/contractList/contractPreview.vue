@@ -378,11 +378,16 @@ export default {
             l < 0 ? l = 0 : l
             t < 0 ? t = 0 : t
             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
-            let pageindex=parseInt(ev.target.offsetTop/992)+1
+            let pageindex=parseInt(ev.target.offsetTop/(992))+1
             sign.x=Number((l/706).toFixed(2))-0.02
-            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))+0.003*(pageindex-1)
+            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))
             if(sign.y>1){
-              sign.y=sign.y-1*(pageindex-1)
+              if(that.isShowType){
+                sign.y=sign.y-1*(pageindex-1)-0.03*pageindex
+                sign.x=sign.x+0.01*pageindex
+              }else{
+                sign.y=sign.y-1*(pageindex-1)
+              }
             }
             sign.pageIndex=Number(pageindex)
             oDiv.style.left = l+'px';
