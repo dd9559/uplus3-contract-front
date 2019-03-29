@@ -42,7 +42,7 @@
           <ul>
             <li v-for="(item,index) in Index" :key="index" @click="toLink(item,index)">{{item.name}}</li>
           </ul>
-          <p class="operation" @click="goBack" v-if="Index.length>2&&$route.path!=='/routingRemitDetail'&&$route.path!=='/detailIntention'&&$route.path!=='/contractDetails'">
+          <p class="operation" @click="goBack" v-if="Index.length>2&&$route.path!=='/routingRemitDetail' && $route.path!=='/detailIntention'&& $route.path!=='/contractDetails'&& $route.path!=='/contractPreview' && !$route.query.formDetail">
             <i class="iconfont icon-fanhui"></i>
             <span>返回</span>
           </p>
@@ -116,7 +116,6 @@
       })
     },
     beforeRouteUpdate(to,from,next){
-      // console.log(this.getUser)
       if(to.path!=='/login'){
         let arr=this.getUser.privileges
         this.views=this.$tool.pathList.map(item=>Object.assign({},item))

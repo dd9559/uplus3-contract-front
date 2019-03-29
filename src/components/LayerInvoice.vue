@@ -28,7 +28,7 @@
                                     </el-option>
                                 </el-select>
                             </div>
-                            <p><label class="checkbox-info iconfont" :class="[item.addressHidden?'active':'']" @click="item.addressHidden=!item.addressHidden"></label><span>隐藏物业地址</span></p>
+                            <!-- <p><label class="checkbox-info iconfont" :class="[item.addressHidden?'active':'']" @click="item.addressHidden=!item.addressHidden"></label><span>隐藏物业地址</span></p> -->
                             <p><label>票据编号：</label><span>{{item.billCode}}</span></p>
                         </div>
                     </li>
@@ -242,12 +242,14 @@
                         }
                         this.$nextTick(()=>{
                             this.$emit("emitPaperSet");
-                            this.$refs.easyPrint.print();
                             let that = this;
-                            setTimeout(()=>{
-                                this.layerLoading.close();
+                            this.$refs.easyPrint.print(()=>{
+                                // setTimeout(()=>{
+                                that.layerLoading.close();
                                 that.paperShow = false;
-                            },101);
+                            // },101);
+                            });
+                            
                         })
                     }
                 }).catch(err=>{

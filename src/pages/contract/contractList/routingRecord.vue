@@ -122,21 +122,24 @@
     <!-- 确认收款 -->
     <el-dialog title="确认打款" :visible.sync="dialogReceipt" width="600px" :closeOnClickModal="$tool.closeOnClickModal" @close="closeReceipt">
       <div class="receipt_one">
-        <span class="tag">分账周期：<span class="text">{{receiptData.startTime|timeFormat_}} ~ {{receiptData.endTime|timeFormat_}}</span></span><span class="tag">收款门店：<span class="text">{{receiptData.inStoreName}}</span></span>
+        <span class="tag">分账周期：<span class="text">{{receiptData.startTime|timeFormat_}} ~ {{receiptData.endTime|timeFormat_}}</span></span><span>收款门店：<span class="text">{{receiptData.inStoreName}}</span></span>
       </div>
       <div class="receipt_two">
         <p class="tag">收款门店账户选择：</p>
         <ul>
           <li v-for="(item,index) in receiptData.inBank" :key="index">
             <el-radio v-model="radio" :label="item">
+              <span class="accountType">账户类型：{{item.type===1?'企业账户':'个人账户'}}</span>
+              <span>银行：{{item.bankName}}</span><br>
               <span class="bankAccountName">开户名：{{item.bankAccountName}}</span><br>
-              <span style="padding-left:25px">银行账户：{{item.bankCard}}</span>
+              <span class="bankName">银行账户：{{item.bankCard}}</span><br>
+              <span class="bankBranchName" v-if="item.type===1">支行：{{item.bankBranchName}}</span>
             </el-radio>
           </li>
         </ul>
       </div>
       <div class="receipt_three">
-        <span class="tag">打款备注：</span>
+        <span class="receiptReason">打款备注：</span>
         <el-input type="textarea" :rows="6" placeholder="请输入打款备注，最多200字 " v-model="receiptReason" resize='none' style="width:460px;overflow-y:hidden" maxlength="200"></el-input>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -592,9 +595,32 @@ export default {
 .bankAccountName{
   display: inline-block;
   padding-right: 10px;
-  width: 150px;
+  padding-left: 23px;
+  padding-bottom: 5px;
+}
+.accountType{
+  display: inline-block;
+  width: 200px;
+  padding-bottom: 5px;
+}
+.bankBranchName{
+  display: inline-block;
+  padding-bottom: 5px;
+  padding-left: 23px;
+}
+.bankName{
+  display: inline-block;
+  padding-left: 23px;
+  padding-bottom: 5px;
 }
 .tag{
+  display: inline-block;
+  width: 246px;
+  color: @color-6c;
+  padding-left: 20px;
+}
+.receiptReason{
+  display: inline-block;
   color: @color-6c;
   padding-left: 20px;
 }

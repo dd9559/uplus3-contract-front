@@ -330,6 +330,7 @@ export default {
                     contType: e.value,
                     id: this.$route.query.id,
                     operateType: 2,
+                    formDetail: true
                 }
             })
         },
