@@ -156,7 +156,7 @@
         <li v-if="activeItem==='付款信息'">
           <h4 class="f14">账户信息</h4>
           <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
-            <el-table-column align="center" prop="bankName" label="银行">
+            <el-table-column align="center" label="账户类型">
               <template slot-scope="scope">
                 <span>{{billMsg.accountProperties===1?"企业账户":"个人账户"}}</span>
               </template>

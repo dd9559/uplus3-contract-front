@@ -23,7 +23,7 @@
           <p class="text-height" v-else>{{inObjPerson.dep}} - {{inObjPerson.emp}}</p>
         </div>
         <div class="input-group col">
-          <label class="form-label no-width f14">银行账户属性</label>
+          <label class="form-label no-width f14">账户类型</label>
           <div class="flex-box">
             <el-select size="small" class="w200" v-model="form.accountProperties" @change="getAccountType" placeholder="请选择">
               <el-option
