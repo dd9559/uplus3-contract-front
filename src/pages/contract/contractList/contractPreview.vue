@@ -381,13 +381,7 @@ export default {
             let pageindex=parseInt(ev.target.offsetTop/(992))+1
             sign.x=Number((l/706).toFixed(2))-0.02
             sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))
-            let deviation=1.002
-            if(that.contType===2){
-              deviation=1.054
-            }
-            if(sign.y>1){
-              sign.y=sign.y-(pageindex-1)*deviation
-            }
+
             sign.pageIndex=Number(pageindex)
             oDiv.style.left = l+'px';
             oDiv.style.top = t+'px';
@@ -395,6 +389,17 @@ export default {
 
             document.onmouseup = function(){
               // debugger
+              let deviationY=sign.pageIndex===1?0:that.isShowType?0.05:0
+              let deviationX=that.isShowType&&sign.pageIndex===1?0.01:0.03
+              console.log(deviationX,deviationY)
+              if(that.isShowType){
+                sign.x=sign.x+deviationX
+              }
+              if(sign.y>1){
+                sign.y=sign.y-(sign.pageIndex-1)-deviationY
+              }else {
+                sign.y=sign.y-deviationY
+              }
               let state=that.src.some((item,index)=>{
               return sign.y>0.85*index&&sign.y<1*index
             })
@@ -403,6 +408,7 @@ export default {
             }else{
               sign.y=parseFloat(sign.y).toFixed(4)
             }
+            sign.x=parseFloat(sign.x).toFixed(4)
             document.onmousemove=null;
             document.onmouseup=null;
             };
