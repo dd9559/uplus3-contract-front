@@ -75,21 +75,21 @@
                             <el-form-item label="业主信息：" class="disb" required>
 
                                 <el-form-item :prop="'contPersons[' + 0 + '].name'" :rules="{validator: nameExp, trigger: 'change'}">
-                                    <el-input v-model="contractForm.contPersons[0].name" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="name1"></el-input>
+                                    <el-input v-model="contractForm.contPersons[0].name" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',0)"></el-input>
                                 </el-form-item>
 
                                 <el-form-item :prop="'contPersons[' + 0 + '].mobile'" :rules="{validator: telPhone, trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[0].mobile" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="editPhone1"></el-input>
+                                    <el-input v-model="contractForm.contPersons[0].mobile" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
                                 </el-form-item>
                                 
                                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                                  <el-select v-model="contractForm.contPersons[0].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType1()">
+                                  <el-select v-model="contractForm.contPersons[0].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
                                     <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                   </el-select>
                                 </el-form-item>                               
 
                                 <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard, trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[0].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[0].cardType===1?18:this.contractForm.contPersons[0].cardType===2?9:this.contractForm.contPersons[0].cardType===3?20:18" @clear="clearIdentify" @input="card1"></el-input>
+                                    <el-input v-model="contractForm.contPersons[0].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[0].cardType===1?18:this.contractForm.contPersons[0].cardType===2?9:this.contractForm.contPersons[0].cardType===3?20:18" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
                                 </el-form-item>
 
 
@@ -130,21 +130,21 @@
                             <el-form-item label="客户信息：" class="disb" required>
 
                                 <el-form-item :prop="'contPersons[' + 1 + '].name'" :rules="{validator: nameExp, trigger: 'change'}">
-                                    <el-input v-model="contractForm.contPersons[1].name" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="name2"></el-input>
+                                    <el-input v-model="contractForm.contPersons[1].name" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',1)"></el-input>
                                 </el-form-item>
 
                                 <el-form-item :prop="'contPersons[' + 1 + '].mobile'" :rules="{validator: telPhone,trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[1].mobile" clearable placeholder="手机号" class="ownwidth" maxlength=11 @input="editPhone2"></el-input>
+                                    <el-input v-model="contractForm.contPersons[1].mobile" clearable placeholder="手机号" class="ownwidth" maxlength=11 @input="cutInfo('editPhone',1)"></el-input>
                                 </el-form-item>
 
                                  <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                                  <el-select v-model="contractForm.contPersons[1].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType2()">
+                                  <el-select v-model="contractForm.contPersons[1].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType(1)">
                                     <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                   </el-select>
                                 </el-form-item>                               
 
                                 <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard1, trigger:'change'}">
-                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[1].cardType===1?18:this.contractForm.contPersons[1].cardType===2?9:this.contractForm.contPersons[1].cardType===3?20:18" @clear="clearIdentify2" @input="card2">></el-input>
+                                    <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[1].cardType===1?18:this.contractForm.contPersons[1].cardType===2?9:this.contractForm.contPersons[1].cardType===3?20:18" @clear="clearIdentify(1)" @input="cutInfo('card',1)">></el-input>
                                 </el-form-item>
 
                             </el-form-item>
@@ -376,77 +376,39 @@ export default {
   },
 
   methods: {
-    clearIdentify(){
+    clearIdentify(type){
      this.$nextTick(() => {
-       this.$set(this.contractForm.contPersons,0,Object.assign({},this.contractForm.contPersons[0],{identifyCode:''}))
+       this.$set(this.contractForm.contPersons,type,Object.assign({},this.contractForm.contPersons[type],{identifyCode:''}))
      })
     },
-     clearIdentify2(){
-     this.$nextTick(() => {
-       this.$set(this.contractForm.contPersons,1,Object.assign({},this.contractForm.contPersons[1],{identifyCode:''}))
-     })
-    },
-    changeCardType1(val){      
+   
+    changeCardType(val){      
         this.$nextTick(() => {    
-          this.clearIdentify()
-          this.$refs.contractForm.validateField('contPersons[0].identifyCode');
+          this.clearIdentify(val)
+          this.$refs.contractForm.validateField('contPersons[' + val + '].identifyCode');
         })      
     },
 
-     changeCardType2(val){
-       this.$nextTick(() => {
-           this.clearIdentify2()
-          this.$refs.contractForm.validateField('contPersons[1].identifyCode');
+    cutInfo(val,index){
+
+      if(val == "editPhone") {
+        this.$nextTick(() => {
+          this.contractForm.contPersons[index].mobile = this.contractForm.contPersons[index].mobile.toString().replace(/\D/g,"")
         })
+      }
+      else if(val == "card") {
+        this.$nextTick(() => {
+         this.contractForm.contPersons[index].identifyCode = this.contractForm.contPersons[index].identifyCode.toString().replace(/\s/g,"")
+        })
+      }
+      else if(val == "name") {
+        this.$nextTick(() => {
+         this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/\s/g,"")
+        })
+      }
     },
 
-    editPhone1(val){
-      if (val){
-        this.$nextTick(() => {
-          this.contractForm.contPersons[0].mobile = val.toString().replace(/\D/g,"")
-        })
-      }  
-    },
-
-    editPhone2(val){
-      if (val){
-        this.$nextTick(() => {
-          this.contractForm.contPersons[1].mobile = val.toString().replace(/\D/g,"")
-        })
-      }  
-    },
-
-    card1(val){
-      if (val){
-        this.$nextTick(() => {
-          this.contractForm.contPersons[0].identifyCode = val.toString().replace(/\s/g,"")
-        })
-      }  
-    },
-
-    card2(val){
-      if (val){
-        this.$nextTick(() => {
-          this.contractForm.contPersons[1].identifyCode = val.toString().replace(/\s/g,"")
-        })
-      }  
-    },
-
-    name1(val){
-      if (val){
-        this.$nextTick(() => {
-          this.contractForm.contPersons[0].name = val.toString().replace(/\s/g,"")
-        })
-      }  
-    },
-
-    name2(val){
-      if (val){
-        this.$nextTick(() => {
-          this.contractForm.contPersons[1].name = val.toString().replace(/\s/g,"")
-        })
-      }  
-    },
+  
 
     housePrice (rule, value, callback) {
       let myprice = /(^[1-9][0-9]{0,8}(['万元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['万元']{2}|['元/月']{3})$)/;
@@ -502,12 +464,11 @@ export default {
       }else if(this.contractForm.contPersons[1].cardType == 1){   
         if (!value || value == '') {
            return callback(new Error("请输入证件号"));
-        } else{
-          if (!this.isIdCardNo(value)) {
-            callback(new Error("请输入正确格式的证件号"));
-          } else {
-            callback();
-          }
+        } else if (!this.isIdCardNo(value)) {
+          // debugger
+          callback(new Error("请输入正确格式的证件号"));
+        } else {
+          callback();
         }
       }else if(this.contractForm.contPersons[1].cardType == 2 || this.contractForm.contPersons[1].cardType == 3){
         if (!value || value == '') {
