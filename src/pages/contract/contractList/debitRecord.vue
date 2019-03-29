@@ -124,6 +124,14 @@
           </template>
         </el-table-column>
 
+        <el-table-column label="账户类型" :formatter="nullFormatter" align="center" min-width="80">
+          <template slot-scope="scope">
+            <p v-if="scope.row.type == 0">个人账户</p>
+            <p v-else-if="scope.row.type == 1">企业账户</p>
+            <p v-else>--</p>
+          </template>
+        </el-table-column>
+
         <el-table-column label="打款人" :formatter="nullFormatter" align="center" min-width="120">
           <template slot-scope="scope">
             <p>{{scope.row.moneyOutDepName + ' - ' + scope.row.moneyOutByName}}</p>
@@ -198,8 +206,21 @@
       </div>
       <div class="paycontent">
         <div class="paytitle">收款门店账户选择：</div>
-          <div v-for="(item,index) in payAgainInfo" :key="index">
-            <el-radio class="radio" v-model="radio" :label="index" @change="changeRadio"><span>开户名：{{item.bankAccountName}}</span><span style="margin-left:24px;margin-top:6px;white-space:normal;display:block;">银行账户：{{item.bankCard}}</span></el-radio>
+          <div v-for="(item,index) in payAgainInfo" :key="index" class="radiodiv">
+            <el-radio class="radio" v-model="radio" :label="index" @change="changeRadio">
+              <div class="innerdiv">
+                <p>
+                  <span class="blue" v-if="item.type==0">账户类型：个人账户</span>
+                  <span class="blue" v-if="item.type==1">账户类型：企业账户</span>
+                  <span class="blue">开户名：{{item.bankAccountName}}</span>
+                </p>
+                <p>
+                  <span class="blue">银行卡号：{{item.bankCard}}</span>
+                  <span class="blue">银行：{{item.bankName}}</span>
+                </p>
+                <p v-if="item.type == 1"><span class="blue">支行:{{item.bankBranchName}}</span></p>
+              </div>
+            </el-radio>
           </div>
       </div>
       <div class="textareabox">
@@ -983,8 +1004,8 @@
 
     .radio{
       margin-bottom: 8px;
-      margin-left: 30px;
-      display: block;
+      margin-left: 20px;
+      display: flex;
 
     }
   }
@@ -1380,6 +1401,34 @@
   .isFlex{
     display: flex;
     align-items: center;
+  }
+  
+  .radiodiv{
+    overflow: hidden;
+    .innerdiv{
+      overflow: hidden;
+      p{
+        margin-bottom: 12px;
+        clear: both;
+        span.blue{
+          display: inline-block;
+        }
+        span.blue:nth-child(1){
+          width: 220px;
+          margin-right: 30px;
+        
+        }
+        
+      }
+      
+    }
+    > .is-checked{
+      .el-radio__label{
+        p span.blue{
+          color:#409EFF;
+        }
+      }
+    }
   }
 
 
