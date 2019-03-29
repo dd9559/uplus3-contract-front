@@ -156,12 +156,23 @@
         <li v-if="activeItem==='付款信息'">
           <h4 class="f14">账户信息</h4>
           <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
-            <el-table-column align="center" prop="userName" label="户名"></el-table-column>
-            <el-table-column align="center" prop="cardNumber" label="银行卡号"></el-table-column>
-            <el-table-column align="center" prop="bankName" label="收款银行">
+            <el-table-column align="center" prop="bankName" label="银行">
               <template slot-scope="scope">
-                <span v-if="scope.row.bankBranch.length>0">{{scope.row.bankName}}-{{scope.row.bankBranch}}</span>
+                <span>{{billMsg.accountProperties===1?"企业账户":"个人账户"}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="userName" label="开户名"></el-table-column>
+            <el-table-column align="center" prop="cardNumber" label="银行卡号"></el-table-column>
+            <el-table-column align="center" prop="bankName" label="银行">
+              <template slot-scope="scope">
+                <span v-if="scope.row.bankName.length>0">{{scope.row.bankName}}</span>
                 <span v-else>{{scope.row.bankName}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="bankBranch" label="支行">
+              <template slot-scope="scope">
+                <span v-if="billMsg.accountProperties===1">{{scope.row.bankBranch}}</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>

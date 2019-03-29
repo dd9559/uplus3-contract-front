@@ -289,7 +289,7 @@
           moneyType:'',
           moneyTypePid:'',
           amount:'',
-          accountProperties:0
+          accountProperties:1
         },
         moneyType: [],
         moneyTypeName: '',
@@ -573,7 +573,7 @@
       getAccountType:function (item) {
         if(item===0){
           this.getBank(this.list[0])
-          this.list[0].bankBranch=''
+          // this.list[0].bankBranch=''
         }
       },
       /**
@@ -656,6 +656,9 @@
                   this.list[0].bankCode=item.bankId
                 }
               })
+            }else {
+              this.list[0].bankBranch=''
+              this.list[0].bankCode=''
             }
             param.filePath = [].concat(this.files)
             this.layer.form=Object.assign({},param)
