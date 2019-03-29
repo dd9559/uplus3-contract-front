@@ -3,7 +3,6 @@
     <div id="printHtml">
       <slot></slot>
     </div>
-    <!-- <iframe src="" id="printf" frameborder="0"></iframe> -->
   </div>
 </template>
 
@@ -13,10 +12,6 @@
       print(printCallBack) {
         var printhtml = document.getElementById("printHtml").innerHTML;
         var f = document.getElementById("printf");
-        // printhtml = `
-        // <div style='position:relative;z-index:100;'>${printhtml}</div>
-        // <div style='position:absolute;z-index:99;left:0;top:0;right:0;bottom:0;background-color:#fff'></div>
-        // `
         if (navigator.userAgent.indexOf("Firefox") > 0) {
           printhtml = `
                             <div>${printhtml}</div>
@@ -30,17 +25,15 @@
         }
         // html
         f.contentDocument.body.innerHTML = printhtml;
-        // css
-        // this.getStyle(f, printCallBack);
         // 关闭
-        setTimeout(()=>{
-            try {
-                window.frames['printf'].print();
-            } catch (e) {
-                f.contentWindow.print();
-            }
-            printCallBack();
-        },100)
+        setTimeout(() => {
+          try {
+            window.frames['printf'].print();
+          } catch (e) {
+            f.contentWindow.print();
+          }
+          printCallBack();
+        }, 100)
       },
       getStyle(printI) {
         var str = "",
@@ -49,15 +42,8 @@
           str += styles1[i].outerHTML;
         }
         str += `<style>header, footer {display: none;}</style>`;
-        //   printI.contentDocument.head.innerHTML = str;
         printI.contentDocument.head.innerHTML = str;
 
-        //   console.log(printI.contentDocument.head)
-
-        //   if (navigator.userAgent.indexOf("Firefox") > 0) {
-        //     lastBack();
-        //     return false;
-        //   }
         // 添加link引入
         let styles = document.querySelectorAll("link");
         let lastLink = "";
@@ -71,7 +57,6 @@
             link.setAttribute("type", 'text/css')
           };
           // link.setAttribute("href", `${styles[i].href}?time=${new Date().getTime()}`);
-          // link.setAttribute("href", styles[i].href);
           link.setAttribute("href", styles[i].href);
           link.setAttribute('media', 'all');
           printI.contentDocument.head.appendChild(link);
@@ -79,7 +64,6 @@
             lastLink = link;
           }
         }
-        // this.loadCss(lastLink)
       },
       loadCss(node, callback) {
         // for IE6-9 and Opera
@@ -116,48 +100,34 @@
           }
         }
       },
-      lastBack(printCallBack) {
-        // window.frames['printf'].focus();
-        // printI.contentDocument.close();
-        // var explorer = window.navigator.userAgent ;
-        try {
-          window.frames['printf'].print();
-        } catch (e) {
-          printI.contentWindow.print();
-        }
-        printCallBack();
-      },
       init() {
         var printI = document.getElementById("printf");
         if (!printI) {
-            printI = document.createElement("iframe");
-            printI.id = "printf";
-            printI.style.position = 'fixed'
-            printI.style.width = '0'
-            printI.style.height = '0'
-            printI.style.top = '-100px'
+          printI = document.createElement("iframe");
+          printI.id = "printf";
+          printI.frameBorder = 0;
 
-            // 兼容ie
-            if (
-                window.location.hostname !== document.domain &&
-                navigator.userAgent.match(/msie/i)
-            ) {
-                
-                printI.src =
-                    'javascript:document.write("<head><script>document.domain=\\"' +
-                    document.domain +
-                    '\\";</s' +
-                    'cript></head><body></body>")';
-                
-            }
-            printI.onload = () => {
-                this.getStyle(printI);
-            }
-                
-            document.body.appendChild(printI);
-        }else{
+          // 兼容ie
+          if (
+            window.location.hostname !== document.domain &&
+            navigator.userAgent.match(/msie/i)
+          ) {
+
+            printI.src =
+              'javascript:document.write("<head><script>document.domain=\\"' +
+              document.domain +
+              '\\";</s' +
+              'cript></head><body></body>")';
+
+          }
+          printI.onload = () => {
             this.getStyle(printI);
-        } 
+          }
+
+          document.body.appendChild(printI);
+        } else {
+          this.getStyle(printI);
+        }
       }
     },
     mounted() {
