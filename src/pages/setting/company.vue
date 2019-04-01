@@ -24,7 +24,7 @@
           </el-select>
         </el-form-item> -->
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" filterable :clearable="true" class="w180">
+          <el-select v-model="searchForm.storeId" filterable :clearable="true" class="w180" v-loadmore="moreStore">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -128,7 +128,7 @@
                 <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect" :disabled="storeNoChange">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect" :disabled="storeNoChange" v-loadmore="moreStore">
                   <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -471,7 +471,11 @@
           }
         },
         storeNoChange: false, //门店选择不可编辑
-        adminBanks:[]
+        adminBanks:[],
+        homeStorePage:1,
+        homeStoreTotal:0,
+        storePage:1,
+        storeTotal:0
       }
     },
     created() {
@@ -484,6 +488,22 @@
       this.getBanks()
     },
     methods: {
+      //门店滚动加载更多
+      moreStore:function () {
+        if(this.companyFormTitle){
+          if(this.storeList.length>=this.storeTotal){
+            return
+          }else {
+            this.getStoreList(2,++this.storePage)
+          }
+        } else {
+          if(this.homeStoreList.length>=this.homeStoreTotal){
+            return
+          }else {
+            this.getStoreList(1,++this.homeStorePage)
+          }
+        }
+      },
       /**
        * 获取银行列表
        */
@@ -524,14 +544,16 @@
             this.$message({message:error})
         })
       },
-      getStoreList(val) {
-        this.$ajax.get('/api/setting/company/queryAllStore', {type: val}).then(res => {
+      getStoreList(val,page=1) {
+        this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page}).then(res => {
           res = res.data
           if(res.status === 200) {
             if(val === 2) {
-              this.storeList = res.data
+              this.storeList = this.storeList.concat(res.data.list)
+              this.storeTotal=res.data.total
             } else {
-              this.homeStoreList = res.data
+              this.homeStoreList = this.homeStoreList.concat(res.data.list)
+              this.homeStoreTotal=res.data.total
             }
           }
         }).catch(error => {
@@ -918,13 +940,6 @@
               type: "error"
           })
         })
-        if(this.companyFormTitle&&!this.companyForm.level) {
-          this.homeStoreList.find(item => {
-            if(this.companyForm.storeId === item.id) {
-              this.companyForm.level = item.level
-            }
-          })
-        }
       },
       getPicture(type) {
         this.imgList = []
