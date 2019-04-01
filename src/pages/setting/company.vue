@@ -24,8 +24,14 @@
           </el-select>
         </el-form-item> -->
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" filterable :clearable="true" class="w180">
+          <el-select v-model="searchForm.storeId" filterable remote :clearable="true" class="w180" :remote-method="remoteMethod" v-loadmore="moreStore">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="账户类型">
+          <el-select v-model="searchForm.type" :clearable="true">
+            <el-option label="全部" value=""></el-option>
+            <el-option v-for="item in bankType" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="合作方式">
@@ -33,7 +39,7 @@
             <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="银行账户">
+        <el-form-item label="银行卡号">
           <el-input v-model="searchForm.bankCard" :clearable="true" @keyup.native="getInt(1)"></el-input>
         </el-form-item>
       </el-form>
@@ -54,16 +60,6 @@
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.type===0?'个人账户':'企业账户' }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="银行">
-          <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankName }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="支行">
-          <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankBranchName==='—'?'--':item.bankBranchName }}</p>
-          </template>
-        </el-table-column>
         <el-table-column align="center" label="开户名">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
@@ -72,6 +68,16 @@
         <el-table-column align="center" label="银行卡号">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard|formatBankCard }}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="银行">
+          <template slot-scope="scope">
+            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankName }}</p>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支行">
+          <template slot-scope="scope">
+            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankBranchName==='—'?'--':item.bankBranchName }}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="合作方式" prop="cooperationMode.label">
@@ -122,7 +128,7 @@
                 <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect" :disabled="storeNoChange">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable remote @change="storeSelect" :disabled="storeNoChange" :remote-method="remoteMethod" v-loadmore="moreStore">
                   <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -416,7 +422,8 @@
           storeId: "",
           cooperationMode: "",
           bankCard: "",
-          keyword: ""
+          keyword: "",
+          type: ""
         },
         cityList: [],
         homeStoreList: [],
@@ -464,7 +471,12 @@
           }
         },
         storeNoChange: false, //门店选择不可编辑
-        adminBanks:[]
+        adminBanks:[],
+        homeStorePage:1,
+        homeStoreTotal:0,
+        storePage:1,
+        storeTotal:0,
+        temKey: ""
       }
     },
     created() {
@@ -477,6 +489,35 @@
       this.getBanks()
     },
     methods: {
+      remoteMethod(query) {
+        if(!this.companyFormTitle){
+          this.homeStoreList = []
+          setTimeout(() => {
+            this.getStoreList(1,this.homeStorePage,query)
+          },200)
+        } else {
+          this.storeList = []
+          setTimeout(() => {
+            this.getStoreList(2,this.storePage,query)
+          },200)
+        }
+      },
+      //门店滚动加载更多
+      moreStore:function () {
+        if(this.companyFormTitle){
+          if(this.storeList.length>=this.storeTotal){
+            return
+          }else {
+            this.getStoreList(2,++this.storePage,this.temKey)
+          }
+        } else {
+          if(this.homeStoreList.length>=this.homeStoreTotal){
+            return
+          }else {
+            this.getStoreList(1,++this.homeStorePage,this.temKey)
+          }
+        }
+      },
       /**
        * 获取银行列表
        */
@@ -517,14 +558,26 @@
             this.$message({message:error})
         })
       },
-      getStoreList(val) {
-        this.$ajax.get('/api/setting/company/queryAllStore', {type: val}).then(res => {
+      getStoreList(val,page=1,keyword) {
+        this.temKey = keyword
+        if(keyword&&keyword.length>0) {
+          if(val===1){
+            page = 1
+            this.homeStorePage = 1
+          }else{
+            page = 1
+            this.storePage = 1
+          }
+        }
+        this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword}).then(res => {
           res = res.data
           if(res.status === 200) {
             if(val === 2) {
-              this.storeList = res.data
+              this.storeList = this.storeList.concat(res.data.list)
+              this.storeTotal = res.data.total
             } else {
-              this.homeStoreList = res.data
+              this.homeStoreList = this.homeStoreList.concat(res.data.list)
+              this.homeStoreTotal = res.data.total
             }
           }
         }).catch(error => {
@@ -726,55 +779,52 @@
           let isOk
           let that_ = this
           function checkBank() {
-            that_.companyBankList.forEach(item => {
+            let bankList = that_.companyBankList
+            for(let i = 0; i < bankList.length; i++) {
               isOk = false
-              if(item.bankAccountName) {
-                if(item.bankCard) {
-                  if(item.bankCard.length >= 16) {
-                    if(item.bankId) {
-                      if(item.bankId) {
-                        if(item.type === 1 && !item.bankBranchName) {
-                          that_.$message({message:"支行不能为空"})
-                          return
-                        } else if(item.type === 0) {
-                          item.bankBranchName = ""
-                        }
-                        if(that_.companyForm.contractSign) {
-                          if(that_.companyForm.financialSign) {
-                            if(that_.companyBankList.length === 1) {
+              if(bankList[i].bankAccountName) {
+                if(bankList[i].bankCard) {
+                  if(bankList[i].bankCard.length >= 16) {
+                    if(bankList[i].bankId) {
+                      if(bankList[i].type === 1 && !bankList[i].bankBranchName) {
+                        that_.$message({message:"支行不能为空"})
+                        break
+                      } else if(bankList[i].type === 0) {
+                        bankList[i].bankBranchName = ""
+                      }
+                      if(that_.companyForm.contractSign) {
+                        if(that_.companyForm.financialSign) {
+                          if(bankList.length === 1) {
+                            isOk = true
+                          } else if(bankList.length === 2) {
+                            if(bankList[0].bankCard === bankList[1].bankCard) {
+                              that_.$message({message:"银行卡号不能相同",type:"warning"})
+                            } else {
                               isOk = true
-                            } else if(that_.companyBankList.length === 2) {
-                              if(that_.companyBankList[0].bankCard === that_.companyBankList[1].bankCard) {
-                                that_.$message({message:"银行卡号不能相同",type:"warning"})
-                              } else {
-                                isOk = true
-                              }
-                            } else if(that_.companyBankList.length > 2) {
-                              let ar1 = []
-                              that_.companyBankList.forEach(item => {
-                                ar1.push(item.bankCard)
-                              })
-                              let ar2 = Array.from(new Set(ar1))
-                              if(ar1.length !== ar2.length) {
-                                that_.$message({message:"银行卡号不能相同",type:"warning"})
-                              } else {
-                                isOk = true
-                              }
                             }
-                          } else {
-                            that_.$message({message:"财务章上传不能为空"})
+                          } else if(bankList.length > 2) {
+                            let ar1 = []
+                            bankList.forEach(item => {
+                              ar1.push(item.bankCard)
+                            })
+                            let ar2 = Array.from(new Set(ar1))
+                            if(ar1.length !== ar2.length) {
+                              that_.$message({message:"银行卡号不能相同",type:"warning"})
+                            } else {
+                              isOk = true
+                            }
                           }
                         } else {
-                          that_.$message({message:"合同章上传不能为空"})
+                          that_.$message({message:"财务章上传不能为空"})
                         }
                       } else {
-                        that_.$message({message: "银行名称不能为空"})
+                        that_.$message({message:"合同章上传不能为空"})
                       }
                     } else {
                       that_.$message({message: "银行不能为空"})
                     }
                   } else {
-                    that_.$message({message: "请输入正确的银行账户"})
+                    that_.$message({message: "请输入正确的银行卡号"})
                   }
                 } else {
                   that_.$message({message: "银行卡号不能为空"})
@@ -782,7 +832,7 @@
               } else {
                 that_.$message({message: "开户名不能为空"})
               }
-            })
+            }
           }
           if(this.companyForm.documentType === 1) {
             if(this.documentCard.creditCode) {
@@ -838,6 +888,9 @@
                 delIds: this.delIds
               }
               param = Object.assign({},param,obj)
+              let tmp = param.storeId
+              param.storeId = param.storeName
+              param.storeName = tmp
               this.$ajax.put('/api/setting/company/update',param).then(res => {
                 res = res.data
                 if(res.status === 200) {
@@ -888,8 +941,8 @@
           id: currentRow.id,
           cityId: currentRow.cityId,
           cityName: currentRow.cityName,
-          storeId: currentRow.storeId,
-          storeName: currentRow.storeName,
+          storeId: currentRow.storeName,
+          storeName: currentRow.storeId,
           cooperationMode: currentRow.cooperationMode.label,
           name: currentRow.name,
           lepName: currentRow.lepName,
@@ -903,7 +956,7 @@
           franchiseRatio: ""
         }
         this.companyForm = newForm
-        this.$ajax.get('/api/setting/company/updateShowFee',{storeId:this.companyForm.storeId}).then(res => {
+        this.$ajax.get('/api/setting/company/updateShowFee',{storeId:this.companyForm.storeName}).then(res => {
           res = res.data
           if(res.status === 200) {
             this.companyForm.franchiseRatio = res.data.franchiseRatio.toString()
@@ -914,13 +967,6 @@
               type: "error"
           })
         })
-        if(this.companyFormTitle&&!this.companyForm.level) {
-          this.homeStoreList.find(item => {
-            if(this.companyForm.storeId === item.id) {
-              this.companyForm.level = item.level
-            }
-          })
-        }
       },
       getPicture(type) {
         this.imgList = []
@@ -957,6 +1003,7 @@
         this.searchForm.cooperationMode = ""
         this.searchForm.bankCard = ""
         this.searchForm.keyword = ""
+        this.searchForm.type = ""
         this.searchTime = []
         this.pageNum = 1
       },
@@ -1021,7 +1068,14 @@
       formatBankCard(val) {
         return val.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
       }
-    }
+    },
+    // watch: {
+    //   temKey:function(val) {
+    //     if(val&&val.length===0){
+    //       this.getStoreList(1)
+    //     }
+    //   }
+    // }
 }
 </script>
 

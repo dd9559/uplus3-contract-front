@@ -163,7 +163,7 @@
                                     <span class="button" @click="removeRow(index)"><i class="icon el-icon-minus"></i></span>
                                 </div>
                             </div>
-                            <div class="default" v-if="item.choice&&item.choice.length>0&&index!==0">
+                            <div class="default" v-show="item.choice&&item.choice.length>0&&index!==0">
                                 <span>选择默认审核人:</span>
                                 <div class="multiple" ref="curChoice">
                                     <span v-for="(ele,m) in item.choice" :key="m"
@@ -482,7 +482,7 @@
                 this.setConditionList(val)
             },
             defaultChoice(index,e,curItem) {
-                let allChoice = this.$refs.curChoice[index-1].children
+                let allChoice = this.$refs.curChoice[index].children
                 for(var i = 0; i < allChoice.length; i++) {
                     allChoice[i].classList.remove('cur-select')
                 }
@@ -696,43 +696,41 @@
                 } else {
                     this.copyNodeList = JSON.parse(JSON.stringify(this.nodeList))
                     let item = this.nodeList
-                    for(var i = 1; i < item.length; i++) {
+                    for(let i = 1; i < item.length; i++) {
                         isOk = false
                         if(item[i].name) {
                             if(item[i].type !== "") {
                                 if(item[i].choice.length>0) {
                                     if(item[i].lastChoice) {
-                                        delete item[i].depName
-                                        delete item[i].peopleTime
-                                        delete item[i].depsTime
-                                        delete item[i].rolesTime
-                                        item[i].type = item[i].lastChoice.type
-                                        item[i].userName = item[i].lastChoice.userName
-                                        item[i].userId = item[i].lastChoice.userId
+                                        isOk = true
                                     } else {
                                         this.$message({message:"每一个分支节点下必须选择一个默认审核人"})
-                                        return false
+                                        break
                                     }
                                 } else {
                                     this.$message({message:"请设置默认审核人"})
-                                    return false
+                                    break
                                 }
                             } else {
                                 this.$message({message:"审批人类型不能为空"})
-                                return false
+                                break
                             }
                         } else {
                             this.$message({message:"节点名称不能为空"})
-                            return false
+                            break
                         }
                     }
-                    isOk = true
                     if(isOk) {
-                        for(var i = 1; i < item.length; i++) {
+                        for(let i = 1; i < item.length; i++) {
+                            delete item[i].depName
+                            delete item[i].peopleTime
+                            delete item[i].depsTime
+                            delete item[i].rolesTime
+                            item[i].type = item[i].lastChoice.type
+                            item[i].userName = item[i].lastChoice.userName
+                            item[i].userId = item[i].lastChoice.userId
                             delete item[i].lastChoice
                         }
-                    }
-                    if(isOk) {
                         delete this.nodeList[0].depName
                     }
                 }
