@@ -400,7 +400,7 @@ export default {
                 sign.y=sign.y-deviationY
               }
               let state=that.src.some((item,index)=>{
-              return sign.y>0.85*index&&sign.y<1*index
+              return sign.y>0.85&&sign.y<1
             })
             if(state){
               sign.y=0.85
