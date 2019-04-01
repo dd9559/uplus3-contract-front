@@ -603,6 +603,10 @@
         if(!val) {
           this.companyForm.cooperationMode = ""
           this.cooModeChange(2)
+          this.companyForm.name = ""
+          this.companyForm.franchiseRatio = ""
+          this.companyForm.contractSign = ""
+          this.companyForm.financialSign = ""
           return
         }
         this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
@@ -632,6 +636,8 @@
               this.companyForm.cooperationMode = ""
               this.cooModeChange(2)
               this.fourthStoreNoEdit = true
+              this.storeList = []
+              this.getStoreList(2)
             }
             this.companyForm.name = ""
             this.companyForm.franchiseRatio = ""
@@ -650,6 +656,8 @@
               this.companyForm.contractSign = ""
               this.companyForm.financialSign = ""
               this.cooModeChange(2)
+              this.storeList = []
+              this.getStoreList(2)
             }
           }
         }).catch(error => {
@@ -661,6 +669,7 @@
         this.creditCodeShow = false
         this.icRegisterShow = false
         this.companyFormTitle = ""
+        this.storeList = []
         this.delIds = []
         done()
       },
@@ -672,6 +681,7 @@
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = localStorage.getItem('cityName')
+        this.storeList = []
         this.getStoreList(2)
       },
       //切换到直营属性时,自动带出证件信息
@@ -893,6 +903,8 @@
                   if(res.status === 200) {
                     this.AddEditVisible = false
                     this.$message(res.message)
+                    this.companyFormTitle = ""
+                    this.storeList = []
                     this.getCompanyList()
                   }
                 }).catch(error => {
@@ -915,6 +927,8 @@
                   this.AddEditVisible = false
                   this.$message(res.message)
                   this.getCompanyList()
+                  this.companyFormTitle = ""
+                  this.storeList = []
                   this.delIds = []
                 }
               }).catch(error => {
@@ -934,9 +948,6 @@
           this.AddEditVisible = true
           this.companyFormTitle = "编辑企业信息"
           this.storeNoChange = true
-          if(!this.storeList.length) {
-            this.getStoreList(2)
-          }
         }
         if(row.documentType.value === 2) {
           this.icRegisterShow = true
@@ -1093,15 +1104,6 @@
           this.homeStoreList = []
           this.homeStorePage = 1
           this.getStoreList(1)
-        }
-      },
-      'companyForm.storeId'(val) {
-        if(this.companyFormTitle){
-          if(val.length===0){
-            this.storeList = []
-            this.storePage = 1
-            this.getStoreList(2)
-          }
         }
       }
     }
