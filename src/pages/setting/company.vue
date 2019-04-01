@@ -24,7 +24,7 @@
           </el-select>
         </el-form-item> -->
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" filterable :clearable="true" class="w180" v-loadmore="moreStore">
+          <el-select v-model="searchForm.storeId" filterable remote :clearable="true" class="w180" :remote-method="remoteMethod" v-loadmore="moreStore">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -128,7 +128,7 @@
                 <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect" :disabled="storeNoChange" v-loadmore="moreStore">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable remote @change="storeSelect" :disabled="storeNoChange" :remote-method="remoteMethod" v-loadmore="moreStore">
                   <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -475,7 +475,8 @@
         homeStorePage:1,
         homeStoreTotal:0,
         storePage:1,
-        storeTotal:0
+        storeTotal:0,
+        temKey: ""
       }
     },
     created() {
@@ -488,19 +489,32 @@
       this.getBanks()
     },
     methods: {
+      remoteMethod(query) {
+        if(!this.companyFormTitle){
+          this.homeStoreList = []
+          setTimeout(() => {
+            this.getStoreList(1,this.homeStorePage,query)
+          },200)
+        } else {
+          this.storeList = []
+          setTimeout(() => {
+            this.getStoreList(2,this.storePage,query)
+          },200)
+        }
+      },
       //门店滚动加载更多
       moreStore:function () {
         if(this.companyFormTitle){
           if(this.storeList.length>=this.storeTotal){
             return
           }else {
-            this.getStoreList(2,++this.storePage)
+            this.getStoreList(2,++this.storePage,this.temKey)
           }
         } else {
           if(this.homeStoreList.length>=this.homeStoreTotal){
             return
           }else {
-            this.getStoreList(1,++this.homeStorePage)
+            this.getStoreList(1,++this.homeStorePage,this.temKey)
           }
         }
       },
@@ -544,16 +558,26 @@
             this.$message({message:error})
         })
       },
-      getStoreList(val,page=1) {
-        this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page}).then(res => {
+      getStoreList(val,page=1,keyword) {
+        this.temKey = keyword
+        if(keyword&&keyword.length>0) {
+          if(val===1){
+            page = 1
+            this.homeStorePage = 1
+          }else{
+            page = 1
+            this.storePage = 1
+          }
+        }
+        this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword}).then(res => {
           res = res.data
           if(res.status === 200) {
             if(val === 2) {
               this.storeList = this.storeList.concat(res.data.list)
-              this.storeTotal=res.data.total
+              this.storeTotal = res.data.total
             } else {
               this.homeStoreList = this.homeStoreList.concat(res.data.list)
-              this.homeStoreTotal=res.data.total
+              this.homeStoreTotal = res.data.total
             }
           }
         }).catch(error => {
@@ -864,6 +888,9 @@
                 delIds: this.delIds
               }
               param = Object.assign({},param,obj)
+              let tmp = param.storeId
+              param.storeId = param.storeName
+              param.storeName = tmp
               this.$ajax.put('/api/setting/company/update',param).then(res => {
                 res = res.data
                 if(res.status === 200) {
@@ -914,8 +941,8 @@
           id: currentRow.id,
           cityId: currentRow.cityId,
           cityName: currentRow.cityName,
-          storeId: currentRow.storeId,
-          storeName: currentRow.storeName,
+          storeId: currentRow.storeName,
+          storeName: currentRow.storeId,
           cooperationMode: currentRow.cooperationMode.label,
           name: currentRow.name,
           lepName: currentRow.lepName,
@@ -929,7 +956,7 @@
           franchiseRatio: ""
         }
         this.companyForm = newForm
-        this.$ajax.get('/api/setting/company/updateShowFee',{storeId:this.companyForm.storeId}).then(res => {
+        this.$ajax.get('/api/setting/company/updateShowFee',{storeId:this.companyForm.storeName}).then(res => {
           res = res.data
           if(res.status === 200) {
             this.companyForm.franchiseRatio = res.data.franchiseRatio.toString()
@@ -1041,7 +1068,14 @@
       formatBankCard(val) {
         return val.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
       }
-    }
+    },
+    // watch: {
+    //   temKey:function(val) {
+    //     if(val&&val.length===0){
+    //       this.getStoreList(1)
+    //     }
+    //   }
+    // }
 }
 </script>
 
