@@ -206,7 +206,7 @@
     <el-dialog
       title="重新打款"
       :visible.sync="payVisiable"
-      width="600px">
+      width="612px">
       <div class="paycontent">
         <p>分账周期：<span>{{fenzhang1 | getDate}} ~ {{fenzhang2 | getDate}}</span></p>
         <p>收款门店：<span>{{shoukuan}}</span></p>
@@ -1421,6 +1421,9 @@
         clear: both;
         span.blue{
           display: inline-block;
+          width: 278px;
+          white-space: normal;
+          vertical-align: top;
         }
         span.blue:nth-child(1){
           width: 220px;

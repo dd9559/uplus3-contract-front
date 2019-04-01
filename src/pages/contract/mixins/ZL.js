@@ -8,7 +8,6 @@ let Obj2 = {
     require:true
   },
   val33:'',
-  val34:'',
   check5:{
     name:'zhizhao5',
     require:true,

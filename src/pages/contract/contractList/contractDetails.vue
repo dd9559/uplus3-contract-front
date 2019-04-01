@@ -308,7 +308,7 @@
           <!-- <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData"> -->
           <div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHei }">
             <div class="classify" v-if="sellerList.length>0">
-              <p class="title">卖方</p>
+              <p class="title">业主</p>
               <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
@@ -331,7 +331,7 @@
               </div>
             </div>
             <div class="classify" v-if="buyerList.length>0">
-              <p class="title">买方</p>
+              <p class="title">客户</p>
               <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
@@ -1081,6 +1081,11 @@ export default {
     this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
   },
+  beforeRouteEnter(to,from,next){
+      next(vm=>{
+        vm.setPath(vm.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+      })
+    },
   methods: {
     //控制 编辑 打印成交报告 保存 按钮显示隐藏
     editFn() {
@@ -1183,7 +1188,7 @@ export default {
     //合同预览
     goPreview() {
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
-      this.$router.replace({
+      this.$router.push({
         path: "/contractPreview",
         query: {
           id: this.id,
@@ -1234,7 +1239,7 @@ export default {
     // 合同编辑
     goEdit() {
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-      this.$router.replace({
+      this.$router.push({
         path: "/addContract",
         query: {
           id: this.contractDetail.id,
@@ -1824,7 +1829,7 @@ export default {
         })
       }
     },
-    //合同资料科删除
+    //合同资料库删除
     delectData(index,index_,type){
       if(this.contractDetail.isHaveData){
         if(type==="seller"){

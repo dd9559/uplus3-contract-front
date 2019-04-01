@@ -127,7 +127,7 @@
     <el-dialog title="资料库" :visible.sync="dialogContData" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="contData">
         <div class="classify" v-if="sellerList.length>0">
-          <p class="title">卖方</p>
+          <p class="title">业主</p>
           <div class="one_" v-for="(item,index) in sellerList" :key="index">
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
@@ -150,7 +150,7 @@
           </div>
         </div>
         <div class="classify" v-if="buyerList.length>0">
-          <p class="title">买方</p>
+          <p class="title">客户</p>
           <div class="one_" v-for="(item,index) in buyerList" :key="index">
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
@@ -371,26 +371,44 @@ export default {
           // debugger
             var disX = ev.clientX -oDiv.offsetLeft;
             var disY = ev.clientY - oDiv.offsetTop;
+          var l=0;
+          var t=0;
+          let pageNums=Array.from(document.querySelectorAll('.signaturewrap>img'))
+          let pageHeight=[]
+          let pageindex=0
+          pageNums.forEach((item,index)=>{
+            pageHeight.push(item.offsetHeight)
+          })
             document.onmousemove = function(ev){
-            var l = ev.clientX-disX;
-            var t = ev.clientY-disY;
+            l = ev.clientX-disX;
+            t = ev.clientY-disY;
             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
             l < 0 ? l = 0 : l
             t < 0 ? t = 0 : t
             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
-            let pageindex=parseInt(ev.target.offsetTop/(992))+1
-            sign.x=Number((l/706).toFixed(2))-0.02
-            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))
 
-            sign.pageIndex=Number(pageindex)
+            // let pageindex=parseInt(ev.target.offsetTop/(992))+1
+
             oDiv.style.left = l+'px';
             oDiv.style.top = t+'px';
             };
 
-            document.onmouseup = function(){
+            document.onmouseup = function(ev){
+              let deviation=0
+              console.log(pageHeight)
+              if(ev.target.offsetTop<pageHeight[0]){
+                pageindex=1
+              }else {
+                deviation=ev.target.offsetTop-pageHeight[0]
+                pageindex=parseInt(deviation/(pageHeight[1]))+2
+              }
+              sign.x=Number((l/706).toFixed(2))-0.02
+              sign.y=Number((t/document.querySelectorAll('.signaturewrap>img')[pageindex-1].offsetHeight).toFixed(2))
+              sign.pageIndex=Number(pageindex)
+
               let deviationY=sign.pageIndex===1?0:that.isShowType?0.05:0
               let deviationX=that.isShowType&&sign.pageIndex===1?0.01:0.03
-              console.log(deviationX,deviationY)
+              // console.log(deviationX,deviationY)
               if(that.isShowType){
                 sign.x=sign.x+deviationX
               }
@@ -400,7 +418,7 @@ export default {
                 sign.y=sign.y-deviationY
               }
               let state=that.src.some((item,index)=>{
-              return sign.y>0.85*index&&sign.y<1*index
+              return sign.y>0.85&&sign.y<1
             })
             if(state){
               sign.y=0.85

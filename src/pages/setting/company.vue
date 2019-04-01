@@ -24,7 +24,7 @@
           </el-select>
         </el-form-item> -->
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" filterable :clearable="true" class="w180">
+          <el-select v-model="searchForm.storeId" filterable remote :clearable="true" class="w180" :remote-method="remoteMethod" v-loadmore="moreStore" @visible-change="showView">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -55,12 +55,12 @@
         </el-table-column>
         <el-table-column align="center" label="门店" prop="storeName">
         </el-table-column>
-        <el-table-column align="center" label="账户类型">
+        <el-table-column align="center" label="账户类型" min-width="60">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.type===0?'个人账户':'企业账户' }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="开户名">
+        <el-table-column align="center" label="开户名" min-width="190">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
           </template>
@@ -80,9 +80,9 @@
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankBranchName==='—'?'--':item.bankBranchName }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合作方式" prop="cooperationMode.label">
+        <el-table-column align="center" label="合作方式" prop="cooperationMode.label" min-width="50">
         </el-table-column>
-        <el-table-column align="center" label="添加时间" prop="createTime">
+        <el-table-column align="center" label="添加时间" prop="createTime" min-width="50">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatDate(2)}}</span>
           </template>
@@ -128,7 +128,7 @@
                 <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable @change="storeSelect" :disabled="storeNoChange">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable remote clearable @change="storeSelect" :disabled="storeNoChange" :remote-method="remoteMethod" v-loadmore="moreStore" @visible-change="showView">
                   <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -144,7 +144,7 @@
                 <el-input v-model="companyForm.franchiseRatio" size="mini"  :disabled="fourthStoreNoEdit" @input="cutNumber('franchiseRatio')"></el-input>%
               </el-form-item>
               <el-form-item label="门店名称: " class="store-name">
-                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字"  :disabled="fourthStoreNoEdit" @input="inputOnly(100,'name')"></el-input>
+                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字" maxlength="50" :disabled="fourthStoreNoEdit" @input="inputOnly(100,'name')"></el-input>
               </el-form-item>
               <el-form-item label="法人姓名: ">
                 <el-input size="mini" maxlength="15" v-model.trim="companyForm.lepName" :disabled="fourthStoreNoEdit" @input="inputOnly(999,'lepName')"></el-input>
@@ -471,7 +471,12 @@
           }
         },
         storeNoChange: false, //门店选择不可编辑
-        adminBanks:[]
+        adminBanks:[],
+        homeStorePage:1,
+        homeStoreTotal:0,
+        storePage:1,
+        storeTotal:0,
+        temKey: ""
       }
     },
     created() {
@@ -484,6 +489,48 @@
       this.getBanks()
     },
     methods: {
+      showView(bol) {
+        if(!this.companyFormTitle){
+          if(!bol&&!this.searchForm.storeId){
+            this.homeStoreList = []
+            this.getStoreList(1)
+          }
+        } else {
+          if(!bol&&!this.companyForm.storeId){
+            this.storeList = []
+            this.getStoreList(2)
+          }
+        }
+      },
+      remoteMethod(query) {
+        if(!this.companyFormTitle){
+          setTimeout(() => {
+            this.homeStoreList = []
+            this.getStoreList(1,this.homeStorePage,query)
+          },200)
+        } else {
+          setTimeout(() => {
+            this.storeList = []
+            this.getStoreList(2,this.storePage,query)
+          },200)
+        }
+      },
+      //门店滚动加载更多
+      moreStore:function () {
+        if(this.companyFormTitle){
+          if(this.storeList.length>=this.storeTotal){
+            return
+          }else {
+            this.getStoreList(2,++this.storePage,this.temKey)
+          }
+        } else {
+          if(this.homeStoreList.length>=this.homeStoreTotal){
+            return
+          }else {
+            this.getStoreList(1,++this.homeStorePage,this.temKey)
+          }
+        }
+      },
       /**
        * 获取银行列表
        */
@@ -524,14 +571,26 @@
             this.$message({message:error})
         })
       },
-      getStoreList(val) {
-        this.$ajax.get('/api/setting/company/queryAllStore', {type: val}).then(res => {
+      getStoreList(val,page=1,keyword) {
+        this.temKey = keyword
+        if(keyword&&keyword.length>0) {
+          if(val===1){
+            page = 1
+            this.homeStorePage = 1
+          }else{
+            page = 1
+            this.storePage = 1
+          }
+        }
+        this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword}).then(res => {
           res = res.data
           if(res.status === 200) {
             if(val === 2) {
-              this.storeList = res.data
+              this.storeList = this.storeList.concat(res.data.list)
+              this.storeTotal = res.data.total
             } else {
-              this.homeStoreList = res.data
+              this.homeStoreList = this.homeStoreList.concat(res.data.list)
+              this.homeStoreTotal = res.data.total
             }
           }
         }).catch(error => {
@@ -539,6 +598,11 @@
         })
       },
       storeSelect(val) {
+        if(!val) {
+          this.companyForm.cooperationMode = ""
+          this.cooModeChange(2)
+          return
+        }
         this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
           res = res.data
           if(res.status === 200 && !res.message) {
@@ -606,9 +670,7 @@
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = localStorage.getItem('cityName')
-        if(!this.storeList.length) {
-          this.getStoreList(2)
-        }
+        this.getStoreList(2)
       },
       //切换到直营属性时,自动带出证件信息
       selectDirectInfo() {
@@ -842,6 +904,9 @@
                 delIds: this.delIds
               }
               param = Object.assign({},param,obj)
+              let tmp = param.storeId
+              param.storeId = param.storeName
+              param.storeName = tmp
               this.$ajax.put('/api/setting/company/update',param).then(res => {
                 res = res.data
                 if(res.status === 200) {
@@ -892,8 +957,8 @@
           id: currentRow.id,
           cityId: currentRow.cityId,
           cityName: currentRow.cityName,
-          storeId: currentRow.storeId,
-          storeName: currentRow.storeName,
+          storeId: type === 'init' ? currentRow.storeId : currentRow.storeName,
+          storeName: type === 'init' ? currentRow.storeName : currentRow.storeId,
           cooperationMode: currentRow.cooperationMode.label,
           name: currentRow.name,
           lepName: currentRow.lepName,
@@ -907,7 +972,7 @@
           franchiseRatio: ""
         }
         this.companyForm = newForm
-        this.$ajax.get('/api/setting/company/updateShowFee',{storeId:this.companyForm.storeId}).then(res => {
+        this.$ajax.get('/api/setting/company/updateShowFee',{storeId:type==='init'?this.companyForm.storeId:this.companyForm.storeName}).then(res => {
           res = res.data
           if(res.status === 200) {
             this.companyForm.franchiseRatio = res.data.franchiseRatio.toString()
@@ -918,13 +983,6 @@
               type: "error"
           })
         })
-        if(this.companyFormTitle&&!this.companyForm.level) {
-          this.homeStoreList.find(item => {
-            if(this.companyForm.storeId === item.id) {
-              this.companyForm.level = item.level
-            }
-          })
-        }
       },
       getPicture(type) {
         this.imgList = []
@@ -1025,6 +1083,22 @@
     filters: {
       formatBankCard(val) {
         return val.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
+      }
+    },
+    watch: {
+      'searchForm.storeId'(val) {
+        if(val.length===0){
+          this.homeStoreList = []
+          this.getStoreList(1)
+        }
+      },
+      'companyForm.storeId'(val) {
+        if(this.companyFormTitle){
+          if(val.length===0){
+            this.storeList = []
+            this.getStoreList(2)
+          }
+        }
       }
     }
 }

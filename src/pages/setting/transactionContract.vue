@@ -48,8 +48,8 @@
 import { FILTER } from "@/assets/js/filter";
 import {MIXINS} from "@/assets/js/mixins";
 const infoType = [
-  {key:"1",value:"买方"},
-  {key:"2",value:"卖方"},
+  {key:"1",value:"客户"},
+  {key:"2",value:"业主"},
   {key:"3",value:"其它"}]
 const rule = {
   type: {
