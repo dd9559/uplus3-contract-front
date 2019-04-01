@@ -388,7 +388,6 @@ export default {
             };
 
             document.onmouseup = function(){
-              // debugger
               let deviationY=sign.pageIndex===1?0:that.isShowType?0.05:0
               let deviationX=that.isShowType&&sign.pageIndex===1?0.01:0.03
               console.log(deviationX,deviationY)
@@ -401,7 +400,7 @@ export default {
                 sign.y=sign.y-deviationY
               }
               let state=that.src.some((item,index)=>{
-              return sign.y>0.85*index&&sign.y<1*index
+              return sign.y>0.85&&sign.y<1
             })
             if(state){
               sign.y=0.85
@@ -413,72 +412,16 @@ export default {
             document.onmouseup=null;
             };
         };
-        // console.log(document.getElementsByClassName('el-icon-close')[count]);
         document.getElementsByClassName('el-icon-close')[countnum].onclick=function(ev){
           that.signPositions.forEach((item,index)=>{
             if(item.index==ev.target.getAttribute('index')){
               that.signPositions.splice(index,1)
               console.log(ev.target.parentNode,'parent');
-              // console.log(document.getElementsByClassName('signature')[count],'zhongji');
-              // let obj=document.getElementsByClassName('signature')[that.index]
               ev.target.parentNode.style.display="none"
-              // ev.target.parentNode.parentNode.removeChild(obj)
-              // that.count=that.count-1
             }
           })
         }
     },
-    // tuozhuai(sign,count){
-    //     var oDiv=document.getElementsByClassName('signature')[count]
-    //     console.log(oDiv)
-    //     var that=this
-    //         oDiv.onmousedown = function(ev){
-    //           // debugger
-    //             var disX = ev.clientX -oDiv.offsetLeft;
-    //             var disY = ev.clientY - oDiv.offsetTop;
-    //             document.onmousemove = function(ev){
-    //             var l = ev.clientX-disX;
-    //             var t = ev.clientY-disY;
-    //             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
-    //             l < 0 ? l = 0 : l
-    //             t < 0 ? t = 0 : t
-    //             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
-    //             let pageindex=parseInt(ev.target.offsetTop/992)+1
-    //             sign.x=Number((l/706).toFixed(2))-0.02
-    //             sign.y=Number((t/993).toFixed(2))-0.01
-    //             sign.pageIndex=Number(pageindex)
-    //             oDiv.style.left = l+'px';
-    //             oDiv.style.top = t+'px';
-    //             };
-    //             document.onmouseup = function(){
-    //               // debugger
-    //               let state=that.src.some((item,index)=>{
-    //               return sign.y>0.85*index&&sign.y<1*index
-    //             })
-    //             if(state){
-    //               sign.y=0.85
-    //             }else{
-    //               sign.y=(sign.y-(sign.pageIndex-1)).toFixed(2)
-    //             }
-    //             document.onmousemove=null;
-    //             document.onmouseup=null;
-    //             };
-    //         };
-    //         // console.log(document.getElementsByClassName('el-icon-close')[count]);
-    //         document.getElementsByClassName('el-icon-close')[count].onclick=function(ev){
-    //           that.signPositions.forEach((item,index)=>{
-    //             if(item.index==ev.target.getAttribute('index')){
-    //               that.signPositions.splice(index,1)
-    //               console.log(ev.target.parentNode,'parent');
-    //               // console.log(document.getElementsByClassName('signature')[count],'zhongji');
-    //               // let obj=document.getElementsByClassName('signature')[that.index]
-    //              ev.target.parentNode.style.display="none"
-    //               // ev.target.parentNode.parentNode.removeChild(obj)
-    //               // that.count=that.count-1
-    //             }
-    //           })
-    //         }
-    // },
     //显示印章下拉框
     showList(){
       if(this.companySigns.length>1){
@@ -850,7 +793,7 @@ export default {
     toEdit(){
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
       if(this.contType>3){
-        this.$router.replace({
+        this.$router.push({
           path: "/newIntention",
           query: {
             id: this.id,
