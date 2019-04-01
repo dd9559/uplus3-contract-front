@@ -465,7 +465,6 @@ export default {
       var signaturewrap=document.getElementsByClassName('signaturewrap')[0]
       signaturewrap.appendChild(signturn)
       // var sign={x:0,y:0,pageIndex:1,index:this.count}
-      // debugger
       var sign={x:0,y:content.scrollTop,pageIndex:1,index:this.countnum}
       let obj=document.getElementsByClassName('signature')[this.countnum]
       obj.style.top=sign.y+'px'
@@ -475,8 +474,6 @@ export default {
           this.tuozhuai(this.signPositions[index],this.countnum++)
         }
       })
-      //  this.tuozhuai(sign,this.count++)
-      console.log(this.signPositions);
 
     },
     // 控制弹框body内容高度，超过显示滚动条
