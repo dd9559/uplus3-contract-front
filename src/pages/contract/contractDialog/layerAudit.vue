@@ -349,9 +349,9 @@ export default {
             else if(parseFloat(this.auditForm.money1) < 0 || parseFloat(this.auditForm.money2) < 0 || parseFloat(this.auditForm.money4) < 0){
               this.$message('请输入非负数的金额');
             } 
-            else if(parseFloat(this.auditForm.money1) + parseFloat(this.auditForm.money2) > parseFloat(this.layerAudit.dealPrice)){
-              this.$message('调整的业主佣金+客户佣金总和不能大于成交总价');
-            } 
+            // else if(parseFloat(this.auditForm.money1) + parseFloat(this.auditForm.money2) > parseFloat(this.layerAudit.dealPrice)){
+            //   this.$message('调整的业主佣金+客户佣金总和不能大于成交总价');
+            // } 
             else if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {                             
               this.$message('没有金额记录调整');
             }   
