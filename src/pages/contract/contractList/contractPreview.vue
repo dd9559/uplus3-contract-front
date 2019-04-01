@@ -845,7 +845,7 @@ export default {
     toEdit(){
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
       if(this.contType>3){
-        this.$router.replace({
+        this.$router.push({
           path: "/newIntention",
           query: {
             id: this.id,

@@ -1183,7 +1183,7 @@ export default {
     //合同预览
     goPreview() {
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
-      this.$router.replace({
+      this.$router.push({
         path: "/contractPreview",
         query: {
           id: this.id,
@@ -1234,7 +1234,7 @@ export default {
     // 合同编辑
     goEdit() {
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-      this.$router.replace({
+      this.$router.push({
         path: "/addContract",
         query: {
           id: this.contractDetail.id,
@@ -1824,7 +1824,7 @@ export default {
         })
       }
     },
-    //合同资料科删除
+    //合同资料库删除
     delectData(index,index_,type){
       if(this.contractDetail.isHaveData){
         if(type==="seller"){
