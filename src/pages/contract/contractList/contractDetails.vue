@@ -1081,6 +1081,11 @@ export default {
     this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
   },
+  beforeRouteEnter(to,from,next){
+      next(vm=>{
+        vm.setPath(vm.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+      })
+    },
   methods: {
     //控制 编辑 打印成交报告 保存 按钮显示隐藏
     editFn() {

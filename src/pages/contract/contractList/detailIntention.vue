@@ -82,7 +82,7 @@
                                     </ul>
                                 </div>
                                 <div class="fr">                  
-                                    <el-button type="primary" plain round class="btn1" @click="onPreview()" v-if="power['sign-ht-xq-view'].state">预 览</el-button>
+                                    <el-button type="primary" plain round class="btn1" @click="onPreview()" v-if="power['sign-ht-info-view'].state">预 览</el-button>
                                     <el-button type="primary" round class="mr30 btn2" v-if="power['sign-ht-info-edit'].state" @click="onEdit(detailData.contType)">编 辑</el-button>                  
                                 </div>
                             </div>
@@ -278,7 +278,7 @@ export default {
 
             //权限
             power: {
-                'sign-ht-xq-view': {
+                'sign-ht-info-view': {
                     state: false,
                     name: '预览'
                 },
@@ -297,7 +297,11 @@ export default {
             }
         }
     },
-    
+    beforeRouteEnter(to,from,next){
+      next(vm=>{
+        vm.setPath(vm.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+      })
+    },
     methods: {
 
 
