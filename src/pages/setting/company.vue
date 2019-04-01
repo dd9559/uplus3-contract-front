@@ -493,11 +493,13 @@
         if(!this.companyFormTitle){
           if(!bol&&!this.searchForm.storeId){
             this.homeStoreList = []
+            this.homeStorePage = 1
             this.getStoreList(1)
           }
         } else {
           if(!bol&&!this.companyForm.storeId){
             this.storeList = []
+            this.storePage = 1
             this.getStoreList(2)
           }
         }
@@ -571,7 +573,7 @@
             this.$message({message:error})
         })
       },
-      getStoreList(val,page=1,keyword) {
+      getStoreList(val,page=1,keyword='') {
         this.temKey = keyword
         if(keyword&&keyword.length>0) {
           if(val===1){
@@ -1089,6 +1091,7 @@
       'searchForm.storeId'(val) {
         if(val.length===0){
           this.homeStoreList = []
+          this.homeStorePage = 1
           this.getStoreList(1)
         }
       },
@@ -1096,6 +1099,7 @@
         if(this.companyFormTitle){
           if(val.length===0){
             this.storeList = []
+            this.storePage = 1
             this.getStoreList(2)
           }
         }
