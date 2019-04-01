@@ -380,7 +380,7 @@ export default {
             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
             let pageindex=parseInt(ev.target.offsetTop/(992))+1
             sign.x=Number((l/706).toFixed(2))-0.02
-            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))
+            sign.y=Number((t/document.querySelector('.signaturewrap').querySelectorAll('img')[pageindex-1].offsetHeight).toFixed(2))
 
             sign.pageIndex=Number(pageindex)
             oDiv.style.left = l+'px';
