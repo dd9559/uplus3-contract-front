@@ -113,9 +113,9 @@
                 <el-tab-pane label="资料库" name="third" class="third-tab" v-if="power['sign-ht-xq-data'].state">
                     <div class="dataBank" v-if="power['sign-ht-xq-data'].state">
 
-                        <!-- 卖方 -->
+                        <!-- 业主 -->
                         <div class="classify" v-if="this.sellerList.length>0">
-                            <div class="ht-title">卖方</div>
+                            <div class="ht-title">业主</div>
                             <div class="small-col" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
@@ -138,9 +138,9 @@
                             </div>                           
                         </div>
 
-                        <!-- 买方 -->
+                        <!-- 客户 -->
                         <div class="classify" v-if="this.buyerList.length>0">
-                            <div class="ht-title">买方</div>
+                            <div class="ht-title">客户</div>
                             <div class="small-col" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state">
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
@@ -265,9 +265,9 @@ export default {
                 }
             ],
 
-            //买方类型
+            //客户类型
             buyerList: [],
-            //卖方类型
+            //业主类型
             sellerList: [],
             //其他类型
             otherList: [],
