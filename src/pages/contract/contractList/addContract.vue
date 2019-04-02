@@ -134,7 +134,7 @@
             <ul class="peopleMsg">
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="20" @input="inputOnly(index,'owner')" class="name_">
+                  <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                  <!-- :disabled="type===2&&!item.edit?true:false" -->
@@ -186,7 +186,7 @@
             <ul class="peopleMsg">
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
                 <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="20" @input="inputOnly(index,'guest')"  class="name_">
+                  <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
