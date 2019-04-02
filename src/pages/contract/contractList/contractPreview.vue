@@ -566,7 +566,8 @@ export default {
           this.isSignature=true;
           this.getContImg();
           this.$message({
-            message:'审核成功'
+            message:'审核成功',
+            type:'success'
           })
         }
       }).catch(error => {

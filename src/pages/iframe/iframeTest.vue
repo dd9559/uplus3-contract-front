@@ -18,14 +18,14 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_ZL],
     data(){
       return{
-        src:'租赁.html'
+        src:'定金.html'
       }
     },
     methods:{
       check:function () {
         let iframe=document.querySelector('#iframe')
-        iframe.contentWindow.document.getElementById('submit').click()
-        console.log(sessionStorage.getItem('templateError'))
+        // this.leaseCheck(iframe.contentWindow)
+        iframe.contentWindow.document.querySelector("#submit").click()
       }
     },
     computed:{
