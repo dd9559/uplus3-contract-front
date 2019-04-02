@@ -103,7 +103,7 @@
                 <div class="guest msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="width:150px;word-wrap:break-word;">{{firstBuyer.name}}</span></p>
-                        <p><span style="min-width:56px;">{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":"营业执照"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
+                        <p><span>{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":"营业执照"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
@@ -151,7 +151,7 @@
                 <div class="owner msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="width:150px;word-wrap:break-word;">{{firstSeller.name}}</span></p>
-                        <p><span style="min-width:56px;">{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":"营业执照"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
+                        <p><span>{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":"营业执照"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
@@ -750,6 +750,7 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 .container {
+    overflow-x: auto;
     color: @color-6c;
     .bold {
         font-weight: bold;
@@ -816,7 +817,7 @@ export default {
         // display: flex;
         flex-wrap: wrap;
         margin-bottom: 10px;
-        max-width: 600px;
+        // max-width: 600px;
         li {
             display: flex;
             &:first-child {
@@ -877,7 +878,7 @@ export default {
 .resource {
     display: flex;
     > div {
-        min-width: 620px;
+        min-width: 610px;
         border: 1px solid #ebeef5;
         margin-right: 10px;
         > p {
@@ -963,6 +964,7 @@ export default {
 .dialog-footer {
     width: 1200px;
     margin-top: 20px;
+    margin-bottom: 20px;
     text-align: center;
 }
 .confirmBtn {

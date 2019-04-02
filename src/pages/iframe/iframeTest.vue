@@ -24,7 +24,8 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     methods:{
       check:function () {
         let iframe=document.querySelector('#iframe')
-        this.brokerageCheck(iframe.contentWindow)
+        iframe.contentWindow.document.getElementById('submit').click()
+        console.log(sessionStorage.getItem('templateError'))
       }
     },
     computed:{

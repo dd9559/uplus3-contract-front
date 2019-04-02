@@ -406,7 +406,7 @@ export default {
               sign.y=Number((t/document.querySelectorAll('.signaturewrap>img')[pageindex-1].offsetHeight).toFixed(2))
               sign.pageIndex=Number(pageindex)
 
-              let deviationY=sign.pageIndex===1?0:that.isShowType?0.05:0
+              let deviationY=sign.pageIndex===1?0:that.isShowType?0.086:0.086
               let deviationX=that.isShowType&&sign.pageIndex===1?0.01:0.03
               // console.log(deviationX,deviationY)
               if(that.isShowType){
