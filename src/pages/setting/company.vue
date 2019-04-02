@@ -24,7 +24,7 @@
           </el-select>
         </el-form-item> -->
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" filterable remote :clearable="true" class="w180" :remote-method="remoteMethod" v-loadmore="moreStore" @visible-change="showView">
+          <el-select v-model="searchForm.storeId" filterable remote :clearable="true" class="w180" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -128,7 +128,7 @@
                 <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable remote clearable @change="storeSelect" :disabled="storeNoChange" :remote-method="remoteMethod" v-loadmore="moreStore" @visible-change="showView">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable remote clearable @change="storeSelect" :disabled="storeNoChange" :remote-method="remoteMethod2" v-loadmore="moreStore2" @visible-change="showView2">
                   <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -489,48 +489,45 @@
       this.getBanks()
     },
     methods: {
-      showView(bol) {
-        if(!this.companyFormTitle){
-          if(!bol&&!this.searchForm.storeId){
-            this.homeStoreList = []
-            this.homeStorePage = 1
-            this.getStoreList(1)
-          }
-        } else {
-          if(!bol&&!this.companyForm.storeId){
-            this.storeList = []
-            this.storePage = 1
-            this.getStoreList(2)
-          }
+      showView1(bol) {
+        if(!bol&&this.temKey){
+          this.homeStoreList = []
+          this.homeStorePage = 1
+          this.getStoreList(1)
         }
       },
-      remoteMethod(query) {
-        if(!this.companyFormTitle){
-          setTimeout(() => {
-            this.homeStoreList = []
-            this.getStoreList(1,this.homeStorePage,query)
-          },200)
-        } else {
-          setTimeout(() => {
-            this.storeList = []
-            this.getStoreList(2,this.storePage,query)
-          },200)
+      showView2(bol) {
+        if(!bol&&this.temKey){
+          this.storeList = []
+          this.storePage = 1
+          this.getStoreList(2)
         }
+      },
+      remoteMethod1(query) {
+        setTimeout(() => {
+          this.homeStoreList = []
+          this.getStoreList(1,this.homeStorePage,query)
+        },200)
+      },
+      remoteMethod2(query) {
+        setTimeout(() => {
+          this.storeList = []
+          this.getStoreList(2,this.storePage,query)
+        },200)
       },
       //门店滚动加载更多
-      moreStore:function () {
-        if(this.companyFormTitle){
-          if(this.storeList.length>=this.storeTotal){
-            return
-          }else {
-            this.getStoreList(2,++this.storePage,this.temKey)
-          }
-        } else {
-          if(this.homeStoreList.length>=this.homeStoreTotal){
-            return
-          }else {
-            this.getStoreList(1,++this.homeStorePage,this.temKey)
-          }
+      moreStore1:function () {
+        if(this.homeStoreList.length>=this.homeStoreTotal){
+          return
+        }else {
+          this.getStoreList(1,++this.homeStorePage,this.temKey)
+        }
+      },
+      moreStore2:function () {
+        if(this.storeList.length>=this.storeTotal){
+          return
+        }else {
+          this.getStoreList(2,++this.storePage,this.temKey)
         }
       },
       /**
@@ -668,8 +665,6 @@
       handleClose(done) {
         this.creditCodeShow = false
         this.icRegisterShow = false
-        this.companyFormTitle = ""
-        this.storeList = []
         this.delIds = []
         done()
       },
@@ -681,8 +676,9 @@
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = localStorage.getItem('cityName')
-        this.storeList = []
-        this.getStoreList(2)
+        if(this.storeList.length===0) {
+          this.getStoreList(2)
+        }
       },
       //切换到直营属性时,自动带出证件信息
       selectDirectInfo() {
@@ -903,8 +899,6 @@
                   if(res.status === 200) {
                     this.AddEditVisible = false
                     this.$message(res.message)
-                    this.companyFormTitle = ""
-                    this.storeList = []
                     this.getCompanyList()
                   }
                 }).catch(error => {
@@ -927,8 +921,6 @@
                   this.AddEditVisible = false
                   this.$message(res.message)
                   this.getCompanyList()
-                  this.companyFormTitle = ""
-                  this.storeList = []
                   this.delIds = []
                 }
               }).catch(error => {
@@ -1096,15 +1088,6 @@
     filters: {
       formatBankCard(val) {
         return val.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
-      }
-    },
-    watch: {
-      'searchForm.storeId'(val) {
-        if(val.length===0){
-          this.homeStoreList = []
-          this.homeStorePage = 1
-          this.getStoreList(1)
-        }
       }
     }
 }
