@@ -803,7 +803,7 @@ export default {
             if (res.data.status === 200) {
               let contractMsg = res.data.data
               this.hidBtn=1
-              localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
               // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
               this.$router.push({
                 path: "/extendParams"
@@ -934,7 +934,7 @@ export default {
 
             if (res.data.status === 200) {
               let contractMsg = res.data.data
-              localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
               // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
               this.$router.push({
                 path: "/extendParams"
