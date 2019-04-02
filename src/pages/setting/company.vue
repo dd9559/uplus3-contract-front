@@ -203,7 +203,7 @@
               <el-table-column align="center" label="" width="170">
                 <template slot-scope="scope">
                   <el-form-item label="账户类型: ">
-                    <el-select size="small" v-model="companyBankList[scope.$index].type" class="property">
+                    <el-select size="small" v-model="companyBankList[scope.$index].type" class="property" :disabled="fourthStoreNoEdit">
                       <el-option v-for="item in bankType" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                   </el-form-item>
@@ -226,7 +226,7 @@
               <el-table-column align="center" label="" width="215">
                 <template slot-scope="scope">
                   <el-form-item label="银行: ">
-                    <el-select size="small" v-model="companyBankList[scope.$index].bankId" filterable>
+                    <el-select size="small" v-model="companyBankList[scope.$index].bankId" filterable :disabled="fourthStoreNoEdit" class="bank-item">
                       <el-option v-for="item in adminBanks" :key="item.id" :label="item.bankName" :value="item.bankId"></el-option>
                     </el-select>
                   </el-form-item>
@@ -653,6 +653,7 @@
               this.companyForm.contractSign = ""
               this.companyForm.financialSign = ""
               this.cooModeChange(2)
+              this.fourthStoreNoEdit = false
               this.storeList = []
               this.getStoreList(2)
             }
@@ -1282,6 +1283,12 @@
         /deep/ .property {
           .el-input {
             width: 95px!important;
+            height: 32px;
+          }
+        }
+        /deep/ .bank-item {
+          .el-input {
+            height: 32px;
           }
         }
         &.el-table {
