@@ -239,13 +239,14 @@
         }
         console.log(errorArr)
     }
-     
+
     let inputAutoBoxs = document.querySelectorAll("span[tag='input-auto']")
     for(let i=0;i<inputAutoBoxs.length;i++){
         if(inputAutoBoxs[i].getAttribute('systemParam')){
             continue
         }
         inputAutoBoxs[i].onclick=function (tip) {
+          tip.target.classList.add("BODERRED")
             //获取span标签的基本配置属性
             let initVal=tip.target.innerHTML
             let type=tip.target.getAttribute('listen')
@@ -306,6 +307,7 @@
                 if(!hiddenModal&&e.target!==tip.target){
                     inputArea.style.display='none'
                     textArea.value=''
+                  tip.target.classList.remove("BODERRED")
                 }
             }
             document.querySelector('.control-btn').onclick=function (e) {
@@ -322,7 +324,7 @@
                         tip.target.classList.add('input-before')
                         if(brother){
                             tips[1].innerHTML=''
-                        }   
+                        }
                     }
                 }else if(btn==='保存'){
 
@@ -330,6 +332,7 @@
                 if(e.target!==e.currentTarget){
                     inputArea.style.display='none'
                     textArea.value=''
+                  tip.target.classList.remove("BODERRED")
                 }
             }
         }
@@ -508,7 +511,7 @@
                     }
                 }
             })
-        } 
+        }
     }
 
     function dateFormatter(val){

@@ -787,7 +787,8 @@
         for (let i = 0; i < addrList.length; i++) {
           if(window.location.host==='localhost:8080'){
             if(addrList[i].indexOf('bundle')>-1){
-              addrList[i]=host_other+'/'+addrList[i]
+              // addrList[i]=host_other+'/'+addrList[i]
+              addrList[i]='./ZL.js'
             }else{
               addrList[i]=host_other+'/'+addrList[i]
             }
