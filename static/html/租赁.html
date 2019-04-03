@@ -170,7 +170,7 @@
             outline: none;
         }
         .info-checkbox{
-            display: inline-block;
+            display: inline;
             cursor: pointer;
         }
         .info-checkbox>span{
@@ -247,7 +247,7 @@
             <p class="p-title">第一条  出租房屋的基本情况：</p>
             <ul>
                 <li>1.类型：<div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>住宅</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>商铺</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>写字楼</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>其他</span></div><span extendParam="val32" tag="input-auto" class="input-before"></span></li>
-                <li>2.座落于：武汉市<span extendParam="val33" tag="input-auto" class="input-before"></span>区（县)<span extendParam="val34" tag="input-auto" class="input-before"></span>（以下简称：“该房屋”），房屋建筑面积<span systemParam="square" extendParam="val35" readonly="readonly" class="text-before" tag="input-auto"></span>平方米。</li>
+                <li>2.座落于：武汉市<span systemparam="propertyAddr" extendParam="val33" tag="input-auto" class="input-before"></span>（以下简称：“该房屋”），房屋建筑面积<span systemParam="square" extendParam="val35" readonly="readonly" class="text-before" tag="input-auto"></span>平方米。</li>
                 <li>3.房屋权属状况：甲方持有（<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>房屋所有权证</span></div>/<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>公有住房租赁合同</span></div>/<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>房屋买卖合同</span></div>/<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>其他房屋</span></div><span style="font-weight:bold">来源证明文件</span>），房屋所有权证编号：<span extendParam="val40" tag="input-auto" class="input-before" ></span>或《商品房买卖合同》编号:<span extendParam="val41" tag="input-auto" class="input-before"></span>。房屋所有权人（公有住房承租人、购房人）姓名或名称：<span extendParam="val42" tag="input-auto" class="input-before"></span>，房屋（<div class="info-checkbox" name="zhizhao6"><p type="check"></p><span>是</span></div>/<div class="info-checkbox" name="zhizhao6"><p type="check"></p><span>否</span></div>） 已设定了抵押。</li>
                 <li>4.已开通的基本设施：<div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>水</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>电</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>有线电视</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>网线</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>管道煤气</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>其他：</span></div><span extendParam="val51" tag="input-auto" class="input-before"></span>。</li>
                 <li>5.附属设施、设备：附《房屋交割清单》（见附件二）</li>
@@ -620,11 +620,11 @@
                 <tr>
                     <td>卧室地板</td>
                     <td colspan="2">
-                        <div class="info-checkbox" name="zhizhao9"><p type="check"></p><span>地砖</span></div>
-                        <div class="info-checkbox" name="zhizhao9"><p type="check"></p><span>木地板</span></div>
-                        <div class="info-checkbox" name="zhizhao9"><p type="check"></p><span>水泥地</span></div>
-                        <div class="info-checkbox" name="zhizhao9"><p type="check"></p><span>其他</span></div>
-                        <span extendParam="val114" type="text" tag="input-auto" class="input-before"></span>
+                        <div class="info-checkbox" name="zhizhao9"><p type="check" nocheck="true"></p><span>地砖</span></div>
+                        <div class="info-checkbox" name="zhizhao9"><p type="check" nocheck="true"></p><span>木地板</span></div>
+                        <div class="info-checkbox" name="zhizhao9"><p type="check" nocheck="true"></p><span>水泥地</span></div>
+                        <div class="info-checkbox" name="zhizhao9"><p type="check" nocheck="true"></p><span>其他</span></div>
+                        <span extendParam="val114" type="text" tag="input-auto" class="input-before" noline="true"></span>
                     </td>
                     <td></td>
                     <td></td>
@@ -632,11 +632,11 @@
                 <tr>
                     <td>客厅地板</td>
                     <td colspan="2">
-                        <div class="info-checkbox" name="zhizhao10"><p type="check"></p><span>地砖</span></div>
-                        <div class="info-checkbox" name="zhizhao10"><p type="check"></p><span>木地板</span></div>
-                        <div class="info-checkbox" name="zhizhao10"><p type="check"></p><span>水泥地</span></div>
-                        <div class="info-checkbox" name="zhizhao10"><p type="check"></p><span>其他</span></div>
-                        <span extendParam="val119" type="text" tag="input-auto" class="input-before"></span>
+                        <div class="info-checkbox" name="zhizhao10"><p type="check" nocheck="true"></p><span>地砖</span></div>
+                        <div class="info-checkbox" name="zhizhao10"><p type="check" nocheck="true"></p><span>木地板</span></div>
+                        <div class="info-checkbox" name="zhizhao10"><p type="check" nocheck="true"></p><span>水泥地</span></div>
+                        <div class="info-checkbox" name="zhizhao10"><p type="check" nocheck="true"></p><span>其他</span></div>
+                        <span extendParam="val119" type="text" tag="input-auto" class="input-before" noline="true"></span>
                     </td>
                     <td></td>
                     <td></td>
@@ -644,12 +644,12 @@
                 <tr>
                     <td>厨卫</td>
                     <td colspan="2">
-                        <div class="info-checkbox" name="zhizhao11"><p type="check"></p><span>木墙裙</span></div>
-                        <div class="info-checkbox" name="zhizhao11"><p type="check"></p><span>墙纸</span></div>
-                        <div class="info-checkbox" name="zhizhao11"><p type="check"></p><span>立邦漆</span></div>
-                        <div class="info-checkbox" name="zhizhao11"><p type="check"></p><span>彩喷</span></div>
-                        <div class="info-checkbox" name="zhizhao11"><p type="check"></p><span>其他</span></div>
-                        <span extendParam="val125" type="text" tag="input-auto" class="input-before"></span>
+                        <div class="info-checkbox" name="zhizhao11"><p type="check" nocheck="true"></p><span>木墙裙</span></div>
+                        <div class="info-checkbox" name="zhizhao11"><p type="check" nocheck="true"></p><span>墙纸</span></div>
+                        <div class="info-checkbox" name="zhizhao11"><p type="check" nocheck="true"></p><span>立邦漆</span></div>
+                        <div class="info-checkbox" name="zhizhao11"><p type="check" nocheck="true"></p><span>彩喷</span></div>
+                        <div class="info-checkbox" name="zhizhao11"><p type="check" nocheck="true"></p><span>其他</span></div>
+                        <span extendParam="val125" type="text" tag="input-auto" class="input-before" noline="true"></span>
                     </td>
                     <td></td>
                     <td></td>
@@ -657,11 +657,11 @@
                 <tr>
                     <td>墙面</td>
                     <td colspan="2">
-                        <div class="info-checkbox" name="zhizhao12"><p type="check"></p><span>瓷砖</span></div>
-                        <div class="info-checkbox" name="zhizhao12"><p type="check"></p><span>未贴砖</span></div>
-                        <div class="info-checkbox" name="zhizhao12"><p type="check"></p><span>马赛克</span></div>
-                        <div class="info-checkbox" name="zhizhao12"><p type="check"></p><span>其他</span></div>
-                        <span extendParam="val130" type="text" tag="input-auto" class="input-before"></span>
+                        <div class="info-checkbox" name="zhizhao12"><p type="check" nocheck="true"></p><span>瓷砖</span></div>
+                        <div class="info-checkbox" name="zhizhao12"><p type="check" nocheck="true"></p><span>未贴砖</span></div>
+                        <div class="info-checkbox" name="zhizhao12"><p type="check" nocheck="true"></p><span>马赛克</span></div>
+                        <div class="info-checkbox" name="zhizhao12"><p type="check" nocheck="true"></p><span>其他</span></div>
+                        <span extendParam="val130" type="text" tag="input-auto" class="input-before" noline="true"></span>
                     </td>
                     <td></td>
                     <td></td>
@@ -669,9 +669,9 @@
                 <tr>
                     <td>窗户</td>
                     <td colspan="2">
-                        <div class="info-checkbox" name="zhizhao13"><p type="check"></p><span>木窗</span></div>
-                        <div class="info-checkbox" name="zhizhao13"><p type="check"></p><span>铝合金</span></div>
-                        <div class="info-checkbox" name="zhizhao13"><p type="check"></p><span>塑钢</span></div>
+                        <div class="info-checkbox" name="zhizhao13"><p type="check" nocheck="true"></p><span>木窗</span></div>
+                        <div class="info-checkbox" name="zhizhao13"><p type="check" nocheck="true"></p><span>铝合金</span></div>
+                        <div class="info-checkbox" name="zhizhao13"><p type="check" nocheck="true"></p><span>塑钢</span></div>
                     </td>
                     <td></td>
                     <td></td>
@@ -679,9 +679,9 @@
                 <tr>
                     <td>阳台</td>
                     <td colspan="2">
-                        <div class="info-checkbox" name="zhizhao14"><p type="check"></p><span>未封</span></div>
-                        <div class="info-checkbox" name="zhizhao14"><p type="check"></p><span>铝合金</span></div>
-                        <div class="info-checkbox" name="zhizhao14"><p type="check"></p><span>塑钢</span></div>
+                        <div class="info-checkbox" name="zhizhao14"><p type="check" nocheck="true"></p><span>未封</span></div>
+                        <div class="info-checkbox" name="zhizhao14"><p type="check" nocheck="true"></p><span>铝合金</span></div>
+                        <div class="info-checkbox" name="zhizhao14"><p type="check" nocheck="true"></p><span>塑钢</span></div>
                     </td>
                     <td></td>
                     <td></td>
@@ -689,9 +689,9 @@
                 <tr>
                     <td>门</td>
                     <td colspan="2">
-                        <div class="info-checkbox" name="zhizhao15"><p type="check"></p><span>防盗门</span></div>
-                        <div class="info-checkbox" name="zhizhao15"><p type="check"></p><span>品牌</span></div>
-                        <span extendParam="val139" type="text" tag="input-auto" class="input-before"></span>
+                        <div class="info-checkbox" name="zhizhao15"><p type="check" nocheck="true"></p><span>防盗门</span></div>
+                        <div class="info-checkbox" name="zhizhao15"><p type="check" nocheck="true"></p><span>品牌</span></div>
+                        <span extendParam="val139" type="text" tag="input-auto" class="input-before" noline="true"></span>
                     </td>
                     <td></td>
                     <td></td>
@@ -699,12 +699,12 @@
                 <tr>
                     <td>遥控器</td>
                     <td colspan="2">
-                        <div class="info-checkbox" name="remote" more="true"><p type="check"></p><span>电视</span></div>
-                        <span extendParam="val141" type="text" tag="input-auto" class="input-before"></span>个
-                        <div class="info-checkbox" name="remote" more="true"><p type="check"></p><span>空调</span></div>
-                        <span extendParam="val143" type="text" tag="input-auto" class="input-before"></span>个
-                        <div class="info-checkbox" name="remote" more="true"><p type="check"></p><span>机顶盒</span></div>
-                        <span extendParam="val145" type="text" tag="input-auto" class="input-before"></span>个
+                        <div class="info-checkbox" name="remote" more="true"><p type="check" nocheck="true"></p><span>电视</span></div>
+                        <span extendParam="val141" type="text" tag="input-auto" class="input-before" noline="true"></span>个
+                        <div class="info-checkbox" name="remote" more="true"><p type="check" nocheck="true"></p><span>空调</span></div>
+                        <span extendParam="val143" type="text" tag="input-auto" class="input-before" noline="true"></span>个
+                        <div class="info-checkbox" name="remote" more="true"><p type="check" nocheck="true"></p><span>机顶盒</span></div>
+                        <span extendParam="val145" type="text" tag="input-auto" class="input-before" noline="true"></span>个
                     </td>
                     <td></td>
                     <td></td>
@@ -712,9 +712,9 @@
                 <tr>
                     <td>门禁卡</td>
                     <td colspan="2">
-                        <div class="info-checkbox" name="zhizhao16" ><p type="check"></p><span>有</span></div>
-                        <div class="info-checkbox" name="zhizhao16" ><p type="check"></p><span>无</span></div>   已交付
-                        <span extendParam="val148" type="text" tag="input-auto" class="input-before"></span>张
+                        <div class="info-checkbox" name="zhizhao16" ><p type="check" nocheck="true"></p><span>有</span></div>
+                        <div class="info-checkbox" name="zhizhao16" ><p type="check" nocheck="true"></p><span>无</span></div>   已交付
+                        <span extendParam="val148" type="text" tag="input-auto" class="input-before" noline="true"></span>张
                     </td>
                     <td></td>
                     <td></td>
@@ -722,7 +722,7 @@
                 <tr>
                     <td>钥匙</td>
                     <td colspan="2">
-                        防盗门<sapn extendParam="val149" type="text" tag="input-auto" class="input-before"></sapn>把  房屋<span extendParam="val150" type="text" tag="input-auto" class="input-before"></span>把  其他<span extendParam="val151" type="text" tag="input-auto" class="input-before"></span>把
+                        防盗门<sapn extendParam="val149" type="text" tag="input-auto" class="input-before" noline="true"></sapn>把  房屋<span extendParam="val150" type="text" tag="input-auto" class="input-before" noline="true"></span>把  其他<span extendParam="val151" type="text" tag="input-auto" class="input-before" noline="true"></span>把
                     </td>
                     <td></td>
                     <td></td>
@@ -747,9 +747,9 @@
                 <tr>
                     <td rowspan="3" style="text-align: center">退房确认</td>
                     <td colspan="2">甲乙双方已对房屋和附属物品、设备设施及水电使用等情况进行了验收，并办理了退房手续。有关费用的承担的房屋及其附属物品、设备设施的返还
-                        <div class="info-checkbox" name="zhizhao17"><p type="check"></p><span>无纠纷</span></div>/
-                        <div class="info-checkbox" name="zhizhao17"><p type="check"></p><span>附以下说明：</span></div>
-                        <span extendParam="val157" type="text" tag="input-auto" class="input-before"></span>
+                        <div class="info-checkbox" name="zhizhao17"><p type="check" nocheck="true"></p><span>无纠纷</span></div>/
+                        <div class="info-checkbox" name="zhizhao17"><p type="check" nocheck="true"></p><span>附以下说明：</span></div>
+                        <span extendParam="val157" type="text" tag="input-auto" class="input-before" noline="true"></span>
                     </td>
                 </tr>
                 <tr>
@@ -760,7 +760,7 @@
                     <td>乙方（承租人）签章：<input type="text" class="no-border" noline="true" readonly="readonly"></td>
                 </tr>
             </table>
-              <!--<span onclick="submit()">click</span>-->
+            <!-- <span id="submit" style="display: none;">click</span> -->
         </div>
     </div>
     <div class="model" style="display: none;">
@@ -775,7 +775,7 @@
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_zl20190327.js"></script> -->
+<script type="text/javascript" src="/js/bundle_zl20190402.js"></script> -->
 <script>
      (function () {
       var scriptList = document.getElementsByTagName("script")
@@ -783,11 +783,12 @@
       if(!scriptList[0].src){
         var host='https://sign2.jjw.com'
         var host_other="http://sign2.jjw.com:28879"
-        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_zl20190327.js","datepicker.css"]
+        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_zl20190402.js","datepicker.css"]
         for (let i = 0; i < addrList.length; i++) {
           if(window.location.host==='localhost:8080'){
             if(addrList[i].indexOf('bundle')>-1){
-              addrList[i]=host_other+'/'+addrList[i]
+            //   addrList[i]=host_other+'/'+addrList[i]
+            addrList[i]="./ZL.js"
             }else{
               addrList[i]=host_other+'/'+addrList[i]
             }
@@ -810,4 +811,5 @@
       }
     })();
 </script>
+
 </html>
