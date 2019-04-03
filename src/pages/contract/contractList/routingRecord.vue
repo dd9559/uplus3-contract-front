@@ -79,7 +79,7 @@
                 <div v-for="item in scope.row.inBank" :key="item.bankCard">
                   <p>银行账户：{{item.bankCard}}</p>
                   <p>开户名：{{item.bankAccountName}}</p>
-                  <p>开户行：{{item.bankName}}{{item.bankBranchName}}</p>
+                  <p>开户行：{{item.bankName}}{{item.bankBranchName==="-"?"":item.bankBranchName}}</p>
                 </div>
               </div>
               <div>

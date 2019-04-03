@@ -452,6 +452,11 @@ export default {
     showList_(){
       if(this.storeId){
         this.showPos()
+      }else if(!this.storeId&&this.companySigns.length===0){
+        this.$message({
+          message:'该公司未设置电子签章，请先设置合同电子签章！',
+          type:'warning'
+        })
       }
       // else{
       //   this.$message({

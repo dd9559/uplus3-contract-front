@@ -1034,7 +1034,7 @@ export default {
      console.log(this.contractForm.houseInfo.ListingPrice)
     let backMsg = JSON.parse(localStorage.getItem("backMsg"));
     if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
-      let contMsg = JSON.parse(localStorage.getItem("contractMsg"));
+      let contMsg = JSON.parse(sessionStorage.getItem("contractMsg"));
       this.contractForm.type=parseInt(contMsg.type);//合同类型
       this.type=2
       this.id=parseInt(contMsg.id)
