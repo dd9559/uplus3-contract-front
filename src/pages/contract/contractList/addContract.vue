@@ -75,12 +75,12 @@
           <br>
           <el-form-item label="建筑面积：" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
-            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
+            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">㎡</i>
           </el-form-item>
           <el-form-item label="套内面积：" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.SquareUse" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
-            <input type="text" v-model="contractForm.houseInfo.SquareUse" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
+            <input type="text" v-model="contractForm.houseInfo.SquareUse" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">㎡</i>
           </el-form-item>
           <!-- <el-form-item label="房源方门店：" class="form-label" style="width:310px;text-align:right">
@@ -133,7 +133,7 @@
           <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
-                <span class="merge" :class="{'disabled':type===2&&!item.edit}">
+                <span class="merge">
                   <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
                 </span>
@@ -185,7 +185,7 @@
           <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
-                <span class="merge" :class="{'disabled':type===2&&!item.edit}">
+                <span class="merge">
                   <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
