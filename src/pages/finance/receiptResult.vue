@@ -109,7 +109,8 @@
             state: false,
             name: '收付款单列表'
           },
-        }
+        },
+        socket:null,
       }
     },
     created() {
@@ -155,7 +156,6 @@
       },
       getWebSocket:function (uid) {
         let host=window.location.host
-        console.log(host)
         let url=''
         switch (host){
           case "localhost:8080":
@@ -167,11 +167,13 @@
           case "sign2.jjw.com":
             url="https://sign2.jjw.com"
                 break
+          default:
+            url="http://192.168.1.96:28800"
         }
-        let socket = io.connect(`${url}?mac=${this.result.payCode}&auth=${uid}`)
+        this.socket = io.connect(`${url}?mac=${this.result.payCode}&auth=${uid}`)
         let that=this
-        socket.on('connect',function () {
-          socket.on('messageevent', function(data) {
+        this.socket.on('connect',function () {
+          that.socket.on('messageevent', function(data) {
             if(data){
               that.goBack('Bill')
             }
@@ -210,6 +212,11 @@
       emitPaperSetFn:function () {
 
       }
+    },
+    destroyed(){
+      // debugger
+      // this.socket.emit('close',{payCode:this.result.payCode})
+      this.socket.disconnect()
     }
   }
 </script>
