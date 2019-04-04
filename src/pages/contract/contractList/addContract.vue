@@ -1277,7 +1277,9 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          this.canClick=true
+          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"){
+            this.canClick=true
+          }
           this.$message({
             message:error,
             type: "error"
