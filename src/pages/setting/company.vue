@@ -55,12 +55,12 @@
         </el-table-column>
         <el-table-column align="center" label="门店" prop="storeName">
         </el-table-column>
-        <el-table-column align="center" label="账户类型" min-width="60">
+        <el-table-column align="center" label="账户类型" min-width="50">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.type===0?'个人账户':'企业账户' }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="开户名" min-width="190">
+        <el-table-column align="center" label="开户名" min-width="180">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
           </template>
@@ -82,14 +82,14 @@
         </el-table-column>
         <el-table-column align="center" label="合作方式" prop="cooperationMode.label" min-width="50">
         </el-table-column>
-        <el-table-column align="center" label="添加时间" prop="createTime" min-width="50">
+        <el-table-column align="center" label="添加时间" prop="createTime" min-width="60">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatDate(2)}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="添加人" prop="createByName">
         </el-table-column>
-        <el-table-column align="center" label="操作">
+        <el-table-column align="center" label="操作" min-width="60">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
             <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&!(scope.row.cooperationMode.value===1&&scope.row.level===4)">编辑</el-button>
