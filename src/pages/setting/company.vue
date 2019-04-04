@@ -128,7 +128,7 @@
                 <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable remote clearable @change="storeSelect" :disabled="storeNoChange" :remote-method="remoteMethod2" v-loadmore="moreStore2" @visible-change="showView2">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable remote clearable @change="storeSelect" :disabled="storeNoChange" :remote-method="remoteMethod2" v-loadmore="moreStore2" @visible-change="showView2" @clear="clearStore">
                   <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -489,6 +489,11 @@
       this.getBanks()
     },
     methods: {
+      clearStore() {
+        this.storeList = []
+        this.storePage = 1
+        this.getStoreList(2)
+      },
       showView1(bol) {
         if(!bol&&this.temKey){
           this.homeStoreList = []
@@ -498,6 +503,9 @@
       },
       showView2(bol) {
         if(!bol&&this.temKey){
+          if(this.companyForm.storeId){
+            return
+          }
           this.storeList = []
           this.storePage = 1
           this.getStoreList(2)
@@ -677,9 +685,8 @@
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = localStorage.getItem('cityName')
-        if(this.storeList.length===0) {
-          this.getStoreList(2)
-        }
+        this.storeList = []
+        this.getStoreList(2)
       },
       //切换到直营属性时,自动带出证件信息
       selectDirectInfo() {
