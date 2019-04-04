@@ -117,7 +117,7 @@ export default {
 		this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
 		this.clientHeight();
-		this.Msg = JSON.parse(localStorage.getItem("contractMsg"));
+		this.Msg = JSON.parse(sessionStorage.getItem("contractMsg"));
     if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
     }
@@ -136,7 +136,7 @@ export default {
 			}else{
 				this.isShowType=false;
 				this.isActive=2;
-				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`//居间
+				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`//买卖
 			}
 
     }else if(this.Msg.type===3){
@@ -239,9 +239,11 @@ export default {
 			let htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 
 			if(this.Msg.type===2){
+				iframebox2.contentWindow.document.querySelector("#submit").click()
 				if(this.Msg.isWuHanMM){
-					emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
-					emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+					iframebox1.contentWindow.document.querySelector("#submit").click()
+					emptyInput1 = JSON.parse(sessionStorage.getItem("templateError"));
+					emptyInput2 = JSON.parse(sessionStorage.getItem("templateError1"));
 					param = {
 						id:this.Msg.id,
 						isClick:isClick,
@@ -252,7 +254,7 @@ export default {
 						isCanAudit:isFull//1.完整 0.否
 					}
 				}else{
-					let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+					let emptyInput2 = JSON.parse(sessionStorage.getItem("templateError1"));
 					param = {
 						id:this.Msg.id,
 						html:{
@@ -262,15 +264,8 @@ export default {
 					}
 				}
 			}else{
-				if(this.Msg.type===1){//租赁
-					emptyInput1 = this.leaseCheck(iframebox1.contentWindow)
-				}else if(this.Msg.type===3){
-					emptyInput1 = this.commissionCheck(iframebox1.contentWindow)
-				}else if(this.Msg.type===4){
-					emptyInput1 = this.agreementCheck(iframebox1.contentWindow)
-				}else if(this.Msg.type===5){
-					emptyInput1 = this.depositAgreementCheck(iframebox1.contentWindow)
-				}
+				iframebox1.contentWindow.document.querySelector("#submit").click()
+				emptyInput1 = JSON.parse(sessionStorage.getItem("templateError"));
 				param = {
 					id:this.Msg.id,
 					isClick:isClick,
@@ -309,9 +304,11 @@ export default {
 			let iframebox1=this.$refs.iframeFirst;
 			let iframebox2=this.$refs.iframeSecond;
 			if(this.Msg.type===2){
+				iframebox2.contentWindow.document.querySelector("#submit").click()
 				if(this.Msg.isWuHanMM){
-					emptyInput1 = this.brokerageCheck(iframebox1.contentWindow)
-					emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+					iframebox1.contentWindow.document.querySelector("#submit").click()
+					emptyInput1 = JSON.parse(sessionStorage.getItem("templateError"));
+					emptyInput2 = JSON.parse(sessionStorage.getItem("templateError1"));
 					if(this.isActive===1){
 						if(emptyInput1.length>0){
 							this.$message({
@@ -358,7 +355,7 @@ export default {
 				}
 			}else{//非武汉买卖
 			// debugger
-				let emptyInput2 = this.dealCheck(iframebox2.contentWindow)
+				let emptyInput2 = JSON.parse(sessionStorage.getItem("templateError1"));
 				if(emptyInput2.length>0){
 					this.$message({
 						message:'合同信息未填写完整',
@@ -376,18 +373,10 @@ export default {
 					iframebox2.contentWindow.scrollTo(0,inputHeight2)
 				}
 			}
-
+			
 			}else{
-				if(this.Msg.type===1){//租赁
-					emptyInput1 = this.leaseCheck(iframebox1.contentWindow)
-					console.log(emptyInput1)
-				}else if(this.Msg.type===3){
-					emptyInput1 = this.commissionCheck(iframebox1.contentWindow)
-				}else if(this.Msg.type===4){
-					emptyInput1 = this.agreementCheck(iframebox1.contentWindow)
-				}else if(this.Msg.type===5){
-					emptyInput1 = this.depositAgreementCheck(iframebox1.contentWindow)
-				}
+				iframebox1.contentWindow.document.querySelector("#submit").click()
+				emptyInput1 = JSON.parse(sessionStorage.getItem("templateError"));
 				if(emptyInput1.length>0){
 					this.$message({
 						message:'合同信息未填写完整',

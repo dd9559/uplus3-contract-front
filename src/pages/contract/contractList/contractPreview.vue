@@ -365,7 +365,6 @@ export default {
   methods: {
       tuozhuai(sign,countnum){
         var oDiv=document.getElementsByClassName('signature')[countnum]
-        console.log(oDiv)
         var that=this
         oDiv.onmousedown = function(ev){
           // debugger
@@ -395,11 +394,10 @@ export default {
 
             document.onmouseup = function(ev){
               let deviation=0
-              console.log(pageHeight)
-              if(ev.target.offsetTop<pageHeight[0]){
+              if(oDiv.offsetTop<pageHeight[0]){
                 pageindex=1
               }else {
-                deviation=ev.target.offsetTop-pageHeight[0]
+                deviation=oDiv.offsetTop-pageHeight[0]
                 pageindex=parseInt(deviation/(pageHeight[1]))+2
               }
               sign.x=Number((l/706).toFixed(2))-0.02
@@ -417,9 +415,7 @@ export default {
               }else {
                 sign.y=sign.y-deviationY
               }
-              let state=that.src.some((item,index)=>{
-              return sign.y>0.85&&sign.y<1
-            })
+              let state=sign.y>0.85&&sign.y<1
             if(state){
               sign.y=0.85
             }else{
@@ -452,6 +448,11 @@ export default {
     showList_(){
       if(this.storeId){
         this.showPos()
+      }else if(!this.storeId&&this.companySigns.length===0){
+        this.$message({
+          message:'该公司未设置电子签章，请先设置合同电子签章！',
+          type:'warning'
+        })
       }
       // else{
       //   this.$message({
@@ -563,7 +564,8 @@ export default {
           this.isSignature=true;
           this.getContImg();
           this.$message({
-            message:'审核成功'
+            message:'审核成功',
+            type:'success'
           })
         }
       }).catch(error => {
@@ -754,7 +756,7 @@ export default {
             this.storeId=res.data.companySigns[0].storeId
             this.signImg=res.data.companySigns[0].contractSign
           }
-          this.companySigns=res.data.companySigns
+          this.companySigns=res.data.companySigns?res.data.companySigns:[]
           if(res.data.isRisk){
             this.textarea=res.data.remarksExamine;
           }

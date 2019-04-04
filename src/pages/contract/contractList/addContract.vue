@@ -75,12 +75,12 @@
           <br>
           <el-form-item label="建筑面积：" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
-            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
+            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">㎡</i>
           </el-form-item>
           <el-form-item label="套内面积：" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.SquareUse" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
-            <input type="text" v-model="contractForm.houseInfo.SquareUse" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
+            <input type="text" v-model="contractForm.houseInfo.SquareUse" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">㎡</i>
           </el-form-item>
           <!-- <el-form-item label="房源方门店：" class="form-label" style="width:310px;text-align:right">
@@ -133,8 +133,8 @@
           <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
-                <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="20" @input="inputOnly(index,'owner')" class="name_">
+                <span class="merge">
+                  <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                  <!-- :disabled="type===2&&!item.edit?true:false" -->
@@ -185,8 +185,8 @@
           <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
-                <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="20" @input="inputOnly(index,'guest')"  class="name_">
+                <span class="merge">
+                  <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
@@ -503,7 +503,7 @@ export default {
   created() {
     let backMsg = JSON.parse(localStorage.getItem("backMsg"));
     if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
-      let contMsg = JSON.parse(localStorage.getItem("contractMsg"));
+      let contMsg = JSON.parse(sessionStorage.getItem("contractMsg"));
       this.contractForm.type = parseInt(contMsg.type);//合同类型
       this.type=2;//编辑
       this.id=parseInt(contMsg.id)
@@ -1269,7 +1269,7 @@ export default {
             this.fullscreenLoading=false;
             let contractMsg = res.data
             this.hidBtn=1
-            localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
             // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
             this.$router.push({
               path: "/extendParams"
@@ -1277,7 +1277,9 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          this.canClick=true
+          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"){
+            this.canClick=true
+          }
           this.$message({
             message:error,
             type: "error"
@@ -1314,7 +1316,7 @@ export default {
           if (res.status === 200) {
             this.fullscreenLoading=false;
             let contractMsg = res.data
-            localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
             // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
             this.$router.push({
               path: "/extendParams"
