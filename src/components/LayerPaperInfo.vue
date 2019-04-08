@@ -3,9 +3,9 @@
     <div class="paper-info-child">
       <div class="paper-border">
       <div class="paper-tit">专用收款收据</div>
-      <div class="paper-number">合同编号：{{comNumber}}<span class="red">{{comText}}</span></div>
+      <div class="paper-number">交款单位：{{comName}}<span class="red">{{comText}}</span></div>
       <ul class="paper-ul">
-        <li class="w1"><span class="cl-1 mr-10">交款单位：</span>{{comName}}</li>
+        <li class="w1"><span class="cl-1 mr-10">合同编号：</span>{{comNumber}}</li>
         <li><span class="cl-1 mr-10">收款日期：</span>{{comCollectionTime}}</li>
         <li><span class="cl-1 mr-10">开票日期：</span>{{comInvoiceTime}}</li>
         <li class="w2"><span class="cl-1 mr-10">票据编号：</span>{{comPaper}}</li>
@@ -70,9 +70,9 @@
     <div class="paper-dashed"></div>
     <div class="paper-border">
       <div class="paper-tit">专用收款收据</div>
-      <div class="paper-number">合同编号：{{comNumber}}<span class="red">{{comText}}</span></div>
+      <div class="paper-number">交款单位：{{comName}}<span class="red">{{comText}}</span></div>
       <ul class="paper-ul">
-        <li class="w1"><span class="cl-1 mr-10">交款单位：</span>{{comName}}</li>
+        <li class="w1"><span class="cl-1 mr-10">合同编号：</span>{{comNumber}}</li>
         <li><span class="cl-1 mr-10">收款日期：</span>{{comCollectionTime}}</li>
         <li><span class="cl-1 mr-10">开票日期：</span>{{comInvoiceTime}}</li>
         <li class="w2"><span class="cl-1 mr-10">票据编号：</span>{{comPaper}}</li>
@@ -407,12 +407,12 @@
 
   .paper-ul > li {
     float: left;
-    width: 25%;
+    width: 23%;
     margin-bottom: 10px;
   }
 
   .paper-ul .w1{
-      width: 23%;
+      width: 27%;
   }
   .paper-ul .w2{
       width: 27%;
