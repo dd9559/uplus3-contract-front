@@ -26,10 +26,10 @@
             <input type="text" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
-          <el-form-item label="佣金支付费：" class="width-250">
+          <!-- <el-form-item label="佣金支付费：" class="width-250">
             <input type="text" v-model="contractForm.commissionPayment" @input="cutNumber('commissionPayment')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
-          </el-form-item>
+          </el-form-item> -->
           <br>
           <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right" v-if="contractForm.type===1">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true" style="width:220px">

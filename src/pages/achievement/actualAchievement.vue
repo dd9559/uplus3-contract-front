@@ -462,7 +462,7 @@
         <h1 class="f14">业绩详情</h1>
         <p class="f14" style="font-weight:bold;">
           可分配业绩：<span class="orange">{{comm}}元</span>
-          <span>（可分配业绩=客户佣金+业主佣金-佣金支付费-第三方合作费）</span>
+          <span>（可分配业绩=客户佣金+业主佣金-第三方合作费）</span>
         </p>
       </div>
       <div class="ach-body">
