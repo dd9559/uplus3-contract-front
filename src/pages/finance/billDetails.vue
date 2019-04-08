@@ -166,7 +166,7 @@
             <el-table-column align="center" prop="bankName" label="银行">
               <template slot-scope="scope">
                 <span v-if="scope.row.bankName.length>0">{{scope.row.bankName}}</span>
-                <span v-else>{{scope.row.bankName}}</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column align="center" prop="bankBranch" label="支行">

@@ -127,7 +127,7 @@
     <el-dialog title="资料库" :visible.sync="dialogContData" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="contData">
         <div class="classify" v-if="sellerList.length>0">
-          <p class="title">卖方</p>
+          <p class="title">业主</p>
           <div class="one_" v-for="(item,index) in sellerList" :key="index">
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
@@ -150,7 +150,7 @@
           </div>
         </div>
         <div class="classify" v-if="buyerList.length>0">
-          <p class="title">买方</p>
+          <p class="title">客户</p>
           <div class="one_" v-for="(item,index) in buyerList" :key="index">
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
@@ -365,114 +365,77 @@ export default {
   methods: {
       tuozhuai(sign,countnum){
         var oDiv=document.getElementsByClassName('signature')[countnum]
-        console.log(oDiv)
         var that=this
         oDiv.onmousedown = function(ev){
           // debugger
             var disX = ev.clientX -oDiv.offsetLeft;
             var disY = ev.clientY - oDiv.offsetTop;
+          var l=0;
+          var t=0;
+          let pageNums=Array.from(document.querySelectorAll('.signaturewrap>img'))
+          let pageHeight=[]
+          let pageindex=0
+          pageNums.forEach((item,index)=>{
+            pageHeight.push(item.offsetHeight)
+          })
             document.onmousemove = function(ev){
-            var l = ev.clientX-disX;
-            var t = ev.clientY-disY;
+            l = ev.clientX-disX;
+            t = ev.clientY-disY;
             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
             l < 0 ? l = 0 : l
             t < 0 ? t = 0 : t
             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
-            let pageindex=parseInt(ev.target.offsetTop/(992))+1
-            sign.x=Number((l/706).toFixed(2))-0.02
-            sign.y=Number((t/document.querySelector('.signaturewrap').querySelector('img').offsetHeight).toFixed(2))
-            let deviation=1.002
-            if(that.contType===2){
-              deviation=1.054
-            }
-            if(sign.y>1){
-              sign.y=sign.y-(pageindex-1)*deviation
-            }
-            sign.pageIndex=Number(pageindex)
+
+            // let pageindex=parseInt(ev.target.offsetTop/(992))+1
+
             oDiv.style.left = l+'px';
             oDiv.style.top = t+'px';
             };
 
-            document.onmouseup = function(){
-              // debugger
-              let state=that.src.some((item,index)=>{
-              return sign.y>0.85*index&&sign.y<1*index
-            })
+            document.onmouseup = function(ev){
+              let deviation=0
+              if(oDiv.offsetTop<pageHeight[0]){
+                pageindex=1
+              }else {
+                deviation=oDiv.offsetTop-pageHeight[0]
+                pageindex=parseInt(deviation/(pageHeight[1]))+2
+              }
+              sign.x=Number((l/706).toFixed(2))-0.02
+              sign.y=Number((t/document.querySelectorAll('.signaturewrap>img')[pageindex-1].offsetHeight).toFixed(2))
+              sign.pageIndex=Number(pageindex)
+
+              let deviationY=sign.pageIndex===1?0:that.isShowType?0.086:0.086
+              let deviationX=that.isShowType&&sign.pageIndex===1?0.01:0.03
+              // console.log(deviationX,deviationY)
+              if(that.isShowType){
+                sign.x=sign.x+deviationX
+              }
+              if(sign.y>1){
+                sign.y=sign.y-(sign.pageIndex-1)-deviationY
+              }else {
+                sign.y=sign.y-deviationY
+              }
+              let state=sign.y>0.85&&sign.y<1
             if(state){
               sign.y=0.85
             }else{
               sign.y=parseFloat(sign.y).toFixed(4)
             }
+            sign.x=parseFloat(sign.x).toFixed(4)
             document.onmousemove=null;
             document.onmouseup=null;
             };
         };
-        // console.log(document.getElementsByClassName('el-icon-close')[count]);
         document.getElementsByClassName('el-icon-close')[countnum].onclick=function(ev){
           that.signPositions.forEach((item,index)=>{
             if(item.index==ev.target.getAttribute('index')){
               that.signPositions.splice(index,1)
               console.log(ev.target.parentNode,'parent');
-              // console.log(document.getElementsByClassName('signature')[count],'zhongji');
-              // let obj=document.getElementsByClassName('signature')[that.index]
               ev.target.parentNode.style.display="none"
-              // ev.target.parentNode.parentNode.removeChild(obj)
-              // that.count=that.count-1
             }
           })
         }
     },
-    // tuozhuai(sign,count){
-    //     var oDiv=document.getElementsByClassName('signature')[count]
-    //     console.log(oDiv)
-    //     var that=this
-    //         oDiv.onmousedown = function(ev){
-    //           // debugger
-    //             var disX = ev.clientX -oDiv.offsetLeft;
-    //             var disY = ev.clientY - oDiv.offsetTop;
-    //             document.onmousemove = function(ev){
-    //             var l = ev.clientX-disX;
-    //             var t = ev.clientY-disY;
-    //             l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
-    //             l < 0 ? l = 0 : l
-    //             t < 0 ? t = 0 : t
-    //             t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
-    //             let pageindex=parseInt(ev.target.offsetTop/992)+1
-    //             sign.x=Number((l/706).toFixed(2))-0.02
-    //             sign.y=Number((t/993).toFixed(2))-0.01
-    //             sign.pageIndex=Number(pageindex)
-    //             oDiv.style.left = l+'px';
-    //             oDiv.style.top = t+'px';
-    //             };
-    //             document.onmouseup = function(){
-    //               // debugger
-    //               let state=that.src.some((item,index)=>{
-    //               return sign.y>0.85*index&&sign.y<1*index
-    //             })
-    //             if(state){
-    //               sign.y=0.85
-    //             }else{
-    //               sign.y=(sign.y-(sign.pageIndex-1)).toFixed(2)
-    //             }
-    //             document.onmousemove=null;
-    //             document.onmouseup=null;
-    //             };
-    //         };
-    //         // console.log(document.getElementsByClassName('el-icon-close')[count]);
-    //         document.getElementsByClassName('el-icon-close')[count].onclick=function(ev){
-    //           that.signPositions.forEach((item,index)=>{
-    //             if(item.index==ev.target.getAttribute('index')){
-    //               that.signPositions.splice(index,1)
-    //               console.log(ev.target.parentNode,'parent');
-    //               // console.log(document.getElementsByClassName('signature')[count],'zhongji');
-    //               // let obj=document.getElementsByClassName('signature')[that.index]
-    //              ev.target.parentNode.style.display="none"
-    //               // ev.target.parentNode.parentNode.removeChild(obj)
-    //               // that.count=that.count-1
-    //             }
-    //           })
-    //         }
-    // },
     //显示印章下拉框
     showList(){
       if(this.companySigns.length>1){
@@ -485,6 +448,11 @@ export default {
     showList_(){
       if(this.storeId){
         this.showPos()
+      }else if(!this.storeId&&this.companySigns.length===0){
+        this.$message({
+          message:'该公司未设置电子签章，请先设置合同电子签章！',
+          type:'warning'
+        })
       }
       // else{
       //   this.$message({
@@ -599,7 +567,8 @@ export default {
           this.isSignature=true;
           this.getContImg();
           this.$message({
-            message:'审核成功'
+            message:'审核成功',
+            type:'success'
           })
         }
       }).catch(error => {
@@ -790,7 +759,7 @@ export default {
             this.storeId=res.data.companySigns[0].storeId
             this.signImg=res.data.companySigns[0].contractSign
           }
-          this.companySigns=res.data.companySigns
+          this.companySigns=res.data.companySigns?res.data.companySigns:[]
           if(res.data.isRisk){
             this.textarea=res.data.remarksExamine;
           }
