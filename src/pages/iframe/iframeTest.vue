@@ -15,7 +15,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
 
   export default {
     name: "iframe-test",
-    mixins: [MIXINS_ZL],
+    mixins: [MIXINS_MM],
     data(){
       return{
         src:'租赁.html'
@@ -24,7 +24,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     methods:{
       check:function () {
         let iframe=document.querySelector('#iframe')
-        // this.leaseCheck(iframe.contentWindow)
+        // this.dealCheck(iframe.contentWindow)
         iframe.contentWindow.document.querySelector("#submit").click()
       }
     },
