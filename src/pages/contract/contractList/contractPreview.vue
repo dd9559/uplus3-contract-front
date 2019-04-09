@@ -20,9 +20,9 @@
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
-        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1" @mouseover="showList" @mouseout="closeList">
+        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length>1||companySigns.length===1&&!isNewTemplate)" @mouseover="showList" @mouseout="closeList">
           <!-- <el-button type="primary" round v-if="examineState===1&&contState===1&&isActive===1" @click="showPos" @mouseover.native="showList" @mouseout="closeList">签章位置</el-button> -->
-          <span class="signAddr" @click="showList_">签章位置</span>
+          <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
             <ul>
               <li v-for="item in companySigns" :key="item.storeId" @click="chooseSign(item)">{{item.name}}</li>
@@ -34,7 +34,7 @@
         <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
-        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&signPositions.length>0" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
@@ -306,6 +306,7 @@ export default {
       storeId:'',//印章id
       signImg:'',
       showSignList:false,
+      isNewTemplate:true,//是否是新模板
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -447,7 +448,9 @@ export default {
     },
     showList_(){
       if(this.storeId){
-        this.showPos()
+        if(!this.isNewTemplate){
+          this.showPos()
+        }
       }else if(!this.storeId&&this.companySigns.length===0){
         this.$message({
           message:'该公司未设置电子签章，请先设置合同电子签章！',
@@ -462,14 +465,16 @@ export default {
       // }
     },
     chooseSign(item){
-      let imgDoms = Array.from(document.getElementsByClassName('signature'))
-      imgDoms.forEach(element => {
-        element.querySelector('img').src=item.contractSign;
-      });
       this.storeId=item.storeId;
       this.signImg=item.contractSign;
       this.showSignList=false;
-      this.showPos()
+      if(!this.isNewTemplate){
+        let imgDoms = Array.from(document.getElementsByClassName('signature'))
+        imgDoms.forEach(element => {
+          element.querySelector('img').src=item.contractSign;
+        });
+        this.showPos()
+      }
     },
     showPos(){
       var content=document.getElementsByClassName('yulan')[0]
@@ -753,10 +758,11 @@ export default {
           this.isSign=res.data.isRisk;
           this.isHaveData=res.data.isHaveData;
           if(res.data.companySigns&&res.data.companySigns.length===1){
-            this.storeId=res.data.companySigns[0].storeId
-            this.signImg=res.data.companySigns[0].contractSign
+            this.storeId=res.data.companySigns[0].storeId;
+            this.signImg=res.data.companySigns[0].contractSign;
           }
-          this.companySigns=res.data.companySigns?res.data.companySigns:[]
+          this.companySigns=res.data.companySigns?res.data.companySigns:[];
+          this.isNewTemplate=res.data.isNewTemplate;//是否是新合同模板
           if(res.data.isRisk){
             this.textarea=res.data.remarksExamine;
           }
