@@ -25,7 +25,10 @@
           <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
             <ul>
-              <li v-for="item in companySigns" :key="item.storeId" @click="chooseSign(item)">{{item.name}}</li>
+              <li v-for="item in companySigns" :key="item.storeId" @click="chooseSign(item)">
+                <!-- <img :src="item.contractSign"> -->
+                {{item.name}}
+              </li>
             </ul>
           </div>
         </div>
@@ -34,7 +37,15 @@
         <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
-        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+        <!-- <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button> -->
+        <el-popover
+          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)"
+          placement="top-start"
+          width="140"
+          trigger="hover">
+          <img :src="signImg" alt="" height="130">
+          <el-button slot="reference" round  @click="signature(3)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+        </el-popover>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
