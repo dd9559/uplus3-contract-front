@@ -233,8 +233,8 @@
         </el-table-column>
         <el-table-column fixed="right" align="center" label="操作" min-width="120">
           <template slot-scope="scope">
-            <div v-if="(power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&scope.row.payStatusValue!==4)||(((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1&&(power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)))">
-              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.isDel===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&scope.row.payStatusValue!==4">
+            <div v-if="(power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11)||(((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1&&(power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)))">
+              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-invoice'].state&&scope.row.type===1&&scope.row.isDel===1&&scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11">
                 开票
               </el-button>
               <template v-if="((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1">
