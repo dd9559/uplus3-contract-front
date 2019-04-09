@@ -43,8 +43,8 @@
           placement="top-start"
           width="140"
           trigger="hover">
-          <img :src="signImg" alt="" height="130">
-          <el-button slot="reference" round  @click="signature(3)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+          <img class="signImg" :src="signImg" alt="">
+          <el-button slot="reference" round @click="signature(3)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
@@ -1200,6 +1200,10 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 
+.signImg{
+  max-height: 130px;
+  max-width: 130px;
+}
 .view-container {
   background: @bg-white;
   .printMaskLayer{
