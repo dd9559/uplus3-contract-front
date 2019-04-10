@@ -35,8 +35,10 @@
         default:false
       },
       scane:{
-        type:[String,Number],
-        default:1
+        type:Object,
+        default:function () {
+          return {path:'other'}
+        }
       }
     },
     data(){
@@ -150,25 +152,42 @@
       up:function () {
         // console.log(uploader)
         let path = ''
-        switch (parseInt(this.scane)){
-          case 1:
-            path='contract/picture/'
+        switch (this.scane.path){
+          case 'ziliaoku':
+            path=`contract/${this.scane.id}/${this.scane.path}`
                 break;
-          case 2:
-            path='bill/picture/'
+          case 'zhuti':
+            path=`contract/${this.scane.id}/${this.scane.path}`
                 break;
-          case 3:
-            path='grade/picture/'
+          case 'jiesuan':
+            path=`contract/${this.scane.id}/${this.scane.path}`
             break;
-          case 4:
-            path='sign/picture/'
+          case 'tiaoyong':
+            path=`contract/${this.scane.id}/${this.scane.path}`
             break;
-          case 5:
-            path='setting/picture/'
+          case 'biangeng':
+            path=`contract/${this.scane.id}/${this.scane.path}`
             break;
-          case 6:
-            path='template/html/'
+          case 'jieyue':
+            path=`contract/${this.scane.id}/${this.scane.path}`
             break;
+          case 'qianhou':
+            path=`contract/${this.scane.id}/${this.scane.path}`
+            break;
+          case 'sk':
+            path=`contract/${this.scane.id}/caiwu/${this.scane.path}`
+            break;
+          case 'fk':
+            path=`contract/${this.scane.id}/caiwu/${this.scane.path}`
+            break;
+          case 'setting':
+            path=`${this.scane.path}`
+            break;
+          case 'template':
+            path=`${this.scane.path}`
+            break;
+          default:
+            path='other'
         }
         let maxSize = 1024
         if(this.uploader.files.length!==0){
