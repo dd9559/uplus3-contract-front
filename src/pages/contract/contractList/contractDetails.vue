@@ -286,7 +286,7 @@
             <ul class="ulData">
               <!-- <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2"> -->
               <li v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
-                <file-up class="uploadSubject" @getUrl="uploadSubject" scane="1" id="zhuti_">
+                <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -313,7 +313,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" scane="1" :id="'seller'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" :scane="dataScane" :id="'seller'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -336,7 +336,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" scane="1" :id="'buyer'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" :scane="dataScane" :id="'buyer'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -359,7 +359,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" scane="1" :id="'other'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" :scane="dataScane" :id="'other'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -555,7 +555,7 @@
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog :shows="shows" @close="closeAch" :achObj="achObj" :dialogType="dialogType" :contractCode="code2"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
-    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
+    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" :code="contCode" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
     <!-- 设置/转交审核人 -->
@@ -967,6 +967,14 @@ export default {
       userMsg:{}, //当前登录人信息
       recordId:'',//合同创建人id
       isReady:false,
+      dataScane:{
+        path:"ziliaoku",
+        id:this.$route.query.code
+      },
+      uploadScane:{
+        path:"zhuti",
+        id:this.$route.query.code
+      },
       //权限
       power: {
         'sign-com-htdetail': {
@@ -1060,7 +1068,7 @@ export default {
   },
   created() {
     this.contType = this.$route.query.contType.toString();
-    this.id = this.$route.query.id;
+    this.id = parseInt(this.$route.query.id);
     this.waterId = Number(this.$route.query.id)
     this.contCode = this.$route.query.code;
     //默认显示 成交报告 判断
