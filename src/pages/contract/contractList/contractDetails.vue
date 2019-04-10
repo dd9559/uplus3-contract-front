@@ -32,7 +32,7 @@
                 <div class="one_">
                   <p><span class="tag">客户佣金：</span><span class="text">{{contractDetail.custCommission}} 元</span></p>
                   <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
-                  <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p>
+                  <!-- <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p> -->
                   <p v-if="contType!='1'">
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
@@ -286,7 +286,7 @@
             <ul class="ulData">
               <!-- <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2"> -->
               <li v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
-                <file-up class="uploadSubject" @getUrl="uploadSubject" scane="1" id="zhuti_">
+                <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -313,7 +313,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" scane="1" :id="'seller'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" :scane="dataScane" :id="'seller'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -336,7 +336,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" scane="1" :id="'buyer'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" :scane="dataScane" :id="'buyer'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -359,7 +359,7 @@
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-if="power['sign-ht-xq-data'].state">
-                    <file-up class="uploadSubject" scane="1" :id="'other'+index" @getUrl="addSubject">
+                    <file-up class="uploadSubject" :scane="dataScane" :id="'other'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
                     </file-up>
@@ -555,7 +555,7 @@
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog :shows="shows" @close="closeAch" :achObj="achObj" :dialogType="dialogType" :contractCode="code2"></achDialog>
     <!-- 变更/解约编辑弹窗 -->
-    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
+    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" :code="contCode" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
     <!-- 设置/转交审核人 -->
@@ -674,7 +674,7 @@
               <div class="title">买方代理人信息</div>
               <div class="two-item">
                 <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.buyerAgentName?contractDetail.report.buyerAgentName:'--'}}</span></p>
-                <p><span>{{contractDetail.report.buyerAgentCardType===1||contractDetail.report.buyerAgentCardType===""?'身份证':'护照'}}：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
+                <p><span>{{contractDetail.report.buyerAgentCardType===1?'身份证':contractDetail.report.buyerAgentCardType===2?'护照':contractDetail.report.buyerAgentCardType===3?'营业执照':'证件号'}}：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{contractDetail.report.buyerAgentMobile?contractDetail.report.buyerAgentMobile:'--'}}</span></p></div>
             </div>
@@ -682,7 +682,7 @@
               <div class="title">卖方代理人信息</div>
               <div class="two-item">
                 <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.sellerAgentName?contractDetail.report.sellerAgentName:'--'}}</span></p>
-                <p><span>{{contractDetail.report.sellerAgentCardType===1||contractDetail.report.sellerAgentCardType===""?'身份证':'护照'}}：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
+                <p><span>{{contractDetail.report.sellerAgentCardType===1?'身份证':contractDetail.report.sellerAgentCardType===2?'护照':contractDetail.report.sellerAgentCardType===3?'营业执照':'证件号'}}：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile?contractDetail.report.sellerAgentMobile:'--'}}</span></p></div>
             </div>
@@ -967,6 +967,14 @@ export default {
       userMsg:{}, //当前登录人信息
       recordId:'',//合同创建人id
       isReady:false,
+      dataScane:{
+        path:"ziliaoku",
+        id:this.$route.query.code
+      },
+      uploadScane:{
+        path:"zhuti",
+        id:this.$route.query.code
+      },
       //权限
       power: {
         'sign-com-htdetail': {
@@ -1060,7 +1068,7 @@ export default {
   },
   created() {
     this.contType = this.$route.query.contType.toString();
-    this.id = this.$route.query.id;
+    this.id = parseInt(this.$route.query.id);
     this.waterId = Number(this.$route.query.id)
     this.contCode = this.$route.query.code;
     //默认显示 成交报告 判断

@@ -15,17 +15,17 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
 
   export default {
     name: "iframe-test",
-    mixins: [MIXINS_JJ],
+    mixins: [MIXINS_MM],
     data(){
       return{
-        src:'居间.html'
+        src:'租赁.html'
       }
     },
     methods:{
       check:function () {
         let iframe=document.querySelector('#iframe')
-        iframe.contentWindow.document.getElementById('submit').click()
-        console.log(sessionStorage.getItem('templateError'))
+        // this.dealCheck(iframe.contentWindow)
+        iframe.contentWindow.document.querySelector("#submit").click()
       }
     },
     computed:{

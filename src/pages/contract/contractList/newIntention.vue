@@ -803,7 +803,7 @@ export default {
             if (res.data.status === 200) {
               let contractMsg = res.data.data
               this.hidBtn=1
-              localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
               // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
               this.$router.push({
                 path: "/extendParams"
@@ -934,7 +934,7 @@ export default {
 
             if (res.data.status === 200) {
               let contractMsg = res.data.data
-              localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
               // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
               this.$router.push({
                 path: "/extendParams"
@@ -1034,7 +1034,7 @@ export default {
      console.log(this.contractForm.houseInfo.ListingPrice)
     let backMsg = JSON.parse(localStorage.getItem("backMsg"));
     if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
-      let contMsg = JSON.parse(localStorage.getItem("contractMsg"));
+      let contMsg = JSON.parse(sessionStorage.getItem("contractMsg"));
       this.contractForm.type=parseInt(contMsg.type);//合同类型
       this.type=2
       this.id=parseInt(contMsg.id)
