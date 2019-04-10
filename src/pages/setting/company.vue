@@ -92,7 +92,7 @@
         <el-table-column align="center" label="操作" min-width="60">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
-            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&!(scope.row.cooperationMode.value===1&&scope.row.level===4)">编辑</el-button>
+            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&scope.row.level!==4">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -257,7 +257,7 @@
                 <span class="point">上传电子签章图片：</span>
                 <ul>
                   <li>
-                    <fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true scane="5"><i>+</i></fileUp>
+                    <fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true scane="{path:'setting'}"><i>+</i></fileUp>
                     <p class="text">点击上传</p>
                   </li>
                   <el-tooltip effect="dark" :content="contractName" placement="bottom">
@@ -276,7 +276,7 @@
                 <span class="point">上传电子签章图片：</span>
                 <ul>
                   <li>
-                    <fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true scane="5"><i>+</i></fileUp>
+                    <fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true scane="{path:'setting'}"><i>+</i></fileUp>
                     <p class="text">点击上传</p>
                   </li>
                   <el-tooltip effect="dark" :content="financialName" placement="bottom">
@@ -506,9 +506,7 @@
           if(this.companyForm.storeId){
             return
           }
-          this.storeList = []
-          this.storePage = 1
-          this.getStoreList(2)
+          this.clearStore()
         }
       },
       remoteMethod1(query) {
@@ -617,32 +615,27 @@
         this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
           res = res.data
           if(res.status === 200 && !res.message) {
-            let isCheck
+            let obj
             this.storeList.find(item => {
               if(val === item.id) {
-                isCheck = item.isCheck
+                obj = item
               }
             })
-            if(isCheck) {
-              this.storeList.find(item => {
-                if(item.id === val) {
-                  this.companyForm.storeName = item.name
-                  this.companyForm.level = item.level
-                  if(item.cooperationMode) {
-                    this.companyForm.cooperationMode = item.cooperationMode.label
-                    this.cooModeChange(item.cooperationMode.value)
-                  }
-                }
-              })
+            if(obj.isCheck) {
+              this.companyForm.storeName = obj.name
+              this.companyForm.level = obj.level
+              if(obj.cooperationMode) {
+                this.companyForm.cooperationMode = obj.cooperationMode.label
+                this.cooModeChange(obj.cooperationMode.value)
+              }
               this.fourthStoreNoEdit = false  
             } else {
-              this.$message({message:"四级直营门店不能录入公司信息",type:"warning"})
+              this.$message({message:"四级门店不能录入公司信息",type:"warning"})
               this.companyForm.storeId = ""
               this.companyForm.cooperationMode = ""
               this.cooModeChange(2)
               this.fourthStoreNoEdit = true
-              this.storeList = []
-              this.getStoreList(2)
+              this.clearStore()
             }
             this.companyForm.name = ""
             this.companyForm.franchiseRatio = ""
@@ -662,8 +655,7 @@
               this.companyForm.financialSign = ""
               this.cooModeChange(2)
               this.fourthStoreNoEdit = false
-              this.storeList = []
-              this.getStoreList(2)
+              this.clearStore()
             }
           }
         }).catch(error => {
@@ -685,8 +677,7 @@
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = localStorage.getItem('cityName')
-        this.storeList = []
-        this.getStoreList(2)
+        this.clearStore()
       },
       //切换到直营属性时,自动带出证件信息
       selectDirectInfo() {
