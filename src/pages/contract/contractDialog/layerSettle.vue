@@ -53,7 +53,7 @@
                         <div class="uploadtitle">结算凭证</div>
                         <ul class="ulData">
                             <li>
-                                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" scane="1">
+                                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" :scane="{path:'jiesuan',id: this.layerAudit.contractCode}">
                                     <i class="iconfont icon-shangchuan"></i>
                                     <p>点击上传</p>
                                 </file-up>
@@ -113,7 +113,10 @@ export default {
             default: false
         },
         layerAudit: {
-           
+           contractCode:{
+               type: String,
+               default:""
+           }
         }
     },
     data() {

@@ -1419,11 +1419,16 @@
       p{
         margin-bottom: 12px;
         clear: both;
+        // display: flex;
+        // align-items: top;
         span.blue{
+          // display:block;
           display: inline-block;
           width: 278px;
           white-space: normal;
           vertical-align: top;
+          // word-wrap: break-word;
+          // word-break: break-all;
         }
         span.blue:nth-child(1){
           width: 230px;
