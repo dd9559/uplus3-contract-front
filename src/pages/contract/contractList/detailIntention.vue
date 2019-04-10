@@ -93,7 +93,7 @@
                     <div class="contractSubject">
                         <ul class="ulData">
                             <li v-if="power['sign-ht-xq-main-add'].state">
-                                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" :scane="{path:'zhuti',id:this.detailData.code}">
+                                <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" :scane="scaneZhuti">
                                     <i class="iconfont icon-shangchuan"></i>
                                     <p>点击上传</p>
                                 </file-up>
@@ -105,7 +105,7 @@
                                         <p>{{item.name}}</p>
                                     </div>
                                 </el-tooltip>
-                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="power['sign-ht-xq-main-add'].state&&isDelete===item.index+item.path"></i>
+                                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow': power['sign-ht-xq-main-add'].state&&isDelete===item.index+item.path}"></i>
                             </li>
                         </ul>
                     </div>
@@ -120,7 +120,7 @@
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li v-if="power['sign-ht-xq-data'].state">
-                                        <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject" :scane="{path:'ziliaoku',id:this.detailData.code}">
+                                        <file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject" :scane="scaneData">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
                                         </file-up>
@@ -132,7 +132,7 @@
                                                 <p>{{item_.name}}</p>                                              
                                             </div>
                                         </el-tooltip>
-                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
+                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                                     </li>
                                 </ul>
                             </div>                           
@@ -145,7 +145,7 @@
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li v-if="power['sign-ht-xq-data'].state">
-                                        <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject" :scane="{path:'ziliaoku',id:this.detailData.code}">
+                                        <file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject" :scane="scaneData">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
                                         </file-up>
@@ -158,7 +158,7 @@
                                                     <p>{{item_.name}}</p>   
                                                 </div>
                                             </el-tooltip>
-                                            <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>                                          
+                                            <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>                                          
                                         </li>
                                     
                                 </ul>
@@ -172,7 +172,7 @@
                                 <p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                                 <ul class="ulData">
                                     <li v-if="power['sign-ht-xq-data'].state">
-                                        <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject" :scane="{path:'ziliaoku',id:this.detailData.code}">
+                                        <file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject" :scane="scaneData">
                                             <i class="iconfont icon-shangchuan"></i>
                                             <p>点击上传</p>
                                         </file-up>
@@ -184,7 +184,7 @@
                                                 <p>{{item_.name}}</p>    
                                             </div>                                         
                                         </el-tooltip>
-                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" v-if="power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path"></i>
+                                        <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                                     </li>
                                 </ul>
                             </div>                           
@@ -228,8 +228,18 @@ export default {
             dialogImageUrl: '',
             dialogVisible: false,
             contState:'',
+            // code:'',
+            scaneZhuti:{
+                path:'zhuti',
+                id: this.code  
+            },
+            scaneData: {
+                path:"ziliaoku",
+                id: this.code
+            },
+            
             detailData: {
-                code:'',
+                // code:'',
                 signDate:'',
                 subscriptionTerm:'',
                 contType: {
@@ -303,6 +313,7 @@ export default {
         vm.setPath(vm.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
       })
     },
+
     methods: {
 
 
@@ -668,6 +679,8 @@ export default {
           
             if (res.data.status === 200) {
                 this.detailData = res.data.data
+                this.code = res.data.data.code
+                console.log(this.code)
                 this.contState = res.data.data.contState.value
                 console.log(this.contState)
                 var contperson = this.detailData.contPersons
@@ -760,7 +773,9 @@ export default {
         padding: 0 30px;
     }
 
-      
+    .deleteShow{
+        display: block !important;
+    }
     
     .detailbox{
         padding: 20px 0 0px;
@@ -964,10 +979,12 @@ export default {
         }
         .ulData{
             display: flex;
+            flex-wrap:wrap;
             li{
                 margin-right: 10px;
                 position: relative;
                 > i{
+                    display: none;
                     position: absolute;
                     top: 5px;
                     right: 5px;
