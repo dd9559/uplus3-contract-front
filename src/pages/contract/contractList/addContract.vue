@@ -13,19 +13,6 @@
             <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
-          <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice">
-            <i class="yuan" v-if="contractForm.type!==1">元</i>
-            <!-- <el-input :value="contractForm.dealPrice" type="text" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
-          </el-form-item>
-          <el-form-item v-if="contractForm.type===1">
-            <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:105px">
-              <el-option v-for="item in dictionary['507']" :key="item.key" :label="`元 / ${item.value}`" :value="item.key"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <span class="chineseNum">{{contractForm.dealPrice|moneyFormat}}</span>
-          </el-form-item>
           <br>
           <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
             <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
@@ -39,10 +26,10 @@
             <input type="text" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
-          <el-form-item label="佣金支付费：" class="width-250">
+          <!-- <el-form-item label="佣金支付费：" class="width-250">
             <input type="text" v-model="contractForm.commissionPayment" @input="cutNumber('commissionPayment')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
-          </el-form-item>
+          </el-form-item> -->
           <br>
           <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right" v-if="contractForm.type===1">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true" style="width:220px">
@@ -60,6 +47,20 @@
             <span class="select" @click="showDialog('house')" v-if="type===1">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
             <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
+          <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
+            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice">
+            <i class="yuan" v-if="contractForm.type!==1">元</i>
+            <!-- <el-input :value="contractForm.dealPrice" type="text" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
+          </el-form-item>
+          <el-form-item v-if="contractForm.type===1">
+            <el-select v-model="contractForm.timeUnit" placeholder="请选择" style="width:105px">
+              <el-option v-for="item in dictionary['507']" :key="item.key" :label="`元 / ${item.value}`" :value="item.key"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <span class="chineseNum">{{contractForm.dealPrice|moneyFormat}}</span>
+          </el-form-item>
+          <br>
           <el-form-item label="物业地址：" :class="{'form-label':type===1}" style="width:605px;text-align:right">
             <span class="propertyAddress" v-if="contractForm.houseinfoCode">
               <!-- {{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}} -->
@@ -74,12 +75,12 @@
           <br>
           <el-form-item label="建筑面积：" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
-            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
+            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">㎡</i>
           </el-form-item>
           <el-form-item label="套内面积：" class="width-250">
             <!-- <el-input v-model="contractForm.houseInfo.SquareUse" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
-            <input type="text" v-model="contractForm.houseInfo.SquareUse" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
+            <input type="text" v-model="contractForm.houseInfo.SquareUse" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">㎡</i>
           </el-form-item>
           <!-- <el-form-item label="房源方门店：" class="form-label" style="width:310px;text-align:right">
@@ -132,8 +133,8 @@
           <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
               <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
-                <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="20" @input="inputOnly(index,'owner')" class="name_">
+                <span class="merge">
+                  <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                  <!-- :disabled="type===2&&!item.edit?true:false" -->
@@ -184,8 +185,8 @@
           <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
               <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
-                <span class="merge" :class="{'disabled':type===2&&!item.edit}">
-                  <input v-model="item.name" placeholder="姓名" maxlength="20" @input="inputOnly(index,'guest')"  class="name_">
+                <span class="merge">
+                  <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
@@ -348,15 +349,15 @@ const rule = {
   signDate: {
     name: "签约日期"
   },
-  dealPrice: {
-    name: "成交总价",
-    type: "money"
-  },
   transFlowCode: {
     name: "交易流程",
   },
   houseinfoCode: {
     name: "房源"
+  },
+  dealPrice: {
+    name: "成交总价",
+    type: "money"
   },
   guestinfoCode: {
     name: "客源"
@@ -502,7 +503,7 @@ export default {
   created() {
     let backMsg = JSON.parse(localStorage.getItem("backMsg"));
     if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
-      let contMsg = JSON.parse(localStorage.getItem("contractMsg"));
+      let contMsg = JSON.parse(sessionStorage.getItem("contractMsg"));
       this.contractForm.type = parseInt(contMsg.type);//合同类型
       this.type=2;//编辑
       this.id=parseInt(contMsg.id)
@@ -743,7 +744,7 @@ export default {
       }
       this.$tool.checkForm(this.contractForm, rule_).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
-            if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
+            // if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
               this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
               let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
               this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
@@ -1203,12 +1204,6 @@ export default {
               //     type: "warning"
               //   });
               // }
-            }else{
-              this.$message({
-                message: "合同信息-总佣金不能大于成交总价",
-                type: "warning"
-              });
-            }
           } else {
             this.$message({
               message: "合同信息-佣金不能为零",
@@ -1274,7 +1269,7 @@ export default {
             this.fullscreenLoading=false;
             let contractMsg = res.data
             this.hidBtn=1
-            localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
             // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
             this.$router.push({
               path: "/extendParams"
@@ -1282,7 +1277,9 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          this.canClick=true
+          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"){
+            this.canClick=true
+          }
           this.$message({
             message:error,
             type: "error"
@@ -1319,7 +1316,7 @@ export default {
           if (res.status === 200) {
             this.fullscreenLoading=false;
             let contractMsg = res.data
-            localStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
             // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
             this.$router.push({
               path: "/extendParams"

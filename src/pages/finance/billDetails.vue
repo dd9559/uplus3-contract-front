@@ -116,7 +116,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作">
               <template slot-scope="scope">
-                <el-button type="text" @click="getPaper('create')" v-if="btnBill&&billMsg.billStatus&&billMsg.isDel===1&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)&&billMsg.payStatusValue!==4">开票</el-button>
+                <el-button type="text" @click="getPaper('create')" v-if="btnBill&&billMsg.billStatus&&billMsg.isDel===1&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)&&billMsg.payStatusValue!==4&&billMsg.payStatusValue!==11">开票</el-button>
                 <span v-else>--</span>
               </template>
             </el-table-column>
@@ -166,7 +166,7 @@
             <el-table-column align="center" prop="bankName" label="银行">
               <template slot-scope="scope">
                 <span v-if="scope.row.bankName.length>0">{{scope.row.bankName}}</span>
-                <span v-else>{{scope.row.bankName}}</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column align="center" prop="bankBranch" label="支行">

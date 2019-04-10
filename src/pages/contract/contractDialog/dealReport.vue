@@ -103,7 +103,7 @@
                 <div class="guest msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="width:150px;word-wrap:break-word;">{{firstBuyer.name}}</span></p>
-                        <p><span style="min-width:56px;">{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":"营业执照"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
+                        <p style="min-width:200px;"><span>{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":"营业执照"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
@@ -151,7 +151,7 @@
                 <div class="owner msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="width:150px;word-wrap:break-word;">{{firstSeller.name}}</span></p>
-                        <p><span style="min-width:56px;">{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":"营业执照"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
+                        <p style="min-width:200px;"><span>{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":"营业执照"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
@@ -188,7 +188,7 @@
                         <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)" :disabled="!saveBtnShow" clearable>
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
-                        <el-input size="small" :maxlength="report.buyerAgentCardType===1?18:report.buyerAgentCardType===2?9:18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.buyerAgentCard" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" :maxlength="report.buyerAgentCardType===1?18:report.buyerAgentCardType===2?9:report.buyerAgentCardType===3?20:18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.buyerAgentCard" :disabled="!saveBtnShow"></el-input>
                     </p>
                     <p>
                         <span>电话：</span>
@@ -205,7 +205,7 @@
                         <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)" :disabled="!saveBtnShow" clearable>
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
-                        <el-input size="small" :maxlength="report.sellerAgentCardType===1?18:report.sellerAgentCardType===2?9:18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.sellerAgentCard" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" :maxlength="report.sellerAgentCardType===1?18:report.sellerAgentCardType===2?9:report.sellerAgentCardType===3?20:18" onkeyup="value=value.replace(/\s+/g,'')" class="w200" v-model="report.sellerAgentCard" :disabled="!saveBtnShow"></el-input>
                     </p>
                     <p>
                         <span>电话：</span>
@@ -750,6 +750,7 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 .container {
+    overflow-x: auto;
     color: @color-6c;
     .bold {
         font-weight: bold;
@@ -775,7 +776,7 @@ export default {
         }
         &.mai-mai {
             p {
-                margin-right: 20px;
+                margin-right: 15px;
             }
             p:nth-child(odd) {
                 span:first-child {
@@ -963,6 +964,7 @@ export default {
 .dialog-footer {
     width: 1200px;
     margin-top: 20px;
+    margin-bottom: 20px;
     text-align: center;
 }
 .confirmBtn {

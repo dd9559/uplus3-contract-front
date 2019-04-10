@@ -32,7 +32,7 @@
                 <div class="one_">
                   <p><span class="tag">客户佣金：</span><span class="text">{{contractDetail.custCommission}} 元</span></p>
                   <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
-                  <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p>
+                  <!-- <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p> -->
                   <p v-if="contType!='1'">
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
@@ -308,7 +308,7 @@
           <!-- <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData"> -->
           <div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHei }">
             <div class="classify" v-if="sellerList.length>0">
-              <p class="title">卖方</p>
+              <p class="title">业主</p>
               <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
@@ -331,7 +331,7 @@
               </div>
             </div>
             <div class="classify" v-if="buyerList.length>0">
-              <p class="title">买方</p>
+              <p class="title">客户</p>
               <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
                 <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
@@ -674,7 +674,7 @@
               <div class="title">买方代理人信息</div>
               <div class="two-item">
                 <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.buyerAgentName?contractDetail.report.buyerAgentName:'--'}}</span></p>
-                <p><span>{{contractDetail.report.buyerAgentCardType===1||contractDetail.report.buyerAgentCardType===""?'身份证':'护照'}}：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
+                <p><span>{{contractDetail.report.buyerAgentCardType===1?'身份证':contractDetail.report.buyerAgentCardType===2?'护照':contractDetail.report.buyerAgentCardType===3?'营业执照':'证件号'}}：</span><span>{{contractDetail.report.buyerAgentCard?contractDetail.report.buyerAgentCard:'--'}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{contractDetail.report.buyerAgentMobile?contractDetail.report.buyerAgentMobile:'--'}}</span></p></div>
             </div>
@@ -682,7 +682,7 @@
               <div class="title">卖方代理人信息</div>
               <div class="two-item">
                 <p class="line"><span>代理人姓名：</span><span>{{contractDetail.report.sellerAgentName?contractDetail.report.sellerAgentName:'--'}}</span></p>
-                <p><span>{{contractDetail.report.sellerAgentCardType===1||contractDetail.report.sellerAgentCardType===""?'身份证':'护照'}}：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
+                <p><span>{{contractDetail.report.sellerAgentCardType===1?'身份证':contractDetail.report.sellerAgentCardType===2?'护照':contractDetail.report.sellerAgentCardType===3?'营业执照':'证件号'}}：</span><span>{{contractDetail.report.sellerAgentCard?contractDetail.report.sellerAgentCard:'--'}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{contractDetail.report.sellerAgentMobile?contractDetail.report.sellerAgentMobile:'--'}}</span></p></div>
             </div>
@@ -1081,6 +1081,11 @@ export default {
     this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
   },
+  beforeRouteEnter(to,from,next){
+      next(vm=>{
+        vm.setPath(vm.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+      })
+    },
   methods: {
     //控制 编辑 打印成交报告 保存 按钮显示隐藏
     editFn() {
@@ -1183,7 +1188,7 @@ export default {
     //合同预览
     goPreview() {
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
-      this.$router.replace({
+      this.$router.push({
         path: "/contractPreview",
         query: {
           id: this.id,
@@ -1234,7 +1239,7 @@ export default {
     // 合同编辑
     goEdit() {
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-      this.$router.replace({
+      this.$router.push({
         path: "/addContract",
         query: {
           id: this.contractDetail.id,
@@ -1824,7 +1829,7 @@ export default {
         })
       }
     },
-    //合同资料科删除
+    //合同资料库删除
     delectData(index,index_,type){
       if(this.contractDetail.isHaveData){
         if(type==="seller"){
