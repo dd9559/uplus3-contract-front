@@ -175,7 +175,7 @@
           <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
           <ul class="upload-list">
             <li>
-              <file-up class="upload-context" @getUrl="getFiles" scane="2">
+              <file-up class="upload-context" @getUrl="getFiles" :scane="uploadScane">
                 <i class="iconfont icon-shangchuan"></i>
                 <span>点击上传</span>
               </file-up>
@@ -346,7 +346,8 @@
             value:1
           }
         ],
-        adminBanks:[]
+        adminBanks:[],
+        uploadScane:{path:'fk',id:''},//上传场景值
       }
     },
     created(){
@@ -362,6 +363,9 @@
       if (type) {
         this.inObjPerson.state=true
         this.getDetails({type: type, payId: this.$route.query.id})
+      }
+      if(query.code){
+        this.uploadScane.id=query.code
       }
     },
     methods:{
