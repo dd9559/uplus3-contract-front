@@ -17,7 +17,7 @@
 					<div class="uploadbtn">
 						<ul>
 							<li>
-								<file-up class="uploadSubject" scane="1" @getUrl="uploadSubject" id="change_">
+								<file-up class="uploadSubject" :scane="changeScane" @getUrl="uploadSubject" id="change_">
 									<i class="iconfont icon-shangchuan"></i>
 									<p>点击上传</p>
 								</file-up>
@@ -85,7 +85,7 @@
 					<div class="uploadbtn">
 						<ul>
 							<li>
-								<file-up class="uploadSubject" scane="1" @getUrl="uploadSubject" id="cancel_">
+								<file-up class="uploadSubject" :scane="cancelScane" @getUrl="uploadSubject" id="cancel_">
 									<i class="iconfont icon-shangchuan"></i>
 									<p>点击上传</p>
 								</file-up>
@@ -141,7 +141,7 @@
 					<div class="uploadbtn">
 						<ul>
 							<li>
-								<file-up class="uploadSubject" scane="1" @getUrl="uploadSubject" id="zhuti_">
+								<file-up class="uploadSubject" :scane="uploadScane" @getUrl="uploadSubject" id="zhuti_">
 									<i class="iconfont icon-shangchuan"></i>
 									<p>点击上传</p>
 								</file-up>
@@ -187,6 +187,10 @@ export default {
       type: Number,
       default: 0
     },
+    code: {
+      type: String,
+      default: ""
+    },
     contState: {
       type: Number,
       default: 99
@@ -209,6 +213,18 @@ export default {
 			//保存按钮是否可点击
 			forbid:false,
 			previewType:'none',
+			changeScane:{
+				path:"biangeng",
+				id:this.code
+			},
+			cancelScane:{
+				path:"jieyue",
+				id:this.code
+			},
+			uploadScane:{
+				path:"zhuti",
+				id:this.code
+			},
 			power:{
 				'sign-ht-xq-main-down': {
           state: false,
@@ -227,6 +243,9 @@ export default {
     },
     getContId() {
       return this.contId;
+    },
+    getCode() {
+      return this.code;
     }
   },
 

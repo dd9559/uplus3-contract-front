@@ -307,7 +307,7 @@
     <!-- 结算弹窗 -->
     <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerAudit" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" :code="uploadCode" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
     <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
@@ -401,6 +401,8 @@ export default {
       },
       //流水用合同编号
       contCode:'',
+      //上传用合同编号
+      uploadCode:'',
       waterContId:'',
       housePurpose:[],
       isSubmitAudit:false,
@@ -804,6 +806,7 @@ export default {
       this.changeCancel = true;
       this.dialogType = "upload";
       this.contId = item.id,
+      this.uploadCode=item.code,
       this.contState=item.contState.value
     },
     //获取当前部门

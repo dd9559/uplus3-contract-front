@@ -119,7 +119,7 @@
       </span>
     </el-dialog>
     <!-- 变更/解约编辑弹窗 -->
-    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
+    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" :code="code" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
      <!-- 提审确认框 -->
     <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
       <span>确定提审？</span>
@@ -143,7 +143,7 @@
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
               <li>
-                <file-up class="uploadSubject" scane="1" :id="'seller'+index" @getUrl="addSubject">
+                <file-up class="uploadSubject" :scane="dataScane" :id="'seller'+index" @getUrl="addSubject">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -166,7 +166,7 @@
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
               <li>
-                <file-up class="uploadSubject" scane="1" :id="'buyer'+index" @getUrl="addSubject">
+                <file-up class="uploadSubject" :scane="dataScane" :id="'buyer'+index" @getUrl="addSubject">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -189,7 +189,7 @@
             <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
               <li>
-                <file-up class="uploadSubject" scane="1" :id="'other'+index" @getUrl="addSubject">
+                <file-up class="uploadSubject" :scane="dataScane" :id="'other'+index" @getUrl="addSubject">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -318,6 +318,10 @@ export default {
       signImg:'',
       showSignList:false,
       isNewTemplate:true,//是否是新模板
+      dataScane:{
+        path:"ziliaoku",
+        id:this.$route.query.code
+      },
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -500,7 +504,6 @@ export default {
       var signaturewrap=document.getElementsByClassName('signaturewrap')[0]
       signaturewrap.appendChild(signturn)
       // var sign={x:0,y:0,pageIndex:1,index:this.count}
-      // debugger
       var sign={x:0,y:content.scrollTop,pageIndex:1,index:this.countnum}
       let obj=document.getElementsByClassName('signature')[this.countnum]
       obj.style.top=sign.y+'px'
@@ -510,8 +513,6 @@ export default {
           this.tuozhuai(this.signPositions[index],this.countnum++)
         }
       })
-      //  this.tuozhuai(sign,this.count++)
-      console.log(this.signPositions);
 
     },
     // 控制弹框body内容高度，超过显示滚动条
