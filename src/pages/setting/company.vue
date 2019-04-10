@@ -512,12 +512,14 @@
       remoteMethod1(query) {
         setTimeout(() => {
           this.homeStoreList = []
+          this.homeStorePage = 1
           this.getStoreList(1,this.homeStorePage,query)
         },200)
       },
       remoteMethod2(query) {
         setTimeout(() => {
           this.storeList = []
+          this.storePage = 1
           this.getStoreList(2,this.storePage,query)
         },200)
       },
@@ -578,15 +580,6 @@
       },
       getStoreList(val,page=1,keyword='') {
         this.temKey = keyword
-        if(keyword&&keyword.length>0) {
-          if(val===1){
-            page = 1
-            this.homeStorePage = 1
-          }else{
-            page = 1
-            this.storePage = 1
-          }
-        }
         this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword}).then(res => {
           res = res.data
           if(res.status === 200) {

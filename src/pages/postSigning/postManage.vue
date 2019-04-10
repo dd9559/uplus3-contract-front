@@ -263,7 +263,7 @@
                                 effect="dark"
                                 :content="scope.row.stepInstanceName"
                                 placement="top">
-                                    <el-button class="blue" type="text" @click="transactionFn(scope.row.stepInstanceid)">{{scope.row.stepInstanceName}}</el-button>
+                                    <el-button class="blue" type="text" @click="transactionFn(scope.row,1)">{{scope.row.stepInstanceName}}</el-button>
                                 </el-tooltip>
                             </p>
                             <p>{{nextStepFn(scope.row.nextStepName)}}</p>
@@ -398,7 +398,7 @@
                                     <el-button class="blue" type="text" @click="operationFn(scope.row.id)">查看</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.backlog && layerShowData.statusLaterStage.label !== STATE.start">
-                                    <el-button class="blue" type="text" @click="transactionFn(scope.row.id)">办理</el-button><el-button class="blue" type="text" v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" @click="downFn(scope)">下</el-button>
+                                    <el-button class="blue" type="text" @click="transactionFn(scope.row)">办理</el-button><el-button class="blue" type="text" v-if="scope.$index !== tableProgress.length-1 && power['sign-qh-mgr-jd-move'].state" @click="downFn(scope)">下</el-button>
                                 </template>
                                 <template v-else-if="scope.row.stepState.value === OPERATION.sure && layerShowData.statusLaterStage.label !== STATE.start">
                                     <el-button class="blue" type="text" @click="sureFn(scope.row)">{{showSeeFn('确认',scope.row)}}</el-button>
@@ -518,7 +518,7 @@
                                                 :id="'fileUp'+index"
                                                 :rules="stepsTypeImg(item.type,1)"
                                                 @getUrl="imgBtnFn"
-                                                scane="4"
+                                                :scane="scanePath"
                                                 class="fileUp">
                                                     <el-button
                                                     class="paper-btn paper-btn-blue"
@@ -875,6 +875,10 @@
                     disabledDate(time) {
                         return time.getTime() > Date.now();
                     },
+                },
+                scanePath:{
+                    path:'qianhou',
+                    id:'合同编号'
                 }
             }
         },
@@ -998,7 +1002,15 @@
                 });
             },
             // 办理
-            transactionFn(id){
+            transactionFn(data,bool=0){
+                let id;
+                if(bool){
+                    id = data.stepInstanceid;
+                    this.scanePath.id = data.code;
+                }else{
+                    id = data.id;
+                    this.scanePath.id = this.layerShowData.code;
+                }
                 // this.stepsData = {
                 //     show:true,
                 //     tit:'办理'
@@ -1263,6 +1275,7 @@
                 //     show:true,
                 //     tit:'确认'
                 // }
+                this.scanePath.id = this.layerShowData.code;
                 this.getLookStepFn(row.id,this.showSeeFn('确认',row));
             },
             showSeeFn(txt,row){
@@ -1334,6 +1347,7 @@
                 //     show:true,
                 //     tit:'修改'
                 // }
+                this.scanePath.id = this.layerShowData.code;
                 this.getLookStepFn(row.id,this.showSeeFn('修改',row));
             },
             // 选择交易流程 取消
