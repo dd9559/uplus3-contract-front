@@ -331,7 +331,7 @@
           <p><label class="form-label f14">付款凭证</label><span>（凭证类型：买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</span></p>
           <ul class="upload-list">
             <li>
-              <file-up class="upload-context" @getUrl="getFiles" scane="2">
+              <file-up class="upload-context" @getUrl="getFiles" :scane="uploadScane">
                 <i class="iconfont icon-shangchuan"></i>
                 <span>点击上传</span>
               </file-up>
@@ -504,6 +504,7 @@
           state:true,
           content:{}
         },//合同是否第一次创建
+        uploadScane:{path:'sk',id:''},//上传场景值
       }
     },
     mounted() {
@@ -517,6 +518,10 @@
       this.addInit(this.$route.query.contId)
       let type = this.$route.query.edit
       let inAccount = this.$route.query.type
+      let code=this.$route.query.code
+      if(code){
+        this.uploadScane.id=code
+      }
       if (type) {
         this.inObjPerson=false
         this.getDetails({type: type, payId: this.$route.query.id})

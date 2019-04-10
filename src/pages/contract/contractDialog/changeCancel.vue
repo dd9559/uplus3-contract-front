@@ -29,7 +29,7 @@
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
-								<i class="iconfont icon-tubiao-6" @click="delectData(index)" :class="{'deleteShow':isDelete===item.title+item.path}"></i>
+								<i class="iconfont icon-tubiao-6" @click="delectData(index)" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
 							</li>
 						</ul>
 					</div>
@@ -97,7 +97,7 @@
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
-								<i class="iconfont icon-tubiao-6" @click="delectData(index)" :class="{'deleteShow':isDelete===item.title+item.path}"></i>
+								<i class="iconfont icon-tubiao-6" @click="delectData(index)" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
 							</li>
 						</ul>
 					</div>

@@ -299,7 +299,7 @@
                   </div>
                 </el-tooltip>
                  <!-- v-if="isDelete===item.title+item.path" -->
-                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow':isDelete===item.title+item.path}"></i>
+                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
           </div>
