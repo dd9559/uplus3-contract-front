@@ -176,7 +176,7 @@
         <el-table-column align="center" label="财务收付" min-width="50">
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
-            <div class="btn" @click="gathering(scope.row.id)">收款</div>
+            <div class="btn" @click="gathering(scope.row)">收款</div>
             <div class="btn" @click="payment(scope.row)">付款</div>
           </template>
         </el-table-column>
@@ -595,13 +595,14 @@ export default {
       this.waterContId='';
     },
     //收款
-    gathering(id) {
+    gathering(item) {
       if(this.power['sign-ht-info-collect'].state){
         this.setPath(this.$tool.getRouter(['合同','合同列表','创建收款'],'contractList'));
         this.$router.push({
           path:'/receiptBill',
           query:{
-            contId:id
+            contId:item.id,
+            code:item.code
           }
         })
       }else{
