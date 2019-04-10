@@ -92,7 +92,7 @@
         <el-table-column align="center" label="操作" min-width="60">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
-            <el-button type="text" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&!(scope.row.cooperationMode.value===1&&scope.row.level===4)">编辑</el-button>
+            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&!(scope.row.cooperationMode.value===1&&scope.row.level===4)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -1150,6 +1150,9 @@
       background-color: #478DE3;
       color: #fff;
     }
+  }
+  .edit-btn{
+    margin-left: 0!important;
   }
 }
 .dialog-info {

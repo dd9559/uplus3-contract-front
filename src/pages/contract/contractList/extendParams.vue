@@ -242,8 +242,8 @@ export default {
 				iframebox2.contentWindow.document.querySelector("#submit").click()
 				if(this.Msg.isWuHanMM){
 					iframebox1.contentWindow.document.querySelector("#submit").click()
-					emptyInput1 = JSON.parse(sessionStorage.getItem("templateError"));
-					emptyInput2 = JSON.parse(sessionStorage.getItem("templateError1"));
+					emptyInput1 = sessionStorage.getItem("templateError")?JSON.parse(sessionStorage.getItem("templateError")):[];
+					emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 					param = {
 						id:this.Msg.id,
 						isClick:isClick,
@@ -254,7 +254,7 @@ export default {
 						isCanAudit:isFull//1.完整 0.否
 					}
 				}else{
-					let emptyInput2 = JSON.parse(sessionStorage.getItem("templateError1"));
+					let emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 					param = {
 						id:this.Msg.id,
 						html:{
@@ -265,7 +265,7 @@ export default {
 				}
 			}else{
 				iframebox1.contentWindow.document.querySelector("#submit").click()
-				emptyInput1 = JSON.parse(sessionStorage.getItem("templateError"));
+				emptyInput1 = sessionStorage.getItem("templateError")?JSON.parse(sessionStorage.getItem("templateError")):[];
 				param = {
 					id:this.Msg.id,
 					isClick:isClick,
@@ -307,8 +307,8 @@ export default {
 				iframebox2.contentWindow.document.querySelector("#submit").click()
 				if(this.Msg.isWuHanMM){
 					iframebox1.contentWindow.document.querySelector("#submit").click()
-					emptyInput1 = JSON.parse(sessionStorage.getItem("templateError"));
-					emptyInput2 = JSON.parse(sessionStorage.getItem("templateError1"));
+					emptyInput1 = sessionStorage.getItem("templateError")?JSON.parse(sessionStorage.getItem("templateError")):[];
+					emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 					if(this.isActive===1){
 						if(emptyInput1.length>0){
 							this.$message({
@@ -355,7 +355,7 @@ export default {
 				}
 			}else{//非武汉买卖
 			// debugger
-				let emptyInput2 = JSON.parse(sessionStorage.getItem("templateError1"));
+				let emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 				if(emptyInput2.length>0){
 					this.$message({
 						message:'合同信息未填写完整',
@@ -376,7 +376,7 @@ export default {
 			
 			}else{
 				iframebox1.contentWindow.document.querySelector("#submit").click()
-				emptyInput1 = JSON.parse(sessionStorage.getItem("templateError"));
+				emptyInput1 = sessionStorage.getItem("templateError")?JSON.parse(sessionStorage.getItem("templateError")):[];
 				if(emptyInput1.length>0){
 					this.$message({
 						message:'合同信息未填写完整',
