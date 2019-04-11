@@ -115,6 +115,7 @@
                   path:`${result.host}/${result.key}${publicPath}`,
                   name:file.name
                 })
+                debugger
                 if(that.currentNum===up.files.length){
                   // 向父组件传递监听函数，并初始化上传配置
                   loading.close()
