@@ -132,13 +132,13 @@
                                 </el-select>
                                 <div v-if="item.type===0" class="person">
                                     <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick($event,index)" @clear="clearDep(index)" @search="searchDep($event,index)"></select-tree>
-                                    <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye" size="small"
-                                                v-model="item.personArr" placeholder="请选择" filterable multiple @change="multiSelect(item.type,index)">
+                                    <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye1" size="small"
+                                    v-model="item.personArr" placeholder="请选择" filterable multiple @change="multiSelect(item.type,index)" @focus="getNodeIndex(index)">
                                         <el-option
-                                        v-for="item in employeList[index-1]"
-                                        :key="item.empId"
-                                        :label="item.name"
-                                        :value="item.empId">
+                                        v-for="e in item.employeList"
+                                        :key="e.empId"
+                                        :label="e.name"
+                                        :value="e.empId">
                                         </el-option>
                                     </el-select>
                                 </div>
@@ -217,7 +217,11 @@
             choice: [],
             peopleTime: 1,
             depsTime: 1,
-            rolesTime: 1
+            rolesTime: 1,
+            employeList:[],
+            employeeTotal:0,
+            employeePage:1,
+            currentDep: null
         }
     ]
 
@@ -270,7 +274,7 @@
                 tempAudit: "",
                 tempNodeList: [],
                 copyNodeList: [],
-                employeList: [],
+                nodeIndex: null,
                 power: {
                     'sign-set-verify': {
                         state: false,
@@ -281,7 +285,7 @@
         },
         created() {
             this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
-            this.getCityList()
+            // this.getCityList()
             this.getDictionary()
             this.getData()
             this.remoteMethod()
@@ -346,17 +350,34 @@
             },
             clearDep: function (index) {
                 this.nodeList[index].depName = ""
-                this.$set(this.employeList,[index-1],[])
+                this.nodeList[index].employeList = []
+                this.nodeList[index].employeePage = 1
                 this.clearSelect()
             },
-            depHandleClick(data,index) {
+            getNodeIndex(index) {
+                this.nodeIndex = index
+            },
+            moreEmploye1() {
+                if(this.nodeList[this.nodeIndex].employeList.length>=this.nodeList[this.nodeIndex].employeeTotal){
+                    return
+                }else {
+                    this.depHandleClick(this.nodeList[this.nodeIndex].currentDep,this.nodeIndex,++this.nodeList[this.nodeIndex].employeePage)
+                }
+            },
+            depHandleClick(data,index,page=1) {
+                if(this.dep.id&&this.dep.id!==data.depId){
+                    this.nodeList[index].employeList = []
+                    this.nodeList[index].employeePage = 1
+                }
+                this.nodeList[index].currentDep = data
                 this.dep.id = data.depId
                 this.dep.name = data.name
                 this.nodeList[index].depName = data.name
-                this.$ajax.get('/api/organize/employees/pages',{depId:data.depId,selectSubs:false}).then(res=>{
+                this.$ajax.get('/api/organize/employees/pages',{depId:data.depId,pageNum:page,selectSubs:false}).then(res=>{
                     res=res.data
                     if(res.status===200){
-                        this.$set(this.employeList,[index-1],res.data.list)
+                        this.nodeList[index].employeList = this.nodeList[index].employeList.concat(res.data.list)
+                        this.nodeList[index].employeeTotal = res.data.total
                     }
                 })
             },
@@ -367,7 +388,6 @@
             handleClose(done) {
                 this.nodeList = []
                 this.tempNodeList = []
-                this.employeList = []
                 done()
             },
             operation(title,type,row) {
@@ -422,7 +442,11 @@
                             lastChoice: (JSON.parse(editRow[i].choice).filter(e => e.isDefault===1))[0],
                             peopleTime: JSON.parse(editRow[i].personArr).length + 1,
                             depsTime: JSON.parse(editRow[i].depArr).length + 1,
-                            rolesTime: JSON.parse(editRow[i].roleArr).length + 1
+                            rolesTime: JSON.parse(editRow[i].roleArr).length + 1,
+                            employeList:[],
+                            employeeTotal:0,
+                            employeePage:1,
+                            currentDep:null
                         })
                     }
                     this.nodeList = array
@@ -535,12 +559,12 @@
                 }
                 if(type === 0) {
                     if(this.nodeList[index].peopleTime === this.nodeList[index].personArr.length) {
-                        for(var i = 0; i < this.employeList[index-1].length; i++) {
-                            if(this.nodeList[index].personArr[this.nodeList[index].peopleTime-1] === this.employeList[index-1][i].empId) {
+                        for(var i = 0; i < this.nodeList[index].employeList.length; i++) {
+                            if(this.nodeList[index].personArr[this.nodeList[index].peopleTime-1] === this.nodeList[index].employeList[i].empId) {
                                 this.nodeList[index].choice.push({
                                     type: 0,
-                                    userName: this.employeList[index-1][i].name,
-                                    userId: this.employeList[index-1][i].empId,
+                                    userName: this.nodeList[index].employeList[i].name,
+                                    userId: this.nodeList[index].employeList[i].empId,
                                     isDefault: 0,
                                     temp: this.nodeList[index].depName
                                 })
@@ -645,7 +669,11 @@
                     choice: [],
                     peopleTime: 1,
                     depsTime: 1,
-                    rolesTime: 1
+                    rolesTime: 1,
+                    employeList:[],
+                    employeeTotal:0,
+                    employeePage:1,
+                    currentDep: null
                 }
                 this.nodeList.push(row)
             },
@@ -726,6 +754,10 @@
                             delete item[i].peopleTime
                             delete item[i].depsTime
                             delete item[i].rolesTime
+                            delete item[i].employeList
+                            delete item[i].employeeTotal
+                            delete item[i].employeePage
+                            delete item[i].currentDep
                             item[i].type = item[i].lastChoice.type
                             item[i].userName = item[i].lastChoice.userName
                             item[i].userId = item[i].lastChoice.userId
