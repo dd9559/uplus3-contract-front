@@ -60,8 +60,8 @@
                                 <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength="70"></el-input>
                             </el-form-item>
 
-                            <el-form-item label="房源总价：" class="error-item" :prop="'houseInfo.ListingPrice'" :rules="{validator: housePrice_, trigger: 'change'}" v-if="contractForm.houseInfo.TradeInt">
-                                <el-input v-model="contractForm.houseInfo.ListingPrice" clearable @input="cutNumber('editHousePrice')">
+                            <el-form-item label="房源总价：" class="error-item" v-if="contractForm.houseInfo.TradeInt">
+                                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable @input="cutNumber('editHousePrice')">
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">万元</i>
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 3">元/月</i>
                                 </el-input>
@@ -410,16 +410,6 @@ export default {
 
   
 
-    housePrice_ (rule, value, callback) {
-      if(value){
-        if (parseFloat(value)<=0||parseFloat(value)>999999999.99) {
-          callback(new Error("输入总价在0-999999999.99之间，不能等于0"));
-        } 
-      }else{
-        callback(new Error("输入总价在0-999999999.99之间，不能等于0"));
-      }
-      
-    },
     housePrice (rule, value, callback) {
       let myprice = /(^[1-9][0-9]{0,8}(['万元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['万元']{2}|['元/月']{3})$)/;
       if(value){
@@ -585,11 +575,10 @@ export default {
       let param = {
         houseId: id
       };
-      this.$ajax
-        .get("/api/resource/houses/one", param)
-        .then(res => {
+      this.$ajax.get("/api/resource/houses/one", param).then(res => {
           res = res.data;
           if (res.status === 200) {
+             this.$refs['contractForm'].clearValidate('houseInfo.ListingPrice');
             let houseMsg = res.data;
             console.log(houseMsg);
             this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
@@ -732,21 +721,26 @@ export default {
 
         this.$refs[contractForm].validate(valid => {
           if (valid) {
-
+            if(this.contractForm.houseinfoCode){
+              if(parseFloat(this.contractForm.houseInfo.ListingPrice)<=0||parseFloat(this.contractForm.houseInfo.ListingPrice)>999999999.99){
+                this.$message({
+                  type: "warning",
+                  message: "房源总价在0-999999999.99之间，不能等于0"
+                });
+                return false
+              }
+            }
             if(this.contractForm.contPersons[0].mobile !=='' &&this.contractForm.contPersons[1].mobile !== ''&&((this.contractForm.contPersons[0].mobile).trim() === (this.contractForm.contPersons[1].mobile).trim())){
               this.$message({
                 type: "warning",
                 message: "业主手机号和客户手机号不能重复!"
               });
-            }
-            else if(this.contractForm.contPersons[0].identifyCode !=='' &&this.contractForm.contPersons[1].identifyCode !== ''&&(this.contractForm.contPersons[0].identifyCode === this.contractForm.contPersons[1].identifyCode)){
+            }else if(this.contractForm.contPersons[0].identifyCode !=='' &&this.contractForm.contPersons[1].identifyCode !== ''&&(this.contractForm.contPersons[0].identifyCode === this.contractForm.contPersons[1].identifyCode)){
               this.$message({
                 type: "warning",
                 message: "业主证件号和客户证件号不能重复!"
               });
-            }
-
-            else if(this.type===1){
+            }else if(this.type===1){
               // this.onSubmit1()
               this.dialogSure=true
             }else if(this.type===2){
@@ -754,9 +748,9 @@ export default {
               this.dialogSure=true
             }
               return true
-            } else {
+          } else {
               return false;
-            }
+          }
         })
 
 
