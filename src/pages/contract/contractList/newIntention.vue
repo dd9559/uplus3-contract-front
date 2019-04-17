@@ -60,8 +60,8 @@
                                 <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength="70"></el-input>
                             </el-form-item>
 
-                            <el-form-item label="房源总价：" class="disb" v-if="contractForm.houseInfo.TradeInt">
-                                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable @input="cutNumber('editHousePrice')">
+                            <el-form-item label="房源总价：" class="error-item" :prop="'houseInfo.ListingPrice'" :rules="{validator: housePrice_, trigger: 'change'}" v-if="contractForm.houseInfo.TradeInt">
+                                <el-input v-model="contractForm.houseInfo.ListingPrice" clearable @input="cutNumber('editHousePrice')">
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">万元</i>
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 3">元/月</i>
                                 </el-input>
@@ -410,6 +410,16 @@ export default {
 
   
 
+    housePrice_ (rule, value, callback) {
+      if(value){
+        if (parseFloat(value)<=0||parseFloat(value)>999999999.99) {
+          callback(new Error("输入总价在0-999999999.99之间，不能等于0"));
+        } 
+      }else{
+        callback(new Error("输入总价在0-999999999.99之间，不能等于0"));
+      }
+      
+    },
     housePrice (rule, value, callback) {
       let myprice = /(^[1-9][0-9]{0,8}(['万元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['万元']{2}|['元/月']{3})$)/;
       if(value){
