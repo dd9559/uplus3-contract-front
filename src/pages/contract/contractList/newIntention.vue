@@ -170,8 +170,8 @@
         <!-- 房客源弹框 -->
         <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :choseHcode="choseHcode" :choseGcode="choseGcode"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
         <!-- 确定保存合同弹框 -->
-        <el-dialog title="提示" :visible.sync="dialogSure" class="myconfirm" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
-            <span>确定保存合同？</span>
+        <el-dialog title="提示" :visible.sync="dialogSure" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
+            <span>请确认客户或者业主的姓名是否与证件上的姓名保持一致？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogSure = false">取 消</el-button>
                 <el-button v-if="type===1" type="primary" @click="onSubmit1()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
@@ -737,9 +737,11 @@ export default {
             }
 
             else if(this.type===1){
-              this.onSubmit1()
+              // this.onSubmit1()
+              this.dialogSure=true
             }else if(this.type===2){
-              this.onSubmit2()
+              // this.onSubmit2()
+              this.dialogSure=true
             }
               return true
             } else {
@@ -752,7 +754,7 @@ export default {
 
     // 新增意向金接口（post）
     onSubmit1() {
-      this.dialogSure = false
+      // this.dialogSure = false
         this.fullscreenLoading=true
 
         let param = {
@@ -854,7 +856,7 @@ export default {
     },
     // 编辑意向金接口
     onSubmit2() {
-        this.dialogSure = false
+        // this.dialogSure = false
         this.fullscreenLoading=true
 
         let param = {
@@ -1066,43 +1068,43 @@ export default {
 <style lang="less" scoped>
 
 
-   .myconfirm{
-        /deep/.el-dialog{
-            width: 420px;
+  //  .myconfirm{
+  //       /deep/.el-dialog{
+  //           width: 420px;
 
-            .el-dialog__header {
-                border-bottom: 1px solid #edecf0;
-                padding: 15px 20px 10px;
-            }
-            .el-dialog__headerbtn{
-                top: 14px;
-                font-size: 22px;
-            }
-            .el-dialog__body{
-                text-align: center;
-                color: #233241;
-                font-size: 16px;
-                padding-top: 60px;
-                padding-bottom: 26px;
-            }
-            .el-dialog__footer{
-                text-align: center;
-                padding: 20px 20px 30px;
-            }
-            .dialog-footer{
-                text-align: center;
+  //           .el-dialog__header {
+  //               border-bottom: 1px solid #edecf0;
+  //               padding: 15px 20px 10px;
+  //           }
+  //           .el-dialog__headerbtn{
+  //               top: 14px;
+  //               font-size: 22px;
+  //           }
+  //           .el-dialog__body{
+  //               text-align: center;
+  //               color: #233241;
+  //               font-size: 16px;
+  //               padding-top: 60px;
+  //               padding-bottom: 26px;
+  //           }
+  //           .el-dialog__footer{
+  //               text-align: center;
+  //               padding: 20px 20px 30px;
+  //           }
+  //           .dialog-footer{
+  //               text-align: center;
 
-                .el-button{
-                    padding: 11px 30px;
-                    border-radius: 30px;
-                }
-                .el-button+.el-button{
-                    margin-left: 16px;
-                }
-            }
+  //               .el-button{
+  //                   padding: 11px 30px;
+  //                   border-radius: 30px;
+  //               }
+  //               .el-button+.el-button{
+  //                   margin-left: 16px;
+  //               }
+  //           }
 
-        }
-    }
+  //       }
+  //   }
 
   .error-item{
     /deep/.el-form-item__error{

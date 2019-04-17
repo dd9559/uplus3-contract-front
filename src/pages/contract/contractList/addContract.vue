@@ -303,7 +303,7 @@
           <!-- 编辑+提审 -->
           <!-- <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button> -->
           <!-- <el-button type="primary" round @click="isSave(0)">保存</el-button> -->
-          <el-button type="primary" round @click="isSave(0)" :disabled="canClick" v-loading.fullscreen.lock="fullscreenLoading">保存并进入下一步</el-button>
+          <el-button type="primary" round @click="isSave(0)" :disabled="canClick">保存并进入下一步</el-button>
         </div>
       </div>
 
@@ -311,13 +311,13 @@
     <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
     </houseGuest>
     <!-- 保存合同确认框 -->
-    <!-- <el-dialog title="提示" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
-      <span>{{hintText}}</span>
+    <el-dialog title="提示" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <span>请确认客户或者业主的姓名是否与证件上的姓名保持一致？</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogSave = false">取 消</el-button>
         <el-button type="primary" @click="saveCont" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
       </span>
-    </el-dialog> -->
+    </el-dialog>
     <!-- 删除人员确认框 -->
     <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <span>确定删除当前联系人吗？</span>
@@ -1091,8 +1091,8 @@ export default {
 
 
 
-                                  // this.dialogSave = true;
-                                  this.addContract();
+                                  this.dialogSave = true;
+                                  // this.addContract();
                                 }
                               }else{
                                 // 合同扩展参数验证
@@ -1139,8 +1139,8 @@ export default {
                                 // if(paramsOk){
                                 //   this.dialogSave = true;
                                 // }
-
-                                this.addContract();
+                                 this.dialogSave = true;
+                                // this.addContract();
                               }
                               }else{
                                 this.$message({
