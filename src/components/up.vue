@@ -126,7 +126,6 @@
               }
             },
             Error: function(up, err) {
-              // debugger
               loading.close()
               if(err.code===-601){
                 that.$message({
@@ -194,9 +193,6 @@
           let type=get_suffix(this.uploader.files[0].name)
           if(this.fileType.includes(type)){
             // maxSize=10
-
-
-
             if(this.picSize) {
               if(this.uploader.files[0].size>5*1024*1024){
                 this.$message({
@@ -244,7 +240,6 @@
     },
     computed:{
       getId:function () {
-        // debugger
         return this.id
       },
       getParentId:function () {

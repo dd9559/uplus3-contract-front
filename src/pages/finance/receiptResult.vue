@@ -5,7 +5,12 @@
       <h3 v-if="checkPerson.state">{{type===1?edit?'POS收款订单修改成功':'POS收款订单创建成功':edit?'收款信息修改成功':'收款信息录入成功'}}</h3>
       <p>{{edit?'收款单修改成功':'已成功生成收款单'}}</p>
       <div class="bill-result-table">
-        <p v-if="type===1">请在POS机上进行收款</p>
+        <div class="warning-text" v-if="type===1">
+          <p>温馨提示：</p>
+          <p>1.操作说明：pos开机状态下，请按快捷键F1，其次按数字键1，最后按功能键后，用红外线对准下图二维码进行收款。</p>
+          <p>2.请勿手动在pos上输入金额！</p>
+          <p>3.pos机上提示收款成功后，有1-2分钟的延迟才能开票，请耐心等待。</p>
+        </div>
         <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" v-if="type===2">
           <el-table-column align="center" label="现金">
             <template slot-scope="scope">
@@ -256,12 +261,15 @@
         }
       }
       .bill-result-table {
-        margin: 70px 0;
+        margin: 30px 0 70px 0;
         text-align: center;
-        > p {
-          color: @color-324;
+        .warning-text{
+          text-align: left;
           margin-bottom: 20px;
-          font-size: 18px;
+          >p{
+            color: red;
+            font-size: 14px;
+          }
         }
       }
     }
