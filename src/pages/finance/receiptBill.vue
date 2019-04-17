@@ -435,7 +435,7 @@
           name:''
         },
         inputPerson:false,//是否显示第三方输入框
-        billStatus:true,//线上或线下
+        billStatus:false,//线上或线下
         form: {
           contId: '',
           remark: '',
