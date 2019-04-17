@@ -3,6 +3,17 @@
     <p class="f14 txt-title">收款信息</p>
     <ul class="bill-form">
       <li>
+        <div class="input-group col">
+          <div class="flex-box tool-tip">
+            <label class="form-label no-width f14 margin-bottom-base">
+              <span>款类</span>
+            </label>
+            <el-tooltip content="当未找到需要的款类时，可联系管理员进行配置" placement="top">
+              <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
+            </el-tooltip>
+          </div>
+          <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
+        </div>
         <div class="input-group col" :class="[inputPerson?'active-360':'']">
           <label class="form-label no-width f14 margin-bottom-base">付款方</label>
           <div class="flex-box">
@@ -39,28 +50,18 @@
           </div>
           <div class="h32" v-else>{{dep.name}}-{{form.inObj}}</div>
         </div>
+      </li>
+      <li>
         <div class="input-group col" v-if="billStatus">
           <label class="form-label no-width f14 margin-bottom-base">收款时间</label>
           <el-date-picker
+            class="w200"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
             v-model="form.createTime"
             type="datetime"
             placeholder="选择日期时间">
           </el-date-picker>
-        </div>
-      </li>
-      <li>
-        <div class="input-group col">
-          <div class="flex-box tool-tip">
-            <label class="form-label no-width f14 margin-bottom-base">
-              <span>款类</span>
-            </label>
-            <el-tooltip content="当未找到需要的款类时，可联系管理员进行配置" placement="top">
-              <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
-            </el-tooltip>
-          </div>
-          <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
         </div>
         <div class="input-group col active-400">
           <div class="flex-box tool-tip no-max">
