@@ -60,7 +60,7 @@
                 </div>
                 <div class="item">
                     <div class="position shui-fei">
-                        <span>缴纳税费：</span>
+                        <span>预缴税费：</span>
                         <el-input size="small" v-model="report.payTaxation" :disabled="!saveBtnShow" @input="cutNumber('payTaxation')"></el-input>
                         <i>万元</i>
                     </div>
@@ -102,8 +102,8 @@
                 <p class="bold">买方信息</p>
                 <div class="guest msg info">
                     <div class="text mai-mai">
-                        <p><span>姓名：</span><span style="width:150px;word-wrap:break-word;">{{firstBuyer.name}}</span></p>
-                        <p style="min-width:200px;"><span>{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":"营业执照"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
+                        <p><span>姓名：</span><span style="width:130px;word-wrap:break-word;">{{firstBuyer.name}}</span></p>
+                        <p style="width:200px;"><span style="white-space:nowrap;">{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":"营业执照"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
@@ -150,8 +150,8 @@
                 <p class="bold">卖方信息</p>
                 <div class="owner msg info">
                     <div class="text mai-mai">
-                        <p><span>姓名：</span><span style="width:150px;word-wrap:break-word;">{{firstSeller.name}}</span></p>
-                        <p style="min-width:200px;"><span>{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":"营业执照"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
+                        <p><span>姓名：</span><span style="width:130px;word-wrap:break-word;">{{firstSeller.name}}</span></p>
+                        <p style="width:200px;"><span style="white-space:nowrap;">{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":"营业执照"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
