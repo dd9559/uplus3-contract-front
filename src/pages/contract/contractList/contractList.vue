@@ -13,11 +13,20 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
-          <el-select v-model="contractForm.contType" placeholder="全部" :clearable="true" style="width:150px">
+          <!-- <el-select v-model="contractForm.contType" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select> -->
+          <el-select v-model="contractForm.contTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':contractForm.contTypes&&contractForm.contTypes.length>3}">
+            <el-option
+              v-for="item in dictionary['10']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
+        
         <el-form-item label="合同状态">
           <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
@@ -88,6 +97,16 @@
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="后期状态">
+          <el-select v-model="contractForm.laterStageState" placeholder="全部" :clearable="true">
+            <el-option v-for="item in dictionary['11']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="佣金比例">
+          <el-input class="percent" v-model="contractForm.beginRatio" @input.native="changeRatio('begin')" style="width:85px" placeholder="请输入" :clearable="true"></el-input> -
+          <el-input class="percent" v-model="contractForm.endRatio" @input.native="changeRatio('end')" style="width:85px" placeholder="请输入" :clearable="true"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -173,6 +192,12 @@
             <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="佣金比例(%)" min-width="90">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">{{((scope.row.receivableCommission/scope.row.dealPrice)*100).toFixed(2)}}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="财务收付" min-width="50">
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)">流水</div>
@@ -212,6 +237,12 @@
                 </div>
               </el-popover>
             </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="打印次数">
+          <template slot-scope="scope">
+            <el-button type="text" size="medium" @click="selectPrintInfo(scope.row)" v-if="scope.row.printCount>0">{{scope.row.printCount}}</el-button>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -318,6 +349,27 @@
         <el-button type="primary" @click="submitAudit">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 打印详情弹窗 -->
+    <el-dialog title="打印详情" :visible.sync="isHavePrint" width="460px">
+      <div>
+        <el-table :data="printData" border>
+          <el-table-column label="操作人">
+            <template slot-scope="scope">
+              {{scope.row.createDeptName+'-'+scope.row.createByName}}
+            </template>
+          </el-table-column>
+          <el-table-column label="打印时间">
+            <template slot-scope="scope">
+              {{scope.row.createTime|formatTime}}
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <!-- <el-button @click="isSubmitAudit = false">取 消</el-button>
+        <el-button type="primary" @click="submitAudit">确 定</el-button> -->
+      </span>
+    </el-dialog>
     <!-- 打印 -->
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
     <!-- <iframe :src="pdfUrl" frameborder="0" style="width:100px" id="dayin"></iframe> -->
@@ -379,7 +431,8 @@ export default {
         "53": "", //合作方式
         "54": "", //业绩状态
         "538": "", //用途
-        "507": ""
+        "507": "",
+        "11": "",//后期状态
       },
       loading:false,
       //部门选择列表
@@ -441,6 +494,8 @@ export default {
         flowType:3,
         label:false
       },
+      printData:'',//打印次数详情
+      isHavePrint:false,
       //权限配置
       power: {
         'sign-com-bill': {
@@ -515,7 +570,6 @@ export default {
     if (!window.location.origin) {
       window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
     }
-    // console.log(window.location.origin)
     this.http = window.location.origin
     this.getAdmin();//获取当前登录人信息
     this.getContractList();//合同列表
@@ -554,6 +608,11 @@ export default {
           param.endDate = this.signDate[1];
         }
       }
+      if(this.contractForm.contTypes&&this.contractForm.contTypes.length>0){
+        param.contTypes=this.contractForm.contTypes.join(',')
+      }else{
+        param.contTypes=''
+      }
 
       delete param.depName
       //console.log(param)
@@ -577,6 +636,18 @@ export default {
     queryFn() {
       this.currentPage=1;
       this.getContractList();
+    },
+    //佣金比例
+    changeRatio(type){
+      if(type==="begin"){
+        this.$nextTick(()=>{
+          this.contractForm.beginRatio=this.$tool.cutFloat({val:this.contractForm.beginRatio,max:100})
+        })
+      }else if(type==="end"){
+        this.$nextTick(()=>{
+          this.contractForm.endRatio=this.$tool.cutFloat({val:this.contractForm.endRatio,max:100})
+        })
+      }
     },
     //流水
     runningWater(item) {
@@ -624,6 +695,27 @@ export default {
       }else{
         this.noPower('付款')
       }
+    },
+    //打印次数详情
+    selectPrintInfo(item){
+      let param = {
+        contId:item.id
+      }
+      this.$ajax.get("/api/contract/selectPrintInfo", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          if(res.data.length>0){
+            this.printData=res.data
+            this.isHavePrint=true
+          }
+          // else{
+          //   this.$message({
+          //     message: '该合同暂无打印详情',
+          //     type: "warning"
+          //   });
+          // }
+        }
+      });
     },
     //合同详情页
     toDetail(value) {
@@ -1076,6 +1168,18 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.width300{
+  width: 325px !important;
+}
+.percent{
+  position: relative;
+  &::before{
+    content: "%";
+    position: absolute;
+    right: 8px;
+    color: #ccc;
+  }
+}
 /deep/.el-form-item{
   margin-bottom: 10px;
 }

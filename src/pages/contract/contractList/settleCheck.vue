@@ -15,8 +15,16 @@
         </el-form-item>
 
         <el-form-item label="合同类型">
-          <el-select v-model="adjustForm.contType" placeholder="全部" class="width150" clearable>
+          <!-- <el-select v-model="adjustForm.contType" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select> -->
+          <el-select v-model="adjustForm.contTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':adjustForm.contTypes&&adjustForm.contTypes.length>3}">
+            <el-option
+              v-for="item in dictionary['10']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -698,7 +706,7 @@
               beginDate,
               endDate,
               examineState: this.adjustForm.examineState,    //this.examineState
-              contractType: this.adjustForm.contType,    //this.adjustForm.contType.key,
+              // contractType: this.adjustForm.contTypes,    //this.adjustForm.contType.key,
               depAttr: this.adjustForm.depAttr,
               dealAgentStoreId: this.adjustForm.depId,    //this.Form.getDepName.id,
               dealAgentId: this.adjustForm.empId,    //this.Form.getAgentName.empId,
@@ -708,6 +716,11 @@
             pageNum: this.pageNum,
             pageSize: this.pageSize
 
+          }
+          if(this.adjustForm.contTypes&&this.adjustForm.contTypes.length>0){
+            param.contResultVo["contTypes"]=this.adjustForm.contTypes.join(',')
+          }else{
+           param.contResultVo["contTypes"]=''
           }
             // 结算审核列表
             this.$ajax
@@ -948,7 +961,9 @@
 </script>
 <style lang="less">
 @import "~@/assets/common.less";
-
+.width300{
+  width: 325px !important;
+}
 #settlecheck{
   .btn-text-info{
     padding: 0;
