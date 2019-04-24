@@ -90,11 +90,11 @@ let TOOL = {
           path: "receivableAchievement",
           code: "sign-yj-rec-query"
         },
-        {
-          name:'门店实收',
-          path:'storeReceive',
-          code: "sign-yj-rec-query"
-        }
+        // {
+        //   name:'门店实收',
+        //   path:'storeReceive',
+        //   code: "sign-yj-rec-query"
+        // }
       ]
     },
     {
