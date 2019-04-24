@@ -50,7 +50,7 @@
         </div>
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
+          <el-select :clearable="true" size="small" class="width200" :class="{'width325':searchForm.contType.length>3}" multiple v-model="searchForm.contType" placeholder="请选择">
             <el-option
               v-for="item in dictionary['10']"
               :key="item.key"
@@ -120,6 +120,11 @@
           <template slot-scope="scope">
             佣金
           </template>
+        </el-table-column>
+        <el-table-column align="center" min-width="160" label="物业地址" prop="propertyAddr">
+          <!--<template slot-scope="scope">
+            &#45;&#45;
+          </template>-->
         </el-table-column>
         <el-table-column align="center" min-width="160" label="成交经纪人" prop="broker">
           <template slot-scope="scope">
@@ -309,11 +314,14 @@
           param.beginProDate = this.$tool.dateFormat(param.collectionTime[0])
           param.endProDate = this.$tool.dateFormat(param.collectionTime[1])
         }
-        delete param.signTime
-        delete param.collectionTime
+
         // delete param.moneyType
+        param.contTypes = param.contType.length===0?'':param.contType.join(',')
         param.pageNum=this.currentPage
         param.pageSize=this.pageSize
+        delete param.signTime
+        delete param.collectionTime
+        delete param.contType
         this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -348,6 +356,12 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .width200{
+    width: 200px !important;
+  }
+  .width325{
+    width: 325px !important;
+  }
   .contract-msglist{
     > li {
       text-align: left;

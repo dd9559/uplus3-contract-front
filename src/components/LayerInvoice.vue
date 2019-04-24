@@ -134,6 +134,28 @@
              * @param row
              */
             getPaperDetails: function(id) {
+              /*let types = [
+                {
+                  name:'服务费',
+                  list:['二手买卖佣金','二手低佣买卖佣金','租赁佣金','代办佣金','金融服务费']
+                },
+                {
+                  name:'违约服务费',
+                  list:['违约金']
+                },
+                {
+                  name:'定金手续费',
+                  list:['定金']
+                },
+                {
+                  name:'意向金手续费',
+                  list:['意向金']
+                },
+                {
+                  name:'刷卡手续费',
+                  list:['刷卡手续费']
+                },
+              ]*/
                 this.$ajax.get(`/api/bills/details`,{
                     id
                 }).then(res => {
@@ -148,6 +170,11 @@
                         this.paperInfoData = Object.assign({}, res.data,{
                             hide
                         })
+                      /*types.forEach(item=>{
+                        if(item.list.includes(this.paperInfoData.type)){
+                          this.paperInfoData.type=item.name
+                        }
+                      })*/
                         // this.paperShow = true
                         this.layerLoading.close();
                         this.paperShow = true;
@@ -228,7 +255,7 @@
                     this.$message.error('请先设置财务专用电子签章');
                     return false
                 }
-                
+
                 this.$ajax.post('/api/bills/print', obj).then(res => {
                     res = res.data
                     if(res.status === 200){
@@ -249,7 +276,7 @@
                                 that.paperShow = false;
                             // },101);
                             });
-                            
+
                         })
                     }
                 }).catch(err=>{
@@ -411,7 +438,7 @@
     }
     .paper-top{
         padding-top: 20px;
-        
+
     }
 
     // 开票预览

@@ -10,7 +10,7 @@
         </div>
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
+          <el-select :clearable="true" size="small" class="width200" :class="{'width325':searchForm.contType.length>3}" multiple v-model="searchForm.contType" placeholder="请选择">
             <el-option
               v-for="item in dictionary['10']"
               :key="item.key"
@@ -550,9 +550,11 @@
           param.startTime = param.timeRange[0]
           param.endTime = param.timeRange[1]
         }
-        delete param.timeRange
+        param.contTypes = param.contType.length===0?'':param.contType.join(',')
         param.pageNum = this.currentPage
         param.pageSize = this.pageSize
+        delete param.contType
+        delete param.timeRange
         let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
         this.$ajax.get(`/api${url}`,param).then(res => {
           res = res.data
@@ -686,6 +688,12 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .width200{
+    width: 200px !important;
+  }
+  .width325{
+    width: 325px !important;
+  }
   /deep/ .theader-bg{
     >th>.cell{
       white-space: normal !important;
