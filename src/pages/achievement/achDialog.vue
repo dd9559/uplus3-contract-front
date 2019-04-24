@@ -19,9 +19,9 @@
             <h1
               v-if="dialogType==0"
               class="f14"
-            >业绩审核</h1>
-            <h1 v-if="dialogType==1">业绩编辑</h1>
-            <h1 v-if="dialogType==2">业绩反审核</h1>
+            >业绩审核<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
+            <h1 v-if="dialogType==1">业绩编辑<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
+            <h1 v-if="dialogType==2">业绩反审核<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
             <h1
               v-if="dialogType==3"
               style="fontSize:20px;"
@@ -38,6 +38,7 @@
             <div class="house-divide">
               <div class="house-left f_l">
                 <h1 class="f14">房源方分成</h1>
+                <p class="f_l delive">合计:{{housetotal}}%</p>
               </div>
               <div
                 class="house-right f_r"
@@ -241,7 +242,7 @@
 
                 <!-- 区经，可输入，可下拉   changeAmaldar-->
                 <el-table-column
-                  label="区经"
+                  label="总监"
                   width="117"
                 >
                   <template slot-scope="scope">
@@ -269,7 +270,7 @@
 
                 <!-- 区总，可输入，可下拉 changeManager-->
                 <el-table-column
-                  label="区总"
+                  label="副总"
                   width="117"
                 >
                   <template slot-scope="scope">
@@ -326,6 +327,7 @@
             <div class="house-divide">
               <div class="house-left f_l">
                 <h1 class="f14">客源方分成</h1>
+                <p class="f_l delive">合计:{{clienttotal}}%</p>
               </div>
               <div
                 class="house-right f_r"
@@ -525,7 +527,7 @@
 
                 <!-- 区经，可输入，可下拉 -->
                 <el-table-column
-                  label="区经"
+                  label="总监"
                   width="117"
                 >
                   <template slot-scope="scope">
@@ -553,7 +555,7 @@
 
                 <!-- 区总，可输入，可下拉 -->
                 <el-table-column
-                  label="区总"
+                  label="副总"
                   width="117"
                 >
                   <template slot-scope="scope">
@@ -1630,7 +1632,7 @@
         this.$ajax
           .get("/api/achievement/"+infoType, param)
           .then(res => {
-            if (res.status === 200) {
+            if (res.status === 200) {  
               this.houseArr = res.data.data.houseAgents;
               this.clientArr = res.data.data.customerAgents;
               this.comm = res.data.data.comm;
@@ -1707,6 +1709,22 @@
         return (num1 * m + num2 * m) / m;
       }
     },
+    computed:{
+        housetotal(){
+            var sum =0
+            this.houseArr.forEach((item,index)=>{
+              sum=sum+item.ratio
+            })
+              return sum
+        },
+        clienttotal(){
+            var sum =0
+            this.clientArr.forEach((item,index)=>{
+              sum=parseInt(sum)+parseInt(item.ratio==''?0:item.ratio)
+            })
+              return sum
+        }
+    }, 
     watch: {
       contractCode(val) {
         // 字典初始化
@@ -1760,7 +1778,10 @@
             });
           }
         }
-      }
+      },
+      // houseArr(val){
+      //   // alert(1)
+      // }
     }
   };
 </script>
@@ -1918,7 +1939,7 @@
           //   background-color: pink;
           .house-left {
             margin-top: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             h1 {
               // font-size: 16px !important;
               color: #233241 !important;
@@ -2059,6 +2080,10 @@
       color: #606266;
     }
     .orange {
+      color: #f56c6c;
+    }
+    .delive{
+      margin-top: 5px;
       color: #f56c6c;
     }
   }
