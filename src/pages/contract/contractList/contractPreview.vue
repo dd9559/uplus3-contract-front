@@ -634,7 +634,7 @@ export default {
             // });
             // this.getUrl(pdfUrl);
             // this.haveUrl=true;
-            this.pdfUrl=`${this.http}/api/contract/getSignPdf/?id=${this.id}`
+            this.pdfUrl=`${this.http}/api/contract/getSignPdf?id=${this.id}`
             this.haveUrl=true;
             this.fullscreenLoading=false;
           }
@@ -653,7 +653,7 @@ export default {
         this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
-            this.pdfUrl=`${this.http}/api/contract/getSignPdf/?id=${this.id}`
+            this.pdfUrl=`${this.http}/api/contract/getSignPdf?id=${this.id}`
             this.haveUrl=true;
           }
         })

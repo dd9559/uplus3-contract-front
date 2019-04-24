@@ -194,7 +194,7 @@
         </el-table-column>
         <el-table-column align="center" label="佣金比例(%)" min-width="90">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">{{((scope.row.receivableCommission/scope.row.dealPrice)*100).toFixed(2)}}</span>
+            <span v-if="scope.row.contType.value===2||scope.row.contType.value===3">{{((scope.row.receivableCommission/scope.row.dealPrice)*100).toFixed(2)}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
