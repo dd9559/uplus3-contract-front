@@ -1713,7 +1713,7 @@
         housetotal(){
             var sum =0
             this.houseArr.forEach((item,index)=>{
-              sum=sum+item.ratio
+              sum=parseInt(sum)+parseInt(item.ratio==''?0:item.ratio)
             })
               return sum
         },
