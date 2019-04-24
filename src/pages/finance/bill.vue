@@ -356,7 +356,7 @@
         tableBox:null,
         activeView: '',
         searchForm: {
-          contType: '',
+          contType: [],
           timeType: '',
           depName: '',
           deptId: '',

@@ -311,7 +311,7 @@
           current:false
         },
         searchForm: {
-          contType: '',
+          contType: [],
           timeType: '',
           depName:'',
           deptId: '',
@@ -550,7 +550,7 @@
           param.startTime = param.timeRange[0]
           param.endTime = param.timeRange[1]
         }
-        param.contTypes = param.contType.length===0?'':param.contType.join(',')
+        param.contTypes = param.contType.join(',')
         param.pageNum = this.currentPage
         param.pageSize = this.pageSize
         delete param.contType

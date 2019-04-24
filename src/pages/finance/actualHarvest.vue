@@ -188,7 +188,7 @@
         drop_MoneyType:[],
         searchForm: {
           moneyType: '',
-          contType: '',
+          contType: [],
           dealAgentStoreName:'',
           dealAgentStoreId: '',
           dealAgentId: '',
@@ -316,7 +316,7 @@
         }
 
         // delete param.moneyType
-        param.contTypes = param.contType.length===0?'':param.contType.join(',')
+        param.contTypes = param.contType.join(',')
         param.pageNum=this.currentPage
         param.pageSize=this.pageSize
         delete param.signTime
