@@ -625,7 +625,7 @@ export default {
           if(res.status===200){
             // let pdfUrl=res.data;
             // this.fullscreenLoading=false;
-            // this.getContImg()
+            this.getContImg()
             // // debugger
             // let pictureList = Array.from(document.getElementsByClassName('signature'))
             // console.log(pictureList)
