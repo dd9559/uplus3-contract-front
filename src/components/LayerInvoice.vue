@@ -50,7 +50,7 @@
                     :collectionTime="paperInfoData.paymentTime"
                     :invoiceTime="paperInfoData.createTime"
                     :paper="paperInfoData.billCode"
-                    :project="paperInfoData.type"
+                    :project="getPro"
                     :hide="paperInfoData.hide"
                     :address="paperInfoData.address"
                     :money="paperInfoData.amount"
@@ -134,28 +134,6 @@
              * @param row
              */
             getPaperDetails: function(id) {
-              /*let types = [
-                {
-                  name:'服务费',
-                  list:['二手买卖佣金','二手低佣买卖佣金','租赁佣金','代办佣金','金融服务费']
-                },
-                {
-                  name:'违约服务费',
-                  list:['违约金']
-                },
-                {
-                  name:'定金手续费',
-                  list:['定金']
-                },
-                {
-                  name:'意向金手续费',
-                  list:['意向金']
-                },
-                {
-                  name:'刷卡手续费',
-                  list:['刷卡手续费']
-                },
-              ]*/
                 this.$ajax.get(`/api/bills/details`,{
                     id
                 }).then(res => {
@@ -358,6 +336,51 @@
             // 枚举类型数据获取
             this.getDictionary();
         },
+      computed:{
+        getPro:function () {
+          let types = [
+            {
+              name:'服务费',
+              list:[1,2,3,4,5]
+            },
+            {
+              name:'违约服务费',
+              list:[6]
+            },
+            {
+              name:'房款',
+              list:[7]
+            },
+            {
+              name:'物业保证金',
+              list:[8]
+            },
+            {
+              name:'定金手续费',
+              list:[9]
+            },
+            {
+              name:'意向金手续费',
+              list:[10]
+            },
+            {
+              name:'刷卡手续费',
+              list:[11]
+            },
+          ]
+          let tips = types.findIndex(item=>{
+            // debugger
+            if(this.moneyTypes.length>0&&item.list.includes(this.moneyTypes[this.activeType].project)){
+              return item
+            }
+          })
+          if(tips>-1){
+            return types[tips].name
+          }else{
+            return this.paperInfoData.type
+          }
+        }
+      },
         watch:{
             paperInfoData(n,old){
                 this.getImgFn(n.signImg)
