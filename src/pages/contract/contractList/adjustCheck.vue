@@ -16,8 +16,16 @@
 
         </el-form-item>
         <el-form-item label="合同类型">
-          <el-select v-model="adjustForm.tradeType" placeholder="全部" class="width150" clearable>
+          <!-- <el-select v-model="adjustForm.tradeType" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select> -->
+          <el-select v-model="adjustForm.contractTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':adjustForm.contractTypes&&adjustForm.contractTypes.length>3}">
+            <el-option
+              v-for="item in dictionary['10']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -430,7 +438,7 @@
         // },
         adjustForm:{
           signDate: '', //发起日期
-          tradeType: '', //合同类型
+          contractTypes: '', //合同类型
           depAttr: '', //合作方式
           depName:'',
           depId: '',
@@ -697,10 +705,15 @@
               empId: this.adjustForm.empId,
               startTime,
               endTime,
-              contractType: this.adjustForm.tradeType,
+              // contractType: this.adjustForm.tradeType,
               depAttr: this.adjustForm.depAttr,
               checkState: this.adjustForm.checkState,
               keyword: this.adjustForm.keyWord
+            }
+            if(this.adjustForm.contractTypes.length>0){
+              param.contractTypes=this.adjustForm.contractTypes.join(',')
+            }else{
+              param.contractTypes=''
             }
             //调整佣金审核列表
             this.$ajax
