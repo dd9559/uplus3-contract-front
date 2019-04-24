@@ -637,7 +637,7 @@
             <!-- amaldar -->
             <el-table-column
               prop="amaldar"
-              label="区经"
+              label="总监"
               width="100"
             >
             </el-table-column>
@@ -645,7 +645,7 @@
             <!-- manager -->
             <el-table-column
               prop="manager"
-              label="区总"
+              label="副总"
             >
             </el-table-column>
           </el-table>
