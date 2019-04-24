@@ -74,8 +74,10 @@
         >
           <el-select
             v-model="propForm.contractType"
-            class="w120"
+            class="width200"
+            :class="{'width325':propForm.contractType.length>3}"
             :clearable="true"
+            multiple
           >
             <el-option
               v-for="item in dictionary['10']"
@@ -1095,12 +1097,11 @@ export default {
         });
     },
     queryFn() {
-    console.log(this.propForm.dateMo)
     if(this.propForm.dateMo){
       this.ajaxParam = {
         dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
         dealAgentId: this.propForm.dealAgentId, //员工
-        contractType: this.propForm.contractType, //合同类型
+        contractType: this.propForm.contractType.length===0?'':this.propForm.contractType.join(','), //合同类型
         distributionType: this.propForm.divideType, //分成类型
         achievementStatus: this.propForm.achType, //业绩类型
         startTime: this.propForm.dateMo[0], //开始时间  
@@ -1114,7 +1115,7 @@ export default {
        this.ajaxParam = {
         dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
         dealAgentId: this.propForm.dealAgentId, //员工
-        contractType: this.propForm.contractType, //合同类型
+        contractType: this.propForm.contractType.length===0?'':this.propForm.contractType.join(','), //合同类型
         distributionType: this.propForm.divideType, //分成类型
         achievementStatus: this.propForm.achType, //业绩类型
         keyword: this.propForm.search, //关键字
@@ -1122,6 +1123,7 @@ export default {
         pageSize: this.pageSize,
         joinMethods:this.propForm.joinMethods
       };
+      
     }
     this.ajaxParam.pageNum=1;
     this.currentPage=1;
@@ -1553,5 +1555,11 @@ export default {
 }
 /deep/ .btn-text-info {
   font-size: 12px !important;
+}
+.width200{
+  width: 200px !important;
+}
+.width325{
+  width: 325px !important;
 }
 </style>

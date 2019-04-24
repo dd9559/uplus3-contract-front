@@ -61,7 +61,7 @@
        </el-form-item>
 
         <el-form-item label="合同类型" prop="contractType">
-          <el-select v-model="propForm.contractType" class="w120" :clearable="true">
+          <el-select v-model="propForm.contractType" class="width200" :class="{'width325':propForm.contractType.length>3}" multiple :clearable="true">
             <el-option
               v-for="item in dictionary['10']"
               :key="item.value"
@@ -356,7 +356,7 @@ export default {
         this.ajaxParam = {
           dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
           dealAgentId: this.propForm.dealAgentId, //员工
-          contractType: this.propForm.contractType, //合同类型
+          contractType: this.propForm.contractType.length===0?'':this.propForm.contractType.join(','), //合同类型
           startTime: this.propForm.dateMo[0], //开始时间
           endTime: this.propForm.dateMo[1], //结束时间
           keyword: this.propForm.search, //关键字
@@ -369,7 +369,7 @@ export default {
         this.ajaxParam = {
           dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
           dealAgentId: this.propForm.dealAgentId, //员工
-          contractType: this.propForm.contractType, //合同类型
+          contractType: this.propForm.contractType.length===0?'':this.propForm.contractType.join(','), //合同类型
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
@@ -597,6 +597,12 @@ export default {
   text-align: right;
   // padding-bottom: 50px;
   // padding-top: 50px;
+}
+.width200{
+  width: 200px !important;
+}
+.width325{
+  width: 325px !important;
 }
 // }
 .w430 {
