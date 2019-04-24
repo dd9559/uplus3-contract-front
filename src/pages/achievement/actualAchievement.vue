@@ -540,7 +540,7 @@
             <!-- amaldar -->
             <el-table-column
               prop="amaldar"
-              label="区经"
+              label="总监"
               width="100"
             >
             </el-table-column>
@@ -548,8 +548,16 @@
             <!-- manager -->
             <el-table-column
               prop="manager"
-              label="区总"
+              label="副总"
             >
+            </el-table-column>
+            <el-table-column
+              label="公共业绩">
+              <template slot-scope="scope">
+                 <div v-if="scope.row.place==-1">--</div>
+                 <div v-if="scope.row.place==0">门店公共业绩</div>
+                 <div v-if="scope.row.place==1">公司公共业绩</div>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -629,7 +637,7 @@
             <!-- amaldar -->
             <el-table-column
               prop="amaldar"
-              label="区经"
+              label="总监"
               width="100"
             >
             </el-table-column>
@@ -637,7 +645,7 @@
             <!-- manager -->
             <el-table-column
               prop="manager"
-              label="区总"
+              label="副总"
             >
             </el-table-column>
           </el-table>
@@ -1072,7 +1080,7 @@ export default {
           if (res.status === 200) {
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
-            if(data.data.achievements){  
+            if(data.data.achievements){
                 this.checkArr = data.data.achievements;  //详情的审核信息
                 this. $nextTick(()=>{
                   this.loading2=false;
@@ -1095,7 +1103,7 @@ export default {
         contractType: this.propForm.contractType, //合同类型
         distributionType: this.propForm.divideType, //分成类型
         achievementStatus: this.propForm.achType, //业绩类型
-        startTime: this.propForm.dateMo[0], //开始时间
+        startTime: this.propForm.dateMo[0], //开始时间  
         endTime: this.propForm.dateMo[1], //结束时间
         keyword: this.propForm.search, //关键字
         pageNum: this.currentPage,

@@ -153,11 +153,13 @@ export default new Router({
             list: ["业绩", "结算业绩"]
           }
         },
+        
         {
           path: "storeReceive",
           component: storeReceive,
           meta: {
-            root: true
+            root: true,
+            list: ["业绩", "门店实收"]
           }
         },
         // 业绩板块 end
@@ -403,31 +405,6 @@ export default new Router({
             root: true,
           }
         },
-        // 业绩板块
-        {
-          path: "actualAchievement",
-          component: actualAchievement,
-          meta: {
-            root: true,
-            list: ['业绩', '应收业绩']
-          }
-        },
-        {
-          path: "receivableAchievement",
-          component: receivableAchievement,
-          meta: {
-            root: true,
-            list: ['业绩', '结算业绩']
-          }
-        },
-        {
-          path: "storeReceive",
-          component: storeReceive,
-          meta: {
-            root: true,
-          }
-        },
-        // 业绩板块 end
         {
           path: "Bill",
           component: Bill,

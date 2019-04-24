@@ -11,7 +11,7 @@
         </div>
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select :clearable="true" size="small" v-model="searchForm.contType" placeholder="请选择">
+          <el-select :clearable="true" class="width200" :class="{'width325':searchForm.contType.length>3}" multiple size="small" v-model="searchForm.contType" placeholder="请选择">
             <el-option
               v-for="item in dictionary['10']"
               :key="item.key"
@@ -356,7 +356,7 @@
         tableBox:null,
         activeView: '',
         searchForm: {
-          contType: '',
+          contType: [],
           timeType: '',
           depName: '',
           deptId: '',
@@ -549,9 +549,11 @@
           param.startTime = param.timeRange[0]
           param.endTime = param.timeRange[1]
         }
-        delete param.timeRange
+        param.contTypes = param.contType.join(',')
         param.pageNum = this.currentPage
         param.pageSize = this.pageSize
+        delete param.contType
+        delete param.timeRange
         this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -706,6 +708,12 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
   @import "~@/assets/less/lsx.less";
+  .width200{
+    width: 200px !important;
+  }
+  .width325{
+    width: 325px !important;
+  }
 
   /deep/ .theader-bg{
     >th>.cell{

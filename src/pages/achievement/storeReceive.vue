@@ -2,20 +2,10 @@
       <div class="layout" style="background-color: #f5f5f5">
                  <!-- 筛选条件  -->
                 <div class="filter-layout">
-                         
-                           <div style="overflow:hidden;">
-                                 <div class="filter-left f_l">
-                                     <h1>
-                                       <b class="iconfont icon-tubiao-5" style="color:#55657A;font-weight:normal;"></b> 
-                                       筛选查询
-                                      </h1>
-                               </div>
-                               <div class="filter-right f_r">
-                                  <el-button type="primary" round>重置</el-button>
-                                  <el-button type="primary" round @click="filterData">查询</el-button>
-                              </div>
-                           </div>
-                            <div class="filter-item" v-show="filterShow">
+                           <ScreeningTop
+                              @propQueryFn="queryFn"
+                              @propResetFormFn="resetFormFn">
+                                <div class="filter-item" v-show="filterShow">
                                <!-- 筛选条件 -->
                                <el-form 
                                :inline="true"
@@ -38,8 +28,6 @@
                                            end-placeholder="结束日期">
                                        </el-date-picker>
                                    </el-form-item>  
-                             
-                                  
                                     <!-- 部门 -->
                                    <el-form-item 
                                    label="部门" 
@@ -64,12 +52,9 @@
                                            :value="item.value"></el-option>
                                        </el-select>
                                    </el-form-item>
-
-                                                        
                                </el-form>
                             </div>
-
-                           <div class="btn" @click="filterShow=!filterShow"></div>
+                  </ScreeningTop>
                 </div> 
                 <!-- 筛选条件 end -->
                 <!-- 数据列表 -->
@@ -619,7 +604,7 @@ export default {
   },
   components: {},
   methods: {
-    filterData() {
+    queryFn() {
       let param = {
         departmentId: this.propForm.department, //部门
         employeeIdQUERY: this.propForm.departmentDetail, //员工
@@ -627,6 +612,11 @@ export default {
         end_time: this.propForm.dateMo[1] //结束时间
       };
       console.log(param);
+    },
+    resetFormFn(){
+      this.propForm.department=''
+      this.propForm.departmentDetail=''
+      this.propForm.dateMo=''
     },
     //分页
     handleSizeChange(val) {
@@ -694,7 +684,6 @@ export default {
   .filter-layout {
     // width: 1680px;
     background-color: #fff;
-    padding: 20px;
     padding-bottom: 0;
     position: relative;
     .btn {
@@ -763,7 +752,7 @@ export default {
     //   color: red;
     // }
     .data-head {
-      height: 120px;
+      height: 84px;
       background-color: #fff;
       // padding-left: 48px;
       .data-head-left {
@@ -773,7 +762,7 @@ export default {
           width: 16px;
           height: 16px;
           left: 0px;
-          top: 63%;
+          top: 59%;
           // margin-top: -8px;
         }
         span:first-of-type {
@@ -782,6 +771,7 @@ export default {
           margin-top: 30px;
           font-size: 18px;
           margin-left: 28px;
+          line-height: 0px;
         }
       }
       .data-head-right {
@@ -801,7 +791,7 @@ export default {
 
   .el-breadcrumb {
     padding-left: 45px;
-    margin-top: 20px;
+    margin-top: 14px;
 
     /deep/ .el-breadcrumb__inner {
       color: #99a1aa !important;
@@ -822,21 +812,15 @@ export default {
   .data-list {
     width: 100%;
     /deep/ .el-table {
-      font-size: 14px !important;
+      // font-size: 14px !important;
       td,
       th {
         padding: 24px 0;
       }
       .el-table__header {
-        height: 55px;
         th {
-          padding: 0;
-          .cell {
-            background-color: #eef2fb;
-            // background-color: pink;
-            height: 55px;
-            line-height: 55px;
-          }
+          padding: 6px 0;
+          background-color: #eef2fb;
         }
       }
     }
@@ -850,5 +834,6 @@ export default {
   /deep/ .el-input__suffix {
     right: 12px;
   }
+  
 }
 </style>
