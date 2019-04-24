@@ -44,7 +44,7 @@
           width="140"
           trigger="hover">
           <img class="signImg" :src="signImg" alt="">
-          <el-button slot="reference" round @click="signature(3)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+          <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
@@ -322,6 +322,7 @@ export default {
         path:"ziliaoku",
         id:this.$route.query.code
       },
+      http:'',
       power: {
         'sign-ht-info-edit': {
           state: false,
@@ -368,6 +369,10 @@ export default {
     };
   },
   created() {
+    if (!window.location.origin) {
+      window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+    }
+    this.http = window.location.origin
     this.id = this.$route.query.id;
     this.code = this.$route.query.code;
     if (this.$route.query.operationType) {
@@ -605,12 +610,7 @@ export default {
     },
     //签章
     signature(value){
-      if(value===3){//签章+打印
-      //   let param={
-    //     id:this.id,
-    //     type:3,
-    //     signPosition:JSON.stringify(this.signPositions)
-    //   }
+      if(value===1){//签章
         let param = {
           id:this.id,
           type:value,
@@ -623,23 +623,20 @@ export default {
         this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
-            let pdfUrl=res.data;
-            // debugger
-            this.fullscreenLoading=false;
-            this.getContImg()
-            // debugger
-            let pictureList = Array.from(document.getElementsByClassName('signature'))
-            console.log(pictureList)
-            pictureList.forEach(element => {
-              element.style.display="none"
-            });
-            this.getUrl(pdfUrl);
+            // let pdfUrl=res.data;
+            // this.fullscreenLoading=false;
+            // this.getContImg()
+            // // debugger
+            // let pictureList = Array.from(document.getElementsByClassName('signature'))
+            // console.log(pictureList)
+            // pictureList.forEach(element => {
+            //   element.style.display="none"
+            // });
+            // this.getUrl(pdfUrl);
+            // this.haveUrl=true;
+            this.pdfUrl=`${this.http}/api/contract/getSignPdf/?id=${this.id}`
             this.haveUrl=true;
-            // setTimeout(()=>{
-            //   this.dayin();
-            //   this.fullscreenLoading=false;
-            // },2000);
-
+            this.fullscreenLoading=false;
           }
         }).catch(error =>{
           this.fullscreenLoading=false;
@@ -648,7 +645,7 @@ export default {
             type: "error"
           })
         })
-      }else if(value===4){//打印(仅仅记录次数)
+      }else if(value===2){//打印(仅仅记录次数)
         let param = {
           id:this.id,
           type:value
@@ -656,27 +653,15 @@ export default {
         this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
+            this.pdfUrl=`${this.http}/api/contract/getSignPdf/?id=${this.id}`
             this.haveUrl=true;
-          }
-        })
-      }else{//打印(获取地址)
-        let param = {
-          id:this.id,
-          type:value
-        }
-        this.$ajax.post('/api/contract/signture', param).then(res=>{
-          res=res.data;
-          if(res.status===200){
-            let pdfUrl=res.data;
-            this.getUrl(pdfUrl);
-            // this.haveUrl=true;
           }
         })
       }
     },
     dayin(){
       // this.$refs.pdfPrint.print();
-      this.signature(4);
+      this.signature(2);
     },
     //关闭打印
     closePrint(){
@@ -757,9 +742,9 @@ export default {
         res=res.data;
         if(res.status===200){
           // this.getContData();
-          if(res.data.contState.value===2&&!type){
-            this.signature(2)
-          }
+          // if(res.data.contState.value===2&&!type){
+          //   this.signature(2)
+          // }
           this.examineState=res.data.examineState.value;
           this.laterStageState=res.data.laterStageState.value;
           this.contState=res.data.contState.value;
