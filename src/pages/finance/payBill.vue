@@ -154,7 +154,7 @@
         </el-table-column>
         <el-table-column align="center" label="支行" v-if="form.accountProperties===1">
           <template slot-scope="scope">
-            <input type="text" class="no-style" placeholder="请输入" v-model.trim="scope.row.bankBranch" @input="inputOnly(3)">
+            <input type="text" class="no-style" placeholder="请输入" v-model.trim="scope.row.bankBranch" @input="inputOnly(3)" @blur="bankCheck">
           </template>
         </el-table-column>
         <el-table-column align="center" label="金额（元）">
@@ -369,6 +369,21 @@
       }
     },
     methods:{
+      bankCheck:function () {
+        let regx = /[\u4E00-\u9FA5]/g
+        let arr = []
+        if(this.list[0].bankBranch.length>0){
+          arr = this.list[0].bankBranch.match(regx)
+        }
+        if(!arr){
+          this.$message({
+            message:'支行名称必须带有中文'
+          })
+          return false
+        }else {
+          return true
+        }
+      },
       /**
        * 获取银行列表
        */
@@ -391,7 +406,7 @@
         }else if(type===1) {
           this.list[0].userName=this.$tool.textInput(this.list[0].userName,3)
         }else if(type===3) {
-          this.list[0].bankBranch=this.$tool.textInput(this.list[0].bankBranch,3)
+          this.list[0].bankBranch=this.$tool.textInput(this.list[0].bankBranch,4)
         }
       },
       clearData:function () {
@@ -641,6 +656,9 @@
               })
               return
             }
+          }
+          if(!this.bankCheck()){
+            return
           }
           if(this.files.length===0){
             this.$message({
