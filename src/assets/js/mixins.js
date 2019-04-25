@@ -286,6 +286,7 @@ const MIXINS = {
       this.$ajax.get(`/api${url}`,param).then(res=>{
         res=res.data
         if(res.status===200){
+          debugger
           this.fileSign([res.data],'download')
           /*var a = document.createElement('a');
           a.download = undefined;

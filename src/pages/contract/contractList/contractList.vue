@@ -125,6 +125,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </div>
         <div>
+          <el-button class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button>
           <el-dropdown placement="bottom" @command="printCont" v-if="power['sign-ht-info-print'].state"><!--  @command="printCont" -->
             <el-button round size="small">
               打印草签合同<i class="el-icon-arrow-down el-icon--right"></i>
@@ -557,7 +558,11 @@ export default {
         'sign-com-cust': {
           state: false,
           name: '客源详情'
-        }
+        },
+        // 'sign-cw-debt-export': {
+        //   state: false,
+        //   name: '导出'
+        // }
       }
     };
   },
@@ -621,7 +626,6 @@ export default {
         if (res.status === 200) {
           this.tableData = res.data.list;
           this.total = res.data.count;
-          // this.getBlankPdf();//空白合同pdf
         }
       });
     },
@@ -1145,6 +1149,36 @@ export default {
           this.haveUrl=true;
         }
       })
+    },
+    //导出
+    getExcel(){
+      let param = {
+        // pageNum: this.currentPage,
+        // pageSize: this.pageSize,
+        keyword: this.keyword
+      };
+      param = Object.assign({}, param, this.contractForm);
+      if(this.signDate){
+        if (this.signDate.length > 0) {
+          param.beginDate = this.signDate[0];
+          param.endDate = this.signDate[1];
+        }
+      }
+      if(this.contractForm.contTypes&&this.contractForm.contTypes.length>0){
+        param.contTypes=this.contractForm.contTypes.join(',')
+      }else{
+        param.contTypes=''
+      }
+
+      delete param.depName
+      //console.log(param)
+      this.excelCreate("/input/contractExcel",param)
+      // this.$ajax.postJSON("/api/input/contractExcel", param).then(res => {
+      //   res = res.data;
+      //   if (res.status === 200) {
+          
+      //   }
+      // });
     }
   },
   filters: {

@@ -311,11 +311,14 @@
     <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
     </houseGuest>
     <!-- 保存合同确认框 -->
-    <el-dialog title="提示" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
-      <span>请确认客户或者业主的姓名是否与证件上的姓名保持一致？</span>
+    <el-dialog title="" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="warning-box">
+        <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
+        <p>否则合同将无效，之后收款所开票据无效！！！</p>
+      </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogSave = false">取 消</el-button>
-        <el-button type="primary" @click="saveCont" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
+        <el-button @click="dialogSave = false" size="small">不确认</el-button>
+        <el-button type="primary" size="small" @click="saveCont" v-loading.fullscreen.lock="fullscreenLoading">确认</el-button>
       </span>
     </el-dialog>
     <!-- 删除人员确认框 -->
@@ -2081,6 +2084,28 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.warning-box{
+  margin: -4px 0 18px 28px;
+  p{
+    line-height: 1.4;
+    &:first-of-type{
+      // display:flex;
+      // align-items:center;
+      i{
+        color:orange;
+        font-size:48px;
+        margin-right:16px;
+      }
+      span{
+        font-size:16px
+      }
+    }
+    &:last-of-type{
+      padding-left:64px;
+      color: red;
+    }
+  }
+}
 .view-container {
   // padding: 0 0 20px 0;
   .add-form {
