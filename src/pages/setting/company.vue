@@ -356,6 +356,9 @@
   let checkPassPort = function (str) {
     return /^1[45][0-9]{7}$|(^[P|p|S|s]\d{7}$)|(^[S|s|G|g|E|e]\d{8}$)|(^[Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8}$)|(^[H|h|M|m]\d{8,10}$)/.test(str)
   }
+  let isHaveChinese = function (str) {
+    return /[\u4E00-\u9FA5]/g.test(str)
+  }
   const rule = {
     cityId: {
       name: "城市选择"
@@ -807,6 +810,11 @@
                         break
                       } else if(bankList[i].type === 0) {
                         bankList[i].bankBranchName = ""
+                      } else if(bankList[i].type === 1 && bankList[i].bankBranchName) {
+                        if(!isHaveChinese(bankList[i].bankBranchName)) {
+                          that_.$message({message:"支行名称必须带有中文"})
+                          break
+                        }
                       }
                       if(that_.companyForm.contractSign) {
                         if(that_.companyForm.financialSign) {
@@ -1036,7 +1044,7 @@
           })
         }else if(type==='bankBranchName') {
           this.$nextTick(()=>{
-            this.companyBankList[index].bankBranchName=this.$tool.textInput(this.companyBankList[index].bankBranchName,3)            
+            this.companyBankList[index].bankBranchName=this.$tool.textInput(this.companyBankList[index].bankBranchName,4)            
           })
         } else if(type==='lepName') {
           this.$nextTick(()=>{
