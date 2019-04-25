@@ -170,12 +170,15 @@
         <!-- 房客源弹框 -->
         <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :choseHcode="choseHcode" :choseGcode="choseGcode"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
         <!-- 确定保存合同弹框 -->
-        <el-dialog title="提示" :visible.sync="dialogSure" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
-            <span>请确认客户或者业主的姓名是否与证件上的姓名保持一致？</span>
+        <el-dialog title="" :visible.sync="dialogSure" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
+            <div class="warning-box">
+              <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
+              <p>否则合同将无效，之后收款所开票据无效！！！</p>
+            </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogSure = false">取 消</el-button>
-                <el-button v-if="type===1" type="primary" @click="onSubmit1()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
-                <el-button v-if="type==2" type="primary" @click="onSubmit2()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
+                <el-button size="small" @click="dialogSure = false">不确认</el-button>
+                <el-button size="small" v-if="type===1" type="primary" @click="onSubmit1()" v-loading.fullscreen.lock="fullscreenLoading">确认</el-button>
+                <el-button size="small" v-if="type==2" type="primary" @click="onSubmit2()" v-loading.fullscreen.lock="fullscreenLoading">确认</el-button>
             </span>
         </el-dialog>
         <!-- 创建合同成功提示框 -->
@@ -1071,7 +1074,28 @@ export default {
 
 <style lang="less" scoped>
 
-
+.warning-box{
+  margin: -4px 0 18px 28px;
+  p{
+    line-height: 1.4;
+    &:first-of-type{
+      // display:flex;
+      // align-items:center;
+      i{
+        color:orange;
+        font-size:48px;
+        margin-right:16px;
+      }
+      span{
+        font-size:16px
+      }
+    }
+    &:last-of-type{
+      padding-left:64px;
+      color: red;
+    }
+  }
+}
   //  .myconfirm{
   //       /deep/.el-dialog{
   //           width: 420px;
