@@ -203,9 +203,9 @@
         <!-- 列表 -->
         <div class="paper-table-box">
             <div class="paper-set-tit">
-                <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
+                <div class="paper-tit-fl" v-if="power['sign-qh-mgr-export'].state"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
                 <p>
-                    <el-button class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button>
+                    <el-button class="btn-info" round type="primary" size="small" @click="getExcel" v-if="power['sign-qh-mgr-export'].state">导出</el-button>
                 </p>
             </div>
             <el-table
@@ -871,6 +871,10 @@
                     },
                     'sign-com-htdetail':{
                         name:'合同详情',
+                        state:false,
+                    },
+                    'sign-qh-mgr-export':{
+                        name:'导出',
                         state:false,
                     },
                 },
