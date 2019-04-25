@@ -119,6 +119,9 @@
         <div class="paper-table-box">
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
+                <p>
+                    <el-button class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button>
+                </p>
             </div>
             <el-table
              border
@@ -205,6 +208,9 @@
     import {TOOL} from '@/assets/js/common';
     import LayerLateProgress from '@/components/LayerLateProgress'
     import flowAccount from '@/components/flowAccount'
+
+    // 列表请求参数
+    let paramObj;
 
     export default {
         mixins: [FILTER,MIXINS],
@@ -313,6 +319,11 @@
             }
         },
         methods:{
+            // 导出excel
+            getExcel:function () {
+                this.queryFn()
+                this.excelCreate('/input/stepMonitorExcel',paramObj)
+            },
             // 成功提示
             successMeFn(e){
                 this.$message({
@@ -409,7 +420,7 @@
                     receiveTimeStar = this.dateFormat(time[0]);
                     receiveTimeEnd = this.dateFormat(time[1]);
                 }
-                this.$ajax.get('/api/postSigning/getMonitorContract',{
+                paramObj = {
                     pageNum:this.pageNum,
                     pageSize:this.pageSize,
                     dealAgentId:this.propForm.departmentMo,
@@ -422,7 +433,8 @@
                     receiveTimeStar,
                     keyword:this.propForm.search,
                     depAttr:this.propForm.depAttr,
-                }).then(res=>{
+                }
+                this.$ajax.get('/api/postSigning/getMonitorContract',paramObj).then(res=>{
                     res = res.data;
                     if(res.status === 200){
                         this.tableData = res.data;

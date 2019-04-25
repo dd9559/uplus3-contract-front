@@ -204,6 +204,9 @@
         <div class="paper-table-box">
             <div class="paper-set-tit">
                 <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
+                <p>
+                    <el-button class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button>
+                </p>
             </div>
             <el-table
             border
@@ -685,6 +688,8 @@
     }
     // 是否超时
     const ISOVERTIME = 1;
+    // 列表请求参数
+    let paramObj;
 
     export default {
         mixins: [FILTER,MIXINS],
@@ -893,6 +898,11 @@
             },
         },
         methods:{
+            // 导出excel
+            getExcel:function () {
+                this.queryFn()
+                this.excelCreate('/input/stepAdminExcel',paramObj)
+            },
             // 赋值给交易步骤
             rulesStepsFn(e){
                 this.rulesSteps = this.rules.steps;
@@ -1663,7 +1673,7 @@
                     receiveTimeStar = this.dateFormat(datamo[0]);
                     receiveTimeEnd = this.dateFormat(datamo[1]);
                 }
-                this.$ajax.get('/api/postSigning/getAdminContract',{
+                paramObj = {
                     pageNum:this.pageNum,
                     pageSize:this.pageSize,
                     statusLaterStage:this.propForm.lateState,
@@ -1683,7 +1693,8 @@
                     receiveTimeStar,
                     keyword:this.propForm.search,
                     depAttr:this.propForm.depAttr,
-                }).then(res=>{
+                }
+                this.$ajax.get('/api/postSigning/getAdminContract',paramObj).then(res=>{
                     res = res.data;
                     if(res.status === 200){
                         this.tableData = res.data
