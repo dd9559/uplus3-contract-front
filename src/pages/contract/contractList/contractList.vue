@@ -125,7 +125,7 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         </div>
         <div>
-          <el-button class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button>
+          <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
           <el-dropdown placement="bottom" @command="printCont" v-if="power['sign-ht-info-print'].state"><!--  @command="printCont" -->
             <el-button round size="small">
               打印草签合同<i class="el-icon-arrow-down el-icon--right"></i>
@@ -559,10 +559,10 @@ export default {
           state: false,
           name: '客源详情'
         },
-        // 'sign-cw-debt-export': {
-        //   state: false,
-        //   name: '导出'
-        // }
+        'sign-ht-info-export': {
+          state: false,
+          name: '导出'
+        }
       }
     };
   },
