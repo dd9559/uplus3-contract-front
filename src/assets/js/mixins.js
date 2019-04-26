@@ -301,6 +301,7 @@ const MIXINS = {
         this.$message({
           message:error
         })
+        this.HQloadingList = false
       })
     },
     /**
