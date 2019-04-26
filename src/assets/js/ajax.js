@@ -72,12 +72,13 @@ let api = {
       dayRandomTime:new Date().getTime()
     })
     if(param.keyword){
-      let code=["[","]","|"]
+      /*let code=["[","]","|"]
       code.forEach((item)=>{
         if(param.keyword.indexOf(item)>-1){
           param.keyword=param.keyword.replace(new RegExp(`\\${item}`,'g'),encodeURIComponent(item))
         }
-      })
+      })*/
+      param.keyword=encodeURIComponent(param.keyword)
     }
     return axios.get(url,{params:param}).then(res => {
       return res
