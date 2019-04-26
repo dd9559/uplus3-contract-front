@@ -213,7 +213,8 @@
             ref="tableCom"
             :max-height="tableNumberCom"
             :data="tableData.list"
-            v-loading="loadingList"
+            v-loading="HQloadingList"
+            element-loading-text="正在加载中"
             @cell-dblclick="dblclickFn"
             class="paper-table">
                 <el-table-column :formatter="nullFormatterData" prop="code" label="合同编号" align="center" min-width="120">
@@ -702,7 +703,7 @@
                 loading:false,
                 loading2:false,
                 LookStepLoad:false,
-                loadingList:false,
+                HQloadingList:false,
                 loadingProgress:false,
                 loadingAdjust:false,
                 loadingReplace:false,
@@ -904,7 +905,8 @@
         methods:{
             // 导出excel
             getExcel:function () {
-                this.queryFn()
+                this.pageNum = 1;
+                this.getDataList('export');
                 this.excelCreate('/input/stepAdminExcel',paramObj)
             },
             // 赋值给交易步骤
@@ -1652,12 +1654,14 @@
                 this.propForm.dateMo = '';
             },
             // 列表数据
-            getDataList(){
+            getDataList(type='init'){
                 // if(!this.power['sign-qh-mgr-query'].state){
                 //     this.noPower(this.power['sign-qh-mgr-query'].name);
                 //     return false
                 // }
-                this.loadingList = true;
+                if(type==='init'){
+                  this.HQloadingList = true;  
+                }
                 let handleTimeEnd = '';
                 let handleTimeStar = '';
                 let receiveTimeEnd = '';
@@ -1711,12 +1715,12 @@
                         };
                     }
                     this.$nextTick(()=>{
-                        this.loadingList = false;
+                        this.HQloadingList = false;
                     });
                 }).catch(err=>{
                     this.errMeFn(err);
                     this.$nextTick(()=>{
-                        this.loadingList = false;
+                        this.HQloadingList = false;
                     });
                 })
             },
