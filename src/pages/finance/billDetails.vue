@@ -117,6 +117,7 @@
             <el-table-column align="center" label="操作">
               <template slot-scope="scope">
                 <el-button type="text" @click="getPaper('create')" v-if="btnBill&&billMsg.billStatus&&billMsg.isDel===1&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)&&billMsg.payStatusValue!==4&&billMsg.payStatusValue!==11">开票</el-button>
+                <el-button type="text" @click="getPaper('client')" v-else-if="btnBill&&billMsg.billStatus&&billMsg.billStatus.value===2">打印客户联</el-button>
                 <span v-else>--</span>
               </template>
             </el-table-column>
@@ -286,7 +287,7 @@
   </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :printType="printType" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
@@ -343,6 +344,7 @@
         btnCheck:false,//是否有审核权限
         btnPrint:false,//是否有打印权限
         btnBill:false,//是否有开票权限
+        printType:'client',//票据是否只显示客户联
       }
     },
     created() {
@@ -374,7 +376,11 @@
       },
       //开票
       getPaper:function (type) {
+        this.printType='client'
         if(type==='details'){
+          this.printType='all'
+          this.$refs.layerInvoice.show(this.billMsg.billId)
+        }else if(type==='client'){
           this.$refs.layerInvoice.show(this.billMsg.billId)
         }else {
           this.$refs.layerInvoice.show(this.billId,true)

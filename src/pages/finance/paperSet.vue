@@ -5,100 +5,101 @@
         <el-form-item label="关键字" prop="keyword">
           <el-tooltip content="开票人员/合同编号/票据编号/物业地址" placement="top">
             <el-input class="w200" v-model="propForm.keyword" placeholder="请输入" clearable></el-input>
-            </el-tooltip>
+          </el-tooltip>
         </el-form-item>
         <div class="in-block">
-            <el-form-item
+          <el-form-item
             label="部门"
             prop="depIdS"
             class="mr">
-                <!-- <el-select
-                ref="tree"
-                size="small"
-                :loading="Loading"
-                :remote-method="remoteMethod"
-                v-model="propForm.depIdS"
-                @clear="clearDep"
-                @visible-change="initDepList"
-                clearable
-                filterable
-                remote
-                placeholder="请选择">
-                    <el-option
-                    class="drop-tree"
-                    value="">
-                        <el-tree
-                        :data="DepList"
-                        :props="defaultProps"
-                        @node-click="depHandleClick"></el-tree>
-                    </el-option>
-                </el-select> -->
-                <select-tree :data="DepList" :init="propForm.depIdS" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
-            </el-form-item>
-            <el-form-item prop="empId">
-                <el-select
-                v-model="propForm.empId"
-                clearable
-                class="w100">
-                    <el-option
-                    v-for="item in EmployeList"
-                    :key="'empId'+item.empId"
-                    :label="item.name"
-                    :value="item.empId"></el-option>
-                </el-select>
-            </el-form-item>
+            <!-- <el-select
+            ref="tree"
+            size="small"
+            :loading="Loading"
+            :remote-method="remoteMethod"
+            v-model="propForm.depIdS"
+            @clear="clearDep"
+            @visible-change="initDepList"
+            clearable
+            filterable
+            remote
+            placeholder="请选择">
+                <el-option
+                class="drop-tree"
+                value="">
+                    <el-tree
+                    :data="DepList"
+                    :props="defaultProps"
+                    @node-click="depHandleClick"></el-tree>
+                </el-option>
+            </el-select> -->
+            <select-tree :data="DepList" :init="propForm.depIdS" @checkCell="depHandleClick" @clear="clearDep"
+                         @search="searchDep"></select-tree>
+          </el-form-item>
+          <el-form-item prop="empId">
+            <el-select
+              v-model="propForm.empId"
+              clearable
+              class="w100">
+              <el-option
+                v-for="item in EmployeList"
+                :key="'empId'+item.empId"
+                :label="item.name"
+                :value="item.empId"></el-option>
+            </el-select>
+          </el-form-item>
         </div>
         <el-form-item
-            label="票据状态"
-            prop="state">
-                <el-select
-                v-model="propForm.state"
-                class="w180">
-                    <el-option
-                    v-for="item in dictionaryData"
-                    :key="'dictionaryData'+item.key"
-                    :label="item.value"
-                    :value="item.key"></el-option>
-                </el-select>
+          label="票据状态"
+          prop="state">
+          <el-select
+            v-model="propForm.state"
+            class="w180">
+            <el-option
+              v-for="item in dictionaryData"
+              :key="'dictionaryData'+item.key"
+              :label="item.value"
+              :value="item.key"></el-option>
+          </el-select>
         </el-form-item>
         <div class="in-block">
-            <el-form-item label="查询时间" prop="dateType" class="mr">
-                <el-select
-                v-model="propForm.dateType"
-                class="w110">
-                    <el-option
-                    v-for="item in $tool.dropdown.dateType"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item
+          <el-form-item label="查询时间" prop="dateType" class="mr">
+            <el-select
+              v-model="propForm.dateType"
+              class="w110">
+              <el-option
+                v-for="item in $tool.dropdown.dateType"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
             prop="timeRange">
-                <el-date-picker
-                v-model="propForm.timeRange"
-                class="w284"
-                type="daterange"
-                value-format="yyyy-MM-dd"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期">
-                </el-date-picker>
-            </el-form-item>
+            <el-date-picker
+              v-model="propForm.timeRange"
+              class="w284"
+              type="daterange"
+              value-format="yyyy-MM-dd"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </el-form-item>
         </div>
         <el-form-item
-              label="合作方式"
-              prop="cooperation">
-                  <el-select
-                  v-model="propForm.cooperation"
-                  class="w100">
-                      <el-option
-                      v-for="item in rules.cooperation"
-                      :key="'cooperation'+item.key"
-                      :label="item.value"
-                      :value="item.key"></el-option>
-                  </el-select>
-          </el-form-item>
+          label="合作方式"
+          prop="cooperation">
+          <el-select
+            v-model="propForm.cooperation"
+            class="w100">
+            <el-option
+              v-for="item in rules.cooperation"
+              :key="'cooperation'+item.key"
+              :label="item.value"
+              :value="item.key"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
@@ -106,7 +107,8 @@
       <div class="paper-set-tit">
         <!-- <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div> -->
       </div>
-      <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" class="paper-table" v-loading="loadingList">
+      <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" class="paper-table"
+                v-loading="loadingList">
         <el-table-column align="center" label="序号" min-width="60">
           <template slot-scope="scope">
             <p class="tc">{{scope.$index + 1}}</p>
@@ -135,14 +137,14 @@
         </el-table-column>
         <el-table-column label="收款人" align="center" min-width="120">
           <template slot-scope="scope">
-              <p>{{nullFormatFn(scope.row.payeeStoreName)}}</p>
-              <p>{{nullFormatFn(scope.row.payeeName)}}</p>
+            <p>{{nullFormatFn(scope.row.payeeStoreName)}}</p>
+            <p>{{nullFormatFn(scope.row.payeeName)}}</p>
           </template>
         </el-table-column>
         <el-table-column label="开票人员" align="center" min-width="120">
           <template slot-scope="scope">
-              <p>{{nullFormatFn(scope.row.drawerDepName)}}</p>
-              <p>{{nullFormatFn(scope.row.drawerName)}}</p>
+            <p>{{nullFormatFn(scope.row.drawerDepName)}}</p>
+            <p>{{nullFormatFn(scope.row.drawerName)}}</p>
           </template>
         </el-table-column>
         <el-table-column prop="drawerDepName" label="门店" align="center" min-width="80">
@@ -154,19 +156,22 @@
             {{dateFormat(scope.row.createTime)}}
           </template>
         </el-table-column>
-        <el-table-column prop="printTimes" label="打印次数" align="center" min-width="60">
-        </el-table-column>
-        <el-table-column prop="printByName" label="打印人" align="center" min-width="120">
+        <el-table-column label="打印次数" align="center" min-width="60">
           <template slot-scope="scope">
-              <p>{{nullFormatFn(scope.row.printByStoreName)}}</p>
-              <p>{{nullFormatFn(scope.row.printByName)}}</p>
+            <span style="cursor: pointer;" @click="getPrintRecord(scope.row)">{{scope.row.printTimes}}</span>
+          </template>
+        </el-table-column>
+        <!--<el-table-column prop="printByName" label="打印人" align="center" min-width="120">
+          <template slot-scope="scope">
+            <p>{{nullFormatFn(scope.row.printByStoreName)}}</p>
+            <p>{{nullFormatFn(scope.row.printByName)}}</p>
           </template>
         </el-table-column>
         <el-table-column label="打印日期" align="center" min-width="90">
-           <template slot-scope="scope">
+          <template slot-scope="scope">
             {{dateFormat(scope.row.printTime)}}
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column label="回收日期" align="center" min-width="90">
           <template slot-scope="scope">
             {{dateFormat(scope.row.recycleTime)}}
@@ -184,7 +189,7 @@
         </el-table-column>
         <el-table-column prop="invalidReason" label="作废原因" align="center" min-width="90">
           <template slot-scope="scope">
-             <el-popover
+            <el-popover
               placement="top-start"
               width="200"
               trigger="hover"
@@ -192,7 +197,7 @@
               :content="scope.row.invalidReason">
               <p class="norwap" slot="reference">{{nullFormatFn(scope.row.invalidReason)}}</p>
             </el-popover>
-              <!-- <p class="norwap">{{scope.row.invalidReason}}</p> -->
+            <!-- <p class="norwap">{{scope.row.invalidReason}}</p> -->
           </template>
         </el-table-column>
         <el-table-column label="操作人/时间" align="center" min-width="120">
@@ -202,19 +207,29 @@
             <p>{{dateFormat(scope.row.updateTime)}}</p>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" min-width="120">
+        <el-table-column fixed="right" class-name="cell-operation" label="操作" align="center" min-width="120">
           <template slot-scope="scope">
             <!-- 已开票 -->
             <template v-if="scope.row.state.value===2">
-              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-bill-delete'].state">核销</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-void'].state">作废</el-button>
+              <p class="operation-text" @click="btnOpera(scope.row,5,'client')"
+                 v-if="power['sign-cw-bill-invoice'].state">打印客户联</p>
+              <p class="operation-text" @click="btnOpera(scope.row,5,'book')"
+                 v-if="power['sign-cw-bill-printtally'].state">打印记账联</p>
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-bill-delete'].state">核销
+              </el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收
+              </el-button>
+              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-void'].state">作废
+              </el-button>
               <!-- <template v-else></template> -->
             </template>
             <!-- 已作废 -->
             <template v-else-if="scope.row.state.value===4">
-              <el-button type="text" @click="btnOpera(scope.row,4)" v-if="power['sign-cw-bill-invoice'].state && scope.row.invalidPrint">开票</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,4)"
+                         v-if="power['sign-cw-bill-invoice'].state && scope.row.invalidPrint">开票
+              </el-button>
+              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收
+              </el-button>
               <!-- <template v-else></template> -->
             </template>
             <!-- 已回收 和 已核销 -->
@@ -224,17 +239,18 @@
       </el-table>
     </div>
     <!-- 分页 -->
-      <div class="pagination" v-if="tableData.total">
-          <el-pagination
-              :current-page="tableData.pageNum"
-              :page-size="tableData.pageSize"
-              @current-change="currentChangeFn"
-              layout=" total, prev, pager, next, jumper"
-              :total="tableData.total">
-          </el-pagination>
-      </div>
+    <div class="pagination" v-if="tableData.total">
+      <el-pagination
+        :current-page="tableData.pageNum"
+        :page-size="tableData.pageSize"
+        @current-change="currentChangeFn"
+        layout=" total, prev, pager, next, jumper"
+        :total="tableData.total">
+      </el-pagination>
+    </div>
     <!-- 弹层 -->
-    <el-dialog :title="layer.title" :visible.sync="layer.show" :width="layer.title==='票据作废'?'740px':'460px'" class="layer-paper">
+    <el-dialog :title="layer.title" :visible.sync="layer.show" :width="layer.title==='票据作废'?'740px':'460px'"
+               class="layer-paper">
       <div v-if="layer.title==='票据作废'" class="layer-invalid">
         <ul class="ul">
           <li>
@@ -253,7 +269,8 @@
         <div class="input-box">
           <span class="cl-1 mr-10"><span class="red mr-5">*</span>作废备注：</span>
           <div class="input">
-            <el-input type="textarea" resize="none" placeholder="请输入作废理由" :maxlength="invalidMax" v-model="layer.reason" class="input">
+            <el-input type="textarea" resize="none" placeholder="请输入作废理由" :maxlength="invalidMax" v-model="layer.reason"
+                      class="input">
             </el-input>
             <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
           </div>
@@ -262,11 +279,27 @@
       <div v-else class="txt">{{layer.msg}}</div>
       <p slot="footer" :class="[layer.title!=='票据作废'?'center':'']">
         <el-button round size="medium" class="paper-btn" @click="layer.show=false">取消</el-button>
-        <el-button round size="medium" class="paper-btn paper-btn-blue" type="primary" @click="submitForm">确定</el-button>
+        <el-button round size="medium" class="paper-btn paper-btn-blue" type="primary" @click="submitForm">确定
+        </el-button>
       </p>
     </el-dialog>
+    <el-dialog title="打印详情" :visible.sync="printDetails" width="460px" class="table-print">
+      <el-table ref="tablePrint" border :data="printRecordList">
+        <el-table-column align="center" label="操作人" min-width="60" prop="createByName"></el-table-column>
+        <el-table-column label="打印时间" align="center" min-width="120">
+          <template slot-scope="scope">
+            <span>{{$tool.timeFormat(scope.row.createTime)}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="详情" align="center" min-width="120">
+          <template slot-scope="scope">
+            <span>{{scope.row.printType?nullFormatFn(scope.row.printType.label):'--'}}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <!--  :showBtn="comPrint" -->
-    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :printType="printType" @emitPaperSet="emitPaperSetFn"></layer-invoice>
   </div>
 </template>
 
@@ -281,9 +314,9 @@
     data() {
       return {
         // 加载
-        loading:false,
-        loading2:false,
-        loadingList:false,
+        loading: false,
+        loading2: false,
+        loadingList: false,
         // 列表数据
         tableData: [],
         // 筛选条件
@@ -294,19 +327,19 @@
           state: '',
           dateType: 1,
           timeRange: '',
-          cooperation:'',
+          cooperation: '',
         },
         // 筛选下拉
-        rules:{
-          depId:[{
-                  name: "全部",
-                  id: ""
-              }],
-          empId:[{
-                  name: "全部",
-                  empId: ""
-              }],
-          cooperation:[]
+        rules: {
+          depId: [{
+            name: "全部",
+            id: ""
+          }],
+          empId: [{
+            name: "全部",
+            empId: ""
+          }],
+          cooperation: []
         },
         //分页
         pageSize: 10,
@@ -314,66 +347,73 @@
         // 筛选选项
         dictionary: {
           '33': '',
-          '53':'合作方式',
+          '53': '合作方式',
         },
-        dictionaryData:[],
+        dictionaryData: [],
         // 作废弹层输入框
         invalidMax: 150,
         // 弹层
         layer: {
           show: false,
           title: '',
-          msg:'',
-          reason:''
+          msg: '',
+          reason: ''
         },
-        activeRow:{},
-        paymentTime:'',
+        activeRow: {},
+        paymentTime: '',
         // 权限
-        power:{
-            // 'sign-cw-bill-query':{
-            //     name:'查询',
-            //     state:false
-            // },
-            'sign-cw-bill-delete':{
-                name:'核销',
-                state:false
-            },
-            'sign-cw-bill-trash':{
-                name:'回收',
-                state:false
-            },
-            'sign-cw-bill-void':{
-                name:'作废',
-                state:false
-            },
-            'sign-cw-bill-invoice':{
-                name:'开票',
-                state:false
-            },
-            // 'sign-cw-bill-print':{
-            //     name:'打印',
-            //     state:false
-            // },
-            'sign-com-htdetail':{
-                name:'合同详情',
-                state:false
-            },
-            'sign-cw-bill-detail':{
-                name:'票据详情',
-                state:false
-            },
-            'sign-com-revdetail':{
-                name:'收款详情',
-                state:false
-            },
-        }
+        power: {
+          // 'sign-cw-bill-query':{
+          //     name:'查询',
+          //     state:false
+          // },
+          'sign-cw-bill-delete': {
+            name: '核销',
+            state: false
+          },
+          'sign-cw-bill-trash': {
+            name: '回收',
+            state: false
+          },
+          'sign-cw-bill-void': {
+            name: '作废',
+            state: false
+          },
+          'sign-cw-bill-invoice': {
+            name: '开票',
+            state: false
+          },
+          'sign-cw-bill-printtally': {
+            name: '打印记账联',
+            state: false
+          },
+          // 'sign-cw-bill-print':{
+          //     name:'打印',
+          //     state:false
+          // },
+          'sign-com-htdetail': {
+            name: '合同详情',
+            state: false
+          },
+          'sign-cw-bill-detail': {
+            name: '票据详情',
+            state: false
+          },
+          'sign-com-revdetail': {
+            name: '收款详情',
+            state: false
+          },
+        },
+        printType: 'all',//开票类型，客户联还是记账联
+        printDetails: false,//打印详情弹窗状态
+        printRecordList: [],//打印记录
       }
     },
     computed: {
       invalidNumber() {
         return this.layer.reason.length
       },
-      comPaymentTime(){
+      comPaymentTime() {
         return this.$tool.dateFormat(this.paymentTime)
       },
       // comPrint(){
@@ -390,12 +430,12 @@
     },
     methods: {
       // 文字处理
-      nullFormatFn(val){
+      nullFormatFn(val) {
         return this.$tool.nullFormat(val);
       },
       // 时间处理
-      dateFormat(val){
-          return this.$tool.dateFormat(val);
+      dateFormat(val) {
+        return this.$tool.dateFormat(val);
       },
       reset: function () {
         this.$refs.propForm.resetFields();
@@ -403,8 +443,8 @@
         this.EmployeList = []
       },
       // 错误提示
-      errMeFn(e){
-          this.$message.error(e);
+      errMeFn(e) {
+        this.$message.error(e);
       },
       // 列表数据
       getData: function () {
@@ -426,122 +466,128 @@
           if (res.status === 200) {
             this.tableData = res.data
           }
-          this.$nextTick(()=>{
-              this.loadingList = false;
+          this.$nextTick(() => {
+            this.loadingList = false;
           });
-        }).catch(err=>{
-          this.$nextTick(()=>{
-              this.loadingList = false;
+        }).catch(err => {
+          this.$nextTick(() => {
+            this.loadingList = false;
           });
         })
       },
-      btnOpera: function (row,type) {
-        this.activeRow = Object.assign({},row)
-        if(type===4){
-          if(!this.power['sign-cw-bill-invoice'].state){
-              this.noPower(this.power['sign-cw-bill-invoice'].name);
-              return false
+      btnOpera: function (row, type, print = '') {
+        this.activeRow = Object.assign({}, row)
+        if (type === 4) {
+          if (!this.power['sign-cw-bill-invoice'].state) {
+            this.noPower(this.power['sign-cw-bill-invoice'].name);
+            return false
           }
-          this.$refs.layerInvoice.show(row.proceedsId,true);
+          this.printType = 'client'
+          this.$refs.layerInvoice.show(row.proceedsId, true);
+          return
+        } else if (type === 5) {
+          this.printType = print
+          this.$refs.layerInvoice.show(row.id, false);
           return
         }
         switch (type) {
           case 1:
-            if(!this.power['sign-cw-bill-delete'].state){
-                this.noPower(this.power['sign-cw-bill-delete'].name);
-                return false
+            if (!this.power['sign-cw-bill-delete'].state) {
+              this.noPower(this.power['sign-cw-bill-delete'].name);
+              return false
             }
             this.layer.title = '票据核销'
             this.layer.msg = '确认要核销该票据吗?'
             this.layer.show = true;
             break
           case 2:
-            if(!this.power['sign-cw-bill-trash'].state){
-                this.noPower(this.power['sign-cw-bill-trash'].name);
-                return false
+            if (!this.power['sign-cw-bill-trash'].state) {
+              this.noPower(this.power['sign-cw-bill-trash'].name);
+              return false
             }
             this.layer.title = '票据回收'
             this.layer.msg = '确认要收回该票据吗?'
             this.layer.show = true;
             break
           case 3:
-            if(!this.power['sign-cw-bill-void'].state){
-                this.noPower(this.power['sign-cw-bill-void'].name);
-                return false
+            if (!this.power['sign-cw-bill-void'].state) {
+              this.noPower(this.power['sign-cw-bill-void'].name);
+              return false
             }
             this.layer.title = '票据作废';
-            this.layer.reason ='';
+            this.layer.reason = '';
             this.layer.show = true;
             this.getPaperDetails(row.id)
             break
         }
       },
-      getPaperDetails: function(id) {
+      getPaperDetails: function (id) {
         document.getElementById
-        this.$ajax.get(`/api/bills/details`,{
-            id
+        this.$ajax.get(`/api/bills/details`, {
+          id
         }).then(res => {
           res = res.data
           if (res.status === 200) {
             this.paymentTime = res.data.paymentTime
           }
-        }).catch(err=>{
+        }).catch(err => {
           this.$message.error(err);
         })
       },
       // 分页
-      currentChangeFn(e){
-          this.pageNum = e;
-          this.getData();
+      currentChangeFn(e) {
+        this.pageNum = e;
+        this.getData();
       },
       // 编号操作
-      cellOpera(type,row) {
+      cellOpera(type, row) {
         if (type === 'contract') {
-          if(!this.power['sign-com-htdetail'].state){
-              this.noPower(this.power['sign-com-htdetail'].name);
-              return false
+          if (!this.power['sign-com-htdetail'].state) {
+            this.noPower(this.power['sign-com-htdetail'].name);
+            return false
           }
-          this.setPath(this.getPath.concat({name:'合同详情'}));
+          this.setPath(this.getPath.concat({name: '合同详情'}));
           this.$router.push({
-              path: "/contractDetails",
-              query: {
-                  id: row.contId,//合同id
-                  code: row.contNo,//合同编号
-                  contType: row.contType,//合同类型
-              }
+            path: "/contractDetails",
+            query: {
+              id: row.contId,//合同id
+              code: row.contNo,//合同编号
+              contType: row.contType,//合同类型
+            }
           });
         } else if (type === 'paper') {
-          if(!this.power['sign-cw-bill-detail'].state){
-              this.noPower(this.power['sign-cw-bill-detail'].name);
-              return false
+          if (!this.power['sign-cw-bill-detail'].state) {
+            this.noPower(this.power['sign-cw-bill-detail'].name);
+            return false
           }
-          this.$refs.layerInvoice.show(row.id,false,row.state.value===4||row.state.value===5||row.state.value===3);
+          this.printType = 'all'
+          this.$refs.layerInvoice.show(row.id, false, row.state.value);
         } else {
-          if(!this.power['sign-com-revdetail'].state){
-              this.noPower(this.power['sign-com-revdetail'].name);
-              return false
+          if (!this.power['sign-com-revdetail'].state) {
+            this.noPower(this.power['sign-com-revdetail'].name);
+            return false
           }
-          this.setPath(this.getPath.concat({name:'收款详情'}));
+          this.setPath(this.getPath.concat({name: '收款详情'}));
           this.$router.push({
-            path:'billDetails',
-            query:{
-              id:row.proceedsId,
-              tab:'收款信息',
-              power:this.getUser.user.empId===row.auditId,
+            path: 'billDetails',
+            query: {
+              id: row.proceedsId,
+              tab: '收款信息',
+              power: this.getUser.user.empId === row.auditId,
               // print:this.power['sign-cw-bill-print'].state,//打印权限
-              bill:this.power['sign-cw-bill-invoice'].state,//开票权限
+              bill: this.power['sign-cw-bill-invoice'].state,//开票权限
             }
           })
 
         }
       },
       // dialog确定
-      submitForm:function () {
+      submitForm: function () {
         let param = {
-          id:this.activeRow.id
+          id: this.activeRow.id
         }
         let url = '';
-        switch (this.layer.title){
+        switch (this.layer.title) {
           case '票据核销':
             // param.state = 3;
             url = 'bills/cav';
@@ -552,7 +598,7 @@
             break
           case '票据作废':
             // param.state = 5;
-            if(!this.layer.reason){
+            if (!this.layer.reason) {
               this.errMeFn('作废原因不能为空');
               return false
             }
@@ -560,62 +606,72 @@
             url = 'bills/invalid'
             break
         }
-        this.$ajax.put(`/api/${url}`,param,0).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.layer.show=false
+        this.$ajax.put(`/api/${url}`, param, 0).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.layer.show = false
             this.$message({
               message: `${this.layer.title}成功`,
               type: 'success'
             });
             this.getData()
           }
-        }).catch(err=>{
+        }).catch(err => {
           this.errMeFn(err);
         })
       },
       // 接收成功
-      emitPaperSetFn(){
+      emitPaperSetFn() {
         // this.$refs.layerInvoice.propCloseFn();
         this.getData();
       },
       // 部门第二版 选择部门
-      depHandleClick(data){
-          this.propForm.depId=data.depId
-          this.propForm.depIdS=data.name
-          this.handleNodeClick(data);
+      depHandleClick(data) {
+        this.propForm.depId = data.depId
+        this.propForm.depIdS = data.name
+        this.handleNodeClick(data);
       },
       // 部门第二版 删除
-      clearDep(){
-          this.propForm.depId='';
-          this.propForm.empId='';
-          this.clearSelect();
-          this.remoteMethod();
+      clearDep() {
+        this.propForm.depId = '';
+        this.propForm.empId = '';
+        this.clearSelect();
+        this.remoteMethod();
       },
       // 部门第二版 下拉隐藏时 刷新数据清除上一次数据
-      initDepList(val){
-          if(!val){
-              this.remoteMethod()
-          }
+      initDepList(val) {
+        if (!val) {
+          this.remoteMethod()
+        }
       },
       // 部门搜索
-      searchDep:function (payload) {
-          /*this.DepList=payload.list
-          this.propForm.depIdS = payload.depName*/
+      searchDep: function (payload) {
+        /*this.DepList=payload.list
+        this.propForm.depIdS = payload.depName*/
       },
+      //获取票据打印详情
+      getPrintRecord: function (row) {
+        this.$ajax.get('/api/bills/printRecords', {billId: row.id}).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.printDetails = true
+            this.printRecordList = res.data
+          }
+        })
+      }
     },
     components: {
       ScreeningTop,
       LayerInvoice
     },
-    watch:{
-      dictionary(n,old){
+    watch: {
+      dictionary(n, old) {
         this.dictionaryData = [{
-          key:'',
-          value:'全部'
-        },...n[33]];
+          key: '',
+          value: '全部'
+        }, ...n[33]];
         // 合作方式
-        this.rules.cooperation= [...n[53]]
+        this.rules.cooperation = [...n[53]]
       }
     }
   }
@@ -623,6 +679,26 @@
 
 <style lang="less" scoped>
   @import "~@/assets/less/lsx.less";
+
+  .cell-operation {
+    .operation-text {
+      color: #409EFF;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .el-button {
+      padding: 0;
+    }
+  }
+
+  .table-print {
+    /deep/ .el-dialog__body {
+      padding-bottom: 10px;
+      max-height: 400px;
+      overflow: auto;
+    }
+  }
+
   .content {
     display: flex;
     flex-wrap: wrap;
@@ -636,75 +712,78 @@
       }*/
     }
   }
-  .layer-paper{
-    .center{
+
+  .layer-paper {
+    .center {
       text-align: center;
     }
-    .paper-btn-blue{
+    .paper-btn-blue {
       color: @color-white;
     }
-    .paper-btn-float{
+    .paper-btn-float {
       position: absolute;
       right: 0;
       bottom: 20px;
     }
   }
-  .paper-edit-box{
+
+  .paper-edit-box {
     margin: 0 40px;
     padding: 20px 0 80px;
     border-bottom: 1px solid @border-D8;
     position: relative;
-    >ul{
-      &:first-of-type{
-        >li{
+    > ul {
+      &:first-of-type {
+        > li {
           margin-bottom: 20px;
           display: flex;
           align-items: center;
-          >label{
+          > label {
             margin-right: 10px;
           }
-          &:first-of-type,&:nth-of-type(2){
-            >p{
-              &:first-of-type{
+          &:first-of-type, &:nth-of-type(2) {
+            > p {
+              &:first-of-type {
                 width: 200px;
               }
             }
           }
-          &:last-of-type{
+          &:last-of-type {
             margin-bottom: 0px;
           }
         }
       }
     }
-    .type-list{
+    .type-list {
       display: flex;
-      >p{
+      > p {
         min-width: 140px;
         margin-right: 20px;
         display: inherit;
         align-items: center;
-        >label.checkbox-info{
+        > label.checkbox-info {
           margin-right: 10px;
         }
       }
-      .input-group{
+      .input-group {
         margin-bottom: 0;
         margin-right: 20px;
       }
     }
   }
-  .paper-watch-tab{
-    >p{
+
+  .paper-watch-tab {
+    > p {
       color: @color-blue;
       text-align: center;
       font-weight: bold;
       margin: 32px;
     }
-    >ul{
+    > ul {
       display: flex;
       justify-content: center;
       margin-bottom: 26px;
-      >li{
+      > li {
         border-top: 2px solid @color-blue;
         border-bottom: 2px solid @color-blue;
         min-width: 100px;
@@ -712,17 +791,17 @@
         display: inherit;
         align-items: center;
         justify-content: center;
-        &:first-of-type{
+        &:first-of-type {
           border-left: 2px solid @color-blue;
           border-top-left-radius: 18px;
           border-bottom-left-radius: 18px;
         }
-        &:last-of-type{
+        &:last-of-type {
           border-right: 2px solid @color-blue;
           border-top-right-radius: 18px;
           border-bottom-right-radius: 18px;
         }
-        &.active{
+        &.active {
           background-color: @color-blue;
           color: @color-white;
         }

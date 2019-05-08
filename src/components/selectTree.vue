@@ -129,6 +129,7 @@
           this.cellClick=false
         }
       },
+
       getList:function (keyword='',type='init') {
         this.$ajax.get('/api/access/deps/tree', {keyword: keyword}).then(res => {
           res = res.data
