@@ -34,14 +34,26 @@
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
-		<!-- 合同提审弹窗 -->
-		<el-dialog title="提示" :visible.sync="dialogSub" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+		<!-- 买卖合同提审弹窗 -->
+		<el-dialog title="" :visible.sync="dialogSub" width="460px" :closeOnClickModal="$tool.closeOnClickModal" center>
+			<div class="submitBox">
+				<p>是否需要打印草签合同？</p>
+				<p>温馨提示：草签合同无公章，仅供买卖双方确认合同条款使用</p>
+			</div>
+      <span slot="footer" class="">
+        <el-button @click="toPrint">打印合同，稍后提审</el-button>
+        <el-button type="primary" @click="toSubmit">无需打印，直接提审</el-button>
+      </span>
+    </el-dialog>
+		<!-- 其他合同提审弹窗 -->
+		<el-dialog title="提示" :visible.sync="otherDialogSub" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <span>确定合同填写无误并提交审核？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogSub = false">取 消</el-button>
+        <el-button @click="otherDialogSub = false">取 消</el-button>
         <el-button type="primary" @click="toSubmit">确 定</el-button>
       </span>
     </el-dialog>
+
 		<!-- 创建合同成功提示框 -->
     <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
       <span>{{Msg.type===1?'请上传资料库':'是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）'}}</span>
@@ -50,6 +62,9 @@
         <el-button type="primary" @click="toUpload">确 定</el-button>
       </span>
     </el-dialog>
+		<!-- 打印 -->
+    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
+		<div class="printMaskLayer" v-if="haveUrl"></div>
   </div>
 </template>
 
@@ -64,9 +79,13 @@ import {MIXINS_ZL} from "../mixins/ZL.js";
 import {MIXINS_DB} from "../mixins/DB.js";
 import {MIXINS_YX} from "../mixins/YX.js";
 import {MIXINS_DJ} from "../mixins/DJ.js";
+import PdfPrint from '@/components/PdfPrint';
 
 export default {
 	mixins: [MIXINS,MIXINS_MM,MIXINS_JJ,MIXINS_ZL,MIXINS_DB,MIXINS_YX,MIXINS_DJ],
+	components: {
+    PdfPrint
+  },
   data(){
     return{
       clientHei:'',
@@ -82,6 +101,7 @@ export default {
       navId:'',
 			dialogSuccess:false,
 			dialogSub:false,
+			otherDialogSub:false,
 			param:'',
 			//权限
 			power:{
@@ -103,7 +123,10 @@ export default {
         },
 			},
 			iframe1State:false,
-			iframe2State:false
+			iframe2State:false,
+			pdfUrl:'',
+			haveUrl:false,
+			http:''
     }
   },
   created(){
@@ -122,32 +145,32 @@ export default {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
     }
     // console.log(window.location.origin)
-    let http = window.location.origin
+    this.http = window.location.origin
     let dayRandomTime=new Date().getTime()
     if(this.Msg.type===1){
       //租赁
-      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
+      this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
     }else if(this.Msg.type===2){
 			//买卖
 			if(this.Msg.isWuHanMM){//是否是武汉的买卖合同
 				this.isShowType=true;
-				this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=residence&dayRandomTime=${dayRandomTime}`//居间
-				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=business&dayRandomTime=${dayRandomTime+10}`//买卖
+				this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=residence&dayRandomTime=${dayRandomTime}`//居间
+				this.src2=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=business&dayRandomTime=${dayRandomTime+10}`//买卖
 			}else{
 				this.isShowType=false;
 				this.isActive=2;
-				this.src2=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`//买卖
+				this.src2=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=address`//买卖
 			}
 
     }else if(this.Msg.type===3){
       //代办
-      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
+      this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
     }else if(this.Msg.type===4){
       //意向
-      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
+      this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
     }else if(this.Msg.type===5){
       //定金
-      this.src1=`${http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
+      this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
 		}
   },
   methods: {
@@ -230,6 +253,13 @@ export default {
 					spinner: 'el-icon-loading',
 					background: 'rgba(0, 0, 0, 0.5)'
 				});
+			}else if(operation===4){
+				loading=this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0.5)'
+				});
 			}
 			var isFull=0;//合同是否填写完整
 			let iframebox1=this.$refs.iframeFirst
@@ -289,6 +319,10 @@ export default {
 							type:'success'
 						})
 						// this.$router.push('/contractList');
+					}else if(operation===4){
+						this.pdfUrl=`${this.http}/api/contract/generateContPdf?id=${this.Msg.id}`
+						this.haveUrl=true;
+						this.dialogSub=false
 					}
 				}
       }).catch(error=>{
@@ -430,7 +464,12 @@ export default {
 					}
 				}
 				this.param = param;
-				this.dialogSub=true
+				if(this.Msg.type==2){
+					this.dialogSub=true
+				}else{
+					this.otherDialogSub=true
+				}
+				
 				// this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
 				// 	res=res.data
 				// 	if(res.status===200){
@@ -488,6 +527,14 @@ export default {
 				})
 			})
 		},
+		//打印草签合同
+		toPrint(){
+			this.isSave(4)
+		},
+		closePrint(){
+       this.pdfUrl='';
+       this.haveUrl=false;
+    },
 		//获取自定义勾选框选中状态
 		getCheckState(ele){
 			return	!!(ele.querySelector('p').getAttribute('checked'))
@@ -532,7 +579,7 @@ export default {
 	watch:{
 		iframeState:function(val){
 			if(val){
-				this.isSave(2)
+				this.isSave(3)
 			}
 		}
 	}
@@ -540,6 +587,30 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.submitBox{
+	padding-top: 10px;
+	text-align: center;
+	p{
+		&:first-of-type{
+			font-size: 16px;
+			font-weight: bold;
+		}
+		&:last-of-type{
+			color: red;
+			margin: 10px;
+		}
+	}
+}
+.printMaskLayer{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  // display: none;
+  z-index: 8888;
+}
 .view-container{
   position: relative;
   // text-align: center;

@@ -31,12 +31,12 @@
             <i class="yuan">元</i>
           </el-form-item> -->
           <br>
-          <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right" v-if="contractForm.type===1">
+          <!-- <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right" v-if="contractForm.type===1">
             <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true" style="width:220px">
               <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </div>
       </div>
       <!-- 房源信息 -->
@@ -314,6 +314,14 @@
     <el-dialog title="" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="warning-box">
         <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
+        <ul>
+          <li v-for="item in ownerList" :key="item.encryptionCode">
+            {{item.name}}：{{item.encryptionCode}}
+          </li>
+          <li v-for="item in guestList" :key="item.encryptionCode">
+            {{item.name}}：{{item.encryptionCode}}
+          </li>
+        </ul>
         <p>否则合同将无效，之后收款所开票据无效！！！</p>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -352,9 +360,9 @@ const rule = {
   signDate: {
     name: "签约日期"
   },
-  transFlowCode: {
-    name: "交易流程",
-  },
+  // transFlowCode: {
+  //   name: "交易流程",
+  // },
   houseinfoCode: {
     name: "房源"
   },
@@ -518,6 +526,8 @@ export default {
         if (this.type == 2) {
           this.id=parseInt(this.$route.query.id)
           this.getContractDetail();
+        }else if(this.type == 1){
+          this.getNewData()
         }
       }
     }
@@ -529,6 +539,15 @@ export default {
     this.getAdmin();//获取当前登录人信息
   },
   methods: {
+    //获取当前日期
+    getNewData(){
+        let time = new Date()
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let time_ = `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D}`;
+        this.contractForm.signDate=time_
+    },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {        
       this.clientHei= document.documentElement.clientHeight -160 + 'px'
@@ -2103,6 +2122,12 @@ export default {
     &:last-of-type{
       padding-left:64px;
       color: red;
+    }
+  }
+  >ul{
+    margin-bottom: 10px;
+    li{
+      padding-left: 65px;
     }
   }
 }
