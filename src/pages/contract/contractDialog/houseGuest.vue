@@ -38,6 +38,19 @@
           </el-form-item>
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
           <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
+          <el-form-item label="部门：">
+            <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+          </el-form-item>
+          <el-form-item>
+            <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.dealAgentId" placeholder="请选择">
+              <el-option
+                v-for="item in EmployeList"
+                :key="item.empId"
+                :label="item.name"
+                :value="item.empId">
+              </el-option>
+            </el-select>
+          </el-form-item>
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">
           <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" height="240">
@@ -245,7 +258,9 @@
 </template>
            
 <script>
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+  mixins: [MIXINS],
   props: {
     dialogVisible: {
       type: Boolean,
@@ -466,7 +481,8 @@ export default {
           }
         } else {
           this.$message({
-            message: "不能选择已锁定房源"
+            message: "不能选择已锁定房源",
+            type:"warning"
           });
         }
       } else if (this.dialogType === "guest") {
@@ -514,7 +530,26 @@ export default {
       if (!row.invalid) {
         return "warning-row";
       }
-    }
+    },
+    //部门
+    depHandleClick(data) {
+      // this.getEmploye(data.depId)
+      this.searchForm.dealAgentStoreId=data.depId
+      this.searchForm.depName=data.name
+
+      this.handleNodeClick(data)
+    },
+    clearDep:function () {
+      this.searchForm.dealAgentStoreId=''
+      this.searchForm.depName=''
+      // this.EmployeList=[]
+      this.searchForm.dealAgentId=''
+      this.clearSelect()
+    },
+    searchDep:function (payload) {
+      /*this.DepList=payload.list
+      this.contractForm.depName=payload.depName*/
+    },
   },
   computed: {
     getDialogVisible: function() {
@@ -538,6 +573,9 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 
+/deep/.margin-left{
+  margin-left: 0;
+}
 .view-container {
   .search_content {
     min-height: 300px;

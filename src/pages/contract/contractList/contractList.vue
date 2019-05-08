@@ -799,7 +799,8 @@ export default {
               this.$router.push({
                 path: "/addContract",
                 query: {
-                  type: command
+                  type: command,
+                  operateType:1
                 }
               });
             } else if (command === 4 || command === 5) {
