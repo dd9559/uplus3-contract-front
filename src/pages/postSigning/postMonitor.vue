@@ -128,7 +128,8 @@
             ref="tableCom"
             :max-height="tableNumberCom"
             :data="tableData.list"
-            v-loading="loadingList"
+            v-loading="HQloadingList"
+            element-loading-text="正在加载中"
             @row-dblclick="tradingStepsFn"
             class="paper-table">
                 <el-table-column label="合同编号" align="center" min-width="120">
@@ -227,7 +228,7 @@
                 // 加载
                 loading:false,
                 loading2:false,
-                loadingList:false,
+                HQloadingList:false,
                 // 枚举数据
                 dictionary:{
                     '13':'收佣状态',
@@ -325,7 +326,8 @@
         methods:{
             // 导出excel
             getExcel:function () {
-                this.queryFn()
+                this.pageNum=1;
+                this.getListData('export');
                 this.excelCreate('/input/stepMonitorExcel',paramObj)
             },
             // 成功提示
@@ -408,12 +410,14 @@
                 }
             },
             // 获取列表数据
-            getListData(){
+            getListData(type='init'){
                 // if(!this.power['sign-qh-cont-query'].state){
                 //     this.noPower(this.power['sign-qh-cont-query'].name);
                 //     return false
                 // }
-                this.loadingList = true;
+                if(type==='init'){
+                  this.HQloadingList = true;  
+                }
                 let receiveTimeEnd = '';
                 let receiveTimeStar = '';
                 let time ='';
@@ -444,12 +448,12 @@
                         this.tableData = res.data;
                     }
                     this.$nextTick(()=>{
-                        this.loadingList = false;
+                        this.HQloadingList = false;
                     });
                 }).catch(err=>{
                     this.errMeFn(err);
                     this.$nextTick(()=>{
-                        this.loadingList = false;
+                        this.HQloadingList = false;
                     });
                 })
             },

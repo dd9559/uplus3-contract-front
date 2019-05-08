@@ -97,7 +97,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="操作" align="center" min-width="120">
                     <template slot-scope="scope">
-                        <el-button v-if="power['sign-qh-rev-opp'].state" class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
+                        <el-button v-if="power['sign-qh-rev-receive'].state" class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -225,9 +225,9 @@
                 </div>
             </LayerScrollAuto>
             <span slot="footer">
-                <el-button v-if="power['sign-qh-rev-save'].state" class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn(receive.receive)" round>保存</el-button>
+                <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn(receive.receive)" round>保存</el-button>
                 <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
-                <el-button v-if="power['sign-qh-rev-reject'].state" class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button>
+                <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button>
             </span>
         </el-dialog>
     </div>
@@ -335,20 +335,24 @@
                     //     name:'查询',
                     //     state:false
                     // },
+                    // 'sign-qh-rev-receive':{
+                    //     name:'接收合同后期',
+                    //     state:false
+                    // },
+                    // 'sign-qh-rev-reject':{
+                    //     name:'拒绝接收',
+                    //     state:false,
+                    // },
+                    // 'sign-qh-rev-save':{
+                    //     name:'保存合同后期和修改责任人',
+                    //     state:false,
+                    // },
+                    // 'sign-qh-rev-opp':{
+                    //     name:'接收',
+                    //     state:false,
+                    // },
                     'sign-qh-rev-receive':{
-                        name:'接收合同后期',
-                        state:false
-                    },
-                    'sign-qh-rev-reject':{
-                        name:'拒绝接收',
-                        state:false,
-                    },
-                    'sign-qh-rev-save':{
-                        name:'保存合同后期和修改责任人',
-                        state:false,
-                    },
-                    'sign-qh-rev-opp':{
-                        name:'接收',
+                        name:'',
                         state:false,
                     },
                     'sign-com-htdetail':{
@@ -469,8 +473,8 @@
             },
             // 接收
             receiveFn(e) {
-                if(!this.power['sign-qh-rev-opp'].state){
-                    this.noPower(this.power['sign-qh-rev-opp'].name);
+                if(!this.power['sign-qh-rev-receive'].state){
+                    this.noPower(this.power['sign-qh-rev-receive'].name);
                     return false
                 }
                 this.receive = {
@@ -659,8 +663,8 @@
             },
             // 保存
             saveBtnFn(state) {
-                if(!this.power['sign-qh-rev-save'].state){
-                    this.noPower(this.power['sign-qh-rev-save'].name);
+                if(!this.power['sign-qh-rev-receive'].state){
+                    this.noPower(this.power['sign-qh-rev-receive'].name);
                     return false
                 }
                 let arr = [...this.dealTable];
@@ -751,8 +755,8 @@
             // 拒绝后期 弹层事件
             propCloseFn(bool) {
                 if (bool) {
-                    if(!this.power['sign-qh-rev-reject'].state){
-                        this.noPower(this.power['sign-qh-rev-reject'].name);
+                    if(!this.power['sign-qh-rev-receive'].state){
+                        this.noPower(this.power['sign-qh-rev-receive'].name);
                         return false
                     }
                     if (this.invalidInput.length < 1) {

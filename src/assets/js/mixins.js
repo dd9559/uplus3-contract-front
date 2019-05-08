@@ -283,9 +283,11 @@ const MIXINS = {
      * 导出excel
      */
     excelCreate:function (url,param) {
+      this.HQloadingList = true
       this.$ajax.get(`/api${url}`,param).then(res=>{
         res=res.data
         if(res.status===200){
+          this.HQloadingList = false
           this.fileSign([res.data],'download')
           /*var a = document.createElement('a');
           a.download = undefined;
@@ -299,6 +301,7 @@ const MIXINS = {
         this.$message({
           message:error
         })
+        this.HQloadingList = false
       })
     },
     /**

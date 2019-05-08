@@ -650,6 +650,14 @@
               label="副总"
             >
             </el-table-column>
+            <el-table-column
+              label="公共业绩">
+              <template slot-scope="scope">
+                 <div v-if="scope.row.place==-1">--</div>
+                 <div v-if="scope.row.place==0">门店公共业绩</div>
+                 <div v-if="scope.row.place==1">公司公共业绩</div>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
 
