@@ -3,7 +3,7 @@
     <el-dialog :title="title" :visible="getDialogVisible" @close='close' :closeOnClickModal="$tool.closeOnClickModal">
       <!-- 选择房源弹窗 -->
       <div v-if="getDialogType==='house'" class="dataList" >
-        <el-form :inline="true" :model="searchForm" class="search-form" size="mini" >
+        <el-form :inline="true" :model="searchForm" class="search-form" size="small" >
           <el-form-item label="关键字：">
             <el-select
               v-model="estateCode"
@@ -96,10 +96,11 @@
       </div>
       <!-- 选择客源弹窗 -->
       <div v-if="getDialogType==='guest'" class="dataList" >
-        <el-form :inline="true" :model="searchForm" class="search-form_" size="mini" >
+        <el-form :inline="true" :model="searchForm" class="search-form_" size="small" >
           <div>
-            <el-form-item label="交易：">
+            <el-form-item label="交易:">
               <el-select
+                style="width:150px" 
                 v-model="guestType"
                 placeholder=""
                 :disabled="contractType!=''"
@@ -113,12 +114,25 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="关键字：">
+            <el-form-item label="关键字:">
               <el-input
                 v-model="guestKeyword"
                 placeholder="客源编号/手机号/客户姓名"
                 style="width:180px"
               ></el-input>
+            </el-form-item>
+            <el-form-item label="部门:">
+              <select-tree :data="DepList" :treeType="treeType" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+            </el-form-item>
+            <el-form-item>
+              <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="empId" placeholder="请选择">
+                <el-option
+                  v-for="item in EmployeList"
+                  :key="item.empId"
+                  :label="item.name"
+                  :value="item.empId">
+                </el-option>
+              </el-select>
             </el-form-item>
           </div>
           <div>
@@ -530,6 +544,8 @@ export default {
       this.BuildingCode = "";
       this.options = [];
       this.buildList = [];
+      this.depId="",
+      this.empId=""
     },
     tableRowClassName({ row, rowIndex }) {
       if (!row.invalid) {
@@ -587,7 +603,7 @@ export default {
   }
   .dataList {
     height: 360px;
-    min-width: 960px;
+    min-width: 1000px;
     overflow-y: auto;
   }
   .outSide {
@@ -624,7 +640,7 @@ export default {
     overflow:hidden; 
   }
   .search_btn {
-    padding: 8px 20px;
+    padding: 8px 15px;
   }
   .attention {
     display: inline-block;
@@ -656,7 +672,7 @@ export default {
   background: oldlace;
 }
 /deep/.el-dialog {
-  min-width: 1000px;
+  min-width: 1050px;
   .el-dialog__header {
     padding-top: 15px;
     padding-bottom: 15px;
