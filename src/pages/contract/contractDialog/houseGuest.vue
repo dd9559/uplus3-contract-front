@@ -42,7 +42,7 @@
             <select-tree :data="DepList" :treeType="treeType" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           </el-form-item>
           <el-form-item>
-            <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.dealAgentId" placeholder="请选择">
+            <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="empId" placeholder="请选择">
               <el-option
                 v-for="item in EmployeList"
                 :key="item.empId"
@@ -321,7 +321,9 @@ export default {
       loading_: false,
       showDataList: true,
       isReady:true,
-      treeType:"house"
+      treeType:"house",
+      depId:"",//部门id
+      empId:"",//人员id
     };
   },
   created() {
@@ -382,7 +384,9 @@ export default {
         contType: this.housetType,
         isFocus: this.attention,
         estateCode: this.estateCode,
-        buildingCode: this.BuildingCode
+        buildingCode: this.BuildingCode,
+        depId:this.depId,
+        empId:this.empId
       };
       this.$ajax.get("/api/contract/houses", param).then(res => {
         res = res.data;
@@ -535,16 +539,16 @@ export default {
     //部门
     depHandleClick(data) {
       // this.getEmploye(data.depId)
-      this.searchForm.dealAgentStoreId=data.depId
-      this.searchForm.depName=data.name
+      this.depId=data.depId
+      this.depName=data.name
 
       this.handleNodeClick(data)
     },
     clearDep:function () {
-      this.searchForm.dealAgentStoreId=''
-      this.searchForm.depName=''
+      this.dealAgentStoreId=''
+      this.depName=''
       // this.EmployeList=[]
-      this.searchForm.dealAgentId=''
+      this.dealAgentId=''
       this.clearSelect()
     },
     searchDep:function (payload) {
