@@ -205,12 +205,12 @@
         </el-table-column>
         <el-table-column align="center" min-width="80" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" min-width="60" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="收付时间" prop="createTime" :formatter="nullFormatter" min-width="90">
+        <el-table-column align="center" label="创建时间" prop="createTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="入账时间" prop="toAccountTime" :formatter="nullFormatter" min-width="90">
+        <el-table-column align="center" label="到账时间" prop="toAccountTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
@@ -241,6 +241,9 @@
                 <!--<el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-debt-edit'].state&&scope.row.caozuo===1">修改</el-button>-->
                 <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)">作废</el-button>
               </template>
+            </div>
+            <div v-else-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2">
+              <el-button type="text" @click="btnOpera(scope.row,4)">打印客户联</el-button>
             </div>
             <span v-else>--</span>
           </template>
@@ -616,6 +619,8 @@
           this.layer.content = [].concat(row)
         } else if (type === 3) {
           this.$refs.layerInvoice.show(row.id, true)
+        }else if (type === 4) {
+          this.$refs.layerInvoice.show(row.billId)
         }
       },
       //作废

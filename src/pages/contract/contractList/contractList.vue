@@ -128,7 +128,7 @@
           <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
           <el-dropdown placement="bottom" @command="printCont" v-if="power['sign-ht-info-print'].state"><!--  @command="printCont" -->
             <el-button round size="small">
-              打印草签合同<i class="el-icon-arrow-down el-icon--right"></i>
+              打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
@@ -152,29 +152,29 @@
         <el-table-column align="center" label="合同信息" min-width="200" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
-              <div class="riskLabel">
+              <!-- <div class="riskLabel"> -->
                 <!-- 风险单 -->
-                <el-popover
+                <!-- <el-popover
                   placement="top-start"
                   width="50"
                   trigger="hover"
                   content="风险单"
                   v-if="scope.row.isRisk">
                   <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
-                </el-popover>
+                </el-popover> -->
                 <!-- 代办 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
                 <!-- 低佣 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
-                <el-popover
+                <!-- <el-popover
                   placement="top-start"
                   width="10"
                   trigger="hover"
                   content="低佣"
                   v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1">
                   <i slot="reference" class="iconfont icon-tubiao_shiyong-3 low"></i>
-                </el-popover>
-              </div>
+                </el-popover> -->
+              <!-- </div> -->
               <ul class="contract-msglist">
                 <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
                 <li>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
@@ -362,6 +362,11 @@
           <el-table-column label="打印时间">
             <template slot-scope="scope">
               {{scope.row.createTime|formatTime}}
+            </template>
+          </el-table-column>
+          <el-table-column label="类型">
+            <template slot-scope="scope">
+              {{scope.row.printType.label}}
             </template>
           </el-table-column>
         </el-table>
@@ -799,14 +804,16 @@ export default {
               this.$router.push({
                 path: "/addContract",
                 query: {
-                  type: command
+                  type: command,
+                  operateType:1
                 }
               });
             } else if (command === 4 || command === 5) {
               this.$router.push({
                 path: "/newIntention",
                 query: {
-                  contType: command
+                  contType: command,
+                  operateType:1
                 }
               });
             }
