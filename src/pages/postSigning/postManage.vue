@@ -465,8 +465,8 @@
                         <div class="handle-choose" v-if="stepsData.tit === STEPS.start || stepsData.tit === STEPS.affirm || stepsData.tit === stepReportTit">
                             <span>是否完成：</span>
                             <el-radio-group v-model="isHandle" @change="handleChange">
-                                <el-radio label="1">是</el-radio>
-                                <el-radio label="0">否</el-radio>
+                                <el-radio label="1">是，现在办结</el-radio>
+                                <el-radio label="0">否，写跟进日志</el-radio>
                             </el-radio-group>
                         </div>
                         <el-form
