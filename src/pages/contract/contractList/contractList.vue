@@ -128,7 +128,7 @@
           <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
           <el-dropdown placement="bottom" @command="printCont" v-if="power['sign-ht-info-print'].state"><!--  @command="printCont" -->
             <el-button round size="small">
-              打印草签合同<i class="el-icon-arrow-down el-icon--right"></i>
+              打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
