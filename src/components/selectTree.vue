@@ -45,7 +45,11 @@
       init: {
         type: String,
         default: ''
-      }
+      },
+      treeType: {
+        type: String,
+        default: 'none'
+      },
     },
     data() {
       return {
@@ -130,7 +134,11 @@
         }
       },
       getList:function (keyword='',type='init') {
-        this.$ajax.get('/api/access/deps/tree', {keyword: keyword}).then(res => {
+        let url="/api/access/deps/tree"
+        if(this.treeType==="house"){
+          url="/api/contract/access/deps/tree"
+        }
+        this.$ajax.get(url, {keyword: keyword}).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list=res.data

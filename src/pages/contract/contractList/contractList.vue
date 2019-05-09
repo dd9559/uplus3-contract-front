@@ -364,6 +364,11 @@
               {{scope.row.createTime|formatTime}}
             </template>
           </el-table-column>
+          <el-table-column label="类型">
+            <template slot-scope="scope">
+              {{scope.row.printType.label}}
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -807,7 +812,8 @@ export default {
               this.$router.push({
                 path: "/newIntention",
                 query: {
-                  contType: command
+                  contType: command,
+                  operateType:1
                 }
               });
             }

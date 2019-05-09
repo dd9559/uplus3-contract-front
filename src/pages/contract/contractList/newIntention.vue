@@ -2,7 +2,7 @@
 <template>
     <div class="newintention" id="newIntention">
         <div class="formbox">
-            <el-form :inline="true" :model="contractForm" :rules="rules" ref="contractForm" class="form-innnerbox">
+            <el-form :inline="true" :model="contractForm" :rules="rules" ref="contractForm" size="small" class="form-innnerbox">
                 <div class="form-content">
                 <!-- 合同信息 -->
                     <div class="column-form">
@@ -165,7 +165,7 @@
 
         </div>
         <div class="form-btn">
-                <el-button type="primary" round @click="checkRule('contractForm')" v-if="hidBtn!==1">保存并进入下一步</el-button>
+            <el-button type="primary" round @click="checkRule('contractForm')" v-if="hidBtn!==1">保存并进入下一步</el-button>
         </div>
         <!-- 房客源弹框 -->
         <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :choseHcode="choseHcode" :choseGcode="choseGcode"  @closeHouseGuest="closeCommission" v-if='isShowDialog'></houseGuest>
@@ -173,6 +173,14 @@
         <el-dialog title="" :visible.sync="dialogSure" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
             <div class="warning-box">
               <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
+              <ul>
+                <li>
+                  {{contractForm.contPersons[0].name}}：{{contractForm.contPersons[0].identifyCode}}
+                </li>
+                <li>
+                  {{contractForm.contPersons[1].name}}：{{contractForm.contPersons[1].identifyCode}}
+                </li>
+              </ul>
               <p>否则合同将无效，之后收款所开票据无效！！！</p>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -379,6 +387,15 @@ export default {
   },
 
   methods: {
+    //获取当前日期
+    getNewData(){
+        let time = new Date()
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let time_ = `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D}`;
+        this.contractForm.signDate=time_
+    },
     clearIdentify(type){
      this.$nextTick(() => {
        this.$set(this.contractForm.contPersons,type,Object.assign({},this.contractForm.contPersons[type],{identifyCode:''}))
@@ -1061,6 +1078,8 @@ export default {
           this.type = parseInt(this.$route.query.operateType);
           this.id = this.$route.query.id;
           this.getContractDetail();
+        }else{
+          this.getNewData()
         }
       }
 
@@ -1093,6 +1112,12 @@ export default {
     &:last-of-type{
       padding-left:64px;
       color: red;
+    }
+  }
+  >ul{
+    margin-bottom: 10px;
+    li{
+      padding-left: 65px;
     }
   }
 }
