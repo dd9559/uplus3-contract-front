@@ -1584,6 +1584,8 @@
                     this.stepsData.tit = this.CurrentStepName
                 } else {
                     this.stepsData.tit = this.stepReportTit
+                    this.stepReportFrom.reportingDate = TOOL.dateFormat(Date.now())
+                    this.stepReportFrom.reportingRemake = ''
                 }
             },
             // 录入跟进日志确定
@@ -1596,7 +1598,7 @@
                             id: this.CurrentStepId,
                             stepReportings: arr
                         }
-                        this.$ajax.postJSON('/api//postSigning/addStepReporting',param)
+                        this.$ajax.postJSON('/api/postSigning/addStepReporting',param)
                         .then(res =>{
                             res = res.data
                             if(res.status === 200){
