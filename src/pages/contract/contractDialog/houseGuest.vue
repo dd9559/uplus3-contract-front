@@ -550,7 +550,7 @@ export default {
       this.depId="",
       this.empId="",
       this.depName=""
-      // this.EmployeList = []
+      this.EmployeList = []
     },
     tableRowClassName({ row, rowIndex }) {
       if (!row.invalid) {
