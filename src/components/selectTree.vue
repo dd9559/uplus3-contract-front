@@ -133,6 +133,7 @@
           this.cellClick=false
         }
       },
+
       getList:function (keyword='',type='init') {
         let url="/api/access/deps/tree"
         if(this.treeType==="house"){

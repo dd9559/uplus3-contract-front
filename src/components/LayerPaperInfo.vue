@@ -1,7 +1,7 @@
 <template>
   <div class="paper-info">
     <div class="paper-info-child">
-      <div class="paper-border">
+      <div v-if="printType!=='book'" class="paper-border">
       <div class="paper-tit">专用收款收据</div>
       <div class="paper-number">交款单位：{{comName}}<span class="red">{{comText}}</span></div>
       <ul class="paper-ul">
@@ -60,6 +60,7 @@
           <div class="fr"><span class="mr-10">开票人：</span><em class="fb">{{comCreate}}</em></div>
         </div>
         <div class="pr-img"><img v-if="comImgSrc!==''" :src="comImgSrc"></div>
+        <div class="pr-img pic-fail" v-if="paperFail"><img :src="failImg" alt=""></div>
       </div>
       <div class="paper-tips">
         <p>温馨提示：</p>
@@ -67,8 +68,8 @@
         <p>2、手动填写修改此收据无效。</p>
       </div>
     </div>
-    <div class="paper-dashed"></div>
-    <div class="paper-border">
+    <div class="paper-dashed" v-if="printType==='all'"></div>
+    <div v-if="printType!=='client'" class="paper-border">
       <div class="paper-tit">专用收款收据</div>
       <div class="paper-number">交款单位：{{comName}}<span class="red">{{comText}}</span></div>
       <ul class="paper-ul">
@@ -129,6 +130,7 @@
           <div class="pr-img2">
             <img v-if="comImgSrc!==''" :src="comImgSrc">
           </div>
+        <div class="pr-img2 pic-fail" v-if="paperFail"><img :src="failImg" alt=""></div>
       </div>
     </div>
     </div>
@@ -143,6 +145,11 @@
     b: '低佣买卖佣金'
   }
   export default {
+    data(){
+      return{
+        failImg:require('@/assets/img/fail.png')
+      }
+    },
     props: {
       number: {//合同编号
         type: String,
@@ -205,7 +212,7 @@
         default: '--'
       },
       time:{
-        type:String,
+        type:[String,Number],
         default:'',
       },
       num:{
@@ -217,12 +224,21 @@
         default(){
           return []
         }
+      },
+      printType:{
+        type:String,
+        default:'client'
+      },
+      paperFail:{//是否显示作废icon
+        type:Boolean,
+        default:false
       }
     },
     computed: {
       comText(){
         if(this.num > 1){
-          return `第${this.num}次打印，重复无效，打印日期:${this.$tool.dateFormat(this.time)}`
+          return `打印日期:${this.$tool.dateFormat(this.time)}`
+          // return `第${this.num}次打印，重复无效，打印日期:${this.$tool.dateFormat(this.time)}`
         }else{
           return ``
         }
@@ -543,6 +559,9 @@
       max-width: 120px;
       max-height: 120px;
     }
+    &.pic-fail{
+      left: 340px;
+    }
   }
 
   .pr-img2 {
@@ -560,6 +579,9 @@
       // vertical-align:middle;
       max-width: 120px;
       max-height: 120px;
+    }
+    &.pic-fail{
+      left: 340px;
     }
   }
 </style>
