@@ -2,7 +2,7 @@
   <div class="view-container">
     <el-dialog :title="title" :visible="getDialogVisible" @close='close' :closeOnClickModal="$tool.closeOnClickModal">
       <!-- 选择房源弹窗 -->
-      <div v-if="getDialogType==='house'" class="dataList" >
+      <div v-if="getDialogType==='house'" class="dataList">
         <el-form :inline="true" :model="searchForm" class="search-form" size="small" >
           <el-form-item label="关键字：">
             <el-select
@@ -95,7 +95,7 @@
         </div>
       </div>
       <!-- 选择客源弹窗 -->
-      <div v-if="getDialogType==='guest'" class="dataList" >
+      <div v-if="getDialogType==='guest'" class="dataList_" >
         <el-form :inline="true" :model="searchForm" class="search-form_" size="small" >
           <div>
             <el-form-item label="交易:">
@@ -607,6 +607,11 @@ export default {
     min-height: 300px;
   }
   .dataList {
+    height: 405px;
+    min-width: 1000px;
+    overflow-y: auto;
+  }
+  .dataList_{
     height: 360px;
     min-width: 1000px;
     overflow-y: auto;

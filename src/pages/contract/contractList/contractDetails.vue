@@ -37,10 +37,10 @@
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
                   </p>
-                  <p class="address" v-if="contType==='1'">
+                  <!-- <p class="address" v-if="contType==='1'">
                     <span class="tag">交易流程：</span>
                     <span class="text" v-for="item in transFlowList" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span>
-                  </p>
+                  </p> -->
                 </div>
                 <!-- <div class="one_">
                   <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
