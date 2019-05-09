@@ -430,7 +430,9 @@ export default {
         pageSize: this.pageSize,
         pageIndex: this.currentPage,
         type: this.guestType,
-        keyword: this.guestKeyword
+        keyword: this.guestKeyword,
+        depId:this.depId,
+        empId:this.empId
       };
       this.$ajax.get("/api/resource/customers", param).then(res => {
         this.loading_ = false;
