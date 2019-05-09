@@ -122,7 +122,7 @@
               ></el-input>
             </el-form-item>
             <el-form-item label="部门:">
-              <select-tree :data="DepList" :treeType="treeType" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+              <select-tree :data="DepList" :treeType="treeType" :init="depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
             </el-form-item>
             <el-form-item>
               <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="empId" placeholder="请选择">
