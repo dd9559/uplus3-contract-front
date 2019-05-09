@@ -476,6 +476,7 @@
                         label-width="136px"
                         v-if="isHandle === '1'"
                         >
+                        <div class="view-title" v-if="stepsData.tit === STEPS.end">完成记录：</div>
                             <el-form-item
                                 v-for="(item,index) in stepsFrom.list"
                                 :prop="'list.' + index + '.val'"
@@ -606,7 +607,8 @@
                                 <div class="text-absloute">{{stepReportFrom.reportingRemake.length}}/{{invalidMax}}</div>
                             </el-form-item>
                         </el-form>
-                        <div class="paper-table step-report-table" v-if="stepReportData.length">
+                        <div class="paper-table step-report-table" v-if="stepReportData.length>0">
+                            <div class="title">跟进记录：</div>
                             <el-table border :data="stepReportData">
                                 <el-table-column align="center" label="跟进人" prop="reportingtor"></el-table-column>
                                 <el-table-column align="center" label="跟进时间">
@@ -614,7 +616,7 @@
                                         {{dateFormat(scope.row.reportingDate)}}
                                     </template>
                                 </el-table-column>
-                                <el-table-column align="center" label="日志内容" prop="reportingRemake"></el-table-column>
+                                <el-table-column align="center" label="日志内容" prop="reportingRemake" :formatter="nullFormatterData"></el-table-column>
                             </el-table>
                         </div>
                         <!-- 预览 -->
