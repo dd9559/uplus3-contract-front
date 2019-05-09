@@ -462,11 +462,20 @@
         <el-dialog :title="stepsData.tit" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="stepsData.show" width="740px"  class="layer-paper layer-scroll-auto">
             <LayerScrollAuto>
                 <div class="steps-from">
+                        <div class="handle-choose" v-if="stepsData.tit === STEPS.start || stepsData.tit === STEPS.affirm || stepsData.tit === stepReportTit">
+                            <span>是否完成：</span>
+                            <el-radio-group v-model="isHandle" @change="handleChange">
+                                <el-radio label="1">是</el-radio>
+                                <el-radio label="0">否</el-radio>
+                            </el-radio-group>
+                        </div>
                         <el-form
                         ref="stepsFrom"
                         :model="stepsFrom"
                         v-loading.fullscreen.lock="LookStepLoad"
-                        label-width="136px">
+                        label-width="136px"
+                        v-if="isHandle === '1'"
+                        >
                             <el-form-item
                                 v-for="(item,index) in stepsFrom.list"
                                 :prop="'list.' + index + '.val'"
@@ -572,6 +581,42 @@
                                 </div>
                             </el-form-item>
                         </el-form>
+                        <el-form v-show="isHandle === '0'" label-width="148px" :model="stepReportFrom" :rules="stepReportRules" ref="stepReportFrom">
+                            <el-form-item label="跟进人：">
+                                <span>{{stepReportFrom.reportingtor}}</span>
+                            </el-form-item>
+                            <el-form-item label="跟进时间：" prop="reportingDate">
+                                <el-date-picker
+                                v-model="stepReportFrom.reportingDate"
+                                size="small"
+                                type="date"
+                                class="w160"
+                                :picker-options="pickerOptions"
+                                placeholder="选择日期">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item label="日志内容：" class="step-report-log">
+                                <el-input
+                                v-model.trim="stepReportFrom.reportingRemake"
+                                type="textarea"
+                                resize="none"
+                                :maxlength="invalidMax"
+                                class="steps-input">
+                                </el-input>
+                                <div class="text-absloute">{{stepReportFrom.reportingRemake.length}}/{{invalidMax}}</div>
+                            </el-form-item>
+                        </el-form>
+                        <div class="paper-table step-report-table" v-if="stepReportData.length">
+                            <el-table border :data="stepReportData">
+                                <el-table-column align="center" label="跟进人" prop="reportingtor"></el-table-column>
+                                <el-table-column align="center" label="跟进时间">
+                                    <template slot-scope="scope">
+                                        {{dateFormat(scope.row.reportingDate)}}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column align="center" label="日志内容" prop="reportingRemake"></el-table-column>
+                            </el-table>
+                        </div>
                         <!-- 预览 -->
                         <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
                 </div>
@@ -581,6 +626,11 @@
                 <template v-if="stepsData.tit === STEPS.start">
                     <el-button class="paper-btn" type size="small" @click="handleCloseFn" round>取消</el-button>
                     <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="handleBtnFn" round>确定</el-button>
+                </template>
+                <!-- 录入跟进日志 -->
+                <template v-else-if="stepsData.tit === stepReportTit">
+                    <el-button class="paper-btn" type size="small" @click="handleCloseFn" round>取消</el-button>
+                    <el-button class="paper-btn paper-btn-blue" type="primary" size="small" @click="stepReportFn" round>确定</el-button>
                 </template>
                 <!--  编辑 -->
                 <template v-else-if="stepsData.tit === STEPS.sure">
@@ -833,6 +883,7 @@
                     instances:[],
                 },
                 ISOVERTIME,
+                isHandle: '1',
                 // 步骤管理弹层数据
                 stepsData:{
                     show:false,
@@ -842,9 +893,25 @@
                     list:[],
                     id:'',
                 },
+                // 跟进日志数据
+                stepReportFrom:{
+                    reportingtorId: '',
+                    reportingtor: '',
+                    reportingDate: TOOL.dateFormat(Date.now()),
+                    reportingRemake: ''
+                },
+                stepReportRules: {
+                    reportingDate: [
+                        { required: true, message: '请选择日期', trigger: 'change' }
+                    ]
+                },
+                stepReportData: [],
                 inputFocus:false,
                 // 办理状态
                 STEPS,
+                stepReportTit:'录入跟进日志',
+                CurrentStepName:'',
+                CurrentStepId: '',
                 // 办理输入形式
                 STEPSINPUT,
                 // 文本输入框最大数值
@@ -1034,6 +1101,9 @@
                 this.getLookStepFn(id,'办理');
             },
             getLookStepFn(id,tit){
+                this.isHandle = '1'
+                this.CurrentStepName = tit
+                this.CurrentStepId = id
                 this.LookStepLoad = true;
                 this.$ajax.get('/api/postSigning/lookStep',{
                     id,
@@ -1042,6 +1112,7 @@
                     if(res.status === 200){
                         let resData = res.data;
                         let arr = [...resData.transAtepsAttach];
+                        this.stepReportData = resData.stepReportings?[...resData.stepReportings]:[]
                         let arr2 = [{
                                     val:this.dateFormat(resData.handleDatetime),
                                     title:'办理日期',
@@ -1507,6 +1578,41 @@
                 }
 
             },
+            // 办理和录入跟进日志切换
+            handleChange(val) {
+                if(val === '1') {
+                    this.stepsData.tit = this.CurrentStepName
+                } else {
+                    this.stepsData.tit = this.stepReportTit
+                }
+            },
+            // 录入跟进日志确定
+            stepReportFn(){
+                this.$refs['stepReportFrom'].validate((valid) => {
+                    if(valid) {
+                        let arr = [...this.stepReportData]
+                        arr.unshift(this.stepReportFrom)
+                        let param = {
+                            id: this.CurrentStepId,
+                            stepReportings: arr
+                        }
+                        this.$ajax.postJSON('/api//postSigning/addStepReporting',param)
+                        .then(res =>{
+                            res = res.data
+                            if(res.status === 200){
+                                this.successMeFn(res.message);
+                                this.lateProgressFn();
+                                this.getDataList();
+                                this.stepsData.show = false;
+                            }else{
+                                this.errMeFn(res.message);
+                            }
+                        }).catch(err=>{
+                            this.errMeFn(err);
+                        })
+                    }
+                })
+            },
             // 办理确定
             handleBtnFn(){
                 this.confirmStepFn();
@@ -1860,6 +1966,10 @@
            cityId(){
                // 交易流程
                 this.getTransactionProcess();
+           },
+           userMsg(){
+               this.stepReportFrom.reportingtorId = this.userMsg.empId
+               this.stepReportFrom.reportingtor = this.userMsg.name
            }
         },
         mounted() {
