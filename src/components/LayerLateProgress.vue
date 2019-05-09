@@ -114,6 +114,18 @@
                                 </template>
                         </el-form-item>
                     </el-form>
+                    <div class="paper-table step-report-table" v-if="stepReportData.length>0">
+                        <div class="title">跟进记录：</div>
+                        <el-table border :data="stepReportData">
+                            <el-table-column align="center" label="跟进人" prop="reportingtor"></el-table-column>
+                            <el-table-column align="center" label="跟进时间">
+                                <template slot-scope="scope">
+                                    {{dateFormat(scope.row.reportingDate)}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column align="center" label="日志内容" prop="reportingRemake" :formatter="nullFormatterData"></el-table-column>
+                        </el-table>
+                    </div>
                     <!-- 预览 -->
                     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
                 </div>
@@ -172,6 +184,7 @@
                     list:[],
                     id:'',
                 },
+                stepReportData: []
             }
         },
         props: {
@@ -250,6 +263,7 @@
                     if(res.status === 200){
                         let resData = res.data;
                         let arr = [...resData.transAtepsAttach];
+                        this.stepReportData = resData.stepReportings?[...resData.stepReportings]:[]
                         let arr2 = [{
                                     val:this.dateFormat(resData.handleDatetime),
                                     title:'办理日期',
@@ -332,6 +346,7 @@
 
 <style scoped lang="less">
 @import "~@/assets/common.less";
+@import "~@/assets/less/lsx.less";
 .blue {
     color: @color-blue;
 }
