@@ -381,7 +381,6 @@ export default{
         let param={
           contId: this.contractId2,
         }
-        debugger
         this.$ajax.get("/api/achievement/getHistoryPriceHouse", param).then(res=>{
           if(res.status===200){
             this.recordShow=true
