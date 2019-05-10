@@ -1516,7 +1516,7 @@
             resultArr[i].roleType === "" ||
             resultArr[i].ratio === "" ||
             resultArr[i].assignor === "" ||
-            resultArr[i].isJob.label === "" ||
+            resultArr[i].isJob === "" ||
             resultArr[i].level3 === "" ||
             resultArr[i].shopkeeper === "" ||
             resultArr[i].level4 === "" ||
