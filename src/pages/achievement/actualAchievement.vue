@@ -310,7 +310,27 @@
           </el-table-column>
 
           <el-table-column
-            label="应收分成金额（元）" align="center" min-width="90">
+            label="特许费比例（%）" align="center" min-width="60">
+            <template slot-scope="scope">
+              <div v-if="scope.row.distributions.length==0">
+                <div>--</div>
+              </div>
+              <div v-else>
+                <div v-for="item in scope.row.distributions">
+                  <p>{{item.platformFeeRatio}}%</p>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+             align="center" min-width="90">
+            <template slot="header" slot-scope="scope">
+                  应收分成金额（元）
+                <el-tooltip content="应收分成金额=个人应收佣金-特许费（未减去收款手续费）" placement="top">
+                  <i class="el-icon-info"></i>
+                </el-tooltip>
+            </template>
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
                 <div>--</div>
@@ -492,8 +512,6 @@
             <!-- ratio -->
             <el-table-column
               prop="ratio"
-              label="分成比例(%)"
-              width="100"
             >
             </el-table-column>
 
@@ -1078,31 +1096,42 @@ export default {
     },
     //获取应收列表详情
     enterDetail(row) {
-      this.dialogVisible = true;
-      this.loading2=true;
-      //合同边和获取业绩详情
       this.code = row.code;
-      let param = { contCode: row.code, entrance: 3,aId:row.aId };
-      this.$ajax
-        .get("/api/achievement/getAchDetails", param)
-        .then(res => {
-          let data = res.data;
-          if (res.status === 200) {
-            this.houseArr = data.data.houseAgents;
-            this.clientArr = data.data.customerAgents;
-            if(data.data.achievements){
-                this.checkArr = data.data.achievements;  //详情的审核信息
-                this. $nextTick(()=>{
-                  this.loading2=false;
-               })
+      let newPage=this.$router.resolve({
+        path: "/achDetial",
+        query: {
+          contCode:row.code,
+          entrance:3,
+          aId:row.aId,
+          contractId2:row.id
+        }
+      });
+      window.open(newPage.href,'_blank')
+      // this.dialogVisible = true;
+      // this.loading2=true;
+      // //合同边和获取业绩详情
+      // this.code = row.code;
+      // let param = { contCode: row.code, entrance: 3,aId:row.aId };
+      // this.$ajax
+      //   .get("/api/achievement/getAchDetails", param)
+      //   .then(res => {
+      //     let data = res.data;
+      //     if (res.status === 200) {
+      //       this.houseArr = data.data.houseAgents;
+      //       this.clientArr = data.data.customerAgents;
+      //       if(data.data.achievements){
+      //           this.checkArr = data.data.achievements;  //详情的审核信息
+      //           this. $nextTick(()=>{
+      //             this.loading2=false;
+      //          })
 
-            }else{
-              this.checkArr = [];
-            }
+      //       }else{
+      //         this.checkArr = [];
+      //       }
 
-            this.comm = data.data.comm;
-          }
-        });
+      //       this.comm = data.data.comm;
+      //     }
+      //   });
     },
     queryFn() {
     if(this.propForm.dateMo){
@@ -1178,17 +1207,31 @@ export default {
       }
       this.shows = true;
     },
-    editAch(value,index) {            //编辑时触发
-        this.beginData = true;
-        this.code2 =  value.code;
-        this.aId =  value.aId;
-        this.contractId =  value.id;
-        this.dialogType = 1;
-        this.achIndex=index
-        this.achObj={
-          contractId:value.id,//合同id
+    // editAch(value,index) {            //编辑时触发
+    //     this.beginData = true;
+    //     this.code2 =  value.code;
+    //     this.aId =  value.aId;
+    //     this.contractId =  value.id;
+    //     this.dialogType = 1;
+    //     this.achIndex=index
+    //     this.achObj={
+    //       contractId:value.id,//合同id
+    //     }
+    //     this.shows = true;
+    // },
+    editAch(value,index) {
+        let newPage=this.$router.resolve({
+        path: "/achPage",
+        query: {
+          aId: value.aId,
+          contractCode:value.code,
+          dialogType:1,
+          achIndex:index,
+          achObj:JSON.stringify({contractId:value.id}),
+          contractId:value.id
         }
-        this.shows = true;
+      });
+      window.open(newPage.href,'_blank')
     },
     againCheck(value,index) {
       this.beginData = true;

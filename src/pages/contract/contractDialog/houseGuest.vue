@@ -53,7 +53,7 @@
           </el-form-item>
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">
-          <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" height="240">
+          <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" height="217">
             <el-table-column width="40">
               <template slot-scope="scope">
                 <span class="outSide">
@@ -391,6 +391,7 @@ export default {
     },
     //房源列表
     getHouseList() {
+      this.showDataList = true;
       this.loading_ = true;
       let param = {
         pageSize: this.pageSize,
@@ -410,14 +411,15 @@ export default {
           // debugger
           //alert('222')
           this.dataList = [];
-          if (res.data.TotalCount > 0) {
+          if (res.data&&res.data.TotalCount > 0) {
             this.dataList = res.data.list;
             this.showDataList = true;
+            this.total = res.data.TotalCount
           } else {
             this.dataList = [];
             this.showDataList = false;
+            this.total = 0
           }
-          this.total = res.data.TotalCount;
         }
       }).catch(error => {
           this.loading_ = false;
@@ -425,6 +427,7 @@ export default {
     },
     //客源列表
     getGuestList() {
+      this.showDataList = true;
       this.loading_ = true;
       let param = {
         pageSize: this.pageSize,
@@ -439,14 +442,16 @@ export default {
         res = res.data;
         if (res.status === 200) {
           //alert('222')
-          if (res.data.TotalCount > 0) {
+          this.dataList = [];
+          if (res.data&&res.data.TotalCount > 0) {
             this.dataList = res.data.list;
             this.showDataList = true;
+            this.total = res.data.TotalCount
           } else {
             this.dataList = [];
             this.showDataList = false;
+            this.total = 0
           }
-          this.total = res.data.TotalCount;
         }
       }).catch(error => {
           this.loading_ = false;
@@ -566,10 +571,10 @@ export default {
       this.handleNodeClick(data)
     },
     clearDep:function () {
-      this.dealAgentStoreId=''
+      this.depId=''
       this.depName=''
       // this.EmployeList=[]
-      this.dealAgentId=''
+      this.empId=''
       this.clearSelect()
     },
     searchDep:function (payload) {
@@ -670,7 +675,7 @@ export default {
   }
   .noList {
     background: #dedde2;
-    padding: 148px 0;
+    padding: 130px 0;
     text-align: center;
   }
 }
