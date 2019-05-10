@@ -185,11 +185,11 @@
 
           <el-table-column prop="ratio" label="分成比例（%）" align="center" min-width="60"></el-table-column>
 
-          <el-table-column prop="agentReceipts" label="实收分成金额（元）" align="center" min-width="80"></el-table-column>
-
           <el-table-column prop="agentPayFee" label="刷卡手续费（元）" align="center" min-width="80"></el-table-column>
 
           <el-table-column prop="agentPlatformFee" label="特许服务费（元）" align="center" min-width="80"></el-table-column>
+
+          <el-table-column prop="agentReceipts" label="实收分成金额（元）" align="center" min-width="80"></el-table-column>
         </el-table>
          <el-pagination
              @size-change="handleSizeChange"
