@@ -608,9 +608,37 @@
     //     line-height: 32px;
     //     word-break: break-all;
     // }
+    /deep/ .el-form-item__label{
+        padding-left: 20px;
+    }
+    .arrow {
+        width: 20px;
+        position: absolute;
+        top: 100px;
+        transform: translateY(-50%);
+        left: 6px;
+        > span{
+            border: 1px solid #dcdfe6;
+            position: relative;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            i {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%,-50%);
+            }
+            &:hover{
+                background-color: #ecf5ff;
+            }
+        }
+    }
     .view-title {
         font-weight: bold;
-        padding-left: 13px;
+        padding-left: 40px;
     }
     .steps-input{
         .text-absloute{
@@ -627,7 +655,7 @@
         }
     }
     .step-report-table {
-        padding-left: 20px;
+        padding-left: 40px;
         .title {
             font-weight: bold;
         }

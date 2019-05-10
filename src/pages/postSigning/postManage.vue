@@ -461,7 +461,11 @@
         <!-- 办理 -->
         <el-dialog :title="stepsData.tit" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="stepsData.show" width="740px"  class="layer-paper layer-scroll-auto">
             <LayerScrollAuto>
-                <div class="steps-from">
+                <div class="steps-from" id="handlePos">
+                        <div class="arrow" v-if="stepReportData.length>0">
+                            <span @click="returnPos('#handlePos')" title="置顶"><i class="el-icon-caret-top"></i></span>
+                            <span @click="returnPos('#stepReportPos')" title="跟进记录"><i class="el-icon-caret-bottom paper-next"></i></span>
+                        </div>
                         <div class="handle-choose" v-if="stepsData.tit === STEPS.start || stepsData.tit === STEPS.affirm || stepsData.tit === stepReportTit">
                             <span>是否完成：</span>
                             <el-radio-group v-model="isHandle" @change="handleChange">
@@ -607,7 +611,7 @@
                                 <div class="text-absloute">{{stepReportFrom.reportingRemake.length}}/{{invalidMax}}</div>
                             </el-form-item>
                         </el-form>
-                        <div class="paper-table step-report-table" v-if="stepReportData.length>0">
+                        <div class="paper-table step-report-table" v-if="stepReportData.length>0" id="stepReportPos">
                             <div class="title">跟进记录：</div>
                             <el-table border :data="stepReportData">
                                 <el-table-column align="center" label="跟进人" prop="reportingtor"></el-table-column>
@@ -1579,6 +1583,9 @@
                     }
                 }
 
+            },
+            returnPos(e) {
+                document.querySelector(`${e}`).scrollIntoView(true);
             },
             // 办理和录入跟进日志切换
             handleChange(val) {

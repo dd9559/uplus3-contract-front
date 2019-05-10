@@ -53,7 +53,7 @@
       </div>
       <p class="tool-bar" :class="[type!==1?'tool-bar-other':'']">
         <el-button round class="make-bill" type="primary" v-if="type===1&&power['sign-cw-bill-invoice'].state" @click="toBill">开票</el-button>
-        <el-button round @click="goBack('contractList')" v-if="power['sign-ht-info-query'].state">返回合同列表</el-button>
+        <!--<el-button round @click="goBack('contractList')" v-if="power['sign-ht-info-query'].state">返回合同列表</el-button>-->
         <el-button round @click="goBack('Bill')" v-if="power['sign-cw-debt-query'].state">返回收付款列表</el-button>
         <span class="btn-question" @click="answer" v-if="type===1">支付遇到问题？</span>
       </p>

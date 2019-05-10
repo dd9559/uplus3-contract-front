@@ -21,7 +21,7 @@
         </el-button-group>
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
         <!-- <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length>1||companySigns.length===1&&!isNewTemplate)" @mouseover="showList" @mouseout="closeList"> -->
-        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===0&&isNewTemplate||companySigns.length===1&&!isNewTemplate||companySigns.length>1)" @mouseover="showList" @mouseout="closeList">
+        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)" @mouseover="showList" @mouseout="closeList">
           <!-- <el-button type="primary" round v-if="examineState===1&&contState===1&&isActive===1" @click="showPos" @mouseover.native="showList" @mouseout="closeList">签章位置</el-button> -->
           <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
