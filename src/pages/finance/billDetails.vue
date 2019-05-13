@@ -86,7 +86,7 @@
             </el-table-column>
             <el-table-column align="center" label="支付方式">
               <template slot-scope="scope">
-                <span v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.payMethod.label}}</span>
+                <span v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.payMethod?scope.row.payMethod.label:'--'}}</span>
                 <span v-else>{{billMsg.method}}</span>
               </template>
             </el-table-column>
