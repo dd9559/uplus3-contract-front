@@ -240,8 +240,8 @@
                     <el-table-column prop="level3" label="门店"></el-table-column>
                     <el-table-column prop="shopkeeper" label="店长"></el-table-column>
                     <el-table-column prop="level4" label="单组"></el-table-column>
-                    <el-table-column prop="amaldar" label="区经"></el-table-column>
-                    <el-table-column prop="manager" label="区总"></el-table-column>
+                    <el-table-column prop="amaldar" label="总监"></el-table-column>
+                    <el-table-column prop="manager" label="副总"></el-table-column>
                   </el-table>
                 </div>
                 <div class="table">
@@ -255,8 +255,8 @@
                     <el-table-column prop="level3" label="门店"></el-table-column>
                     <el-table-column prop="shopkeeper" label="店长"></el-table-column>
                     <el-table-column prop="level4" label="单组"></el-table-column>
-                    <el-table-column prop="amaldar" label="区经"></el-table-column>
-                    <el-table-column prop="manager" label="区总"></el-table-column>
+                    <el-table-column prop="amaldar" label="总监"></el-table-column>
+                    <el-table-column prop="manager" label="副总"></el-table-column>
                   </el-table>
                 </div>
               </div>
