@@ -415,11 +415,9 @@ export default{
       }
     }
     /deep/ .ach-body {
-      // background-color: pink;
       padding: 0 20px !important;
       box-sizing: border-box;
       // overflow-y: scroll!important;
-      max-height: 500px;
       h1{
         display: flex;
         justify-content: space-between;
