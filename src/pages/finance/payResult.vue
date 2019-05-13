@@ -10,7 +10,7 @@
           </li>
         </ul>
         <p>
-          <el-button round @click="goBack('contractList')" v-if="power['sign-ht-info-query'].state">返回合同列表</el-button>
+          <!--<el-button round @click="goBack('contractList')" v-if="power['sign-ht-info-query'].state">返回合同列表</el-button>-->
           <el-button round @click="goBack('Bill')" v-if="power['sign-cw-debt-query'].state">返回收付款列表</el-button>
         </p>
       </div>
