@@ -105,7 +105,7 @@
                 <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
                 <el-table-column
                   label="经纪人"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -180,7 +180,7 @@
                 <!-- 店长，可输入，可下拉 -->
                 <el-table-column
                   label="店长"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -208,7 +208,7 @@
                 <!-- 单组，可输入，可下拉 -->
                 <el-table-column
                   label="单组"
-                  width="150"
+                  width="155"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -235,7 +235,7 @@
                 <!-- 区经，可输入，可下拉   changeAmaldar-->
                 <el-table-column
                   label="总监"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -263,7 +263,7 @@
                 <!-- 区总，可输入，可下拉 changeManager-->
                 <el-table-column
                   label="副总"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -396,7 +396,7 @@
 
                 <el-table-column
                   label="经纪人"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -470,7 +470,7 @@
                 <!-- 店长，可输入，可下拉 -->
                 <el-table-column
                   label="店长"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -497,7 +497,7 @@
                 <!-- 单组，可输入，可下拉 -->
                 <el-table-column
                   label="单组"
-                  width="150"
+                  width="155"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -524,7 +524,7 @@
                 <!-- 区经，可输入，可下拉 -->
                 <el-table-column
                   label="总监"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -552,7 +552,7 @@
                 <!-- 区总，可输入，可下拉 -->
                 <el-table-column
                   label="副总"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -801,7 +801,7 @@
                   {{scope.row.PriceDifferential}}
                 </template>
               </el-table-column>
-              <el-table-column prop="ModificationTime" label="修改时间" ></el-table-column>
+              <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
         <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">

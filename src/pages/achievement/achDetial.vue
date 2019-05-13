@@ -305,7 +305,7 @@
                   {{scope.row.PriceDifferential}}
                 </template>
               </el-table-column>
-              <el-table-column prop="ModificationTime" label="修改时间" ></el-table-column>
+              <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
         <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
