@@ -796,7 +796,11 @@
               <el-table-column prop="FinalPriceBefore" label="底价（修改前）" ></el-table-column>
               <el-table-column prop="TotalPriceAfter" label="总价（修改后）" ></el-table-column>
               <el-table-column prop="FinalPriceAfter" label="底价（修改后）" ></el-table-column>
-              <el-table-column prop="PriceDifferential" label="成交价格误差" ></el-table-column>
+              <el-table-column  label="成交价格误差（%）" width="140" >
+                <template slot-scope="scope">
+                  {{scope.row.PriceDifferential}}
+                </template>
+              </el-table-column>
               <el-table-column prop="ModificationTime" label="修改时间" ></el-table-column>
             </el-table>
         </el-dialog>
@@ -1939,7 +1943,7 @@
         }
       }
       .ach-body {
-        max-height: 450px;
+        // max-height: 500px;
         box-sizing: border-box;
         overflow-y: auto;
         .ach-divide-list{
