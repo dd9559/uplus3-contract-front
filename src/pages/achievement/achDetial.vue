@@ -454,5 +454,6 @@ export default{
         color: #233241;
         margin: 13px 0 0 0px;
       }
+      
     }        
 </style>
