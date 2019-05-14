@@ -931,7 +931,9 @@
       filterHouseNumber(val, index) {
         if (val > 100) {
           this.houseArr[index].ratio = 100;
-        } else {
+        }else if(val < 1){
+          this.houseArr[index].ratio = 1;
+        }else {
           val = val.toString().match(/^\d*\.?\d?/)[0];
           this.houseArr[index].ratio = val;
         }
