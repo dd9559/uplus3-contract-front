@@ -1,14 +1,16 @@
 <template>
   <div class="view">
     <div class="view-context">
-      <h1><i class="iconfont icon-chenggong"></i></h1>
+      <h1 v-if="type===1">扫码收款</h1>
+      <h1 v-else><i class="iconfont icon-chenggong"></i></h1>
+      <div><img :src="result.RQcode" width="220" alt=""></div>
       <h3 v-if="checkPerson.state">{{type===1?edit?'POS收款订单修改成功':'POS收款订单创建成功':edit?'收款信息修改成功':'收款信息录入成功'}}</h3>
-      <p>{{edit?'收款单修改成功':'已成功生成收款单'}}</p>
+      <p><i class="iconfont icon-chenggong" v-if="type===1"></i><span>{{edit?'收款单修改成功':'已成功生成收款单'}}</span></p>
       <div class="bill-result-table">
         <div class="warning-text" v-if="type===1">
           <p>温馨提示：</p>
-          <p>1.操作说明：pos开机状态下，请按快捷键F1，其次按数字键1，最后按功能键后，用红外线对准下图二维码进行收款。</p>
-          <p>2.请勿手动在pos上输入金额！</p>
+          <p>1.请勿手动在pos上输入金额！否则无法开收据！</p>
+          <p>2.操作说明：pos开机状态下，请按快捷键F1，其次按数字键1，最后按功能键后，用红外线对准上图二维码进行收款。</p>
           <p>3.pos机上提示收款成功后，有1-2分钟的延迟才能开票，请耐心等待。</p>
         </div>
         <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" v-if="type===2">
@@ -44,11 +46,11 @@
               <span>{{result.amount}}</span>
             </template>
           </el-table-column>
-          <el-table-column min-width="160" align="center" label="订单条码">
-            <template slot-scope="scope">
-              <img :src="result.RQcode" alt="">
-            </template>
-          </el-table-column>
+          <!--<el-table-column min-width="160" align="center" label="订单条码">-->
+            <!--<template slot-scope="scope">-->
+              <!--<img :src="result.RQcode" alt="">-->
+            <!--</template>-->
+          <!--</el-table-column>-->
         </el-table>
       </div>
       <p class="tool-bar" :class="[type!==1?'tool-bar-other':'']">
@@ -232,21 +234,31 @@
   .view {
     background-color: @bg-white;
     position: relative;
-    height: 100%;
+    /*height: 100%;*/
     &-context {
-      position: absolute;
+      width: 60%;
+      margin: 0 auto;
+      /*position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);*/
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       >h1{
-        margin-bottom: 41px;
+        margin-top: 20px;
+        /*margin-bottom: 41px;*/
         .iconfont{
           color: @color-58b;
           font-size: 89px;
+        }
+      }
+      >p{
+        margin-bottom: 41px;
+        .iconfont{
+          color: @color-58b;
+          /*font-size: 89px;*/
         }
       }
       > h3 {
@@ -261,6 +273,7 @@
         }
       }
       .bill-result-table {
+        width: 100%;
         margin: 30px 0 70px 0;
         text-align: center;
         .warning-text{
@@ -268,7 +281,7 @@
           margin-bottom: 20px;
           >p{
             color: red;
-            font-size: 14px;
+            font-size: 20px;
           }
         }
       }
