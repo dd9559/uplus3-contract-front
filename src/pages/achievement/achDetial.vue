@@ -37,6 +37,8 @@
             <!-- ratio -->
             <el-table-column
               prop="ratio"
+              label="分成比例(%)"
+              width="100"
             >
             </el-table-column>
 
