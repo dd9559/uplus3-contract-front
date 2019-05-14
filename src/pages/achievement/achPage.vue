@@ -1399,7 +1399,7 @@
               if (res.data.status == 200) {
               var paperBtn=document.getElementById('savebtn')
                 paperBtn.disabled=true
-                paperBtn.classList.remove('color-blue')
+                paperBtn.classList.remove('color-green')
                 paperBtn.classList.add('grey')
                 this.$emit("close");
                 this.loading=false;
