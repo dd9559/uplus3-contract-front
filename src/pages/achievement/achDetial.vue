@@ -37,6 +37,8 @@
             <!-- ratio -->
             <el-table-column
               prop="ratio"
+              label="分成比例(%)"
+              width="100"
             >
             </el-table-column>
 
@@ -305,7 +307,7 @@
                   {{scope.row.PriceDifferential}}
                 </template>
               </el-table-column>
-              <el-table-column prop="ModificationTime" label="修改时间" ></el-table-column>
+              <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
         <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
@@ -415,11 +417,9 @@ export default{
       }
     }
     /deep/ .ach-body {
-      // background-color: pink;
       padding: 0 20px !important;
       box-sizing: border-box;
       // overflow-y: scroll!important;
-      max-height: 500px;
       h1{
         display: flex;
         justify-content: space-between;
