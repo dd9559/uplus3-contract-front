@@ -1104,6 +1104,9 @@
                 //     show:true,
                 //     tit:'办理'
                 // }
+                if(!id){
+                    return
+                }
                 this.getLookStepFn(id,'办理');
             },
             getLookStepFn(id,tit){

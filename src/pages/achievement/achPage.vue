@@ -641,7 +641,7 @@
                 round
                 @click="passAch"
                 class="color-green"
-                v-dbClick
+                id="savebtn"
               >通过</el-button>
             </div>
           </div>
@@ -665,7 +665,7 @@
                 round
                 @click="keepAch(2,1,'editSave')"
                 class="color-blue"
-                v-dbClick
+                id="savebtn2"
               >保存并提审</el-button>
             </div>
           </div>
@@ -880,7 +880,7 @@
         aId:'',
         achIndex:'',
         achObj:'',
-        contractId2:''
+        contractId2:'',
       };
     },
     components:{
@@ -1396,8 +1396,11 @@
           this.$ajax
             .postJSON("/api/achievement/examineAdopt", param)
             .then(res => {
-              console.log(res.data.status);
               if (res.data.status == 200) {
+              var paperBtn=document.getElementById('savebtn')
+                paperBtn.disabled=true
+                paperBtn.classList.remove('color-green')
+                paperBtn.classList.add('grey')
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
@@ -1560,7 +1563,6 @@
               contractId: this.achObj.contractId
             };
           }
-
           this.$ajax.postJSON("/api/achievement/"+editStr, param).then(res => {
             if (res.data.status == 200) {
               let sendObj = {
@@ -1573,6 +1575,10 @@
                 this.$emit("saveData", this.achIndex, resultArr, -1);
               }
               if (type == 2 && status == 1) {
+                var paperBtn2=document.getElementById('savebtn2')
+                paperBtn2.disabled=true
+                paperBtn2.classList.remove('color-blue')
+                paperBtn2.classList.add('grey')
                 this.$emit("saveData", this.achIndex, resultArr, 0);
               }
               this.loading=false;
@@ -2160,4 +2166,9 @@
   .recordtable{
     min-height: 200px;
   }
+  .grey{
+          background-color: #F5F5F5;
+          color:#ACA899;
+          border: 1px solid #DDD;
+      }
 </style>
