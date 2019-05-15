@@ -297,7 +297,7 @@
                                         message: `请输入办理日期`
                                     }
                                 },{
-                                    val:'',
+                                    val:resData.remarks,
                                     title:'备注',
                                     isRequired:false,
                                     type:8,
