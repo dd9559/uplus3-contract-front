@@ -2172,6 +2172,9 @@
     height: 30px;
     line-height: 30px;
   }
+    .dialog1 /deep/ .el-input__icon{
+      line-height: 0px;
+    }
   .grey{
           background-color: #F5F5F5;
           color:#ACA899;
