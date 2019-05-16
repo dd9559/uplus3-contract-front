@@ -56,10 +56,10 @@
                   type="primary"
                   @click="addMansHouse"
                 >添加分配人</el-button>
-                <el-button
+                <!-- <el-button
                   type="primary"
                   @click="houseRecode"
-                >房源价格变更记录</el-button>
+                >房源价格变更记录</el-button> -->
               </div>
             </div>
 
@@ -349,10 +349,10 @@
                   type="primary"
                   @click="addMansClient"
                 >添加分配人</el-button>
-                <el-button
+                <!-- <el-button
                   type="primary"
                   @click="ammanger"
-                >AM管理关系</el-button>
+                >AM管理关系</el-button> -->
               </div>
             </div>
 
