@@ -327,7 +327,7 @@
         // this.paperShow = true;
         this.FooterShow = false;
         this.stateBoll = [3,4,5].includes(stateBoll)?true:false;
-        this.paperFail = stateBoll===4?true:false//票据状态4已作废时，显示icon
+        this.paperFail = this.stateBoll//票据状态4已作废时，显示icon
         this.pdfUrl = "";
         this.ID = id
         if (bool) {
