@@ -2167,14 +2167,14 @@
   .recordtable{
     min-height: 200px;
   }
-  .dialog1 /deep/ input, .el-input__inner{
-    font-size: 10px !important;
-    height: 30px;
-    line-height: 30px;
-  }
-    .dialog1 /deep/ .el-input__icon{
-      line-height: 0px;
-    }
+  // .dialog1 /deep/ input, .el-input__inner{
+  //   font-size: 10px !important;
+  //   height: 30px;
+  //   line-height: 30px;
+  // }
+  //   .dialog1 /deep/ .el-input__icon{
+  //     line-height: 0px;
+  //   }
   .grey{
           background-color: #F5F5F5;
           color:#ACA899;
