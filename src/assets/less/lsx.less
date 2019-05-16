@@ -611,31 +611,61 @@
     /deep/ .el-form-item__label{
         padding-left: 20px;
     }
-    .arrow {
-        width: 20px;
+    // .arrow {
+    //     width: 20px;
+    //     position: absolute;
+    //     top: 100px;
+    //     transform: translateY(-50%);
+    //     left: 6px;
+    //     > span{
+    //         border: 1px solid #dcdfe6;
+    //         position: relative;
+    //         width: 20px;
+    //         height: 20px;
+    //         border-radius: 50%;
+    //         display: inline-block;
+    //         cursor: pointer;
+    //         i {
+    //             position: absolute;
+    //             left: 50%;
+    //             top: 50%;
+    //             transform: translate(-50%,-50%);
+    //         }
+    //         &:hover{
+    //             background-color: #ecf5ff;
+    //         }
+    //     }
+    // }
+    // .to-step-report {
+    //     position: absolute;
+    //     right: 60px;
+    //     top: 21px;
+    // }
+    .select-title{
         position: absolute;
-        top: 100px;
-        transform: translateY(-50%);
-        left: 6px;
-        > span{
-            border: 1px solid #dcdfe6;
-            position: relative;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: inline-block;
-            cursor: pointer;
-            i {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%,-50%);
-            }
-            &:hover{
-                background-color: #ecf5ff;
+        left: 10px;
+        top: 0;
+        font-size: 20px;
+        font-family: "MicrosoftYaHei";
+        color: #303133;
+        .select-option {
+            display: flex;
+            >li {
+                height: 62px;
+                margin-left: 30px;
+                display: flex;
+                align-items: center;
+                &.active{
+                    color: @color-blue;
+                    border-bottom: 3px solid @color-blue;
+                }
             }
         }
+        .stepsData-tit{
+            margin: 18px 0 0 12px;
+        }  
     }
+    
     .view-title {
         font-weight: bold;
         padding-left: 40px;
@@ -656,6 +686,7 @@
     }
     .step-report-table {
         padding-left: 40px;
+        margin-bottom: 50px;
         .title {
             font-weight: bold;
         }
@@ -667,6 +698,17 @@
             right: 12px;
             bottom: 0;
         }
+    }
+}
+/deep/.handle-dialog {
+    .el-dialog__header{
+        padding: 32px!important;
+    }
+    .el-dialog__title {
+        display: none;
+    }
+    .el-dialog__headerbtn {
+        top: 16px;
     }
 }
 
@@ -844,11 +886,17 @@
 .steps-p{
     position: relative;
     padding-left: 60px;
+    height: 40px;
     .steps-span{
         position: absolute;
         left: 0;
         top:0;
         line-height: 40px;
+    }
+    .steps-line{
+        display: flex;
+        height: 40px;
+        align-items: center;
     }
     /deep/.el-button--text{
         text-overflow: ellipsis;

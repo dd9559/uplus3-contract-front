@@ -56,10 +56,10 @@
                   type="primary"
                   @click="addMansHouse"
                 >添加分配人</el-button>
-                <el-button
+                <!-- <el-button
                   type="primary"
                   @click="houseRecode"
-                >房源价格变更记录</el-button>
+                >房源价格变更记录</el-button> -->
               </div>
             </div>
 
@@ -105,7 +105,7 @@
                 <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
                 <el-table-column
                   label="经纪人"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -180,7 +180,7 @@
                 <!-- 店长，可输入，可下拉 -->
                 <el-table-column
                   label="店长"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -208,7 +208,7 @@
                 <!-- 单组，可输入，可下拉 -->
                 <el-table-column
                   label="单组"
-                  width="150"
+                  width="155"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -235,7 +235,7 @@
                 <!-- 区经，可输入，可下拉   changeAmaldar-->
                 <el-table-column
                   label="总监"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -263,7 +263,7 @@
                 <!-- 区总，可输入，可下拉 changeManager-->
                 <el-table-column
                   label="副总"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -349,10 +349,10 @@
                   type="primary"
                   @click="addMansClient"
                 >添加分配人</el-button>
-                <el-button
+                <!-- <el-button
                   type="primary"
                   @click="ammanger"
-                >AM管理关系</el-button>
+                >AM管理关系</el-button> -->
               </div>
             </div>
 
@@ -396,7 +396,7 @@
 
                 <el-table-column
                   label="经纪人"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -470,7 +470,7 @@
                 <!-- 店长，可输入，可下拉 -->
                 <el-table-column
                   label="店长"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -497,7 +497,7 @@
                 <!-- 单组，可输入，可下拉 -->
                 <el-table-column
                   label="单组"
-                  width="150"
+                  width="155"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -524,7 +524,7 @@
                 <!-- 区经，可输入，可下拉 -->
                 <el-table-column
                   label="总监"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -552,7 +552,7 @@
                 <!-- 区总，可输入，可下拉 -->
                 <el-table-column
                   label="副总"
-                  width="117"
+                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -641,7 +641,7 @@
                 round
                 @click="passAch"
                 class="color-green"
-                v-dbClick
+                id="savebtn"
               >通过</el-button>
             </div>
           </div>
@@ -665,7 +665,7 @@
                 round
                 @click="keepAch(2,1,'editSave')"
                 class="color-blue"
-                v-dbClick
+                id="savebtn2"
               >保存并提审</el-button>
             </div>
           </div>
@@ -801,7 +801,7 @@
                   {{scope.row.PriceDifferential}}
                 </template>
               </el-table-column>
-              <el-table-column prop="ModificationTime" label="修改时间" ></el-table-column>
+              <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
         <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
@@ -880,7 +880,7 @@
         aId:'',
         achIndex:'',
         achObj:'',
-        contractId2:''
+        contractId2:'',
       };
     },
     components:{
@@ -931,7 +931,9 @@
       filterHouseNumber(val, index) {
         if (val > 100) {
           this.houseArr[index].ratio = 100;
-        } else {
+        }else if(val < 1){
+          this.houseArr[index].ratio = 1;
+        }else {
           val = val.toString().match(/^\d*\.?\d?/)[0];
           this.houseArr[index].ratio = val;
         }
@@ -1394,8 +1396,11 @@
           this.$ajax
             .postJSON("/api/achievement/examineAdopt", param)
             .then(res => {
-              console.log(res.data.status);
               if (res.data.status == 200) {
+              var paperBtn=document.getElementById('savebtn')
+                paperBtn.disabled=true
+                paperBtn.classList.remove('color-green')
+                paperBtn.classList.add('grey')
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
@@ -1558,7 +1563,6 @@
               contractId: this.achObj.contractId
             };
           }
-
           this.$ajax.postJSON("/api/achievement/"+editStr, param).then(res => {
             if (res.data.status == 200) {
               let sendObj = {
@@ -1571,6 +1575,10 @@
                 this.$emit("saveData", this.achIndex, resultArr, -1);
               }
               if (type == 2 && status == 1) {
+                var paperBtn2=document.getElementById('savebtn2')
+                paperBtn2.disabled=true
+                paperBtn2.classList.remove('color-blue')
+                paperBtn2.classList.add('grey')
                 this.$emit("saveData", this.achIndex, resultArr, 0);
               }
               this.loading=false;
@@ -2158,4 +2166,9 @@
   .recordtable{
     min-height: 200px;
   }
+  .grey{
+          background-color: #F5F5F5;
+          color:#ACA899;
+          border: 1px solid #DDD;
+      }
 </style>

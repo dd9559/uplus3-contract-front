@@ -76,14 +76,21 @@
         title="查看" 
         :visible.sync="stepsDataShow" 
         width="740px"  
-        class="layer-paper layer-scroll-auto">
+        class="layer-paper layer-scroll-auto handle-dialog">
             <LayerScrollAuto>
                 <div class="steps-from">
+                    <div class="select-title">
+                        <ul class="select-option" v-if="stepReportData.length>0">
+                            <li v-for="item in optionTab" :key="item.id" :class="[activeItem===item.id?'active':'']" @click="changeTab(item)">{{item.name}}</li>  
+                        </ul>
+                        <div class="stepsData-tit" v-else>查看</div> 
+                    </div>
                     <el-form 
                     ref="stepsFrom"
                     :model="stepsFrom"
                     v-loading.fullscreen.lock="LookStepLoad"
-                    label-width="150px">
+                    label-width="150px"
+                    v-if="activeItem===1">
                         <el-form-item
                             v-for="(item,index) in stepsFrom.list"
                             :prop="'list.' + index + '.val'"
@@ -114,8 +121,8 @@
                                 </template>
                         </el-form-item>
                     </el-form>
-                    <div class="paper-table step-report-table" v-if="stepReportData.length>0">
-                        <div class="title">跟进记录：</div>
+                    <div class="paper-table step-report-table" v-if="stepReportData.length>0&&activeItem===2">
+                        <!-- <div class="title">跟进记录：</div> -->
                         <el-table border :data="stepReportData">
                             <el-table-column align="center" label="跟进人" prop="reportingtor"></el-table-column>
                             <el-table-column align="center" label="跟进时间">
@@ -184,7 +191,18 @@
                     list:[],
                     id:'',
                 },
-                stepReportData: []
+                stepReportData: [],
+                optionTab: [
+                    {
+                        id:1,
+                        name:"查看"
+                    },
+                    {
+                        id:2,
+                        name:"跟进记录"
+                    }
+                ],
+                activeItem: 1,
             }
         },
         props: {
@@ -250,12 +268,16 @@
             hid() {
                 this.layerShow = false;
             },
+            changeTab(item){
+                this.activeItem = item.id
+            },
             // 查看
             operationFn(id){
                 this.getLookStepFn(id);
             },
             getLookStepFn(id){
                 this.LookStepLoad = true;
+                this.activeItem = 1
                 this.$ajax.get('/api/postSigning/lookStep',{
                     id,
                 }).then(res=>{
@@ -275,7 +297,7 @@
                                         message: `请输入办理日期`
                                     }
                                 },{
-                                    val:'',
+                                    val:resData.remarks,
                                     title:'备注',
                                     isRequired:false,
                                     type:8,

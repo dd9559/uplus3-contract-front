@@ -9,10 +9,10 @@
       </div>
       <div class="ach-body">
         <h1 class="f14">房源方分成
-          <el-button
+          <!-- <el-button
                   type="primary"
                   @click="houseRecode"
-                >房源价格变更记录</el-button>
+                >房源价格变更记录</el-button> -->
         </h1>
         <div class="ach-divide-list">
           <el-table
@@ -37,6 +37,8 @@
             <!-- ratio -->
             <el-table-column
               prop="ratio"
+              label="分成比例(%)"
+              width="100"
             >
             </el-table-column>
 
@@ -108,10 +110,10 @@
         </div>
 
         <h1 class="f14">客源方分成
-          <el-button
+          <!-- <el-button
                   type="primary"
                   @click="ammanger"
-                >AM管理关系</el-button>
+                >AM管理关系</el-button> -->
         </h1>
         <div class="ach-divide-list">
           <el-table
@@ -305,7 +307,7 @@
                   {{scope.row.PriceDifferential}}
                 </template>
               </el-table-column>
-              <el-table-column prop="ModificationTime" label="修改时间" ></el-table-column>
+              <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
         <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
@@ -415,11 +417,9 @@ export default{
       }
     }
     /deep/ .ach-body {
-      // background-color: pink;
       padding: 0 20px !important;
       box-sizing: border-box;
       // overflow-y: scroll!important;
-      max-height: 500px;
       h1{
         display: flex;
         justify-content: space-between;
@@ -454,5 +454,6 @@ export default{
         color: #233241;
         margin: 13px 0 0 0px;
       }
+      
     }        
 </style>

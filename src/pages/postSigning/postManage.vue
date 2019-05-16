@@ -262,7 +262,9 @@
                         <template v-else>
                             <p class="steps-p">
                                 <span class="steps-span">当前步骤：</span>
+                                <span v-if="scope.row.stepInstanceName==='-'" class="steps-line">-</span>
                                 <el-tooltip
+                                v-else
                                 class="item"
                                 effect="dark"
                                 :content="scope.row.stepInstanceName"
@@ -459,14 +461,20 @@
             </span>
         </el-dialog>
         <!-- 办理 -->
-        <el-dialog :title="stepsData.tit" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="stepsData.show" width="740px"  class="layer-paper layer-scroll-auto">
+        <el-dialog :title="stepsData.tit" :close-on-click-modal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" :visible.sync="stepsData.show" width="740px"  class="layer-paper layer-scroll-auto handle-dialog">
             <LayerScrollAuto>
-                <div class="steps-from" id="handlePos">
-                        <div class="arrow" v-if="stepReportData.length>0">
+                <div class="steps-from">
+                        <!-- <div class="arrow" v-if="stepReportData.length>0">
                             <span @click="returnPos('#handlePos')" title="置顶"><i class="el-icon-caret-top"></i></span>
                             <span @click="returnPos('#stepReportPos')" title="跟进记录"><i class="el-icon-caret-bottom paper-next"></i></span>
+                        </div> -->
+                        <div class="select-title">
+                           <ul class="select-option" v-if="stepReportData.length>0">
+                                <li v-for="item in optionTab" :key="item.id" :class="[activeItem===item.id?'active':'']" @click="changeTab(item)">{{item.name}}</li>  
+                            </ul>
+                            <div class="stepsData-tit" v-else>{{stepsData.tit}}</div> 
                         </div>
-                        <div class="handle-choose" v-if="stepsData.tit === STEPS.start || stepsData.tit === STEPS.affirm || stepsData.tit === stepReportTit">
+                        <div class="handle-choose" v-show="(stepsData.tit === STEPS.start || stepsData.tit === STEPS.affirm || stepsData.tit === stepReportTit)&&activeItem===1">
                             <span>是否完成：</span>
                             <el-radio-group v-model="isHandle" @change="handleChange">
                                 <el-radio label="1">是，现在办结</el-radio>
@@ -478,9 +486,9 @@
                         :model="stepsFrom"
                         v-loading.fullscreen.lock="LookStepLoad"
                         label-width="136px"
-                        v-if="isHandle === '1'"
+                        v-show="isHandle === '1'&&activeItem===1"
                         >
-                        <div class="view-title" v-if="stepsData.tit === STEPS.end">完成记录：</div>
+                        <!-- <div class="view-title" v-if="stepsData.tit === STEPS.end">完成记录：</div> -->
                             <el-form-item
                                 v-for="(item,index) in stepsFrom.list"
                                 :prop="'list.' + index + '.val'"
@@ -586,7 +594,7 @@
                                 </div>
                             </el-form-item>
                         </el-form>
-                        <el-form v-show="isHandle === '0'" label-width="148px" :model="stepReportFrom" :rules="stepReportRules" ref="stepReportFrom">
+                        <el-form v-show="isHandle === '0'&&activeItem===1" label-width="148px" :model="stepReportFrom" :rules="stepReportRules" ref="stepReportFrom">
                             <el-form-item label="跟进人：">
                                 <span>{{stepReportFrom.reportingtor}}</span>
                             </el-form-item>
@@ -611,8 +619,8 @@
                                 <div class="text-absloute">{{stepReportFrom.reportingRemake.length}}/{{invalidMax}}</div>
                             </el-form-item>
                         </el-form>
-                        <div class="paper-table step-report-table" v-if="stepReportData.length>0" id="stepReportPos">
-                            <div class="title">跟进记录：</div>
+                        <div class="paper-table step-report-table" v-if="stepReportData.length>0&&activeItem===2">
+                            <!-- <div class="title">跟进记录：</div> -->
                             <el-table border :data="stepReportData">
                                 <el-table-column align="center" label="跟进人" prop="reportingtor"></el-table-column>
                                 <el-table-column align="center" label="跟进时间">
@@ -627,7 +635,7 @@
                         <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
                 </div>
             </LayerScrollAuto>
-            <span slot="footer">
+            <span slot="footer" v-if="activeItem===1">
                 <!-- 办理 -->
                 <template v-if="stepsData.tit === STEPS.start">
                     <el-button class="paper-btn" type size="small" @click="handleCloseFn" round>取消</el-button>
@@ -899,6 +907,17 @@
                     list:[],
                     id:'',
                 },
+                optionTab: [
+                    {
+                        id:1,
+                        name:""
+                    },
+                    {
+                        id:2,
+                        name:"跟进记录"
+                    }
+                ],
+                activeItem: 1,
                 // 跟进日志数据
                 stepReportFrom:{
                     reportingtorId: '',
@@ -1108,7 +1127,9 @@
             },
             getLookStepFn(id,tit){
                 this.isHandle = '1'
+                this.activeItem = 1
                 this.CurrentStepName = tit
+                this.optionTab[0].name = tit
                 this.CurrentStepId = id
                 this.LookStepLoad = true;
                 this.$ajax.get('/api/postSigning/lookStep',{
@@ -1584,15 +1605,20 @@
                 }
 
             },
-            returnPos(e) {
-                document.querySelector(`${e}`).scrollIntoView(true);
+            changeTab(item){
+                this.activeItem = item.id
             },
+            // returnPos(e) {
+            //     document.querySelector(`${e}`).scrollIntoView(true);
+            // },
             // 办理和录入跟进日志切换
             handleChange(val) {
                 if(val === '1') {
                     this.stepsData.tit = this.CurrentStepName
+                    this.optionTab[0].name = this.CurrentStepName
                 } else {
                     this.stepsData.tit = this.stepReportTit
+                    this.optionTab[0].name = this.stepReportTit
                     this.stepReportFrom.reportingDate = TOOL.dateFormat(Date.now())
                     this.stepReportFrom.reportingRemake = ''
                 }
