@@ -1923,6 +1923,8 @@
   }
   //业绩详情弹框改变样式
   .dialog1 {
+    padding-left: 20px;
+    padding-top: 5px;
     /deep/ .base-dialog {
       
       /deep/ .el-input__suffix {
