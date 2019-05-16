@@ -88,7 +88,7 @@
             <el-table-column
               prop="manager"
               label="副总"
-            >
+            > 
             </el-table-column>
             <el-table-column
               label="公共业绩">
