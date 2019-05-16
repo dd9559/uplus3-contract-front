@@ -1961,6 +1961,7 @@
         /deep/ .el-select__caret.is-reverse,
         .el-icon-arrow-up {
           position: absolute;
+          line-height: 30px;
           left: -5px;
           top: 0;
         }
@@ -2165,6 +2166,11 @@
   }
   .recordtable{
     min-height: 200px;
+  }
+  .dialog1 /deep/ input, .el-input__inner{
+    font-size: 10px !important;
+    height: 30px;
+    line-height: 30px;
   }
   .grey{
           background-color: #F5F5F5;
