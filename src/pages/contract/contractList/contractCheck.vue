@@ -124,7 +124,7 @@
             <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="成交经纪人" min-width="120 ">
+        <el-table-column align="center" label="成交经纪人" min-width="120">
           <template slot-scope="scope">
             <p>{{scope.row.dealAgentStoreName}}</p>
             <p>{{scope.row.dealAgentName}}</p>

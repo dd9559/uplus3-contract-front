@@ -38,7 +38,7 @@
           </el-form-item>
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
           <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
-          <el-form-item label="部门：">
+          <!-- <el-form-item label="部门：">
             <select-tree :data="DepList" :treeType="treeType" :init="depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           </el-form-item>
           <el-form-item>
@@ -50,7 +50,7 @@
                 :value="item.empId">
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">
           <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" height="217">
@@ -121,7 +121,7 @@
                 style="width:180px"
               ></el-input>
             </el-form-item>
-            <el-form-item label="部门:">
+            <!-- <el-form-item label="部门:">
               <select-tree :data="DepList" :treeType="treeType" :init="depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
             </el-form-item>
             <el-form-item>
@@ -133,7 +133,7 @@
                   :value="item.empId">
                 </el-option>
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
           </div>
           <div>
             <el-button type="primary" round class="search_btn" @click="inquireGuest">查询</el-button>
@@ -338,11 +338,18 @@ export default {
       treeType:"house",
       depId:"",//部门id
       empId:"",//人员id
-      depName:""
+      depName:"",
+      userMsg:""
     };
   },
   created() {
-    console.log("222");
+    // let userMsg = JSON.parse(sessionStorage.getItem("userMsg"))
+    // this.userMsg=userMsg;
+    // this.depHandleClick(userMsg.user)
+    // this.depId = userMsg.user.depId
+    // this.depName=userMsg.user.depName
+    // this.empId=userMsg.user.empId
+    // this.EmployeList.push({depId:this.depId,depName:this.depName,empId:this.empId,name:userMsg.user.name})
     if (this.contractType === "求租") {
       this.housetType = 3;
       this.guestType = 1;
@@ -363,6 +370,7 @@ export default {
       this.getGuestList();
       this.selectCode=this.choseGcode;
     }
+    
   },
   methods: {
     close() {
@@ -580,6 +588,28 @@ export default {
     searchDep:function (payload) {
       /*this.DepList=payload.list
       this.contractForm.depName=payload.depName*/
+    },
+    moreEmploye:function () {
+      if(this.EmployeList.length>=this.employeTotal){
+        return
+      }else {
+        this.getEmploye(this.depId,++this.employePage)
+      }
+    },
+    getEmploye:function (val,page=1,sub=true) {
+      this.$ajax.get('/api/organize/employees/pages',{depId:val,pageNum:page,selectSubs:sub}).then(res=>{
+        res=res.data
+        if(res.status===200){
+          res.data.list.forEach((element,index) => {
+            if(element.empId===this.userMsg.user.empId){
+              res.data.list.splice(index,1)
+            }
+          });
+          this.EmployeList=this.EmployeList.concat(res.data.list)
+          this.employeTotal=res.data.total
+          this.EmployeInit = res.data.total
+        }
+      })
     },
   },
   computed: {

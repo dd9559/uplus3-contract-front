@@ -267,7 +267,7 @@
         </el-table-column>
         <el-table-column align="center" label="后期状态" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
+            <span v-if="scope.row.contType.value<4&&scope.row.contType.value!==1">
               <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
               <span v-else>{{scope.row.laterStageState.label}}</span>
             </span>
