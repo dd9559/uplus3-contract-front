@@ -103,7 +103,7 @@
                 <div class="guest msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="width:130px;word-wrap:break-word;">{{firstBuyer.name}}</span></p>
-                        <p style="width:200px;"><span style="white-space:nowrap;">{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":"营业执照"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
+                        <p style="width:220px;"><span style="white-space:nowrap;">{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":"营业执照"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="buyerArr.length !== 1">
@@ -151,7 +151,7 @@
                 <div class="owner msg info">
                     <div class="text mai-mai">
                         <p><span>姓名：</span><span style="width:130px;word-wrap:break-word;">{{firstSeller.name}}</span></p>
-                        <p style="width:200px;"><span style="white-space:nowrap;">{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":"营业执照"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
+                        <p style="width:220px;"><span style="white-space:nowrap;">{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":"营业执照"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
                     </div>
                     <ul class="text gongyouren" v-if="sellerArr.length !== 1">
