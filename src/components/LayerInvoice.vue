@@ -63,7 +63,7 @@
             :rules="paperInfoData.remark"
             :imgSrc="imgUrl"
             :time="paperInfoData.printDate"
-            :num="paperInfoData.printTimes"
+            :num="paperInfoData.printCount?paperInfoData.printCount.KHL:0"
             :methodAndAmount="paperInfoData.methodAndAmount"
             :storesName="paperInfoData.storeName"
             :printType="printType"
