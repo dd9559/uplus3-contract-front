@@ -1220,8 +1220,8 @@ export default {
           width: 500px;
         }
         .yuan {
-          line-height: 40px;
-          padding-right: 12px;
+          line-height: 30px;
+          padding-right: 5px;
         }
         .disb {
           display: block;
@@ -1254,8 +1254,8 @@ export default {
   }
   .textLength {
     position: absolute;
-    bottom: 0px;
-    right: 24px;
+    bottom: 8px;
+    right: 20px;
     color: #6c7986;
   }
   .form-btn {

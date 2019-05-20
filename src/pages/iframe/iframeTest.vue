@@ -18,7 +18,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_MM],
     data(){
       return{
-        src:'代办.html'
+        src:'租赁.html'
       }
     },
     methods:{
