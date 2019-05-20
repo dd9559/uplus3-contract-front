@@ -1,6 +1,4 @@
 let obj = {
-    val2:'',
-    val17:'',
     val22:'',
     val25:'',
     val26:'',
