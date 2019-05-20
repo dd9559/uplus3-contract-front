@@ -981,7 +981,7 @@ export default {
                               }
                             } else {
                               this.$message({
-                                message: "客源信息-业主姓名不正确",
+                                message: "客源信息-客户姓名不正确",
                                 type: "warning"
                               });
                               break
