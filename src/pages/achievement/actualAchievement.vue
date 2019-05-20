@@ -991,7 +991,9 @@ export default {
             if (res.status === 200) {
                _that.selectAchList = data.data.list;
                _that.selectAchList.forEach((item,index)=>{
-                 item.distributions.aMoney=Math.floor(item.distributions.aMoney*100)/100
+                 for(let i=0;i<item.distributions.length;i++){
+                   item.distributions[i].aMoney=(Math.floor((item.distributions[i].aMoney)*100))/100
+                 }
                })
                _that.total = data.data.total;
               if(data.data.list[0]){
