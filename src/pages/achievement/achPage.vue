@@ -1634,6 +1634,16 @@
           this.$message.error("客源至少保留一人");
           return false;
         }
+        for(let i=0;i<this.houseArr.length;i++){
+          this.houseArr[i].sortNum=i+1
+          this.houseArr[i].contractId=this.achObj.contractId
+          this.houseArr[i].contractCode=this.contractCode
+        }
+        for(let i=0;i<this.clientArr.length;i++){
+          this.clientArr[i].sortNum=i+1
+          this.clientArr[i].contractId=this.achObj.contractId
+          this.clientArr[i].contractCode=this.contractCode
+        }
         let resultArr = this.houseArr.concat(this.clientArr);
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
@@ -1641,7 +1651,7 @@
             resultArr[i].roleType === "" ||
             resultArr[i].ratio === "" ||
             resultArr[i].assignor === "" ||
-            resultArr[i].isJob.label === "" ||
+            resultArr[i].isJob === "" ||
             resultArr[i].level3 === "" ||
             resultArr[i].shopkeeper === "" ||
             resultArr[i].level4 === "" ||

@@ -990,6 +990,9 @@ export default {
             let data = res.data;
             if (res.status === 200) {
                _that.selectAchList = data.data.list;
+               _that.selectAchList.forEach((item,index)=>{
+                 item.distributions.aMoney=Math.floor(item.distributions.aMoney*100)/100
+               })
                _that.total = data.data.total;
               if(data.data.list[0]){
                    _that.countData = data.data.list[0].contractCount;
