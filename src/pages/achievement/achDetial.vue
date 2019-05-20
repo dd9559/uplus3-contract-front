@@ -9,10 +9,10 @@
       </div>
       <div class="ach-body">
         <h1 class="f14">房源方分成
-          <!-- <el-button
+          <el-button
                   type="primary"
                   @click="houseRecode"
-                >房源价格变更记录</el-button> -->
+                >房源价格变更记录</el-button>
         </h1>
         <div class="ach-divide-list">
           <el-table
@@ -102,10 +102,10 @@
         </div>
 
         <h1 class="f14">客源方分成
-          <!-- <el-button
+          <el-button
                   type="primary"
                   @click="ammanger"
-                >AM管理关系</el-button> -->
+                >AM管理关系</el-button>
         </h1>
         <div class="ach-divide-list">
           <el-table
