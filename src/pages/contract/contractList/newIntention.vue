@@ -750,6 +750,13 @@ export default {
                 return false
               }
             }
+            if(this.contractForm.contPersons[0].name.indexOf("先生")!=-1||this.contractForm.contPersons[0].name.indexOf("女士")!=-1||this.contractForm.contPersons[1].name.indexOf("先生")!=-1||this.contractForm.contPersons[1].name.indexOf("女士")!=-1){
+              this.$message({
+                  type: "warning",
+                  message: "业主或客户姓名不正确"
+                });
+                return false
+            }
             if(this.contractForm.contPersons[0].mobile !=='' &&this.contractForm.contPersons[1].mobile !== ''&&((this.contractForm.contPersons[0].mobile).trim() === (this.contractForm.contPersons[1].mobile).trim())){
               this.$message({
                 type: "warning",
