@@ -25,7 +25,6 @@
              客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
             <el-table-column
               label="角色类型"
-              width="100"
             >
               <template slot-scope="scope">
                 <div>
@@ -38,7 +37,6 @@
             <el-table-column
               prop="ratio"
               label="分成比例(%)"
-              width="100"
             >
             </el-table-column>
 
@@ -46,14 +44,12 @@
             <el-table-column
               prop="assignor"
               label="经纪人"
-              width="100"
             >
             </el-table-column>
 
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
             <el-table-column
               label="在职状况"
-              width="75"
             >
               <template slot-scope="scope">
                 <div v-if="scope.row.isJob">
@@ -66,21 +62,18 @@
             <el-table-column
               prop="shopkeeper"
               label="店长"
-              width="100"
             >
             </el-table-column>
             <!-- level4 -->
             <el-table-column
               prop="level4"
               label="单组"
-              width="135"
             >
             </el-table-column>
             <!-- level3 -->
             <el-table-column
               prop="level3"
               label="门店"
-              width="135"
             >
             </el-table-column>
 
@@ -88,7 +81,6 @@
             <el-table-column
               prop="amaldar"
               label="总监"
-              width="100"
             >
             </el-table-column>
 
@@ -96,7 +88,7 @@
             <el-table-column
               prop="manager"
               label="副总"
-            >
+            > 
             </el-table-column>
             <el-table-column
               label="公共业绩">
@@ -127,7 +119,6 @@
             <el-table-column
 
               label="角色类型"
-              width="100"
             >
               <template slot-scope="scope">
                 <div>
@@ -140,7 +131,6 @@
             <el-table-column
               prop="ratio"
               label="分成比例(%)"
-              width="100"
             >
             </el-table-column>
 
@@ -148,14 +138,12 @@
             <el-table-column
               prop="assignor"
               label="经纪人"
-              width="100"
             >
             </el-table-column>
 
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
             <el-table-column
               label="在职状况"
-              width="75"
             >
               <template slot-scope="scope">
                 <div v-if="scope.row.isJob">
@@ -168,21 +156,18 @@
             <el-table-column
               prop="shopkeeper"
               label="店长"
-              width="100"
             >
             </el-table-column>
             <!-- level4 -->
             <el-table-column
               prop="level4"
               label="单组"
-              width="135"
             >
             </el-table-column>
             <!-- level3 -->
             <el-table-column
               prop="level3"
               label="门店"
-              width="135"
             >
             </el-table-column>
 
@@ -190,7 +175,6 @@
             <el-table-column
               prop="amaldar"
               label="总监"
-              width="100"
             >
             </el-table-column>
 
@@ -218,7 +202,6 @@
             <!-- examineDate -->
             <el-table-column
               label="时间"
-              width="150"
             >
               <template slot-scope="scope">
                 <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatTime}}</p>
@@ -229,14 +212,12 @@
             <el-table-column
               prop="auditor"
               label="姓名"
-              width="220"
             >
             </el-table-column>
             <!-- auditor -->
             <el-table-column
               prop="auditorDepartment"
               label="职务"
-              width="150"
             >
             </el-table-column>
 
@@ -253,7 +234,6 @@
             <el-table-column
               prop="createDepName"
               label="操作"
-              width="150"
             >
               <!-- <template slot-scope="scope">
                 <div>
@@ -283,7 +263,7 @@
             <el-table-column label="备注">
               <template slot-scope="scope">
                    <div v-if="scope.row.remark">
-                      <el-popover trigger="hover" placement="top" :content="scope.row.remark" width="150">
+                      <el-popover trigger="hover" placement="top" :content="scope.row.remark" width="130">
                           <div style="width:160px" slot="reference" class="name-wrapper">{{scope.row.remark}}</div>
                       </el-popover>
                    </div>

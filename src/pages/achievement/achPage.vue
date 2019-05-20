@@ -1359,6 +1359,16 @@
           flag = true,
           sum = 0,
           sumFlag = false;
+        for(let i=0;i<this.houseArr.length;i++){
+          this.houseArr[i].sortNum=i+1
+          this.houseArr[i].contractId=this.achObj.contractId
+          this.houseArr[i].contractCode=this.contractCode
+        }
+        for(let i=0;i<this.clientArr.length;i++){
+          this.clientArr[i].sortNum=i+1
+          this.clientArr[i].contractId=this.achObj.contractId
+          this.clientArr[i].contractCode=this.contractCode
+        }
         let resultArr = this.houseArr.concat(this.clientArr);
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
@@ -1366,7 +1376,7 @@
             resultArr[i].roleType === "" ||
             resultArr[i].ratio === "" ||
             resultArr[i].assignor === "" ||
-            resultArr[i].isJob.label === "" ||
+            resultArr[i].isJob === "" ||
             resultArr[i].level3 === "" ||
             resultArr[i].shopkeeper === "" ||
             resultArr[i].level4 === "" ||
@@ -1441,6 +1451,16 @@
           flag = true,
           sum = 0,
           sumFlag = false;
+        for(let i=0;i<this.houseArr.length;i++){
+          this.houseArr[i].sortNum=i+1
+          this.houseArr[i].contractId=this.achObj.contractId
+          this.houseArr[i].contractCode=this.contractCode
+        }
+        for(let i=0;i<this.clientArr.length;i++){
+          this.clientArr[i].sortNum=i+1
+          this.clientArr[i].contractId=this.achObj.contractId
+          this.clientArr[i].contractCode=this.contractCode
+        }
         let resultArr = this.houseArr.concat(this.clientArr);
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
@@ -1448,7 +1468,7 @@
             resultArr[i].roleType === "" ||
             resultArr[i].ratio === "" ||
             resultArr[i].assignor === "" ||
-            resultArr[i].isJob.label === "" ||
+            resultArr[i].isJob === "" ||
             resultArr[i].level3 === "" ||
             resultArr[i].shopkeeper === "" ||
             resultArr[i].level4 === "" ||
@@ -1923,6 +1943,8 @@
   }
   //业绩详情弹框改变样式
   .dialog1 {
+    padding-left: 20px;
+    padding-top: 5px;
     /deep/ .base-dialog {
       
       /deep/ .el-input__suffix {
@@ -1961,6 +1983,7 @@
         /deep/ .el-select__caret.is-reverse,
         .el-icon-arrow-up {
           position: absolute;
+          line-height: 30px;
           left: -5px;
           top: 0;
         }
@@ -2166,6 +2189,14 @@
   .recordtable{
     min-height: 200px;
   }
+  // .dialog1 /deep/ input, .el-input__inner{
+  //   font-size: 10px !important;
+  //   height: 30px;
+  //   line-height: 30px;
+  // }
+  //   .dialog1 /deep/ .el-input__icon{
+  //     line-height: 0px;
+  //   }
   .grey{
           background-color: #F5F5F5;
           color:#ACA899;

@@ -237,7 +237,11 @@
     computed: {
       comText(){
         if(this.num > 1){
-          return `打印日期:${this.$tool.dateFormat(this.time)}`
+          let str = `打印日期:${this.$tool.dateFormat(this.time)}`
+          if(this.printType==='client'){
+            str = `第${this.num}次打印，重复无效，${str}`
+          }
+          return str
           // return `第${this.num}次打印，重复无效，打印日期:${this.$tool.dateFormat(this.time)}`
         }else{
           return ``
