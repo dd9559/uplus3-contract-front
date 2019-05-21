@@ -1502,7 +1502,6 @@
             .then(res => {
               console.log(res.data.status);
               if (res.data.status == 200) {
-                if(this.state2===1){
                   var paperBtn3=document.getElementById('savebtn3')
                   paperBtn3.disabled=true
                   paperBtn3.classList.remove('color-red')
@@ -1511,7 +1510,6 @@
                   paperBtn.disabled=true
                   paperBtn.classList.remove('color-green')
                   paperBtn.classList.add('grey')
-                }
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
