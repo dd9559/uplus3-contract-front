@@ -2123,14 +2123,14 @@
         box-sizing: border-box;
         position: relative;
         .el-input__prefix{
-          left: 73px;
+          left: 107px;
         }
         .el-input__suffix{
           right: 90px;
           display: none;
         }
         .el-input__inner{
-          width: 110px!important;
+          width: 150px!important;
         }
         p {
           margin-top: 5px;
