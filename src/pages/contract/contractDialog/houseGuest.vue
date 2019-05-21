@@ -38,7 +38,7 @@
           </el-form-item>
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
           <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
-          <!-- <el-form-item label="部门：">
+          <el-form-item label="部门：">
             <select-tree :data="DepList" :treeType="treeType" :init="depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           </el-form-item>
           <el-form-item>
@@ -50,7 +50,7 @@
                 :value="item.empId">
               </el-option>
             </el-select>
-          </el-form-item> -->
+          </el-form-item>
         </el-form>
         <div class="search_content" v-loading="loading_" v-if="showDataList">
           <el-table :data="dataList" border header-row-class-name="theader-bg"  @row-click="selectItem" :row-class-name="tableRowClassName" height="217">
@@ -121,7 +121,7 @@
                 style="width:180px"
               ></el-input>
             </el-form-item>
-            <!-- <el-form-item label="部门:">
+            <el-form-item label="部门:">
               <select-tree :data="DepList" :treeType="treeType" :init="depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
             </el-form-item>
             <el-form-item>
@@ -133,7 +133,7 @@
                   :value="item.empId">
                 </el-option>
               </el-select>
-            </el-form-item> -->
+            </el-form-item>
           </div>
           <div>
             <el-button type="primary" round class="search_btn" @click="inquireGuest">查询</el-button>
@@ -572,7 +572,7 @@ export default {
     },
     //部门
     depHandleClick(data) {
-      // this.getEmploye(data.depId)
+      this.getEmploye(data.depId)
       this.depId=data.depId
       this.depName=data.name
 
@@ -600,11 +600,11 @@ export default {
       this.$ajax.get('/api/organize/employees/pages',{depId:val,pageNum:page,selectSubs:sub}).then(res=>{
         res=res.data
         if(res.status===200){
-          res.data.list.forEach((element,index) => {
-            if(element.empId===this.userMsg.user.empId){
-              res.data.list.splice(index,1)
-            }
-          });
+          // res.data.list.forEach((element,index) => {
+          //   if(element.empId===this.userMsg.user.empId){
+          //     res.data.list.splice(index,1)
+          //   }
+          // });
           this.EmployeList=this.EmployeList.concat(res.data.list)
           this.employeTotal=res.data.total
           this.EmployeInit = res.data.total
