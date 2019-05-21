@@ -1765,12 +1765,9 @@
             if (res.status === 200) {
               this.houseArr = res.data.data.houseAgents;
               var houseArr2 = res.data.data.houseAgents;
-            
-             
-              
               console.log(this.houseArr,'houseArr');
               this.clientArr = res.data.data.customerAgents;
-              debugger
+              // debugger
               this.comm = res.data.data.comm;
               this.state2=res.data.data.state;
               if(this.state2===0){
