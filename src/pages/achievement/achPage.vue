@@ -634,6 +634,7 @@
                 round
                 @click="rejectAch"
                 class="color-red"
+                id="savebtn3"
                 v-dbClick
               >驳回</el-button>
               <el-button
@@ -881,6 +882,7 @@
         achIndex:'',
         achObj:'',
         contractId2:'',
+        state2:''
       };
     },
     components:{
@@ -1407,6 +1409,10 @@
             .postJSON("/api/achievement/examineAdopt", param)
             .then(res => {
               if (res.data.status == 200) {
+                var paperBtn3=document.getElementById('savebtn3')
+                  paperBtn3.disabled=true
+                  paperBtn3.classList.remove('color-red')
+                  paperBtn3.classList.add('grey')
               var paperBtn=document.getElementById('savebtn')
                 paperBtn.disabled=true
                 paperBtn.classList.remove('color-green')
@@ -1496,6 +1502,16 @@
             .then(res => {
               console.log(res.data.status);
               if (res.data.status == 200) {
+                if(this.state2===1){
+                  var paperBtn3=document.getElementById('savebtn3')
+                  paperBtn3.disabled=true
+                  paperBtn3.classList.remove('color-red')
+                  paperBtn3.classList.add('grey')
+                  var paperBtn=document.getElementById('savebtn')
+                  paperBtn.disabled=true
+                  paperBtn.classList.remove('color-green')
+                  paperBtn.classList.add('grey')
+                }
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
@@ -1595,17 +1611,25 @@
                 this.$emit("saveData", this.achIndex, resultArr, -1);
               }
               if (type == 2 && status == 1) {
-                var paperBtn2=document.getElementById('savebtn2')
-                paperBtn2.disabled=true
-                paperBtn2.classList.remove('color-blue')
-                paperBtn2.classList.add('grey')
-                this.$emit("saveData", this.achIndex, resultArr, 0);
+                if(this.state2===1){
+                  var paperBtn2=document.getElementById('savebtn2')
+                  paperBtn2.disabled=true
+                  paperBtn2.classList.remove('color-blue')
+                  paperBtn2.classList.add('grey')
+                  this.$emit("saveData", this.achIndex, resultArr, 0);
+                }
               }
               this.loading=false;
               this.$emit("close");
               this.$message({ message: "操作成功", type: "success" });
             }
           }).catch(error => {
+            // if(this.state2==0){
+            //   var paperBtn2=document.getElementById('savebtn2')
+            //       paperBtn2.disabled=true
+            //       paperBtn2.classList.remove('color-blue')
+            //       paperBtn2.classList.add('grey')
+            // }
             if(error.message==='下一节点审批人不存在'){
               this.checkPerson.flowType=2;
               this.checkPerson.code= this.aId;
@@ -1746,7 +1770,26 @@
               
               console.log(this.houseArr,'houseArr');
               this.clientArr = res.data.data.customerAgents;
+              debugger
               this.comm = res.data.data.comm;
+              this.state2=res.data.data.state;
+              if(this.state2===0){
+                if(infoType=='getEditInfo'){
+                  var paperBtn2=document.getElementById('savebtn2')
+                  paperBtn2.disabled=true
+                  paperBtn2.classList.remove('color-blue')
+                  paperBtn2.classList.add('grey')
+                }else if(infoType=='getExamineInfo'){
+                  var paperBtn=document.getElementById('savebtn')
+                  paperBtn.disabled=true
+                  paperBtn.classList.remove('color-green')
+                  paperBtn.classList.add('grey')
+                  var paperBtn3=document.getElementById('savebtn3')
+                  paperBtn3.disabled=true
+                  paperBtn3.classList.remove('color-red')
+                  paperBtn3.classList.add('grey')
+                }
+              }
               if (res.data.data.examineDate) {
                 this.examineDate = res.data.data.examineDate;
               }
