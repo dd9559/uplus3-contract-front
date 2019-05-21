@@ -83,29 +83,29 @@
         <el-table-column align="center" label="合同信息" min-width="200" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
-              <div class="riskLabel">
+              <!-- <div class="riskLabel"> -->
                 <!-- 风险单 -->
-                <el-popover
+                <!-- <el-popover
                   placement="top-start"
                   width="50"
                   trigger="hover"
                   content="风险单"
                   v-if="scope.row.isRisk">
                   <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
-                </el-popover>
+                </el-popover> -->
                 <!-- 代办 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
                 <!-- 低佣 -->
                 <!-- <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
-                <el-popover
+                <!-- <el-popover
                   placement="top-start"
                   width="10"
                   trigger="hover"
                   content="低佣"
                   v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1">
                   <i slot="reference" class="iconfont icon-tubiao_shiyong-3 low"></i>
-                </el-popover>
-              </div>
+                </el-popover> -->
+              <!-- </div> -->
               <ul class="contract-msglist">
                 <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
                 <li>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
