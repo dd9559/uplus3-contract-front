@@ -807,7 +807,7 @@
         <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
             <el-table :data="AMData" class="recordtable">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
-              <el-table-column prop="ManagerLevel" label="M经理职人" ></el-table-column>
+              <el-table-column prop="ManagerLevel" label="M经理职级" ></el-table-column>
               <el-table-column prop="EmpName" label="经纪人" ></el-table-column>
               <el-table-column prop="EmpLevel" label="经纪人级别" ></el-table-column>
               <el-table-column prop="StartTime" label="开始时间" ></el-table-column>
