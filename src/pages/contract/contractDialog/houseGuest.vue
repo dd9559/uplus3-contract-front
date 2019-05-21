@@ -572,7 +572,7 @@ export default {
     },
     //部门
     depHandleClick(data) {
-      this.getEmploye(data.depId)
+      // this.getEmploye(data.depId)
       this.depId=data.depId
       this.depName=data.name
 
