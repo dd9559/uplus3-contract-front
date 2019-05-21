@@ -2251,5 +2251,10 @@
           background-color: #F5F5F5;
           color:#ACA899;
           border: 1px solid #DDD;
+          &:hover{
+            background-color: #F5F5F5;
+          color:#ACA899;
+          border: 1px solid #DDD;
+          }
       }
 </style>
