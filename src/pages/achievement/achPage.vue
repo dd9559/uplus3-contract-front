@@ -893,7 +893,6 @@
       this.aId=this.$route.query.aId
       this.achIndex=this.$route.query.achIndex
       this.achObj=JSON.parse(this.$route.query.achObj)
-      // debugger
       this.contractId2=this.$route.query.contractId
       
     },
@@ -910,9 +909,9 @@
         let param={
           contId: this.contractId2,
         }
+        this.AMShow=true
         this.$ajax.get("/api/achievement/getEmpAMById", param).then(res=>{
           if(res.status===200){
-            this.AMShow=true
             this.AMData=res.data.data
           }
         })
@@ -921,9 +920,9 @@
         let param={
           contId: this.contractId2,
         }
+        this.recordShow=true
         this.$ajax.get("/api/achievement/getHistoryPriceHouse", param).then(res=>{
           if(res.status===200){
-            this.recordShow=true
             this.recordData=res.data.data
           }
         })
