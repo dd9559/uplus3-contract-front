@@ -47,7 +47,7 @@
                 <span>{{billMsg.createTime|formatTime}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="收款时间" v-else>
+            <el-table-column align="center" label="创建时间" v-else>
               <template slot-scope="scope">
                 <span>{{billMsg.createTime|formatTime}}</span>
               </template>
@@ -109,9 +109,9 @@
                 <span>{{billMsg.statusName}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="入账时间">
+            <el-table-column align="center" label="到账时间">
               <template slot-scope="scope">
-                {{billMsg.toAccountTime|formatDate}}
+                {{billMsg.toAccountTime|formatTime}}
               </template>
             </el-table-column>
             <el-table-column align="center" label="操作">
