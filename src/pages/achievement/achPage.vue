@@ -635,7 +635,6 @@
                 @click="rejectAch"
                 class="color-red"
                 id="savebtn3"
-                v-dbClick
               >驳回</el-button>
               <el-button
                 type="primary"
@@ -1500,16 +1499,16 @@
           this.$ajax
             .postJSON("/api/achievement/examineReject", param)
             .then(res => {
-              console.log(res.data.status);
+              console.log(res.data.status)
               if (res.data.status == 200) {
-                  var paperBtn3=document.getElementById('savebtn3')
+                 var paperBtn3=document.getElementById('savebtn3')
                   paperBtn3.disabled=true
                   paperBtn3.classList.remove('color-red')
                   paperBtn3.classList.add('grey')
-                  var paperBtn=document.getElementById('savebtn')
-                  paperBtn.disabled=true
-                  paperBtn.classList.remove('color-green')
-                  paperBtn.classList.add('grey')
+              var paperBtn=document.getElementById('savebtn')
+                paperBtn.disabled=true
+                paperBtn.classList.remove('color-green')
+                paperBtn.classList.add('grey')
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
@@ -1518,7 +1517,7 @@
             }).catch(error => {
             this.$message.error({message: error})
             this.loading=false;
-          });;
+          });
         } else if (!sumFlag && flag) {
           this.$message.error("请输入正确的分成比例");
         } else if (this.remark == "") {
