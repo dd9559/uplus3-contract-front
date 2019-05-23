@@ -1007,7 +1007,7 @@ export default {
                _that.selectAchList = data.data.list;
                _that.selectAchList.forEach((item,index)=>{
                  for(let i=0;i<item.distributions.length;i++){
-                   item.distributions[i].aMoney=(Math.floor(this.mul((item.distributions[i].aMoney)*100)))/100
+                   item.distributions[i].aMoney=(Math.floor(this.mul(item.distributions[i].aMoney,100)))/100
                   //  debugger
                  }
                })
