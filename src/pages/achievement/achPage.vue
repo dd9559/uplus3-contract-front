@@ -634,7 +634,7 @@
                 round
                 @click="rejectAch"
                 class="color-red"
-                v-dbClick
+                id="savebtn3"
               >驳回</el-button>
               <el-button
                 type="primary"
@@ -881,6 +881,7 @@
         achIndex:'',
         achObj:'',
         contractId2:'',
+        state2:''
       };
     },
     components:{
@@ -892,7 +893,6 @@
       this.aId=this.$route.query.aId
       this.achIndex=this.$route.query.achIndex
       this.achObj=JSON.parse(this.$route.query.achObj)
-      // debugger
       this.contractId2=this.$route.query.contractId
       
     },
@@ -909,9 +909,9 @@
         let param={
           contId: this.contractId2,
         }
+        this.AMShow=true
         this.$ajax.get("/api/achievement/getEmpAMById", param).then(res=>{
           if(res.status===200){
-            this.AMShow=true
             this.AMData=res.data.data
           }
         })
@@ -920,9 +920,9 @@
         let param={
           contId: this.contractId2,
         }
+        this.recordShow=true
         this.$ajax.get("/api/achievement/getHistoryPriceHouse", param).then(res=>{
           if(res.status===200){
-            this.recordShow=true
             this.recordData=res.data.data
           }
         })
@@ -1407,6 +1407,10 @@
             .postJSON("/api/achievement/examineAdopt", param)
             .then(res => {
               if (res.data.status == 200) {
+                var paperBtn3=document.getElementById('savebtn3')
+                  paperBtn3.disabled=true
+                  paperBtn3.classList.remove('color-red')
+                  paperBtn3.classList.add('grey')
               var paperBtn=document.getElementById('savebtn')
                 paperBtn.disabled=true
                 paperBtn.classList.remove('color-green')
@@ -1494,8 +1498,16 @@
           this.$ajax
             .postJSON("/api/achievement/examineReject", param)
             .then(res => {
-              console.log(res.data.status);
+              console.log(res.data.status)
               if (res.data.status == 200) {
+                 var paperBtn3=document.getElementById('savebtn3')
+                  paperBtn3.disabled=true
+                  paperBtn3.classList.remove('color-red')
+                  paperBtn3.classList.add('grey')
+              var paperBtn=document.getElementById('savebtn')
+                paperBtn.disabled=true
+                paperBtn.classList.remove('color-green')
+                paperBtn.classList.add('grey')
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
@@ -1504,7 +1516,7 @@
             }).catch(error => {
             this.$message.error({message: error})
             this.loading=false;
-          });;
+          });
         } else if (!sumFlag && flag) {
           this.$message.error("请输入正确的分成比例");
         } else if (this.remark == "") {
@@ -1595,17 +1607,25 @@
                 this.$emit("saveData", this.achIndex, resultArr, -1);
               }
               if (type == 2 && status == 1) {
-                var paperBtn2=document.getElementById('savebtn2')
-                paperBtn2.disabled=true
-                paperBtn2.classList.remove('color-blue')
-                paperBtn2.classList.add('grey')
-                this.$emit("saveData", this.achIndex, resultArr, 0);
+                if(this.state2===1){
+                  var paperBtn2=document.getElementById('savebtn2')
+                  paperBtn2.disabled=true
+                  paperBtn2.classList.remove('color-blue')
+                  paperBtn2.classList.add('grey')
+                  this.$emit("saveData", this.achIndex, resultArr, 0);
+                }
               }
               this.loading=false;
               this.$emit("close");
               this.$message({ message: "操作成功", type: "success" });
             }
           }).catch(error => {
+            // if(this.state2==0){
+            //   var paperBtn2=document.getElementById('savebtn2')
+            //       paperBtn2.disabled=true
+            //       paperBtn2.classList.remove('color-blue')
+            //       paperBtn2.classList.add('grey')
+            // }
             if(error.message==='下一节点审批人不存在'){
               this.checkPerson.flowType=2;
               this.checkPerson.code= this.aId;
@@ -1741,12 +1761,28 @@
             if (res.status === 200) {
               this.houseArr = res.data.data.houseAgents;
               var houseArr2 = res.data.data.houseAgents;
-            
-             
-              
               console.log(this.houseArr,'houseArr');
               this.clientArr = res.data.data.customerAgents;
+              // debugger
               this.comm = res.data.data.comm;
+              this.state2=res.data.data.state;
+              if(this.state2===0){
+                if(infoType=='getEditInfo'){
+                  var paperBtn2=document.getElementById('savebtn2')
+                  paperBtn2.disabled=true
+                  paperBtn2.classList.remove('color-blue')
+                  paperBtn2.classList.add('grey')
+                }else if(infoType=='getExamineInfo'){
+                  var paperBtn=document.getElementById('savebtn')
+                  paperBtn.disabled=true
+                  paperBtn.classList.remove('color-green')
+                  paperBtn.classList.add('grey')
+                  var paperBtn3=document.getElementById('savebtn3')
+                  paperBtn3.disabled=true
+                  paperBtn3.classList.remove('color-red')
+                  paperBtn3.classList.add('grey')
+                }
+              }
               if (res.data.data.examineDate) {
                 this.examineDate = res.data.data.examineDate;
               }
@@ -2083,14 +2119,14 @@
         box-sizing: border-box;
         position: relative;
         .el-input__prefix{
-          left: 73px;
+          left: 107px;
         }
         .el-input__suffix{
           right: 90px;
           display: none;
         }
         .el-input__inner{
-          width: 110px!important;
+          width: 150px!important;
         }
         p {
           margin-top: 5px;
@@ -2211,5 +2247,10 @@
           background-color: #F5F5F5;
           color:#ACA899;
           border: 1px solid #DDD;
+          &:hover{
+            background-color: #F5F5F5;
+          color:#ACA899;
+          border: 1px solid #DDD;
+          }
       }
 </style>

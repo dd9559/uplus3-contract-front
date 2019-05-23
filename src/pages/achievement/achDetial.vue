@@ -356,9 +356,9 @@ export default{
         let param={
           contId: this.contractId2,
         }
+            this.AMShow=true
         this.$ajax.get("/api/achievement/getEmpAMById", param).then(res=>{
           if(res.status===200){
-            this.AMShow=true
             this.AMData=res.data.data
           }
         })
@@ -367,9 +367,9 @@ export default{
         let param={
           contId: this.contractId2,
         }
+            this.recordShow=true
         this.$ajax.get("/api/achievement/getHistoryPriceHouse", param).then(res=>{
           if(res.status===200){
-            this.recordShow=true
             this.recordData=res.data.data
           }
         })
