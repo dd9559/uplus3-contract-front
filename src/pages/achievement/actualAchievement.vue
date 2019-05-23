@@ -337,7 +337,7 @@
               </div>
               <div v-else>
                 <p v-for="item in scope.row.distributions">
-                  {{item.aMoney| rounding}}
+                  {{item.aMoney}}
                 </p>
               </div>
             </template>
@@ -957,6 +957,21 @@ export default {
         }
   },
   methods: {
+
+  mul : function (arg1, arg2) {
+      var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+      try {
+        m += s1.split(".")[1].length;
+      }
+      catch (e) {
+      }
+      try {
+        m += s2.split(".")[1].length;
+      }
+      catch (e) {
+      }
+      return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+  },
    //获取当前部门
     initDepList:function (val) {
       if(!val){
@@ -992,7 +1007,8 @@ export default {
                _that.selectAchList = data.data.list;
                _that.selectAchList.forEach((item,index)=>{
                  for(let i=0;i<item.distributions.length;i++){
-                   item.distributions[i].aMoney=(Math.floor((item.distributions[i].aMoney)*100))/100
+                   item.distributions[i].aMoney=(Math.floor(this.mul(item.distributions[i].aMoney,100)))/100
+                  //  debugger
                  }
                })
                _that.total = data.data.total;
