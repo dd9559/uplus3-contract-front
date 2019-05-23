@@ -508,26 +508,27 @@ export default {
     telPhone (rule, value, callback) {
       
       let myreg = /^[1][0-9]{10}$/;
-      let myreg2 = /(^[1][0-9]{10}$)|(^[1][0-9]{2}\*{4}[0-9]{4}$)/;
+      let myreg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+      // let myreg2 = /(^[1][0-9]{10}$)|(^[1][0-9]{2}\*{4}[0-9]{4}$)/;
 
         if (!value) {
-            return callback(new Error("请输入手机号"));
+            return callback(new Error("请输入电话号码"));
             
-        }else if(this.type == 1){
-      
-              if (!myreg.test(value)) {
-                callback(new Error("请输入1开头的11位手机号码"));
-              } else {
-                callback();
-              }
-            
-        }else if(this.type==2){
-            if (!myreg2.test(value)) {
-              callback(new Error("编辑时请输入1开头的11位手机号码"));
+        }else{
+            if (!myreg.test(value)&&!myreg_.test(value)) {
+              callback(new Error("请输入正确电话号码"));
             } else {
               callback();
             }
         }
+            
+        // }else if(this.type==2){
+        //     if (!myreg.test(value)&&!myreg_.test(value)) {
+        //       callback(new Error("请输入正确电话号码"));
+        //     } else {
+        //       callback();
+        //     }
+        // }
     },
 
     
@@ -760,7 +761,7 @@ export default {
             if(this.contractForm.contPersons[0].mobile !=='' &&this.contractForm.contPersons[1].mobile !== ''&&((this.contractForm.contPersons[0].mobile).trim() === (this.contractForm.contPersons[1].mobile).trim())){
               this.$message({
                 type: "warning",
-                message: "业主手机号和客户手机号不能重复!"
+                message: "业主电话号码和客户电话号码不能重复!"
               });
             }else if(this.contractForm.contPersons[0].identifyCode !=='' &&this.contractForm.contPersons[1].identifyCode !== ''&&(this.contractForm.contPersons[0].identifyCode === this.contractForm.contPersons[1].identifyCode)){
               this.$message({

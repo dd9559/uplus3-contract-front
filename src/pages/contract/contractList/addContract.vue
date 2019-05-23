@@ -725,9 +725,10 @@ export default {
       }else{
         if(item.mobile.length===11){
           let reg = /^1[0-9]{10}$/;
-          if (!reg.test(item.mobile)) {
+          let reg_ = /^0\d{2,3}-?\d{7,8}$/
+          if (!reg.test(item.mobile)&&!reg_.test(item.mobile)) {
             this.$message({
-              message:'手机号格式不正确',
+              message:'电话号码格式不正确',
               type: "warning"
             })
           }
@@ -737,9 +738,10 @@ export default {
     verifyMobile_(value) {
       if(value.length===11){
         let reg = /^1[0-9]{10}$/;
-        if (!reg.test(value)) {
+        let reg_ = /^0\d{2,3}-?\d{7,8}$/
+        if (!reg.test(value)&&!reg_.test(value)) {
           this.$message({
-            message:'手机号格式不正确',
+            message:'电话号码格式不正确',
             type: "warning"
           })
         }
@@ -797,8 +799,9 @@ export default {
                       element.name=element.name.replace(/\s/g,"");
                       if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
                         if (element.encryptionMobile.length === 11) {
-                        let reg = /^1[0-9]{10}$/;
-                        if (reg.test(element.encryptionMobile)) {
+                        let reg = /^1[0-9]{10}$/;//手机号正则
+                        let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                        if (reg.test(element.encryptionMobile)||reg_.test(element.encryptionMobile)) {
                           if (element.relation) {
                             if(this.contractForm.type===1&&element.cardType||this.contractForm.type!==1){
                               if(this.type===2){
@@ -911,8 +914,9 @@ export default {
                               element.name=element.name.replace(/\s/g,"");
                               if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
                                 if (element.encryptionMobile.length === 11) {
-                                let reg = /^1[0-9]{10}$/;
-                                if (reg.test(element.encryptionMobile)) {
+                                let reg = /^1[0-9]{10}$/;//手机号正则
+                                let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                                if (reg.test(element.encryptionMobile)||reg_.test(element.encryptionMobile)) {
                                   if (element.relation) {
                                     if(this.contractForm.type===1&&element.cardType||this.contractForm.type!==1){
                                     if(this.type===2){
@@ -1061,11 +1065,12 @@ export default {
                                 if(this.contractForm.otherCooperationInfo.mobile){
                                   mobileOk=false;
                                   let reg = /^1[0-9]{10}$/;
-                                  if (reg.test(this.contractForm.otherCooperationInfo.mobile)) {
+                                  let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                                  if (reg.test(this.contractForm.otherCooperationInfo.mobile)||reg_.test(this.contractForm.otherCooperationInfo.mobile)) {
                                     mobileOk=true;
                                   }else{
                                     this.$message({
-                                      message: "三方合作-手机号码不正确",
+                                      message: "三方合作-电话号码不正确",
                                       type: "warning"
                                     });
                                   }
@@ -1200,7 +1205,7 @@ export default {
                             }
                             }else{
                               this.$message({
-                                message:'手机号码重复',
+                                message:'电话号码重复',
                                 type: "warning"
                               })
                             }
@@ -1263,6 +1268,7 @@ export default {
     // 新增/编辑合同
     addContract(){
       this.fullscreenLoading=true
+      this.dialogSave=false
       this.contractForm.contPersons=[];
       let ownerArr = this.ownerList.map(item=>Object.assign({},item));
       let guestArr = this.guestList.map(item=>Object.assign({},item));
@@ -1315,7 +1321,7 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"){
+          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"){
             this.canClick=true
           }
           this.$message({
