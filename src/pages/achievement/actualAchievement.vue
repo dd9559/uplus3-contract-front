@@ -337,7 +337,7 @@
               </div>
               <div v-else>
                 <p v-for="item in scope.row.distributions">
-                  {{item.aMoney| rounding}}
+                  {{item.aMoney}}
                 </p>
               </div>
             </template>
