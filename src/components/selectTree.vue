@@ -135,11 +135,16 @@
       },
 
       getList:function (keyword='',type='init') {
-        let url="/api/access/deps/tree"
-        if(this.treeType==="house"){
+        // debugger
+        let url="/api/access/deps/tree";
+        let isControl = true;
+        if(this.treeType!=="none"){
           url="/api/contract/access/deps/tree"
+          if(this.treeType==="house"){
+            isControl=false
+          }
         }
-        this.$ajax.get(url, {keyword: keyword}).then(res => {
+        this.$ajax.get(url, {keyword: keyword,isControl: isControl}).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list=res.data
