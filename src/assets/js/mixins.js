@@ -322,7 +322,8 @@ const MIXINS = {
     },
     ...mapMutations([
       'setPath',
-      'setLoading'
+      'setLoading',
+      'setSearchQuery'
     ])
   },
   computed:{

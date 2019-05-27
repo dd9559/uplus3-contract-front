@@ -557,6 +557,13 @@
         param.pageSize = this.pageSize
         delete param.contType
         delete param.timeRange
+        let sessionQuery=JSON.parse(JSON.stringify(param))
+        sessionQuery.pageNum=1
+        this.setSearchQuery({
+          path:'bill',
+          url:'/payInfo/selectPayInfoList',
+          query:sessionQuery
+        })
         this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
           res = res.data
           if (res.status === 200) {
