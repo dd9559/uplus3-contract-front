@@ -1130,6 +1130,7 @@
               }else if(roleId==1){
                 this.amaldars = res.data.data.list;
               }else if(roleId==0){
+                // debugger
                 this.managers = res.data.data.list;
               }
               this.loading1 = false;
@@ -1206,10 +1207,10 @@
           let idName=val.split("-");
           console.log(idName);
           if (type1 == 0) {
-            this.houseArr[index].amaldar = idName[0];
+            this.houseArr[index].amaldarId = idName[0];
             this.houseArr[index].amaldar = idName[1];
           }else if(type1 == 1){
-            this.clientArr[index].amaldar = idName[0];
+            this.clientArr[index].amaldarId = idName[0];
             this.clientArr[index].amaldar = idName[1];
           }
         }
@@ -1220,10 +1221,10 @@
           let idName=val.split("-");
           console.log(idName);
           if (type1 == 0) {
-            this.houseArr[index].manager = idName[0];
+            this.houseArr[index].managerId = idName[0];
             this.houseArr[index].manager = idName[1];
           }else if(type1 == 1){
-            this.clientArr[index].manager = idName[0];
+            this.clientArr[index].managerId = idName[0];
             this.clientArr[index].manager = idName[1];
           }
         }
