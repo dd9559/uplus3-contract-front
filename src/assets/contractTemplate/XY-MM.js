@@ -261,6 +261,9 @@ Dropdown.create({
             prohibit(bindElem,['a','b'],'payment')
         }
       }
+    }else{
+      bindElem.innerHTML = dateObj.value
+      bindElem.classList.remove('input-select')
     }
   }
 })
@@ -516,7 +519,7 @@ for(let readonlyItem in msg){
   }
   if(readonlyItem==="companyNames"){
     if(msg[readonlyItem].length>0){
-      let companyName = document.querySelector(`input[extendParam="val11"]`)
+      let companyName = document.querySelector(`*[extendParam="val11"]`)
       let companyNameTxt = msg[readonlyItem].join(',')
       companyName.setAttribute('list',companyNameTxt)
     }

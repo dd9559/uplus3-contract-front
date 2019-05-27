@@ -75,14 +75,12 @@
         .title-box>.code{
             text-align: right;
         }
-        /* .hetong_msg>div>ul{
-            display: flex;
-        }
-        .hetong_msg>.role>ul>li:first-child{
-            width: 40%!important;
-        } */
         .hetong_msg>div:nth-child(-n+4){
             margin-bottom: 5px;
+        }
+        .hetong_msg>div:nth-child(-n+4)>ul>li{
+            display: inline-block;
+            min-width: 220px;
         }
         .ding-fang>ul {
             display: flex;
@@ -116,6 +114,11 @@
         }
         span[tag='input-auto'].input-before:before{
             content:'请输入';
+            text-align: center;
+            color: #a1a1a1;
+        }
+        span[tag='input-auto'].input-select:before{
+            content:'请选择';
             text-align: center;
             color: #a1a1a1;
         }
@@ -218,44 +221,32 @@
         <div class="tip">提示：凡有空格□处，若是选择项则必须用√表示，非选择项则必须用×表示，以保证此合同不产生异议。</div>
         <div class="hetong_msg">
             <div class="role">
-                <p>
-                    <span>甲方（卖方）：</span>
-                    <span systemparam="ownerName" tag="input-auto"></span>
-                </p>
                 <ul>
+                    <li><span>甲方（卖方）：</span><span systemparam="ownerName" tag="input-auto"></span></li>
                     <li><span>身份证号：</span><span systemparam="ownerID" tag="input-auto"></span></li>
                     <li><span>常住地址：</span><span tag="input-auto" class="text-limit input-before" extendParam="val3"></span></li>
                 </ul>
             </div>
             <div class="role">
-                <p>
-                    <span>产权共有权人（或代理人）：</span>
-                    <span systemparam="agentName" tag="input-auto"></span>
-                </p>
                 <ul>
+                    <li><span>产权共有权人（或代理人）：</span><span systemparam="agentName" tag="input-auto"></span></li>
                     <li><span>身份证号：</span><span systemparam="agentId" tag="input-auto"></span></li>
                     <li><span>常住地址：</span><span tag="input-auto" class="text-limit input-before" extendParam="val6"></span></li>
                 </ul>
             </div>
             <div class="role">
-                <p>
-                    <span>乙方（买方）：</span>
-                    <span systemparam="guestName" tag="input-auto"></span>
-                </p>
                 <ul>
+                    <li><span>乙方（买方）：</span><span systemparam="guestName" tag="input-auto"></span></li>
                     <li><span>身份证号：</span><span systemparam="guestId" tag="input-auto"></span></li>
                     <li><span>常住地址：</span><span tag="input-auto" class="text-limit input-before" extendParam="val9"></span></li>
                 </ul>
             </div>
             <div class="jujian">
-                <p>
-                    <span>丙方（居间方）：</span>
-                    <span tag="input-auto" class="text-limit input-before" extendParam="val10"></span>
-                    <br>
-                    <span>联系电话：<span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val12"></span></span>
-                    <br>
-                    <span>(襄阳吉家特许加盟商<input type="text" tag="input" class="text-limit dropdown-item" extendParam="val11" style="width:450px;" value="" />门店)</span>
-                </p>
+                <ul>
+                    <li><span>丙方（居间方）：</span><span tag="input-auto" class="text-limit input-before" extendParam="val10"></span></li>
+                    <li><span></span>(襄阳吉家特许加盟商<span type="text" systemparam="true" tag="input-auto" class="input-select text-limit dropdown-item" extendParam="val11"></span>门店)</span></li>
+                    <li><span>联系电话：</span><span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val12"></span></li>
+                </ul>
             </div>
             <div class="role ding-fang">
                 <ul>
@@ -291,7 +282,7 @@
         </div>
         <div class="text-indent">
             <span>第五条</span>
-            该房屋成交价格(含装修和附属设施)为人民币(大写) <span extendParam="val29" systemParam="dealPrice_add" class="text-limit" tag="input-auto"></span>圆(小写:￥<span tag="input-auto" systemParam="dealPrice" class="input-readonly"></span>元)整。
+            该房屋成交价格(含装修和附属设施)为人民币(大写) <span extendParam="val29" systemParam="true" class="text-limit" tag="input-auto"></span>圆(小写:￥<span tag="input-auto" systemParam="dealPrice" class="input-readonly"></span>元)整。
         </div>
         <div class="text-indent">
             <span>第六条 </span>
