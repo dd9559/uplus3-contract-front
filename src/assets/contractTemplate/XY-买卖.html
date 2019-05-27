@@ -82,29 +82,28 @@
             display: inline-block;
             min-width: 220px;
         }
-        .ding-fang>ul {
-            display: flex;
+        .ding-fang>ul>li{
+            display: inline-block;
+            margin-right: 20px;
         }
         .ding-fang>ul>li:first-child{
-            width: 40%;
-            margin-right: 20px;
+            min-width: 300px;
         }
         .text-indent>span:first-child{
             font-weight: bold;
         }
         .sign{
-            display: flex;
-            justify-content: space-between;
             margin-bottom: 50px;
         }
-        .last-msg>ul{
-            display: flex;
+        .sign>li{
+            display: inline-block;
+            margin-right: 25px;
         }
-        .last-msg>ul>li:first-child{
-            margin-right: 10px;
+        .last-msg>ul>li{
+            display: inline-block;
         }
         .last-msg>ul>li:nth-child(n+2){
-            margin-right: 90px;
+            margin-right: 80px;
         }
         span[tag='input-auto']{
             border-bottom: 1px solid gray;
@@ -117,7 +116,7 @@
             text-align: center;
             color: #a1a1a1;
         }
-        span[tag='input-auto'].input-select:before{
+        span[tag='input-auto'].input-before.input-select:before{
             content:'请选择';
             text-align: center;
             color: #a1a1a1;
@@ -200,6 +199,9 @@
         .BODERRED{
           border-color: red !important;
         }
+        @page {
+          size: 955px 1350px;
+        }
     </style>
 </head>
 <body>
@@ -244,7 +246,7 @@
             <div class="jujian">
                 <ul>
                     <li><span>丙方（居间方）：</span><span tag="input-auto" class="text-limit input-before" extendParam="val10"></span></li>
-                    <li><span></span>(襄阳吉家特许加盟商<span type="text" systemparam="true" tag="input-auto" class="input-select text-limit dropdown-item" extendParam="val11"></span>门店)</span></li>
+                    <li><span></span>(襄阳吉家特许加盟商<span type="text" systemparam="true" tag="input-auto" class="input-before input-select text-limit dropdown-item" extendParam="val11"></span>门店)</span></li>
                     <li><span>联系电话：</span><span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val12"></span></li>
                 </ul>
             </div>
