@@ -440,20 +440,13 @@ export default {
       },
     //确认收款
     toReceipt(item,index){
-      if(this.power['sign-ht-fz-pay'].state){
-        if(item.inBank&&item.inBank.length>0){
-          this.dialogReceipt=true
-          this.receiptData=item;
-          this.index = index
-        }else{
-          this.$message({
-            message:'没有收款门店账户',
-            type:'warning'
-          });
-        }
+      if(item.inBank&&item.inBank.length>0){
+        this.dialogReceipt=true
+        this.receiptData=item;
+        this.index = index
       }else{
         this.$message({
-          message:'没有确认打款权限',
+          message:'没有收款门店账户',
           type:'warning'
         });
       }
