@@ -6,19 +6,19 @@
       <div class="audit-box"  :style="{ height: clientHeight() }">
         <div class="audit-col">
           <div class="col-li">
-            <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
-            <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
+            <p>合同编号：<span class="blue">{{getLayerAudit.contractCode}}</span></p>
+            <p>物业地址：<span>{{getLayerAudit.propertyAddr}}</span></p>
           </div>
           <div class="col-li">
-            <p>申请日期：<span>{{layerAudit.createTime | getDate}}</span></p>
-            <p>申请人：<span>{{layerAudit.createByDepName + '-' + layerAudit.createByName}}</span></p>
+            <p>申请日期：<span>{{getLayerAudit.createTime | getDate}}</span></p>
+            <p>申请人：<span>{{getLayerAudit.createByDepName + '-' + getLayerAudit.createByName}}</span></p>
           </div>
           <div class="col-li">
-            <p>合同类型：<span>{{layerAudit.tradeType}}</span></p>
-            <p class="mr100">成交总价：{{layerAudit.dealPrice}}元
-              <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===layerAudit.timeUnit"> / {{item.value}}</span>
+            <p>合同类型：<span>{{getLayerAudit.tradeType}}</span></p>
+            <p class="mr100">成交总价：{{getLayerAudit.dealPrice}}元
+              <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===getLayerAudit.timeUnit"> / {{item.value}}</span>
             </p>
-            <p>可分配业绩：<span>{{layerAudit.money}}元</span></p>
+            <p>可分配业绩：<span>{{getLayerAudit.money}}元</span></p>
           </div>
           <div class="col-li">
             <p>调整类型：<span>佣金调整</span></p>
@@ -39,16 +39,16 @@
                 <th>业主佣金</th>
                 <th>客户佣金</th>
                 <!-- <th>按揭手续费</th> -->
-                <th v-if="layerAudit.isCooperation === 1">合作费扣除</th>
+                <th v-if="getLayerAudit.isCooperation === 1">合作费扣除</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>原金额</td>
-                <td>{{layerAudit.ownerCommission}}元</td>
-                <td>{{layerAudit.custCommission}}元</td>
+                <td>{{getLayerAudit.ownerCommission}}元</td>
+                <td>{{getLayerAudit.custCommission}}元</td>
                 <!-- <td>另外出<span>;</span>客户<span>;</span>0元</td> -->
-                <td v-if="layerAudit.isCooperation === 1">{{layerAudit.otherCooperationCost}}元</td>
+                <td v-if="getLayerAudit.isCooperation === 1">{{getLayerAudit.otherCooperationCost}}元</td>
               </tr>
               <tr>
                 <td>调整为</td>
@@ -78,7 +78,7 @@
                     <div><el-input v-model="auditForm.money3" placeholder="输入金额" class="width70"></el-input>元</div>
                   
                 </td> -->
-                <td v-if="layerAudit.isCooperation === 1">
+                <td v-if="getLayerAudit.isCooperation === 1">
                   <div><el-input v-model="auditForm.money4" placeholder="输入金额" class="width70"  type="text" @input="cutNumber('money4')"></el-input>元</div>
                 </td>
               </tr>
@@ -86,11 +86,11 @@
           </table>
           <!-- 上传附件 -->
           <div class="uploadfile">
-            <div class="uploadtitle">上传附件</div>
+            <div class="uploadtitle"><em>*</em>上传附件</div>
 
             <ul class="ulData">
                 <li>
-                    <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" :scane="{path:'tiaoyong',id: this.contractCode}">
+                    <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" :scane="{path:'tiaoyong',id: getLayerAudit.contractCode}">
                         <i class="iconfont icon-shangchuan"></i>
                         <p>点击上传</p>
                     </file-up>
@@ -138,6 +138,12 @@ export default {
         contractCode: {
           type: String,
           default:''
+        },
+        layerAudit: {
+          type: Object,
+          default:function() {
+            return {}
+          }
         }
     },
 
@@ -171,12 +177,12 @@ export default {
               money4: '', //合作费扣除
           },
           checked: false, //是否有解除协议
-          layerAudit:{
-            ownerCommission: '',
-            custCommission: '',
-            otherCooperationCost: ''
+          // layerAudit:{
+          //   ownerCommission: '',
+          //   custCommission: '',
+          //   otherCooperationCost: ''
             
-          },
+          // },
           // preview:false,
           // start:'',
           //上传的协议
@@ -194,6 +200,9 @@ export default {
     computed: {
         getDialogVisible: function () {
             return this.dialogVisible
+        },
+        getLayerAudit: function () {
+            return this.layerAudit
         }
     },
 
@@ -261,8 +270,6 @@ export default {
               this.isDelete=''
           }
       },
-
-
     // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {        
           return this.clientHei - 265 + 'px'
@@ -292,14 +299,18 @@ export default {
 
           }).catch(error => {
               this.$message({
-                message: error
+                message: error,
+                type:"error"
               })
           })
       },
 
       myclose: function() {
         this.checkPerson.state=false
-        this.$message('已申请');
+        this.$message({
+          message:"已申请",
+          type:'warning'
+        });
         setTimeout(() => {                      
           this.$emit('closeCentCommission')
         }, 1500); 
@@ -319,7 +330,10 @@ export default {
         //     message:`成功${this.checkPerson.type==='init'?'转交审核人':'设置审核人'}`
         // }) 
         setTimeout(() => {                      
-            this.$message('已申请');
+            this.$message({
+              message:'已申请',
+              type:'warning'
+            });
             this.$emit('closeCentCommission')
         }, 1500); 
         
@@ -330,7 +344,7 @@ export default {
         this.auditForm.money2=this.$tool.cutFloat({val:this.auditForm.money2,max:999999999.99})
         this.auditForm.money4=this.$tool.cutFloat({val:this.auditForm.money4,max:999999999.99})
         let param = {
-          contractCode: this.contractCode,
+          contractCode: this.layerAudit.contractCode,
           reason: this.auditForm.textarea,
           enclosure: this.uploadList,
           relieve: this.checked, 
@@ -343,23 +357,38 @@ export default {
         }
         if((this.auditForm.textarea).trim() !== ""){
           // if (this.auditForm.money1 !== null && this.auditForm.money2 !== null && this.auditForm.money3 !== null){            
-            if(this.checked === true && this.uploadList.length <= 0){
-              this.$message("请您上传协议或者去掉勾选'有解除协议'");           
+            if(this.uploadList.length <= 0){
+              this.$message({
+                message:"请您上传附件",
+                type:"warning"
+              });           
             }
             else if(parseFloat(this.auditForm.money1) < 0 || parseFloat(this.auditForm.money2) < 0 || parseFloat(this.auditForm.money4) < 0){
-              this.$message('请输入非负数的金额');
+              this.$message({
+                message:'请输入非负数的金额',
+                type:"warning"
+              });
             } 
             // else if(parseFloat(this.auditForm.money1) + parseFloat(this.auditForm.money2) > parseFloat(this.layerAudit.dealPrice)){
             //   this.$message('调整的业主佣金+客户佣金总和不能大于成交总价');
             // } 
             else if( this.auditForm.money1 == this.layerAudit.ownerCommission && this.auditForm.money2 == this.layerAudit.custCommission && this.auditForm.money4 == this.layerAudit.otherCooperationCost) {                             
-              this.$message('没有金额记录调整');
+              this.$message({
+                message:'没有金额记录调整',
+                type:"warning"
+              });
             }   
             else if(this.auditForm.money1=='' || this.auditForm.money2=='' || this.auditForm.money4=='') {                             
-              this.$message('请填写调整后的金额');
+              this.$message({
+                message:'请填写调整后的金额',
+                type:"warning"
+              });
             } 
             else if(this.auditForm.money1==0 && this.auditForm.money2==0 && this.layerAudit.isCooperation === 1&&this.auditForm.money4==0 || this.auditForm.money1==0 && this.auditForm.money2==0 && this.layerAudit.isCooperation === 0) {                             
-              this.$message('调整后的金额不能都为0');
+              this.$message({
+                message:'调整后的金额不能都为0',
+                type:"warning"
+              });
             }      
             else{
               this.fullscreenLoading=true
@@ -374,7 +403,10 @@ export default {
                     //     this.$emit('closeCentCommission')
                     //   }, 1500); 
                     // }
-                    this.$message('已申请');
+                    this.$message({
+                      message:'已申请',
+                      type:"warning"
+                    });
                     setTimeout(() => {                     
                       this.$emit('closeCentCommission')
                     }, 1500);                   
@@ -387,7 +419,8 @@ export default {
                     this.choseCheckPerson(error.data.checkId)                                    
                   } else{
                     this.$message({
-                      message: error
+                      message: error,
+                      type:"error"
                     })
                   }
                     
@@ -397,23 +430,30 @@ export default {
           //     this.$message('调整后的金额不能为空');
           // }
         }else if((this.auditForm.textarea).trim() === ""){
-           this.$message('请填写调整原因'); 
+           this.$message({
+             message:'请填写调整原因',
+             type:"warning"
+           }); 
         }
        
       }
     },
-
+    watch:{
+      layerAudit:function(news,old){
+        this.$set(this.auditForm,"money1",news.ownerCommission)
+        this.$set(this.auditForm,"money2",news.custCommission)
+        this.$set(this.auditForm,"money4",news.otherCooperationCost)
+      }
+    },
     created() {
       this.getDictionary();
-      this.getData();    
-      console.log(this.uploadList)
+      // this.getData();    
     },
-
     mounted() {
       var _this = this;
-       window.onresize = function(){
-         _this.clientHei = document.documentElement.clientHeight;
-       }
+      window.onresize = function(){
+        _this.clientHei = document.documentElement.clientHeight;
+      }
     },
 }
 </script>
@@ -421,6 +461,10 @@ export default {
 <style lang="less">
 // 调佣申请弹层样式
 #layeraudit{
+  em{
+    color:#FF3E3E;
+    margin-right: 3px;
+  }
   .layer-audit{
     .el-dialog{
       margin: 80px auto 60px !important;
@@ -480,10 +524,6 @@ export default {
         align-items: flex-start;
         span{
           width: 80px;
-          em{
-            color:#FF3E3E;
-            margin-right: 3px;
-          }
         }
       }
       .table{

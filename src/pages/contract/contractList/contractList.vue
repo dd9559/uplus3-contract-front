@@ -295,7 +295,8 @@
         </el-table-column>
         <el-table-column align="center" label="结算状态" min-width="80">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.contType.value<4" type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button>
+            <!-- <el-button v-if="scope.row.contType.value<4" type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button> -->
+            <span v-if="scope.row.contType.value<4">{{scope.row.resultState.label}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -315,7 +316,7 @@
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</el-button>
               <!-- </span> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
             <!-- </div> -->
           </template>
         </el-table-column>
@@ -335,9 +336,9 @@
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterContId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 调佣弹框 -->
-    <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
+    <layerAudit :dialogVisible="tiaoyong" :layerAudit="layerAudit" @closeCentCommission="closeCommission" v-if='tiaoyong'></layerAudit>
     <!-- 结算弹窗 -->
-    <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerAudit" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
+    <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerSettle" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" :code="uploadCode" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
@@ -421,8 +422,9 @@ export default {
       currentPage: 1,
       pageSize: 10,
       water: false,
-      contractCode: "",
+      // contractCode: "",
       tiaoyong: false,
+      layerAudit:{},
       jiesuan: false,
       changeCancel: false,
       dialogType: "",
@@ -450,7 +452,7 @@ export default {
       //合同状态
       contState:99,
       settleId:'',
-      layerAudit:{
+      layerSettle:{
         contarctType:{
           label: ""
         },
@@ -791,7 +793,6 @@ export default {
     },
     //新增合同
     toAddcontract(command) {
-      // if(this.power['sign-ht-info-add'].state){
         let param = {
           type:command
         };
@@ -829,9 +830,6 @@ export default {
               type: "warning"
             });
           });
-      // }else{
-      //   this.noPower('创建合同')
-      // }
     },
     //合同预览
     goPreview(item) {
@@ -862,21 +860,27 @@ export default {
 
     },
     //调佣弹窗
-    //Z171231001
     toLayerAudit(item) {
-      // if(item.isCanChangeCommission===1){
-        this.contractCode = item.code;
-        this.tiaoyong = true;
-      // }else{
-      //   this.$alert('已存在未审核的调佣申请，不允许重复提交！', '提示', {
-      //     confirmButtonText: '确定',
-      //   });
-      // }
+      let param = {
+        contractCode: item.code            
+      }
+      this.$ajax.get("/api/commission/detail", param).then(res => {
+        let data = res.data;
+        if (res.data.status === 200) {
+          this.layerAudit = data.data
+          this.tiaoyong = true;
+        }
+      }).catch(error => {
+          this.$message({
+            message: error,
+            type:"error"
+          })
+      })
     },
     //关闭调佣弹窗
     closeCommission() {
       this.tiaoyong = false;
-      this.contractCode = "";
+      this.layerAudit={}
       this.getContractList();
     },
     //关闭变更解约弹窗
@@ -1000,7 +1004,7 @@ export default {
             if (res.data.status === 200) {
               this.jiesuan=true;
               this.settleId=item.id;
-              this.layerAudit = data.data
+              this.layerSettle = data.data
             }
           }).catch(error => {
               this.$message({
