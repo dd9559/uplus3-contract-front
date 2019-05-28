@@ -332,7 +332,9 @@ const MIXINS = {
       'getUser',
       'getLoading',
       'getCollapse',
-      'getBodyScollShow'
+      'getBodyScollShow',
+      'getSearchQuery',
+      'getDataList'
     ])
   },
   mounted() {

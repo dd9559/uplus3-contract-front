@@ -13,6 +13,7 @@ const store = new Vuex.Store({
     fullscreenLoading:false,
     bodyScollShow:0,
     searchQuery:null,//筛选条件
+    dataList:null,//列表渲染对象
   },
   mutations: {
     setPath (state,payload) {
@@ -39,6 +40,9 @@ const store = new Vuex.Store({
     setSearchQuery(state,payload){
       // debugger
       state.searchQuery=payload
+    },
+    setDataList(state,payload){
+      state.dataList=payload
     }
   },
   actions:{
@@ -74,6 +78,9 @@ const store = new Vuex.Store({
     },
     getSearchQuery:state=>{
       return state.searchQuery
+    },
+    getDataList:state=>{
+      return state.dataList
     }
   }
 })
