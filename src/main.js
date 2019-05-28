@@ -109,19 +109,35 @@ router.beforeEach((to,from,next)=>{
   promiseArr.push(new Promise((resolve,reject)=>{
     // debugger
     if(sessionQuery&&(to.path===sessionQuery.path)&&(from.path===sessionQuery.nxetPage)){
-      api.get(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
-        res=res.data
-        if(res.status===200){
-          // debugger
-          store.commit('setDataList',{
-            route:sessionQuery.path,
-            data:res.data
-          })
-          resolve()
-        }
-      }).catch(error=>{
-        reject()
-      })
+      if(sessionQuery.methods==='get'||!sessionQuery.methods){
+        api.get(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
+          res=res.data
+          if(res.status===200){
+            // debugger
+            store.commit('setDataList',{
+              route:sessionQuery.path,
+              data:res.data
+            })
+            resolve()
+          }
+        }).catch(error=>{
+          reject()
+        })
+      }else if(sessionQuery.methods==='postJSON'){
+        api.postJSON(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
+          res=res.data
+          if(res.status===200){
+            // debugger
+            store.commit('setDataList',{
+              route:sessionQuery.path,
+              data:res.data
+            })
+            resolve()
+          }
+        }).catch(error=>{
+          reject()
+        })
+      }
     }else{
       reject()
     }

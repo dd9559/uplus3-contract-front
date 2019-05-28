@@ -584,10 +584,26 @@ export default {
     }
     this.http = window.location.origin
     this.getAdmin();//获取当前登录人信息
-    this.getContractList();//合同列表
     this.getDictionary();//字典
     this.getHousePurpose();//用途
     this.remoteMethod();//部门
+    let res=this.getDataList
+    if(res&&(res.route===this.$route.path)){
+      this.tableData = res.data.list
+      this.total = res.data.count
+      let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+      this.contractForm = Object.assign({},this.contractForm,session.query,{contTypes:session.query.contTypes.split(',')})
+      this.contractForm.contTypes = this.contractForm.contTypes.map(item=>{
+        return Number(item)
+      })
+      this.keyword=session.query.keyword
+      if(session.query.beginDate){
+        this.signDate[0]=session.query.beginDate
+        this.signDate[1]=session.query.endDate
+      }
+    }else{
+      this.getContractList();//合同列表
+    }
   },
   methods: {
     dayin(){
@@ -628,6 +644,12 @@ export default {
 
       delete param.depName
       //console.log(param)
+      sessionStorage.setItem('sessionQuery',JSON.stringify({
+        path:'/contractList',
+        url:'/contract/contractList',
+        query:param,
+        methods:"postJSON"
+      }))
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
