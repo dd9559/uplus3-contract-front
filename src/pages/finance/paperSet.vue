@@ -1,6 +1,6 @@
 <template>
   <div ref="tableComView" class="paper-set">
-    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
         <el-form-item label="关键字" prop="keyword">
           <el-tooltip content="开票人员/合同编号/票据编号/物业地址" placement="top">
@@ -426,7 +426,15 @@
       // 部门搜索
       this.remoteMethod();
       // 获取列表
-      this.getData();
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        debugger
+        this.tableData = res.data
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.propForm = Object.assign({},this.propForm,session.query,{timeRange:[session.query.startTime,session.query.endTime]})
+      }else{
+        this.getData()
+      }
     },
     methods: {
       // 文字处理
@@ -447,11 +455,14 @@
         this.$message.error(e);
       },
       // 列表数据
-      getData: function () {
+      getData: function (type='init') {
         // if(!this.power['sign-cw-bill-query'].state){
         //     this.noPower(this.power['sign-cw-bill-query'].name);
         //     return false
         // }
+        if(type==='search'){
+          this.pageNum=1
+        }
         this.loadingList = true;
         let param = Object.assign({}, this.propForm)
         param.pageNum = this.pageNum
@@ -461,6 +472,16 @@
           param.endTime = param.timeRange[1]
           delete param.timeRange
         }
+
+        //点击查询时，缓存筛选条件
+        if(type==='search'){
+          sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:this.$route.path,
+            url:'/bills',
+            query:param
+          }))
+        }
+
         this.$ajax.get('/api/bills', param).then(res => {
           res = res.data
           if (res.status === 200) {
