@@ -322,7 +322,8 @@ const MIXINS = {
     },
     ...mapMutations([
       'setPath',
-      'setLoading'
+      'setLoading',
+      'setSearchQuery'
     ])
   },
   computed:{
@@ -331,7 +332,9 @@ const MIXINS = {
       'getUser',
       'getLoading',
       'getCollapse',
-      'getBodyScollShow'
+      'getBodyScollShow',
+      'getSearchQuery',
+      'getDataList'
     ])
   },
   mounted() {

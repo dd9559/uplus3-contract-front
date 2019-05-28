@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>买卖居间合同</title>
+    <link rel="stylesheet" href="./datepicker.css">
+    <style>
+        body{
+            font-family: SimHei;
+        }
+        p,div{
+            margin: 0px;
+            padding: 0px;
+            line-height: 1.8;
+        }
+        input{
+            border: 0;
+            outline: none;
+            border-bottom: 1px solid gray;
+            height: 16px;
+            padding-left: 10px;
+            box-sizing: border-box;
+            font-family: SimHei;
+        }
+        input:disabled{
+            background-color: #fff;
+        }
+        input[type="checkbox"]{
+            border:0px;
+        }
+        /*去掉谷歌，火狐下的type="number"中的右边箭头*/
+        input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
+            -webkit-appearance: none !important;
+        }
+        input[type="number"]{-moz-appearance:textfield;}
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .font-bold {
+            font-weight: bold;
+        }
+        .modal{
+            position: relative;
+        }
+        .modal:before{
+            content: '';
+            z-index: 50;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        .main {
+            width: 840px;
+            padding: 0 40px 40px 40px;
+            box-sizing: border-box;
+            margin: 0 auto;
+            font-size: 16px;
+        }
+        .main>div{
+            margin-bottom: 5px;
+        }
+        .title-box>.title{
+            text-align: center;
+            font-size: 20px;
+            padding-top:5px;
+            margin-bottom: 10px;
+        }
+        .title-box>.code{
+            text-align: right;
+        }
+        .hetong_msg>div:nth-child(-n+4){
+            margin-bottom: 5px;
+        }
+        .hetong_msg>div:nth-child(-n+4)>ul>li{
+            display: inline-block;
+            min-width: 220px;
+        }
+        .ding-fang>ul>li{
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .ding-fang>ul>li:first-child{
+            min-width: 300px;
+        }
+        .text-indent>span:first-child{
+            font-weight: bold;
+        }
+        .sign{
+            margin-bottom: 50px;
+        }
+        .sign>li{
+            display: inline-block;
+            margin-right: 25px;
+        }
+        .last-msg>ul>li{
+            display: inline-block;
+        }
+        .last-msg>ul>li:nth-child(n+2){
+            margin-right: 80px;
+        }
+        span[tag='input-auto']{
+            border-bottom: 1px solid gray;
+            padding: 2px 10px;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+        span[tag='input-auto'].input-before:before{
+            content:'请输入';
+            text-align: center;
+            color: #a1a1a1;
+        }
+        span[tag='input-auto'].input-before.input-select:before{
+            content:'请选择';
+            text-align: center;
+            color: #a1a1a1;
+        }
+        span[tag='input-readonly'].input-before:before{
+            content:'';
+            text-align: center;
+            color: #a1a1a1;
+        }
+        .text-indent {
+            text-indent: 30px;
+        }
+        .info-checkbox{
+            display: inline;
+            cursor: pointer;
+            text-indent: 0px;
+            line-height: 1;
+        }
+        .info-checkbox>p[type="check"]{
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 1px solid gray;
+            position: relative;
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+        }
+        .info-checkbox>p[type="check"][checked='true']:before{
+            content:'';
+            position: absolute;
+            display: inline-block;
+            width: 100%;
+            height: 10px;
+            background-size: contain;
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABPElEQVQ4T72TsUvDQBjF33cYUhfFP0GIVO7S1cXJxU3sIqiLuHSyOIg4Cro4OBW3jJ10EhcRdHcw2901f0BWh04OmvskpZVYqjYEvPl9v3v3vneEiocqzuP/AY1GY9k5F2VZ1kyS5LWUAynlihDigZnnmblprb2bGhCG4TqAWwCzzNwyxkR5fgNAEARzvu8fGWPOAXyMB6uU2iaiLoAZ51zbWns10gwAUsotIcQNM9/XarXNOI7fRwIp5QERdYiInHOn1tqz4gVfTwjDsAOgzcxP/X5/I03TN6XUBRGdDAcutdbH4+6KGQil1CMRrQF4BtADsJ8PMHNkjGlN6sy3EIdZvBDRUkHc1Vrv5Zw/AbmgXq8vep4XA1gAcK213gXgfmrsxDUqpVaJ6FBrvQMg+63uU/eglIMyH6yyg0+YpmgRBNEBzgAAAABJRU5ErkJggg==");
+        }
+        .info-checkbox>p[type="check"][checked='false']:after{
+            content:'';
+            position: absolute;
+            display: inline-block;
+            width: 100%;
+            height: 10px;
+            background-size: contain;
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABdklEQVQ4T42TvUrEQBSFz1kt1BewU8QnSJ5gu0mrsGDjRAt/UVBBWRtdsdgVBBdcFBHFZK0U+8TKwkIsEt/Ffq9M9se4GzVTDZM5X865dy5tpd8EeIlDv4z8i7ajGwCmaSt3D8QJBPUo9LZzMIzmBsQiIKs0AsuZLxOFah6IrdxbI5YW1uNn7zIBmGU7ugLwUCC1OPD3s5xYyr0gsdYVmzs9QNuJrhIsA1KJAv8oDemKIa3tKGzWu99+ABInyj0DsSVo7cdBs5Y+6xcPOOjF6UCMAChMGmCW+FdAEqeT1+zTbvprMxChe8FS+pzkRgIQOY5D/yCrsFkA2kpfgVwyf6YUxpMIkNMo8Hf/c0BLuXckdFYRRaQRh/5mGvLtoFQasj7H7gnM/d1GuY5Cf/lnG0ulIftz9BHgTJ6HBEkgK6Y8RLE4bI9MPPwnTrW4/ZQFfhx6C7SUfiI5m2cOOpDvYRK5puW47wK8fgTeTo5J7EW3lPZITH0B+X227Y6+aJ4AAAAASUVORK5CYII=");
+        }
+        .alert-viwer{
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%,-50%);
+          padding: 10px;
+          border-radius: 4px;
+          background: #fff;
+          z-index: 999;
+          box-shadow: 0 1px 3px rgba(0,0,0,.3);
+        }
+        .alert-viwer>textarea{
+          background: #fff;
+          border: 1px solid #dcdfe6;
+        }
+        .alert-viwer>p{
+          text-align: right;
+          margin: 6px 0 0;
+          padding: 0;
+          line-height: normal;
+        }
+        .alert-viwer>p>span{
+          display: inline-block;
+          background: #409eff;
+          padding: 6px 12px;
+          color: #FFFFFF;
+          border-radius: 4px;
+        }
+        .alert-viwer>p>span:last-of-type{
+          background: #fff;
+          color: #606266;
+          border: 1px solid #dcdfe6;
+        }
+        .BODERRED{
+          border-color: red !important;
+        }
+        @page {
+          size: 955px 1350px;
+        }
+    </style>
+</head>
+<body>
+    <span id="submit" style="position: absolute;top: -1000px;z-index: 0;">click</span>
+    <div class="main container">
+        <div class="alert-viwer" style="display: none;">
+            <textarea id="inputArea" cols="30" rows="4"></textarea>
+            <p class="control-btn">
+                <span>保存</span>
+                <span>取消</span>
+            </p>
+        </div>
+        <div class="title-box">
+            <p class="title font-bold">襄阳市城市房屋存量房买卖居间合同</p>
+            <p class="code font-bold">
+                合同编号：<input type="text" systemparam="code" readonly="readonly" />
+            </p>
+        </div>
+        <div class="tip">提示：凡有空格□处，若是选择项则必须用√表示，非选择项则必须用×表示，以保证此合同不产生异议。</div>
+        <div class="hetong_msg">
+            <div class="role">
+                <ul>
+                    <li><span>甲方（卖方）：</span><span systemparam="ownerName" tag="input-auto"></span></li>
+                    <li><span>身份证号：</span><span systemparam="ownerID" tag="input-auto"></span></li>
+                    <li><span>常住地址：</span><span tag="input-auto" class="text-limit input-before" extendParam="val3"></span></li>
+                </ul>
+            </div>
+            <div class="role">
+                <ul>
+                    <li><span>产权共有权人（或代理人）：</span><span systemparam="agentName" tag="input-auto"></span></li>
+                    <li><span>身份证号：</span><span systemparam="agentId" tag="input-auto"></span></li>
+                    <li><span>常住地址：</span><span tag="input-auto" class="text-limit input-before" extendParam="val6"></span></li>
+                </ul>
+            </div>
+            <div class="role">
+                <ul>
+                    <li><span>乙方（买方）：</span><span systemparam="guestName" tag="input-auto"></span></li>
+                    <li><span>身份证号：</span><span systemparam="guestId" tag="input-auto"></span></li>
+                    <li><span>常住地址：</span><span tag="input-auto" class="text-limit input-before" extendParam="val9"></span></li>
+                </ul>
+            </div>
+            <div class="jujian">
+                <ul>
+                    <li><span>丙方（居间方）：</span><span tag="input-auto" class="text-limit input-before" extendParam="val10"></span></li>
+                    <li><span></span>(襄阳吉家特许加盟商<span type="text" systemparam="true" tag="input-auto" class="input-before input-select text-limit dropdown-item" extendParam="val11"></span>门店)</span></li>
+                    <li><span>联系电话：</span><span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val12"></span></li>
+                </ul>
+            </div>
+            <div class="role ding-fang">
+                <ul>
+                    <li>丁方： 襄阳吉家网络科技有限公司</li>
+                    <li>联系电话：0710-3115558</li>
+                </ul>
+                <ul>
+                    <li>统一社会信用代码：91420600MA496A4X8W</li>
+                    <li>地址：襄阳市樊城区春园西路汇升苑11楼</li>
+                </ul>
+            </div>
+        </div>
+        <div class="notice">
+            （本合同履行过程中所有文件及通知，以专递或挂号信寄至上述地址即视为送达，收件人拒收或未签收的，仍视为送达。）
+            根据国家法律法规规定，甲、乙双方本着诚信、自愿、平等的原则，由丙方居间介绍，经协商一致签订本合同并共同遵守。                
+        </div>
+        <div class="text-indent">
+            <span>第一条 </span>
+            甲方及产权共有权人同意，自愿将合法拥有的、坐落于襄阳市<span systemParam="propertyAddr" extendParam="val13" class="text-limit" tag="input-auto"></span>室的房屋出售给乙方，乙方对甲方出售的房屋已作了详细了解，并已实地看房，对该房屋基本信息无异议，并愿意按协议价格购买。
+        </div>
+        <div class="text-indent">
+            <span>第二条 </span>
+            甲方的物业为城市房屋，不动产权证号：<span tag="input-auto" class="text-limit input-before" extendParam="val14"></span>,房产证号：<span tag="input-auto" class="text-limit input-before" extendParam="val15"></span>，土地证号：<span tag="input-auto" class="text-limit input-before" extendParam="val16"></span>，房屋用途<span tag="input-auto" class="text-limit input-before" extendParam="val17"></span>，房产证（不动产权证）上载明的建筑面积：<span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val18"></span>平方米，
+            (<div class="info-checkbox" extendParam="val19" name="check1" checkmodel="check1"><p type="check"></p>含有产权储藏间或车库</div><div class="info-checkbox" extendParam="val20" name="check1" checkmodel="check1"><p type="check"></p>另送无产权储藏间或车库：</div><span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val21"></span>平方米)该房屋的相关资料以产权登记信息为准。土地证使用权面积：<span tag="input-auto" listen="number" class="text-limit input-before" extendParam="val22"></span>平方米，土地性质：<span tag="input-auto" class="text-limit input-before" extendParam="val23"></span>，如该产权尚需办理<div class="info-checkbox" extendParam="val24" name="part2"><p type="check"></p>继承</div><div class="info-checkbox" extendParam="val25" name="part2"><p type="check"></p>赠与</div><div class="info-checkbox" extendParam="val26" name="part2"><p type="check"></p>离异等完善变更手续的</div>，则甲方应在本合同签订之日起<span class="input-before" listen="number" extendParam="val27" tag="input-auto"></span>个工作日内办理产权转移手续，并承担相关的费用，以使甲方对该房产具备合法的完全处分权。
+        </div>
+        <div class="text-indent">
+            <span>第三条 </span>
+            甲方保证：对该房屋拥有完全、合法的处分权，该房屋可以上市交易并能够将产权转移过户给乙方，同时负责缴清该房出售前的契税和其它相关费用。出售已出租的房屋，出售方应如实将出租情况告知买方;甲方出售已抵押的房屋，应告知买方房屋抵押的事实，同时就解押有关事项协商一致。甲方出售共有房屋应已取得共有权人的书面同意书。如该房屋尚欠契税、因继承、赠与取得而产生的税费、面积补差房款、维修基金等费用，则由甲方补交，本合同另有约定的除外。
+        </div>
+        <div class="text-indent">
+            <span>第四条 </span>
+            房屋附属设施：<span tag="input-auto" class="text-limit input-before" extendParam="val28"></span>
+        </div>
+        <div class="text-indent">
+            <span>第五条</span>
+            该房屋成交价格(含装修和附属设施)为人民币(大写) <span extendParam="val29" systemParam="true" class="text-limit" tag="input-auto"></span>圆(小写:￥<span tag="input-auto" systemParam="dealPrice" class="input-readonly"></span>元)整。
+        </div>
+        <div class="text-indent">
+            <span>第六条 </span>
+            付款方式及手续办理:  
+            <ul>
+                <li>
+                    1.乙方于本合同签订<span class="input-before" listen="number" extendParam="val31" tag="input-auto"></span>日内向甲方支付购房定金人民币(大写)<span tag="input-auto" listen="chinese" extendParam="val32" max="12" class="text-limit input-before"></span>圆；乙方支付购房诚意金的，所交诚意金在本合同签署成立时自动转为定金；甲方需将产权证原件及有关过户资料原件交给丙方保管，丙方出具收件收据签订本合同当日，甲方同意支付人民币(大写)<span tag="input-auto" listen="chinese" extendParam="val33" max="12" class="text-limit input-before"></span>圆整作为交房保证金， 由甲、乙双方指定的第三方监管，此保证金在甲乙双方物业交割完毕且甲乙丙三方无异议当日(周末及节假日除外)，以现金或转账方式打入甲方账户。
+                </li>
+                <li>
+                    2.甲、乙双方同意采用下列第<input type="text" class="text-limit dropdown-item" list="A,B" style="width:40px" extendParam="val34" systemParam="true" readonly="readonly" inputmethod="payment" />种方式支付剩余购房款(已付定金除外):
+                </li>
+                <li name="payment">
+                    <span>A、一次性付款:</span>
+                    <div>
+                        <div class="info-checkbox" extendParam="val35" name="pay" checkmodel="pay"><p type="check"></p>甲、乙双方约定于</div><input type="text" class="text-limit calendar-item" extendParam="val36" style="width:130px" readonly="readonly"/>之前办理过户手续，乙方于办理产权交易过户(即双方签字按手印后)向甲方支付购房款人民币(大写)<span class="input-before" listen="chinese" max="12" extendParam="val37" tag="input-auto"></span>圆(该款项包含房产交易中心监管的房款)。
+                    </div>
+                    <div>
+                        <div class="info-checkbox" extendParam="val38" name="pay" checkmodel="pay"><p type="check"></p></div>若乙方要求该产权暂不过户，只要求先行办理委托公证书，则甲乙双方同意自本合同签订之日起<span class="input-before" listen="number" extendParam="val39" tag="input-auto"></span>工作日内办理委托公证手续，乙方在办理公证当日一次性向甲方支付剩余购房款，本次交易视为完成，公证后若有变故，由乙方自行负责。
+                    </div>
+                </li>
+                <li name="payment">
+                    <span>B、甲方同意乙方申请银行按揭贷款方式支付房款: </span>
+                    <div>
+                        甲乙双方约定于<span class="input-before" listen="number" extendParam="val40" tag="input-auto"></span>日前办理乙方银行按揭贷款面签手续，乙方通过向银行申请按揭贷款方式向甲方支付购房款(不含首付款)人民币(大写)<span class="input-before" listen="chinese" max="12" extendParam="val41" tag="input-auto"></span>圆整 (具体金额以银行审批为准，不足部分由乙方自行补齐)。办理技揭所需费用(包括但不限于评估费、抵押登记费、资料费、担保费、服务费等)由乙方承担，甲、乙双方须积极配合办理相关手续，不得借故拖延，否则视为违约。甲、乙双方需于<div class="info-checkbox" name="loan" checkmodel="loan" extendParam="val42"><p type="check"></p>按揭贷款手续审批通过后</div><div class="info-checkbox" name="loan" checkmodel="loan" extendParam="val43"><p type="check"></p>产权注销抵押完善后</div><span class="input-before" listen="number" extendParam="val44" tag="input-auto"></span>日内办理过户手续，乙方于过户(即双方签字按手印后)向甲方支付首付款(该款项包含房产交易中心监管的房款)人民币(大写）<span class="input-before" listen="chinese" max="12" extendParam="val45" tag="input-auto"></span>圆整。
+                    </div>
+                </li>
+                <li>
+                    3、甲、乙双方约定于<div class="info-checkbox" extendParam="val46" name="receive" checkmodel="receive"><p type="check"></p>甲方收到乙方全部房款</div><div class="info-checkbox" extendParam="val47" name="receive" checkmodel="receive"><p type="check"></p>房屋过户完成后</div><span class="input-before" listen="number" extendParam="val48" tag="input-auto"></span>日内将该房屋钥匙交于乙方。甲方应在交接前结清该房屋的水、电、气、物管等费用，如逾期交房，视为甲方违约，违约金按总房价每日万分之五由甲方支付给乙方。
+                </li>
+            </ul>
+        </div>
+        <div class="text-indent">
+            <span>第七条 </span>
+            户口约定:若该房屋内有户口，甲方承诺于<span class="input-before" listen="number" extendParam="val49" tag="input-auto"></span>日内将该房屋内所有户口迁出，若逾期迁出户口，视为甲方违约，违约金按每日<span class="input-before" listen="number" extendParam="val50" tag="input-auto"></span>元由甲方支付给乙方直至所有户口迁出为止。
+        </div>
+        <div class="text-indent">
+            <span>第八条 </span>
+            如甲方房屋系按揭房或抵押房，经甲、乙双方协商:<div class="info-checkbox" extendParam="val51" name="eight_paid" checkmodel="eight_paid"><p type="check"></p>甲方应于合同签订后</div><span class="input-before" listen="number" extendParam="val52" tag="input-auto"></span>日内还清贷款本息(含赎楼罚息)，(如遇银行原因不能及时提前还贷，则顺延至符合银行提前还贷的时间内)办妥解除抵押手续；<div class="info-checkbox" extendParam="val53" name="eight_paid" checkmodel="eight_paid"><p type="check"></p>乙方自愿出资人民币</div><span class="input-before" listen="number" extendParam="val54" tag="input-auto"></span>元(冲抵购房款)帮助甲方还清贷款(还贷前甲方应办理全权委托公证书(含买卖权)到<span tag="input-auto" class="text-limit input-before" extendParam="val55"></span>方指定人员名下， 公证书交由丁方保管，公证费由<div class="info-checkbox" extendParam="val56" name="part8"><p type="check"></p>甲方支付</div><div class="info-checkbox" extendParam="val57" name="part8"><p type="check"></p>乙方支付</div>，同时甲方同意在办理委托公证当日将婚姻状况原件交由丁方保管，待办理此房过户手续后退还给甲方)。<br />
+            <div class="info-checkbox" extendParam="val58" name="eight_paid" checkmodel="eight_paid"><p type="check"></p>若甲方需委托担保公司赎楼，则须在本合同签订后</div><span class="input-before" listen="number" extendParam="val59" tag="input-auto"></span>日内办理全权委托公证书给担保公司或丁方的指定人员，赎楼所产生的费用(包括但不限于公证费、借款利息、手续费、服务费等相关费用)由<span tag="input-auto" class="text-limit input-before" extendParam="val60"></span>方承担。
+        </div>
+        <div class="text-indent">
+            <span>第九条 </span>
+            丙方为甲、乙双方提供了房产信息咨询、促进买卖双方交易等房产中介居间服务，本合同签署当日，甲方应向丙方支付居间服务费人民币(大写)<span class="input-before" listen="chinese" max="12" extendParam="val61" tag="input-auto"></span>圆整，乙方应向丙方支付居间服务费人民币(大写)<span class="input-before" listen="chinese" max="12" extendParam="val62" tag="input-auto"></span>圆整。<br />
+            若甲、乙双方任何一方违约，均不影响按前述方式支付居间服务费。
+        </div>
+        <div class="text-indent">
+            <span>第十条 </span>
+            经甲、乙双方协商一致，该房屋在办理产权交易过户时产生的所有税费承担方式为:<div class="info-checkbox" extendParam="val63" name="part10_1"><p type="check"></p>乙方承担全部过户税费、</div><div class="info-checkbox" extendParam="val64" name="part10_1"><p type="check"></p>甲乙双方按国家规定各自承担、甲方承担全部过户税费；</div>若在本合同履行过程中因政府部门原因发生税费种类及标准的变化，则由<div class="info-checkbox" extendParam="val65" name="part10_2"><p type="check"></p>买卖双方各自承担；</div><div class="info-checkbox" extendParam="val66" name="part10_2"><p type="check"></p>买方承担；</div><div class="info-checkbox" extendParam="val67" name="part10_2"><p type="check"></p>卖方承担。</div>成交后关于产权交易过户、委托公证代办服务费人民币(大写)<span class="input-before" listen="chinese" max="12" extendParam="val68" tag="input-auto"></span>圆整由乙方支付给丁方；按揭贷款服务费人民币(大写)<span class="input-before" listen="chinese" max="12" extendParam="val69" tag="input-auto"></span>圆整由乙方支付给丙方；如需委托办理其他事项，关于代办内容及代办服务费，另行协议商定。
+            如果房屋需办理产权<div class="info-checkbox" extendParam="val70" name="part10_3"><p type="check"></p>继承</div><div class="info-checkbox" extendParam="val71" name="part10_3"><p type="check"></p>赠与</div><div class="info-checkbox" extendParam="val72" name="part10_3"><p type="check"></p>离异变更</div><div class="info-checkbox" extendParam="val73" name="part10_3"><p type="check"></p>银行解押手续</div>，相关费用由甲方支付给丁方。
+        </div>
+        <div class="text-indent">
+            <span>第十一条 </span>
+            若甲、乙任何一方未在约定期限内履行本合同约定事项和义务，则对方可以解除合同，并追究违约方责任；如甲、乙双方任何一方违约，则守约方有权选择定金罚则主张权利或要求违约方支付等同于该房屋本合同成交价格百分之<span class="input-before" listen="number" extendParam="val74" tag="input-auto"></span>的违约金。甲、乙双方均同意从上述所获定金赔偿中优先支付丙方的居间服务费，余额支付给守约方。甲、乙双方任何一方违约，须支<span class="input-before" listen="number" extendParam="val75" tag="input-auto"></span>元作为违约赔尝金给丙方。
+        </div>
+        <div class="text-indent">
+            <span>第十二条 </span>
+            若因政策或不可抗力原因导致合同无法履行，本合同四方可协商解除合同，互不追责，所收定金退还乙方。已产生的费用各自承担。
+        </div>
+        <div class="text-indent">
+            <span>第十三条 </span>
+            甲、乙双方应及时提供真实、有效、合法的过户、贷款、公证、变更等相关材料并及时配合丙、丁方办理相关手续，如因甲、乙任何一方提供材料不全或不及时缴纳相关费用而造成手续拖延，则由该方承担相应责任。
+        </div>
+        <div class="text-indent">
+            <span>第十四条 </span>
+            在合同履行过程中，若发生争议应协商解决并签订书面补充协议，任何口头承诺均视为无效。协商不成的，可依法向襄阳市樊城区人民法院起诉。
+        </div>
+        <div class="text-indent">
+            <span>第十五条 </span>
+            本合同一式四份，经甲、乙、丙、丁四方签字或盖章后即生效，甲、乙、丙、丁四方各执一份，每份具有同等法律效力。
+        </div>
+        <div class="text-indent">
+            <span>第十六条 </span>
+            其它约定事项（如果以上条放与本约定事项发生冲突，则以本条款为准)：<span extendParam="val76" tag="input-auto" class="text-limit input-before"></span>
+        </div>
+        <ul class="sign font-bold">
+            <li>甲方（或代理人）：</li>
+            <li>乙方（或代理人）：</li>
+            <li>丙方（或代理人）：</li>
+            <li>丁方（或代理人）：</li>
+        </ul>
+        <div class="last-msg">
+            <p>总（分）店：<span systemParam="storeName"></span></p>
+            <ul>
+              <li>房源号：<span systemParam="houseinfoCode"></span></li>
+              <li>客源号：<span systemParam="guestinfoCode"></span></li>  
+              <li>置业顾问：</li>
+              <li>签约时间：</li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="module" src="./XY-MM.js"></script>
+<script type="text/javascript" src="./datepicker.js"></script>
+<script type="text/javascript" src="./dropdown.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser.min.js"></script>
+<script type="text/javascript" src="/datepicker.js"></script>
+<script type="text/javascript" src="/dropdown.js"></script>
+<script type="text/javascript" src="/js/bundle_mm20190409.js"></script> -->
+<!-- <script>
+    (function () {
+      var scriptList = document.getElementsByTagName("script")
+      console.log(scriptList)
+      if(!scriptList[0].src){
+        var host='https://sign2.jjw.com'
+        var host_other="http://sign2.jjw.com:28879"
+        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_mm20190402.js","datepicker.css"]
+        for (let i = 0; i < addrList.length; i++) {
+          if(window.location.host==='localhost:8080'){
+            if(addrList[i].indexOf('bundle')>-1){
+              addrList[i]=host_other+'/'+addrList[i]
+              // addrList[i]='./MM.js'
+            }else{
+              addrList[i]=host_other+'/'+addrList[i]
+            }
+          }else{
+            addrList[i]='/'+addrList[i]
+          }
+          if(addrList[i].indexOf('.css')>-1){
+            var hm = document.createElement("link");
+            hm.rel="stylesheet"
+            hm.href = addrList[i];
+            var s = document.getElementsByTagName("link")[0];
+            s.parentNode.insertBefore(hm,s);
+          }else{
+            var hm = document.createElement("script");
+            hm.src = addrList[i];
+            var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
+            s.parentNode.insertBefore(hm,s);
+          }
+        }
+      }
+    })();
+</script> -->
+</html>

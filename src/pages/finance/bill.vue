@@ -370,7 +370,7 @@
           moneyType: '',
           payMethod: '',
           keyword: '',
-          timeRange: '',
+          timeRange: [],
           payObjType: '',
           cooperation: ''
         },
@@ -454,7 +454,22 @@
     },
     mounted() {
       this.$nextTick(()=>{
-        this.getData()
+        let res=this.getDataList
+        if(res&&(res.route===this.$route.path)){
+          debugger
+          this.list = res.data.page.list
+          this.total = res.data.page.total
+          this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+          let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+          this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.split(',')},{timeRange:[session.query.startTime,session.query.endTime]})
+          // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
+          // this.$
+          this.searchForm.contType = this.searchForm.contType.map(item=>{
+            return Number(item)
+          })
+        }else{
+          this.getData()
+        }
         this.getDictionary()
         this.getMoneyTypes()
         // this.remoteMethod()
@@ -557,6 +572,16 @@
         param.pageSize = this.pageSize
         delete param.contType
         delete param.timeRange
+
+        //点击查询时，缓存筛选条件
+        if(type==='search'){
+          sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:'/Bill',
+            url:'/payInfo/selectPayInfoList',
+            query:param
+          }))
+        }
+
         this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
           res = res.data
           if (res.status === 200) {

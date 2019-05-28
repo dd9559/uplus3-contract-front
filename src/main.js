@@ -86,6 +86,7 @@ Vue.directive("dbClick", {
 });
 
 router.beforeEach((to,from,next)=>{
+  let promiseArr=[]
   let pathList = localStorage.getItem('router')
   store.commit('setPath',pathList?JSON.parse(pathList):[])
 
@@ -102,17 +103,56 @@ router.beforeEach((to,from,next)=>{
 
     })
   }
-
-  if(to.matched.some(record=>record.meta.root)){
-    if(to.path==='/moneyCheck'){
-      to.meta.list=parseInt(to.query.type)===1?['财务','收款审核']:['财务','付款审核']
+  let sessionQuery=Object.create(null)
+  sessionStorage.getItem('sessionQuery')&&(sessionQuery=JSON.parse(sessionStorage.getItem('sessionQuery')))
+  // debugger
+  promiseArr.push(new Promise((resolve,reject)=>{
+    // debugger
+    if(sessionQuery&&(to.path===sessionQuery.path)&&(from.path===sessionQuery.nxetPage)){
+      api.get(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
+        res=res.data
+        if(res.status===200){
+          // debugger
+          store.commit('setDataList',{
+            route:sessionQuery.path,
+            data:res.data
+          })
+          resolve()
+        }
+      }).catch(error=>{
+        reject()
+      })
+    }else{
+      reject()
     }
-    let arr = TOOL.getRouter(to.meta.list,to.fullPath)
-    store.commit('setPath',arr)
+  }))
+
+  promiseArr.push(new Promise((resolve,reject)=>{
+    // debugger
+    if(to.matched.some(record=>record.meta.root)){
+      if(to.path==='/moneyCheck'){
+        to.meta.list=parseInt(to.query.type)===1?['财务','收款审核']:['财务','付款审核']
+      }
+      let arr = TOOL.getRouter(to.meta.list,to.fullPath)
+      store.commit('setPath',arr)
+    }
+    resolve()
+  }))
+
+  Promise.all(promiseArr).then(function () {
     next()
-  }else {
+  }).catch(function(){
+    //判断是否从缓存页面跳转到其他页面，是则存储目标页为nxetPage，否则清空缓存数据
+    if(sessionQuery&&(from.path===sessionQuery.path)){
+      Object.assign(sessionQuery,{nxetPage:to.path})
+      sessionStorage.setItem('sessionQuery',JSON.stringify(sessionQuery))
+    }else{
+      Object.assign(sessionQuery,{nxetPage:''})
+      sessionStorage.removeItem('sessionQuery')
+      store.commit('setDataList',null)
+    }
     next()
-  }
+  })
 })
 
 
