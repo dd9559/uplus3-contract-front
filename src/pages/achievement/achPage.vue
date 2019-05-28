@@ -77,6 +77,7 @@
                     <el-select
                       v-model="scope.row.roleType"
                       placeholder="请选择"
+                      @change="housecli(scope.row.roleType,scope.$index)"
                     >
                       <el-option
                         v-for="item in roleType0"
@@ -370,6 +371,7 @@
                     <el-select
                       v-model="scope.row.roleType"
                       placeholder="请选择"
+                      @change="clentcli(scope.row.roleType0,scope.$index)"
                     >
                       <el-option
                         v-for="item in roleType1"
@@ -905,6 +907,32 @@
     //   achObj: Object //合同详情传过来的对象（首次业绩录入需要用）
     // },
     methods: {
+      unique(arr1) {
+          const res = new Map();
+          return arr1.filter((a) => !res.has(a.roleType) && res.set(a.roleType, 1))
+      },
+      clentcli(val,index){
+        let arr1=JSON.parse(JSON.stringify(this.clientArr))
+            arr1.splice(index,1)
+        for(let i=0;i<arr1.length;i++){
+         if(arr1[i].roleType==this.clientArr[index].roleType){
+           this.$message.error("角色已经存在，请勿重新添加")
+           this.clientArr[index].roleType=''
+           return false;
+         }
+       }
+      },
+      housecli(val,index){
+        let arr1=JSON.parse(JSON.stringify(this.houseArr))
+            arr1.splice(index,1)
+       for(let i=0;i<arr1.length;i++){
+         if(arr1[i].roleType==this.houseArr[index].roleType){
+           this.$message.error("角色已经存在，请勿重新添加")
+           this.houseArr[index].roleType=''
+           return false;
+         }
+       }
+      },
       ammanger(){
         let param={
           contId: this.contractId2,
@@ -1355,6 +1383,16 @@
           this.$message.error("客源至少保留一人");
           return false;
         }
+        var arr1=this.unique(this.houseArr)
+        if(arr1.length<this.houseArr.length){
+          this.$message.error("房源方有重复角色存在，请核实")
+          return
+        }
+        var arr2=this.unique(this.clientArr)
+        if(arr2.length<this.clientArr.length){
+          this.$message.error("客源方有重复角色存在，请核实")
+          return
+        }
         let arr = [],
           roleFlag = true,
           flag = true,
@@ -1450,7 +1488,16 @@
           this.$message.error("客源至少保留一人");
           return false;
         }
-
+        var arr1=this.unique(this.houseArr)
+        if(arr1.length<this.houseArr.length){
+          this.$message.error("房源方有重复角色存在，请核实")
+          return
+        }
+        var arr2=this.unique(this.clientArr)
+        if(arr2.length<this.clientArr.length){
+          this.$message.error("客源方有重复角色存在，请核实")
+          return
+        }
         let arr = [],
           roleFlag = true,
           flag = true,
@@ -1534,6 +1581,16 @@
         }else if(this.houseArr.length != 0 && this.clientArr.length == 0){
           this.$message.error("客源至少保留一人");
           return false;
+        }
+        var arr1=this.unique(this.houseArr)
+        if(arr1.length<this.houseArr.length){
+          this.$message.error("房源方有重复角色存在，请核实")
+          return
+        }
+        var arr2=this.unique(this.clientArr)
+        if(arr2.length<this.clientArr.length){
+          this.$message.error("客源方有重复角色存在，请核实")
+          return
         }
         for(let i=0;i<this.houseArr.length;i++){
           this.houseArr[i].sortNum=i+1
@@ -1654,6 +1711,16 @@
         }else if(this.houseArr.length != 0 && this.clientArr.length == 0){
           this.$message.error("客源至少保留一人");
           return false;
+        }
+        var arr1=this.unique(this.houseArr)
+        if(arr1.length<this.houseArr.length){
+          this.$message.error("房源方有重复角色存在，请核实")
+          return
+        }
+        var arr2=this.unique(this.clientArr)
+        if(arr2.length<this.clientArr.length){
+          this.$message.error("客源方有重复角色存在，请核实")
+          return
         }
         for(let i=0;i<this.houseArr.length;i++){
           this.houseArr[i].sortNum=i+1
@@ -1805,9 +1872,33 @@
       manSure(type) {
         let addhouseArr = [];
         if (this.type == 1) {
-          this.houseArr= this.houseArr.concat(this.addManList);
+          var hflag=true
+          this.addManList.forEach((item,index)=>{
+            for(let i=0;i<this.houseArr.length;i++){
+              if(item.roleType==this.houseArr[i].roleType){
+                  this.$message.error("角色已经存在，请勿重新添加");
+                  hflag=false
+                  return false;
+              }
+            }
+          })
+          if(hflag){
+            this.houseArr= this.houseArr.concat(this.addManList); 
+          }     
         } else {
-          this.clientArr = this.clientArr.concat(this.addManList);
+          var kflag=true
+          this.addManList.forEach((item,index)=>{
+            for(let i=0;i<this.clientArr.length;i++){
+              if(item.roleType==this.clientArr[i].roleType){
+                  this.$message.error("角色已经存在，请勿重新添加");
+                  hflag=false
+                  return false;
+              }
+            }
+          })
+          if(hflag){
+            this.clientArr= this.clientArr.concat(this.addManList); 
+          }
         }
         this.showTips1 = false;
       },
