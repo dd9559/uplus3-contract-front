@@ -83,6 +83,7 @@
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
     import { MIXINS } from "@/assets/js/mixins";
+    var param={}
     export default {
         mixins: [MIXINS],
         data() {
@@ -91,7 +92,7 @@
                 departmentName:'',
                 department: [],
                 keyword: "",
-                searchTime: '',
+                searchTime: [],
                 tableData: [],
                 pageSize: 30,
                 pageNum: 1,
@@ -108,9 +109,25 @@
                  }
             }
         },
-        created() {
+        mounted() {
             this.remoteMethod()
-            this.getLogList()
+            let res=this.getDataList
+            if(res&&(res.route===this.$route.path)){
+
+                this.total = res.data.total
+                this.tableData = res.data.list
+                let session = JSON.parse(sessionStorage.getItem('sessionQuery')).query
+                this.pageSize=session.pageSize,
+                this.pageNum=session.pageNum,
+                this.department=session.deptId,
+                this.depUser=session.depId,
+                this.selectType=session.objectType,
+                this.searchTime = session.startTime?[session.startTime,session.startTime]:[]
+                this.keyword=session.keyword
+                
+            }else{
+                this.getLogList()
+            }
             this.$ajax.get('/api/operation/getObjectType').then(res => {
                 this.type=res.data.data
             })
@@ -149,7 +166,7 @@
             },
             getLogList() {
                 // if(this.power['sign-set-log-query'].state){
-                    let param = {
+                     param = {
                         pageSize: this.pageSize,
                         pageNum: this.pageNum,
                         deptId:this.department,
@@ -187,7 +204,14 @@
             },
             // 查询
             queryFn(){
+                   
                 this.getLogList()
+                 sessionStorage.setItem('sessionQuery',JSON.stringify({
+                        path:'/operationLog',
+                        url:'/operation/getList',
+                        query:param,
+                        methods:"get"
+                    }))
             },
         },
         components:{

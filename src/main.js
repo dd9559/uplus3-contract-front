@@ -179,8 +179,8 @@ router.beforeEach((to,from,next)=>{
     }else{
       Object.assign(sessionQuery,{nxetPage:''})
       sessionStorage.removeItem('sessionQuery')
-      store.commit('setDataList',null)
     }
+    store.commit('setDataList',null)
     next()
   })
 })
