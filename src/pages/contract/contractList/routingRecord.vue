@@ -115,8 +115,6 @@
          :total="total">
         </el-pagination>
       </div>
-      <!-- <iframe src="../static/dealContract.html" frameborder="0" ref='iframeFirst' style="width:900px;height:1000px"></iframe>
-      <span @click='getIframe'>click</span> -->
     </div>
 
     <!-- 确认收款 -->
@@ -212,24 +210,29 @@ export default {
   created() {
     this.getDictionary();//字典
     this.getDepList({
-        // type:'G',
-        pageNum:this.currentPage_,
-        pageSize:this.pageSize_,
-      })
+      // type:'G',
+      pageNum:this.currentPage_,
+      pageSize:this.pageSize_,
+    })
+    debugger
+    let res=this.getDataList
+    if(res&&(res.route===this.$route.path)){
+      this.tableData = res.data.list
+      this.total = res.data.total
+      let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+      this.searchForm = Object.assign({},this.searchForm,session.query)
+      if(session.query.startTime){
+        this.signDate[0]=session.query.startTime
+        this.signDate[1]=session.query.endTime
+      }
+    }
     //结算日期的默认范围改为前月和当月
     let date = new Date();
     this.timeDefaultShow=new Date(date.getFullYear(),date.getMonth(),0)
   },
   methods: {
-    getIframe:function(){
-      let iframebox=this.$refs.iframeFirst
-      // document.query
-      // console.log(iframebox.contentWindow.document.querySelector('#txt1').value)
-      iframebox.contentWindow.document.querySelector('#five_').click()
-
-    },
     //获取分账记录列表
-    getProateNotes(){
+    getProateNotes(type="init"){
       let param = {
         pageNum:this.currentPage,
         pageSize:this.pageSize
@@ -239,6 +242,14 @@ export default {
         param.startTime = this.signDate[0];
         param.endTime = this.signDate[1];
       };
+      if(type==="search"){
+        sessionStorage.setItem('sessionQuery',JSON.stringify({
+          path:'/routingRecord',
+          url:'/separate/account/list',
+          query:param,
+          methods:"get"
+        }))
+      }
       this.$ajax.get('/api/separate/account/list',param).then(res=>{
         res=res.data;
         if(res.status===200){
@@ -255,7 +266,7 @@ export default {
     // 查询
     queryFn() {
       if(this.signDate&&this.signDate.length>1){
-        this.getProateNotes();
+        this.getProateNotes("search");
       }else{
         this.$message({
           message:"请选择时间范围",

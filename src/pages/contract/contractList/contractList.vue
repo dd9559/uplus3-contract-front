@@ -623,7 +623,7 @@ export default {
       })
     },
     //获取合同列表
-    getContractList() {
+    getContractList(type='init') {
       let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
@@ -644,12 +644,14 @@ export default {
 
       delete param.depName
       //console.log(param)
-      sessionStorage.setItem('sessionQuery',JSON.stringify({
-        path:'/contractList',
-        url:'/contract/contractList',
-        query:param,
-        methods:"postJSON"
-      }))
+      if(type==="search"){
+        sessionStorage.setItem('sessionQuery',JSON.stringify({
+          path:'/contractList',
+          url:'/contract/contractList',
+          query:param,
+          methods:"postJSON"
+        }))
+      }
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
@@ -668,7 +670,7 @@ export default {
     // 查询
     queryFn() {
       this.currentPage=1;
-      this.getContractList();
+      this.getContractList("search");
     },
     //佣金比例
     changeRatio(type){

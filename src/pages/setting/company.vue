@@ -484,7 +484,16 @@
     },
     created() {
       this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
-      this.getCompanyList()
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.tableData = res.data.list
+        this.count = res.data.total
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.searchForm = session.query
+        this.searchTime = this.searchForm.startTime?[this.searchForm.startTime,this.searchForm.endTime]:[]
+      }else{
+        this.getCompanyList()
+      }
       this.selectDirectInfo()
       this.initFormList()
       this.getDictionary()
@@ -563,7 +572,7 @@
       /**
        * 获取公司设置列表
        */
-      getCompanyList: function () {
+      getCompanyList: function (type="init") {
         let param = {
           pageSize: this.pageSize,
           pageNum: this.pageNum,
@@ -571,6 +580,17 @@
           endTime: this.searchTime == null ? "" : this.searchTime[1]
         }
         param = Object.assign({},this.searchForm,param)
+
+        //点击查询时，缓存筛选条件
+        if(type==='search'){
+          sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:'/company',
+            url:'/setting/company/list',
+            query:param,
+            methods:"get"
+          }))
+        }
+
         this.$ajax.get('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
@@ -1017,7 +1037,7 @@
         this.getCompanyList()
       },
       queryFn() {
-        this.getCompanyList()
+        this.getCompanyList('search')
       },
       resetFormFn() {
         this.searchForm.storeId = ""
