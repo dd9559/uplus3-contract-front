@@ -592,10 +592,13 @@ export default {
       this.tableData = res.data.list
       this.total = res.data.count
       let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-      this.contractForm = Object.assign({},this.contractForm,session.query,{contTypes:session.query.contTypes.split(',')})
-      this.contractForm.contTypes = this.contractForm.contTypes.map(item=>{
-        return Number(item)
-      })
+      this.contractForm = Object.assign({},this.contractForm,session.query,{contTypes:session.query.contTypes.length>0?session.query.contTypes.split(','):''})
+      if(this.contractForm.contTypes){
+        this.contractForm.contTypes = this.contractForm.contTypes.map(item=>{
+          return Number(item)
+        })
+      }
+      
       this.keyword=session.query.keyword
       if(session.query.beginDate){
         this.signDate[0]=session.query.beginDate

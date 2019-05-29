@@ -2,11 +2,11 @@
 <template>
   <div class="view-container" id="adjustcheck" ref="tableComView">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini" ref="adjustCheckForm">
         <el-form-item label="关键字">
           <el-tooltip effect="dark" content="合同编号/房源编号/客源编号" placement="top">
-            <el-input v-model="adjustForm.keyWord" style="width:150px" clearable placeholder="请输入"></el-input>
+            <el-input v-model="adjustForm.keyword" style="width:150px" clearable placeholder="请输入"></el-input>
           </el-tooltip>
         </el-form-item>
 
@@ -452,7 +452,7 @@
           //   empId: ""
           // }],
           checkState: '',  //审核状态
-          keyWord: ''   //关键字
+          keyword: ''   //关键字
 
         },
         dictionary: {
@@ -685,7 +685,7 @@
       },
 
       // 查询
-      queryFn() {
+      queryFn(type="init") {
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
@@ -708,12 +708,20 @@
               // contractType: this.adjustForm.tradeType,
               depAttr: this.adjustForm.depAttr,
               checkState: this.adjustForm.checkState,
-              keyword: this.adjustForm.keyWord
+              keyword: this.adjustForm.keyword
             }
             if(this.adjustForm.contractTypes.length>0){
               param.contractTypes=this.adjustForm.contractTypes.join(',')
             }else{
               param.contractTypes=''
+            }
+            if(type==="search"){
+              sessionStorage.setItem('sessionQuery',JSON.stringify({
+                path:'/adjustCheck',
+                url:'/commission/updateList',
+                query:param,
+                methods:"get"
+              }))
             }
             //调整佣金审核列表
             this.$ajax
@@ -935,7 +943,23 @@
     },
 
     created() {
-      this.queryFn();
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.tableData = res.data
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.adjustForm = Object.assign({},this.adjustForm,session.query,{contractTypes:session.query.contractTypes.length>0?session.query.contractTypes.split(','):''})
+        if(this.adjustForm.contractTypes){
+          this.adjustForm.contractTypes = this.adjustForm.contractTypes.map(item=>{
+            return Number(item)
+          })
+        }
+        if(session.query.startTime){
+          this.adjustForm.signDate=[session.query.startTime,session.query.endTime]
+          // this.adjustForm.signDate[1]=session.query.endTime
+        }
+      }else{
+        this.queryFn();
+      }
       // this.getDepNameFn();
       this.getDictionary();
       this.getAdmin();

@@ -98,7 +98,7 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" v-if="power['sign-ht-fz-pay'].state" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
+            <el-button type="text" size="medium" v-if="power['sign-ht-fz-pay'].state&&scope.row.flag!=1" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
             <span v-else>-</span>
              <!-- v-if="power['sign-ht-fz-pay'].state" -->
           </template>
@@ -214,7 +214,6 @@ export default {
       pageNum:this.currentPage_,
       pageSize:this.pageSize_,
     })
-    debugger
     let res=this.getDataList
     if(res&&(res.route===this.$route.path)){
       this.tableData = res.data.list
