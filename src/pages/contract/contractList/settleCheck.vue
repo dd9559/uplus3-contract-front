@@ -950,10 +950,12 @@
       if(res&&(res.route===this.$route.path)){
         this.tableData = res.data
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-        this.adjustForm = Object.assign({},this.adjustForm,session.query.contResultVo,{contTypes:session.query.contResultVo.contTypes.split(',')})
-        this.adjustForm.contTypes = this.adjustForm.contTypes.map(item=>{
-          return Number(item)
-        })
+        this.adjustForm = Object.assign({},this.adjustForm,session.query.contResultVo,{contTypes:session.query.contResultVo.contTypes.length>0?session.query.contResultVo.contTypes.split(','):''})
+        if(this.adjustForm.contTypes){
+          this.adjustForm.contTypes = this.adjustForm.contTypes.map(item=>{
+            return Number(item)
+          })
+        }
         if(session.query.contResultVo.beginDate){
           this.adjustForm.signDate=[session.query.contResultVo.beginDate,session.query.contResultVo.endDate]
           // this.adjustForm.signDate[1]=session.query.endTime
