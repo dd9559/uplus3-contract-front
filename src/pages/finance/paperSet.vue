@@ -428,7 +428,6 @@
       // 获取列表
       let res=this.getDataList
       if(res&&(res.route===this.$route.path)){
-        debugger
         this.tableData = res.data
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
         this.propForm = Object.assign({},this.propForm,session.query,{timeRange:[session.query.startTime,session.query.endTime]})

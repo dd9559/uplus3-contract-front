@@ -423,14 +423,12 @@
 
       let res=this.getDataList
       if(res&&(res.route===this.$route.fullPath)){
-        debugger
         this.list = res.data.page.list
         this.total = res.data.page.total
         // this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-        this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.split(',')},{timeRange:session.query.startTime&&[session.query.startTime,session.query.endTime]})
-        // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
-        // this.$
+        this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.length>0?session.query.contTypes.split(','):[]},{timeRange:session.query.startTime&&[session.query.startTime,session.query.endTime]})
+
         this.searchForm.contType = this.searchForm.contType.map(item=>{
           return Number(item)
         })
@@ -456,20 +454,15 @@
           }
         }
       }
-      /*this.$nextTick(()=>{
-        this.tableBox=this.$refs.dataList
-      })*/
-// debugger
+
       let res=this.getDataList
       if(res&&(res.route===to.fullPath)){
-        // debugger
         this.list = res.data.page.list
         this.total = res.data.page.total
         // this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-        this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.split(',')},{timeRange:session.query.startTime&&[session.query.startTime,session.query.endTime]})
-        // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
-        // this.$
+        this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.length>0?session.query.contTypes.split(','):[]},{timeRange:session.query.startTime&&[session.query.startTime,session.query.endTime]})
+
         this.searchForm.contType = this.searchForm.contType.map(item=>{
           return Number(item)
         })

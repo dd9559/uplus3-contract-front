@@ -230,14 +230,12 @@
     },
     mounted() {
       this.$nextTick(()=>{
-        // debugger
         let res=this.getDataList
         if(res&&(res.route===this.$route.path)){
-          // debugger
           this.list = res.data.list
           this.total = res.data.total
           let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-          this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.split(',')},{signTime:session.query.beginDate&&[session.query.beginDate,session.query.endDate]},{collectionTime:session.query.beginProDate&&[session.query.beginProDate,session.query.endProDate]})
+          this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.length>0?session.query.contTypes.split(','):[]},{signTime:session.query.beginDate&&[session.query.beginDate,session.query.endDate]},{collectionTime:session.query.beginProDate&&[session.query.beginProDate,session.query.endProDate]})
           // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
           // this.$
           this.searchForm.contType = this.searchForm.contType.map(item=>{
