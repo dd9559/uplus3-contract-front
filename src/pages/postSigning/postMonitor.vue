@@ -353,7 +353,7 @@
             // 查询
             queryFn() {
                 this.pageNum=1;
-                this.getListData();
+                this.getListData('search');
             },
             // 合同编号弹层
             contractFn(value){
@@ -442,6 +442,17 @@
                     keyword:this.propForm.search,
                     depAttr:this.propForm.depAttr,
                 }
+
+                //点击查询时，缓存筛选条件
+                if(type==='search'){
+                    sessionStorage.setItem('sessionQuery',JSON.stringify({
+                        path:'/postMonitor',
+                        url:'/postSigning/getMonitorContract',
+                        query:paramObj,
+                        methods:'get'
+                    }))
+                }
+
                 this.$ajax.get('/api/postSigning/getMonitorContract',paramObj).then(res=>{
                     res = res.data;
                     if(res.status === 200){
@@ -515,16 +526,38 @@
             },
         },
         mounted() {
-            // 获取城市id
-            this.getAdmin();
-            // 交易步骤
-            this.getTradingSteps();
-            // 部门搜索
-            this.remoteMethod();
-            // 枚举数据查询
-            this.getDictionary();
-            // 列表数据
-            this.getListData();
+            this.$nextTick(()=>{
+              // 获取城市id
+                this.getAdmin();
+                // 交易步骤
+                this.getTradingSteps();
+                // 部门搜索
+                this.remoteMethod();
+                // 枚举数据查询
+                this.getDictionary();
+                let res=this.getDataList
+                if(res&&(res.route===this.$route.path)){
+                    this.tableData.list = res.data.list
+                    this.tableData.total = res.data.total
+                    let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+                    let query = session.query
+                    this.propForm = {
+                        department:'',
+                        departmentS:'',
+                        departmentMo:'',
+                        search: query.keyword,
+                        paper: query.statusResult,
+                        time: query.transFlowCode,
+                        late: query.stepInstanceCode,
+                        lateName: query.stepState,
+                        depAttr:query.depAttr,
+                    }
+                }else{
+                    // 列表数据
+                    this.getListData();
+                }
+            })
+            
         },
         watch:{
             dictionary(newData,oldData){

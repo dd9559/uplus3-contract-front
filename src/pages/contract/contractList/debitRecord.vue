@@ -2,11 +2,11 @@
 <template>
   <div class="view-container" id="debitRecord" ref="tableComView">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini" ref="adjustCheckForm">
         <el-form-item label="关键字">
           <el-tooltip effect="dark" content="打款人/账户/备注/金额" placement="top">
-            <el-input v-model="adjustForm.keyWord" style="width:150px" clearable placeholder="请输入"></el-input>
+            <el-input v-model="adjustForm.keyword" style="width:150px" clearable placeholder="请输入"></el-input>
           </el-tooltip>
         </el-form-item>
 
@@ -182,7 +182,7 @@
 
         <el-table-column label="操作" fixed="right" align="center" min-width="120">
           <template slot-scope="scope">
-            <template v-if="scope.row.status && scope.row.status.value === 2 && power['sign-ht-fz-pay'].state">
+            <template v-if="scope.row.status && scope.row.status.value === 2 && power['sign-ht-fz-pay'].state&&scope.row.flag!=1">
               <el-button type="text" class="curPointer" @click="payAgain(scope.row)">重新打款</el-button>
             </template>
             <span v-else>--</span>
@@ -428,7 +428,7 @@
           inStoreId: '', //分账门店属性
           outStoreAttr: '', //收款门店id
           inStoreAttr: '', //收款门店属性
-          keyWord: '',   //关键字
+          keyword: '',   //关键字
           status:{
             value:'',
             label: ''
@@ -680,7 +680,7 @@
       },
 
       // 查询
-      queryFn() {
+      queryFn(type="init") {
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
@@ -701,9 +701,17 @@
               moneyOutEndTime,
               pageNum: this.pageNum,
               pageSize: this.pageSize,
-              keyword: this.adjustForm.keyWord,
+              keyword: this.adjustForm.keyword,
               status: this.adjustForm.status.value,
               type:  this.adjustForm.type
+            }
+            if(type==="search"){
+              sessionStorage.setItem('sessionQuery',JSON.stringify({
+                path:'/debitRecord',
+                url:'/separate/money/out/list',
+                query:param,
+                methods:"get"
+              }))
             }
             //调整佣金审核列表
             this.$ajax
@@ -950,17 +958,25 @@
         this.getDepList(param,false,'in')
         }
       },
-
-
-
-
-
-
-
     },
-
     created() {
-      this.queryFn();
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.tableData = res.data
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.adjustForm = Object.assign({},this.adjustForm,session.query)
+        this.adjustForm.status={
+          value:this.adjustForm.status,
+          label:''
+        }
+        if(session.query.moneyOutStartTime){
+          this.adjustForm.signDate=[session.query.moneyOutStartTime,session.query.moneyOutEndTime]
+        }
+        this.adjustForm.outStoreId=''
+        this.adjustForm.inStoreId=''
+      }else{
+        this.queryFn();
+      }
       // this.getDepNameFn();
       this.getDictionary();
       this.getDepList({
@@ -970,9 +986,6 @@
       })
       // this.getAdmin();
       // this.remoteMethod()
-
-
-
     },
 
     mounted() {

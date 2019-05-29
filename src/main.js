@@ -108,7 +108,7 @@ router.beforeEach((to,from,next)=>{
   // debugger
   promiseArr.push(new Promise((resolve,reject)=>{
     // debugger
-    if(sessionQuery&&(to.path===sessionQuery.path)&&(from.path===sessionQuery.nxetPage)){
+    if(sessionQuery&&(to.fullPath===sessionQuery.path)&&(from.fullPath===sessionQuery.nxetPage)){
       if(sessionQuery.methods==='get'||!sessionQuery.methods){
         api.get(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
           res=res.data
@@ -125,6 +125,20 @@ router.beforeEach((to,from,next)=>{
         })
       }else if(sessionQuery.methods==='postJSON'){
         api.postJSON(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
+          res=res.data
+          if(res.status===200){
+            // debugger
+            store.commit('setDataList',{
+              route:sessionQuery.path,
+              data:res.data
+            })
+            resolve()
+          }
+        }).catch(error=>{
+          reject()
+        })
+      }else if(sessionQuery.methods==='put'){
+        api.put(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
           res=res.data
           if(res.status===200){
             // debugger
@@ -159,14 +173,14 @@ router.beforeEach((to,from,next)=>{
     next()
   }).catch(function(){
     //判断是否从缓存页面跳转到其他页面，是则存储目标页为nxetPage，否则清空缓存数据
-    if(sessionQuery&&(from.path===sessionQuery.path)){
-      Object.assign(sessionQuery,{nxetPage:to.path})
+    if(sessionQuery&&(from.fullPath===sessionQuery.path)){
+      Object.assign(sessionQuery,{nxetPage:to.fullPath})
       sessionStorage.setItem('sessionQuery',JSON.stringify(sessionQuery))
     }else{
       Object.assign(sessionQuery,{nxetPage:''})
       sessionStorage.removeItem('sessionQuery')
-      store.commit('setDataList',null)
     }
+    store.commit('setDataList',null)
     next()
   })
 })

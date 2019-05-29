@@ -592,10 +592,14 @@ export default {
       this.tableData = res.data.list
       this.total = res.data.count
       let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-      this.contractForm = Object.assign({},this.contractForm,session.query,{contTypes:session.query.contTypes.split(',')})
-      this.contractForm.contTypes = this.contractForm.contTypes.map(item=>{
-        return Number(item)
-      })
+      this.contractForm = Object.assign({},this.contractForm,session.query,{contTypes:session.query.contTypes.length>0?session.query.contTypes.split(','):''})
+      if(this.contractForm.contTypes){
+        this.contractForm.contTypes = this.contractForm.contTypes.map(item=>{
+          return Number(item)
+        })
+      }
+      this.contractForm.dealAgentStoreId=''
+      this.contractForm.dealAgentId=''
       this.keyword=session.query.keyword
       if(session.query.beginDate){
         this.signDate[0]=session.query.beginDate
@@ -623,7 +627,7 @@ export default {
       })
     },
     //获取合同列表
-    getContractList() {
+    getContractList(type='init') {
       let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
@@ -644,12 +648,14 @@ export default {
 
       delete param.depName
       //console.log(param)
-      sessionStorage.setItem('sessionQuery',JSON.stringify({
-        path:'/contractList',
-        url:'/contract/contractList',
-        query:param,
-        methods:"postJSON"
-      }))
+      if(type==="search"){
+        sessionStorage.setItem('sessionQuery',JSON.stringify({
+          path:'/contractList',
+          url:'/contract/contractList',
+          query:param,
+          methods:"postJSON"
+        }))
+      }
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
@@ -668,7 +674,7 @@ export default {
     // 查询
     queryFn() {
       this.currentPage=1;
-      this.getContractList();
+      this.getContractList("search");
     },
     //佣金比例
     changeRatio(type){
