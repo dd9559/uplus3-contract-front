@@ -341,7 +341,11 @@
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:this.$route.path,
             url:'/payInfo/receivables',
-            query:param,
+            query:Object.assign({},param,{
+              dealAgentStoreName:'',
+              dealAgentStoreId: '',
+              dealAgentId: '',
+            }),
             methods:'put'
           }))
         }

@@ -477,7 +477,11 @@
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:this.$route.path,
             url:'/bills',
-            query:param
+            query:Object.assign({},param,{
+              depId:'',
+              empId:'',
+              depIdS:''
+            })
           }))
         }
 

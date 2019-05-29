@@ -584,7 +584,11 @@
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:this.$route.fullPath,
             url:this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList',
-            query:param
+            query:Object.assign({},param,{
+              depName:'',
+              deptId: '',
+              empId: '',
+            })
           }))
         }
 
