@@ -958,8 +958,9 @@
         }
         if(session.query.contResultVo.beginDate){
           this.adjustForm.signDate=[session.query.contResultVo.beginDate,session.query.contResultVo.endDate]
-          // this.adjustForm.signDate[1]=session.query.endTime
         }
+        this.adjustForm.dealAgentStoreId=''
+        this.adjustForm.dealAgentId=''
       }else{
         this.queryFn();
       }

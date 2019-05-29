@@ -955,8 +955,9 @@
         }
         if(session.query.startTime){
           this.adjustForm.signDate=[session.query.startTime,session.query.endTime]
-          // this.adjustForm.signDate[1]=session.query.endTime
         }
+        this.adjustForm.empId=''
+        this.adjustForm.deptId=''
       }else{
         this.queryFn();
       }

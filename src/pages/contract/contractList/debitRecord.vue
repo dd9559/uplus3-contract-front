@@ -701,7 +701,7 @@
               moneyOutEndTime,
               pageNum: this.pageNum,
               pageSize: this.pageSize,
-              keyword: this.adjustForm.keyWord,
+              keyword: this.adjustForm.keyword,
               status: this.adjustForm.status.value,
               type:  this.adjustForm.type
             }
@@ -965,9 +965,15 @@
         this.tableData = res.data
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
         this.adjustForm = Object.assign({},this.adjustForm,session.query)
+        this.adjustForm.status={
+          value:this.adjustForm.status,
+          label:''
+        }
         if(session.query.moneyOutStartTime){
           this.adjustForm.signDate=[session.query.moneyOutStartTime,session.query.moneyOutEndTime]
         }
+        this.adjustForm.outStoreId=''
+        this.adjustForm.inStoreId=''
       }else{
         this.queryFn();
       }

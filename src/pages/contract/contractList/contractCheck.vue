@@ -322,6 +322,8 @@ export default {
           return Number(item)
         })
       }
+      this.contractForm.dealAgentStoreId=''
+      this.contractForm.dealAgentId=''
       this.keyword=session.query.keyword
       if(session.query.beginDate){
         this.signDate[0]=session.query.beginDate

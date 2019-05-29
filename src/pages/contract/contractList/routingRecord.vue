@@ -220,6 +220,8 @@ export default {
       this.total = res.data.total
       let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
       this.searchForm = Object.assign({},this.searchForm,session.query)
+      this.searchForm.outStoreId=''
+      this.searchForm.inStoreId=''
       if(session.query.startTime){
         this.signDate[0]=session.query.startTime
         this.signDate[1]=session.query.endTime
