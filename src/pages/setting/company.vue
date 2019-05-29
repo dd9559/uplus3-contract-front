@@ -491,6 +491,7 @@
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
         this.searchForm = session.query
         this.searchTime = this.searchForm.startTime?[this.searchForm.startTime,this.searchForm.endTime]:[]
+        this.searchForm.storeId = ''
       }else{
         this.getCompanyList()
       }
