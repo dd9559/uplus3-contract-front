@@ -998,7 +998,7 @@
             // 导出excel
             getExcel:function () {
                 this.pageNum = 1;
-                this.getDataList('export');
+                this.getData('export');
                 this.excelCreate('/input/stepAdminExcel',paramObj)
             },
             // 赋值给交易步骤
@@ -1081,13 +1081,13 @@
                 this.pageNum = 1;
                 this.$refs.propForm.resetFields()
                 // this.pageNum = 1;
-                // this.getDataList();
+                // this.getData();
               this.EmployeList = []
             },
             // 查询
             queryFn() {
                 this.pageNum = 1;
-                this.getDataList();
+                this.getData('search');
             },
             // 部门回调
             // departmentChangeFn(){
@@ -1412,7 +1412,7 @@
                     let upId = e.row.id;
                     let downId = this.tableProgress[index-1].id;
                     this.oderStepFn(upId,downId);
-                    // this.getDataList();
+                    // this.getData();
                     // }
                 }
             },
@@ -1447,7 +1447,7 @@
                     if(res.status === 200){
                         this.successMeFn(res.message);
                         this.lateProgressFn();
-                        this.getDataList();
+                        this.getData();
                     }else{
                         this.errMeFn(res.message);
                     }
@@ -1497,7 +1497,7 @@
                             // 接收弹层列表数据刷新
                             this.lateProgressFn();
                             // 列表刷新
-                            this.getDataList();
+                            this.getData();
                             // 成功提示
                             this.successMeFn(res.message);
                             this.replaceShow = false;
@@ -1639,7 +1639,7 @@
                             if(res.status === 200){
                                 this.successMeFn(res.message);
                                 this.lateProgressFn();
-                                this.getDataList();
+                                this.getData();
                                 this.stepsData.show = false;
                             }else{
                                 this.errMeFn(res.message);
@@ -1691,7 +1691,7 @@
                                 }
                                 this.successMeFn(res.message);
                                 this.lateProgressFn();
-                                this.getDataList();
+                                this.getData();
                                 this.stepsData.show = false;
                             }else{
                                 this.errMeFn(res.message);
@@ -1757,7 +1757,7 @@
                             // 接收弹层列表数据刷新
                             this.lateProgressFn();
                             // 列表刷新
-                            this.getDataList();
+                            this.getData();
                             // 成功提示
                             this.successMeFn(res.message);
                             this.adjustShow = false;
@@ -1790,14 +1790,14 @@
             // 分页
             currentChangeFn(e){
                 this.pageNum = e;
-                this.getDataList();
+                this.getData();
             },
             // 接收日期改变的时候
             receivingdateChangeFn(){
                 this.propForm.dateMo = '';
             },
             // 列表数据
-            getDataList(type='init'){
+            getData(type='init'){
                 // if(!this.power['sign-qh-mgr-query'].state){
                 //     this.noPower(this.power['sign-qh-mgr-query'].name);
                 //     return false
@@ -1845,6 +1845,17 @@
                     keyword:this.propForm.search,
                     depAttr:this.propForm.depAttr,
                 }
+
+                //点击查询时，缓存筛选条件
+                if(type==='search'){
+                    sessionStorage.setItem('sessionQuery',JSON.stringify({
+                        path:'/postManage',
+                        url:'/postSigning/getAdminContract',
+                        query:paramObj,
+                        methods:'get'
+                    }))
+                }
+
                 this.$ajax.get('/api/postSigning/getAdminContract',paramObj).then(res=>{
                     res = res.data;
                     if(res.status === 200){
@@ -2010,18 +2021,47 @@
            }
         },
         mounted() {
-            // 获取城市id
-            this.getAdmin();
-            // 贷款银行
-            this.remoteMethodFn();
-            // 部门搜索
-            this.remoteMethod();
-            // 交易步骤
-            this.getTradingSteps();
-            // 枚举数据查询
-            this.getDictionary();
-            // 列表数据
-            this.getDataList();
+            this.$nextTick(()=>{
+               // 获取城市id
+                this.getAdmin();
+                // 贷款银行
+                this.remoteMethodFn();
+                // 部门搜索
+                this.remoteMethod();
+                // 交易步骤
+                this.getTradingSteps();
+                // 枚举数据查询
+                this.getDictionary();
+                let res=this.getDataList
+                if(res&&(res.route===this.$route.path)){
+                    this.tableData.list = res.data.list
+                    this.tableData.total = res.data.total
+                    let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+                    let query = session.query
+                    this.propForm = {
+                        search:query.keyword,
+                        dateMo:query.receiveTimeStar?[query.receiveTimeStar,query.receiveTimeEnd]:query.handleTimeStar?[query.handleTimeStar,query.handleTimeEnd]:'',
+                        dateMoB:'',
+                        region:query.handleTimeStar?1:0,
+                        steps:query.stepInstanceCode,
+                        stepsMo:query.stepState,
+                        process:query.transFlowCode,
+                        timeout:query.isOvertime,
+                        bank:query.stagesBankCode,
+                        range:query.dataRange,
+                        termination:query.statusChange,
+                        lateState:query.statusLaterStage,
+                        commission:query.statusReceiveAmount,
+                        department:'',
+                        departmentS:'',
+                        departmentMo:'',
+                        depAttr:query.depAttr,
+                    }
+                }else{
+                    // 列表数据
+                    this.getData()
+                } 
+            })
         },
     }
 </script>
