@@ -2,11 +2,11 @@
 <template>
   <div class="view-container" id="settlecheck" ref="tableComView">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini">
         <el-form-item label="关键字">
           <el-tooltip effect="dark" content="合同编号/房源编号/客源编号" placement="top">
-            <el-input v-model="adjustForm.keyWord" style="width:150px" clearable placeholder="请输入"></el-input>
+            <el-input v-model="adjustForm.keyword" style="width:150px" clearable placeholder="请输入"></el-input>
           </el-tooltip>
         </el-form-item>
         <el-form-item label="发起日期">
@@ -442,7 +442,7 @@
           //   empId: ""
           // }],
                      //审核状态
-          keyWord: ''   //关键字
+          keyword: ''   //关键字
 
         },
 
@@ -689,7 +689,7 @@
       },
 
       // 查询
-      queryFn() {
+      queryFn(type="init") {
         // console.log(this.power)
         // if(this.power['sign-ht-js-query'].state){
 
@@ -710,7 +710,7 @@
               depAttr: this.adjustForm.depAttr,
               dealAgentStoreId: this.adjustForm.depId,    //this.Form.getDepName.id,
               dealAgentId: this.adjustForm.empId,    //this.Form.getAgentName.empId,
-              keyword: this.adjustForm.keyWord
+              keyword: this.adjustForm.keyword
 
             },
             pageNum: this.pageNum,
@@ -722,6 +722,14 @@
           }else{
            param.contResultVo["contTypes"]=''
           }
+          if(type==="search"){
+              sessionStorage.setItem('sessionQuery',JSON.stringify({
+                path:'/settleCheck',
+                url:'/contract/contResultList',
+                query:param,
+                methods:"postJSON"
+              }))
+            }
             // 结算审核列表
             this.$ajax
             .postJSON("/api/contract/contResultList", param)
@@ -938,7 +946,21 @@
     },
 
     created() {
-      this.queryFn();
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.tableData = res.data
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.adjustForm = Object.assign({},this.adjustForm,session.query.contResultVo,{contTypes:session.query.contResultVo.contTypes.split(',')})
+        this.adjustForm.contTypes = this.adjustForm.contTypes.map(item=>{
+          return Number(item)
+        })
+        if(session.query.contResultVo.beginDate){
+          this.adjustForm.signDate=[session.query.contResultVo.beginDate,session.query.contResultVo.endDate]
+          // this.adjustForm.signDate[1]=session.query.endTime
+        }
+      }else{
+        this.queryFn();
+      }
       // this.getDepNameFn();
       this.getDictionary();
       this.getAdmin();
