@@ -833,7 +833,7 @@
             // 查询
             queryFn() {
                 this.pageNum = 1;
-                this.getListData();
+                this.getListData('search');
                 // console.log('查询');
             },
             // 部门第二版 选择部门
@@ -887,7 +887,7 @@
                 })
             },
             // 获取数据
-            getListData() {
+            getListData(type='init') {
                 this.loadingList = true;
                 let signDateSta = '';
                 let signDateEnd = '';
@@ -897,8 +897,7 @@
                         signDateEnd = TOOL.dateFormat(this.propForm.dateMo[1]);
                     }
                 }
-
-                this.$ajax.get('/api/postSigning/getContract', {
+                let param = {
                     keyword: this.propForm.search,
                     signDateSta,
                     signDateEnd,
@@ -910,7 +909,19 @@
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
                     depAttr:this.propForm.depAttr,
-                }).then((res) => {
+                }
+
+                //点击查询时，缓存筛选条件
+                if(type==='search'){
+                    sessionStorage.setItem('sessionQuery',JSON.stringify({
+                        path:'/postReceive',
+                        url:'/postSigning/getContract',
+                        query:param,
+                        methods:'get'
+                    }))
+                }
+
+                this.$ajax.get('/api/postSigning/getContract',param).then((res) => {
                     res = res.data
                     if (res.status === 200) {
                         this.tableData = res.data;
@@ -972,21 +983,42 @@
             LayerScrollAuto
         },
         mounted() {
-            // 获取城市id
-            this.getAdmin();
-            // 枚举数据查询
-            this.getDictionary();
-            // 贷款银行
-            this.remoteMethodFn();
-            // // 部门搜索
-            // this.regionMethodFn('');
-            // 部门搜索
-            this.remoteMethod();
-            // 后期状态
-            this.getLateState();
-            // 列表数据
-            this.getListData();
-
+            this.$nextTick(()=>{
+                // 获取城市id
+                this.getAdmin();
+                // 枚举数据查询
+                this.getDictionary();
+                // 贷款银行
+                this.remoteMethodFn();
+                // // 部门搜索
+                // this.regionMethodFn('');
+                // 部门搜索
+                this.remoteMethod();
+                // 后期状态
+                this.getLateState();
+                let res=this.getDataList
+                if(res&&(res.route===this.$route.path)){
+                    this.tableData.list = res.data.list
+                    this.tableData.total = res.data.total
+                    let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+                    let query = session.query
+                    this.propForm = {
+                        region: '',
+                        regionS: '',
+                        regionName: '',
+                        regionNameS: '',
+                        search: query.keyword,
+                        paper: query.stagesBankCode,
+                        time: query.transFlowCode,
+                        late: query.statusLaterStage,
+                        dateMo: query.signDateSta?[query.signDateSta,query.signDateEnd]:'',
+                        depAttr:query.depAttr,
+                    }
+                }else{
+                    // 列表数据
+                    this.getListData();
+                }
+            })
         },
         watch: {
             dictionary(newData,oldData){
