@@ -461,7 +461,7 @@
           this.total = res.data.page.total
           this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
           let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-          this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.split(',')},{timeRange:[session.query.startTime,session.query.endTime]})
+          this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.split(',')},{timeRange:session.query.startTime&&[session.query.startTime,session.query.endTime]})
           // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
           // this.$
           this.searchForm.contType = this.searchForm.contType.map(item=>{
@@ -576,7 +576,7 @@
         //点击查询时，缓存筛选条件
         if(type==='search'){
           sessionStorage.setItem('sessionQuery',JSON.stringify({
-            path:'/Bill',
+            path:this.$route.fullPath,
             url:'/payInfo/selectPayInfoList',
             query:param
           }))

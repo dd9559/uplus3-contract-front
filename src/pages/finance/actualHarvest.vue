@@ -230,7 +230,22 @@
     },
     mounted() {
       this.$nextTick(()=>{
-        this.getData()
+        // debugger
+        let res=this.getDataList
+        if(res&&(res.route===this.$route.path)){
+          // debugger
+          this.list = res.data.list
+          this.total = res.data.total
+          let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+          this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.split(',')},{signTime:session.query.beginDate&&[session.query.beginDate,session.query.endDate]},{collectionTime:session.query.beginProDate&&[session.query.beginProDate,session.query.endProDate]})
+          // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
+          // this.$
+          this.searchForm.contType = this.searchForm.contType.map(item=>{
+            return Number(item)
+          })
+        }else{
+          this.getData()
+        }
         // this.remoteMethod()
         this.getDictionary()
         this.getMoneyTypes()
@@ -322,6 +337,17 @@
         delete param.signTime
         delete param.collectionTime
         delete param.contType
+
+        //点击查询时，缓存筛选条件
+        if(type==='search'){
+          sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:this.$route.path,
+            url:'/payInfo/receivables',
+            query:param,
+            methods:'put'
+          }))
+        }
+
         this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
           res = res.data
           if (res.status === 200) {
