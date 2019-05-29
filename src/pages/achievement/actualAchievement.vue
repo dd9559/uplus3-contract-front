@@ -939,7 +939,45 @@ export default {
         pageSize: this.pageSize
     }
     this.getAdmin();//获取当前登录人信息
-    this.getData(this.ajaxParam);
+    this.$nextTick(()=>{
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+               this.selectAchList = res.data.list;
+               this.selectAchList.forEach((item,index)=>{
+                 for(let i=0;i<item.distributions.length;i++){
+                   item.distributions[i].aMoney=(Math.floor(this.mul(item.distributions[i].aMoney,100)))/100
+                 }
+               })
+               this.total = res.data.total;
+              if(res.data.list[0]){
+                   this.countData = res.data.list[0].contractCount;
+              }else {
+                   this.countData = [0, 0, 0, 0];
+            }
+            let session = JSON.parse(sessionStorage.getItem('sessionQuery')).query
+            this.propForm.contractType=session.contractType.split(',')
+            this.propForm.divideType=session.distributionType
+            this.propForm.achType=session.achievementStatus
+            this.propForm.dateMo=session.startTime?[session.startTime,session.endTime]:[]
+            this.propForm.search=session.keyword
+            this.propForm.pageNum=session.currentPage
+            this.propForm.pageSize=session.pageSize
+            debugger
+            this.propForm.joinMethods=session.joinMethods
+            if(this.propForm.contractType[0]!=''){
+              for(let i=0;i<this.propForm.contractType.length;i++){
+                        this.propForm.contractType[i]=Number(this.propForm.contractType[i])
+                  }
+            }else{
+              this.propForm.contractType=[]
+            }
+             this. $nextTick(()=>{
+                this.loading=false;
+             })
+            }else{
+              this.getData(this.ajaxParam);
+            }
+    })
     // 字典初始化
     this.getDictionary();
      //部门初始化
@@ -1185,6 +1223,15 @@ export default {
     }
     this.ajaxParam.pageNum=1;
     this.currentPage=1;
+    let param = JSON.parse(JSON.stringify(this.ajaxParam))
+      // delete param.dealAgentStoreId
+      // delete param.dealAgentId
+      sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:'/actualAchievement',
+            url:'/achievement/selectAchievementList',
+            query:param,
+            methods:'get'
+      }))
     this.getData(this.ajaxParam)
     },
     resetFormFn() {

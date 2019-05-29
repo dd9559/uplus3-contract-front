@@ -282,7 +282,35 @@ export default {
       pageNum: this.currentPage,
       pageSize: this.pageSize
     };
-    this.getData(this.ajaxParam);
+    this.$nextTick(()=>{
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.receivableList = res.data.list;
+        this.total = res.data.total;
+         let session = JSON.parse(sessionStorage.getItem('sessionQuery')).query
+         this.propForm.dateMo = session.startTime?[session.startTime,session.endTime]:[]
+         this.propForm.search=session.keyword
+         this.propForm.contractType=session.contractType.split(',')
+         if(this.propForm.contractType[0]!=''){
+          for(let i=0;i<this.propForm.contractType.length;i++){
+                    this.propForm.contractType[i]=Number(this.propForm.contractType[i])
+              }
+         }else{
+           this.propForm.contractType=[]
+         }
+         
+         this.currentPage=session.pageNum
+         this.pageSize=session.pageSize
+         this.propForm.timeType=session.timeType
+         this.propForm.joinMethods=session.joinMethods
+        // this.propForm = Object.assign({},this.ajaxParam,session.query)
+        this. $nextTick(()=>{
+               this.loading=false;
+            })
+      }else{
+        this.getData(this.ajaxParam);
+      }
+    })
     // 字典初始化
     this.getDictionary();
     //部门初始化
@@ -304,7 +332,6 @@ export default {
         this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
           let data = res.data;
           if (res.status === 200) {
-            console.log("22222222222")
             console.log(data.data.list);
             _that.receivableList = data.data.list;
             // if (data.data.list[0]) {
@@ -349,6 +376,7 @@ export default {
       this.propForm.department=payload.depName*/
     },
     queryFn() {
+      
       // console.log("ssssssssssss");
       // console.log(this.ajaxParam);
       // console.log(this.propForm);
@@ -378,6 +406,15 @@ export default {
       }
       this.ajaxParam.pageNum = 1;
       this.currentPage = 1;
+      let param = JSON.parse(JSON.stringify(this.ajaxParam))
+      delete param.dealAgentStoreId
+      delete param.dealAgentId
+      sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:'/receivableAchievement',
+            url:'/achievement/selectReceiptsList',
+            query:param,
+            methods:'get'
+          }))
       this.getData(this.ajaxParam);
     },
     resetFormFn() {
