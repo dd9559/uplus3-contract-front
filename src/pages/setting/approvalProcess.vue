@@ -846,6 +846,14 @@
                     }
                 }
             }
+        },
+        watch: {
+            dictionary(val){
+                let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+                if(val&&session!=null){
+                    this.setHomeConditionList(this.searchForm.type)
+                }
+            }
         }
     }
 </script>

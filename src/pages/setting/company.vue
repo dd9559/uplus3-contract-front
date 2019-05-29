@@ -1037,6 +1037,7 @@
         this.getCompanyList()
       },
       queryFn() {
+        this.pageNum = 1
         this.getCompanyList('search')
       },
       resetFormFn() {
