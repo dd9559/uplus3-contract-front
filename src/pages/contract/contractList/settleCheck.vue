@@ -967,7 +967,7 @@
       // this.getDepNameFn();
       this.getDictionary();
       // this.getAdmin();
-      this.userMsg=this.getUser
+      this.userMsg=this.getUser.user
       this.remoteMethod();
     },
 

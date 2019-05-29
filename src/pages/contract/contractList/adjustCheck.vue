@@ -965,7 +965,7 @@
       this.getDictionary();
       // this.getAdmin();
       this.remoteMethod()
-      this.userMsg=this.getUser
+      this.userMsg=this.getUser.user
     },
 
     mounted() {
