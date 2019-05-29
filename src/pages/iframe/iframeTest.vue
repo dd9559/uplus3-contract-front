@@ -1,6 +1,6 @@
 <template>
   <div class="iframe-context">
-    <iframe :src="getUrl" frameborder="0" width="870" height="600" id="iframe"></iframe>
+    <!--<iframe :src="getUrl" frameborder="0" width="870" height="600" id="iframe"></iframe>-->
     <span id="checkBtn" @click="check">校验</span>
   </div>
 </template>
@@ -21,11 +21,17 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
         src:'租赁.html'
       }
     },
+    created(){
+      // this.blobPdf()
+    },
     methods:{
       check:function () {
         let iframe=document.querySelector('#iframe')
         // this.dealCheck(iframe.contentWindow)
         iframe.contentWindow.document.querySelector("#submit").click()
+      },
+      blobPdf:function () {
+        let url = `${window.location.host}/api/test/pdfTest`
       }
     },
     computed:{
