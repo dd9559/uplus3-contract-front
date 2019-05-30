@@ -498,6 +498,7 @@
             name:session.query.homeStoreName
           })
         }
+        this.pageNum = session.query.pageNum
       }else{
         this.getCompanyList()
       }
@@ -589,7 +590,7 @@
         param = Object.assign({},this.searchForm,param)
 
         //点击查询时，缓存筛选条件
-        if(type==='search'){
+        if(type==='search'||type==='pagination'){
           if(param.storeId){
             this.homeStoreList.find(item=>{
               if(param.storeId===item.id){
@@ -1056,7 +1057,7 @@
       },
       handleCurrentChange(val) {
         this.pageNum = val
-        this.getCompanyList()
+        this.getCompanyList('pagination')
       },
       queryFn() {
         this.pageNum = 1
