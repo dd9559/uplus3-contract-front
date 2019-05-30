@@ -219,11 +219,11 @@ export default {
   },
   created() {
     this.getDictionary();//字典
-    this.getDepList({
-      // type:'G',
-      pageNum:this.currentPage_,
-      pageSize:this.pageSize_,
-    })
+    // this.getDepList({
+    //   // type:'G',
+    //   pageNum:this.currentPage_,
+    //   pageSize:this.pageSize_,
+    // })
     let res=this.getDataList
     if(res&&(res.route===this.$route.path)){
       this.tableData = res.data.list
@@ -232,38 +232,52 @@ export default {
       this.searchForm = Object.assign({},this.searchForm,session.query)
       delete this.searchForm.pageNum
       this.currentPage=session.query.pageNum
-      // this.searchForm.outStoreId=''
-      // this.searchForm.inStoreId=''
+
+      if(this.searchForm.outStoreAttr){
+        let param = {
+          pageNum:this.currentPage_out,
+          pageSize:this.pageSize_,
+        }
+        param.depAttr=this.searchForm.outStoreAttr===1?"DIRECT":"JOIN"
+        this.getDepList(param,true,"out")
+      }
+      if(this.searchForm.inStoreAttr){
+        let param = {
+          pageNum:this.currentPage_in,
+          pageSize:this.pageSize_,
+        }
+        param.depAttr=this.searchForm.inStoreAttr===1?"DIRECT":"JOIN"
+        this.getDepList(param,true,"in")
+      }
+      if(!this.searchForm.outStoreAttr&&!this.searchForm.inStoreAttr){
+        this.getDepList({
+          // type:'G',
+          pageNum:1,
+          pageSize:this.pageSize_,
+        })
+      }
       if(this.searchForm.checkOutDep.id){
         this.outStoreList.unshift({
           id:this.searchForm.checkOutDep.id,
           name:this.searchForm.checkOutDep.name
         })
-        this.inStoreList.unshift({
-          id:this.searchForm.checkOutDep.id,
-          name:this.searchForm.checkOutDep.name
-        })
       }
       if(this.searchForm.checkInDep.id){
-        this.outStoreList.unshift({
-          id:this.searchForm.checkInDep.id,
-          name:this.searchForm.checkInDep.name
-        })
         this.inStoreList.unshift({
           id:this.searchForm.checkInDep.id,
           name:this.searchForm.checkInDep.name
         })
       }
-      // if(this.searchForm.checkInDep.id){
-      //   this.inStoreList.unshift({
-      //     id:this.searchForm.checkInDep.id,
-      //     name:this.searchForm.checkInDep.name
-      //   })
-      // }
       if(session.query.startTime){
         this.signDate[0]=session.query.startTime
         this.signDate[1]=session.query.endTime
       }
+    }else{
+      this.getDepList({
+        // type:'G',
+        pageNum:1,
+        pageSize:this.pageSize_,
+    })
     }
     //结算日期的默认范围改为前月和当月
     let date = new Date();
@@ -304,7 +318,6 @@ export default {
     },
     //记录选中的门店
     checkOut(data){//分账门店
-    // debugger
       if(data){
         let cell = this.outStoreList.find(item=>item.id===data)
         this.checkOutDep=Object.assign({},this.checkOutDep,{
@@ -347,8 +360,8 @@ export default {
       // this.inStoreList=this.options//收款门店
       this.currentPage_out=1//分账
       this.currentPage_in=1//收款
-      this.total_out=this.firstTotal
-      this.total_in=this.firstTotal
+      // this.total_out=this.firstTotal
+      // this.total_in=this.firstTotal
       this.signDate=[]
       this.outStoreList=[]
       this.inStoreList=[]
@@ -367,36 +380,46 @@ export default {
       this.currentPage = val;
       this.getProateNotes("page");
     },
-    getDepList(param,first=true,type='out'){
+    getDepList(param,first=true,type='other'){
       this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
         res=res.data;
         if(res.status===200){
-          if(this.searchForm.checkOutDep&&this.searchForm.checkOutDep.id||this.searchForm.checkInDep&&this.searchForm.checkInDep.id){
+          let outList = [].concat(res.data.list)
+          let inList = [].concat(res.data.list)
+          if(this.searchForm.checkOutDep&&this.searchForm.checkOutDep.id){
             res.data.list.forEach((element,index) => {
-              if((this.searchForm.checkOutDep&&this.searchForm.checkOutDep.id===element.id)||(this.searchForm.checkInDep&&this.searchForm.checkInDep.id===element.id)){
-                res.data.list.splice(index,1)
+              if(this.searchForm.checkOutDep&&this.searchForm.checkOutDep.id===element.id){
+                outList.splice(index,1)
               }
             });
           }
-          // if(this.searchForm.checkInDep.id){
-          //   res.data.list.forEach((element,index) => {
-          //     if(this.searchForm.checkOutDep.id===element.id){
-          //       res.data.list.splice(index,1)
-          //     }
-          //   });
-          // }
+          if(this.searchForm.checkInDep&&this.searchForm.checkInDep.id){
+            res.data.list.forEach((element,index) => {
+              if(this.searchForm.checkInDep&&this.searchForm.checkInDep.id===element.id){
+                inList.splice(index,1)
+              }
+            });
+          }
           if(first){
-            this.outStoreList=this.outStoreList.concat(res.data.list);
-            this.inStoreList=this.inStoreList.concat(res.data.list);
-            this.options=res.data.list;
-            this.firstTotal=res.data.total;
-            this.total_out=res.data.total
-            this.total_in=res.data.total
+            if(type==="out"){
+              this.outStoreList=this.outStoreList.concat(outList);
+              this.total_out=res.data.total
+            }else if(type==="in"){
+              this.inStoreList=this.inStoreList.concat(inList);
+              this.total_in=res.data.total
+            }else{
+              this.outStoreList=this.outStoreList.concat(outList);
+              this.inStoreList=this.inStoreList.concat(inList);
+              this.total_out=res.data.total
+              this.total_in=res.data.total
+            }
+            // this.options=res.data.list;
+            // this.firstTotal=res.data.total;
           }else{
             if(type==='out'){
               this.outStoreList=res.data.list;
               this.total_out=res.data.total
-            }else{
+            }else if(type==='in'){
               this.inStoreList=res.data.list;
               this.total_in=res.data.total
             }

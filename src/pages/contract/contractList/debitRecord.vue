@@ -846,24 +846,46 @@
       },
 
 
-    getDepList(param,first=true,type='out'){
+    getDepList(param,first=true,type='other'){
       this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
         res=res.data;
         if(res.status===200){
-          if(this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id||this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id){
+          // if(this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id||this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id){
+          //   res.data.list.forEach((element,index) => {
+          //     if((this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id===element.id)||(this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id===element.id)){
+          //       res.data.list.splice(index,1)
+          //     }
+          //   });
+          // }
+          let outList = [].concat(res.data.list)
+          let inList = [].concat(res.data.list)
+          if(this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id){
             res.data.list.forEach((element,index) => {
-              if((this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id===element.id)||(this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id===element.id)){
-                res.data.list.splice(index,1)
+              if(this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id===element.id){
+                outList.splice(index,1)
+              }
+            });
+          }
+          if(this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id){
+            res.data.list.forEach((element,index) => {
+              if(this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id===element.id){
+                inList.splice(index,1)
               }
             });
           }
           if(first){
-            this.outStoreList=this.outStoreList.concat(res.data.list);
-            this.inStoreList=this.inStoreList.concat(res.data.list);
-            this.options=res.data.list;
-            this.firstTotal=res.data.total;
-            this.total_out=res.data.total
-            this.total_in=res.data.total
+            if(type==="out"){
+              this.outStoreList=this.outStoreList.concat(outList);
+              this.total_out=res.data.total
+            }else if(type==="in"){
+              this.inStoreList=this.inStoreList.concat(inList);
+              this.total_in=res.data.total
+            }else{
+              this.outStoreList=this.outStoreList.concat(outList);
+              this.inStoreList=this.inStoreList.concat(inList);
+              this.total_out=res.data.total
+              this.total_in=res.data.total
+            }
           }else{
             if(type==='out'){
               this.outStoreList=res.data.list;
@@ -1040,31 +1062,52 @@
             id:this.adjustForm.checkOutDep.id,
             name:this.adjustForm.checkOutDep.name
           })
-          this.inStoreList.unshift({
-            id:this.adjustForm.checkOutDep.id,
-            name:this.adjustForm.checkOutDep.name
-          })
         }
         if(this.adjustForm.checkInDep.id){
-          this.outStoreList.unshift({
-            id:this.adjustForm.checkInDep.id,
-            name:this.adjustForm.checkInDep.name
-          })
           this.inStoreList.unshift({
             id:this.adjustForm.checkInDep.id,
             name:this.adjustForm.checkInDep.name
+          })
+        }
+
+        if(this.adjustForm.outStoreAttr){
+          let param = {
+            pageNum:this.currentPage_out,
+            pageSize:this.pageSize_,
+          }
+          param.depAttr=this.adjustForm.outStoreAttr===1?"DIRECT":"JOIN"
+          this.getDepList(param,true,"out")
+        }
+        if(this.adjustForm.inStoreAttr){
+          let param = {
+            pageNum:this.currentPage_in,
+            pageSize:this.pageSize_,
+          }
+          param.depAttr=this.adjustForm.inStoreAttr===1?"DIRECT":"JOIN"
+          this.getDepList(param,true,"in")
+        }
+        if(!this.adjustForm.outStoreAttr&&!this.adjustForm.inStoreAttr){
+          this.getDepList({
+            // type:'G',
+            pageNum:1,
+            pageSize:this.pageSize_,
           })
         }
       }else{
         this.queryFn();
+        this.getDepList({
+          // type:'G',
+          pageNum:1,
+          pageSize:this.pageSize_,
+        })
       }
       // this.getDepNameFn();
       this.getDictionary();
-      this.getDepList({
-        type:'G',
-        pageNum:this.currentPage_,
-        pageSize:this.pageSize_,
-      })
+      // this.getDepList({
+      //   type:'G',
+      //   pageNum:this.currentPage_,
+      //   pageSize:this.pageSize_,
+      // })
       // this.getAdmin();
       // this.remoteMethod()
     },
