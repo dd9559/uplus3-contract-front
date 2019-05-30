@@ -807,8 +807,9 @@ export default {
           ? [session.startTime, session.endTime]
           : [];
         this.propForm.search = session.keyword;
-        this.propForm.pageNum = session.currentPage;
-        this.propForm.pageSize = session.pageSize;
+        this.currentPage = session.pageNum;
+        this.pageSize = session.pageSize;
+        debugger
         this.propForm.empName=session.empName
         this.propForm.department=session.department
         this.propForm.joinMethods = session.joinMethods;
@@ -1091,8 +1092,8 @@ export default {
           joinMethods: this.propForm.joinMethods
         };
       }
-      this.ajaxParam.pageNum = 1;
-      this.currentPage = 1;
+      // this.ajaxParam.pageNum = 1;
+      // this.currentPage = 1;
       let param = JSON.parse(JSON.stringify(this.ajaxParam));
       // delete param.dealAgentStoreId
       // delete param.dealAgentId
@@ -1201,7 +1202,7 @@ export default {
       // console.log(`当前页: ${val}`);
       this.ajaxParam.pageNum = val;
       this.currentPage = val;
-      this.getData(this.ajaxParam);
+      this.queryFn();
     },
     skipContDel(value) {
       //进入合同详情

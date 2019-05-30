@@ -123,6 +123,7 @@
                 this.department=session.deptId,
                 this.departmentName=session.departmentName,
                 this.depUser=session.empId,
+                this.pageNum=session.pageNum
                 this.selectType=session.objectType,
                 this.searchTime = session.startTime?[session.startTime,session.startTime]:[]
                 this.keyword=session.keyword,
@@ -172,7 +173,7 @@
             },
             handleCurrentChange (val) {
             this.pageNum = val
-            this.getLogList()
+            this.queryFn()
             },
             getLogList() {
                 // if(this.power['sign-set-log-query'].state){
