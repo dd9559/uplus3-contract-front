@@ -822,7 +822,7 @@ export default {
           this.propForm.contractType = [];
         }
         if(this.propForm.dealAgentId){
-            this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId})
+            this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.searchForm.dealAgentName})
             this.EmployeList.unshift({
               empId:this.propForm.dealAgentId,
               name:this.propForm.empName
@@ -893,7 +893,10 @@ export default {
       /*this.DepList=payload.list
       this.propForm.department=payload.depName*/
     },
-    getData(ajaxParam) {
+    getData(ajaxParam,typeshow,param) {
+      if(typeshow!=1&&param==2){
+        this.currentPage=1
+      }
       this.loading = true;
       let _that = this;
       this.$ajax
@@ -1055,7 +1058,7 @@ export default {
       //     }
       //   });
     },
-    queryFn() {
+    queryFn(typeshow) {
       if (this.propForm.dateMo) {
         this.ajaxParam = {
           dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
@@ -1105,7 +1108,7 @@ export default {
           methods: "get"
         })
       );
-      this.getData(this.ajaxParam);
+      this.getData(this.ajaxParam,typeshow,2);
     },
     resetFormFn() {
       this.ajaxParam = {
@@ -1201,7 +1204,7 @@ export default {
       // console.log(`当前页: ${val}`);
       this.ajaxParam.pageNum = val;
       this.currentPage = val;
-      this.queryFn();
+      this.queryFn(1);
     },
     skipContDel(value) {
       //进入合同详情

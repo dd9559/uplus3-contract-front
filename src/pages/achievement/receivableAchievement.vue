@@ -307,7 +307,7 @@ export default {
            this.propForm.contractType=[]
          }
          if(this.propForm.dealAgentId){
-            this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId})
+            this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.searchForm.dealAgentName})
             this.EmployeList.unshift({
               empId:this.propForm.dealAgentId,
               name:this.propForm.empName
@@ -341,11 +341,14 @@ export default {
         let param = Object.assign({},this.ajaxParam)
         this.excelCreate('/input/exportSettleExcel',param)
     },
-    getData(param) {
+    getData(ajaxParam,typeshow,param) {
+      if(typeshow!=1&&param==2){
+        this.currentPage=1
+      }
        this.loading=true;
        // 实收列表
         let _that = this;
-        this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
+        this.$ajax.get("/api/achievement/selectReceiptsList", ajaxParam).then(res => {
           let data = res.data;
           if (res.status === 200) {
             console.log(data.data.list);
@@ -391,7 +394,7 @@ export default {
       /*this.DepList=payload.list
       this.propForm.department=payload.depName*/
     },
-    queryFn() {
+    queryFn(typeshow) {
       
       // console.log("ssssssssssss");
       // console.log(this.ajaxParam);
@@ -422,8 +425,8 @@ export default {
           joinMethods:this.propForm.joinMethods//合作方式
         };
       }
-      this.ajaxParam.pageNum = 1;
-      this.currentPage = 1;
+      // this.ajaxParam.pageNum = 1;
+      // this.currentPage = 1;
       let param = JSON.parse(JSON.stringify(this.ajaxParam))
       sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:'/receivableAchievement',
@@ -431,7 +434,7 @@ export default {
             query:Object.assign({},param,{empName:this.dep.empName}),
             methods:'get'
           }))
-      this.getData(this.ajaxParam);
+      this.getData(this.ajaxParam,typeshow,2);
     },
     resetFormFn() {
       this.ajaxParam = {
@@ -466,7 +469,7 @@ export default {
     handleCurrentChange(val) {
       this.ajaxParam.pageNum = val;
       this.currentPage = val;
-      this.queryFn();
+      this.queryFn(1);
     },
     // 跳转合同详情
     skipContDel(value) {
