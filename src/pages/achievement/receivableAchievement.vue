@@ -295,11 +295,9 @@ export default {
          this.propForm.dealAgentId=session.dealAgentId
          this.propForm.empName=session.empName
          this.propForm.department=session.department
-<<<<<<< HEAD
-=======
         this.propForm.pageNum = session.pageNum
         this.propForm.pageSize = session.pageSize
->>>>>>> lf
+
          this.propForm.contractType=session.contractType.split(',')
          if(this.propForm.contractType[0]!=''){
           for(let i=0;i<this.propForm.contractType.length;i++){
@@ -308,10 +306,6 @@ export default {
          }else{
            this.propForm.contractType=[]
          }
-<<<<<<< HEAD
-         debugger
-=======
->>>>>>> lf
          if(this.propForm.dealAgentId){
             this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId})
             this.EmployeList.unshift({

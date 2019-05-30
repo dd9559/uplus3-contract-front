@@ -807,14 +807,8 @@ export default {
           ? [session.startTime, session.endTime]
           : [];
         this.propForm.search = session.keyword;
-<<<<<<< HEAD
-        this.propForm.pageNum = session.currentPage;
-        this.propForm.pageSize = session.pageSize;
-=======
         this.currentPage = session.pageNum;
         this.pageSize = session.pageSize;
-        debugger
->>>>>>> lf
         this.propForm.empName=session.empName
         this.propForm.department=session.department
         this.propForm.joinMethods = session.joinMethods;

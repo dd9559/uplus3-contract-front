@@ -467,21 +467,14 @@
             return Number(item)
           })
           if(this.searchForm.empId){
-<<<<<<< HEAD
-            this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId})
-=======
             this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId,empName:this.searchForm.empName})
->>>>>>> lf
             this.EmployeList.unshift({
               empId:this.searchForm.empId,
               name:this.searchForm.empName
             })
             this.getEmploye(this.searchForm.deptId)
           }
-<<<<<<< HEAD
-=======
           this.currentPage=this.searchForm.pageNum
->>>>>>> lf
         }else{
           this.getData()
         }
