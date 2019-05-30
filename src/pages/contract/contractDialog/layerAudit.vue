@@ -280,30 +280,30 @@ export default {
       },
 
       //根据合同编号获取调佣申请弹框的内容
-      getData(){
-        let param = {
-            contractCode: this.contractCode            
-          }
-          this.$ajax         
-          .get("/api/commission/detail", param)
-          .then(res => {
-            console.log(res);
-            let data = res.data;
-            if (res.data.status === 200) {
-              this.layerAudit = data.data
-              this.auditForm.money1 = this.layerAudit.ownerCommission
-              this.auditForm.money2 = this.layerAudit.custCommission
-              this.auditForm.money4 = this.layerAudit.otherCooperationCost
-            }
+      // getData(){
+      //   let param = {
+      //       contractCode: this.contractCode            
+      //     }
+      //     this.$ajax         
+      //     .get("/api/commission/detail", param)
+      //     .then(res => {
+      //       console.log(res);
+      //       let data = res.data;
+      //       if (res.data.status === 200) {
+      //         this.layerAudit = data.data
+      //         this.auditForm.money1 = this.layerAudit.ownerCommission
+      //         this.auditForm.money2 = this.layerAudit.custCommission
+      //         this.auditForm.money4 = this.layerAudit.otherCooperationCost
+      //       }
             
 
-          }).catch(error => {
-              this.$message({
-                message: error,
-                type:"error"
-              })
-          })
-      },
+      //     }).catch(error => {
+      //         this.$message({
+      //           message: error,
+      //           type:"error"
+      //         })
+      //     })
+      // },
 
       myclose: function() {
         this.checkPerson.state=false
@@ -357,13 +357,7 @@ export default {
         }
         if((this.auditForm.textarea).trim() !== ""){
           // if (this.auditForm.money1 !== null && this.auditForm.money2 !== null && this.auditForm.money3 !== null){            
-            if(this.uploadList.length <= 0){
-              this.$message({
-                message:"请您上传附件",
-                type:"warning"
-              });           
-            }
-            else if(parseFloat(this.auditForm.money1) < 0 || parseFloat(this.auditForm.money2) < 0 || parseFloat(this.auditForm.money4) < 0){
+             if(parseFloat(this.auditForm.money1) < 0 || parseFloat(this.auditForm.money2) < 0 || parseFloat(this.auditForm.money4) < 0){
               this.$message({
                 message:'请输入非负数的金额',
                 type:"warning"
@@ -378,7 +372,7 @@ export default {
                 type:"warning"
               });
             }   
-            else if(this.auditForm.money1=='' || this.auditForm.money2=='' || this.auditForm.money4=='') {                             
+            else if(this.auditForm.money1=='' || this.auditForm.money2=='' || ( this.layerAudit.isCooperation&&this.auditForm.money4=='')) {                             
               this.$message({
                 message:'请填写调整后的金额',
                 type:"warning"
@@ -389,7 +383,12 @@ export default {
                 message:'调整后的金额不能都为0',
                 type:"warning"
               });
-            }      
+            } else if(this.uploadList.length <= 0){
+              this.$message({
+                message:"请您上传附件",
+                type:"warning"
+              });           
+            }     
             else{
               this.fullscreenLoading=true
               this.$ajax         
@@ -405,7 +404,7 @@ export default {
                     // }
                     this.$message({
                       message:'已申请',
-                      type:"warning"
+                      type:"success"
                     });
                     setTimeout(() => {                     
                       this.$emit('closeCentCommission')

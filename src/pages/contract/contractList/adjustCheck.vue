@@ -963,11 +963,9 @@
       }
       // this.getDepNameFn();
       this.getDictionary();
-      this.getAdmin();
+      // this.getAdmin();
       this.remoteMethod()
-
-
-
+      this.userMsg=this.getUser.user
     },
 
     mounted() {

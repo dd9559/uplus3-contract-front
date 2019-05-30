@@ -179,7 +179,7 @@
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?1:2)">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+            <el-button type="text" v-if="(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?1:2)">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="120">
@@ -203,7 +203,7 @@
             <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
               <!--<el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>-->
-            <span style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&scope.row.auditId!==userMsg.empId">{{scope.row.auditName}}正在审核</span>
+            <span style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&userMsg&&scope.row.auditId!==userMsg.empId">{{scope.row.auditName}}正在审核</span>
             <el-button type="text"  v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&userMsg&&scope.row.auditId===userMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId<0&&userMsg&&(userMsg.roleId===22||userMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</el-button>
             <!-- </div> -->
           </template>
@@ -310,7 +310,8 @@ export default {
   created() {
     this.getDictionary();//字典
     this.remoteMethod();//部门
-    this.getAdmin();//获取当前登录人信息
+    // this.getAdmin();//获取当前登录人信息
+    this.userMsg=this.getUser.user
     let res=this.getDataList
     if(res&&(res.route===this.$route.path)){
       this.tableData = res.data.list
