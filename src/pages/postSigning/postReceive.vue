@@ -32,6 +32,7 @@
                         v-model="propForm.regionName"
                         v-loadmore="moreEmploye"
                         class="w100"
+                        @change="handleEmpNodeClick"
                         clearable>
                             <el-option
                             v-for="item in EmployeList"
@@ -469,7 +470,7 @@
             // 分页
             currentChangeFn(e) {
                 this.pageNum = e;
-                this.getListData();
+                this.getListData('pagination');
             },
             // 接收
             receiveFn(e) {
@@ -912,11 +913,11 @@
                 }
 
                 //点击查询时，缓存筛选条件
-                if(type==='search'){
+                if(type==='search'||type==='pagination'){
                     sessionStorage.setItem('sessionQuery',JSON.stringify({
                         path:'/postReceive',
                         url:'/postSigning/getContract',
-                        query:param,
+                        query:Object.assign({},param,{empName:this.dep.empName},{depName:this.propForm.regionS}),
                         methods:'get'
                     }))
                 }
@@ -1003,9 +1004,9 @@
                     let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
                     let query = session.query
                     this.propForm = {
-                        region: '',
-                        regionS: '',
-                        regionName: '',
+                        region: query.dealDeptId,
+                        regionS: query.depName,
+                        regionName: query.dealAgentId,
                         regionNameS: '',
                         search: query.keyword,
                         paper: query.stagesBankCode,
@@ -1014,6 +1015,15 @@
                         dateMo: query.signDateSta?[query.signDateSta,query.signDateEnd]:'',
                         depAttr:query.depAttr,
                     }
+                    if(this.propForm.regionName){
+                        this.dep=Object.assign({},this.dep,{id:this.propForm.region,empId:this.propForm.regionName})
+                        this.EmployeList.unshift({
+                            empId:this.propForm.regionName,
+                            name:query.empName
+                        })
+                        this.getEmploye(this.propForm.region)
+                    }
+                    this.tableData.pageNum = query.pageNum
                 }else{
                     // 列表数据
                     this.getListData();
