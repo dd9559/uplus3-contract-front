@@ -46,11 +46,11 @@
           <el-select
             :clearable="true"
             v-loadmore="moreEmploye"
+            @change="handleEmpNodeClick"
             class="margin-left"
             size="small"
             v-model="propForm.dealAgentId"
             placeholder="请选择"
-            v-if='EmployeList.length>0'
           >
             <el-option
               v-for="item in EmployeList"
@@ -801,12 +801,16 @@ export default {
         this.propForm.contractType = session.contractType.split(",");
         this.propForm.divideType = session.distributionType;
         this.propForm.achType = session.achievementStatus;
+        this.propForm.dealAgentStoreId=session.dealAgentStoreId
+        this.propForm.dealAgentId=session.dealAgentId
         this.propForm.dateMo = session.startTime
           ? [session.startTime, session.endTime]
           : [];
         this.propForm.search = session.keyword;
-        this.propForm.pageNum = session.currentPage;
-        this.propForm.pageSize = session.pageSize;
+        this.currentPage = session.pageNum;
+        this.pageSize = session.pageSize;
+        this.propForm.empName=session.empName
+        this.propForm.department=session.department
         this.propForm.joinMethods = session.joinMethods;
         if (this.propForm.contractType[0] != "") {
           for (let i = 0; i < this.propForm.contractType.length; i++) {
@@ -817,6 +821,16 @@ export default {
         } else {
           this.propForm.contractType = [];
         }
+        if(this.propForm.dealAgentId){
+            this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.propForm.dealAgentName})
+            this.EmployeList.unshift({
+              empId:this.propForm.dealAgentId,
+              name:this.propForm.empName
+            })
+            this.getEmploye(this.propForm.dealAgentStoreId)
+          }
+         
+        
         this.$nextTick(() => {
           this.loading = false;
         });
@@ -879,7 +893,10 @@ export default {
       /*this.DepList=payload.list
       this.propForm.department=payload.depName*/
     },
-    getData(ajaxParam) {
+    getData(ajaxParam,typeshow,param) {
+      if(typeshow!=1&&param==2){
+        this.currentPage=1
+      }
       this.loading = true;
       let _that = this;
       this.$ajax
@@ -1041,7 +1058,7 @@ export default {
       //     }
       //   });
     },
-    queryFn() {
+    queryFn(typeshow) {
       if (this.propForm.dateMo) {
         this.ajaxParam = {
           dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
@@ -1056,6 +1073,7 @@ export default {
           endTime: this.propForm.dateMo[1], //结束时间
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
+          department:this.propForm.department,
           pageSize: this.pageSize,
           joinMethods: this.propForm.joinMethods
         };
@@ -1070,13 +1088,14 @@ export default {
           distributionType: this.propForm.divideType, //分成类型
           achievementStatus: this.propForm.achType, //业绩类型
           keyword: this.propForm.search, //关键字
+          department:this.propForm.department,
           pageNum: this.currentPage,
           pageSize: this.pageSize,
           joinMethods: this.propForm.joinMethods
         };
       }
-      this.ajaxParam.pageNum = 1;
-      this.currentPage = 1;
+      // this.ajaxParam.pageNum = 1;
+      // this.currentPage = 1;
       let param = JSON.parse(JSON.stringify(this.ajaxParam));
       // delete param.dealAgentStoreId
       // delete param.dealAgentId
@@ -1085,11 +1104,11 @@ export default {
         JSON.stringify({
           path: "/actualAchievement",
           url: "/achievement/selectAchievementList",
-          query: param,
+          query: Object.assign({},param,{empName:this.dep.empName}),
           methods: "get"
         })
       );
-      this.getData(this.ajaxParam);
+      this.getData(this.ajaxParam,typeshow,2);
     },
     resetFormFn() {
       this.ajaxParam = {
@@ -1111,6 +1130,7 @@ export default {
         department: "", //部门
         dealAgentStoreId: '',
         dealAgentId: '',
+        empName:'',
         departmentDetail: "", //部门详情（员工）
         contractType: "", //合同类型
         divideType: "", //分成类型
@@ -1184,7 +1204,7 @@ export default {
       // console.log(`当前页: ${val}`);
       this.ajaxParam.pageNum = val;
       this.currentPage = val;
-      this.getData(this.ajaxParam);
+      this.queryFn(1);
     },
     skipContDel(value) {
       //进入合同详情

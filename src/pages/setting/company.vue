@@ -479,7 +479,8 @@
         homeStoreTotal:0,
         storePage:1,
         storeTotal:0,
-        temKey: ""
+        temKey: "",
+        homeStoreName:''
       }
     },
     created() {
@@ -491,7 +492,13 @@
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
         this.searchForm = session.query
         this.searchTime = this.searchForm.startTime?[this.searchForm.startTime,this.searchForm.endTime]:[]
-        this.searchForm.storeId = ''
+        if(session.query.storeId){
+          this.homeStoreList.unshift({
+            id:session.query.storeId,
+            name:session.query.homeStoreName
+          })
+        }
+        this.pageNum = session.query.pageNum
       }else{
         this.getCompanyList()
       }
@@ -583,11 +590,18 @@
         param = Object.assign({},this.searchForm,param)
 
         //点击查询时，缓存筛选条件
-        if(type==='search'){
+        if(type==='search'||type==='pagination'){
+          if(param.storeId){
+            this.homeStoreList.find(item=>{
+              if(param.storeId===item.id){
+                this.homeStoreName=item.name
+              }
+            })
+          }
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:'/company',
             url:'/setting/company/list',
-            query:param,
+            query:Object.assign({},param,{homeStoreName:this.homeStoreName}),
             methods:"get"
           }))
         }
@@ -611,6 +625,14 @@
               this.storeList = this.storeList.concat(res.data.list)
               this.storeTotal = res.data.total
             } else {
+              let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+              if(session){
+                res.data.list.some((item,index)=>{
+                  if(session.query.storeId===item.id){
+                    res.data.list.splice(index,1)
+                  }
+                })
+              }
               this.homeStoreList = this.homeStoreList.concat(res.data.list)
               this.homeStoreTotal = res.data.total
             }
@@ -1035,7 +1057,7 @@
       },
       handleCurrentChange(val) {
         this.pageNum = val
-        this.getCompanyList()
+        this.getCompanyList('pagination')
       },
       queryFn() {
         this.pageNum = 1

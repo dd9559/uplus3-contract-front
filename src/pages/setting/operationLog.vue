@@ -9,13 +9,13 @@
                         <el-input v-model="keyword" placeholder="操作内容" size="small"></el-input>
                     </el-form-item>
                     <el-form-item label="部门">
-                         <select-tree :data="DepList" :init="departmentName"   @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+                         <select-tree :data="DepList" :init="departmentName"    @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                         <!-- <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
                             <el-option class="drop-tree" value="">
                             <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                             </el-option>
                         </el-select> -->
-                        <el-select v-model="depUser" :clearable="true" v-loadmore="moreEmploye" filterable placeholder="请选择">
+                        <el-select v-model="depUser" :clearable="true" @change="handleEmpNodeClick" v-loadmore="moreEmploye" filterable placeholder="请选择">
                             <el-option
                                 v-for="item in EmployeList"
                                 :key="item.empId"
@@ -95,6 +95,7 @@
                 searchTime: [],
                 tableData: [],
                 pageSize: 30,
+                empName:'',
                 pageNum: 1,
                 selectType:'',
                 total:0,
@@ -120,11 +121,20 @@
                 this.pageSize=session.pageSize,
                 this.pageNum=session.pageNum,
                 this.department=session.deptId,
-                this.depUser=session.depId,
+                this.departmentName=session.departmentName,
+                this.depUser=session.empId,
                 this.selectType=session.objectType,
                 this.searchTime = session.startTime?[session.startTime,session.startTime]:[]
-                this.keyword=session.keyword
-                
+                this.keyword=session.keyword,
+                this.empName=session.empName
+                if(this.depUser){
+                    this.dep=Object.assign({},this.dep,{id:this.department,empId:this.depUser})
+                    this.EmployeList.unshift({
+                    empId:this.depUser,
+                    name:this.empName
+                    })
+                    this.getEmploye(this.department)
+                }
             }else{
                 this.getLogList()
             }
@@ -162,20 +172,24 @@
             },
             handleCurrentChange (val) {
             this.pageNum = val
-            this.getLogList()
+            this.queryFn(1)
             },
-            getLogList() {
-                // if(this.power['sign-set-log-query'].state){
+            getLogList(typeshow,param) {
+                    if(typeshow!=1&&param==2){
+                        this.pageNum=1
+                    }
                      param = {
                         pageSize: this.pageSize,
                         pageNum: this.pageNum,
                         deptId:this.department,
                         empId:this.depUser,
+                        departmentName:this.departmentName,
                         objectType:this.selectType,
                         startTime:this.searchTime!== null?this.searchTime[0]:'',
                         endTime:this.searchTime!==null?this.searchTime[1]:'',
                         keyword:this.keyword
                     }
+                    
                     this.$ajax.get('/api/operation/getList',param).then(res => {
                         res = res.data
                         if(res.status === 200) {
@@ -203,15 +217,26 @@
                 this.EmployeList = []
             },
             // 查询
-            queryFn(){
-                   
-                this.getLogList()
+            queryFn(typeshow){
+                param = {
+                        pageSize: this.pageSize,
+                        pageNum: this.pageNum,
+                        deptId:this.department,
+                        empId:this.depUser,
+                        departmentName:this.departmentName,
+                        objectType:this.selectType,
+                        startTime:this.searchTime!== null?this.searchTime[0]:'',
+                        endTime:this.searchTime!==null?this.searchTime[1]:'',
+                        keyword:this.keyword
+                    }
                  sessionStorage.setItem('sessionQuery',JSON.stringify({
                         path:'/operationLog',
                         url:'/operation/getList',
-                        query:param,
+                        query:Object.assign({},param,{empName:this.dep.empName}),
                         methods:"get"
                     }))
+                this.getLogList(typeshow,2)
+                
             },
         },
         components:{

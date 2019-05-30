@@ -39,6 +39,7 @@
           <el-form-item prop="empId">
             <el-select
               v-model="propForm.empId"
+              @change="handleEmpNodeClick"
               clearable
               class="w100">
               <el-option
@@ -430,7 +431,16 @@
       if(res&&(res.route===this.$route.path)){
         this.tableData = res.data
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-        this.propForm = Object.assign({},this.propForm,session.query,{timeRange:[session.query.startTime,session.query.endTime]})
+        this.propForm = Object.assign({},this.propForm,session.query,{timeRange:session.query.startTime&&[session.query.startTime,session.query.endTime]})
+        if(this.propForm.empId){
+          this.dep=Object.assign({},this.dep,{id:this.propForm.depId,empId:this.propForm.empId,empName:this.propForm.empName})
+          this.EmployeList.unshift({
+            empId:this.propForm.empId,
+            name:this.propForm.empName
+          })
+          this.getEmploye(this.propForm.depId)
+        }
+        this.pageNum=this.propForm.pageNum
       }else{
         this.getData()
       }
@@ -473,15 +483,11 @@
         }
 
         //点击查询时，缓存筛选条件
-        if(type==='search'){
+        if(type==='search'||type==='pagination'){
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:this.$route.path,
             url:'/bills',
-            query:Object.assign({},param,{
-              depId:'',
-              empId:'',
-              depIdS:''
-            })
+            query:Object.assign({},param,{empName:this.dep.empName})
           }))
         }
 
@@ -561,7 +567,7 @@
       // 分页
       currentChangeFn(e) {
         this.pageNum = e;
-        this.getData();
+        this.getData('pagination');
       },
       // 编号操作
       cellOpera(type, row) {
