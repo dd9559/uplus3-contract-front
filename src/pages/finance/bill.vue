@@ -467,13 +467,14 @@
             return Number(item)
           })
           if(this.searchForm.empId){
-            this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId})
+            this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId,empName:this.searchForm.empName})
             this.EmployeList.unshift({
               empId:this.searchForm.empId,
               name:this.searchForm.empName
             })
             this.getEmploye(this.searchForm.deptId)
           }
+          this.currentPage=this.searchForm.pageNum
         }else{
           this.getData()
         }
@@ -515,9 +516,8 @@
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
         this.currentPage = val
-        this.getData()
+        this.getData('pagination')
       },
       clearDep: function () {
         this.searchForm.deptId = ''
@@ -581,7 +581,7 @@
         delete param.timeRange
 
         //点击查询时，缓存筛选条件
-        if(type==='search'){
+        if(type==='search'||type==='pagination'){
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:this.$route.fullPath,
             url:'/payInfo/selectPayInfoList',
