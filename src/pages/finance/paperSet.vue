@@ -159,7 +159,7 @@
         </el-table-column>
         <el-table-column label="打印次数" align="center" min-width="60">
           <template slot-scope="scope">
-            <span style="cursor: pointer;" @click="getPrintRecord(scope.row)">{{scope.row.printTimes}}</span>
+            <span style="cursor: pointer;color:#409EFF;" @click="getPrintRecord(scope.row)">{{scope.row.printTimes}}</span>
           </template>
         </el-table-column>
         <!--<el-table-column prop="printByName" label="打印人" align="center" min-width="120">
