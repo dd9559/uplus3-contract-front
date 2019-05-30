@@ -61,7 +61,7 @@
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>-->
-          <el-select :clearable="true" class="margin-left" size="small" v-loadmore="moreEmploye" v-model="searchForm.empId" placeholder="请选择">
+          <el-select :clearable="true" class="margin-left" size="small" v-loadmore="moreEmploye" v-model="searchForm.empId" @change="handleEmpNodeClick" placeholder="请选择">
           <!--<el-select :clearable="true" filterable remote :remote-method="test" v-loadmore="moreEmploye" @visible-change="empHandle" class="margin-left" size="small"
                      v-model="searchForm.empId" placeholder="请选择">-->
             <el-option
@@ -466,6 +466,14 @@
           this.searchForm.contType = this.searchForm.contType.map(item=>{
             return Number(item)
           })
+          if(this.searchForm.empId){
+            this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId})
+            this.EmployeList.unshift({
+              empId:this.searchForm.empId,
+              name:this.searchForm.empName
+            })
+            this.getEmploye(this.searchForm.deptId)
+          }
         }else{
           this.getData()
         }
@@ -577,11 +585,7 @@
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:this.$route.fullPath,
             url:'/payInfo/selectPayInfoList',
-            query:Object.assign({},param,{
-              depName: '',
-              deptId: '',
-              empId: '',
-            })
+            query:Object.assign({},param,{empName:this.dep.empName})
           }))
         }
 
