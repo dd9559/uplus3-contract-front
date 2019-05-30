@@ -307,7 +307,7 @@ export default {
            this.propForm.contractType=[]
          }
          if(this.propForm.dealAgentId){
-            this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.searchForm.dealAgentName})
+            this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.propForm.dealAgentName})
             this.EmployeList.unshift({
               empId:this.propForm.dealAgentId,
               name:this.propForm.empName
