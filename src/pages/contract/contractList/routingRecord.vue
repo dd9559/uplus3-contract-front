@@ -24,6 +24,7 @@
             v-loadmore.out="moreDeps"
             :clearable="true"
             @clear="clearOutList('out')"
+            @change="checkOut"
             :loading="loading">
             <el-option
               v-for="item in outStoreList"
@@ -50,6 +51,7 @@
             v-loadmore.in="moreDeps"
             :clearable="true"
             @clear="clearOutList('in')"
+            @change="checkIn"
             :loading="loading">
             <el-option
               v-for="item in inStoreList"
@@ -110,7 +112,7 @@
          class="pagination-info"
          @current-change="handleCurrentChange"
          :current-page="currentPage"
-         :page-size="50"
+         :page-size="pageSize"
          layout="total, prev, pager, next, jumper"
          :total="total">
         </el-pagination>
@@ -175,6 +177,14 @@ export default {
       },
       outStoreList:[],//分账门店
       inStoreList:[],//收款门店
+      checkOutDep:{
+        id:'',
+        name:''
+      },
+      checkInDep:{
+        id:'',
+        name:''
+      },
       currentPage_out:1,//分账
       pageSize_:10,
       currentPage_in:1,//收款
@@ -220,8 +230,36 @@ export default {
       this.total = res.data.total
       let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
       this.searchForm = Object.assign({},this.searchForm,session.query)
-      this.searchForm.outStoreId=''
-      this.searchForm.inStoreId=''
+      delete this.searchForm.pageNum
+      this.currentPage=session.query.pageNum
+      // this.searchForm.outStoreId=''
+      // this.searchForm.inStoreId=''
+      if(this.searchForm.checkOutDep.id){
+        this.outStoreList.unshift({
+          id:this.searchForm.checkOutDep.id,
+          name:this.searchForm.checkOutDep.name
+        })
+        this.inStoreList.unshift({
+          id:this.searchForm.checkOutDep.id,
+          name:this.searchForm.checkOutDep.name
+        })
+      }
+      if(this.searchForm.checkInDep.id){
+        this.outStoreList.unshift({
+          id:this.searchForm.checkInDep.id,
+          name:this.searchForm.checkInDep.name
+        })
+        this.inStoreList.unshift({
+          id:this.searchForm.checkInDep.id,
+          name:this.searchForm.checkInDep.name
+        })
+      }
+      // if(this.searchForm.checkInDep.id){
+      //   this.inStoreList.unshift({
+      //     id:this.searchForm.checkInDep.id,
+      //     name:this.searchForm.checkInDep.name
+      //   })
+      // }
       if(session.query.startTime){
         this.signDate[0]=session.query.startTime
         this.signDate[1]=session.query.endTime
@@ -243,11 +281,11 @@ export default {
         param.startTime = this.signDate[0];
         param.endTime = this.signDate[1];
       };
-      if(type==="search"){
+      if(type==="search"||type==="page"){
         sessionStorage.setItem('sessionQuery',JSON.stringify({
           path:'/routingRecord',
           url:'/separate/account/list',
-          query:param,
+          query:Object.assign({},param,{checkOutDep:this.checkOutDep},{checkInDep:this.checkInDep}),
           methods:"get"
         }))
       }
@@ -264,9 +302,36 @@ export default {
         })
       })
     },
+    //记录选中的门店
+    checkOut(data){//分账门店
+    // debugger
+      if(data){
+        let cell = this.outStoreList.find(item=>item.id===data)
+        this.checkOutDep=Object.assign({},this.checkOutDep,{
+          id:cell.id,
+          name:cell.name
+        })
+      }else{
+        this.checkOutDep.id=''
+        this.checkOutDep.name=''
+      }
+    },
+    checkIn(data){//收款门店
+      if(data){
+        let cell = this.inStoreList.find(item=>item.id===data)
+        this.checkInDep=Object.assign({},this.checkInDep,{
+          id:cell.id,
+          name:cell.name
+        })
+      }else{
+        this.checkInDep.id=''
+        this.checkInDep.name=''
+      }
+    },
     // 查询
     queryFn() {
       if(this.signDate&&this.signDate.length>1){
+        this.pageNum=1
         this.getProateNotes("search");
       }else{
         this.$message({
@@ -278,26 +343,51 @@ export default {
     // 重置
     resetFormFn() {
       TOOL.clearForm(this.searchForm);
-      this.outStoreList=this.options//分账门店
-      this.inStoreList=this.options//收款门店
+      // this.outStoreList=this.options//分账门店
+      // this.inStoreList=this.options//收款门店
       this.currentPage_out=1//分账
       this.currentPage_in=1//收款
       this.total_out=this.firstTotal
       this.total_in=this.firstTotal
       this.signDate=[]
+      this.outStoreList=[]
+      this.inStoreList=[]
+      this.getDepList({
+        // type:'G',
+        pageNum:this.currentPage_,
+        pageSize:this.pageSize_,
+      })
+      this.checkOutDep.id=''
+      this.checkOutDep.name=''
+      this.checkInDep.id=''
+      this.checkInDep.name=''
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
       this.currentPage = val;
-      this.getProateNotes();
+      this.getProateNotes("page");
     },
     getDepList(param,first=true,type='out'){
       this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
         res=res.data;
         if(res.status===200){
+          if(this.searchForm.checkOutDep&&this.searchForm.checkOutDep.id||this.searchForm.checkInDep&&this.searchForm.checkInDep.id){
+            res.data.list.forEach((element,index) => {
+              if((this.searchForm.checkOutDep&&this.searchForm.checkOutDep.id===element.id)||(this.searchForm.checkInDep&&this.searchForm.checkInDep.id===element.id)){
+                res.data.list.splice(index,1)
+              }
+            });
+          }
+          // if(this.searchForm.checkInDep.id){
+          //   res.data.list.forEach((element,index) => {
+          //     if(this.searchForm.checkOutDep.id===element.id){
+          //       res.data.list.splice(index,1)
+          //     }
+          //   });
+          // }
           if(first){
-            this.outStoreList=res.data.list;
-            this.inStoreList=res.data.list;
+            this.outStoreList=this.outStoreList.concat(res.data.list);
+            this.inStoreList=this.inStoreList.concat(res.data.list);
             this.options=res.data.list;
             this.firstTotal=res.data.total;
             this.total_out=res.data.total
@@ -395,6 +485,8 @@ export default {
         pageSize:this.pageSize_,
         depAttr:''
       }
+      this.checkOutDep.id=''
+      this.checkOutDep.name=''
       if(value===1){
         param.depAttr='DIRECT'
       }else if(value===2){
@@ -411,6 +503,8 @@ export default {
         pageSize:this.pageSize_,
         depAttr:''
       }
+      this.checkInDep.id=''
+      this.checkInDep.name=''
       if(value===1){
         param.depAttr='DIRECT'
       }else if(value===2){
@@ -433,7 +527,7 @@ export default {
         }else if(this.searchForm.outStoreAttr===2){
           param.depAttr='JOIN'
         }
-        this.getDepList(param,false,'out')
+        // this.getDepList(param,false,'out')
       }else{
         this.currentPage_in=1;
         let param = {
@@ -447,7 +541,7 @@ export default {
         }else if(this.searchForm.inStoreAttr===2){
           param.depAttr='JOIN'
         }
-        this.getDepList(param,false,'in')
+        // this.getDepList(param,false,'in')
         }
       },
     //确认收款

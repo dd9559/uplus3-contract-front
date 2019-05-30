@@ -63,6 +63,7 @@
             v-loadmore.in="moreDeps"
             :clearable="true"
             @clear="clearOutList('in')"
+            @change="checkIn"
             :loading="loading">
             <el-option
               v-for="item in inStoreList"
@@ -194,8 +195,8 @@
       </el-table>
       <el-pagination
       @current-change="handleCurrentChange"
-      :page-size="tableData.pageSize"
-      :current-page="tableData.pageNum"
+      :page-size="pageSize"
+      :current-page="pageNum"
       layout="total, prev, pager, next, jumper"
       :total="tableData.total"
       v-if="tableData.total > 0"
@@ -440,6 +441,14 @@
         pageSize_:50,
         outStoreList:[],//分账门店
         inStoreList:[],//收款门店
+        checkOutDep:{
+          id:'',
+          name:''
+        },
+        checkInDep:{
+          id:'',
+          name:''
+        },
         currentPage_out:1,//分账
         currentPage_in:1,//收款
         total_out:0,
@@ -677,6 +686,17 @@
           this.currentPage_in=1//收款
           this.total_out=this.firstTotal
           this.total_in=this.firstTotal
+          this.outStoreList=[]
+          this.inStoreList=[]
+          this.getDepList({
+            // type:'G',
+            pageNum:this.currentPage_,
+            pageSize:this.pageSize_,
+          })
+          this.checkOutDep.id=''
+          this.checkOutDep.name=''
+          this.checkInDep.id=''
+          this.checkInDep.name=''
       },
 
       // 查询
@@ -684,6 +704,9 @@
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
+          if(type==="search"){
+            this.pageNum=1
+          }
         this.loadingTable = true;
         // this.adjustForm.signDate = TOOL.dateFormat(this.adjustForm.signDate);
             let moneyOutStartTime = '';
@@ -705,11 +728,11 @@
               status: this.adjustForm.status.value,
               type:  this.adjustForm.type
             }
-            if(type==="search"){
+            if(type==="search"||type==="page"){
               sessionStorage.setItem('sessionQuery',JSON.stringify({
                 path:'/debitRecord',
                 url:'/separate/money/out/list',
-                query:param,
+                query:Object.assign({},param,{checkOutDep:this.checkOutDep},{checkInDep:this.checkInDep}),
                 methods:"get"
               }))
             }
@@ -741,7 +764,32 @@
         // }
 
       },
-
+      //记录选中的门店
+    checkOut(data){//分账门店
+    // debugger
+      if(data){
+        let cell = this.outStoreList.find(item=>item.id===data)
+        this.checkOutDep=Object.assign({},this.checkOutDep,{
+          id:cell.id,
+          name:cell.name
+        })
+      }else{
+        this.checkOutDep.id=''
+        this.checkOutDep.name=''
+      }
+    },
+    checkIn(data){//收款门店
+      if(data){
+        let cell = this.inStoreList.find(item=>item.id===data)
+        this.checkInDep=Object.assign({},this.checkInDep,{
+          id:cell.id,
+          name:cell.name
+        })
+      }else{
+        this.checkInDep.id=''
+        this.checkInDep.name=''
+      }
+    },
       // 双击详情事件
       toDetail(e) {
         let newPage = this.$router.resolve({
@@ -794,7 +842,7 @@
 
       handleCurrentChange(e) {
         this.pageNum = e;
-        this.queryFn();
+        this.queryFn("page");
       },
 
 
@@ -802,9 +850,16 @@
       this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
         res=res.data;
         if(res.status===200){
+          if(this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id||this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id){
+            res.data.list.forEach((element,index) => {
+              if((this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id===element.id)||(this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id===element.id)){
+                res.data.list.splice(index,1)
+              }
+            });
+          }
           if(first){
-            this.outStoreList=res.data.list;
-            this.inStoreList=res.data.list;
+            this.outStoreList=this.outStoreList.concat(res.data.list);
+            this.inStoreList=this.inStoreList.concat(res.data.list);
             this.options=res.data.list;
             this.firstTotal=res.data.total;
             this.total_out=res.data.total
@@ -903,6 +958,8 @@
         pageSize:this.pageSize_,
         depAttr:''
       }
+      this.checkOutDep.id=''
+      this.checkOutDep.name=''
       if(value===1){
         param.depAttr='DIRECT'
       }else if(value===2){
@@ -919,6 +976,8 @@
         pageSize:this.pageSize_,
         depAttr:''
       }
+      this.checkInDep.id=''
+      this.checkInDep.name=''
       if(value===1){
         param.depAttr='DIRECT'
       }else if(value===2){
@@ -941,7 +1000,7 @@
         }else if(this.adjustForm.outStoreAttr===2){
           param.depAttr='JOIN'
         }
-        this.getDepList(param,false,'out')
+        // this.getDepList(param,false,'out')
       }else{
         this.currentPage_in=1;
         let param = {
@@ -955,7 +1014,7 @@
         }else if(this.adjustForm.inStoreAttr===2){
           param.depAttr='JOIN'
         }
-        this.getDepList(param,false,'in')
+        // this.getDepList(param,false,'in')
         }
       },
     },
@@ -972,8 +1031,30 @@
         if(session.query.moneyOutStartTime){
           this.adjustForm.signDate=[session.query.moneyOutStartTime,session.query.moneyOutEndTime]
         }
-        this.adjustForm.outStoreId=''
-        this.adjustForm.inStoreId=''
+        delete this.adjustForm.pageNum
+        this.pageNum=session.query.pageNum
+        // this.adjustForm.outStoreId=''
+        // this.adjustForm.inStoreId=''
+        if(this.adjustForm.checkOutDep.id){
+          this.outStoreList.unshift({
+            id:this.adjustForm.checkOutDep.id,
+            name:this.adjustForm.checkOutDep.name
+          })
+          this.inStoreList.unshift({
+            id:this.adjustForm.checkOutDep.id,
+            name:this.adjustForm.checkOutDep.name
+          })
+        }
+        if(this.adjustForm.checkInDep.id){
+          this.outStoreList.unshift({
+            id:this.adjustForm.checkInDep.id,
+            name:this.adjustForm.checkInDep.name
+          })
+          this.inStoreList.unshift({
+            id:this.adjustForm.checkInDep.id,
+            name:this.adjustForm.checkInDep.name
+          })
+        }
       }else{
         this.queryFn();
       }

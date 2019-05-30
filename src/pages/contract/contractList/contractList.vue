@@ -53,7 +53,7 @@
           <select-tree :data="DepList" :init="contractForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
         </el-form-item>
         <el-form-item>
-          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
+          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" @change="handleEmpNodeClick" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -598,12 +598,23 @@ export default {
           return Number(item)
         })
       }
-      this.contractForm.dealAgentStoreId=''
-      this.contractForm.dealAgentId=''
+      // this.contractForm.dealAgentStoreId=''
+      // this.contractForm.dealAgentId=''
+      delete this.contractForm.keyword
+      delete this.contractForm.pageNum
       this.keyword=session.query.keyword
+      this.currentPage=session.query.pageNum
       if(session.query.beginDate){
         this.signDate[0]=session.query.beginDate
         this.signDate[1]=session.query.endDate
+      }
+      if(this.contractForm.dealAgentId){
+        this.dep=Object.assign({},this.dep,{id:this.contractForm.dealAgentStoreId,empId:this.contractForm.dealAgentId,empName:this.contractForm.empName})
+        this.EmployeList.unshift({
+          empId:this.contractForm.dealAgentId,
+          name:this.contractForm.empName
+        })
+        this.getEmploye(this.contractForm.dealAgentStoreId)
       }
     }else{
       this.getContractList();//合同列表
@@ -646,13 +657,13 @@ export default {
         param.contTypes=''
       }
 
-      delete param.depName
+      // delete param.depName
       //console.log(param)
-      if(type==="search"){
+      if(type==="search"||type==="page"){
         sessionStorage.setItem('sessionQuery',JSON.stringify({
           path:'/contractList',
           url:'/contract/contractList',
-          query:param,
+          query:Object.assign({},param,{empName:this.dep.empName}),
           methods:"postJSON"
         }))
       }
@@ -817,7 +828,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getContractList();
+      this.getContractList("page");
     },
     //新增合同
     toAddcontract(command) {

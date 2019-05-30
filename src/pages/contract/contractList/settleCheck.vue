@@ -43,8 +43,7 @@
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> -->
           <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
-                     v-model="adjustForm.empId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="adjustForm.dealAgentId" @change="handleEmpNodeClick" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -431,8 +430,8 @@
           depAttr: '', //合作方式
           examineState:'',
           depName:'',
-          depId: '',
-          empId: '',
+          dealAgentStoreId: '',
+          dealAgentId: '',
           // getDepName: [{
           //   name: "全部",
           //   id: ""
@@ -696,7 +695,9 @@
           this.loadingTable = true;
           let beginDate;
           let endDate;
-
+          if(type==="search"){
+            this.pageNum=1
+          }
           if(this.adjustForm.signDate && this.adjustForm.signDate.length === 2){
               beginDate = TOOL.dateFormat(this.adjustForm.signDate[0]);
               endDate = TOOL.dateFormat(this.adjustForm.signDate[1]);
@@ -708,8 +709,9 @@
               examineState: this.adjustForm.examineState,    //this.examineState
               // contractType: this.adjustForm.contTypes,    //this.adjustForm.contType.key,
               depAttr: this.adjustForm.depAttr,
-              dealAgentStoreId: this.adjustForm.depId,    //this.Form.getDepName.id,
-              dealAgentId: this.adjustForm.empId,    //this.Form.getAgentName.empId,
+              dealAgentStoreId: this.adjustForm.dealAgentStoreId, 
+              depName:this.adjustForm.depName,   //this.Form.getDepName.id,
+              dealAgentId: this.adjustForm.dealAgentId,    //this.Form.getAgentName.empId,
               keyword: this.adjustForm.keyword
 
             },
@@ -722,7 +724,8 @@
           }else{
            param.contResultVo["contTypes"]=''
           }
-          if(type==="search"){
+          if(type==="search"||type==="page"){
+              param.contResultVo.empName=this.dep.empName
               sessionStorage.setItem('sessionQuery',JSON.stringify({
                 path:'/settleCheck',
                 url:'/contract/contResultList',
@@ -910,24 +913,24 @@
 
       handleCurrentChange(e) {
         this.pageNum = e;
-        this.queryFn();
+        this.queryFn("page");
       },
 
 
       depHandleClick(data) {
         // this.getEmploye(data.depId)
-        this.adjustForm.depId=data.depId
+        this.adjustForm.dealAgentStoreId=data.depId
         this.adjustForm.depName=data.name
-        this.adjustForm.empId = ''
+        this.adjustForm.dealAgentId = ''
 
         this.handleNodeClick(data)
       },
 
       clearDep:function () {
-        this.adjustForm.depId=''
+        this.adjustForm.dealAgentStoreId=''
         this.adjustForm.depName=''
         // this.EmployeList=[]
-        this.adjustForm.empId=''
+        this.adjustForm.dealAgentId=''
         this.clearSelect()
       },
 
@@ -956,11 +959,21 @@
             return Number(item)
           })
         }
+        delete this.adjustForm.pageNum
+        this.pageNum=session.query.contResultVo.pageNum
         if(session.query.contResultVo.beginDate){
           this.adjustForm.signDate=[session.query.contResultVo.beginDate,session.query.contResultVo.endDate]
         }
-        this.adjustForm.dealAgentStoreId=''
-        this.adjustForm.dealAgentId=''
+        // this.adjustForm.dealAgentStoreId=''
+        // this.adjustForm.dealAgentId=''
+        if(this.adjustForm.dealAgentId){
+          this.dep=Object.assign({},this.dep,{id:this.adjustForm.dealAgentStoreId,empId:this.adjustForm.dealAgentId,empName:this.adjustForm.empName})
+          this.EmployeList.unshift({
+            empId:this.adjustForm.dealAgentId,
+            name:this.adjustForm.empName
+          })
+          this.getEmploye(this.adjustForm.dealAgentStoreId)
+        }
       }else{
         this.queryFn();
       }

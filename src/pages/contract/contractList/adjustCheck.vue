@@ -43,8 +43,7 @@
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> -->
           <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
-                     v-model="adjustForm.empId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="adjustForm.empId" @change="handleEmpNodeClick" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -689,7 +688,9 @@
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
-
+          if(type==='search'){
+            this.pageNum=1
+          }
           this.loadingTable = true;
           let startTime = '';
           let endTime = '';
@@ -702,6 +703,7 @@
               pageNum: this.pageNum,
               pageSize: this.pageSize,
               deptId: this.adjustForm.depId,
+              depName:this.adjustForm.depName,
               empId: this.adjustForm.empId,
               startTime,
               endTime,
@@ -715,11 +717,11 @@
             }else{
               param.contractTypes=''
             }
-            if(type==="search"){
+            if(type==="search"||type==="page"){
               sessionStorage.setItem('sessionQuery',JSON.stringify({
                 path:'/adjustCheck',
                 url:'/commission/updateList',
-                query:param,
+                query:Object.assign({},param,{empName:this.dep.empName}),
                 methods:"get"
               }))
             }
@@ -906,7 +908,7 @@
 
       handleCurrentChange(e) {
         this.pageNum = e;
-        this.queryFn();
+        this.queryFn("page");
       },
 
 
@@ -953,11 +955,21 @@
             return Number(item)
           })
         }
+        delete this.adjustForm.pageNum
+        this.pageNum=session.query.pageNum
         if(session.query.startTime){
           this.adjustForm.signDate=[session.query.startTime,session.query.endTime]
         }
-        this.adjustForm.empId=''
-        this.adjustForm.deptId=''
+        if(this.adjustForm.empId){
+        this.dep=Object.assign({},this.dep,{id:this.adjustForm.deptId,empId:this.adjustForm.empId,empName:this.adjustForm.empName})
+        this.EmployeList.unshift({
+          empId:this.adjustForm.empId,
+          name:this.adjustForm.empName
+        })
+        this.getEmploye(this.adjustForm.deptId)
+      }
+        // this.adjustForm.empId=''
+        // this.adjustForm.deptId=''
       }else{
         this.queryFn();
       }
