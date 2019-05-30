@@ -354,7 +354,6 @@
             // 查询
             queryFn() {
                 this.pageNum=1;
-                console.log();
                 this.getListData('search');
             },
             // 合同编号弹层
@@ -555,7 +554,7 @@
                         depAttr:query.depAttr,
                     }
                     if(this.propForm.departmentMo){
-                        this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo})
+                        this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo,empName:query.empName})
                         this.EmployeList.unshift({
                             empId:this.propForm.departmentMo,
                             name:query.empName
