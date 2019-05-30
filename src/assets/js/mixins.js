@@ -157,7 +157,10 @@ const MIXINS = {
     },
     //员工树结构选择操作
     handleEmpNodeClick(data) {
-      let cell = this.EmployeList.find(item=>item.empId===data)
+      let cell = {empId:'',name:''}
+      if(data){
+        cell = this.EmployeList.find(item=>item.empId===data)
+      }
       this.dep=Object.assign({},this.dep,{
         empId:cell.empId,
         empName:cell.name
