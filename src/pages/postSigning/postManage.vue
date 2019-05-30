@@ -163,6 +163,7 @@
                         v-model="propForm.departmentMo"
                          v-loadmore="moreEmploye"
                         clearable
+                        @change="handleEmpNodeClick"
                         class="w100">
                             <el-option
                             v-for="item in EmployeList"
@@ -1790,7 +1791,7 @@
             // 分页
             currentChangeFn(e){
                 this.pageNum = e;
-                this.getData();
+                this.getData('pagination');
             },
             // 接收日期改变的时候
             receivingdateChangeFn(){
@@ -1847,11 +1848,11 @@
                 }
 
                 //点击查询时，缓存筛选条件
-                if(type==='search'){
+                if(type==='search'||type==='pagination'){
                     sessionStorage.setItem('sessionQuery',JSON.stringify({
                         path:'/postManage',
                         url:'/postSigning/getAdminContract',
-                        query:paramObj,
+                        query:Object.assign({},paramObj,{empName:this.dep.empName},{depName:this.propForm.departmentS}),
                         methods:'get'
                     }))
                 }
@@ -2052,11 +2053,20 @@
                         termination:query.statusChange,
                         lateState:query.statusLaterStage,
                         commission:query.statusReceiveAmount,
-                        department:'',
-                        departmentS:'',
-                        departmentMo:'',
+                        department:query.dealDeptId,
+                        departmentS:query.depName,
+                        departmentMo:query.dealAgentId,
                         depAttr:query.depAttr,
                     }
+                    if(this.propForm.departmentMo){
+                        this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo})
+                        this.EmployeList.unshift({
+                            empId:this.propForm.departmentMo,
+                            name:query.empName
+                        })
+                        this.getEmploye(this.propForm.department)
+                    }
+                    this.tableData.pageNum = query.pageNum
                 }else{
                     // 列表数据
                     this.getData()

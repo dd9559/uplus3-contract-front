@@ -91,6 +91,7 @@
                         v-model="propForm.departmentMo"
                         v-loadmore="moreEmploye"
                         clearable
+                        @change="handleEmpNodeClick"
                         class="w100">
                             <el-option
                             v-for="item in EmployeList"
@@ -353,6 +354,7 @@
             // 查询
             queryFn() {
                 this.pageNum=1;
+                console.log();
                 this.getListData('search');
             },
             // 合同编号弹层
@@ -393,10 +395,10 @@
                 return TOOL.dateFormat(val);
             },
             // 分页
-            currentChangeFn(e){
-                this.pageNum = e;
-                this.getListData();
-            },
+            // currentChangeFn(e){
+            //     this.pageNum = e;
+            //     this.getListData();
+            // },
             // 经纪人
             agentFn(s,t){
                 if(!!s && !!t){
@@ -444,11 +446,11 @@
                 }
 
                 //点击查询时，缓存筛选条件
-                if(type==='search'){
+                if(type==='search'||type==='pagination'){
                     sessionStorage.setItem('sessionQuery',JSON.stringify({
                         path:'/postMonitor',
                         url:'/postSigning/getMonitorContract',
-                        query:paramObj,
+                        query:Object.assign({},paramObj,{empName:this.dep.empName},{depName:this.propForm.departmentS}),
                         methods:'get'
                     }))
                 }
@@ -471,7 +473,7 @@
             // 分页
             currentChangeFn(e){
                 this.pageNum = e;
-                this.getListData();
+                this.getListData('pagination');
             },
             // 交易步骤获取数据
             getTradingSteps(){
@@ -542,9 +544,9 @@
                     let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
                     let query = session.query
                     this.propForm = {
-                        department:'',
-                        departmentS:'',
-                        departmentMo:'',
+                        department:query.dealDeptId,
+                        departmentS:query.depName,
+                        departmentMo:query.dealAgentId,
                         search: query.keyword,
                         paper: query.statusResult,
                         time: query.transFlowCode,
@@ -552,6 +554,15 @@
                         lateName: query.stepState,
                         depAttr:query.depAttr,
                     }
+                    if(this.propForm.departmentMo){
+                        this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo})
+                        this.EmployeList.unshift({
+                            empId:this.propForm.departmentMo,
+                            name:query.empName
+                        })
+                        this.getEmploye(this.propForm.department)
+                    }
+                    this.tableData.pageNum = query.pageNum
                 }else{
                     // 列表数据
                     this.getListData();
