@@ -39,7 +39,7 @@
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>-->
-          <el-select :clearable="true" v-loadmore="moreEmploye" size="small" class="margin-left" v-model="searchForm.dealAgentId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" size="small" class="margin-left" @change="handleEmpNodeClick" v-model="searchForm.dealAgentId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -241,6 +241,15 @@
           this.searchForm.contType = this.searchForm.contType.map(item=>{
             return Number(item)
           })
+          if(this.searchForm.dealAgentId){
+            this.dep=Object.assign({},this.dep,{id:this.searchForm.dealAgentStoreId,empId:this.searchForm.dealAgentId,empName:this.searchForm.dealAgentName})
+            this.EmployeList.unshift({
+              empId:this.searchForm.dealAgentId,
+              name:this.searchForm.dealAgentName
+            })
+            this.getEmploye(this.searchForm.dealAgentStoreId)
+          }
+          this.currentPage=this.searchForm.pageNum
         }else{
           this.getData()
         }
@@ -277,7 +286,7 @@
       },
       handleCurrentChange:function (val) {
         this.currentPage = val
-        this.getData()
+        this.getData('pagination')
       },
       initDepList:function (val) {
         if(!val){
@@ -337,14 +346,15 @@
         delete param.contType
 
         //点击查询时，缓存筛选条件
-        if(type==='search'){
+        if(type==='search'||type==='pagination'){
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:this.$route.path,
             url:'/payInfo/receivables',
             query:Object.assign({},param,{
-              dealAgentStoreName:'',
-              dealAgentStoreId: '',
-              dealAgentId: '',
+              /*dealAgentStoreName:this.dep.name,
+              dealAgentStoreId: this.dep.id,
+              dealAgentId: this.dep.empId,*/
+              dealAgentName:this.dep.empName
             }),
             methods:'put'
           }))

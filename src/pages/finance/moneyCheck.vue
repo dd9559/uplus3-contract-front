@@ -51,7 +51,7 @@
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>-->
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" @change="handleEmpNodeClick" v-model="searchForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -432,6 +432,15 @@
         this.searchForm.contType = this.searchForm.contType.map(item=>{
           return Number(item)
         })
+        if(this.searchForm.empId){
+          this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId,empName:this.searchForm.empName})
+          this.EmployeList.unshift({
+            empId:this.searchForm.empId,
+            name:this.searchForm.empName
+          })
+          this.getEmploye(this.searchForm.deptId)
+        }
+        this.currentPage=this.searchForm.pageNum
       }else{
         this.getData()
       }
@@ -466,6 +475,15 @@
         this.searchForm.contType = this.searchForm.contType.map(item=>{
           return Number(item)
         })
+        if(this.searchForm.empId){
+          this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId,empName:this.searchForm.empName})
+          this.EmployeList.unshift({
+            empId:this.searchForm.empId,
+            name:this.searchForm.empName
+          })
+          this.getEmploye(this.searchForm.deptId)
+        }
+        this.currentPage=this.searchForm.pageNum
       }else{
         this.getData()
       }
@@ -536,9 +554,8 @@
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
         this.currentPage = val
-        this.getData()
+        this.getData('pagination')
       },
       initDepList:function (val) {
         if(!val){
@@ -580,15 +597,11 @@
         delete param.timeRange
 
         //点击查询时，缓存筛选条件
-        if(type==='search'){
+        if(type==='search'||type==='pagination'){
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:this.$route.fullPath,
             url:this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList',
-            query:Object.assign({},param,{
-              depName:'',
-              deptId: '',
-              empId: '',
-            })
+            query:Object.assign({},param,{empName:this.dep.empName})
           }))
         }
 
