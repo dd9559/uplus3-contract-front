@@ -1016,7 +1016,7 @@
                         depAttr:query.depAttr,
                     }
                     if(this.propForm.regionName){
-                        this.dep=Object.assign({},this.dep,{id:this.propForm.region,empId:this.propForm.regionName})
+                        this.dep=Object.assign({},this.dep,{id:this.propForm.region,empId:this.propForm.regionName,empName:query.empName})
                         this.EmployeList.unshift({
                             empId:this.propForm.regionName,
                             name:query.empName

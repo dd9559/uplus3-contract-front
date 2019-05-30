@@ -2059,7 +2059,7 @@
                         depAttr:query.depAttr,
                     }
                     if(this.propForm.departmentMo){
-                        this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo})
+                        this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo,empName:query.empName})
                         this.EmployeList.unshift({
                             empId:this.propForm.departmentMo,
                             name:query.empName

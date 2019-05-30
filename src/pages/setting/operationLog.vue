@@ -172,10 +172,12 @@
             },
             handleCurrentChange (val) {
             this.pageNum = val
-            this.queryFn()
+            this.queryFn(1)
             },
-            getLogList() {
-                // if(this.power['sign-set-log-query'].state){
+            getLogList(typeshow,param) {
+                    if(typeshow!=1&&param==2){
+                        this.pageNum=1
+                    }
                      param = {
                         pageSize: this.pageSize,
                         pageNum: this.pageNum,
@@ -187,6 +189,7 @@
                         endTime:this.searchTime!==null?this.searchTime[1]:'',
                         keyword:this.keyword
                     }
+                    
                     this.$ajax.get('/api/operation/getList',param).then(res => {
                         res = res.data
                         if(res.status === 200) {
@@ -214,15 +217,26 @@
                 this.EmployeList = []
             },
             // 查询
-            queryFn(){
-                   
-                this.getLogList()
+            queryFn(typeshow){
+                param = {
+                        pageSize: this.pageSize,
+                        pageNum: this.pageNum,
+                        deptId:this.department,
+                        empId:this.depUser,
+                        departmentName:this.departmentName,
+                        objectType:this.selectType,
+                        startTime:this.searchTime!== null?this.searchTime[0]:'',
+                        endTime:this.searchTime!==null?this.searchTime[1]:'',
+                        keyword:this.keyword
+                    }
                  sessionStorage.setItem('sessionQuery',JSON.stringify({
                         path:'/operationLog',
                         url:'/operation/getList',
                         query:Object.assign({},param,{empName:this.dep.empName}),
                         methods:"get"
                     }))
+                this.getLogList(typeshow,2)
+                
             },
         },
         components:{
