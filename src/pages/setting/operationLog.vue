@@ -172,7 +172,7 @@
             },
             handleCurrentChange (val) {
             this.pageNum = val
-            this.getLogList()
+            this.queryFn()
             },
             getLogList() {
                 // if(this.power['sign-set-log-query'].state){
