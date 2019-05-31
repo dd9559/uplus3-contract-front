@@ -40,7 +40,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="银行卡号">
-          <el-input v-model="searchForm.bankCard" :clearable="true" @keyup.native="getInt(1)"></el-input>
+          <el-input v-model="searchForm.bankCard" maxlength="20" :clearable="true" @keyup.native="getInt(1)"></el-input>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -498,6 +498,11 @@
             name:session.query.homeStoreName
           })
         }
+        delete this.searchForm.homeStoreName
+        delete this.searchForm.startTime
+        delete this.searchForm.endTime
+        delete this.searchForm.pageNum
+        delete this.searchForm.pageSize
         this.pageNum = session.query.pageNum
       }else{
         this.getCompanyList()
