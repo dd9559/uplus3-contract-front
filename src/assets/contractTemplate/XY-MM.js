@@ -427,8 +427,8 @@ for (let i = 0; i < inputbox.length; i++) {
         if(attr==='delivery'){
             prohibit(inputbox[i],['a','b','c'],'delivery')
         }
-        if(attr==='reject'){
-            prohibit(inputbox[i],['a','b'],'reject')
+        if(attr==='solve'){
+            prohibit(inputbox[i],['a','b'],'solve')
         }
         if(attr==='loans1'){
             prohibit(inputbox[i],['a','b'],'loans1',0)
