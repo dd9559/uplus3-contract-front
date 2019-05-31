@@ -179,7 +179,7 @@
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?1:2)">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+            <el-button type="text" v-if="getUserMsg&&(scope.row.auditId===getUserMsg.empId||scope.row.preAuditId===getUserMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="120">
@@ -189,7 +189,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="getUserMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===getUserMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="变更/解约" min-width="80">
@@ -203,8 +203,8 @@
             <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
               <!--<el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>-->
-            <span style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&userMsg&&scope.row.auditId!==userMsg.empId">{{scope.row.auditName}}正在审核</span>
-            <el-button type="text"  v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&userMsg&&scope.row.auditId===userMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId<0&&userMsg&&(userMsg.roleId===22||userMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</el-button>
+            <span style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</span>
+            <el-button type="text"  v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</el-button>
             <!-- </div> -->
           </template>
         </el-table-column>
@@ -327,6 +327,8 @@ export default {
       // this.contractForm.dealAgentId=''
       delete this.contractForm.keyword
       delete this.contractForm.pageNum
+      delete this.contractForm.beginDate
+      delete this.contractForm.endDate
       this.keyword=session.query.keyword
       this.currentPage=session.query.pageNum
       if(session.query.beginDate){
@@ -562,6 +564,9 @@ export default {
                 break
         }
         return url
+    },
+    getUserMsg(){
+      return this.userMsg
     }
   },
   filters: {
