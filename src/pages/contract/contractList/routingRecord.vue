@@ -231,6 +231,8 @@ export default {
       let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
       this.searchForm = Object.assign({},this.searchForm,session.query)
       delete this.searchForm.pageNum
+      delete this.searchForm.startTime
+      delete this.searchForm.endTime
       this.currentPage=session.query.pageNum
 
       if(this.searchForm.outStoreAttr){

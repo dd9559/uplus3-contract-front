@@ -517,7 +517,7 @@
         }
       },
       getUserMsg(){
-        return this.userMsg
+        return this.getUser.user
       }
 
     },
@@ -957,6 +957,8 @@
           })
         }
         delete this.adjustForm.pageNum
+        delete this.adjustForm.startTime
+        delete this.adjustForm.endTime
         this.pageNum=session.query.pageNum
         if(session.query.startTime){
           this.adjustForm.signDate=[session.query.startTime,session.query.endTime]
@@ -978,7 +980,6 @@
       this.getDictionary();
       // this.getAdmin();
       this.remoteMethod()
-      this.userMsg=this.getUser.user
     },
 
     mounted() {

@@ -1054,6 +1054,8 @@
           this.adjustForm.signDate=[session.query.moneyOutStartTime,session.query.moneyOutEndTime]
         }
         delete this.adjustForm.pageNum
+        delete this.adjustForm.moneyOutStartTime
+        delete this.adjustForm.moneyOutEndTime
         this.pageNum=session.query.pageNum
         // this.adjustForm.outStoreId=''
         // this.adjustForm.inStoreId=''
