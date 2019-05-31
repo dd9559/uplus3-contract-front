@@ -135,7 +135,7 @@
             </span>
             <p v-else>--</p>
 
-            <p class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,userMsg.empId===scope.row.checkby?2:1)">{{userMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
+            <p class="btn-text-info" type="text" v-if="getUserMsg&& (scope.row.preAuditId === getUserMsg.empId || scope.row.checkby === getUserMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,getUserMsg.empId===scope.row.checkby?2:1)">{{getUserMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="120">
@@ -146,7 +146,7 @@
             </span>
             <p v-else>--</p>
 
-            <p class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
+            <p class="btn-text-info color-red" type="text" v-if="getUserMsg && (scope.row.checkby === getUserMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" align="center" min-width="120">
@@ -166,7 +166,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="120" fixed="right" align="center">
           <template slot-scope="scope">
-            <template v-if="scope.row.checkState === 0 && scope.row.checkby === userMsg.empId">
+            <template v-if="scope.row.checkState === 0 && scope.row.checkby === getUserMsg.empId">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
@@ -425,7 +425,6 @@
         loading:false,
         loading2:false,
         loadingTable:false,
-        userMsg:{},
 
         // 分页
         pageNum: 1,
@@ -516,8 +515,10 @@
         }else if(this.layerAudit.relieve === 0){
           return false
         }
+      },
+      getUserMsg(){
+        return this.userMsg
       }
-
 
     },
 

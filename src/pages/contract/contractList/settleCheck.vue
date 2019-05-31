@@ -138,7 +138,7 @@
               <p>{{scope.row.examineName}}</p>
             </span>
             <p v-else>--</p>
-            <p class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,userMsg.empId===scope.row.auditorId?2:1)">{{userMsg.empId===scope.row.auditorId?'转交审核人':'设置审核人'}}</p>
+            <p class="btn-text-info" type="text" v-if="getUserMsg&&(scope.row.preAuditId === getUserMsg.empId || scope.row.auditorId === getUserMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,getUserMsg.empId===scope.row.auditorId?2:1)">{{getUserMsg.empId===scope.row.auditorId?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="120">
@@ -148,7 +148,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>--</p>
-            <p class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId&&scope.row.nextAuditId!==0)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
+            <p class="btn-text-info color-red" type="text" v-if="getUserMsg&&(scope.row.auditorId === getUserMsg.empId&&scope.row.nextAuditId!==0)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" align="center" min-width="120">
@@ -169,7 +169,7 @@
 
         <el-table-column label="操作" min-width="120" fixed="right" align="center">
           <template slot-scope="scope">
-            <template v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === userMsg.empId">
+            <template v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === getUserMsg.empId">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
@@ -422,7 +422,6 @@
         loading2:false,
         loadingTable:false,
         settleMarks: '',
-        userMsg:{},
         // settleMarks:'',
          adjustForm:{
           signDate: '', //发起日期
@@ -523,6 +522,9 @@
     },
 
     computed: {
+      getUserMsg(){
+        return this.userMsg
+      }
         // settlemark(){
         //   return this.layerAudit.settlementRemarks.length;
         // }
