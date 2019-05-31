@@ -556,10 +556,10 @@ export default {
       switch (host){
           case "localhost:8080":
           case "sign2.jjw.com:28879":
-            url=this.userMsg.depId===594||this.userMsg.depId===838
+            url=this.getUserMsg.depId===594||this.getUserMsg.depId===838
                 break
           case "sign2.jjw.com":
-            url=this.userMsg.depId===900||this.userMsg.depId===2257
+            url=this.getUserMsg.depId===900||this.getUserMsg.depId===2257
                 break
         }
         return url
