@@ -1,5 +1,5 @@
 <template>
-  <div class="view-container">
+  <div class="view-container" ref="tableComView">
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="45">
       <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
         <el-form-item label="结算日期">
@@ -66,7 +66,7 @@
     <!-- 列表 -->
     <div class="routing-list">
       <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
-      <el-table :data="tableData" border @row-dblclick='toDetail'>
+      <el-table :data="tableData" border @row-dblclick='toDetail' ref="tableCom" :max-height="tableNumberCom">
         <el-table-column align="center" label="分账门店" prop="outStoreName">
         </el-table-column>
         <el-table-column align="center" label="分账门店账户" prop="outBankCard">

@@ -289,7 +289,7 @@
           </div>
           <div class="col-li col-li2">
             <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
-            <p>后期状态：<span>{{layerAudit.statusLaterStage.label}}</span></p>
+            <p>后期状态：<span v-if="layerAudit.contractType.value!==1">{{layerAudit.statusLaterStage.label}}</span><span v-else>--</span></p>
             <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
           </div>
           <div class="col-li col-li2">
