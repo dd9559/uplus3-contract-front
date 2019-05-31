@@ -432,6 +432,8 @@
         this.tableData = res.data
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
         this.propForm = Object.assign({},this.propForm,session.query,{timeRange:session.query.startTime&&[session.query.startTime,session.query.endTime]})
+        delete this.propForm.startTime
+        delete this.propForm.endTime
         if(this.propForm.empId){
           this.dep=Object.assign({},this.dep,{id:this.propForm.depId,empId:this.propForm.empId,empName:this.propForm.empName})
           this.EmployeList.unshift({
