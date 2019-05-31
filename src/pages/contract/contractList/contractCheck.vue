@@ -311,7 +311,6 @@ export default {
     this.getDictionary();//字典
     this.remoteMethod();//部门
     // this.getAdmin();//获取当前登录人信息
-    this.userMsg=this.getUser.user
     let res=this.getDataList
     if(res&&(res.route===this.$route.path)){
       this.tableData = res.data.list
@@ -566,7 +565,7 @@ export default {
         return url
     },
     getUserMsg(){
-      return this.userMsg
+      return this.getUser.user
     }
   },
   filters: {

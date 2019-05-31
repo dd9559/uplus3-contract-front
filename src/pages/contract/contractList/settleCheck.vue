@@ -523,7 +523,7 @@
 
     computed: {
       getUserMsg(){
-        return this.userMsg
+        return this.getUser.user
       }
         // settlemark(){
         //   return this.layerAudit.settlementRemarks.length;
@@ -962,6 +962,8 @@
           })
         }
         delete this.adjustForm.pageNum
+        delete this.adjustForm.beginDate
+        delete this.adjustForm.endDate
         this.pageNum=session.query.contResultVo.pageNum
         if(session.query.contResultVo.beginDate){
           this.adjustForm.signDate=[session.query.contResultVo.beginDate,session.query.contResultVo.endDate]
@@ -982,7 +984,6 @@
       // this.getDepNameFn();
       this.getDictionary();
       // this.getAdmin();
-      this.userMsg=this.getUser.user
       this.remoteMethod();
     },
 
