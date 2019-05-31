@@ -241,6 +241,11 @@
           this.searchForm.contType = this.searchForm.contType.map(item=>{
             return Number(item)
           })
+
+          delete this.searchForm.beginDate
+          delete this.searchForm.endDate
+          delete this.searchForm.beginProDate
+          delete this.searchForm.endProDate
           if(this.searchForm.dealAgentId){
             this.dep=Object.assign({},this.dep,{id:this.searchForm.dealAgentStoreId,empId:this.searchForm.dealAgentId,empName:this.searchForm.dealAgentName})
             this.EmployeList.unshift({
