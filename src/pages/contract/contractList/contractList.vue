@@ -602,6 +602,8 @@ export default {
       // this.contractForm.dealAgentId=''
       delete this.contractForm.keyword
       delete this.contractForm.pageNum
+      delete this.contractForm.beginDate
+      delete this.contractForm.endDate
       this.keyword=session.query.keyword
       this.currentPage=session.query.pageNum
       if(session.query.beginDate){
