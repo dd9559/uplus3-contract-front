@@ -91,6 +91,7 @@
                         v-model="propForm.departmentMo"
                         v-loadmore="moreEmploye"
                         clearable
+                        @change="handleEmpNodeClick"
                         class="w100">
                             <el-option
                             v-for="item in EmployeList"
@@ -353,7 +354,7 @@
             // 查询
             queryFn() {
                 this.pageNum=1;
-                this.getListData();
+                this.getListData('search');
             },
             // 合同编号弹层
             contractFn(value){
@@ -393,10 +394,10 @@
                 return TOOL.dateFormat(val);
             },
             // 分页
-            currentChangeFn(e){
-                this.pageNum = e;
-                this.getListData();
-            },
+            // currentChangeFn(e){
+            //     this.pageNum = e;
+            //     this.getListData();
+            // },
             // 经纪人
             agentFn(s,t){
                 if(!!s && !!t){
@@ -442,6 +443,17 @@
                     keyword:this.propForm.search,
                     depAttr:this.propForm.depAttr,
                 }
+
+                //点击查询时，缓存筛选条件
+                if(type==='search'||type==='pagination'){
+                    sessionStorage.setItem('sessionQuery',JSON.stringify({
+                        path:'/postMonitor',
+                        url:'/postSigning/getMonitorContract',
+                        query:Object.assign({},paramObj,{empName:this.dep.empName},{depName:this.propForm.departmentS}),
+                        methods:'get'
+                    }))
+                }
+
                 this.$ajax.get('/api/postSigning/getMonitorContract',paramObj).then(res=>{
                     res = res.data;
                     if(res.status === 200){
@@ -460,7 +472,7 @@
             // 分页
             currentChangeFn(e){
                 this.pageNum = e;
-                this.getListData();
+                this.getListData('pagination');
             },
             // 交易步骤获取数据
             getTradingSteps(){
@@ -515,16 +527,47 @@
             },
         },
         mounted() {
-            // 获取城市id
-            this.getAdmin();
-            // 交易步骤
-            this.getTradingSteps();
-            // 部门搜索
-            this.remoteMethod();
-            // 枚举数据查询
-            this.getDictionary();
-            // 列表数据
-            this.getListData();
+            this.$nextTick(()=>{
+              // 获取城市id
+                this.getAdmin();
+                // 交易步骤
+                this.getTradingSteps();
+                // 部门搜索
+                this.remoteMethod();
+                // 枚举数据查询
+                this.getDictionary();
+                let res=this.getDataList
+                if(res&&(res.route===this.$route.path)){
+                    this.tableData.list = res.data.list
+                    this.tableData.total = res.data.total
+                    let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+                    let query = session.query
+                    this.propForm = {
+                        department:query.dealDeptId,
+                        departmentS:query.depName,
+                        departmentMo:query.dealAgentId,
+                        search: query.keyword,
+                        paper: query.statusResult,
+                        time: query.transFlowCode,
+                        late: query.stepInstanceCode,
+                        lateName: query.stepState,
+                        depAttr:query.depAttr,
+                    }
+                    if(this.propForm.departmentMo){
+                        this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo,empName:query.empName})
+                        this.EmployeList.unshift({
+                            empId:this.propForm.departmentMo,
+                            name:query.empName
+                        })
+                        this.getEmploye(this.propForm.department)
+                    }
+                    this.tableData.pageNum = query.pageNum
+                }else{
+                    // 列表数据
+                    this.getListData();
+                }
+            })
+            
         },
         watch:{
             dictionary(newData,oldData){

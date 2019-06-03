@@ -1,5 +1,5 @@
 <template>
-  <div class="view-container">
+  <div class="view-container" ref="tableComView">
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="45">
       <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
         <el-form-item label="结算日期">
@@ -24,6 +24,7 @@
             v-loadmore.out="moreDeps"
             :clearable="true"
             @clear="clearOutList('out')"
+            @change="checkOut"
             :loading="loading">
             <el-option
               v-for="item in outStoreList"
@@ -50,6 +51,7 @@
             v-loadmore.in="moreDeps"
             :clearable="true"
             @clear="clearOutList('in')"
+            @change="checkIn"
             :loading="loading">
             <el-option
               v-for="item in inStoreList"
@@ -64,7 +66,7 @@
     <!-- 列表 -->
     <div class="routing-list">
       <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
-      <el-table :data="tableData" border @row-dblclick='toDetail'>
+      <el-table :data="tableData" border @row-dblclick='toDetail' ref="tableCom" :max-height="tableNumberCom">
         <el-table-column align="center" label="分账门店" prop="outStoreName">
         </el-table-column>
         <el-table-column align="center" label="分账门店账户" prop="outBankCard">
@@ -98,7 +100,7 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" v-if="power['sign-ht-fz-pay'].state" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
+            <el-button type="text" size="medium" v-if="power['sign-ht-fz-pay'].state&&scope.row.flag!=1" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
             <span v-else>-</span>
              <!-- v-if="power['sign-ht-fz-pay'].state" -->
           </template>
@@ -110,13 +112,11 @@
          class="pagination-info"
          @current-change="handleCurrentChange"
          :current-page="currentPage"
-         :page-size="50"
+         :page-size="pageSize"
          layout="total, prev, pager, next, jumper"
          :total="total">
         </el-pagination>
       </div>
-      <!-- <iframe src="../static/dealContract.html" frameborder="0" ref='iframeFirst' style="width:900px;height:1000px"></iframe>
-      <span @click='getIframe'>click</span> -->
     </div>
 
     <!-- 确认收款 -->
@@ -177,6 +177,14 @@ export default {
       },
       outStoreList:[],//分账门店
       inStoreList:[],//收款门店
+      checkOutDep:{
+        id:'',
+        name:''
+      },
+      checkInDep:{
+        id:'',
+        name:''
+      },
       currentPage_out:1,//分账
       pageSize_:10,
       currentPage_in:1,//收款
@@ -211,25 +219,75 @@ export default {
   },
   created() {
     this.getDictionary();//字典
-    this.getDepList({
+    // this.getDepList({
+    //   // type:'G',
+    //   pageNum:this.currentPage_,
+    //   pageSize:this.pageSize_,
+    // })
+    let res=this.getDataList
+    if(res&&(res.route===this.$route.path)){
+      this.tableData = res.data.list
+      this.total = res.data.total
+      let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+      this.searchForm = Object.assign({},this.searchForm,session.query)
+      delete this.searchForm.pageNum
+      delete this.searchForm.startTime
+      delete this.searchForm.endTime
+      this.currentPage=session.query.pageNum
+
+      if(this.searchForm.outStoreAttr){
+        let param = {
+          pageNum:this.currentPage_out,
+          pageSize:this.pageSize_,
+        }
+        param.depAttr=this.searchForm.outStoreAttr===1?"DIRECT":"JOIN"
+        this.getDepList(param,true,"out")
+      }
+      if(this.searchForm.inStoreAttr){
+        let param = {
+          pageNum:this.currentPage_in,
+          pageSize:this.pageSize_,
+        }
+        param.depAttr=this.searchForm.inStoreAttr===1?"DIRECT":"JOIN"
+        this.getDepList(param,true,"in")
+      }
+      if(!this.searchForm.outStoreAttr&&!this.searchForm.inStoreAttr){
+        this.getDepList({
+          // type:'G',
+          pageNum:1,
+          pageSize:this.pageSize_,
+        })
+      }
+      if(this.searchForm.checkOutDep.id){
+        this.outStoreList.unshift({
+          id:this.searchForm.checkOutDep.id,
+          name:this.searchForm.checkOutDep.name
+        })
+      }
+      if(this.searchForm.checkInDep.id){
+        this.inStoreList.unshift({
+          id:this.searchForm.checkInDep.id,
+          name:this.searchForm.checkInDep.name
+        })
+      }
+      if(session.query.startTime){
+        this.signDate[0]=session.query.startTime
+        this.signDate[1]=session.query.endTime
+      }
+    }else{
+      this.getDepList({
         // type:'G',
-        pageNum:this.currentPage_,
+        pageNum:1,
         pageSize:this.pageSize_,
-      })
+    })
+    }
     //结算日期的默认范围改为前月和当月
     let date = new Date();
     this.timeDefaultShow=new Date(date.getFullYear(),date.getMonth(),0)
   },
   methods: {
-    getIframe:function(){
-      let iframebox=this.$refs.iframeFirst
-      // document.query
-      // console.log(iframebox.contentWindow.document.querySelector('#txt1').value)
-      iframebox.contentWindow.document.querySelector('#five_').click()
-
-    },
     //获取分账记录列表
-    getProateNotes(){
+    getProateNotes(type="init"){
       let param = {
         pageNum:this.currentPage,
         pageSize:this.pageSize
@@ -239,6 +297,14 @@ export default {
         param.startTime = this.signDate[0];
         param.endTime = this.signDate[1];
       };
+      if(type==="search"||type==="page"){
+        sessionStorage.setItem('sessionQuery',JSON.stringify({
+          path:'/routingRecord',
+          url:'/separate/account/list',
+          query:Object.assign({},param,{checkOutDep:this.checkOutDep},{checkInDep:this.checkInDep}),
+          methods:"get"
+        }))
+      }
       this.$ajax.get('/api/separate/account/list',param).then(res=>{
         res=res.data;
         if(res.status===200){
@@ -252,10 +318,36 @@ export default {
         })
       })
     },
+    //记录选中的门店
+    checkOut(data){//分账门店
+      if(data){
+        let cell = this.outStoreList.find(item=>item.id===data)
+        this.checkOutDep=Object.assign({},this.checkOutDep,{
+          id:cell.id,
+          name:cell.name
+        })
+      }else{
+        this.checkOutDep.id=''
+        this.checkOutDep.name=''
+      }
+    },
+    checkIn(data){//收款门店
+      if(data){
+        let cell = this.inStoreList.find(item=>item.id===data)
+        this.checkInDep=Object.assign({},this.checkInDep,{
+          id:cell.id,
+          name:cell.name
+        })
+      }else{
+        this.checkInDep.id=''
+        this.checkInDep.name=''
+      }
+    },
     // 查询
     queryFn() {
       if(this.signDate&&this.signDate.length>1){
-        this.getProateNotes();
+        this.pageNum=1
+        this.getProateNotes("search");
       }else{
         this.$message({
           message:"请选择时间范围",
@@ -266,35 +358,70 @@ export default {
     // 重置
     resetFormFn() {
       TOOL.clearForm(this.searchForm);
-      this.outStoreList=this.options//分账门店
-      this.inStoreList=this.options//收款门店
+      // this.outStoreList=this.options//分账门店
+      // this.inStoreList=this.options//收款门店
       this.currentPage_out=1//分账
       this.currentPage_in=1//收款
-      this.total_out=this.firstTotal
-      this.total_in=this.firstTotal
+      // this.total_out=this.firstTotal
+      // this.total_in=this.firstTotal
       this.signDate=[]
+      this.outStoreList=[]
+      this.inStoreList=[]
+      this.getDepList({
+        // type:'G',
+        pageNum:this.currentPage_,
+        pageSize:this.pageSize_,
+      })
+      this.checkOutDep.id=''
+      this.checkOutDep.name=''
+      this.checkInDep.id=''
+      this.checkInDep.name=''
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
       this.currentPage = val;
-      this.getProateNotes();
+      this.getProateNotes("page");
     },
-    getDepList(param,first=true,type='out'){
+    getDepList(param,first=true,type='other'){
       this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
         res=res.data;
         if(res.status===200){
+          let outList = [].concat(res.data.list)
+          let inList = [].concat(res.data.list)
+          if(this.searchForm.checkOutDep&&this.searchForm.checkOutDep.id){
+            res.data.list.forEach((element,index) => {
+              if(this.searchForm.checkOutDep&&this.searchForm.checkOutDep.id===element.id){
+                outList.splice(index,1)
+              }
+            });
+          }
+          if(this.searchForm.checkInDep&&this.searchForm.checkInDep.id){
+            res.data.list.forEach((element,index) => {
+              if(this.searchForm.checkInDep&&this.searchForm.checkInDep.id===element.id){
+                inList.splice(index,1)
+              }
+            });
+          }
           if(first){
-            this.outStoreList=res.data.list;
-            this.inStoreList=res.data.list;
-            this.options=res.data.list;
-            this.firstTotal=res.data.total;
-            this.total_out=res.data.total
-            this.total_in=res.data.total
+            if(type==="out"){
+              this.outStoreList=this.outStoreList.concat(outList);
+              this.total_out=res.data.total
+            }else if(type==="in"){
+              this.inStoreList=this.inStoreList.concat(inList);
+              this.total_in=res.data.total
+            }else{
+              this.outStoreList=this.outStoreList.concat(outList);
+              this.inStoreList=this.inStoreList.concat(inList);
+              this.total_out=res.data.total
+              this.total_in=res.data.total
+            }
+            // this.options=res.data.list;
+            // this.firstTotal=res.data.total;
           }else{
             if(type==='out'){
               this.outStoreList=res.data.list;
               this.total_out=res.data.total
-            }else{
+            }else if(type==='in'){
               this.inStoreList=res.data.list;
               this.total_in=res.data.total
             }
@@ -383,6 +510,8 @@ export default {
         pageSize:this.pageSize_,
         depAttr:''
       }
+      this.checkOutDep.id=''
+      this.checkOutDep.name=''
       if(value===1){
         param.depAttr='DIRECT'
       }else if(value===2){
@@ -399,6 +528,8 @@ export default {
         pageSize:this.pageSize_,
         depAttr:''
       }
+      this.checkInDep.id=''
+      this.checkInDep.name=''
       if(value===1){
         param.depAttr='DIRECT'
       }else if(value===2){
@@ -421,7 +552,7 @@ export default {
         }else if(this.searchForm.outStoreAttr===2){
           param.depAttr='JOIN'
         }
-        this.getDepList(param,false,'out')
+        // this.getDepList(param,false,'out')
       }else{
         this.currentPage_in=1;
         let param = {
@@ -435,25 +566,18 @@ export default {
         }else if(this.searchForm.inStoreAttr===2){
           param.depAttr='JOIN'
         }
-        this.getDepList(param,false,'in')
+        // this.getDepList(param,false,'in')
         }
       },
     //确认收款
     toReceipt(item,index){
-      if(this.power['sign-ht-fz-pay'].state){
-        if(item.inBank&&item.inBank.length>0){
-          this.dialogReceipt=true
-          this.receiptData=item;
-          this.index = index
-        }else{
-          this.$message({
-            message:'没有收款门店账户',
-            type:'warning'
-          });
-        }
+      if(item.inBank&&item.inBank.length>0){
+        this.dialogReceipt=true
+        this.receiptData=item;
+        this.index = index
       }else{
         this.$message({
-          message:'没有确认打款权限',
+          message:'没有收款门店账户',
           type:'warning'
         });
       }

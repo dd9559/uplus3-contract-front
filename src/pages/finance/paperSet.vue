@@ -1,6 +1,6 @@
 <template>
   <div ref="tableComView" class="paper-set">
-    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData">
+    <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
         <el-form-item label="关键字" prop="keyword">
           <el-tooltip content="开票人员/合同编号/票据编号/物业地址" placement="top">
@@ -39,6 +39,7 @@
           <el-form-item prop="empId">
             <el-select
               v-model="propForm.empId"
+              @change="handleEmpNodeClick"
               clearable
               class="w100">
               <el-option
@@ -158,7 +159,7 @@
         </el-table-column>
         <el-table-column label="打印次数" align="center" min-width="60">
           <template slot-scope="scope">
-            <span style="cursor: pointer;" @click="getPrintRecord(scope.row)">{{scope.row.printTimes}}</span>
+            <span style="cursor: pointer;color:#409EFF;" @click="getPrintRecord(scope.row)">{{scope.row.printTimes}}</span>
           </template>
         </el-table-column>
         <!--<el-table-column prop="printByName" label="打印人" align="center" min-width="120">
@@ -426,7 +427,25 @@
       // 部门搜索
       this.remoteMethod();
       // 获取列表
-      this.getData();
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.tableData = res.data
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.propForm = Object.assign({},this.propForm,session.query,{timeRange:session.query.startTime&&[session.query.startTime,session.query.endTime]})
+        delete this.propForm.startTime
+        delete this.propForm.endTime
+        if(this.propForm.empId){
+          this.dep=Object.assign({},this.dep,{id:this.propForm.depId,empId:this.propForm.empId,empName:this.propForm.empName})
+          this.EmployeList.unshift({
+            empId:this.propForm.empId,
+            name:this.propForm.empName
+          })
+          this.getEmploye(this.propForm.depId)
+        }
+        this.pageNum=this.propForm.pageNum
+      }else{
+        this.getData()
+      }
     },
     methods: {
       // 文字处理
@@ -447,11 +466,14 @@
         this.$message.error(e);
       },
       // 列表数据
-      getData: function () {
+      getData: function (type='init') {
         // if(!this.power['sign-cw-bill-query'].state){
         //     this.noPower(this.power['sign-cw-bill-query'].name);
         //     return false
         // }
+        if(type==='search'){
+          this.pageNum=1
+        }
         this.loadingList = true;
         let param = Object.assign({}, this.propForm)
         param.pageNum = this.pageNum
@@ -461,6 +483,16 @@
           param.endTime = param.timeRange[1]
           delete param.timeRange
         }
+
+        //点击查询时，缓存筛选条件
+        if(type==='search'||type==='pagination'){
+          sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:this.$route.path,
+            url:'/bills',
+            query:Object.assign({},param,{empName:this.dep.empName})
+          }))
+        }
+
         this.$ajax.get('/api/bills', param).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -537,7 +569,7 @@
       // 分页
       currentChangeFn(e) {
         this.pageNum = e;
-        this.getData();
+        this.getData('pagination');
       },
       // 编号操作
       cellOpera(type, row) {

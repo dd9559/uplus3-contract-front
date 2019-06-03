@@ -2,11 +2,11 @@
 <template>
   <div class="view-container" id="adjustcheck" ref="tableComView">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini" ref="adjustCheckForm">
         <el-form-item label="关键字">
           <el-tooltip effect="dark" content="合同编号/房源编号/客源编号" placement="top">
-            <el-input v-model="adjustForm.keyWord" style="width:150px" clearable placeholder="请输入"></el-input>
+            <el-input v-model="adjustForm.keyword" style="width:150px" clearable placeholder="请输入"></el-input>
           </el-tooltip>
         </el-form-item>
 
@@ -43,8 +43,7 @@
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> -->
           <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
-                     v-model="adjustForm.empId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="adjustForm.empId" @change="handleEmpNodeClick" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -136,7 +135,7 @@
             </span>
             <p v-else>--</p>
 
-            <p class="btn-text-info" type="text" v-if="userMsg && (scope.row.preAuditId === userMsg.empId || scope.row.checkby === userMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,userMsg.empId===scope.row.checkby?2:1)">{{userMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
+            <p class="btn-text-info" type="text" v-if="getUserMsg&& (scope.row.preAuditId === getUserMsg.empId || scope.row.checkby === getUserMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,getUserMsg.empId===scope.row.checkby?2:1)">{{getUserMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="120">
@@ -147,7 +146,7 @@
             </span>
             <p v-else>--</p>
 
-            <p class="btn-text-info color-red" type="text" v-if="userMsg && (scope.row.checkby === userMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
+            <p class="btn-text-info color-red" type="text" v-if="getUserMsg && (scope.row.checkby === getUserMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" align="center" min-width="120">
@@ -167,7 +166,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="120" fixed="right" align="center">
           <template slot-scope="scope">
-            <template v-if="scope.row.checkState === 0 && scope.row.checkby === userMsg.empId">
+            <template v-if="scope.row.checkState === 0 && scope.row.checkby === getUserMsg.empId">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
@@ -426,7 +425,6 @@
         loading:false,
         loading2:false,
         loadingTable:false,
-        userMsg:{},
 
         // 分页
         pageNum: 1,
@@ -452,7 +450,7 @@
           //   empId: ""
           // }],
           checkState: '',  //审核状态
-          keyWord: ''   //关键字
+          keyword: ''   //关键字
 
         },
         dictionary: {
@@ -517,8 +515,10 @@
         }else if(this.layerAudit.relieve === 0){
           return false
         }
+      },
+      getUserMsg(){
+        return this.getUser.user
       }
-
 
     },
 
@@ -685,11 +685,13 @@
       },
 
       // 查询
-      queryFn() {
+      queryFn(type="init") {
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
-
+          if(type==='search'){
+            this.pageNum=1
+          }
           this.loadingTable = true;
           let startTime = '';
           let endTime = '';
@@ -702,18 +704,27 @@
               pageNum: this.pageNum,
               pageSize: this.pageSize,
               deptId: this.adjustForm.depId,
+              depName:this.adjustForm.depName,
               empId: this.adjustForm.empId,
               startTime,
               endTime,
               // contractType: this.adjustForm.tradeType,
               depAttr: this.adjustForm.depAttr,
               checkState: this.adjustForm.checkState,
-              keyword: this.adjustForm.keyWord
+              keyword: this.adjustForm.keyword
             }
             if(this.adjustForm.contractTypes.length>0){
               param.contractTypes=this.adjustForm.contractTypes.join(',')
             }else{
               param.contractTypes=''
+            }
+            if(type==="search"||type==="page"){
+              sessionStorage.setItem('sessionQuery',JSON.stringify({
+                path:'/adjustCheck',
+                url:'/commission/updateList',
+                query:Object.assign({},param,{empName:this.dep.empName}),
+                methods:"get"
+              }))
             }
             //调整佣金审核列表
             this.$ajax
@@ -898,7 +909,7 @@
 
       handleCurrentChange(e) {
         this.pageNum = e;
-        this.queryFn();
+        this.queryFn("page");
       },
 
 
@@ -935,14 +946,40 @@
     },
 
     created() {
-      this.queryFn();
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.tableData = res.data
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.adjustForm = Object.assign({},this.adjustForm,session.query,{contractTypes:session.query.contractTypes.length>0?session.query.contractTypes.split(','):''})
+        if(this.adjustForm.contractTypes){
+          this.adjustForm.contractTypes = this.adjustForm.contractTypes.map(item=>{
+            return Number(item)
+          })
+        }
+        delete this.adjustForm.pageNum
+        delete this.adjustForm.startTime
+        delete this.adjustForm.endTime
+        this.pageNum=session.query.pageNum
+        if(session.query.startTime){
+          this.adjustForm.signDate=[session.query.startTime,session.query.endTime]
+        }
+        if(this.adjustForm.empId){
+        this.dep=Object.assign({},this.dep,{id:this.adjustForm.deptId,empId:this.adjustForm.empId,empName:this.adjustForm.empName})
+        this.EmployeList.unshift({
+          empId:this.adjustForm.empId,
+          name:this.adjustForm.empName
+        })
+        this.getEmploye(this.adjustForm.deptId)
+      }
+        // this.adjustForm.empId=''
+        // this.adjustForm.deptId=''
+      }else{
+        this.queryFn();
+      }
       // this.getDepNameFn();
       this.getDictionary();
-      this.getAdmin();
+      // this.getAdmin();
       this.remoteMethod()
-
-
-
     },
 
     mounted() {

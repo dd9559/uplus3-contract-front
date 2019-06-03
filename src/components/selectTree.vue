@@ -66,8 +66,8 @@
       }
     },
     mounted(){
-      this.getList()
       this.$nextTick(()=>{
+        this.getList()
         document.body.addEventListener('mousedown',this.bodyClick)
       })
     },
@@ -77,6 +77,7 @@
     watch: {
       init: function (val) {
         this.inputVal = val
+        // this.getList(this.inputVal,'search')
       }
     },
     methods: {
@@ -123,6 +124,11 @@
         if(type==='hide'){
           if(_inputVal!==this.inputVal){
             this.inputVal=''
+            this.$emit('clear')
+            //部门选择添加初始值--2019/05/28
+            /*if(_list.length===0){
+              this.getList()
+            }*/
           }
           /*if(this.list.length!==_list.length){
             this.list = _list.map(item=>Object.assign({},item))
@@ -167,6 +173,10 @@
               this.$emit('search')
             }else {
               this.list = _list.map(item=>Object.assign({},item))
+              //部门选择添加初始值--2019/05/28
+              /*if(_list.length===0){
+                this.getList()
+              }*/
             }
           },800)
         }

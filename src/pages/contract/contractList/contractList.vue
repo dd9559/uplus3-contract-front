@@ -53,7 +53,7 @@
           <select-tree :data="DepList" :init="contractForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
         </el-form-item>
         <el-form-item>
-          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
+          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" @change="handleEmpNodeClick" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -295,7 +295,8 @@
         </el-table-column>
         <el-table-column align="center" label="结算状态" min-width="80">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.contType.value<4" type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button>
+            <!-- <el-button v-if="scope.row.contType.value<4" type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button> -->
+            <span v-if="scope.row.contType.value<4">{{scope.row.resultState.label}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -315,7 +316,7 @@
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</el-button>
               <!-- </span> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-adjust'].state&&scope.row.contState.value>1&&scope.row.contType.value<4&&scope.row.contChangeState.value!=2&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
+              <el-button type="text" size="medium" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
             <!-- </div> -->
           </template>
         </el-table-column>
@@ -335,9 +336,9 @@
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterContId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 调佣弹框 -->
-    <layerAudit :dialogVisible="tiaoyong" :contractCode="contractCode" @closeCentCommission="closeCommission" v-if='contractCode'></layerAudit>
+    <layerAudit :dialogVisible="tiaoyong" :layerAudit="layerAudit" @closeCentCommission="closeCommission" v-if='tiaoyong'></layerAudit>
     <!-- 结算弹窗 -->
-    <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerAudit" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
+    <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerSettle" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" :code="uploadCode" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
@@ -421,8 +422,9 @@ export default {
       currentPage: 1,
       pageSize: 10,
       water: false,
-      contractCode: "",
+      // contractCode: "",
       tiaoyong: false,
+      layerAudit:{},
       jiesuan: false,
       changeCancel: false,
       dialogType: "",
@@ -450,7 +452,7 @@ export default {
       //合同状态
       contState:99,
       settleId:'',
-      layerAudit:{
+      layerSettle:{
         contarctType:{
           label: ""
         },
@@ -582,10 +584,43 @@ export default {
     }
     this.http = window.location.origin
     this.getAdmin();//获取当前登录人信息
-    this.getContractList();//合同列表
     this.getDictionary();//字典
     this.getHousePurpose();//用途
     this.remoteMethod();//部门
+    let res=this.getDataList
+    if(res&&(res.route===this.$route.path)){
+      this.tableData = res.data.list
+      this.total = res.data.count
+      let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+      this.contractForm = Object.assign({},this.contractForm,session.query,{contTypes:session.query.contTypes.length>0?session.query.contTypes.split(','):''})
+      if(this.contractForm.contTypes){
+        this.contractForm.contTypes = this.contractForm.contTypes.map(item=>{
+          return Number(item)
+        })
+      }
+      // this.contractForm.dealAgentStoreId=''
+      // this.contractForm.dealAgentId=''
+      delete this.contractForm.keyword
+      delete this.contractForm.pageNum
+      delete this.contractForm.beginDate
+      delete this.contractForm.endDate
+      this.keyword=session.query.keyword
+      this.currentPage=session.query.pageNum
+      if(session.query.beginDate){
+        this.signDate[0]=session.query.beginDate
+        this.signDate[1]=session.query.endDate
+      }
+      if(this.contractForm.dealAgentId){
+        this.dep=Object.assign({},this.dep,{id:this.contractForm.dealAgentStoreId,empId:this.contractForm.dealAgentId,empName:this.contractForm.empName})
+        this.EmployeList.unshift({
+          empId:this.contractForm.dealAgentId,
+          name:this.contractForm.empName
+        })
+        this.getEmploye(this.contractForm.dealAgentStoreId)
+      }
+    }else{
+      this.getContractList();//合同列表
+    }
   },
   methods: {
     dayin(){
@@ -605,7 +640,7 @@ export default {
       })
     },
     //获取合同列表
-    getContractList() {
+    getContractList(type='init') {
       let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
@@ -624,8 +659,16 @@ export default {
         param.contTypes=''
       }
 
-      delete param.depName
+      // delete param.depName
       //console.log(param)
+      if(type==="search"||type==="page"){
+        sessionStorage.setItem('sessionQuery',JSON.stringify({
+          path:'/contractList',
+          url:'/contract/contractList',
+          query:Object.assign({},param,{empName:this.dep.empName}),
+          methods:"postJSON"
+        }))
+      }
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
@@ -644,7 +687,7 @@ export default {
     // 查询
     queryFn() {
       this.currentPage=1;
-      this.getContractList();
+      this.getContractList("search");
     },
     //佣金比例
     changeRatio(type){
@@ -787,11 +830,10 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getContractList();
+      this.getContractList("page");
     },
     //新增合同
     toAddcontract(command) {
-      // if(this.power['sign-ht-info-add'].state){
         let param = {
           type:command
         };
@@ -829,9 +871,6 @@ export default {
               type: "warning"
             });
           });
-      // }else{
-      //   this.noPower('创建合同')
-      // }
     },
     //合同预览
     goPreview(item) {
@@ -862,21 +901,27 @@ export default {
 
     },
     //调佣弹窗
-    //Z171231001
     toLayerAudit(item) {
-      // if(item.isCanChangeCommission===1){
-        this.contractCode = item.code;
-        this.tiaoyong = true;
-      // }else{
-      //   this.$alert('已存在未审核的调佣申请，不允许重复提交！', '提示', {
-      //     confirmButtonText: '确定',
-      //   });
-      // }
+      let param = {
+        contractCode: item.code            
+      }
+      this.$ajax.get("/api/commission/detail", param).then(res => {
+        let data = res.data;
+        if (res.data.status === 200) {
+          this.layerAudit = data.data
+          this.tiaoyong = true;
+        }
+      }).catch(error => {
+          this.$message({
+            message: error,
+            type:"error"
+          })
+      })
     },
     //关闭调佣弹窗
     closeCommission() {
       this.tiaoyong = false;
-      this.contractCode = "";
+      this.layerAudit={}
       this.getContractList();
     },
     //关闭变更解约弹窗
@@ -1000,7 +1045,7 @@ export default {
             if (res.data.status === 200) {
               this.jiesuan=true;
               this.settleId=item.id;
-              this.layerAudit = data.data
+              this.layerSettle = data.data
             }
           }).catch(error => {
               this.$message({

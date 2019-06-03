@@ -61,7 +61,7 @@
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>-->
-          <el-select :clearable="true" class="margin-left" size="small" v-loadmore="moreEmploye" v-model="searchForm.empId" placeholder="请选择">
+          <el-select :clearable="true" class="margin-left" size="small" v-loadmore="moreEmploye" v-model="searchForm.empId" @change="handleEmpNodeClick" placeholder="请选择">
           <!--<el-select :clearable="true" filterable remote :remote-method="test" v-loadmore="moreEmploye" @visible-change="empHandle" class="margin-left" size="small"
                      v-model="searchForm.empId" placeholder="请选择">-->
             <el-option
@@ -370,7 +370,7 @@
           moneyType: '',
           payMethod: '',
           keyword: '',
-          timeRange: '',
+          timeRange: [],
           payObjType: '',
           cooperation: ''
         },
@@ -454,7 +454,37 @@
     },
     mounted() {
       this.$nextTick(()=>{
-        this.getData()
+        let res=this.getDataList
+        if(res&&(res.route===this.$route.path)){
+          this.list = res.data.page.list
+          this.total = res.data.page.total
+          this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+          let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+          this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.length>0?session.query.contTypes.split(','):[]})
+          // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
+          // this.$
+          this.searchForm.contType = this.searchForm.contType.map(item=>{
+            return Number(item)
+          })
+          if(session.query.startTime){
+            this.searchForm.timeRange=[session.query.startTime,session.query.endTime]
+            delete this.searchForm.startTime
+            delete this.searchForm.endTime
+          }else{
+            this.searchForm.timeRange=[]
+          }
+          if(this.searchForm.empId){
+            this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId,empName:this.searchForm.empName})
+            this.EmployeList.unshift({
+              empId:this.searchForm.empId,
+              name:this.searchForm.empName
+            })
+            this.getEmploye(this.searchForm.deptId)
+          }
+          this.currentPage=this.searchForm.pageNum
+        }else{
+          this.getData()
+        }
         this.getDictionary()
         this.getMoneyTypes()
         // this.remoteMethod()
@@ -493,9 +523,8 @@
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
         this.currentPage = val
-        this.getData()
+        this.getData('pagination')
       },
       clearDep: function () {
         this.searchForm.deptId = ''
@@ -543,7 +572,6 @@
         })
       },
       getData: function (type='init') {
-        // debugger
         if(type==='search'){
           this.currentPage=1
         }
@@ -557,13 +585,16 @@
         param.pageSize = this.pageSize
         delete param.contType
         delete param.timeRange
-        let sessionQuery=JSON.parse(JSON.stringify(param))
-        sessionQuery.pageNum=1
-        this.setSearchQuery({
-          path:'bill',
-          url:'/payInfo/selectPayInfoList',
-          query:sessionQuery
-        })
+
+        //点击查询时，缓存筛选条件
+        if(type==='search'||type==='pagination'){
+          sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:this.$route.fullPath,
+            url:'/payInfo/selectPayInfoList',
+            query:Object.assign({},param,{empName:this.dep.empName})
+          }))
+        }
+
         this.$ajax.get('/api/payInfo/selectPayInfoList', param).then(res => {
           res = res.data
           if (res.status === 200) {

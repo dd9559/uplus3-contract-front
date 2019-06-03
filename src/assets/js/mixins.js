@@ -20,7 +20,9 @@ const MIXINS = {
       //部门下拉筛选
       dep:{
         id:'',
-        name:''
+        name:'',
+        empId:'',
+        empName:''
       },
       employePage:1,
       employeTotal:0,
@@ -111,6 +113,11 @@ const MIXINS = {
       this.$ajax.get('/api/organize/employees/pages',{depId:val,pageNum:page,selectSubs:sub}).then(res=>{
         res=res.data
         if(res.status===200){
+          res.data.list.some((item,index)=>{
+            if(item.empId===this.dep.empId){
+              res.data.list.splice(index,1)
+            }
+          })
           this.EmployeList=this.EmployeList.concat(res.data.list)
           this.employeTotal=res.data.total
           this.EmployeInit = res.data.total
@@ -138,7 +145,7 @@ const MIXINS = {
         this.employePage=1
       }
     },
-    //部门树结构选择操作
+    //部门、员工树结构选择操作
     handleNodeClick(data) {
       this.getEmploye(data.depId)
       this.clearSelect('emp')
@@ -147,6 +154,17 @@ const MIXINS = {
       /*if(data.subs.length===0){
         this.$refs.tree.blur()
       }*/
+    },
+    //员工树结构选择操作
+    handleEmpNodeClick(data) {
+      let cell = {empId:'',name:''}
+      if(data){
+        cell = this.EmployeList.find(item=>item.empId===data)
+      }
+      this.dep=Object.assign({},this.dep,{
+        empId:cell.empId,
+        empName:cell.name
+      })
     },
     //员工滚动加载更多
     moreEmploye:function () {
@@ -332,7 +350,9 @@ const MIXINS = {
       'getUser',
       'getLoading',
       'getCollapse',
-      'getBodyScollShow'
+      'getBodyScollShow',
+      'getSearchQuery',
+      'getDataList'
     ])
   },
   mounted() {

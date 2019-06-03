@@ -50,7 +50,7 @@
        </el-form-item>
 
         <el-form-item>
-             <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="propForm.dealAgentId" placeholder="请选择">
+             <el-select :clearable="true" v-loadmore="moreEmploye" @change="handleEmpNodeClick" class="margin-left" size="small" v-model="propForm.dealAgentId" placeholder="请选择">
                <el-option
                  v-for="item in EmployeList"
                  :key="item.empId"
@@ -233,7 +233,8 @@ export default {
         dateMo: "", //时间
         search: "" ,//关键字
         timeType:0,
-        joinMethods:""//合作方式
+        joinMethods:"",//合作方式
+        empName:''
       },
       dictionary: {
         //数据字典
@@ -282,7 +283,50 @@ export default {
       pageNum: this.currentPage,
       pageSize: this.pageSize
     };
-    this.getData(this.ajaxParam);
+    this.$nextTick(()=>{
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.receivableList = res.data.list;
+        this.total = res.data.total;
+         let session = JSON.parse(sessionStorage.getItem('sessionQuery')).query
+         this.propForm.dateMo = session.startTime?[session.startTime,session.endTime]:[]
+         this.propForm.search=session.keyword
+         this.propForm.dealAgentStoreId=session.dealAgentStoreId
+         this.propForm.dealAgentId=session.dealAgentId
+         this.propForm.empName=session.empName
+         this.propForm.department=session.department
+        this.propForm.pageNum = session.pageNum
+        this.propForm.pageSize = session.pageSize
+
+         this.propForm.contractType=session.contractType.split(',')
+         if(this.propForm.contractType[0]!=''){
+          for(let i=0;i<this.propForm.contractType.length;i++){
+                    this.propForm.contractType[i]=Number(this.propForm.contractType[i])
+              }
+         }else{
+           this.propForm.contractType=[]
+         }
+         if(this.propForm.dealAgentId){
+            this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.propForm.empName})
+            this.EmployeList.unshift({
+              empId:this.propForm.dealAgentId,
+              name:this.propForm.empName
+            })
+            this.getEmploye(this.propForm.dealAgentStoreId)
+          }
+         
+         this.currentPage=session.pageNum
+         this.pageSize=session.pageSize
+         this.propForm.timeType=session.timeType
+         this.propForm.joinMethods=session.joinMethods
+        // this.propForm = Object.assign({},this.ajaxParam,session.query)
+        this. $nextTick(()=>{
+               this.loading=false;
+            })
+      }else{
+        this.getData(this.ajaxParam);
+      }
+    })
     // 字典初始化
     this.getDictionary();
     //部门初始化
@@ -297,14 +341,16 @@ export default {
         let param = Object.assign({},this.ajaxParam)
         this.excelCreate('/input/exportSettleExcel',param)
     },
-    getData(param) {
+    getData(ajaxParam,typeshow,param) {
+      if(typeshow!=1&&param==2){
+        this.currentPage=1
+      }
        this.loading=true;
        // 实收列表
         let _that = this;
-        this.$ajax.get("/api/achievement/selectReceiptsList", param).then(res => {
+        this.$ajax.get("/api/achievement/selectReceiptsList", ajaxParam).then(res => {
           let data = res.data;
           if (res.status === 200) {
-            console.log("22222222222")
             console.log(data.data.list);
             _that.receivableList = data.data.list;
             // if (data.data.list[0]) {
@@ -348,7 +394,8 @@ export default {
       /*this.DepList=payload.list
       this.propForm.department=payload.depName*/
     },
-    queryFn() {
+    queryFn(typeshow) {
+      
       // console.log("ssssssssssss");
       // console.log(this.ajaxParam);
       // console.log(this.propForm);
@@ -361,6 +408,7 @@ export default {
           endTime: this.propForm.dateMo[1], //结束时间
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
+          department:this.propForm.department,
           pageSize: this.pageSize,
           timeType:this.propForm.timeType,
           joinMethods:this.propForm.joinMethods//合作方式
@@ -372,13 +420,21 @@ export default {
           contractType: this.propForm.contractType.length===0?'':this.propForm.contractType.join(','), //合同类型
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
+          department:this.propForm.department,
           pageSize: this.pageSize,
           joinMethods:this.propForm.joinMethods//合作方式
         };
       }
-      this.ajaxParam.pageNum = 1;
-      this.currentPage = 1;
-      this.getData(this.ajaxParam);
+      // this.ajaxParam.pageNum = 1;
+      // this.currentPage = 1;
+      let param = JSON.parse(JSON.stringify(this.ajaxParam))
+      sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:'/receivableAchievement',
+            url:'/achievement/selectReceiptsList',
+            query:Object.assign({},param,{empName:this.dep.empName}),
+            methods:'get'
+          }))
+      this.getData(this.ajaxParam,typeshow,2);
     },
     resetFormFn() {
       this.ajaxParam = {
@@ -413,7 +469,7 @@ export default {
     handleCurrentChange(val) {
       this.ajaxParam.pageNum = val;
       this.currentPage = val;
-      this.getData(this.ajaxParam);
+      this.queryFn(1);
     },
     // 跳转合同详情
     skipContDel(value) {

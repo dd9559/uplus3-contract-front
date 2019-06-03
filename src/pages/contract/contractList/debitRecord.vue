@@ -2,11 +2,11 @@
 <template>
   <div class="view-container" id="debitRecord" ref="tableComView">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini" ref="adjustCheckForm">
         <el-form-item label="关键字">
           <el-tooltip effect="dark" content="打款人/账户/备注/金额" placement="top">
-            <el-input v-model="adjustForm.keyWord" style="width:150px" clearable placeholder="请输入"></el-input>
+            <el-input v-model="adjustForm.keyword" style="width:150px" clearable placeholder="请输入"></el-input>
           </el-tooltip>
         </el-form-item>
 
@@ -63,6 +63,7 @@
             v-loadmore.in="moreDeps"
             :clearable="true"
             @clear="clearOutList('in')"
+            @change="checkIn"
             :loading="loading">
             <el-option
               v-for="item in inStoreList"
@@ -182,7 +183,7 @@
 
         <el-table-column label="操作" fixed="right" align="center" min-width="120">
           <template slot-scope="scope">
-            <template v-if="scope.row.status && scope.row.status.value === 2 && power['sign-ht-fz-pay'].state">
+            <template v-if="scope.row.status && scope.row.status.value === 2 && power['sign-ht-fz-pay'].state&&scope.row.flag!=1">
               <el-button type="text" class="curPointer" @click="payAgain(scope.row)">重新打款</el-button>
             </template>
             <span v-else>--</span>
@@ -194,8 +195,8 @@
       </el-table>
       <el-pagination
       @current-change="handleCurrentChange"
-      :page-size="tableData.pageSize"
-      :current-page="tableData.pageNum"
+      :page-size="pageSize"
+      :current-page="pageNum"
       layout="total, prev, pager, next, jumper"
       :total="tableData.total"
       v-if="tableData.total > 0"
@@ -428,7 +429,7 @@
           inStoreId: '', //分账门店属性
           outStoreAttr: '', //收款门店id
           inStoreAttr: '', //收款门店属性
-          keyWord: '',   //关键字
+          keyword: '',   //关键字
           status:{
             value:'',
             label: ''
@@ -440,6 +441,14 @@
         pageSize_:50,
         outStoreList:[],//分账门店
         inStoreList:[],//收款门店
+        checkOutDep:{
+          id:'',
+          name:''
+        },
+        checkInDep:{
+          id:'',
+          name:''
+        },
         currentPage_out:1,//分账
         currentPage_in:1,//收款
         total_out:0,
@@ -677,13 +686,27 @@
           this.currentPage_in=1//收款
           this.total_out=this.firstTotal
           this.total_in=this.firstTotal
+          this.outStoreList=[]
+          this.inStoreList=[]
+          this.getDepList({
+            // type:'G',
+            pageNum:this.currentPage_,
+            pageSize:this.pageSize_,
+          })
+          this.checkOutDep.id=''
+          this.checkOutDep.name=''
+          this.checkInDep.id=''
+          this.checkInDep.name=''
       },
 
       // 查询
-      queryFn() {
+      queryFn(type="init") {
         // console.log(this.power)
         // if(this.power['sign-ht-maid-query'].state){
           // console.log(this.userMsg.empId)
+          if(type==="search"){
+            this.pageNum=1
+          }
         this.loadingTable = true;
         // this.adjustForm.signDate = TOOL.dateFormat(this.adjustForm.signDate);
             let moneyOutStartTime = '';
@@ -701,9 +724,17 @@
               moneyOutEndTime,
               pageNum: this.pageNum,
               pageSize: this.pageSize,
-              keyword: this.adjustForm.keyWord,
+              keyword: this.adjustForm.keyword,
               status: this.adjustForm.status.value,
               type:  this.adjustForm.type
+            }
+            if(type==="search"||type==="page"){
+              sessionStorage.setItem('sessionQuery',JSON.stringify({
+                path:'/debitRecord',
+                url:'/separate/money/out/list',
+                query:Object.assign({},param,{checkOutDep:this.checkOutDep},{checkInDep:this.checkInDep}),
+                methods:"get"
+              }))
             }
             //调整佣金审核列表
             this.$ajax
@@ -733,7 +764,32 @@
         // }
 
       },
-
+      //记录选中的门店
+    checkOut(data){//分账门店
+    // debugger
+      if(data){
+        let cell = this.outStoreList.find(item=>item.id===data)
+        this.checkOutDep=Object.assign({},this.checkOutDep,{
+          id:cell.id,
+          name:cell.name
+        })
+      }else{
+        this.checkOutDep.id=''
+        this.checkOutDep.name=''
+      }
+    },
+    checkIn(data){//收款门店
+      if(data){
+        let cell = this.inStoreList.find(item=>item.id===data)
+        this.checkInDep=Object.assign({},this.checkInDep,{
+          id:cell.id,
+          name:cell.name
+        })
+      }else{
+        this.checkInDep.id=''
+        this.checkInDep.name=''
+      }
+    },
       // 双击详情事件
       toDetail(e) {
         let newPage = this.$router.resolve({
@@ -786,21 +842,50 @@
 
       handleCurrentChange(e) {
         this.pageNum = e;
-        this.queryFn();
+        this.queryFn("page");
       },
 
 
-    getDepList(param,first=true,type='out'){
+    getDepList(param,first=true,type='other'){
       this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
         res=res.data;
         if(res.status===200){
+          // if(this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id||this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id){
+          //   res.data.list.forEach((element,index) => {
+          //     if((this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id===element.id)||(this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id===element.id)){
+          //       res.data.list.splice(index,1)
+          //     }
+          //   });
+          // }
+          let outList = [].concat(res.data.list)
+          let inList = [].concat(res.data.list)
+          if(this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id){
+            res.data.list.forEach((element,index) => {
+              if(this.adjustForm.checkOutDep&&this.adjustForm.checkOutDep.id===element.id){
+                outList.splice(index,1)
+              }
+            });
+          }
+          if(this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id){
+            res.data.list.forEach((element,index) => {
+              if(this.adjustForm.checkInDep&&this.adjustForm.checkInDep.id===element.id){
+                inList.splice(index,1)
+              }
+            });
+          }
           if(first){
-            this.outStoreList=res.data.list;
-            this.inStoreList=res.data.list;
-            this.options=res.data.list;
-            this.firstTotal=res.data.total;
-            this.total_out=res.data.total
-            this.total_in=res.data.total
+            if(type==="out"){
+              this.outStoreList=this.outStoreList.concat(outList);
+              this.total_out=res.data.total
+            }else if(type==="in"){
+              this.inStoreList=this.inStoreList.concat(inList);
+              this.total_in=res.data.total
+            }else{
+              this.outStoreList=this.outStoreList.concat(outList);
+              this.inStoreList=this.inStoreList.concat(inList);
+              this.total_out=res.data.total
+              this.total_in=res.data.total
+            }
           }else{
             if(type==='out'){
               this.outStoreList=res.data.list;
@@ -895,6 +980,8 @@
         pageSize:this.pageSize_,
         depAttr:''
       }
+      this.checkOutDep.id=''
+      this.checkOutDep.name=''
       if(value===1){
         param.depAttr='DIRECT'
       }else if(value===2){
@@ -911,6 +998,8 @@
         pageSize:this.pageSize_,
         depAttr:''
       }
+      this.checkInDep.id=''
+      this.checkInDep.name=''
       if(value===1){
         param.depAttr='DIRECT'
       }else if(value===2){
@@ -933,7 +1022,7 @@
         }else if(this.adjustForm.outStoreAttr===2){
           param.depAttr='JOIN'
         }
-        this.getDepList(param,false,'out')
+        // this.getDepList(param,false,'out')
       }else{
         this.currentPage_in=1;
         let param = {
@@ -947,32 +1036,82 @@
         }else if(this.adjustForm.inStoreAttr===2){
           param.depAttr='JOIN'
         }
-        this.getDepList(param,false,'in')
+        // this.getDepList(param,false,'in')
         }
       },
-
-
-
-
-
-
-
     },
-
     created() {
-      this.queryFn();
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.tableData = res.data
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.adjustForm = Object.assign({},this.adjustForm,session.query)
+        this.adjustForm.status={
+          value:this.adjustForm.status,
+          label:''
+        }
+        if(session.query.moneyOutStartTime){
+          this.adjustForm.signDate=[session.query.moneyOutStartTime,session.query.moneyOutEndTime]
+        }
+        delete this.adjustForm.pageNum
+        delete this.adjustForm.moneyOutStartTime
+        delete this.adjustForm.moneyOutEndTime
+        this.pageNum=session.query.pageNum
+        // this.adjustForm.outStoreId=''
+        // this.adjustForm.inStoreId=''
+        if(this.adjustForm.checkOutDep.id){
+          this.outStoreList.unshift({
+            id:this.adjustForm.checkOutDep.id,
+            name:this.adjustForm.checkOutDep.name
+          })
+        }
+        if(this.adjustForm.checkInDep.id){
+          this.inStoreList.unshift({
+            id:this.adjustForm.checkInDep.id,
+            name:this.adjustForm.checkInDep.name
+          })
+        }
+
+        if(this.adjustForm.outStoreAttr){
+          let param = {
+            pageNum:this.currentPage_out,
+            pageSize:this.pageSize_,
+          }
+          param.depAttr=this.adjustForm.outStoreAttr===1?"DIRECT":"JOIN"
+          this.getDepList(param,true,"out")
+        }
+        if(this.adjustForm.inStoreAttr){
+          let param = {
+            pageNum:this.currentPage_in,
+            pageSize:this.pageSize_,
+          }
+          param.depAttr=this.adjustForm.inStoreAttr===1?"DIRECT":"JOIN"
+          this.getDepList(param,true,"in")
+        }
+        if(!this.adjustForm.outStoreAttr&&!this.adjustForm.inStoreAttr){
+          this.getDepList({
+            // type:'G',
+            pageNum:1,
+            pageSize:this.pageSize_,
+          })
+        }
+      }else{
+        this.queryFn();
+        this.getDepList({
+          // type:'G',
+          pageNum:1,
+          pageSize:this.pageSize_,
+        })
+      }
       // this.getDepNameFn();
       this.getDictionary();
-      this.getDepList({
-        type:'G',
-        pageNum:this.currentPage_,
-        pageSize:this.pageSize_,
-      })
+      // this.getDepList({
+      //   type:'G',
+      //   pageNum:this.currentPage_,
+      //   pageSize:this.pageSize_,
+      // })
       // this.getAdmin();
       // this.remoteMethod()
-
-
-
     },
 
     mounted() {

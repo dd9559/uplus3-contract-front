@@ -287,7 +287,15 @@
             this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
             // this.getCityList()
             this.getDictionary()
-            this.getData()
+            let res=this.getDataList
+            if(res&&(res.route===this.$route.path)){
+                this.tableData = res.data.data
+                this.total = res.data.total
+                let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+                this.searchForm = session.query
+            }else{
+                this.getData()
+            }
             this.remoteMethod()
             this.getDeps()
             this.getRoles()
@@ -308,12 +316,23 @@
                     }
                 }
             },
-            getData() {
+            getData(type="init") {
                 let param = {
                     pageSize: this.pageSize,
                     pageNum: this.pageNum
                 }
                 param = Object.assign({},this.searchForm,param)
+
+                //点击查询时，缓存筛选条件
+                if(type==='search'){
+                    sessionStorage.setItem('sessionQuery',JSON.stringify({
+                        path:'/approvalProcess',
+                        url:'/auditflow/selectFlowList',
+                        query:param,
+                        methods:"get"
+                    }))
+                }
+
                 this.$ajax.get('/api/auditflow/selectFlowList',param).then(res => {
                     res = res.data
                     if(res.status === 200) {
@@ -797,7 +816,7 @@
                 })
             },
             queryFn() {
-                this.getData()
+                this.getData('search')
             },
             resetFormFn() {
                 this.searchForm.deptAttr = ""
@@ -825,6 +844,14 @@
                     if(val === i) {
                         return flowType[i]
                     }
+                }
+            }
+        },
+        watch: {
+            dictionary(val){
+                let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+                if(val&&session!=null){
+                    this.setHomeConditionList(this.searchForm.type)
                 }
             }
         }

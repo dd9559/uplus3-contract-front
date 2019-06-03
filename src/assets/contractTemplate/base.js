@@ -4,7 +4,7 @@ let contractConfig = {
      * @param callback 弹窗中多行文本框的输入回调
      * 注意弹窗必须是一个div.alert-viwer，子元素有textarea#inputArea、p.control-btn
      */
-    inputListener: function (callback) {
+    inputListener: function (callback,success) {
         let inputAutoBoxs = document.querySelectorAll("*[tag='input-auto']")
         for (let i = 0; i < inputAutoBoxs.length; i++) {
             inputAutoBoxs[i].onclick = function (tip) {
@@ -49,6 +49,7 @@ let contractConfig = {
                             tip.target.innerHTML=''
                             tip.target.classList.add('input-before')
                         }
+                        success&&success(tip)
                     }
                     if(e.target!==e.currentTarget){
                         inputArea.style.display='none'

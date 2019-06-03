@@ -35,7 +35,7 @@
           <select-tree :data="DepList" :init="contractForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
         </el-form-item>
         <el-form-item>
-          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" placeholder="请选择">
+          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" @change="handleEmpNodeClick" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -179,7 +179,7 @@
               <!-- v-if="userMsg&&scope.row.auditId===userMsg.empId" -->
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.auditId===userMsg.empId||scope.row.preAuditId===userMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===userMsg.empId?1:2)">{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+            <el-button type="text" v-if="getUserMsg&&(scope.row.auditId===getUserMsg.empId||scope.row.preAuditId===getUserMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="120">
@@ -189,7 +189,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="userMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===userMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="getUserMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===getUserMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="变更/解约" min-width="80">
@@ -203,8 +203,8 @@
             <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
               <!--<el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>-->
-            <span style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&scope.row.auditId!==userMsg.empId">{{scope.row.auditName}}正在审核</span>
-            <el-button type="text"  v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&userMsg&&scope.row.auditId===userMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId<0&&userMsg&&(userMsg.roleId===22||userMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</el-button>
+            <span style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</span>
+            <el-button type="text"  v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</el-button>
             <!-- </div> -->
           </template>
         </el-table-column>
@@ -308,14 +308,47 @@ export default {
     }
   },
   created() {
-    this.getContractList();//合同列表
     this.getDictionary();//字典
     this.remoteMethod();//部门
-    this.getAdmin();//获取当前登录人信息
+    // this.getAdmin();//获取当前登录人信息
+    let res=this.getDataList
+    if(res&&(res.route===this.$route.path)){
+      this.tableData = res.data.list
+      this.total = res.data.count
+      let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+      this.contractForm = Object.assign({},this.contractForm,session.query,{contTypes:session.query.contTypes.length>0?session.query.contTypes.split(','):''})
+      if(this.contractForm.contTypes){
+        this.contractForm.contTypes = this.contractForm.contTypes.map(item=>{
+          return Number(item)
+        })
+      }
+      // this.contractForm.dealAgentStoreId=''
+      // this.contractForm.dealAgentId=''
+      delete this.contractForm.keyword
+      delete this.contractForm.pageNum
+      delete this.contractForm.beginDate
+      delete this.contractForm.endDate
+      this.keyword=session.query.keyword
+      this.currentPage=session.query.pageNum
+      if(session.query.beginDate){
+        this.signDate[0]=session.query.beginDate
+        this.signDate[1]=session.query.endDate
+      }
+      if(this.contractForm.dealAgentId){
+        this.dep=Object.assign({},this.dep,{id:this.contractForm.dealAgentStoreId,empId:this.contractForm.dealAgentId,empName:this.contractForm.empName})
+        this.EmployeList.unshift({
+          empId:this.contractForm.dealAgentId,
+          name:this.contractForm.empName
+        })
+        this.getEmploye(this.contractForm.dealAgentStoreId)
+      }
+    }else{
+      this.getContractList();//合同列表
+    }
   },
   methods:{
     //获取合同列表
-    getContractList() {
+    getContractList(type="init") {
       let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
@@ -334,8 +367,17 @@ export default {
       }else{
         param.contTypes=''
       }
-      delete param.depName
+      // delete param.depName
       //console.log(param)
+      if(type==="search"||type==="page"){
+        sessionStorage.setItem('sessionQuery',JSON.stringify({
+          path:'/contractCheck',
+          url:'/contract/auditList',
+          query:Object.assign({},param,{empName:this.dep.empName}),
+          methods:"postJSON"
+        }))
+      }
+      
       this.$ajax.postJSON("/api/contract/auditList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
@@ -347,7 +389,7 @@ export default {
     //翻页
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getContractList();
+      this.getContractList("page");
     },
     //重置
     resetFormFn() {
@@ -359,7 +401,7 @@ export default {
     // 查询
     queryFn() {
       this.currentPage=1;
-      this.getContractList();
+      this.getContractList("search");
     },
      //字典查询
     getDictionaries() {
@@ -514,13 +556,16 @@ export default {
       switch (host){
           case "localhost:8080":
           case "sign2.jjw.com:28879":
-            url=this.userMsg.depId===594||this.userMsg.depId===838
+            url=this.getUserMsg.depId===594||this.getUserMsg.depId===838
                 break
           case "sign2.jjw.com":
-            url=this.userMsg.depId===900||this.userMsg.depId===2257
+            url=this.getUserMsg.depId===900||this.getUserMsg.depId===2257
                 break
         }
         return url
+    },
+    getUserMsg(){
+      return this.getUser.user
     }
   },
   filters: {

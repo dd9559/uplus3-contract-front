@@ -2,11 +2,11 @@
 <template>
   <div class="view-container" id="settlecheck" ref="tableComView">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini">
         <el-form-item label="关键字">
           <el-tooltip effect="dark" content="合同编号/房源编号/客源编号" placement="top">
-            <el-input v-model="adjustForm.keyWord" style="width:150px" clearable placeholder="请输入"></el-input>
+            <el-input v-model="adjustForm.keyword" style="width:150px" clearable placeholder="请输入"></el-input>
           </el-tooltip>
         </el-form-item>
         <el-form-item label="发起日期">
@@ -43,8 +43,7 @@
               <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select> -->
           <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
-                     v-model="adjustForm.empId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="adjustForm.dealAgentId" @change="handleEmpNodeClick" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -139,7 +138,7 @@
               <p>{{scope.row.examineName}}</p>
             </span>
             <p v-else>--</p>
-            <p class="btn-text-info" type="text" v-if="userMsg&&(scope.row.preAuditId === userMsg.empId || scope.row.auditorId === userMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,userMsg.empId===scope.row.auditorId?2:1)">{{userMsg.empId===scope.row.auditorId?'转交审核人':'设置审核人'}}</p>
+            <p class="btn-text-info" type="text" v-if="getUserMsg&&(scope.row.preAuditId === getUserMsg.empId || scope.row.auditorId === getUserMsg.empId)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,getUserMsg.empId===scope.row.auditorId?2:1)">{{getUserMsg.empId===scope.row.auditorId?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="下一步审核人" min-width="120">
@@ -149,7 +148,7 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>--</p>
-            <p class="btn-text-info color-red" type="text" v-if="userMsg&&(scope.row.auditorId === userMsg.empId&&scope.row.nextAuditId!==0)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
+            <p class="btn-text-info color-red" type="text" v-if="getUserMsg&&(scope.row.auditorId === getUserMsg.empId&&scope.row.nextAuditId!==0)&&scope.row.examineState&&scope.row.examineState.value===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" align="center" min-width="120">
@@ -170,7 +169,7 @@
 
         <el-table-column label="操作" min-width="120" fixed="right" align="center">
           <template slot-scope="scope">
-            <template v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === userMsg.empId">
+            <template v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === getUserMsg.empId">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
@@ -290,7 +289,7 @@
           </div>
           <div class="col-li col-li2">
             <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
-            <p>后期状态：<span>{{layerAudit.statusLaterStage.label}}</span></p>
+            <p>后期状态：<span v-if="layerAudit.contractType.value!==1">{{layerAudit.statusLaterStage.label}}</span><span v-else>--</span></p>
             <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
           </div>
           <div class="col-li col-li2">
@@ -423,7 +422,6 @@
         loading2:false,
         loadingTable:false,
         settleMarks: '',
-        userMsg:{},
         // settleMarks:'',
          adjustForm:{
           signDate: '', //发起日期
@@ -431,8 +429,8 @@
           depAttr: '', //合作方式
           examineState:'',
           depName:'',
-          depId: '',
-          empId: '',
+          dealAgentStoreId: '',
+          dealAgentId: '',
           // getDepName: [{
           //   name: "全部",
           //   id: ""
@@ -442,7 +440,7 @@
           //   empId: ""
           // }],
                      //审核状态
-          keyWord: ''   //关键字
+          keyword: ''   //关键字
 
         },
 
@@ -524,6 +522,9 @@
     },
 
     computed: {
+      getUserMsg(){
+        return this.getUser.user
+      }
         // settlemark(){
         //   return this.layerAudit.settlementRemarks.length;
         // }
@@ -689,14 +690,16 @@
       },
 
       // 查询
-      queryFn() {
+      queryFn(type="init") {
         // console.log(this.power)
         // if(this.power['sign-ht-js-query'].state){
 
           this.loadingTable = true;
           let beginDate;
           let endDate;
-
+          if(type==="search"){
+            this.pageNum=1
+          }
           if(this.adjustForm.signDate && this.adjustForm.signDate.length === 2){
               beginDate = TOOL.dateFormat(this.adjustForm.signDate[0]);
               endDate = TOOL.dateFormat(this.adjustForm.signDate[1]);
@@ -708,9 +711,10 @@
               examineState: this.adjustForm.examineState,    //this.examineState
               // contractType: this.adjustForm.contTypes,    //this.adjustForm.contType.key,
               depAttr: this.adjustForm.depAttr,
-              dealAgentStoreId: this.adjustForm.depId,    //this.Form.getDepName.id,
-              dealAgentId: this.adjustForm.empId,    //this.Form.getAgentName.empId,
-              keyword: this.adjustForm.keyWord
+              dealAgentStoreId: this.adjustForm.dealAgentStoreId, 
+              depName:this.adjustForm.depName,   //this.Form.getDepName.id,
+              dealAgentId: this.adjustForm.dealAgentId,    //this.Form.getAgentName.empId,
+              keyword: this.adjustForm.keyword
 
             },
             pageNum: this.pageNum,
@@ -722,6 +726,15 @@
           }else{
            param.contResultVo["contTypes"]=''
           }
+          if(type==="search"||type==="page"){
+              param.contResultVo.empName=this.dep.empName
+              sessionStorage.setItem('sessionQuery',JSON.stringify({
+                path:'/settleCheck',
+                url:'/contract/contResultList',
+                query:param,
+                methods:"postJSON"
+              }))
+            }
             // 结算审核列表
             this.$ajax
             .postJSON("/api/contract/contResultList", param)
@@ -902,24 +915,24 @@
 
       handleCurrentChange(e) {
         this.pageNum = e;
-        this.queryFn();
+        this.queryFn("page");
       },
 
 
       depHandleClick(data) {
         // this.getEmploye(data.depId)
-        this.adjustForm.depId=data.depId
+        this.adjustForm.dealAgentStoreId=data.depId
         this.adjustForm.depName=data.name
-        this.adjustForm.empId = ''
+        this.adjustForm.dealAgentId = ''
 
         this.handleNodeClick(data)
       },
 
       clearDep:function () {
-        this.adjustForm.depId=''
+        this.adjustForm.dealAgentStoreId=''
         this.adjustForm.depName=''
         // this.EmployeList=[]
-        this.adjustForm.empId=''
+        this.adjustForm.dealAgentId=''
         this.clearSelect()
       },
 
@@ -938,10 +951,39 @@
     },
 
     created() {
-      this.queryFn();
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.tableData = res.data
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.adjustForm = Object.assign({},this.adjustForm,session.query.contResultVo,{contTypes:session.query.contResultVo.contTypes.length>0?session.query.contResultVo.contTypes.split(','):''})
+        if(this.adjustForm.contTypes){
+          this.adjustForm.contTypes = this.adjustForm.contTypes.map(item=>{
+            return Number(item)
+          })
+        }
+        delete this.adjustForm.pageNum
+        delete this.adjustForm.beginDate
+        delete this.adjustForm.endDate
+        this.pageNum=session.query.contResultVo.pageNum
+        if(session.query.contResultVo.beginDate){
+          this.adjustForm.signDate=[session.query.contResultVo.beginDate,session.query.contResultVo.endDate]
+        }
+        // this.adjustForm.dealAgentStoreId=''
+        // this.adjustForm.dealAgentId=''
+        if(this.adjustForm.dealAgentId){
+          this.dep=Object.assign({},this.dep,{id:this.adjustForm.dealAgentStoreId,empId:this.adjustForm.dealAgentId,empName:this.adjustForm.empName})
+          this.EmployeList.unshift({
+            empId:this.adjustForm.dealAgentId,
+            name:this.adjustForm.empName
+          })
+          this.getEmploye(this.adjustForm.dealAgentStoreId)
+        }
+      }else{
+        this.queryFn();
+      }
       // this.getDepNameFn();
       this.getDictionary();
-      this.getAdmin();
+      // this.getAdmin();
       this.remoteMethod();
     },
 

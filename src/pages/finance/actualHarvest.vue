@@ -39,7 +39,7 @@
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>-->
-          <el-select :clearable="true" v-loadmore="moreEmploye" size="small" class="margin-left" v-model="searchForm.dealAgentId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" size="small" class="margin-left" @change="handleEmpNodeClick" v-model="searchForm.dealAgentId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -230,7 +230,34 @@
     },
     mounted() {
       this.$nextTick(()=>{
-        this.getData()
+        let res=this.getDataList
+        if(res&&(res.route===this.$route.path)){
+          this.list = res.data.list
+          this.total = res.data.total
+          let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+          this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.length>0?session.query.contTypes.split(','):[]},{signTime:session.query.beginDate&&[session.query.beginDate,session.query.endDate]},{collectionTime:session.query.beginProDate&&[session.query.beginProDate,session.query.endProDate]})
+          // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
+          // this.$
+          this.searchForm.contType = this.searchForm.contType.map(item=>{
+            return Number(item)
+          })
+
+          delete this.searchForm.beginDate
+          delete this.searchForm.endDate
+          delete this.searchForm.beginProDate
+          delete this.searchForm.endProDate
+          if(this.searchForm.dealAgentId){
+            this.dep=Object.assign({},this.dep,{id:this.searchForm.dealAgentStoreId,empId:this.searchForm.dealAgentId,empName:this.searchForm.dealAgentName})
+            this.EmployeList.unshift({
+              empId:this.searchForm.dealAgentId,
+              name:this.searchForm.dealAgentName
+            })
+            this.getEmploye(this.searchForm.dealAgentStoreId)
+          }
+          this.currentPage=this.searchForm.pageNum
+        }else{
+          this.getData()
+        }
         // this.remoteMethod()
         this.getDictionary()
         this.getMoneyTypes()
@@ -264,7 +291,7 @@
       },
       handleCurrentChange:function (val) {
         this.currentPage = val
-        this.getData()
+        this.getData('pagination')
       },
       initDepList:function (val) {
         if(!val){
@@ -322,6 +349,22 @@
         delete param.signTime
         delete param.collectionTime
         delete param.contType
+
+        //点击查询时，缓存筛选条件
+        if(type==='search'||type==='pagination'){
+          sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:this.$route.path,
+            url:'/payInfo/receivables',
+            query:Object.assign({},param,{
+              /*dealAgentStoreName:this.dep.name,
+              dealAgentStoreId: this.dep.id,
+              dealAgentId: this.dep.empId,*/
+              dealAgentName:this.dep.empName
+            }),
+            methods:'put'
+          }))
+        }
+
         this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
           res = res.data
           if (res.status === 200) {

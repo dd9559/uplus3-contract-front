@@ -51,7 +51,7 @@
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>-->
-          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择">
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" @change="handleEmpNodeClick" v-model="searchForm.empId" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -421,7 +421,34 @@
         }
       }
 
-      this.getData()
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.fullPath)){
+        this.list = res.data.page.list
+        this.total = res.data.page.total
+        // this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.length>0?session.query.contTypes.split(','):[]})
+
+        this.searchForm.contType = this.searchForm.contType.map(item=>{
+          return Number(item)
+        })
+        if(session.query.startTime){
+          this.searchForm.timeRange=[session.query.startTime,session.query.endTime]
+          delete this.searchForm.startTime
+          delete this.searchForm.endTime
+        }
+        if(this.searchForm.empId){
+          this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId,empName:this.searchForm.empName})
+          this.EmployeList.unshift({
+            empId:this.searchForm.empId,
+            name:this.searchForm.empName
+          })
+          this.getEmploye(this.searchForm.deptId)
+        }
+        this.currentPage=this.searchForm.pageNum
+      }else{
+        this.getData()
+      }
       // this.remoteMethod()
       this.getDictionary()
       this.getMoneyTypes()
@@ -441,11 +468,35 @@
           }
         }
       }
-      /*this.$nextTick(()=>{
-        this.tableBox=this.$refs.dataList
-      })*/
 
-      this.getData()
+      let res=this.getDataList
+      if(res&&(res.route===to.fullPath)){
+        this.list = res.data.page.list
+        this.total = res.data.page.total
+        // this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.length>0?session.query.contTypes.split(','):[]})
+
+        this.searchForm.contType = this.searchForm.contType.map(item=>{
+          return Number(item)
+        })
+        if(session.query.startTime){
+          this.searchForm.timeRange=[session.query.startTime,session.query.endTime]
+          delete this.searchForm.startTime
+          delete this.searchForm.endTime
+        }
+        if(this.searchForm.empId){
+          this.dep=Object.assign({},this.dep,{id:this.searchForm.deptId,empId:this.searchForm.empId,empName:this.searchForm.empName})
+          this.EmployeList.unshift({
+            empId:this.searchForm.empId,
+            name:this.searchForm.empName
+          })
+          this.getEmploye(this.searchForm.deptId)
+        }
+        this.currentPage=this.searchForm.pageNum
+      }else{
+        this.getData()
+      }
       this.getDictionary()
       next()
     },
@@ -513,9 +564,8 @@
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
         this.currentPage = val
-        this.getData()
+        this.getData('pagination')
       },
       initDepList:function (val) {
         if(!val){
@@ -555,6 +605,16 @@
         param.pageSize = this.pageSize
         delete param.contType
         delete param.timeRange
+
+        //点击查询时，缓存筛选条件
+        if(type==='search'||type==='pagination'){
+          sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:this.$route.fullPath,
+            url:this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList',
+            query:Object.assign({},param,{empName:this.dep.empName})
+          }))
+        }
+
         let url = this.activeView===1?'/payInfo/proceedsAuditList':'/payInfo/payMentAuditList'
         this.$ajax.get(`/api${url}`,param).then(res => {
           res = res.data
