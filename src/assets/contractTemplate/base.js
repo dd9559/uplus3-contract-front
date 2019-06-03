@@ -48,8 +48,8 @@ let contractConfig = {
                         }else {
                             tip.target.innerHTML=''
                             tip.target.classList.add('input-before')
-                            success&&success(tip)
                         }
+                        success&&success(tip)
                     }
                     if(e.target!==e.currentTarget){
                         inputArea.style.display='none'
