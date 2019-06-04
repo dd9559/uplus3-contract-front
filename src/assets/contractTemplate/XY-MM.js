@@ -427,8 +427,8 @@ for (let i = 0; i < inputbox.length; i++) {
         if(attr==='delivery'){
             prohibit(inputbox[i],['a','b','c'],'delivery')
         }
-        if(attr==='reject'){
-            prohibit(inputbox[i],['a','b'],'reject')
+        if(attr==='solve'){
+            prohibit(inputbox[i],['a','b'],'solve')
         }
         if(attr==='loans1'){
             prohibit(inputbox[i],['a','b'],'loans1',0)
@@ -721,9 +721,15 @@ contractConfig.inputListener(function(ev,tip){
       tip.target.innerHTML=ev.target.value
     }
   },function(tip){
+    //获取输入框的默认值
+    let initVal=tip.target.innerHTML
     let ArrCn = ['val52','val66','val68','val71','val74','val76','val83','val85']
     let strCn = tip.target.getAttribute('extendparam')
-    if(ArrCn.includes(strCn)){
-        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
+    if(initVal.length>0){
+       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
+    }else{
+      if(ArrCn.includes(strCn)){
+       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
+      }
     }
   })
