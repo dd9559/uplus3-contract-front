@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="/datepicker.css"/>
+    <link rel="stylesheet" href="./datepicker.css"/>
+    <!--<link rel="stylesheet" href="/datepicker.css"/>-->
     <title>居间合同</title>
     <style>
         body {
@@ -246,48 +247,13 @@
         </div>
     </div>
 </body>
-<script type="module" src="./xy-JJ.js"></script>
 <script type="text/javascript" src="./datepicker.js"></script>
 <script type="text/javascript" src="./dropdown.js"></script>
+<script type="module" src="./xy-JJ.js"></script>
 
 <!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
 <script type="text/javascript" src="/js/bundle_jj_xy20190603.js"></script> -->
-<!-- <script>
-     (function () {
-      var scriptList = document.getElementsByTagName("script")
-      console.log(scriptList)
-      if(!scriptList[0].src){
-        var host='https://sign2.jjw.com'
-        var host_other="http://sign2.jjw.com:28879"
-        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_jj20190402.js","datepicker.css"]
-        for (let i = 0; i < addrList.length; i++) {
-          if(window.location.host==='localhost:8080'){
-            if(addrList[i].indexOf('bundle')>-1){
-              addrList[i]=host_other+'/'+addrList[i]
-            // addrList[i]='./JJ.js'
-            }else{
-              addrList[i]=host_other+'/'+addrList[i]
-            }
-          }else{
-            addrList[i]='/'+addrList[i]
-          }
-          if(addrList[i].indexOf('.css')>-1){
-            var hm = document.createElement("link");
-            hm.rel="stylesheet"
-            hm.href = addrList[i];
-            var s = document.getElementsByTagName("link")[0];
-            s.parentNode.insertBefore(hm,s);
-          }else{
-            var hm = document.createElement("script");
-            hm.src = addrList[i];
-            var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
-            s.parentNode.insertBefore(hm,s);
-          }
-        }
-      }
-    })();
-</script> -->
 </html>
