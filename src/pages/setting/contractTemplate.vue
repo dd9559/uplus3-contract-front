@@ -122,6 +122,7 @@
         mmaiAddress:'',
         jjianAddress:'',
         mbanAddress:'',
+        towFlag:0, 
         id:'',
         power: {
               'sign-set-ht-query': {
@@ -184,7 +185,7 @@
        */
       getList: function () {
         let param = {
-          cityId:this.selectCity=='武汉'?1:this.selectCity
+          cityId:this.selectCity
         }
         // if(this.power['sign-set-ht-query'].state){
               this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
@@ -235,6 +236,9 @@
               }
             }
         this.modal=false
+        if(this.uploadType){
+          this.towFlag=1
+        }
         this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
         this.$router.push({
         path: "/contraPreview",
@@ -242,10 +246,11 @@
           mmaiAddress: this.mmaiAddress,
           jjianAddress:this.jjianAddress,
           mbanAddress:this.mbanAddress,
-          selectCity:this.selectCity=='武汉'?1:this.selectCity,
+          selectCity:this.selectCity,
           type:this.contraType,
           cityName:this.cityName,
           contraName:this.contraName,
+          towFlag:this.towFlag,
           show:1,
           id:this.id
         }
@@ -301,12 +306,12 @@
             this.contraName=''
             this.mbanAddress=''
             this.mmaiAddress=''
-            this.jjianAddress=''
+            this.jjianAddress='' 
             this.template = 1
             this.id=row.id
             this.contraType=row.type.value
             this.titleStr='上传合同模板'
-            this.uploadType = (row.cityName==='武汉'&&(row.type.label==='买卖'))
+            this.uploadType = row.flag==1
         }
         //预览
         else if(type===2){
