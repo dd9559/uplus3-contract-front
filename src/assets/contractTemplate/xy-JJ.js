@@ -111,18 +111,7 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-    code:'S0001190522002',
-    ownerName:'张三',
-    ownerIdType:'',
-    ownerId:'421101199801011776',
-    guestName:'王五',
-    guestIdType:'',
-    guestId:'421101199801012222',
-    propertyAddr:'襄阳市水晶之城(别墅) 水晶之城A栋1单元03B',
-    companyNames:['中北门店加盟一']
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
