@@ -354,7 +354,8 @@ for(let readonlyItem in msg){
             element.querySelector('p').setAttribute('checked', 'true')
         }
       }else{
-        element.innerHTML=msg[readonlyItem]
+        element.value=msg[readonlyItem]
+        element.setAttribute('value', msg[readonlyItem])
       }
       element.classList.remove('input-before')
     });
