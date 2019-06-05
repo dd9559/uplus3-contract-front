@@ -91,12 +91,13 @@ let contractConfig = {
     }
   },
   /**
-   *
+   * 监听下拉筛选框
    * @param val下拉框当前选中的值
    * @param datalist下拉框列表数据
    * @param dropdownName下拉框的name，用于查找与下拉框关联的dom列表
+   * @param callback选择筛选项之后的回调
    */
-  dropdownListener:function (val,datalist,dropdownName) {
+  dropdownListener:function (val,datalist,dropdownName,callback) {
     let domList = Array.from(document.querySelectorAll(`*[name*=${dropdownName}]`))//查找与下拉框关联的dom列表
     //当前拉下框选中domList的哪一项
     let tip=datalist.findIndex(function(item){
@@ -104,8 +105,39 @@ let contractConfig = {
     })
     domList.forEach(function(item,index){
       item.classList.remove('modal');
+      //为非选项添加modal遮罩层
       if(tip>-1&&index!==tip){
         item.classList.add('modal')
+      }
+    })
+    callback()
+  },
+  /**
+   * 操作带有交互性的勾选框、下拉筛选框之后，初始化（清空）相关的子表单元素
+   * @param config配置对象（以extendparam属性名作为key值的集合）--交互性的勾选框、下拉筛选框相关的子表单元素
+   * @param readonly初始化子元素时，判断是否只可读（默认只读）
+   */
+  initForm:function (config,readonly=1) {
+    config.forEach(function(item){
+      let dom = document.querySelector(`*[extendparam=${item}]`)
+      if(readonly===1){
+        dom.setAttribute("readonly","readonly");
+        dom.setAttribute('disabled',"disabled")
+        dom.setAttribute('systemParam',"true")
+      }
+      let domType = dom.getAttribute('type')
+      let domTag = dom.getAttribute('tag')
+      //判断标签元素为输入框、下拉框（变相的也算输入框）时清空输入内容，勾选框时取消勾选状态
+      if(domType==='text'||domType==='number'||domTag==='input-auto'){
+        if(dom.tagName.toLocaleLowerCase()==='input'){
+          dom.value=''
+          dom.removeAttribute("value")
+        }else{
+          dom.innerHTML=''
+          dom.classList.add('input-before')
+        }
+      }else{
+        dom.querySelector('p').removeAttribute('checked')
       }
     })
   }
