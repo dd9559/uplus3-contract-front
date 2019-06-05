@@ -166,7 +166,7 @@ for(let readonlyItem in msg){
     }
 }
 
-let toChineseNumber=function (money) {
+let toChineseNumber = function (money) {
     //汉字的数字
     var cnNums = new Array(
         "零",
@@ -262,7 +262,7 @@ let toChineseNumber=function (money) {
     } else if (decimalNum == "") {
         chineseStr += cnInteger;
     }
-    return chineseStr;
+    return chineseStr.split('元')[0];
 }
 
 //输入自适应
