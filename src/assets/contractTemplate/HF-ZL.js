@@ -1,4 +1,4 @@
-import {contractConfig} from "./base.js"
+import {contractConfig,toChineseNumber} from "./base.js"
 let obj = {
   val6:'',
   check1:{
@@ -46,17 +46,90 @@ let obj = {
   val39:'',
   val40:'',
 }
-let errorArr=[]
+let errorArr1=[]
 
 function getCheckState(ele){
   return	!!(ele.querySelector('p').getAttribute('checked'))
+}
+
+//非空校验
+function submit(e,Obj=obj){
+  errorArr1=[]
+  sessionStorage.setItem("templateError",JSON.stringify(errorArr1))
+  for(let item in Obj){
+    let templateError=JSON.parse(sessionStorage.getItem("templateError"))
+    if(templateError.length>0){
+        return
+    }
+    let itemType=Object.prototype.toString.call(Obj[item])
+    if(itemType==='[object Object]'){
+      let state=false
+      let box=document.querySelectorAll(`div[name=${Obj[item].name}]`)
+      let arr=Array.from(box)
+      state = arr.every(function (item) {
+        return getCheckState(item)===false
+      })
+      if(state){
+        errorArr1.push(Obj[item].name)
+        break
+      }else{
+        //勾选后判断
+        if(Obj[item].require){
+          let box=document.querySelectorAll(`div[name=${Obj[item].name}]`)
+          let detail={}
+          switch (Obj[item].name){
+            case 'proveType':
+              if(getCheckState(box[0])){
+                detail={
+                  val9:''
+                }
+              }else{
+                document.querySelector(`span[extendparam="val9"]`).classList.remove('BODERRED')
+                document.querySelector(`span[extendparam="val10"]`).classList.remove('BODERRED')
+                let value9 = document.querySelector(`span[extendparam="val9"]`).innerHTML
+                let value10 = document.querySelector(`span[extendparam="val10"]`).innerHTML
+                if(!value9&&!value10){
+                  detail={
+                    val9:''
+                  }
+                }
+              }
+              break
+          }
+          submit(e,detail)
+        }
+      }
+    }else {
+      let classList = Array.from(document.querySelector(`*[extendparam=${item}]`).classList)
+      if(classList.includes('dropdown-item')||classList.includes('calendar-item')){
+        if(item==="val6"){
+          Obj[item]=document.querySelector(`span[extendparam=${item}]`).innerHTML
+        }else{
+          Obj[item]=document.querySelector(`input[extendparam=${item}]`).value
+        } 
+      }else{
+        Obj[item]=document.querySelector(`span[extendparam=${item}]`).innerHTML
+      }
+      document.querySelector(`*[extendparam=${item}]`).classList.remove('BODERRED')
+      if(Obj[item].length===0){
+        errorArr1.push({
+          type:'input',
+          name:item
+        })
+        break
+      }
+    }
+  }
+  sessionStorage.setItem('templateError',JSON.stringify(errorArr1))
+  console.log(errorArr1)
+  return errorArr1
 }
 
 //给按钮添加点击事件
 let mainBtn=document.querySelector('#submit');
 if(mainBtn){
   mainBtn.addEventListener('click',function(e){
-    submit(e,Obj1,true)
+    submit(e,obj,true)
   })
 }else{
   let btn=document.createElement('span')
@@ -65,7 +138,7 @@ if(mainBtn){
   btn.innerHTML='click'
   document.body.appendChild(btn)
   btn.addEventListener('click',function(e){
-    submit(e,Obj1,true)
+    submit(e,obj,true)
   })
 }
 
@@ -77,6 +150,18 @@ Calendar.create({
       bindElem.value=`${dateObj.year}年${dateObj.month}月${dateObj.date}日`
       bindElem.setAttribute('value',bindElem.value)
       bindElem.setAttribute('random',dateObj.random)
+    }
+  }
+})
+
+//初始化下拉控件
+Dropdown.create({
+  classN: 'dropdown-item',
+  callBack: function(bindElem, dateObj) {
+    if(bindElem.tagName.toLowerCase()==='span'){
+      bindElem.innerHTML = dateObj.value
+      bindElem.classList.remove('input-select')
+      bindElem.classList.remove('input-before')
     }
   }
 })
@@ -97,7 +182,7 @@ contractConfig.inputListener(function(ev,tip){
     let toChineseArr = ['val22','val25','val30','val32']
     let chineseStr = tip.target.getAttribute('extendparam')
     if(toChineseArr.includes(chineseStr)){
-        document.querySelector(`*[extendparam=${chineseStr}_add]`).innerHTML = toChineseNumber(ev.target.value)
+        document.querySelector(`*[extendparam=${chineseStr}_add]`).innerHTML = toChineseNumber(ev.target.value).split('元')[0]
     }
   }
   if(spanAttr==='chinese'){
@@ -116,7 +201,7 @@ contractConfig.inputListener(function(ev,tip){
 },function(tip){
   //获取输入框的默认值
   let initVal=tip.target.innerHTML
-  let ArrCn = ['val6','val8','val10']
+  let ArrCn = ['val22','val25','val30','val32']
   let strCn = tip.target.getAttribute('extendparam')
   if(initVal.length>0){
     document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
@@ -130,13 +215,11 @@ contractConfig.inputListener(function(ev,tip){
 // 勾选框逻辑
 contractConfig.checkboxListener(function(){},function(obj,index){
   if(obj.currentTarget.getAttribute('name')==='proveType'){
-    console.log('111')
     document.querySelector(`span[extendparam="val9"]`).innerHTML=''
     document.querySelector(`span[extendparam="val10"]`).innerHTML=''
     document.querySelector(`span[extendparam="val9"]`).classList.add("input-before")
     document.querySelector(`span[extendparam="val10"]`).classList.add("input-before")
     let proveTypeDoms = document.getElementsByName("proveType")
-    debugger
     if(proveTypeDoms[0].querySelector('p').getAttribute('checked')==='true'){
         document.querySelector(`span[extendparam="val10"]`).setAttribute('systemParam','true')
     }else{
@@ -146,52 +229,52 @@ contractConfig.checkboxListener(function(){},function(obj,index){
 })
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  code: "Z0001190604004",
-  commissionPayment: 0,
-  companyNames: ["森林小镇二店"],
-  custCommission: 0,
-  custCommissionUpper: "零",
-  custEnsure: 0,
-  ownerCardType:'身份证',
-  ownerCardTypes:'护照、营业执照',
-  guestCardType:'护照',
-  guestCardTypes:'',
-  dealPrice: 3265,
-  dealPriceUpper: "叁仟贰佰陆拾伍",
-  guestID: "456321199111111111",
-  guestIDs: "",
-  guestName: "撒的发生",
-  guestNames: "",
-  guestTel: "13071291915",
-  guestTels: "",
-  guestinfoCode: "CSXD000064",
-  houseinfoCode: "ZB83XZYD000472",
-  id: 1977,
-  isHaveData: 0,
-  isWuHanMM: 0,
-  moneyUnit: "元",
-  otherCooperationCost: 0,
-  ownerCommission: 12312,
-  ownerCommissionUpper: "壹万贰仟叁佰壹拾贰",
-  ownerID: "123123123",
-  ownerIDs: "456321199111111112、45465465464654646465",
-  ownerName: "梵蒂冈",
-  ownerNames: "ss、aa",
-  ownerTel: "11320568832",
-  ownerTels: "13222222222、13211111111",
-  propertyAddr: "合肥市好尬是大将军奥斯卡的",
-  propertyCard: "",
-  remarks: "",
-  signDate: 1559577600000,
-  square: 102,
-  squareUse: 0,
-  subscriptionPrice: 0,
-  subscriptionPriceUpper: "零",
-  timeUnit: "月",
-  type: 1
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = {
+//   code: "Z0001190604004",
+//   commissionPayment: 0,
+//   companyNames: ["森林小镇二店"],
+//   custCommission: 0,
+//   custCommissionUpper: "零",
+//   custEnsure: 0,
+//   ownerCardType:'身份证',
+//   ownerCardTypes:'护照、营业执照',
+//   guestCardType:'护照',
+//   guestCardTypes:'',
+//   dealPrice: 3265,
+//   dealPriceUpper: "叁仟贰佰陆拾伍",
+//   guestID: "456321199111111111",
+//   guestIDs: "",
+//   guestName: "撒的发生",
+//   guestNames: "",
+//   guestTel: "13071291915",
+//   guestTels: "",
+//   guestinfoCode: "CSXD000064",
+//   houseinfoCode: "ZB83XZYD000472",
+//   id: 1977,
+//   isHaveData: 0,
+//   isWuHanMM: 0,
+//   moneyUnit: "元",
+//   otherCooperationCost: 0,
+//   ownerCommission: 12312,
+//   ownerCommissionUpper: "壹万贰仟叁佰壹拾贰",
+//   ownerID: "123123123",
+//   ownerIDs: "456321199111111112、45465465464654646465",
+//   ownerName: "梵蒂冈",
+//   ownerNames: "ss、aa",
+//   ownerTel: "11320568832",
+//   ownerTels: "13222222222、13211111111",
+//   propertyAddr: "合肥市好尬是大将军奥斯卡的",
+//   propertyCard: "",
+//   remarks: "",
+//   signDate: 1559577600000,
+//   square: 102,
+//   squareUse: 0,
+//   subscriptionPrice: 0,
+//   subscriptionPriceUpper: "零",
+//   timeUnit: "月",
+//   type: 1
+// }
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
