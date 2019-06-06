@@ -2,7 +2,7 @@ import {contractConfig} from "./base.js"
 
 let Obj={
     check2:{
-      val29:['val30','val31','val32','val33','val34','val35','val36'],
+      val29:['val30'],
       val37:['val38','val39','val40']
     },
     setting:{
@@ -14,8 +14,7 @@ let Obj={
       val60:['val61','val62','val63','val64'],
       val65:[]
     },
-    part5_1:['val71','val73','val74'],
-    part5_2:['val79','val80','val81'],
+    part5_1:['val70_','val71','val72','val72_','val73','val74'],
     part7:['val94'],
     part8:['val125','val126','val127']
   }
@@ -38,6 +37,7 @@ let Obj={
     check11:{
       name:'rentout'
     },
+    val55_:'',
     val56:'',
     check4:{
       name:'furniture'
@@ -47,12 +47,17 @@ let Obj={
       require:true
     },
     val66:'',
+    val67:'',
     val68:'',
     val70:'method2',
     val76:'',
-    val78:'method3',
+    check18:{
+      name:'loanstype'
+    },
+    val82:'',
+    val82_1:'',
+    val82_2:'',
     val83:'',
-    val85:'',
     check12:{
       name:'yes'
     },
@@ -60,7 +65,6 @@ let Obj={
       name:'yes1'
     },
     val91:'',
-    val92:'',
     val93:'method4',
     check14:{
       name:"check03"
@@ -76,7 +80,6 @@ let Obj={
     },
     val103:'',
     val124:'method5',
-    val128:'',
     check19:{
       name:'transfer'
     }
@@ -114,16 +117,7 @@ let Obj={
               case 'acquire':
                 if(getCheckState(box[0])){
                   detail={
-                    val30:'',
-                    val31:'',
-                    check0:{
-                      name:'property'
-                    },
-                    val33:'',
-                    check:{
-                      name:'land'
-                    },
-                    val36:''
+                    val30:''
                   }
                 }else{
                   detail={
@@ -150,17 +144,6 @@ let Obj={
                     },
                     val63:'',
                     val64:''
-                  }
-                }
-                break
-              case 'psecond':
-                if(getCheckState(box[0])){
-                  detail={
-                    val74:''
-                  }
-                }else{
-                  detail={
-                    val78:''
                   }
                 }
                 break
@@ -212,31 +195,16 @@ let Obj={
           switch (val.toLowerCase()){
             case 'a':
               methodDetail={
-                val71:''
+                val70_:'',
+                val71:'',
+                val72:'',
+                val72_:''
               }
               break
             case 'b':
               methodDetail={
                 val73:'',
                 val74:''
-              }
-              break
-            default:
-              errorArr2.push({
-                type:'input',
-                name:item
-              })
-          }
-        }else if(obj[item]==='method3'){
-          switch (val.toLowerCase()){
-            case 'a':
-              break
-            case 'b':
-              methodDetail={
-                check:{
-                  name:'loanstype'
-                },
-                val82:''
               }
               break
             default:
@@ -348,9 +316,6 @@ Dropdown.create({
         if(attr==='solve'){
             prohibit(bindElem,['a','b',],'solve')
         }
-        if(attr==='loans1'){
-            prohibit(bindElem,['a','b'],'loans1',0)
-        }
         if(attr==='pay'){
             prohibit(bindElem,['a','b'],'pay')
         }
@@ -364,7 +329,7 @@ Dropdown.create({
 })
 
 function prohibit(val,arr,checkName,onlyTwo=1){
-  cleanInput(Obj[checkName==='diya'?'part2':checkName==='delivery'?'part8':checkName==="solve"?'part7':checkName==='loans1'?'part5_2':'part5_1'],0)
+  cleanInput(Obj[checkName==='diya'?'part2':checkName==='delivery'?'part8':checkName==="solve"?'part7':'part5_1'],0)
   let aaa = Array.from(document.querySelectorAll(`*[name*=${checkName}]`))
   let tip=arr.findIndex(function(item){
     return item===val.value.toLowerCase()
@@ -429,9 +394,6 @@ for (let i = 0; i < inputbox.length; i++) {
         }
         if(attr==='solve'){
             prohibit(inputbox[i],['a','b'],'solve')
-        }
-        if(attr==='loans1'){
-            prohibit(inputbox[i],['a','b'],'loans1',0)
         }
         if(attr==='pay'){
             prohibit(inputbox[i],['a','b'],'pay')
@@ -582,26 +544,7 @@ let toChineseNumber = function (money) {
   }
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  code:'S0001190522002',
-  ownerName:'张三',
-  ownerIdType:'',
-  ownerId:'421101199801011776',
-  ownerNames:'',
-  ownerNamesIdType:'',
-  ownerNamesId:'',
-  guestName:'王五',
-  guestIdType:'',
-  guestId:'421101199801012222',
-  guestNames:'',
-  guestNamesIdType:'',
-  guestNamesId:'',
-  propertyAddr:'襄阳市水晶之城(别墅) 水晶之城A栋1单元03B',
-  square:'120',
-  companyNames:['中北门店加盟一'],
-  dealPriceUpper:'987654321'
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
@@ -619,7 +562,7 @@ for(let readonlyItem in msg){
     }
   }
 
-  let readonlyArr = ['ownerName','ownerId','agentName','agentId','guestName','guestId','propertyAddr','dealPriceUpper','square']
+  let readonlyArr = ['ownerName','ownerID','ownerNames','ownerIDs','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPriceUpper','square']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyItem==='signDate'){
@@ -627,17 +570,13 @@ for(let readonlyItem in msg){
       }else if(readonlyArr.includes(readonlyItem)){
         if(element.getAttribute("extendParam")==="val25"){
             let value = msg["propertyAddr"]
-            if(value.substring(0,3)==="襄阳市"){
-                element.innerHTML=value.replace("襄阳市",'')
+            if(value.substring(0,3)==="合肥市"){
+                element.innerHTML=value.replace("合肥市",'')
             }else{
                 element.innerHTML=value
             }
         }else{
             element.innerHTML=msg[readonlyItem]
-            if(readonlyItem==="dealPriceUpper"){
-              let str = toChineseNumber(element.innerHTML)
-              document.querySelector(`span[extendParam="val57"]`).innerHTML=str
-            }
         }
         element.classList.remove('input-before')
       }else{
@@ -660,8 +599,7 @@ contractConfig.checkboxListener(function(obj,index){
     let checkDom=Obj[tagName][obj.currentTarget.getAttribute('extendparam')]
     let bool = obj.currentTarget.querySelector('p').getAttribute('checked')
     let arr = []
-    let removeArr = ['val30','val31','val32','val33','val34','val35','val36',
-    'val38','val39','val40','val45','val46','val47','val48','val49','val50','val51','val52','val61','val62','val63','val64']
+    let removeArr = ['val30','val38','val39','val40','val45','val46','val47','val48','val49','val50','val51','val52','val61','val62','val63','val64']
     if(checkDom&&checkDom.length>0){
       checkDom.forEach(function(item){
         let dom = document.querySelector(`*[extendparam=${item}]`)
@@ -701,11 +639,6 @@ contractConfig.inputListener(function(ev,tip){
     let spanAttr=tip.target.getAttribute('listen')
     if(spanAttr==='number'){
       ev.target.value=ev.target.value.replace(/[^\d]/g, "")
-      let toChineseArr = ['val52','val66','val68','val71','val74','val76','val83','val85']
-      let chineseStr = tip.target.getAttribute('extendparam')
-      if(toChineseArr.includes(chineseStr)){
-        document.querySelector(`*[extendparam=${chineseStr}_add]`).innerHTML = toChineseNumber(ev.target.value)
-      }
     }
     if(spanAttr==='chinese'){
       ev.target.value=ev.target.value.replace(/[^\d]/g, "")
@@ -720,16 +653,4 @@ contractConfig.inputListener(function(ev,tip){
     }else {
       tip.target.innerHTML=ev.target.value
     }
-  },function(tip){
-    //获取输入框的默认值
-    let initVal=tip.target.innerHTML
-    let ArrCn = ['val52','val66','val68','val71','val74','val76','val83','val85']
-    let strCn = tip.target.getAttribute('extendparam')
-    if(ArrCn.includes(strCn)){
-      if(initVal.length>0){
-        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
-     }else{
-        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
-     }
-     }
-  })
+  },function(tip){})
