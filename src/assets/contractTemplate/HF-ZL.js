@@ -203,13 +203,13 @@ contractConfig.inputListener(function(ev,tip){
   let initVal=tip.target.innerHTML
   let ArrCn = ['val22','val25','val30','val32']
   let strCn = tip.target.getAttribute('extendparam')
-  if(initVal.length>0){
-    document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
-  }else{
-    if(ArrCn.includes(strCn)){
+  if(ArrCn.includes(strCn)){
+    if(initVal.length>0){
+      document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
+   }else{
       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
-    }  
-  }
+   }
+   }
 })
 
 // 勾选框逻辑
@@ -354,7 +354,8 @@ for(let readonlyItem in msg){
             element.querySelector('p').setAttribute('checked', 'true')
         }
       }else{
-        element.innerHTML=msg[readonlyItem]
+        element.value=msg[readonlyItem]
+        element.setAttribute('value', msg[readonlyItem])
       }
       element.classList.remove('input-before')
     });

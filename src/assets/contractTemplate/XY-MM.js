@@ -725,11 +725,11 @@ contractConfig.inputListener(function(ev,tip){
     let initVal=tip.target.innerHTML
     let ArrCn = ['val52','val66','val68','val71','val74','val76','val83','val85']
     let strCn = tip.target.getAttribute('extendparam')
-    if(initVal.length>0){
-       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
-    }else{
-      if(ArrCn.includes(strCn)){
-       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
-      }
-    }
+    if(ArrCn.includes(strCn)){
+      if(initVal.length>0){
+        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
+     }else{
+        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
+     }
+     }
   })
