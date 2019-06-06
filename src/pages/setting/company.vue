@@ -257,7 +257,7 @@
                 <span class="point">上传电子签章图片：</span>
                 <ul>
                   <li>
-                    <fileUp id="imgcontract" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :canvas="true"><i>+</i></fileUp>
+                    <fileUp id="imgcontract" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :canvas="true"><i>+</i></fileUp>
                     <p class="text">点击上传</p>
                   </li>
                   <el-tooltip effect="dark" :content="contractName" placement="bottom">
@@ -276,7 +276,7 @@
                 <span class="point">上传电子签章图片：</span>
                 <ul>
                   <li>
-                    <fileUp id="imgfinance" class="up" :rules="['png']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :canvas="true"><i>+</i></fileUp>
+                    <fileUp id="imgfinance" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :canvas="true"><i>+</i></fileUp>
                     <p class="text">点击上传</p>
                   </li>
                   <el-tooltip effect="dark" :content="financialName" placement="bottom">
@@ -297,7 +297,7 @@
             <div class="message">
               <p>如何上传印章图片？</p>
               <p>将您的印章盖到白纸上，然后拍照或者用扫描仪扫到电脑后再上传；</p>
-              <p>注意：盖在白纸上时请加深印泥的浓度，上传透明背景或白色背景的<i>png</i>格式的图片效果最佳，大小不超过<i>5M</i></p>
+              <p>注意：盖在白纸上时请加深印泥的浓度，上传透明背景或白色背景的<i>png、jpg</i>格式的图片效果最佳，大小不超过<i>5M</i></p>
             </div>
           </div>
         </div>
