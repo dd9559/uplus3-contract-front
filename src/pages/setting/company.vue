@@ -522,6 +522,13 @@
         this.getStoreList(2)
       },
       showView1(bol) {
+        if(!bol&&this.searchForm.storeId){
+          this.homeStoreList.find(item=>{
+            if(this.searchForm.storeId===item.id){
+              this.homeStoreName=item.name
+            }
+          })
+        }
         if(!bol&&this.temKey){
           this.homeStoreList = []
           this.homeStorePage = 1
@@ -598,13 +605,6 @@
 
         //点击查询时，缓存筛选条件
         if(type==='search'||type==='pagination'){
-          if(param.storeId){
-            this.homeStoreList.find(item=>{
-              if(param.storeId===item.id){
-                this.homeStoreName=item.name
-              }
-            })
-          }
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:'/company',
             url:'/setting/company/list',
