@@ -110,7 +110,7 @@
                         let picture_qz =new File([blob],item.name)
                         that.canvasBlobState=true
                         that.uploader.splice(0,1)
-                        that.uploader.addFile(picture_qz, 'test.jpg')
+                        that.uploader.addFile(picture_qz, item.name)
                       },item.type, 0.5)
                     }
                   }
