@@ -107,11 +107,11 @@
                       img.putImageData(that.sepiaFilter(imgData), 0, 0)
                       //压缩图片返回url
                       canvas.toBlob(function (blob) {
-                        let picture_qz =new File([blob],item.name)
+                        let picture_qz =new File([blob],`${item.name.split('.')[0]}.png`)
                         that.canvasBlobState=true
                         that.uploader.splice(0,1)
-                        that.uploader.addFile(picture_qz, item.name)
-                      },item.type, 0.5)
+                        that.uploader.addFile(picture_qz, `${item.name.split('.')[0]}.png`)
+                      },'image/png', 0.5)
                     }
                   }
                   reader.readAsDataURL(item.getNative())
@@ -215,6 +215,7 @@
         return blob;
       },
       sepiaFilter:function (imgData) {
+        // debugger
         let d = imgData.data
         let rgba = [255, 255, 255, 255]
         for (var index = 0; index < d.length; index += 4) {
