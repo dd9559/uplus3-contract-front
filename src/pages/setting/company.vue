@@ -186,7 +186,7 @@
             </div>
             <div class="tip tip-top">
               <span>温馨提示: </span>
-              <div class="message">
+              <div style="color: #CD6D6D;">
                 <p>1. 门店名称必须和营业执照证件上登记的名称一致；</p>
                 <p>2. 如个体工商户在营业执照上无企业名称的，请填“经营者”名字；</p>
                 <p>3. 三证合一企业证件，只需要填写“统一社会信用代码”；老三证，请分别填写工商注册号、组织机构代码、税务登记证；</p>
@@ -295,7 +295,9 @@
           <div class="tip">
             <span>温馨提示: </span>
             <div class="message">
-              <p>请上传<i>png透明</i>格式的图片,大小不超过<i>5M</i>；</p>
+              <p>如何上传印章图片？</p>
+              <p>将您的印章盖到白纸上，然后拍照或者用扫描仪扫到电脑后再上传；</p>
+              <p>注意：盖在白纸上时请加深印泥的浓度，上传透明背景或白色背景的<i>png</i>格式的图片效果最佳，大小不超过<i>5M</i></p>
             </div>
           </div>
         </div>
@@ -1219,7 +1221,7 @@
         font-weight: bold;
         margin-right: 10px;
       }
-      .message {
+      .message>p:last-child {
         color: #CD6D6D;
         i { font-weight: bold; color: #D56868; }
       }
