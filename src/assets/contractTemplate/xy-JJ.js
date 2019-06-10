@@ -302,11 +302,11 @@ contractConfig.inputListener(function(ev,tip){
     let initVal=tip.target.innerHTML
     let ArrCn = ['val6','val8','val10']
     let strCn = tip.target.getAttribute('extendparam')
-    if(initVal.length>0){
-        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
-    }else{
-      if(ArrCn.includes(strCn)){
-        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
-      }  
+    if(ArrCn.includes(strCn)){
+        if(initVal.length>0){
+            document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
+        }else{
+            document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
+        }
     }
 })
