@@ -230,51 +230,6 @@ contractConfig.checkboxListener(function(){},function(obj,index){
 
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-// let msg = {
-//   code: "Z0001190604004",
-//   commissionPayment: 0,
-//   companyNames: ["森林小镇二店"],
-//   custCommission: 0,
-//   custCommissionUpper: "零",
-//   custEnsure: 0,
-//   ownerCardType:'身份证',
-//   ownerCardTypes:'护照、营业执照',
-//   guestCardType:'护照',
-//   guestCardTypes:'',
-//   dealPrice: 3265,
-//   dealPriceUpper: "叁仟贰佰陆拾伍",
-//   guestID: "456321199111111111",
-//   guestIDs: "",
-//   guestName: "撒的发生",
-//   guestNames: "",
-//   guestTel: "13071291915",
-//   guestTels: "",
-//   guestinfoCode: "CSXD000064",
-//   houseinfoCode: "ZB83XZYD000472",
-//   id: 1977,
-//   isHaveData: 0,
-//   isWuHanMM: 0,
-//   moneyUnit: "元",
-//   otherCooperationCost: 0,
-//   ownerCommission: 12312,
-//   ownerCommissionUpper: "壹万贰仟叁佰壹拾贰",
-//   ownerID: "123123123",
-//   ownerIDs: "456321199111111112、45465465464654646465",
-//   ownerName: "梵蒂冈",
-//   ownerNames: "ss、aa",
-//   ownerTel: "11320568832",
-//   ownerTels: "13222222222、13211111111",
-//   propertyAddr: "合肥市好尬是大将军奥斯卡的",
-//   propertyCard: "",
-//   remarks: "",
-//   signDate: 1559577600000,
-//   square: 102,
-//   squareUse: 0,
-//   subscriptionPrice: 0,
-//   subscriptionPriceUpper: "零",
-//   timeUnit: "月",
-//   type: 1
-// }
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
