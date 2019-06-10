@@ -654,6 +654,15 @@ contractConfig.checkboxListener(function(obj,index){
     }else{
       arr = tagNameList
     }
+    let property = document.getElementsByName('property')
+    if(obj.currentTarget.getAttribute('name')==='acquire'){
+      if(index===0&&!(obj.currentTarget.querySelector('p').getAttribute('checked')==='true')){
+        Array.from(property).forEach(item=>{
+          item.querySelector('p').setAttribute('checked', true)
+          item.setAttribute('readonly','readonly')
+        })
+      }
+    }
     if(bool){
       arr.forEach(function(item){
         let dom = document.querySelector(`*[extendparam=${item}]`)
