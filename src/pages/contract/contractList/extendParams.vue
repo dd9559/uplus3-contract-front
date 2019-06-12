@@ -284,7 +284,7 @@ export default {
 						isCanAudit:isFull//1.完整 0.否
 					}
 				}else{
-					let emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
+					emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 					param = {
 						id:this.Msg.id,
 						html:{
@@ -389,7 +389,7 @@ export default {
 				}
 			}else{//非武汉买卖
 			// debugger
-				let emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
+				emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 				if(emptyInput2.length>0){
 					this.$message({
 						message:'合同信息未填写完整',
