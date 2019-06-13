@@ -9,7 +9,8 @@
     <div class="contentBox">
       <div class="nav" :class="{'hid':isActive===2}">
         <ul>
-          <li><span :class="{'navBlue':navId==='#one'}" @click="goNav('#one')">第一条、房屋基本情况</span></li>
+					<li v-for="item in navTag" :key="item.id" :class="{'navBlue':navId===item.id}"  @click="goNav(item.id)"><span>{{item.title}}</span></li>
+          <!-- <li><span :class="{'navBlue':navId==='#one'}" @click="goNav('#one')">第一条、房屋基本情况</span></li>
           <li><span :class="{'navBlue':navId==='#two'}" @click="goNav('#two')">第二条、房屋交易流程</span></li>
           <li><span :class="{'navBlue':navId==='#three'}" @click="goNav('#three')">第三条、房屋权属情况</span></li>
           <li><span :class="{'navBlue':navId==='#four'}" @click="goNav('#four')">第四条、成交方式</span></li>
@@ -19,11 +20,11 @@
           <li><span :class="{'navBlue':navId==='#eight'}" @click="goNav('#eight')">第八条、房产过户</span></li>
           <li><span :class="{'navBlue':navId==='#nine'}" @click="goNav('#nine')">第九条、房产交付</span></li>
           <li><span :class="{'navBlue':navId==='#ten'}" @click="goNav('#ten')">第十条、户口迁移及学籍、学位</span></li>
-          <li><span :class="{'navBlue':navId==='#eleven'}" @click="goNav('#eleven')">第十一条 、违约责任</span></li>
+          <li><span :class="{'navBlue':navId==='#eleven'}" @click="goNav('#eleven')">第十一条、违约责任</span></li>
           <li><span :class="{'navBlue':navId==='#twelve'}" @click="goNav('#twelve')">第十二条、不可抗力</span></li>
           <li><span :class="{'navBlue':navId==='#thirteen'}" @click="goNav('#thirteen')">第十三条、其他</span></li>
           <li><span :class="{'navBlue':navId==='#fourteen'}" @click="goNav('#fourteen')">第十四条、争议解决</span></li>
-          <li><span :class="{'navBlue':navId==='#fifteen'}" @click="goNav('#fifteen')">第十五条、生效要件</span></li>
+          <li><span :class="{'navBlue':navId==='#fifteen'}" @click="goNav('#fifteen')">第十五条、生效要件</span></li> -->
         </ul>
       </div>
       <iframe :src="src1" frameborder="0" ref='iframeFirst' :style="{ height: clientHei }" v-show="isActive===1"></iframe>
@@ -126,7 +127,8 @@ export default {
 			iframe2State:false,
 			pdfUrl:'',
 			haveUrl:false,
-			http:''
+			http:'',
+			navTag:""
     }
   },
   created(){
@@ -198,7 +200,7 @@ export default {
     goNav(id){
 			this.navId=id;
 			let iframebox=this.$refs.iframeSecond
-			let navHeight = iframebox.contentWindow.document.querySelector(id).offsetTop+5
+			let navHeight = iframebox.contentWindow.document.querySelector(`#${id}`).offsetTop+5
 			iframebox.contentWindow.scrollTo(0,navHeight)
     },
     //回到顶部
@@ -397,7 +399,7 @@ export default {
 					})
 					let inputHeight2=0
 					if(emptyInput2[0].type){
-						let inputTag = iframebox2.contentWindow.document.querySelector(`input[extendparam=${emptyInput2[0].name}]`)
+						let inputTag = iframebox2.contentWindow.document.querySelector(`*[extendparam=${emptyInput2[0].name}]`)
 						inputTag.classList.add("BODERRED")
 						inputHeight2 = inputTag.offsetTop
 					}else{
@@ -552,13 +554,63 @@ export default {
 			if(this.Msg.isWuHanMM){
 				iframe2.onload=function(){
 					that.iframe2State=true
+					if(that.userMsg.cityId===1){//武汉
+						// console.log('wh')
+						let nav = [
+							{title:"第一条、房屋基本情况",id:"one"},
+							{title:"第二条、房屋交易流程",id:"two"},
+							{title:"第三条、房屋权属情况",id:"three"},
+							{title:"第四条、成交方式",id:"four"},
+							{title:"第五条、房产转让价格",id:"five"},
+							{title:"第六条、付款约定",id:"six"},
+							{title:"第七条、房屋产权及具体状况的承诺",id:"seven"},
+							{title:"第八条、房产过户",id:"eight"},
+							{title:"第九条、房产交付",id:"nine"},
+							{title:"第十条、户口迁移及学籍、学位",id:"ten"},
+							{title:"第十一条、违约责任",id:"eleven"},
+							{title:"第十二条、不可抗力",id:"twelve"},
+							{title:"第十三条、其他",id:"thirteen"},
+							{title:"第十四条、争议解决",id:"fourteen"},
+							{title:"第十五条、生效要件",id:"fifteen"},
+						]
+						that.navTag=[].concat(nav)
+					}else if(that.userMsg.cityId===11){//襄阳
+						// console.log('xy')
+						let nav = [
+							{title:"第一条、房屋基本情况",id:"one"},
+							{title:"第二条、房屋权属情况",id:"two"},
+							{title:"第三条、成交方式",id:"three"},
+							{title:"第四条、房产转让价格",id:"four"},
+							{title:"第五条、付款约定",id:"five"},
+							{title:"第六条、房屋产权及具体状况的承诺",id:"six"},
+							{title:"第七条、房产过户",id:"seven"},
+							{title:"第八条、房屋交付",id:"eight"},
+							{title:"第九条、户口迁移及学籍、学位",id:"nine"},
+							{title:"第十条 、违约责任",id:"ten"},
+							{title:"第十一条、不可抗力",id:"eleven"},
+							{title:"第十二条、其他",id:"twelve"},
+							{title:"第十三条、争议解决",id:"thirteen"},
+							{title:"第十四条、生效要件",id:"fourteen"},
+						]
+						that.navTag=[].concat(nav)
+					}
 				}
 				iframe1.onload=function(){
 					that.iframe1State=true
 				}
 			}else{
-				iframe2.onload=function(){
+				// debugger
+				iframe2.onload=function(e){
 					that.isSave(2)
+					let iframeBox=this.contentDocument
+					let p_titleList=Array.from(iframeBox.querySelectorAll('.navTitle'))
+					let nav = []
+					p_titleList.forEach(element => {
+						let val = element.innerHTML
+						let id = element.id
+						nav.push({title:val,id:id})
+					});
+					that.navTag=[].concat(nav)
 				}
 			}
 		}else{
