@@ -1,6 +1,6 @@
 <template>
   <div class="iframe-context">
-    <!--<iframe :src="getUrl" frameborder="0" width="870" height="600" id="iframe"></iframe>-->
+    <iframe :src="getUrl" frameborder="0" width="870" height="600" id="iframe"></iframe>
     <span id="checkBtn" @click="check">校验</span>
   </div>
 </template>

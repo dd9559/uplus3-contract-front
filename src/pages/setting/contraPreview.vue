@@ -126,6 +126,7 @@ export default{
           }
         },
         created(){
+            this.towFlag=this.$route.query.towFlag
             this.cityId=this.$route.query.selectCity
             this.cityName=this.$route.query.cityName
             this.mmaiAddress = this.$route.query.mmaiAddress
@@ -652,7 +653,7 @@ export default{
                 //   if(this.tableDate.length!==0 && this.show==1 && this.flag==1){
                 //       this.modalDialog=true
                 //     }
-                 if(this.cityId==1 && (this.type==2)){
+                 if((this.towFlag==1) && (this.type==2)){
                     this.showSed=true
                     this.position=false
                     this.imgSrc=res.data.data.businessImg.url

@@ -111,18 +111,7 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-    code:'S0001190522002',
-    ownerName:'张三',
-    ownerIdType:'',
-    ownerId:'421101199801011776',
-    guestName:'王五',
-    guestIdType:'',
-    guestId:'421101199801012222',
-    propertyAddr:'襄阳市水晶之城(别墅) 水晶之城A栋1单元03B',
-    companyNames:['中北门店加盟一']
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
@@ -177,7 +166,7 @@ for(let readonlyItem in msg){
     }
 }
 
-let toChineseNumber=function (money) {
+let toChineseNumber = function (money) {
     //汉字的数字
     var cnNums = new Array(
         "零",
@@ -273,7 +262,7 @@ let toChineseNumber=function (money) {
     } else if (decimalNum == "") {
         chineseStr += cnInteger;
     }
-    return chineseStr;
+    return chineseStr.split('元')[0];
 }
 
 //输入自适应
@@ -313,11 +302,11 @@ contractConfig.inputListener(function(ev,tip){
     let initVal=tip.target.innerHTML
     let ArrCn = ['val6','val8','val10']
     let strCn = tip.target.getAttribute('extendparam')
-    if(initVal.length>0){
-        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
-    }else{
-      if(ArrCn.includes(strCn)){
-        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
-      }  
+    if(ArrCn.includes(strCn)){
+        if(initVal.length>0){
+            document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
+        }else{
+            document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
+        }
     }
 })
