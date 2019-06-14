@@ -283,8 +283,8 @@
                 }
             }
         },
-        created() {
-            this.searchForm.cityId = this.getUser.user.cityId
+        mounted() {
+            this.searchForm.cityId = this.cityInfo.user.cityId
             // this.getCityList()
             this.getDictionary()
             let res=this.getDataList
@@ -414,7 +414,7 @@
                 this.aduitTitle = title
                 if(type === 1) {
                     this.$tool.clearForm(this.aduitForm)
-                    this.aduitForm.cityId = this.getUser.user.cityName
+                    this.aduitForm.cityId = this.cityInfo.user.cityName
                     this.isAudit = ""
                     this.tempAudit = ""
                     this.editDisabled = false
@@ -853,6 +853,11 @@
                 if(val&&session!=null){
                     this.setHomeConditionList(this.searchForm.type)
                 }
+            }
+        },
+        computed: {
+            cityInfo(){
+                return this.getUser
             }
         }
     }
