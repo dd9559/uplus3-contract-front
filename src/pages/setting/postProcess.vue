@@ -55,7 +55,7 @@
       transactionContract
     },
     created() {
-      this.cityId = parseInt(localStorage.getItem('initId'))
+      this.cityId = this.getUser.user.cityId
       this.$ajax.get('/api/organize/cities').then(res => {
         res = res.data
         if(res.status === 200) {

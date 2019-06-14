@@ -486,7 +486,7 @@
       }
     },
     created() {
-      this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
+      this.searchForm.cityId = this.getUser.user.cityId
       let res=this.getDataList
       if(res&&(res.route===this.$route.path)){
         this.tableData = res.data.list
@@ -722,7 +722,7 @@
         this.initFormList()
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
-        this.companyForm.cityName = localStorage.getItem('cityName')
+        this.companyForm.cityName = this.getUser.user.cityName
         this.clearStore()
       },
       //切换到直营属性时,自动带出证件信息

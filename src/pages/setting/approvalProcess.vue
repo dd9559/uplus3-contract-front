@@ -284,7 +284,7 @@
             }
         },
         created() {
-            this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
+            this.searchForm.cityId = this.getUser.user.cityId
             // this.getCityList()
             this.getDictionary()
             let res=this.getDataList
@@ -414,7 +414,7 @@
                 this.aduitTitle = title
                 if(type === 1) {
                     this.$tool.clearForm(this.aduitForm)
-                    this.aduitForm.cityId = localStorage.getItem('cityName')
+                    this.aduitForm.cityId = this.getUser.user.cityName
                     this.isAudit = ""
                     this.tempAudit = ""
                     this.editDisabled = false
