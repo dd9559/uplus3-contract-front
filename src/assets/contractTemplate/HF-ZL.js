@@ -231,45 +231,44 @@ contractConfig.checkboxListener(function(){},function(obj,index){
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 // let msg = {
-//   code: "Z0001190604004",
+//   code: "Z0001190610001",
 //   commissionPayment: 0,
-//   companyNames: ["森林小镇二店"],
+//   companyNames: ["adfasfd"],
 //   custCommission: 0,
 //   custCommissionUpper: "零",
 //   custEnsure: 0,
-//   ownerCardType:'身份证',
-//   ownerCardTypes:'护照、营业执照',
-//   guestCardType:'护照',
-//   guestCardTypes:'',
-//   dealPrice: 3265,
-//   dealPriceUpper: "叁仟贰佰陆拾伍",
-//   guestID: "456321199111111111",
+//   dealPrice: 4000,
+//   dealPriceUpper: "肆仟",
+//   guestCardType: "2",
+//   guestCardTypes: "",
+//   guestID: "345345345",
 //   guestIDs: "",
-//   guestName: "撒的发生",
+//   guestName: "租个房子",
 //   guestNames: "",
 //   guestTel: "13071291915",
 //   guestTels: "",
-//   guestinfoCode: "CSXD000064",
-//   houseinfoCode: "ZB83XZYD000472",
-//   id: 1977,
+//   guestinfoCode: "CSXD000063",
+//   houseinfoCode: "Z461JYHH000182",
+//   id: 1978,
 //   isHaveData: 0,
 //   isWuHanMM: 0,
 //   moneyUnit: "元",
 //   otherCooperationCost: 0,
-//   ownerCommission: 12312,
-//   ownerCommissionUpper: "壹万贰仟叁佰壹拾贰",
+//   ownerCardType: "2",
+//   ownerCardTypes: "",
+//   ownerCommission: 1212,
+//   ownerCommissionUpper: "壹仟贰佰壹拾贰",
 //   ownerID: "123123123",
-//   ownerIDs: "456321199111111112、45465465464654646465",
-//   ownerName: "梵蒂冈",
-//   ownerNames: "ss、aa",
-//   ownerTel: "11320568832",
-//   ownerTels: "13222222222、13211111111",
-//   propertyAddr: "合肥市好尬是大将军奥斯卡的",
+//   ownerIDs: "",
+//   ownerName: "录房勘啊",
+//   ownerNames: "",
+//   ownerTels: "",
+//   propertyAddr: "啊时代发生的发生地方",
 //   propertyCard: "",
 //   remarks: "",
-//   signDate: 1559577600000,
-//   square: 102,
-//   squareUse: 0,
+//   signDate: 1560096000000,
+//   square: 235,
+//   squareUse: 200,
 //   subscriptionPrice: 0,
 //   subscriptionPriceUpper: "零",
 //   timeUnit: "月",
@@ -353,9 +352,11 @@ for(let readonlyItem in msg){
         if(element.getAttribute('value')===msg[readonlyItem]){
             element.querySelector('p').setAttribute('checked', 'true')
         }
-      }else{
+      }else if(readonlyItem==='code'){
         element.value=msg[readonlyItem]
         element.setAttribute('value', msg[readonlyItem])
+      }else{
+        element.innerHTML=msg[readonlyItem]
       }
       element.classList.remove('input-before')
     });

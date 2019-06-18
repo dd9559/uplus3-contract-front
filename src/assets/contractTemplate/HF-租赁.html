@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <!--<link rel="stylesheet" href="./datepicker.css"/>-->
-    <link rel="stylesheet" href="/datepicker.css"/>
+    <!-- <link rel="stylesheet" href="./datepicker.css"/> -->
+     <link rel="stylesheet" href="/datepicker.css"/>
 	<title>租赁</title>
     <style>
         h1{
@@ -232,7 +232,7 @@
 <body>
   <div class="zulin container">
     <p class="title">合肥市房屋租赁合同</p>
-    <p class="hetong-no">合同编号：<input systemParam="code"  extendParam="val1"  class="text-limit" type="text" unselectable="on" readonly="readonly" tag="input" value="" style="width:200px" /></p>
+    <p class="hetong-no">合同编号：<input systemParam="code"  extendParam="val1"  class="text-limit" type="text" unselectable="on" readonly="readonly" tag="input" value="" style="width:150px;padding-left: 10px;" /></p>
     <ul class="p_message">
       <li style="min-width:250px;">出租人（甲方）：<span systemParam="ownerName" extendParam="val2" class="input-before" tag="input-auto"></span></li>
       <li style="min-width:200px;">证件类型：<span systemParam="ownerCardType" extendParam="val100" class="input-before" tag="input-auto" ></span></li>
@@ -265,14 +265,14 @@
     <div>
       <p class="p-title text-indent">第三条  租赁期限</p>
       <ul>
-        <li class="text-indent">（一）房屋租赁期自<input extendParam="val15" type="text" readonly="readonly" class="text-limit calendar-item" />至<input extendParam="val16" type="text" readonly="readonly" class="text-limit calendar-item" />。甲方应于<input extendParam="val17" type="text" readonly="readonly" class="text-limit calendar-item" />前将房屋按约定条件交付给乙方。《房屋交割清单》（见附件一）经甲乙双方交验签字盖章并移交房门钥匙及<span extendParam="val18" tag="input-auto" class="input-before"></span>后视为交付完成。</li>
+        <li class="text-indent">（一）房屋租赁期自<input extendParam="val15" style="padding-left: 10px;width:100px;" type="text" readonly="readonly" class="text-limit calendar-item" />至<input extendParam="val16" style="padding-left: 10px;width:100px;" type="text" readonly="readonly" class="text-limit calendar-item" />。甲方应于<input extendParam="val17" style="padding-left: 10px;width:100px;" type="text" readonly="readonly" class="text-limit calendar-item" />前将房屋按约定条件交付给乙方。《房屋交割清单》（见附件一）经甲乙双方交验签字盖章并移交房门钥匙及<span extendParam="val18" tag="input-auto" class="input-before"></span>后视为交付完成。</li>
         <li class="text-indent noIndent">（二）租赁期满或合同解除后，甲方有权收回房屋，乙方应按照原状返还房屋及其附属物品、设备设施。甲乙双方应对房屋和附属物品、设备设施及水电使用等情况进行验收，结清各自应当承担的费用。乙方继续承租的，应提前<span extendParam="val19" listen="number" tag="input-auto" class="input-before"></span>日向甲方提出（<div class="info-checkbox" name="methodType"><p type="check"></p><span>书面</span></div>/<div class="info-checkbox" name="methodType"><p type="check"></p><span>口头</span></div>）续租要求，协商一致后双方重新签订房屋租赁合同。</li>
       </ul>
     </div>
     <div>
       <p class="p-title text-indent">第四条  租金及押金</p>
       <ul>
-        <li class="text-indent noIndent">（一）租金标准及支付方式：人民币<span systemParam="dealPrice" extendParam="val20" max="12" class="input-before" tag="input-auto"></span>元整（大写：<span systemParam="dealPriceUpper" extendParam="val21" tag="input-auto"></span>圆）（<div class="info-checkbox" systemParam="timeUnit" value="月" name="timeType" disabled="true"><p type="check"></p><span>月</span></div>/<div class="info-checkbox" systemParam="timeUnit" value="季度" name="timeType" disabled="true"><p type="check"></p><span>季</span></div>/<div class="info-checkbox" systemParam="timeUnit" value="半年" name="timeType" disabled="true"><p type="check"></p><span>半年</span></div>/<div class="info-checkbox" systemParam="timeUnit" value="年" name="timeType" disabled="true"><p type="check"></p><span>年</span></div>），每期所支付租金总计：人民币<span extendParam="val22" listen="number" brother="name1" max="12" listen="number" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="true" extendParam="val22_add" brother="name1" type="text" unselectable="on" readonly="readonly" class="text-limit" tag="input-auto"></span>圆）。支付方式：（<div class="info-checkbox" name="payType"><p type="check"></p><span>现金</span></div>/<div class="info-checkbox" name="payType"><p type="check"></p><span>转账支票</span></div>/<div class="info-checkbox" name="payType"><p type="check"></p><span>银行汇款</span></div>），押<span extendParam="val23" tag="input-auto" class="input-before"></span>付<span extendParam="val24" tag="input-auto" class="input-before"></span>。</li>
+        <li class="text-indent noIndent">（一）租金标准及支付方式：人民币<span systemParam="dealPrice" extendParam="val20" max="12" class="input-before" tag="input-auto"></span>元整（大写：<span systemParam="dealPriceUpper" extendParam="val21" tag="input-auto"></span>圆）（<div class="info-checkbox" systemParam="timeUnit" value="月" name="timeType" readonly="readonly"><p type="check"></p><span>月</span></div>/<div class="info-checkbox" systemParam="timeUnit" value="季度" name="timeType" readonly="readonly"><p type="check"></p><span>季</span></div>/<div class="info-checkbox" systemParam="timeUnit" value="半年" name="timeType" readonly="readonly"><p type="check"></p><span>半年</span></div>/<div class="info-checkbox" systemParam="timeUnit" value="年" name="timeType" readonly="readonly"><p type="check"></p><span>年</span></div>），每期所支付租金总计：人民币<span extendParam="val22" listen="number" brother="name1" max="12" listen="number" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="true" extendParam="val22_add" brother="name1" type="text" unselectable="on" readonly="readonly" class="text-limit" tag="input-auto"></span>圆）。支付方式：（<div class="info-checkbox" name="payType"><p type="check"></p><span>现金</span></div>/<div class="info-checkbox" name="payType"><p type="check"></p><span>转账支票</span></div>/<div class="info-checkbox" name="payType"><p type="check"></p><span>银行汇款</span></div>），押<span extendParam="val23" tag="input-auto" class="input-before"></span>付<span extendParam="val24" tag="input-auto" class="input-before"></span>。</li>
         <li class="text-indent">（二）押金：人民币<span extendParam="val25" listen="number" brother="name2" max="12" listen="number" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="true" extendParam="val25_add" brother="name2" type="text" unselectable="on" readonly="readonly" class="text-limit" tag="input-auto"></span>圆），租赁期满或合同解除后，房屋租赁押金除抵扣应由乙方承担的费用、租金，以及乙方应当承担的违约赔偿责任外，剩余部分应如数返还给乙方。</li>
       </ul>
     </div>
@@ -361,7 +361,7 @@
       <ul><li class="signDate">年<span></span>月<span></span>日</li><li class="signDate">年<span></span>月<span></span>日</li></ul>
     </div>
     <div style="margin-top:30px;margin-bottom:30px;">
-      <p>居间人（丙方）签章：</p>
+      <p style="position:relative;"></p><img class="SignatureLocation" style="position:absolute;left:170px;top:-30px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" />居间人（丙方）签章：</p>
       <p>联系方式：</p>
       <p class="signDate">年<span></span>月<span></span>日</p>
     </div>
@@ -784,11 +784,11 @@
 <!-- <script type="text/javascript" src="./datepicker.js"></script>
 <script type="text/javascript" src="./dropdown.js"></script>
 <script type="module" src="./HF-ZL.js"></script> -->
- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_zl_hf20190605.js"></script>
+<script type="text/javascript" src="/js/bundle_zl_hf20190610.js"></script>
 <!-- <script>
      (function () {
       var scriptList = document.getElementsByTagName("script")

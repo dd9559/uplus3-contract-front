@@ -54,14 +54,14 @@
       transactionProcess,
       transactionContract
     },
-    created() {
-      this.cityId = parseInt(localStorage.getItem('initId'))
-      this.$ajax.get('/api/organize/cities').then(res => {
-        res = res.data
-        if(res.status === 200) {
-          this.cityList = res.data
-        }
-      })
+    mounted() {
+      this.cityId = this.cityInfo.user.cityId
+      // this.$ajax.get('/api/organize/cities').then(res => {
+      //   res = res.data
+      //   if(res.status === 200) {
+      //     this.cityList = res.data
+      //   }
+      // })
     },
     methods: {
       checkTab: function(item) {
@@ -73,6 +73,11 @@
         } else {
           this.current = "transactionContract";
         }
+      }
+    },
+    computed: {
+      cityInfo(){
+        return this.getUser
       }
     }
   };

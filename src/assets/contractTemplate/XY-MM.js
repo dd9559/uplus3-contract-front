@@ -582,26 +582,7 @@ let toChineseNumber = function (money) {
   }
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  code:'S0001190522002',
-  ownerName:'张三',
-  ownerIdType:'',
-  ownerId:'421101199801011776',
-  ownerNames:'',
-  ownerNamesIdType:'',
-  ownerNamesId:'',
-  guestName:'王五',
-  guestIdType:'',
-  guestId:'421101199801012222',
-  guestNames:'',
-  guestNamesIdType:'',
-  guestNamesId:'',
-  propertyAddr:'襄阳市水晶之城(别墅) 水晶之城A栋1单元03B',
-  square:'120',
-  companyNames:['中北门店加盟一'],
-  dealPriceUpper:'987654321'
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
@@ -619,7 +600,7 @@ for(let readonlyItem in msg){
     }
   }
 
-  let readonlyArr = ['ownerName','ownerId','agentName','agentId','guestName','guestId','propertyAddr','dealPriceUpper','square']
+  let readonlyArr = ['ownerName','ownerCardType','ownerID','ownerNames','ownerCardTypes','ownerIDs','guestName','guestCardType','guestID','guestNames','guestCardTypes','guestIDs','propertyAddr','dealPriceUpper','square']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyItem==='signDate'){
@@ -634,10 +615,6 @@ for(let readonlyItem in msg){
             }
         }else{
             element.innerHTML=msg[readonlyItem]
-            if(readonlyItem==="dealPriceUpper"){
-              let str = toChineseNumber(element.innerHTML)
-              document.querySelector(`span[extendParam="val57"]`).innerHTML=str
-            }
         }
         element.classList.remove('input-before')
       }else{
@@ -676,6 +653,15 @@ contractConfig.checkboxListener(function(obj,index){
       })
     }else{
       arr = tagNameList
+    }
+    let property = document.getElementsByName('property')
+    if(obj.currentTarget.getAttribute('name')==='acquire'){
+      if(index===0&&!(obj.currentTarget.querySelector('p').getAttribute('checked')==='true')){
+        Array.from(property).forEach(item=>{
+          item.querySelector('p').setAttribute('checked', true)
+          item.setAttribute('readonly','readonly')
+        })
+      }
     }
     if(bool){
       arr.forEach(function(item){
