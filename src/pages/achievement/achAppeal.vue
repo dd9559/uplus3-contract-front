@@ -1,6 +1,6 @@
 <template>
   <div class="layout" style="background-color: #f5f5f5" ref="tableComView">
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" @aplQueryFn="aplquery">
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="propForm" class="prop-form" size="small">
         <el-form-item label="关键字" prop="search">
           <el-tooltip content="合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号" placement="top">
@@ -14,7 +14,9 @@
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="签约日期" prop="dateMo" class="mr">
+        <span @click.stop="aplquery" class="shensulink" style="cursor:pointer;">今日申诉</span>
+        <span @click.stop="aplquery" class="shensulink" style="cursor:pointer;">三日内申诉</span>
+        <el-form-item label="申诉日期" prop="dateMo" class="mr">
           <el-date-picker
             v-model="propForm.dateMo"
             class="w330"
@@ -156,20 +158,28 @@
           <el-table-column label="申诉角色" align="center" min-width="90">
             <template slot-scope="scope">
                 <div v-for="item in scope.row.achievementAppeals">
-                    <div v-for="item in item.roles">
+                    <div v-if="!item.roles||item.roles.length==0"></div>
+                    <div v-else>
+                      <div  v-for="item in item.roles">
                       <p>{{item}}</p>
+                      </div>
                     </div>
                 </div>
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉内容" align="center" min-width="60">
+          <el-table-column label="申诉内容" align="center" min-width="200">
             <template slot-scope="scope">
-              <div>
                 <div v-for="item in scope.row.achievementAppeals">
-                  <p>{{item.appealContent}}</p>
+                  <div v-if="item.appealContent.length>10">
+                      <el-popover trigger="hover" width="100" :content="item.appealContent" placement="top">
+                      <p slot="reference">{{item.appealContent.slice(0,10)}}</p>
+                  </el-popover>
+                  </div>
+                  <div v-else>
+                      <p>{{item.appealContent}}</p>
+                  </div>
                 </div>
-              </div>
             </template>
           </el-table-column>
 
@@ -190,7 +200,7 @@
             <template slot-scope="scope">
                 <div v-for="item2 in scope.row.achievementAppeals">
                   <div v-for="(item,index) in item2.voucherUrl">
-                      <p @click="previewPhoto(item2.voucherUrl,index)">{{item.name}}</p>
+                      <p class="link" @click="previewPhoto(item2.voucherUrl,index)">附件{{index+1}}</p>
                     </div>
                 </div>
             </template>
@@ -1197,4 +1207,30 @@ export default {
 .width425 {
   width: 425px !important;
 }
+  .name-wrapper {
+    min-width: 80px;
+    max-height: 65px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    word-wrap:break-word;
+  }
+  .isFlex{
+    display: flex;
+    align-items: center;
+  }
+  .link{
+    color: #478de3;
+    cursor:pointer
+  }
+  .shensulink{
+    font-size:14px;
+    color:#478de3;
+    margin-right:8px;
+    position:relative;
+    top:6px;
+  }
 </style>

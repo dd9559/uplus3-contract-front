@@ -613,7 +613,7 @@
                 <h1 class="f14">申诉信息</h1>
               </div>
            </div>
-           <div class="ach-divide-list">
+           <div class="ach-divide-list" style="margin-bottom:20px">
              <el-table
                 :data="shensuArr"
                 style="width: 100%"
@@ -630,7 +630,7 @@
                   label="申诉角色"
                 >
                 <template slot-scope="scope">
-                  <div v-if="scope.row.roles.length==0">
+                  <div v-if="!scope.row.roles||scope.row.roles.length==0">
                     <div>--</div>
                   </div>
                   <div v-else>
@@ -641,9 +641,16 @@
                 </template>
                 </el-table-column>
                 <el-table-column
-                  label="申诉类容"
-                  prop="appealContent"
+                  label="申诉内容"
+                  width="200"
                 >
+                <template slot-scope="scope">
+                      <div>
+                        <el-popover trigger="hover" width="100" :content="scope.row.appealContent" placement="top">
+                        <p slot="reference">{{scope.row.appealContent.slice(0,10)}}</p>
+                        </el-popover>
+                      </div>
+                  </template>
                 </el-table-column>
 
                 <el-table-column
@@ -663,7 +670,7 @@
               </el-table-column>
 
                 <el-table-column
-                  label="申诉类容"
+                  label="审核人名称"
                   prop="appealContent"
                 >
                 </el-table-column>
@@ -672,7 +679,7 @@
                 >
                 <template slot-scope="scope">
                     <div  v-for="(item,index) in scope.row.voucherUrl">
-                      <p @click="previewPhoto(scope.row.voucherUrl,index)">{{item.name}}</p>
+                      <p class="link" @click="previewPhoto(scope.row.voucherUrl,index)">附件{{index+1}}</p>
                     </div>
                 </template>
                 </el-table-column>
@@ -1022,7 +1029,6 @@
               this.clientArr = res.data.data.customerAgents;
               this.comm = res.data.data.comm;
               // this.state2=res.data.data.examineStatus;
-              debugger
               if (res.data.data.examineDate) {
                 this.examineDate = res.data.data.examineDate;
               }
@@ -2069,6 +2075,10 @@
 
 <style lang="less" scoped>
   // 相关人员弹框
+   .link{
+    color: #478de3;
+    cursor:pointer
+  }
   /deep/ .dialog2In {
     width: 450px !important;
     max-height: 600px;

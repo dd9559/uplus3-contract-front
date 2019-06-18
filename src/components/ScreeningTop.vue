@@ -12,22 +12,6 @@
           round>查 询
         </el-button>
         <el-button
-          v-if="$route.path==='/achAppeal'"
-          class="paper-btn paper-btn-blue btn-info"
-          type="primary"
-          size="small"
-          @click="queryFn(1)"
-          round>今日申诉
-        </el-button>
-        <el-button
-          v-if="$route.path==='/achAppeal'"
-          class="paper-btn paper-btn-blue btn-info"
-          type="primary"
-          size="small"
-          @click="queryFn(2)"
-          round>3日内申诉
-        </el-button>
-        <el-button
           class="paper-btn btn-info"
           size="small"
           @click="resetFormFn"
@@ -59,12 +43,8 @@ import {mapMutations} from 'vuex'
     },
     methods: {
       // 点击查询
-      queryFn(type=1) {
-        if(this.$route.path=='/achAppeal' && (type===1 || type===2)){
-          this.$emit('aplQueryFn',{type:type})
-        }else{
+      queryFn() {
           this.$emit('propQueryFn')
-        }
       },
       // 点击重置
       resetFormFn() {
