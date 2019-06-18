@@ -100,6 +100,17 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="申诉状态" prop="appealType">
+          <el-select v-model="propForm.appealType" class="w120" :clearable="true">
+            <el-option
+              v-for="item in aplStatuArr"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="合作方式" prop="contractType">
           <el-select v-model="propForm.joinMethods" class="w120" :clearable="true">
             <el-option
@@ -345,7 +356,12 @@
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-edit'].state"
-                  >编辑</span>
+                  >确认业绩</span>
+                  <span
+                    @click.stop="shenSu(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-edit'].state"
+                  >申诉</span>
                   <span style="cursor:pointer;" v-else>-</span>
                 </div>
 
@@ -355,6 +371,11 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-fs'].state&&(userMsg&&scope.row.finalAuditorId===userMsg.empId)"
                   >反审核</span>
+                  <span
+                    @click.stop="shenSu(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-edit'].state"
+                  >申诉</span>
                   <span style="cursor:pointer;" v-else>-</span>
                 </div>
 
@@ -364,6 +385,11 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-edit'].state"
                   >编辑</span>
+                  <span
+                    @click.stop="shenSu(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-edit'].state"
+                  >申诉</span>
                   <span style="cursor:pointer;" v-else>-</span>
                 </div>
 
@@ -373,6 +399,11 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-retreat'].state"
                   >撤回</span>
+                  <span
+                    @click.stop="shenSu(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-edit'].state"
+                  >申诉</span>
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
@@ -635,7 +666,38 @@
         </span>
       </el-dialog>
     </div>
-
+      <!-- 申诉弹窗 -->
+      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
+            <div class="ssu">
+              <p>合同编号：{{htbh}}</p>
+              <p>签约时间：{{qysj}}</p>
+              <p>申诉人：{{this.userMsg.name}}</p>
+            </div>
+            <div class="role">
+              <span class="point">申诉角色：</span>
+              <el-select v-model="SSuForm.role" placeholder="请选择" multiple 
+              class="width300"
+              :class="{'width425':SSuForm.role.length>3}"
+              :clearable="true">
+                    <el-option v-for="item in people" :key="item.code" :label="item.description"  :value="item.code"></el-option>
+              </el-select>
+            </div>
+             <div class="input-group" style="align-items: normal;position:relative">
+                    <span class="point" style="min-width:78px">申诉类容：</span>
+                    <el-input type="textarea" :rows="4" resize='none' v-model="SSuForm.remark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
+                     <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
+              </div>
+              <div class="input-group">
+                <span >申诉凭证：</span>
+                <div>
+                  <fileUp @getUrl='getAdd' :scane="uploadScane" :more=true :rules="mbrules" id='pinzheng' class='fileup'>选择文件</fileUp>
+                  <span class="sustip" v-show="this.SSuForm.pinzheng.length!=0">上传成功！</span>
+                </div>
+              </div>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="submitForm" type="primary" class="confirmBtn" v-dbClick>确 定</el-button>
+              </div>
+      </el-dialog>
     <!-- 选择审核人弹框 -->
     <checkPerson
       :show="checkPerson.state"
@@ -662,6 +724,14 @@ export default {
   name: "actualAchievement",
   data() {
     return {
+      uploadScane:{path:'shensu',id:''},//上传场景值
+      people:[],
+      htbh:'',
+      yjId:'',
+      qysj:'',
+      inputMax:200,
+      isSS:false,
+      mbrules:['jpg','png','doc','docx','pdf','jpeg','xlsx','xls'],
       selectAchList: [], //应收列表数组
       countData: [], //数据统计数组
       houseArr: [], //应收详情房源数组
@@ -671,6 +741,11 @@ export default {
       depUser: "",
       users: [],
       dialogVisible: false, //详情弹框
+      SSuForm:{
+        role:[],
+        remark:'',
+        pinzheng:[],
+      },
       // 筛选条件
       propForm: {
         department: "", //部门
@@ -680,6 +755,7 @@ export default {
         contractType: "", //合同类型
         divideType: "", //分成类型
         achType: "", //业绩类型
+        appealType:'', //申诉状态
         dateMo: "",
         search: "",
         joinMethods: "" //合作方式
@@ -730,6 +806,24 @@ export default {
           value: "已驳回"
         }
       ],
+      aplStatuArr: [
+        {
+          key: -1,
+          value: "未申诉"
+        },
+        {
+          key: 0,
+          value: "申诉中"
+        },
+        {
+          key: 1,
+          value: "申诉驳回"
+        },
+        {
+          key: 2,
+          value: "申诉通过"
+        }
+      ],
       //权限配置
       power: {
         "sign-yj-rev-query": {
@@ -774,6 +868,13 @@ export default {
   created(){
     this.getAdmin(); //获取当前登录人信息
     this.userMsg=this.getUser.user
+    this.$ajax.get("/api/appeal/launchAppeal").then(res=>{
+      if(res.data.status==200){
+        this.people=res.data.data
+      }
+    }
+
+    )
   },
   mounted() {
     this.ajaxParam = {
@@ -843,6 +944,11 @@ export default {
     //部门初始化
     this.remoteMethod();
   },
+  computed: {
+            validInput() {
+                return this.SSuForm.remark.length
+            }
+          },
   components: {
     achDialog,
     MIXINS,
@@ -855,6 +961,33 @@ export default {
     }
   },
   methods: {
+    submitForm(){
+      let param={
+          achievementId :this.yjId,
+          appealRole:this.SSuForm.role.join(','),
+          appealContent:this.SSuForm.remark,
+          voucherUrl:this.SSuForm.pinzheng,
+      }
+      debugger
+      this.$ajax.postJSON('/api/appeal/saveAppealInfo',param,2).then(res=>{
+        if(res.status==200){
+            this.isSS=false
+            this.$message({message: '提交成功！'})
+        }
+      })
+    },
+    getAdd(obj){
+      for(let i=0;i<obj.param.length;i++){
+        this.SSuForm.pinzheng.push(obj.param[i].path+'?'+obj.param[i].name)
+      }
+      },
+    shenSu(row,index){
+      this.uploadScane.id=row.code
+      this.htbh=row.code
+      this.yjId=row.aId
+      this.qysj=this.$tool.dateFormat(row.signDate)
+      this.isSS=true
+    },
     mul: function(arg1, arg2) {
       var m = 0,
         s1 = arg1.toString(),
@@ -1069,6 +1202,7 @@ export default {
               : this.propForm.contractType.join(","), //合同类型
           distributionType: this.propForm.divideType, //分成类型
           achievementStatus: this.propForm.achType, //业绩类型
+          appealStatus:this.propForm.appealType,
           startTime: this.propForm.dateMo[0], //开始时间
           endTime: this.propForm.dateMo[1], //结束时间
           keyword: this.propForm.search, //关键字
@@ -1087,6 +1221,7 @@ export default {
               : this.propForm.contractType.join(","), //合同类型
           distributionType: this.propForm.divideType, //分成类型
           achievementStatus: this.propForm.achType, //业绩类型
+          appealStatus:this.propForm.appealType,
           keyword: this.propForm.search, //关键字
           department:this.propForm.department,
           pageNum: this.currentPage,
@@ -1274,6 +1409,24 @@ export default {
   .check-btn span {
     color: #478de3;
   }
+  .sustip{
+    position: relative;
+    line-height: auto;
+    top: 12px;
+    font-style: italic;
+    padding-left: 0;
+    font-size: 12px;
+    color: darkseagreen;
+  }
+  .fileup{
+            width:86px;
+            height:32px;
+            line-height: 32px;
+            background:rgba(71,141,227,1);
+            margin-top: 10px;
+            color: white;
+            text-align: center !important
+    }
   .check-btn span:first-of-type {
     margin-right: 8px;
   }
@@ -1286,6 +1439,15 @@ export default {
   .green {
     color: #54d384;
   }
+  .text-absolute {
+      position: absolute;
+      right: 15px;
+      color: #D6D6D6;
+      bottom: 0;
+    }
+    .role{
+      margin-bottom: 10px;
+    }
   // 改变头部面包屑样式
   .head {
     .head-left {
@@ -1509,6 +1671,12 @@ export default {
   }
 }
 
+.point::before{
+    content:'*';
+    color:red;
+    position:relative;
+    top:3
+  }
 /deep/ tr.el-table__row {
   overflow: scroll !important;
 }
@@ -1535,7 +1703,20 @@ export default {
     padding: 0 !important;
   }
 }
-
+.ssu{
+  display: flex;
+  p{
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+    height: 37px;
+    span{
+      min-width: 78px;
+      margin-right: 8px;
+    }
+  }
+    
+}
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
   max-height: 500px;
@@ -1567,5 +1748,11 @@ export default {
 }
 .width325 {
   width: 325px !important;
+}
+.width300 {
+  width: 300px !important;
+}
+.width425 {
+  width: 425px !important;
 }
 </style>

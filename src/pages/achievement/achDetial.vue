@@ -221,42 +221,10 @@
             >
             </el-table-column>
 
-
-           <!-- 节点名称（新增）-->
-            <!-- <el-table-column
-              prop="updateByName"
-              label="节点名称"
-              width="130"
-            >
-            </el-table-column> -->
-
-            <!-- result审核结果(0未审核 1通过 2驳回)(薪资组审核) -->
             <el-table-column
               prop="createDepName"
               label="操作"
             >
-              <!-- <template slot-scope="scope">
-                <div>
-                  <div v-if="scope.row.contType==0">
-                    <p class="blue">提交审核</p>
-                  </div>
-                  <div v-if="scope.row.contType==-1">
-                    <p class="blue">待提审</p>
-                  </div>
-                  <div v-else-if="scope.row.contType==1">
-                    <p class="green">审核通过</p>
-                  </div>
-                  <div v-else-if="scope.row.contType==2">
-                    <p class="orange">已驳回</p>
-                  </div>
-                 <div v-else-if="scope.row.contType==3">
-                    <p class="orange">撤销</p>
-                  </div>
-                  <div v-else>
-                    <p>-</p>
-                  </div>
-                </div>
-              </template> -->
             </el-table-column>
 
             <!-- remark -->
@@ -273,9 +241,94 @@
               </template>
             </el-table-column>
           </el-table>
+
         </div>
+
+        <h1 class="f14">申诉信息</h1>
+
+        <div class="ach-divide-list">
+             <el-table
+                :data="shensuArr"
+                style="width: 100%"
+              >
+              <el-table-column
+                  label="申诉人"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.auditDepName}}-{{scope.row.appealName}}
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="申诉角色"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.roles.length==0">
+                    <div>--</div>
+                  </div>
+                  <div v-else>
+                    <div v-for="item in scope.row.roles">
+                      <p>{{item}}</p>
+                    </div>
+                  </div>
+                </template>
+                </el-table-column>
+                <el-table-column
+                  label="申诉类容"
+                  prop="appealContent"
+                >
+                </el-table-column>
+
+                <el-table-column
+                  label="申诉时间"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.appealTime|formatDate}}
+                </template>
+              </el-table-column>
+
+               <el-table-column
+                  label="申诉状态"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.auditStatus.label}}
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="申诉类容"
+                  prop="appealContent"
+                >
+                </el-table-column>
+                <el-table-column
+                  label="申诉凭证"
+                >
+                <template slot-scope="scope">
+                    <div  v-for="(item,index) in scope.row.voucherUrl">
+                      <p @click="previewPhoto(scope.row.voucherUrl,index)">{{item.name}}</p>
+                    </div>
+                </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="审核信息"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.auditRemarks}}
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="申诉"
+                >
+                <template slot-scope="scope">
+                  <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
+                </template>
+                </el-table-column>
+            </el-table>
+           </div>
       </div>
-      <div class="ach-footer"></div>
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
       <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
             <el-table :data="recordData" class="recordtable">
               <el-table-column prop="TotalPriceBefore" label="总价（修改前）" ></el-table-column>
@@ -290,6 +343,7 @@
               <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
+        
         <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
             <el-table :data="AMData" class="recordtable">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
@@ -301,13 +355,53 @@
               <el-table-column prop="Remarks" label="备注" ></el-table-column>
             </el-table>
         </el-dialog>
+
+        <el-dialog title="审核" :visible.sync="aplDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+                 <div class="input-group" style="position:relative">
+                    <label>申诉人：</label>
+                     <span>{{this.aplman}}</span>
+                </div>
+                <div class="input-group" style="position:relative">
+                    <label>审核角色：</label>
+                     <span>{{this.aplrole}}</span>
+                </div>
+                <div class="input-group" style="position:relative">
+                    <label>申诉内容：</label>
+                     <span>{{this.aplcontent}}</span>
+                </div>
+                <div class="input-group" style="position:relative">
+                    <label>附件信息：</label>
+                    <div v-for="(item,index) in aplurl">
+                      <span  @click="previewPhoto(aplurl,index)" style="margin-right:20px">{{item.name}}</span>
+                    </div>
+                </div>
+                 <div class="input-group" style="position:relative;">
+                    <label>备注：</label>
+                    <el-input type="textarea" :rows="4" resize='none' v-model="aplremark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
+                     <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
+                </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="nopass" type="primary" class="confirmBtn" v-dbClick>驳回</el-button>
+                <el-button @click="pass" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
            
 <script>
+  import { MIXINS } from "@/assets/js/mixins";
 export default{
+    mixins: [MIXINS],
     data() {
       return {
+        aplman:'',
+        aplrole:'',
+        aplcontent:'',
+        aplurl:[],
+        aplid:'',
+        aplDialog:false,
+        imgList:[],
+        shensuArr:[],
         AMData:[],
         AMShow:false,
         recordData:[],
@@ -338,6 +432,10 @@ export default{
         .then(res => {
           let data = res.data;
           if (res.status === 200) {
+            this.shensuArr=data.data.appeals
+            for(let i=0;i<this.shensuArr.length;i++){
+                this.shensuArr[i].voucherUrl=this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
+              }
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
@@ -352,6 +450,46 @@ export default{
         });
     },
     methods: {
+      itemht(row){
+        debugger
+        this.aplman=row.appealName
+        this.aplrole=row.roles
+        this.aplcontent=row.appealContent
+        this.aplurl=row.voucherUrl
+        this.aplid=row.id
+        this.aplDialog=true
+      },
+      nopass(){
+        if(this.aplremark==""){
+          this.$messsage("请填写备注信息！")
+          return
+        }
+        let param={
+          id:this.aplid,
+          examineRemark:this.aplremark
+        }
+        this.$ajax.post('/api/appeal/appealReject  ',param,2).then(res=>{
+          if(res.status==200){
+            this.$message({ message: "操作成功", type: "success" })
+            this.aplDialog=false
+          }
+        })
+      },
+      pass(){
+        let param={
+          id:this.aplid,
+          examineRemark:this.aplremark
+        }
+        this.$ajax.post('/api/appeal/appealAdopt',param,2).then(res=>{
+          if(res.status==200){
+            this.$message({ message: "操作成功", type: "success" })
+            this.aplDialog=false
+          }
+        })
+      },
+      getPicture(item){
+        return this.$tool.cutFilePath(item)
+      },
       ammanger(){
         let param={
           contId: this.contractId2,

@@ -28,6 +28,8 @@ const receivableAchievement = () => import('@/pages/achievement/receivableAchiev
 const storeReceive = () => import('./../pages/achievement/storeReceive.vue')
 const achPage = () => import('@/pages/achievement/achPage')
 const achDetial = () => import('@/pages/achievement/achDetial')
+const achAppeal = () => import('@/pages/achievement/achAppeal')
+const aplPage = () => import('@/pages/achievement/aplPage')
 
 const actualHarvest = () => import('@/pages/finance/actualHarvest')
 const moneyCheck = () => import('@/pages/finance/moneyCheck')
@@ -148,8 +150,20 @@ export default new Router({
           }
         },
         {
+          path: "achAppeal",
+          component: achAppeal,
+          meta: {
+            root: true,
+            list: ["业绩", "业绩申诉审核"]
+          }
+        },
+        {
           path: "achPage",
           component: achPage,
+        },
+        {
+          path: "aplPage",
+          component: aplPage,
         },
         {
           path: "achDetial",
