@@ -2096,6 +2096,9 @@
     color: #478de3;
     cursor:pointer
   }
+  .preview{
+      z-index:2220!important
+    }
   /deep/ .dialog2In {
     width: 450px !important;
     max-height: 600px;

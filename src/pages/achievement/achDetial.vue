@@ -263,7 +263,7 @@
                   label="申诉角色"
                 >
                 <template slot-scope="scope">
-                  <div v-if="scope.row.roles.length==0">
+                  <div v-if="!scope.row.roles||scope.row.roles.length==0">
                     <div>--</div>
                   </div>
                   <div v-else>
@@ -320,7 +320,14 @@
                   label="审核信息"
                 >
                 <template slot-scope="scope">
-                  {{scope.row.auditRemarks}}
+                  <div v-if="scope.row.auditRemarks.length==0">
+                    <el-tooltip class="item" effect="dark" :content="scope.row.auditRemarks" placement="top-start">
+                      <p>{{scope.row.auditRemarks.slice(0,8)}}</p>
+                  </el-tooltip>
+                  </div>
+                  <div v-else>
+                    -
+                  </div>
                 </template>
               </el-table-column>
 
@@ -365,20 +372,21 @@
         <el-dialog title="审核" :visible.sync="aplDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
                  <div class="input-group" style="position:relative">
                     <label>申诉人：</label>
-                     <span>{{this.aplman}}</span>
+                     <span>{{aplman}}</span>
                 </div>
                 <div class="input-group" style="position:relative">
                     <label>审核角色：</label>
-                     <span>{{this.aplrole}}</span>
+                     <span v-if="aplrole">{{aplrole.join('，')}}</span>
+                     <span v-else>-</span>
                 </div>
                 <div class="input-group" style="position:relative">
                     <label>申诉内容：</label>
-                     <span>{{this.aplcontent}}</span>
+                     <span>{{aplcontent}}</span>
                 </div>
                 <div class="input-group" style="position:relative">
                     <label>附件信息：</label>
                     <div v-for="(item,index) in aplurl">
-                      <span  @click="previewPhoto(aplurl,index)" style="margin-right:20px">{{item.name}}</span>
+                      <span class="link"  @click="previewPhoto(aplurl,index)" style="margin-right:20px">附件{{index+1}}</span>
                     </div>
                 </div>
                  <div class="input-group" style="position:relative;">
@@ -400,6 +408,7 @@ export default{
     mixins: [MIXINS],
     data() {
       return {
+        aplremark:'',
         inputMax:200,
         aplman:'',
         aplrole:'',
@@ -527,10 +536,19 @@ export default{
 }
 </script>
 <style scoped lang="less">
+    .preview{
+      z-index:2220!important
+    }
      .link{
           color: #478de3;
           cursor:pointer
      }
+     .text-absolute {
+      position: absolute;
+      right: 4px;
+      color: #D6D6D6;
+      bottom: 0;
+    }
     .ach-header {
       min-height: 70px;
       min-width: 100%;

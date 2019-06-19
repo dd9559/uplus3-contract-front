@@ -170,8 +170,11 @@
                       <p slot="reference">{{item.appealContent.slice(0,10)}}</p>
                   </el-popover>
                   </div>
-                  <div v-else>
+                  <div v-else-if="item.appealContent.length>0">
                       <p>{{item.appealContent}}</p>
+                  </div>
+                  <div v-else>
+                      <p>-</p>
                   </div>
                 </div>
             </template>
@@ -193,20 +196,29 @@
           <el-table-column label="申诉凭证" align="center" min-width="100">
             <template slot-scope="scope">
                 <div v-for="item2 in scope.row.achievementAppeals">
-                  <div v-for="(item,index) in item2.voucherUrl">
-                      <p class="link" @click="previewPhoto(item2.voucherUrl,index)">附件{{index+1}}</p>
-                    </div>
+                  <div v-if="item2.voucherUrl&&item2.voucherUrl.length>0">
+                    <span v-for="(item,index) in item2.voucherUrl">
+                        <span style="margin-right:10px" class="link" @click="previewPhoto(item2.voucherUrl,index)">附件{{index+1}}</span>
+                    </span>
+                  </div>
+                  <div v-else>
+                    -
+                  </div>
+                  
                 </div>
             </template>
           </el-table-column>
 
-          <el-table-column label="审核信息" align="center" min-width="60">
+          <el-table-column label="审核信息" align="center" min-width="200">
             <template slot-scope="scope">
-              <div>
                 <div v-for="item in scope.row.achievementAppeals">
-                  <p>{{item.auditRemarks}}</p>
+                  <div v-if="item.auditRemarks.length>0">
+                    <el-tooltip class="item" effect="dark" :content="item.auditRemarks" placement="top-start">
+                      <p>{{item.auditRemarks.slice(0,8)}}</p>
+                    </el-tooltip>
+                  </div>
+                  <div v-else>-</div>
                 </div>
-              </div>
             </template>
           </el-table-column>
 
