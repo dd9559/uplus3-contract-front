@@ -608,7 +608,7 @@
             
            </div>
 
-           <div class="house-divide top20">
+           <div class="house-divide top20" style="height:38px">
              <div class="house-left f_l">
                 <h1 class="f14">申诉信息</h1>
               </div>
@@ -2303,7 +2303,7 @@
           position: relative;
           .el-textarea {
             position: absolute;
-            left: 70px;
+            left: 43px;
             top: 0;
             padding-bottom: 80px;
             width: 60%;

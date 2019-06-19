@@ -49,9 +49,9 @@
       <!-- 头部 -->
       <div class="table-tool">
         <div class="tool-left">
-          <h4 class="f14">
+          <!-- <h4 class="f14">
             <i class="iconfont icon-tubiao-11"></i>数据列表
-          </h4>
+          </h4> -->
           <!-- <ul>
             <li>
               <span>
@@ -214,7 +214,7 @@
                 <div v-for="item in scope.row.achievementAppeals">
                   <div v-if="item.auditRemarks.length>0">
                     <el-tooltip class="item" effect="dark" :content="item.auditRemarks" placement="top-start">
-                      <p>{{item.auditRemarks.slice(0,8)}}</p>
+                      <p class="dot">{{item.auditRemarks}}</p>
                     </el-tooltip>
                   </div>
                   <div v-else>-</div>
@@ -860,6 +860,11 @@ export default {
 .layout {
   .check-btn span {
     color: #478de3;
+  }
+  .dot{
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    overflow:hidden
   }
   .sustip{
     position: relative;
