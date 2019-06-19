@@ -93,7 +93,7 @@ let TOOL = {
         {
           name: "业绩申诉审核",
           path: "achAppeal",
-          code: "sign-yj-rec-query"
+          code: "sign-yj-appeal-query"
         },
         // {
         //   name:'门店实收',
