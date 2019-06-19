@@ -298,7 +298,10 @@
                   label="申诉状态"
                 >
                 <template slot-scope="scope">
-                  {{scope.row.auditStatus.label}}
+                  <div v-if="scope.row.auditStatus">
+                      {{scope.row.auditStatus.label}}
+                  </div>
+                  <div v-else>-</div>
                 </template>
               </el-table-column>
 

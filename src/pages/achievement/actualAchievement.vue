@@ -687,7 +687,7 @@
               </el-select>
             </div>
              <div class="input-group" style="align-items: normal;position:relative">
-                    <span class="point" style="min-width:78px">申诉类容：</span>
+                    <span class="point" style="min-width:78px">申诉内容：</span>
                     <el-input type="textarea" :rows="4" resize='none' v-model="SSuForm.remark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
                      <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
               </div>

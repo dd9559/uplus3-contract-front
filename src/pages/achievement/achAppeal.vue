@@ -184,9 +184,12 @@
             <template slot-scope="scope">
               
                 <div v-for="item in scope.row.achievementAppeals">
-                  <p v-if="item.auditStatus.value==0">未审核</p>
-                  <p v-if="item.auditStatus.value==1">通过</p>
-                  <p v-if="item.auditStatus.value==2">驳回</p>
+                  <div v-if="item.auditStatus">
+                    <p v-if="item.auditStatus.value==0">未审核</p>
+                    <p v-if="item.auditStatus.value==1">通过</p>
+                    <p v-if="item.auditStatus.value==2">驳回</p>
+                  </div>
+                  <div v-else>-</div>
                 </div>
             </template>
           </el-table-column>
