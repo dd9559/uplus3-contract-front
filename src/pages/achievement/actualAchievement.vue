@@ -362,7 +362,6 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-appeal'].state"
                   >申诉</span>
-                  <span style="cursor:pointer;" v-else>-</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==1" class="check-btn">
@@ -376,7 +375,6 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-appeal'].state"
                   >申诉</span>
-                  <span style="cursor:pointer;" v-else>-</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==2" class="check-btn">
@@ -390,7 +388,6 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-appeal'].state"
                   >申诉</span>
-                  <span style="cursor:pointer;" v-else>-</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==0" class="check-btn">
