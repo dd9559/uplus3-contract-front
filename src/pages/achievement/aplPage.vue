@@ -902,20 +902,21 @@
         <el-dialog title="审核" :visible.sync="aplDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
                  <div class="input-group" style="position:relative">
                     <label>申诉人：</label>
-                     <span>{{this.aplman}}</span>
+                     <span>{{aplman}}</span>
                 </div>
                 <div class="input-group" style="position:relative">
                     <label>审核角色：</label>
-                     <span>{{this.aplrole}}</span>
+                     <span v-if="aplrole">{{aplrole.join('，')}}</span>
+                     <span v-else>-</span>
                 </div>
                 <div class="input-group" style="position:relative">
                     <label>申诉内容：</label>
-                     <span>{{this.aplcontent}}</span>
+                     <span>{{aplcontent}}</span>
                 </div>
                 <div class="input-group" style="position:relative">
                     <label>附件信息：</label>
                     <div v-for="(item,index) in aplurl">
-                      <span  @click="previewPhoto(aplurl,index)" style="margin-right:20px">{{item.name}}</span>
+                      <span class="link"  @click="previewPhoto(aplurl,index)" style="margin-right:20px">附件{{index+1}}</span>
                     </div>
                 </div>
                  <div class="input-group" style="position:relative;">
@@ -1018,7 +1019,21 @@
       this.achIndex=this.$route.query.achIndex
       this.achObj=JSON.parse(this.$route.query.achObj)
       this.contractId2=this.$route.query.contractId
-      this.$ajax.get('/api/appeal/getExamineInfo',{aId:this.aId}).then(res=>{
+      this.getDictionary()
+      this.$ajax.get("/api/role/types").then(res => {
+          console.log(res.status);
+          if (res.status === 200) {
+            // console.log(res.data.data[0]);
+            this.roleType0 = res.data.data[1]; //房源角色类型
+            this.roleType1 = res.data.data[2]; //客源角色类型
+          }
+        });
+      
+      this.getData()
+    },
+    methods: {
+      getData(){
+        this.$ajax.get('/api/appeal/getExamineInfo',{aId:this.aId}).then(res=>{
         if (res.status === 200) {
               this.houseArr = res.data.data.houseAgents;
               this.shensuArr=res.data.data.appeals
@@ -1028,16 +1043,13 @@
               var houseArr2 = res.data.data.houseAgents;
               this.clientArr = res.data.data.customerAgents;
               this.comm = res.data.data.comm;
-              // this.state2=res.data.data.examineStatus;
               if (res.data.data.examineDate) {
                 this.examineDate = res.data.data.examineDate;
               }
               this.loading=false;
             }
-      })
-      
-    },
-    methods: {
+          })
+      },
       nopass(){
         if(this.aplremark==""){
           this.$messsage("请填写备注信息！")
@@ -1050,7 +1062,9 @@
         this.$ajax.post('/api/appeal/appealReject  ',param,2).then(res=>{
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
+            this.aplremark=''
             this.aplDialog=false
+             this.getData()
           }
         })
       },
@@ -1062,7 +1076,9 @@
         this.$ajax.post('/api/appeal/appealAdopt',param,2).then(res=>{
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
+            this.aplremark=''
             this.aplDialog=false
+            this.getData()
           }
         })
       },
@@ -1617,6 +1633,7 @@
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
                 this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
+                this.getData()
               }
             }).catch(error => {
             if(error.message==='下一节点审批人不存在'){

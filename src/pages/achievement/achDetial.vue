@@ -400,6 +400,7 @@ export default{
     mixins: [MIXINS],
     data() {
       return {
+        inputMax:200,
         aplman:'',
         aplrole:'',
         aplcontent:'',
@@ -517,7 +518,12 @@ export default{
           }
         })
       },
-    }
+    },
+    computed:{
+        validInput() {
+                return this.aplremark.length
+            }
+        }
 }
 </script>
 <style scoped lang="less">

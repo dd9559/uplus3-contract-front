@@ -607,6 +607,101 @@
               </el-table>
             
            </div>
+
+           <div class="house-divide top20">
+             <div class="house-left f_l">
+                <h1 class="f14">申诉信息</h1>
+              </div>
+           </div>
+            <div class="ach-divide-list" style="margin-bottom:20px">
+             <el-table
+                :data="shensuArr"
+                style="width: 100%"
+              >
+              <el-table-column
+                  label="申诉人"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.auditDepName}}-{{scope.row.appealName}}
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="申诉角色"
+                >
+                <template slot-scope="scope">
+                  <div v-if="!scope.row.roles||scope.row.roles.length==0">
+                    <div>--</div>
+                  </div>
+                  <div v-else>
+                    <div v-for="item in scope.row.roles">
+                      <p>{{item}}</p>
+                    </div>
+                  </div>
+                </template>
+                </el-table-column>
+                <el-table-column
+                  label="申诉内容"
+                  width="200"
+                >
+                <template slot-scope="scope">
+                      <div>
+                        <el-popover trigger="hover" width="100" :content="scope.row.appealContent" placement="top">
+                        <p slot="reference">{{scope.row.appealContent.slice(0,10)}}</p>
+                        </el-popover>
+                      </div>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="申诉时间"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.appealTime|formatDate}}
+                </template>
+              </el-table-column>
+
+               <el-table-column
+                  label="申诉状态"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.auditStatus.label}}
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="审核人名称"
+                  prop="appealContent"
+                >
+                </el-table-column>
+                <el-table-column
+                  label="申诉凭证"
+                >
+                <template slot-scope="scope">
+                    <div  v-for="(item,index) in scope.row.voucherUrl">
+                      <p class="link" @click="previewPhoto(scope.row.voucherUrl,index)">附件{{index+1}}</p>
+                    </div>
+                </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="审核信息"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.auditRemarks}}
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="申诉"
+                >
+                <template slot-scope="scope">
+                  <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
+                </template>
+                </el-table-column>
+            </el-table>
+            <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+           </div>
           </div>
 
           <!-- 业绩审核底部 -->
@@ -818,6 +913,36 @@
             </el-table>
         </el-dialog>
       
+      <el-dialog title="审核" :visible.sync="aplDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+                 <div class="input-group" style="position:relative">
+                    <label>申诉人：</label>
+                     <span>{{aplman}}</span>
+                </div>
+                <div class="input-group" style="position:relative">
+                    <label>审核角色：</label>
+                     <span v-if="aplrole">{{aplrole.join('，')}}</span>
+                     <span v-else>-</span>
+                </div>
+                <div class="input-group" style="position:relative">
+                    <label>申诉内容：</label>
+                     <span>{{aplcontent}}</span>
+                </div>
+                <div class="input-group" style="position:relative">
+                    <label>附件信息：</label>
+                    <div v-for="(item,index) in aplurl">
+                      <span class="link"  @click="previewPhoto(aplurl,index)" style="margin-right:20px">附件{{index+1}}</span>
+                    </div>
+                </div>
+                 <div class="input-group" style="position:relative;">
+                    <label>备注：</label>
+                    <el-input type="textarea" :rows="4" resize='none' v-model="aplremark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
+                     <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
+                </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="nopass" type="primary" class="confirmBtn" v-dbClick>驳回</el-button>
+                <el-button @click="pass" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
+            </div>
+        </el-dialog>
     </div>
   </div>
 </template>
@@ -830,11 +955,19 @@
     name: "achDialog",
     data() {
       return {
+        aplid:'',
+        aplman:'',
+        aplrole:'',
+        aplcontent:'',
+        aplurl:[],
+        aplDialog:false,
+        imgList:[],
         AMData:[],
         AMShow:false,
         recordData:[],
         recordShow:false,
         shows:true,
+        shensuArr:[],
         houseArr: [], //房源列表
         clientArr: [], //客源列表
         mansList: [], //人员列表
@@ -907,6 +1040,42 @@
     //   achObj: Object //合同详情传过来的对象（首次业绩录入需要用）
     // },
     methods: {
+      itemht(row){
+        this.aplman=row.appealName
+        this.aplrole=row.roles
+        this.aplcontent=row.appealContent
+        this.aplurl=row.voucherUrl
+        this.aplid=row.id
+        this.aplDialog=true
+      },
+      nopass(){
+        if(this.aplremark==""){
+          this.$messsage("请填写备注信息！")
+          return
+        }
+        let param={
+          id:this.aplid,
+          examineRemark:this.aplremark
+        }
+        this.$ajax.post('/api/appeal/appealReject  ',param,2).then(res=>{
+          if(res.status==200){
+            this.$message({ message: "操作成功", type: "success" })
+            this.aplDialog=false
+          }
+        })
+      },
+      pass(){
+        let param={
+          id:this.aplid,
+          examineRemark:this.aplremark
+        }
+        this.$ajax.post('/api/appeal/appealAdopt',param,2).then(res=>{
+          if(res.status==200){
+            this.$message({ message: "操作成功", type: "success" })
+            this.aplDialog=false
+          }
+        })
+      },
       unique(arr1) {
           const res = new Map();
           return arr1.filter((a) => !res.has(a.roleType) && res.set(a.roleType, 1))
@@ -1820,6 +1989,9 @@
         this.addManList = val;
         this.addArr.push(val);
       },
+      getPicture(item){
+        return this.$tool.cutFilePath(item)
+      },
       // 审核，反审核，编辑点进去的房源，客源
       codeBaseInfo(contCode, entrance, aId,infoType) {
         let param = { contCode: contCode, entrance: entrance, aId: this.aId };
@@ -1829,6 +2001,10 @@
             if (res.status === 200) {
               this.houseArr = res.data.data.houseAgents;
               var houseArr2 = res.data.data.houseAgents;
+              this.shensuArr= res.data.data.appeals
+              for(let i=0;i<this.shensuArr.length;i++){
+                this.shensuArr[i].voucherUrl=this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
+              }
               console.log(this.houseArr,'houseArr');
               this.clientArr = res.data.data.customerAgents;
               // debugger
@@ -2027,6 +2203,10 @@
 
 <style lang="less" scoped>
   // 相关人员弹框
+  .link{
+          color: #478de3;
+          cursor:pointer
+  }
   /deep/ .dialog2In {
     width: 450px !important;
     max-height: 600px;

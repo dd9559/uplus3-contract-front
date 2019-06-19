@@ -384,7 +384,7 @@
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-edit'].state"
-                  >编辑</span>
+                  >确认业绩</span>
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
@@ -682,6 +682,13 @@
                     <el-option v-for="item in people" :key="item.code" :label="item.description"  :value="item.code"></el-option>
               </el-select>
             </div>
+            <div class="role">
+              <span class="point" style="margin-right:17px">审核人：</span>{{depName}}
+              <el-select v-model="SSuForm.empNames" style="margin-right:19px" placeholder="请选择"  
+              :clearable="true" @change="getName">
+                    <el-option v-for="item in this.empNames" :key="item.empId" :label="item.name"  :value="item.empId"></el-option>
+              </el-select>
+            </div>
              <div class="input-group" style="align-items: normal;position:relative">
                     <span class="point" style="min-width:78px">申诉类容：</span>
                     <el-input type="textarea" :rows="4" resize='none' v-model="SSuForm.remark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
@@ -724,6 +731,9 @@ export default {
   name: "actualAchievement",
   data() {
     return {
+      roleName:'',
+      auditName:'',
+      depName:'',
       uploadScane:{path:'shensu',id:''},//上传场景值
       people:[],
       htbh:'',
@@ -740,10 +750,13 @@ export default {
       departs: [], //部门
       depUser: "",
       users: [],
+      empNames:[],
       dialogVisible: false, //详情弹框
       SSuForm:{
         role:[],
         remark:'',
+        empNames:'',
+        auditName:'',
         pinzheng:[],
       },
       // 筛选条件
@@ -868,13 +881,9 @@ export default {
   created(){
     this.getAdmin(); //获取当前登录人信息
     this.userMsg=this.getUser.user
-    this.$ajax.get("/api/appeal/launchAppeal").then(res=>{
-      if(res.data.status==200){
-        this.people=res.data.data
-      }
-    }
+    
 
-    )
+    
   },
   mounted() {
     this.ajaxParam = {
@@ -961,17 +970,47 @@ export default {
     }
   },
   methods: {
+    getName(val){
+      for(let i=0;i<this.empNames.length;i++){
+        if(val==this.empNames[i].empId){
+            this.auditName=this.empNames[i].name
+            this.roleName=this.empNames[i].roleName
+        }
+      }
+    },
     submitForm(){
+      if(this.SSuForm.role.length==0){
+        this.$message('申诉角色不能为空！')
+        return
+      }
+      if(this.SSuForm.remark==''){
+        this.$message('申诉内容不能为空！')
+        return
+      }
+      if(this.auditName==''){
+        this.$message('审核人不能为空！')
+        return
+      }
       let param={
           achievementId :this.yjId,
           appealRole:this.SSuForm.role.join(','),
           appealContent:this.SSuForm.remark,
           voucherUrl:this.SSuForm.pinzheng,
+          auditDepName:this.depName,
+          auditId:this.SSuForm.empNames,
+          auditName:this.auditName,
+          roleName:this.roleName,
       }
-      debugger
       this.$ajax.postJSON('/api/appeal/saveAppealInfo',param,2).then(res=>{
         if(res.status==200){
             this.isSS=false
+            this.yjId=''
+            this.SSuForm.role=[]
+            this.SSuForm.remark=''
+            this.SSuForm.pinzheng=[]
+            this.SSuForm.empNames=''
+            this.auditName=''
+            this.roleName=''
             this.$message({message: '提交成功！'})
         }
       })
@@ -986,6 +1025,13 @@ export default {
       this.htbh=row.code
       this.yjId=row.aId
       this.qysj=this.$tool.dateFormat(row.signDate)
+      this.$ajax.get("/api/appeal/launchAppeal",{aId:`${this.yjId}`}).then(res=>{
+      if(res.data.status==200){
+        this.people=res.data.data.allRole
+        this.depName=res.data.data.depName
+        this.empNames=res.data.data.empNames
+      }
+      })
       this.isSS=true
     },
     mul: function(arg1, arg2) {

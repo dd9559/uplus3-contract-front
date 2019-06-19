@@ -14,8 +14,8 @@
           </el-tooltip>
         </el-form-item>
 
-        <span @click.stop="aplquery" class="shensulink" style="cursor:pointer;">今日申诉</span>
-        <span @click.stop="aplquery" class="shensulink" style="cursor:pointer;">三日内申诉</span>
+        <span @click.stop="aplquery(1)" class="shensulink" style="cursor:pointer;">今日申诉</span>
+        <span @click.stop="aplquery(2)" class="shensulink" style="cursor:pointer;">三日内申诉</span>
         <el-form-item label="申诉日期" prop="dateMo" class="mr">
           <el-date-picker
             v-model="propForm.dateMo"
@@ -82,17 +82,6 @@
             </li>
           </ul> -->
         </div>
-        <p>
-          <el-button
-            class="f_r"
-            round
-            type="primary"
-            size="medium"
-            @click="getExcel"
-            style="padding:9px 15px;min-width: 80px;"
-            v-if="power['sign-yj-rev-export'].state"
-          >导出</el-button>
-        </p>
       </div>
       <!-- 头部 end -->
 
@@ -155,14 +144,19 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉角色" align="center" min-width="90">
+          <el-table-column label="申诉角色" align="center" min-width="100">
             <template slot-scope="scope">
                 <div v-for="item in scope.row.achievementAppeals">
-                    <div v-if="!item.roles||item.roles.length==0"></div>
+                    <div v-if="!item.roles||item.roles.length==0">-</div>
                     <div v-else>
-                      <div  v-for="item in item.roles">
-                      <p>{{item}}</p>
-                      </div>
+                       <!-- {{item.roles.join(',')}} -->
+                        <el-tooltip class="item" effect="dark" :content="item.roles.join(',')" placement="top-start">
+                          <p>{{item.roles.join(',').slice(0,7)}}</p>
+                        </el-tooltip>
+                      
+                      <!-- <div  v-for="item in item.roles">
+                      <span>{{item}}</span>
+                      </div> -->
                     </div>
                 </div>
             </template>
@@ -393,13 +387,6 @@ export default {
   created(){
     this.getAdmin(); //获取当前登录人信息
     this.userMsg=this.getUser.user
-    this.$ajax.get("/api/appeal/launchAppeal").then(res=>{
-      if(res.data.status==200){
-        this.people=res.data.data
-      }
-    }
-
-    )
   },
   mounted() {
     this.ajaxParam = {
@@ -584,13 +571,7 @@ export default {
           });
         });
     },
-    // 导出功能
-    getExcel() {
-      this.queryFn();
-      // this.ajaxParam.is_Receivable=1;
-      let param = Object.assign({}, this.ajaxParam);
-      this.excelCreate("/input/achievementExcel", param);
-    },
+    
     closeDialog() {
       this.dialogVisible = false;
     },
@@ -666,6 +647,7 @@ export default {
         
       // this.ajaxParam.pageNum = 1;
       // this.currentPage = 1;
+      debugger
       let param = JSON.parse(JSON.stringify(this.ajaxParam));
       this.getData(this.ajaxParam);
     },
