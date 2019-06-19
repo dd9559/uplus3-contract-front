@@ -360,7 +360,7 @@
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-edit'].state"
+                    v-if="power['sign-yj-rev-appeal'].state"
                   >申诉</span>
                   <span style="cursor:pointer;" v-else>-</span>
                 </div>
@@ -374,7 +374,7 @@
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-edit'].state"
+                    v-if="power['sign-yj-rev-appeal'].state"
                   >申诉</span>
                   <span style="cursor:pointer;" v-else>-</span>
                 </div>
@@ -388,7 +388,7 @@
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-edit'].state"
+                    v-if="power['sign-yj-rev-appeal'].state"
                   >申诉</span>
                   <span style="cursor:pointer;" v-else>-</span>
                 </div>
@@ -402,7 +402,7 @@
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-edit'].state"
+                    v-if="power['sign-yj-rev-appeal'].state"
                   >申诉</span>
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
