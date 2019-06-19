@@ -327,11 +327,25 @@
                 </template>
               </el-table-column>
 
+              <el-table-column
+                  label="审核人名称"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.auditName&&scope.row.auditName.length>0">
+                    {{scope.row.auditDepName}}-{{scope.row.auditName}}
+                  </div>
+                  <div v-else>-</div>
+                </template>
+                </el-table-column>
+
                 <el-table-column
                   label="申诉"
                 >
                 <template slot-scope="scope">
-                  <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
+                  <div v-if="scope.row.auditStatus.value==0">
+                    <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
+                  </div>
+                  <div v-else>-</div>
                 </template>
                 </el-table-column>
             </el-table>

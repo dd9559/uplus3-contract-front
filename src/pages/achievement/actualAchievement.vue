@@ -1000,23 +1000,27 @@ export default {
           auditDepName:this.depName,
           auditId:this.SSuForm.empNames,
           auditName:this.auditName,
-          roleName:this.roleName,
+          auditPostionName:this.roleName,
       }
-      this.$ajax.postJSON('/api/appeal/saveAppealInfo',param,2).then(res=>{
-        if(res.status==200){
-            this.isSS=false
-            this.yjId=''
-            this.SSuForm.role=[]
-            this.SSuForm.remark=''
-            this.SSuForm.pinzheng=[]
-            this.SSuForm.empNames=''
-            this.auditName=''
-            this.roleName=''
-            this.$message({message: '提交成功！'})
+      if(this.power['sign-yj-rev-appeal'].state){
+        this.$ajax.postJSON('/api/appeal/saveAppealInfo',param,2).then(res=>{
+          if(res.status==200){
+              this.isSS=false
+              this.yjId=''
+              this.SSuForm.role=[]
+              this.SSuForm.remark=''
+              this.SSuForm.pinzheng=[]
+              this.SSuForm.empNames=''
+              this.auditName=''
+              this.roleName=''
+              this.$message({message: '提交成功！'})
+          }
+        }).catch(err=>{
+          this.$message({message:err})
+        })
+       }else{
+              this.noPower(this.power['sign-yj-rev-appeal'].name)
         }
-      }).catch(err=>{
-        this.$message({message:err})
-      })
     },
     getAdd(obj){
       for(let i=0;i<obj.param.length;i++){

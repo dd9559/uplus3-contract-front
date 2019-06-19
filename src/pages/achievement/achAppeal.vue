@@ -223,7 +223,7 @@
            <el-table-column label="审核人名称" align="center" min-width="120">
             <template slot-scope="scope">
                 <div v-for="item in scope.row.achievementAppeals">
-                  <p>{{item.auditDepName}}-{{item.auditPostionName}}</p>
+                  <p>{{item.auditDepName}}-{{item.auditName}}</p>
                 </div>
             </template>
           </el-table-column>
@@ -351,7 +351,7 @@ export default {
       ],
       //权限配置
       power: {
-        "sign-yj-rev-query": {
+        "sign-yj-appeal-query": {
           state: false,
           name: "查询"
         },
@@ -401,9 +401,14 @@ export default {
     };
     this.$nextTick(() => {
       let res = this.getDataList;
-      debugger
       if (res && res.route === this.$route.path) {
         this.selectAchList = res.data.list;
+        for(let i=0;i<this.selectAchList.length;i++){
+              for(let j=0;j<this.selectAchList[i].achievementAppeals.length;j++){
+                // for(let k=0;k<_that.selectAchList[i].achievementAppeals[j].)
+                this.selectAchList[i].achievementAppeals[j].voucherUrl=this.getPicture(JSON.parse(this.selectAchList[i].achievementAppeals[j].voucherUrl))
+              }
+            }
         this.total = res.data.total;
         
         let session = JSON.parse(sessionStorage.getItem("sessionQuery")).query;
@@ -411,6 +416,7 @@ export default {
           ? [session.startTime, session.endTime]
           : [];
         this.propForm.search = session.keyword;
+        this.propForm.appealType = session.appealType;
         this.currentPage = session.pageNum;
         this.pageSize = session.pageSize;
         this.propForm.empName=session.empName
@@ -530,32 +536,31 @@ export default {
       }
       this.loading = true;
       let _that = this;
-      this.$ajax
-        .get("/api/appeal/getAppealList", ajaxParam)
-        .then(res => {
+       if(this.power['sign-yj-appeal-query'].state){
+      this.$ajax.get("/api/appeal/getAppealList", ajaxParam).then(res => {
           console.log(res);
           let data = res.data;
           if (res.status === 200) {
             _that.selectAchList = data.data.list;
             for(let i=0;i<_that.selectAchList.length;i++){
               for(let j=0;j<_that.selectAchList[i].achievementAppeals.length;j++){
-                // for(let k=0;k<_that.selectAchList[i].achievementAppeals[j].)
                 _that.selectAchList[i].achievementAppeals[j].voucherUrl=this.getPicture(JSON.parse(_that.selectAchList[i].achievementAppeals[j].voucherUrl))
               }
             }
-            console.log(_that.selectAchList,'list');
             _that.total = data.data.total;
             this.$nextTick(() => {
               this.loading = false;
             });
           }
-        })
-        .catch(error => {
+        }).catch(error => {
           this.$message({ message: error });
           this.$nextTick(() => {
             this.loading = false;
           });
-        });
+        })
+       }else{
+          this.noPower(this.power['sign-yj-appeal-query'].name)
+       }
     },
     
     closeDialog() {
