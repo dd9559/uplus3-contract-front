@@ -395,7 +395,6 @@ export default {
     };
   },
   created(){
-    this.getAdmin(); //获取当前登录人信息
   },
   mounted() {
     this.ajaxParam = {
