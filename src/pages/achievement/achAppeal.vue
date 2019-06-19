@@ -236,6 +236,7 @@
                 <div v-if="scope.row.type==0"  class="check-btn">
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
+                    v-if="userMsg&&userMsg.empId==scope.row.auditId"
                     style="cursor:pointer;"
                   >审核</span>
                 </div>
@@ -445,10 +446,13 @@ export default {
     this.remoteMethod();
   },
   computed: {
-            validInput() {
-                return this.SSuForm.remark.length
-            }
-          },
+    userMsg(){
+        return this.getUser.user
+      },
+        validInput() {
+            return this.SSuForm.remark.length
+        }
+    },
   components: {
     achDialog,
     MIXINS,

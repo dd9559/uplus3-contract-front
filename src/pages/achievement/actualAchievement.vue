@@ -877,7 +877,7 @@ export default {
   },
   created(){
     this.getAdmin(); //获取当前登录人信息
-    this.userMsg=this.getUser.user
+    
     
 
     
@@ -952,10 +952,13 @@ export default {
     this.remoteMethod();
   },
   computed: {
-            validInput() {
-                return this.SSuForm.remark.length
-            }
-          },
+      userMsg(){
+        return this.getUser.user
+      },
+      validInput() {
+        return this.SSuForm.remark.length
+        }
+      },
   components: {
     achDialog,
     MIXINS,
