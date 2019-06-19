@@ -622,7 +622,10 @@
                   label="申诉人"
                 >
                 <template slot-scope="scope">
-                  {{scope.row.auditDepName}}-{{scope.row.appealName}}
+                  <div v-if="scope.row.appealName&&scope.row.appealName.length>0">
+                    {{scope.row.auditDepName}}-{{scope.row.appealName}}
+                  </div>
+                  <div v-else>-</div>
                 </template>
               </el-table-column>
 
@@ -645,11 +648,12 @@
                   width="200"
                 >
                 <template slot-scope="scope">
-                      <div>
+                      <div v-if="scope.row.appealContent&&scope.row.appealContent.length>0">
                         <el-popover trigger="hover" width="100" :content="scope.row.appealContent" placement="top">
-                        <p slot="reference">{{scope.row.appealContent.slice(0,10)}}</p>
+                        <p class="dot" slot="reference">{{scope.row.appealContent}}</p>
                         </el-popover>
                       </div>
+                      <div v-else>-</div>
                   </template>
                 </el-table-column>
 
@@ -671,8 +675,13 @@
 
                 <el-table-column
                   label="审核人名称"
-                  prop="appealContent"
                 >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.auditName&&scope.row.auditName.length>0">
+                    {{scope.row.auditDepName}}-{{scope.row.auditName}}
+                  </div>
+                  <div v-else>-</div>
+                </template>
                 </el-table-column>
                 <el-table-column
                   label="申诉凭证"
@@ -688,7 +697,10 @@
                   label="审核信息"
                 >
                 <template slot-scope="scope">
-                  {{scope.row.auditRemarks}}
+                  <div v-if="scope.row.auditRemarks&&scope.row.auditRemarks.length>0">
+                      {{scope.row.auditRemarks}}
+                  </div>
+                  <div v-else>-</div>
                 </template>
               </el-table-column>
 
@@ -915,9 +927,12 @@
                 </div>
                 <div class="input-group" style="position:relative">
                     <label>附件信息：</label>
-                    <div v-for="(item,index) in aplurl">
+                    <div v-if="aplurl&&aplurl.length>0">
+                      <span  v-for="(item,index) in aplurl">
                       <span class="link"  @click="previewPhoto(aplurl,index)" style="margin-right:20px">附件{{index+1}}</span>
+                    </span>
                     </div>
+                    <div v-else>暂无</div>
                 </div>
                  <div class="input-group" style="position:relative;">
                     <label>备注：</label>
@@ -1066,6 +1081,8 @@
             this.aplDialog=false
              this.getData()
           }
+        }).catch(err=>{
+          this.$message({message:err})
         })
       },
       pass(){
@@ -1080,6 +1097,8 @@
             this.aplDialog=false
             this.getData()
           }
+        }).catch(err=>{
+          this.$message({message:err})
         })
       },
       getPicture(item){
@@ -2096,6 +2115,11 @@
     color: #478de3;
     cursor:pointer
   }
+  .dot{
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      overflow:hidden
+      }
   .preview{
       z-index:2220!important
     }

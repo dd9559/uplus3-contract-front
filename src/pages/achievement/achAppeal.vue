@@ -121,10 +121,8 @@
 
           <el-table-column label="申诉状态" align="center" min-width="80">
             <template slot-scope="scope">
-              <p v-if="scope.row.type==-1" class="blue" style="cursor:text">未申诉</p>
-              <p v-if="scope.row.type==0" class="blue" style="cursor:text">申诉中</p>
-              <p v-if="scope.row.type==1" class="green">通过</p>
-              <p v-if="scope.row.type==2" class="orange">驳回</p>
+              <p v-if="scope.row.type==1" class="green">已处理</p>
+              <p v-if="scope.row.type==2" class="orange">未处理</p>
             </template>
           </el-table-column>
 
@@ -151,7 +149,7 @@
                     <div v-else>
                        <!-- {{item.roles.join(',')}} -->
                         <el-tooltip class="item" effect="dark" :content="item.roles.join(',')" placement="top-start">
-                          <p>{{item.roles.join(',').slice(0,7)}}</p>
+                          <p class="dot">{{item.roles.join(',')}}</p>
                         </el-tooltip>
                       
                       <!-- <div  v-for="item in item.roles">
@@ -167,7 +165,7 @@
                 <div v-for="item in scope.row.achievementAppeals">
                   <div v-if="item.appealContent.length>10">
                       <el-popover trigger="hover" width="100" :content="item.appealContent" placement="top">
-                      <p slot="reference">{{item.appealContent.slice(0,10)}}</p>
+                      <p class="dot" slot="reference">{{item.appealContent}}</p>
                   </el-popover>
                   </div>
                   <div v-else-if="item.appealContent.length>0">
@@ -339,21 +337,17 @@ export default {
       statuAid: null,
       aplStatuArr: [
         {
-          key: -1,
+          key: 0,
           value: "全部"
         },
         {
-          key: 0,
-          value: "申诉中"
-        },
-        {
           key: 1,
-          value: "通过"
+          value: "已处理"
         },
         {
           key: 2,
-          value: "驳回"
-        }
+          value: "未处理"
+        },
       ],
       //权限配置
       power: {
@@ -407,21 +401,12 @@ export default {
     };
     this.$nextTick(() => {
       let res = this.getDataList;
+      debugger
       if (res && res.route === this.$route.path) {
         this.selectAchList = res.data.list;
         this.total = res.data.total;
-        // if (res.data.list[0]) {
-        //   this.countData = res.data.list[0].contractCount;
-        // } else {
-        //   this.countData = [0, 0, 0, 0];
-        // }
         
         let session = JSON.parse(sessionStorage.getItem("sessionQuery")).query;
-        this.propForm.contractType = session.contractType.split(",");
-        this.propForm.divideType = session.distributionType;
-        this.propForm.achType = session.achievementStatus;
-        this.propForm.dealAgentStoreId=session.dealAgentStoreId
-        this.propForm.dealAgentId=session.dealAgentId
         this.propForm.dateMo = session.startTime
           ? [session.startTime, session.endTime]
           : [];
@@ -429,25 +414,14 @@ export default {
         this.currentPage = session.pageNum;
         this.pageSize = session.pageSize;
         this.propForm.empName=session.empName
-        this.propForm.department=session.department
-        this.propForm.joinMethods = session.joinMethods;
-        if (this.propForm.contractType[0] != "") {
-          for (let i = 0; i < this.propForm.contractType.length; i++) {
-            this.propForm.contractType[i] = Number(
-              this.propForm.contractType[i]
-            );
-          }
-        } else {
-          this.propForm.contractType = [];
-        }
-        if(this.propForm.dealAgentId){
-            this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.propForm.empName})
-            this.EmployeList.unshift({
-              empId:this.propForm.dealAgentId,
-              name:this.propForm.empName
-            })
-            this.getEmploye(this.propForm.dealAgentStoreId)
-          }
+        // if(this.propForm.dealAgentId){
+        //     this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.propForm.empName})
+        //     this.EmployeList.unshift({
+        //       empId:this.propForm.dealAgentId,
+        //       name:this.propForm.empName
+        //     })
+        //     this.getEmploye(this.propForm.dealAgentStoreId)
+        //   }
          
         
         this.$nextTick(() => {
@@ -659,7 +633,6 @@ export default {
         
       // this.ajaxParam.pageNum = 1;
       // this.currentPage = 1;
-      debugger
       let param = JSON.parse(JSON.stringify(this.ajaxParam));
       this.getData(this.ajaxParam);
     },
@@ -686,15 +659,15 @@ export default {
       let param = JSON.parse(JSON.stringify(this.ajaxParam));
       // delete param.dealAgentStoreId
       // delete param.dealAgentId
-      // sessionStorage.setItem(
-      //   "sessionQuery",
-      //   JSON.stringify({
-      //     path: "/actualAchievement",
-      //     url: "/achievement/selectAchievementList",
-      //     query: Object.assign({},param,{empName:this.dep.empName}),
-      //     methods: "get"
-      //   })
-      // );
+      sessionStorage.setItem(
+        "sessionQuery",
+        JSON.stringify({
+          path: "/achAppeal",
+          url: "/appeal/getAppealList",
+          query: Object.assign({},param,{empName:this.dep.empName}),
+          methods: "get"
+        })
+      );
       this.getData(this.ajaxParam,typeshow,2);
     },
     resetFormFn() {

@@ -277,11 +277,12 @@
                   label="申诉内容"
                   width="200">
                     <template slot-scope="scope">
-                      <div>
+                      <div v-if="scope.row.appealContent&&scope.row.appealContent.length>0">
                         <el-popover trigger="hover" width="100" :content="scope.row.appealContent" placement="top">
-                        <p slot="reference">{{scope.row.appealContent.slice(0,10)}}</p>
+                        <p class="dot" slot="reference">{{scope.row.appealContent}}</p>
                         </el-popover>
                       </div>
+                      <div v-else>-</div>
                   </template>
                 </el-table-column>
 
@@ -302,11 +303,6 @@
               </el-table-column>
 
                 <el-table-column
-                  label="审核人名称"
-                  prop="appealContent"
-                >
-                </el-table-column>
-                <el-table-column
                   label="申诉凭证"
                 >
                 <template slot-scope="scope">
@@ -320,9 +316,9 @@
                   label="审核信息"
                 >
                 <template slot-scope="scope">
-                  <div v-if="scope.row.auditRemarks.length==0">
+                  <div v-if="scope.row.auditRemarks&&scope.row.auditRemarks.length>0">
                     <el-tooltip class="item" effect="dark" :content="scope.row.auditRemarks" placement="top-start">
-                      <p>{{scope.row.auditRemarks.slice(0,8)}}</p>
+                      <p class="dot">{{scope.row.auditRemarks}}</p>
                   </el-tooltip>
                   </div>
                   <div v-else>
@@ -385,9 +381,13 @@
                 </div>
                 <div class="input-group" style="position:relative">
                     <label>附件信息：</label>
-                    <div v-for="(item,index) in aplurl">
+                    <div v-if="aplurl&&aplurl.length>0">
+                      <span  v-for="(item,index) in aplurl">
                       <span class="link"  @click="previewPhoto(aplurl,index)" style="margin-right:20px">附件{{index+1}}</span>
+                    </span>
                     </div>
+                    <div v-else>暂无</div>
+                    
                 </div>
                  <div class="input-group" style="position:relative;">
                     <label>备注：</label>
@@ -488,6 +488,8 @@ export default{
             this.$message({ message: "操作成功", type: "success" })
             this.aplDialog=false
           }
+        }).catch(err=>{
+           this.$message({message:err})
         })
       },
       pass(){
@@ -500,6 +502,8 @@ export default{
             this.$message({ message: "操作成功", type: "success" })
             this.aplDialog=false
           }
+        }).catch(err=>{
+          this.$message({message:err})
         })
       },
       getPicture(item){
@@ -543,6 +547,11 @@ export default{
           color: #478de3;
           cursor:pointer
      }
+     .dot{
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      overflow:hidden
+      }
      .text-absolute {
       position: absolute;
       right: 4px;

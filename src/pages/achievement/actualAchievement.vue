@@ -821,24 +821,24 @@ export default {
       ],
       aplStatuArr: [
         {
-          key: -1,
-          value: "未申诉"
-        },
-        {
           key: 0,
-          value: "申诉中"
+          value: "全部"
         },
         {
           key: 1,
-          value: "申诉驳回"
+          value: "已处理"
         },
         {
           key: 2,
-          value: "申诉通过"
+          value: "未处理"
         }
       ],
       //权限配置
       power: {
+        "sign-yj-rev-appeal": {
+          state: false,
+          name: "申诉"
+        },
         "sign-yj-rev-query": {
           state: false,
           name: "查询"
@@ -913,6 +913,7 @@ export default {
         this.propForm.achType = session.achievementStatus;
         this.propForm.dealAgentStoreId=session.dealAgentStoreId
         this.propForm.dealAgentId=session.dealAgentId
+        this.propForm.appealType=session.appealStatus
         this.propForm.dateMo = session.startTime
           ? [session.startTime, session.endTime]
           : [];
@@ -1013,6 +1014,8 @@ export default {
             this.roleName=''
             this.$message({message: '提交成功！'})
         }
+      }).catch(err=>{
+        this.$message({message:err})
       })
     },
     getAdd(obj){
