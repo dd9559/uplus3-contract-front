@@ -637,9 +637,9 @@
                     <div>--</div>
                   </div>
                   <div v-else>
-                    <div v-for="item in scope.row.roles">
-                      <p>{{item}}</p>
-                    </div>
+                    <el-tooltip class="item" effect="dark" :content="scope.row.roles.join(',')" placement="top-start">
+                          <p class="dot">{{scope.row.roles.join(',')}}</p>
+                    </el-tooltip>
                   </div>
                 </template>
                 </el-table-column>
@@ -687,9 +687,12 @@
                   label="申诉凭证"
                 >
                 <template slot-scope="scope">
-                    <div  v-for="(item,index) in scope.row.voucherUrl">
+                    <div v-if="scope.row.voucherUrl&&scope.row.voucherUrl.length>0">
+                      <div  v-for="(item,index) in scope.row.voucherUrl">
                       <p class="link" @click="previewPhoto(scope.row.voucherUrl,index)">附件{{index+1}}</p>
                     </div>
+                  </div>
+                  <div v-else>-</div>
                 </template>
                 </el-table-column>
 

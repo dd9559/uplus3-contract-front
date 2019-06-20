@@ -25,7 +25,6 @@
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            @change="test"
           ></el-date-picker>
         </el-form-item>
 
@@ -261,9 +260,9 @@
           <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
               <div v-if="scope.row.type==0" class="check-btn">
-                <span @click.stop="checkAch(scope.row,scope.$index)" 
+                <span @click.stop="checkAch(scope.row,scope.$index)" v-if="scope.row.auditIds==1"
                 style="cursor:pointer;">审核</span>
-                <!-- <span v-else>-</span>v-if="scope.row.auditIds==1" -->
+                <span v-else>-</span>
               </div>
             </template>
           </el-table-column>
@@ -561,9 +560,6 @@ export default {
     searchDep: function(payload) {
       /*this.DepList=payload.list
       this.propForm.department=payload.depName*/
-    },
-    test(val){
-debugger
     },
     getPicture(item) {
       return this.$tool.cutFilePath(item);
