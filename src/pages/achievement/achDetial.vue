@@ -493,7 +493,7 @@ export default{
       },
       nopass(){
         if(this.aplremark==""){
-          this.$messsage("请填写备注信息！")
+          this.$message({message:"请填写备注信息！"})
           return
         }
         let param={

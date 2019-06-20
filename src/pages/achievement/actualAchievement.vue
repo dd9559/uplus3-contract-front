@@ -668,7 +668,7 @@
             <div class="ssu">
               <p>合同编号：{{htbh}}</p>
               <p>签约时间：{{qysj}}</p>
-              <p>申诉人：{{this.userMsg.name}}</p>
+              <p v-if="userMsg">申诉人：{{userMsg.name}}</p>
             </div>
             <div class="role">
               <span class="point">申诉角色：</span>
@@ -882,6 +882,7 @@ export default {
     
   },
   mounted() {
+    this.userMsg = this.userInfo
     this.ajaxParam = {
       pageNum: this.currentPage,
       pageSize: this.pageSize
@@ -951,7 +952,7 @@ export default {
     this.remoteMethod();
   },
   computed: {
-      userMsg(){
+      userInfo(){
         return this.getUser.user
       },
       validInput() {
@@ -1036,6 +1037,8 @@ export default {
         this.people=res.data.data.allRole
         this.depName=res.data.data.depName
         this.empNames=res.data.data.empNames
+        // debugger
+        this.SSuForm.empNames=res.data.data.empNames[0].empId
       }
       })
       this.isSS=true

@@ -236,9 +236,10 @@
                 <div v-if="scope.row.type==0"  class="check-btn">
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
-                    v-if="userMsg&&userMsg.empId==scope.row.auditId"
+                    
                     style="cursor:pointer;"
                   >审核</span>
+                  <!-- v-if="userMsg&&userMsg.empId==scope.row.auditId" -->
                 </div>
             </template>
           </el-table-column>
@@ -397,6 +398,7 @@ export default {
   created(){
   },
   mounted() {
+    this.userMsg=this.userInfo
     this.ajaxParam = {
       pageNum: this.currentPage,
       pageSize: this.pageSize
@@ -445,7 +447,7 @@ export default {
     this.remoteMethod();
   },
   computed: {
-    userMsg(){
+    userInfo(){
         return this.getUser.user
       },
         validInput() {
@@ -541,9 +543,7 @@ export default {
       }
       this.loading = true;
       let _that = this;
-       if(this.power['sign-yj-appeal-query'].state){
       this.$ajax.get("/api/appeal/getAppealList", ajaxParam).then(res => {
-          console.log(res);
           let data = res.data;
           if (res.status === 200) {
             _that.selectAchList = data.data.list;
@@ -563,9 +563,7 @@ export default {
             this.loading = false;
           });
         })
-       }else{
-          this.noPower(this.power['sign-yj-appeal-query'].name)
-       }
+       
     },
     
     closeDialog() {

@@ -1070,9 +1070,10 @@
       },
       nopass(){
         if(this.aplremark==""){
-          this.$messsage("请填写备注信息！")
+          this.$message({message:"请填写备注信息！"})
           return
         }
+        
         let param={
           id:this.aplid,
           examineRemark:this.aplremark
@@ -1648,7 +1649,7 @@
             contractId: this.achObj.contractId
           };
           this.$ajax
-            .postJSON("/api/achievement/examineAdopt", param)
+            .postJSON("/api/appeal/saveAgents", param)
             .then(res => {
               if (res.data.status == 200) {
                 this.$emit("close");
